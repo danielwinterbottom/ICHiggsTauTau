@@ -152,7 +152,13 @@ sample_list = [
    'EWKZ2Jets_ZToLL-ext',
    'EWKZ2Jets_ZToLL',
    'EWKZ2Jets_ZToNuNu-ext',
-   'EWKZ2Jets_ZToNuNu'
+   'EWKZ2Jets_ZToNuNu',
+   'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
+   'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+   'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+   'VBFHiggs0M_M-125',
+   'VBFHiggs0Mf05ph0_M-125',
+   'VBFHiggs0PM_M-125'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

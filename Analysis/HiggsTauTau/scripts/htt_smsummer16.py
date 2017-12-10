@@ -68,6 +68,8 @@ parser.add_option("--all", dest="proc_all", action='store_true', default=False,
 
 parser.add_option("--short_signal", dest="short_signal", action='store_true', default=False,
                   help="Only process the 125/160 signal samples")
+parser.add_option("--cp_signal", dest="cp_signal", action='store_true', default=False,
+                  help="Process the samples needed for CP studies")
 
 #parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
 #                  help="A comma separated list of channels to ignore.  Supported channels: For data_2015 %(CHANNELS_2015)s" % vars())
@@ -197,6 +199,16 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'GluGluHToWWTo2L2Nu_M-125',
         'VBFHToWWTo2L2Nu_M-125'
         ]
+  # add cp samples
+  if options.cp_signal:
+    signal_mc += [
+        'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
+        'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+        'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+        'VBFHiggs0M_M-125',
+        'VBFHiggs0Mf05ph0_M-125',
+        'VBFHiggs0PM_M-125'
+    ]  
     
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500', '600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 
@@ -355,62 +367,62 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    #'TT',
-    ##'WJetsToLNu',
-    #'WJetsToLNu-LO',
-    #'WJetsToLNu-LO-ext',
-    #'VVTo2L2Nu',
-    #'VVTo2L2Nu-ext1',
-    #'ZZTo2L2Q',
-    ##'ZZTo4L',
-    #'ZZTo4L-amcat',
-    #'WWTo1L1Nu2Q',
-    ##'WWToLNuQQ',
-    ##'WWToLNuQQ-ext',
-    #'WZJToLLLNu',
-    #'WZTo1L3Nu',
-    #'WZTo2L2Q',
-    #'WZTo1L1Nu2Q',
-    #'T-t',
-    #'Tbar-t',
-    #'T-tW',
-    #'Tbar-tW',
-    ##'DYJetsToLL',
+    'TT',
+    #'WJetsToLNu',
+    'WJetsToLNu-LO',
+    'WJetsToLNu-LO-ext',
+    'VVTo2L2Nu',
+    'VVTo2L2Nu-ext1',
+    'ZZTo2L2Q',
+    #'ZZTo4L',
+    'ZZTo4L-amcat',
+    'WWTo1L1Nu2Q',
+    #'WWToLNuQQ',
+    #'WWToLNuQQ-ext',
+    'WZJToLLLNu',
+    'WZTo1L3Nu',
+    'WZTo2L2Q',
+    'WZTo1L1Nu2Q',
+    'T-t',
+    'Tbar-t',
+    'T-tW',
+    'Tbar-tW',
+    #'DYJetsToLL',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
-    ##'DYJetsToLL_M-10to50-ext',
-    ##'DYJetsToLL_M-10to50',
+    #'DYJetsToLL_M-10to50-ext',
+    #'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
-    ##'DY1JetsToLL_M-10-50-LO',
-    ##'DY2JetsToLL_M-10-50-LO',
-    ##'DY3JetsToLL_M-10-50-LO',
-    ##'DYJetsToLL_M-150-LO',
+    #'DY1JetsToLL_M-10-50-LO',
+    #'DY2JetsToLL_M-10-50-LO',
+    #'DY3JetsToLL_M-10-50-LO',
+    #'DYJetsToLL_M-150-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
-    #'W1JetsToLNu-LO',
-    #'W2JetsToLNu-LO',
-    #'W2JetsToLNu-LO-ext',
-    #'W3JetsToLNu-LO',
-    #'W3JetsToLNu-LO-ext',
-    #'W4JetsToLNu-LO',
-    #'W4JetsToLNu-LO-ext1',
-    #'W4JetsToLNu-LO-ext2',
-    #'WGToLNuG',
-    #'WGToLNuG-ext',
-    #'WGstarToLNuEE',
-    #'WGstarToLNuMuMu'
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W2JetsToLNu-LO-ext',
+    'W3JetsToLNu-LO',
+    'W3JetsToLNu-LO-ext',
+    'W4JetsToLNu-LO',
+    'W4JetsToLNu-LO-ext1',
+    'W4JetsToLNu-LO-ext2',
+    'WGToLNuG',
+    'WGToLNuG-ext',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-      #'EWKWMinus2Jets_WToLNu-ext1',
-      #'EWKWMinus2Jets_WToLNu-ext2',
-      #'EWKWMinus2Jets_WToLNu',
-      #'EWKWPlus2Jets_WToLNu-ext1',
-      #'EWKWPlus2Jets_WToLNu-ext2',
-      #'EWKWPlus2Jets_WToLNu',
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
       'EWKZ2Jets_ZToLL-ext',
       'EWKZ2Jets_ZToLL',
       'EWKZ2Jets_ZToNuNu-ext',
