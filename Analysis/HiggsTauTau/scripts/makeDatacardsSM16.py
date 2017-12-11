@@ -258,19 +258,16 @@ for ch in channels:
     
     if jes_systematics and not options.no_shape_systs:
       # have to do this to avoid using too much memory...  
-      dc1='%s_jes1' % dc
-      dc2='%s_jes2' % dc
-      dc3='%s_jes3' % dc
       os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc1)s'
+              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes1' 
               ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s '
               ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=1:9' % vars())    
       os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc2)s'
+              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes2'
               ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s '
               ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=10:18' % vars()) 
       os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc3)s'
+              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes3'
               ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s '
               ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=19:27' % vars())
               
