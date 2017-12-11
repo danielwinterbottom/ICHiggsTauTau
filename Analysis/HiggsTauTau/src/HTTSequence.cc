@@ -80,7 +80,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
-    if(jes_mode > 0 && json["baseline"]["split_by_source"].asBool()) svfit_folder=svfit_folder+"/";
+    if(json["baseline"]["jes_mode"].asUInt() > 0 && json["baseline"]["split_by_source"].asBool()) svfit_folder=svfit_folder+"/";
     else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   }
   svfit_override = json["svfit_override"].asString();
@@ -1388,7 +1388,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(0)
-    .set_require_inputs_match(true)
+    .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
     .set_met_label(met_label)
