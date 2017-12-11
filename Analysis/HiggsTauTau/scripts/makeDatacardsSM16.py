@@ -213,7 +213,7 @@ if SCHEME == 'smsummer16':
     ("8",   "boosted", "boosted",  VAR_BOOSTED_TT, ''),
     ("8",   "boosted", "boosted_qcd_cr",  VAR_BOOSTED_TT_QCDCR, ' --do_ss '),
     ("8",   "vbf",     "vbf",  VAR_VBF_TT, ''),
-    ("8",   "vbf",    "0jet_vbf_cr",  VAR_VBF_TT_QCDCR, ' --do_ss ')
+    ("8",   "vbf",      "vbf_qcd_cr",  VAR_VBF_TT_QCDCR, ' --do_ss ')
   ]
   scheme_em = [
     ("15",   "0jet",    "0jet",  VAR_0JET_EM, '--set_alias="sel:mt_1<50" '),
