@@ -69,6 +69,7 @@ def SetAxisTitles(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
+  titles['pzeta'] = ['D_{#zeta} (GeV)','Events / '+bin_width+' GeV', 'dN/dD_{#zeta} (1/GeV)']
   
   if var not in titles: 
     if not isVarBins: return [var,'Events']
@@ -2036,9 +2037,9 @@ def HTTPlot(nodename,
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
     if FF:
-        background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
-        'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
-        'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+        'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+        'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
         
@@ -2260,6 +2261,74 @@ def HTTPlot(nodename,
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
+    
+    ## category plots for mt and em channel
+    ## mt cats plot:
+    #line1 = R.TLine()
+    #line1.SetLineStyle(2)
+    #line1.SetLineWidth(2)
+    #line1.DrawLine(40, 0, 40, 21000)
+    #latex1 = R.TLatex()
+    #latex1.SetTextAlign(23)
+    #latex1.SetTextSize(0.03)
+    #latex1.DrawLatex(20, 21000*1.05, "Tight-m_{T}")
+    #
+    #line2 = R.TLine()
+    #line2.SetLineStyle(2)
+    #line2.SetLineWidth(2)
+    #line2.DrawLine(70, 0, 70, 21000)
+    #latex2 = R.TLatex()
+    #latex2.SetTextAlign(23)
+    #latex2.SetTextSize(0.03)
+    #latex2.DrawLatex(55, 21000*1.05, "Loose-m_{T}")
+    #
+    ##latex3 = R.TLatex()
+    ##latex3.SetTextSize(0.03)
+    ##latex3.SetTextAlign(13)
+    ##latex3.DrawLatex(90, 10000, "control-region")
+    
+    ##command to run2_mssm
+    ##python scripts/HiggsTauTauPlot_mt.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.00368 --add_stat_to_syst --ratio_range=0.4,1.6
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.4,1.6 --x_title="m_{T}^{#mu} (GeV)"#prefit
+    
+    
+    ## for em cat plots
+    #line1 = R.TLine()
+    #line1.SetLineStyle(2)
+    #line1.SetLineWidth(2)
+    #line1.DrawLine(-50, 0, -50, 46000)
+    ##latex1 = R.TLatex()
+    ##latex1.SetTextAlign(23)
+    ##latex1.SetTextSize(0.03)
+    ##latex1.DrawLatex(-88, 48000, "control-region")
+    #
+    #line2 = R.TLine()
+    #line2.SetLineStyle(2)
+    #line2.SetLineWidth(2)
+    #line2.DrawLine(-10, 0, -10, 46000)
+    #latex2 = R.TLatex()
+    #latex2.SetTextAlign(23)
+    #latex2.SetTextSize(0.03)
+    #latex2.DrawLatex(-30, 46000*1.05, "Low-D_{#zeta}")
+    # 
+    #line3 = R.TLine()
+    #line3.SetLineStyle(2)
+    #line3.SetLineWidth(2)
+    #line3.DrawLine(30, 0, 30, 46000)
+    #latex3 = R.TLatex()
+    #latex3.SetTextAlign(23)
+    #latex3.SetTextSize(0.03)
+    #latex3.DrawLatex(10, 46000*1.05, "Medium-D_{#zeta}")
+    #
+    #latex4 = R.TLatex()
+    #latex4.SetTextAlign(23)
+    #latex4.SetTextSize(0.03)
+    #latex4.DrawLatex(70, 20000, "High-D_{#zeta}")
+    
+    #command to run2_mssm
+    ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em 
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em  #prefit
+
     
     #Add ratio plot if required
     if ratio:
