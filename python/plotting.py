@@ -343,7 +343,7 @@ def ModTDRStyle(width=600, height=600, t=0.06, b=0.12, l=0.16, r=0.04):
     # 0.08, 0.12, 0.12, 0.04
 
     # Set number of axis tick divisions
-    R.gStyle.SetNdivisions(506, 'XYZ')  # default 510
+    R.gStyle.SetNdivisions(510, 'XYZ')  # default 510
 
     # Some marker properties not set in the default tdr style
     R.gStyle.SetMarkerColor(R.kBlack)
@@ -2258,9 +2258,9 @@ def HTTPlot(nodename,
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
-    DrawTitle(pads[0], lumi, 3)
+    #DrawTitle(pads[0], lumi, 3)
     
     ## category plots for mt and em channel
     ## mt cats plot:
