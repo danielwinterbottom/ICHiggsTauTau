@@ -729,6 +729,10 @@ namespace ic {
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
+      outtree_->Branch("jpt_1",             &jpt_1_.var_double);
+      outtree_->Branch("jpt_2",             &jpt_2_.var_double);
+      outtree_->Branch("jeta_1",            &jeta_1_.var_double);
+      outtree_->Branch("jeta_2",            &jeta_2_.var_double);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -1153,12 +1157,8 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("nearjpt_1",             &nearjpt_1_);
         outtree_->Branch("j1_dm",             &j1_dm_);
-        outtree_->Branch("jpt_2",             &jpt_2_.var_double);
-        outtree_->Branch("jeta_1",            &jeta_1_.var_double);
-        outtree_->Branch("jeta_2",            &jeta_2_.var_double);
         outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
         outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);

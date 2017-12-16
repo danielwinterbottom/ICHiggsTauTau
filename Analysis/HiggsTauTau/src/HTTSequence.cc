@@ -2021,7 +2021,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
       httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample);
+      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm);
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);

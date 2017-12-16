@@ -270,17 +270,17 @@ compare_qcd_shapes = False
 if options.scheme == "qcd_shape": compare_qcd_shapes = True
 if options.scheme == "w_shape": compare_w_shapes = True
 w_abs_shift=None # if not None then the QCD shape will be adjusted by shifting the W yield up and down by +/- w_abs_shift
-if options.era == "mssmsummer16" or options.era == "smsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
+if options.era == "mssmsummer16" or options.era == "smsummer16" or options.era == "cpsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
 
 cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+        if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'
+        if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -301,24 +301,26 @@ elif options.analysis == 'mssm':
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-    if options.era == 'smsummer16': cats['baseline'] = '(pt_1>50 && mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(pt_1>50 && mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
-    if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto &% trg_muonelectron)'
+    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto &% trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
+    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
+    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
     
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
-if options.era == 'smsummer16': cats['w_sdb'] = 'mt_1>80.'
+if options.era in ['smsummer16','cpsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era == 'smsummer16': cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && pt_1>50 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && pt_1>50 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 
@@ -348,17 +350,20 @@ if options.channel == 'em': cats['vbf'] = '(n_jets==2 && mjj>300)'
 if options.channel == 'et': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50)'
 if options.channel == 'mt': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50 && pt_2>40)'
 if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)'
+# for cpsummer16 dijet category replaces vbf category
+cats['dijet'] = 'n_jets>=2 && jdeta>3 && opp_sides && m_vis>80 && m_vis<130'
 cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['vbf'])
+if options.era == "cpsummer16": cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['dijet'])
 if options.channel == "em":
   cats['0jet'] += '*(n_bjets==0)'    
   cats['boosted'] += '*(n_bjets==0)'
   cats['vbf'] += '*(n_bjets==0)'
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
-if options.era == 'smsummer16':
+if options.era in ['smsummer16','cpsummer16']:
   if options.channel == 'et': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)*('+cats[options.cat]+')'
   if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))*('+cats[options.cat]+')'
-  if options.cat in ['boosted','vbf']: cats['w_shape'] = cats['qcd_shape']
+  if options.cat in ['boosted','vbf','dijet']: cats['w_shape'] = cats['qcd_shape']
 
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
@@ -447,7 +452,7 @@ if options.channel in ['mj']:
   top_sels['ttt_sel'] = '(0)' 
   top_sels['ttj_sel'] = '(1)'
   
-if options.era == "smsummer16":
+if options.era in ["smsummer16",'cpsummer16']:
   if options.channel in ['mt','et']:
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2!=6&&gen_match_2!=5)'
@@ -486,7 +491,7 @@ ewkz_samples = []
 gghww_samples = []
 qqhww_samples = []
 
-if options.era == "mssmsummer16" or options.era == "smsummer16":
+if options.era in ["mssmsummer16","smsummer16",'cpsummer16']:
     # Add data sample names
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
@@ -505,7 +510,7 @@ if options.era == "mssmsummer16" or options.era == "smsummer16":
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
     
-if options.era == "smsummer16":
+if options.era in ["smsummer16",'cpsummer16']:
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext','EWKZ2Jets_ZToNuNu','EWKZ2Jets_ZToNuNu-ext']
@@ -513,7 +518,7 @@ if options.era == "smsummer16":
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
-if options.era == "smsummer16": sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
+if options.era in ["smsummer16",'cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -561,7 +566,7 @@ if options.syst_zwt != '':
     systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 if options.syst_w_fake_rate != '':
     to_skip = ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125']
-    if options.era == "smsummer16": to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125']
+    if options.era in ["smsummer16",'cpsummer16']: to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125']
     systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', to_skip, False)
     systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', to_skip, False)
 if options.syst_jfake_m != '':
@@ -594,10 +599,10 @@ if options.syst_zpt_statpt40 != '':
 if options.syst_zpt_statpt80 != '':
     systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
-if options.syst_z_mjj != '' and options.cat == 'vbf':
+if options.syst_z_mjj != '' and options.cat in ['vbf','dijet']:
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
-if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf'] and options.channel in ['em','et','mt','tt']: 
+if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
@@ -621,7 +626,7 @@ if options.syst_qcd_shape_wsf != '':
     systematics['syst_qcd_shape_wsf_up'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Up', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_shape_wsf_down'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Down', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     if options.cat in ["0jet","boosted"]: w_abs_shift=0.1
-    if options.cat in ["vbf"]: w_abs_shift=0.3
+    if options.cat in ["vbf",'dijet']: w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
     systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['QCD','jetFakes'], False)
     systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['QCD','jetFakes'], False)
@@ -682,12 +687,12 @@ else:
           qcd_os_ss_ratio = 1.0
           if options.cat == '0jet': qcd_os_ss_ratio = 1.0
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.28
-          elif options.cat == 'vbf': qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet']: qcd_os_ss_ratio = 1.0
       elif options.channel in ['mt','mj']: 
           qcd_os_ss_ratio = 1.07
           if options.cat == '0jet': qcd_os_ss_ratio = 1.07
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
-          elif options.cat == 'vbf': qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet']: qcd_os_ss_ratio = 1.0
       elif options.channel == 'zmm' or options.channel == 'zee':
           qcd_os_ss_ratio = 1.07   
       else:
@@ -1004,7 +1009,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   subtract_node.AddNode(vvj_node)
   ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
   subtract_node.AddNode(ztt_node)
-  if options.era == 'smsummer16': 
+  if options.era in ['smsummer16','cpsummer16']: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
@@ -1621,6 +1626,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     for node in nodes:
         if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
             if options.method == 18 and 'jetFakes' == node.name: continue
+            if add_name not in node.name: continue
             if first_hist:
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
                 first_hist=False
@@ -1698,7 +1704,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
-        if 'EWKZ' not in samples_to_skip and options.era == 'smsummer16': 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
     
     else:
@@ -1720,10 +1726,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
-        if 'EWKZ' not in samples_to_skip and options.era == 'smsummer16': 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'HWW' not in samples_to_skip and options.era == 'smsummer16' and options.channel == 'em':
-            GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, z_sels, not options.do_ss, True, True)    
+        #if 'HWW' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
+        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, z_sels, not options.do_ss, True, True)    
             
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
@@ -1903,7 +1909,7 @@ while len(systematics) > 0:
           ff_syst_weight = systematics[systematic][2]
       if options.add_wt is not "": weight+="*"+options.add_wt
       if options.channel == "tt" and options.era == 'mssmsummer16': weight+='*wt_tau_id_medium'
-      if options.channel == "tt" and options.era == 'smsummer16': weight+='*wt_tau_id_tight'
+      if options.channel == "tt" and options.era in ['smsummer16','cpsummer16']: weight+='*wt_tau_id_tight'
       if options.cat == '0jet': weight+='*wt_lfake_rate'
 
       samples_to_skip = systematics[systematic][3]
@@ -1989,7 +1995,7 @@ while len(systematics) > 0:
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-if options.era == "smsummer16" and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
+if options.era in ["smsummer16",'cpsummer16'] and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)
     DONLOUncerts(nodename,outfile)
@@ -2200,10 +2206,10 @@ if not options.no_plot:
 #norm signal yields on datacards to 1pb AFTER plotting    
 outfile =  ROOT.TFile(output_name, 'UPDATE')
 for add_name in add_names: 
-    if options.era != "smsummer16": NormSignals(outfile,add_name)
+    if options.era not in ["smsummer16",'cpsummer16']: NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one - note this may need normalizing to 1pb again!
-if options.era == "smsummer16":
+if options.era in ["smsummer16",'cpsummer16']:
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []

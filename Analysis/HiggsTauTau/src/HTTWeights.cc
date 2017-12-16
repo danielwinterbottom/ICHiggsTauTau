@@ -200,6 +200,7 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+            
         if(do_trg_weights_ || do_idiso_weights_) {
           if (strategy_ != strategy::smsummer16) {
 
@@ -263,10 +264,12 @@ namespace ic {
                w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu19leg_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
-            fns_["t_fake_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
-            fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+            if(strategy_ == strategy::smsummer16){
+              fns_["t_fake_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+              fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+            }
           }
           if (strategy_ != strategy::smsummer16) {
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
@@ -371,9 +374,9 @@ namespace ic {
                 wtrk_->function("e_trk_ratio")->functor(wtrk_->argSet("e_pt,e_eta")));
           } else {
             fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("m_trk_ratio")->functor(wtrk_->argSet("m_eta")));
+                w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
             fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("e_trk_ratio")->functor(wtrk_->argSet("e_pt,e_eta")));  
+                w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));  
           }
         }
     }
@@ -2510,8 +2513,8 @@ namespace ic {
            if(strategy_ == strategy::smsummer16){
              m_1_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args1_1.data());
              m_2_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args2_1.data());  
-             if(m_1_iso) m_1_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args1_1.data());
-             if(m_2_iso) m_2_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args2_1.data()); 
+             if(m_1_iso>0.15) m_1_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args1_1.data());
+             if(m_2_iso>0.15) m_2_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args2_1.data()); 
            } else {
              m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
              m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;

@@ -117,17 +117,17 @@ extra_channel = {
       "em" : ' '
   }
 jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
-em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
-et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
-mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
-tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
-
-#common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" '
+#common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
 #em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
-#et_shape_systematics=' --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
-#mt_shape_systematics=' --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
-#tt_shape_systematics=' '
+#et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
+#mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
+#tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
+
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" '
+em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
+et_shape_systematics=' --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
+mt_shape_systematics=' --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
+tt_shape_systematics=' '
 
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
@@ -147,47 +147,46 @@ if options.no_shape_systs:
 
 if SCHEME == 'smsummer16':
   
-  # replace m_vis with sv fit ass when it has been run
-  #VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
-  #VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
-  #VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
-  #
-  #VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
-  #VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
-  #
-  #VAR_VBF = 'mjj,m_sv[300,700,1100,1500],[0,95,115,135,155,400]' 
-  #VAR_VBF_TT = 'mjj,m_sv[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
-  #
-  #VAR_0JET_LT_WCR = 'mt_1[80,200]'
-  #VAR_BOOSTED_WCR = 'mt_1[80,200]'
-  #
-  #VAR_0JET_LT_QCDCR = 'm_vis(4,40,200)' 
-  #VAR_BOOSTED_LT_QCDCR = 'm_sv(4,40,200)'
-  #
-  #VAR_0JET_TT_QCDCR = 'm_sv[0,300]'
-  #VAR_BOOSTED_TT_QCDCR = 'm_sv[0,300]' 
-  #VAR_VBF_TT_QCDCR = 'm_sv[0,250]'
-  
-  #m_vis based variables
   VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
   VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
-  VAR_0JET_TT = 'm_vis[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
   
-  VAR_BOOSTED = 'pt_tt,m_vis[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
-  VAR_BOOSTED_TT = 'pt_tt,m_vis[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
-  VAR_VBF = 'mjj,m_vis[300,700,1100,1500],[0,95,115,135,155,400]' 
-  VAR_VBF_TT = 'mjj,m_vis[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
+  VAR_VBF = 'mjj,m_sv[300,700,1100,1500],[0,95,115,135,155,400]' 
+  VAR_VBF_TT = 'mjj,m_sv[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
   VAR_0JET_LT_WCR = 'mt_1[80,200]'
   VAR_BOOSTED_WCR = 'mt_1[80,200]'
   
   VAR_0JET_LT_QCDCR = 'm_vis(4,40,200)' 
-  VAR_BOOSTED_LT_QCDCR = 'm_vis(4,40,200)'
+  VAR_BOOSTED_LT_QCDCR = 'm_sv(4,40,200)'
   
-  VAR_0JET_TT_QCDCR = 'm_vis[0,300]'
-  VAR_BOOSTED_TT_QCDCR = 'm_vis[0,300]' 
-  VAR_VBF_TT_QCDCR = 'm_vis[0,250]'
+  VAR_0JET_TT_QCDCR = 'm_sv[0,300]'
+  VAR_BOOSTED_TT_QCDCR = 'm_sv[0,300]' 
+  VAR_VBF_TT_QCDCR = 'm_sv[0,250]'
+  
+  ##m_vis based variables
+  #VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
+  #VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
+  #VAR_0JET_TT = 'm_vis[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  #
+  #VAR_BOOSTED = 'pt_tt,m_vis[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
+  #VAR_BOOSTED_TT = 'pt_tt,m_vis[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
+  #
+  #VAR_VBF = 'mjj,m_vis[300,700,1100,1500],[0,95,115,135,155,400]' 
+  #VAR_VBF_TT = 'mjj,m_vis[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
+  #
+  #VAR_0JET_LT_WCR = 'mt_1[80,200]'
+  #VAR_BOOSTED_WCR = 'mt_1[80,200]'
+  #
+  #VAR_0JET_LT_QCDCR = 'm_vis(4,40,200)' 
+  #VAR_BOOSTED_LT_QCDCR = 'm_vis(4,40,200)'
+  #
+  #VAR_0JET_TT_QCDCR = 'm_vis[0,300]'
+  #VAR_BOOSTED_TT_QCDCR = 'm_vis[0,300]' 
+  #VAR_VBF_TT_QCDCR = 'm_vis[0,250]'
 
   scheme_et = [
     ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),

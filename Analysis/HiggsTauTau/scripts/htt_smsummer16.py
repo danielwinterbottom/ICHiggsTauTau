@@ -93,6 +93,9 @@ parser.add_option("--analysis", dest="analysis", type='string', default='sm',
 
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
                   help="Submit jobs parametrically")
+parser.add_option("--config", dest="config", type='string', default='prevlist',
+                  help="Config file")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -136,6 +139,7 @@ if analysis == 'sm':
   CONFIG='scripts/configsm2016.json'
 else:
   CONFIG='scripts/config2016.json'
+if options.config != '': CONFIG = options.config
  
 n_channels=1
 with open(CONFIG,"r") as input:
@@ -183,7 +187,8 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
-  masses = ['110', '120', '125', '130', '140']
+  if options.analysis == 'sm': masses = ['110', '120', '125', '130', '140']
+  else: masses = ['125']
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
