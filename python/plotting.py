@@ -2196,10 +2196,10 @@ def HTTPlot(nodename,
     
     
     ## for em cat plots
-    line1 = R.TLine()
-    line1.SetLineStyle(2)
-    line1.SetLineWidth(2)
-    line1.DrawLine(-50, 0, -50, 46000)
+    #line1 = R.TLine()
+    #line1.SetLineStyle(2)
+    #line1.SetLineWidth(2)
+    #line1.DrawLine(-50, 0, -50, 46000)
     ##latex1 = R.TLatex()
     ##latex1.SetTextAlign(23)
     ##latex1.SetTextSize(0.03)
