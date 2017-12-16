@@ -264,7 +264,7 @@ def ModTDRStyle(width=600, height=600, t=0.06, b=0.12, l=0.16, r=0.04):
     # 0.08, 0.12, 0.12, 0.04
 
     # Set number of axis tick divisions
-    R.gStyle.SetNdivisions(506, 'XYZ')  # default 510
+    R.gStyle.SetNdivisions(510, 'XYZ')  # default 510
 
     # Some marker properties not set in the default tdr style
     R.gStyle.SetMarkerColor(R.kBlack)
@@ -383,6 +383,7 @@ def TwoPadSplit(split_point, gap_low, gap_high):
     upper = R.TPad('upper', 'upper', 0., 0., 1., 1.)
     upper.SetBottomMargin(split_point + gap_high)
     upper.SetFillStyle(4000)
+    upper.SetTicks(1)
     upper.Draw()
     lower = R.TPad('lower', 'lower', 0., 0., 1., 1.)
     lower.SetTopMargin(1 - split_point + gap_low)
@@ -2018,7 +2019,7 @@ def HTTPlot(nodename,
         axish[1].GetXaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetNdivisions(4)
         if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
-        else: axish[1].GetYaxis().SetTitle("Obs/Exp")
+        else: axish[1].GetYaxis().SetTitle("Data/Exp")
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
@@ -2081,14 +2082,14 @@ def HTTPlot(nodename,
         
     ## Add another signal mass point
     #sighist2 = R.TH1F()
-    #sighist2= infile.Get(nodename+'/ggH200').Clone()
+    #sighist2= infile.Get(nodename+'/ggH350').Clone()
     #sighist2.SetLineColor(R.kRed)
     #sighist2.SetLineWidth(3)
     #sighist2.Scale(signal_scale)
     ## Add another signal mass point
     #sighist3 = R.TH1F()
-    #sighist3= infile.Get(nodename+'/ggH400').Clone()
-    #sighist3.SetLineColor(R.kGreen+3)
+    #sighist3= infile.Get(nodename+'/ggH700').Clone()
+    #sighist3.SetLineColor(R.kGreen+2)
     #sighist3.SetLineWidth(3)
     #sighist3.Scale(signal_scale)
     #if norm_bins: 
@@ -2126,13 +2127,13 @@ def HTTPlot(nodename,
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.30,0.30,3,0.03)
+    legend = PositionedLegend(0.37,0.3,3,0.03) = #legend = PositionedLegend(0.37,0.37,3,0.03) when showing lots of signal
     legend.SetTextFont(42)
-    legend.SetTextSize(0.022)
+    legend.SetTextSize(0.03)
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
-    else: legend.AddEntry(blind_datahist,"Observation","PE")
+    else: legend.AddEntry(blind_datahist,"Data","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[scheme].reverse()
@@ -2143,12 +2144,12 @@ def HTTPlot(nodename,
     if signal_mass != "":
         legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
     ## Add a second signal mass
-    #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
-    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(400 GeV)#rightarrow#tau#tau","l")  
+    #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")  
+    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(700 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
-    if channel == "em": channel_label = "e#mu"
-    if channel == "et": channel_label = "e#tau_{h}"
-    if channel == "mt": channel_label = "#mu#tau_{h}"
+    if channel == "em": channel_label = "e_{}#mu_{}"
+    if channel == "et": channel_label = "e_{}#tau_{h}"
+    if channel == "mt": channel_label = "#mu_{}#tau_{h}"
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
@@ -2230,7 +2231,7 @@ def HTTPlot(nodename,
     
     #command to run2_mssm
     ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em 
-    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.7,1.3 --channel=em  #prefit
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.7,1.3 --channel=em
 
     
     #Add ratio plot if required
