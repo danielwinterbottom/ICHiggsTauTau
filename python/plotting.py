@@ -2127,7 +2127,8 @@ def HTTPlot(nodename,
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.03) = #legend = PositionedLegend(0.37,0.37,3,0.03) when showing lots of signal
+    legend = PositionedLegend(0.37,0.3,3,0.03) 
+    #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
@@ -2162,8 +2163,8 @@ def HTTPlot(nodename,
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
-    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
     ## category plots for mt and em channel
@@ -2193,7 +2194,8 @@ def HTTPlot(nodename,
     
     ##command to run2_mssm
     ##python scripts/HiggsTauTauPlot_mt.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.00368 --add_stat_to_syst --ratio_range=0.4,1.6
-    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.7,1.3 --x_title="m_{T}^{#mu} (GeV)"#prefit
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.85,1.15 --x_title="m_{T}^{#mu} (GeV)" --y_title="Events / 5 GeV" #prefit
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.85,1.15 --x_title="m_{T}^{#mu} (GeV)" --y_title="Events / 5 GeV" --signal_scale=100 --draw_signal_mass=130 # with signal
     
     
     ## for em cat plots
@@ -2227,11 +2229,13 @@ def HTTPlot(nodename,
     #latex4 = R.TLatex()
     #latex4.SetTextAlign(23)
     #latex4.SetTextSize(0.03)
-    #latex4.DrawLatex(70, 20000, "High-D_{#zeta}")
-    
+    #latex4.DrawLatex(85, 20000, "High-D_{#zeta}")
+   
     #command to run2_mssm
     ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em 
-    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.7,1.3 --channel=em
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.85,1.15 --channel=em
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.85,1.15 --channel=em --y_title="Events / 10 GeV" --signal_scale=200 --draw_signal_mass=130 # with signal
+
 
     
     #Add ratio plot if required
