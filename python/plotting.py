@@ -64,6 +64,7 @@ def SetAxisTitles(plot, channel):
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
+  titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)']

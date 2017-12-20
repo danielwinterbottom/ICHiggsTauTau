@@ -93,7 +93,7 @@ parser.add_option("--analysis", dest="analysis", type='string', default='sm',
 
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
                   help="Submit jobs parametrically")
-parser.add_option("--config", dest="config", type='string', default='prevlist',
+parser.add_option("--config", dest="config", type='string', default='',
                   help="Config file")
 
 
@@ -212,7 +212,9 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         'VBFHiggs0M_M-125',
         'VBFHiggs0Mf05ph0_M-125',
-        'VBFHiggs0PM_M-125'
+        'VBFHiggs0PM_M-125',
+        'GluGluToHToTauTau_amcNLO_M-125',
+        'VBFHToTauTau_amcNLO_M-125'
     ]  
     
 if options.proc_mssm or options.proc_all:

@@ -346,14 +346,18 @@ cats['qcd_shape_comp']=''
 # SM categories
 cats['0jet'] = '(n_jets==0)'
 cats['vbf'] = '(0)'
+cats['twojets'] = '(n_jets>=2)'
 if options.channel == 'em': cats['vbf'] = '(n_jets==2 && mjj>300)'
 if options.channel == 'et': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50)'
 if options.channel == 'mt': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50 && pt_2>40)'
 if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)'
 # for cpsummer16 dijet category replaces vbf category
-cats['dijet'] = 'n_jets>=2 && jdeta>3 && opp_sides && m_vis>80 && m_vis<130'
-cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['vbf'])
-if options.era == "cpsummer16": cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['dijet'])
+cats['dijet'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0'
+cats['dijet_lowM'] = 'n_jets>=2 && jdeta>3 && m_sv<100 && n_bjets==0'
+cats['dijet_highM'] = 'n_jets>=2 && jdeta>3 && m_sv>150 && n_bjets==0'
+cats['dijet_boosted'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && pt_tt>150'
+cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['vbf'])
+if options.era == "cpsummer16": cats['boosted'] = '(!(%s) && !(n_jets>=2 && jdeta>3 && n_bjets==0))' % cats['0jet']
 if options.channel == "em":
   cats['0jet'] += '*(n_bjets==0)'    
   cats['boosted'] += '*(n_bjets==0)'
@@ -518,7 +522,9 @@ if options.era in ["smsummer16",'cpsummer16']:
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
-if options.era in ["smsummer16",'cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
+if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar' }
+# removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -602,8 +608,9 @@ if options.syst_zpt_statpt80 != '':
 if options.syst_z_mjj != '' and options.cat in ['vbf','dijet']:
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
-if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet'] and options.channel in ['em','et','mt','tt']: 
+if options.syst_qcd_scale != '' and options.cat in ['boosted','vbf','dijet'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
+    if options.cat == 'dijet': weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
