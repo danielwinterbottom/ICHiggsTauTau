@@ -1284,6 +1284,14 @@ class HTTCategories : public ModuleBase {
   double wt_lfake_dm1_up_;
   double wt_lfake_dm1_down_;
   double wt_lfake_rate_;
+  
+  double spjdphi_;
+  double min_hj_deta_;
+  double pjdeta_;
+  double pjahdeta_;
+  double pjbhdeta_;
+  int prob_region_;
+  unsigned n_pjets_;
 
  public:
   HTTCategories(std::string const& name);

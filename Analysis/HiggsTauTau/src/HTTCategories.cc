@@ -692,6 +692,13 @@ namespace ic {
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("sjdphi",             &sjdphi_);
+      outtree_->Branch("spjdphi", &spjdphi_     );
+      outtree_->Branch("min_hj_deta", &min_hj_deta_ );
+      outtree_->Branch("pjdeta", &pjdeta_      );
+      outtree_->Branch("pjahdeta", &pjahdeta_    );
+      outtree_->Branch("pjbhdeta", &pjbhdeta_    );
+      outtree_->Branch("prob_region", &prob_region_ );
+      outtree_->Branch("n_pjets", &n_pjets_ );
       outtree_->Branch("opp_sides",             &opp_sides_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
@@ -3566,6 +3573,49 @@ namespace ic {
       if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       else sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
       opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
+      
+      n_pjets_=0;
+      if (jets.size()==1) n_pjets_=1;
+      if(jets.size()>=2){
+        double higgs_eta = 0;
+        if (event->Exists("svfitHiggs")) {
+          Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
+          higgs_eta = higgs.eta();
+        }
+        else higgs_eta = (lep1->vector()+lep2->vector()).Rapidity();
+        // sort jets higher and lower than higgs eta_1
+        std::vector<PFJet*> jets_high;
+        std::vector<PFJet*> jets_low;
+        for (unsigned i=0; i<jets.size(); ++i){
+          if (jets[i]->eta() > higgs_eta) jets_high.push_back(jets[i]);    
+          else jets_low.push_back(jets[i]);
+        }
+        if(jets_low.size()>0) n_pjets_++;
+        if(jets_high.size()>0) n_pjets_++;
+        Candidate pseudo_jet_a;
+        Candidate pseudo_jet_b;
+        for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j->vector());
+        for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j->vector());
+        spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
+        for (unsigned i=0; i<jets.size(); ++i){
+          double dEta = std::fabs(higgs_eta - jets[i]->eta());  
+          if(i==0 || dEta<min_hj_deta_) min_hj_deta_ = dEta;    
+        }
+        pjdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - pseudo_jet_b.vector().Rapidity());
+        pjahdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+        pjbhdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+        if((jets[0]->eta()>higgs_eta&&jets[1]->eta()>higgs_eta)||(jets[0]->eta()<higgs_eta&&jets[1]->eta()<higgs_eta)) prob_region_ = 1;
+        else prob_region_ = 0;
+      }
+      else {
+        spjdphi_ = -9999;
+        min_hj_deta_ = -9999;
+        pjdeta_ =-9999;
+        pjahdeta_ = -9999;
+        pjbhdeta_ = -9999;
+        prob_region_ = -9999;
+      }
+      
       double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
       double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;
