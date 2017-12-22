@@ -158,7 +158,9 @@ sample_list = [
    'GluGluH2JetsToTauTau_M125_CPmixing_sm',
    'VBFHiggs0M_M-125',
    'VBFHiggs0Mf05ph0_M-125',
-   'VBFHiggs0PM_M-125'
+   'VBFHiggs0PM_M-125',
+   'GluGluToHToTauTau_amcNLO_M-125',
+   'VBFHToTauTau_amcNLO_M-125'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

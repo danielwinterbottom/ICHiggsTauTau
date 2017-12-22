@@ -610,8 +610,10 @@ if options.syst_z_mjj != '' and options.cat in ['vbf','dijet']:
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
 if options.syst_qcd_scale != '' and options.cat in ['boosted','vbf','dijet'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
-    if options.cat == 'dijet': weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
+    if options.cat == 'dijet': 
+      weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
+      weight_down = 'wt*(2-wt_scale_%s_vbf)' % (options.channel)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
 if options.syst_tau_id_dm0 != '':
