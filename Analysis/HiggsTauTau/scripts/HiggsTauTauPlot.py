@@ -367,7 +367,7 @@ if options.channel == "em":
 if options.era in ['smsummer16','cpsummer16']:
   if options.channel == 'et': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)*('+cats[options.cat]+')'
   if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))*('+cats[options.cat]+')'
-  if options.cat in ['boosted','vbf','dijet']: cats['w_shape'] = cats['qcd_shape']
+  if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM']: cats['w_shape'] = cats['qcd_shape']
 
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
@@ -605,13 +605,13 @@ if options.syst_zpt_statpt40 != '':
 if options.syst_zpt_statpt80 != '':
     systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
-if options.syst_z_mjj != '' and options.cat in ['vbf','dijet']:
+if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']:
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
-if options.syst_qcd_scale != '' and options.cat in ['boosted','vbf','dijet'] and options.channel in ['em','et','mt','tt']: 
+if options.syst_qcd_scale != '' and options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
-    if options.cat == 'dijet': 
+    if options.cat in ['dijet','dijet_lowM','dijet_highM']: 
       weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
       weight_down = 'wt*(2-wt_scale_%s_vbf)' % (options.channel)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
@@ -635,7 +635,7 @@ if options.syst_qcd_shape_wsf != '':
     systematics['syst_qcd_shape_wsf_up'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Up', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_shape_wsf_down'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Down', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     if options.cat in ["0jet","boosted"]: w_abs_shift=0.1
-    if options.cat in ["vbf",'dijet']: w_abs_shift=0.3
+    if options.cat in ["vbf",'dijet','dijet_lowM','dijet_highM']: w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
     systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['QCD','jetFakes'], False)
     systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['QCD','jetFakes'], False)
@@ -696,12 +696,12 @@ else:
           qcd_os_ss_ratio = 1.0
           if options.cat == '0jet': qcd_os_ss_ratio = 1.0
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.28
-          elif options.cat in ['vbf','dijet']: qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']: qcd_os_ss_ratio = 1.0
       elif options.channel in ['mt','mj']: 
           qcd_os_ss_ratio = 1.07
           if options.cat == '0jet': qcd_os_ss_ratio = 1.07
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
-          elif options.cat in ['vbf','dijet']: qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']: qcd_os_ss_ratio = 1.0
       elif options.channel == 'zmm' or options.channel == 'zee':
           qcd_os_ss_ratio = 1.07   
       else:
