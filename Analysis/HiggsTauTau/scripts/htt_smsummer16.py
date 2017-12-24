@@ -197,7 +197,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'ZHToTauTau_M-'+mass,
       'WplusHToTauTau_M-'+mass,
       'WminusHToTauTau_M-'+mass#,
-      ##'TTHToTauTau_M-'+mass
+      #'TTHToTauTau_M-'+mass
     ]
   if options.proc_sm:  
     signal_mc += [

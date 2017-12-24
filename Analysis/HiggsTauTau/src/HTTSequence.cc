@@ -2131,7 +2131,7 @@ if(js["baseline"]["do_ff_weights"].asBool()){
     
 if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
-bool do_sm_scale_wts = output_name.find("GluGluToHToTauTau_M") != output_name.npos && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
+bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos ) && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
