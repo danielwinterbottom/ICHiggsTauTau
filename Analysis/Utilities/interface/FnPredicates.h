@@ -11,6 +11,7 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "Math/VectorUtil.h"
 #include "TVector3.h"
+#include "TLorentzVector.h"
 
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
@@ -403,6 +404,53 @@ namespace ic {
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
+  
+  template <class T>
+  TVector3 getIPVector(T *tau, Vertex *vtx){
+    TVector3 k, p, IP;
+    std::cout << tau->lead_dxy_vertex() << std::endl;
+    std::cout << tau->vx() << "    " <<  vtx->vx() << "    " <<  tau->vy() << "    " <<  vtx->vy() << "    " <<  tau->vz() << "    " <<  vtx->vz() << std::endl;
+    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
+    else IP.SetXYZ(-999, -999, -999); 
+
+    return IP;
+  }
+
+  template <class T>
+  double IPDeltaEta(T *tau1, T *tau2, Vertex *vtx){
+    TVector3 IP1 = getIPVector(tau1, vtx);
+    TVector3 IP2 = getIPVector(tau2, vtx);
+    //std::cout << "------------------------" << std::endl;
+    //std::cout << IP1.X() << "   " << IP1.Y() << "    " << IP1.Z() << std::endl;
+    //std::cout << IP2.X() << "   " << IP2.Y() << "    " << IP2.Z() << std::endl;
+    return std::fabs(IP1.Eta() - IP2.Eta());
+  }
+  
+  template <class T>
+  double IPDeltaPhi(T *tau1, T *tau2, Vertex *vtx){
+    TVector3 IP1 = getIPVector(tau1, vtx);
+    TVector3 IP2 = getIPVector(tau2, vtx);
+    return std::fabs(IP1.DeltaPhi(IP2));
+  }
+ 
+  template <class T>
+  double IPDeltaPhiStar(T *tau1, T *tau2, Vertex *vtx){
+    TVector3 IP1 = getIPVector(tau1, vtx);
+    TVector3 IP2 = getIPVector(tau2, vtx);
+    ROOT::Math::PtEtaPhiEVector vec = tau1->vector() + tau2->vector();
+    TLorentzVector lvec;
+    lvec.SetXYZM(vec.Px(),vec.Py(),vec.Pz(),vec.M());
+    TVector3 boost = lvec.BoostVector();
+    TLorentzVector lIP1(IP1,0.);
+    TLorentzVector lIP2(IP2,0.);
+    lIP1.Boost(-boost);
+    lIP2.Boost(-boost);
+  
+    return std::fabs(lIP1.DeltaPhi(lIP2));
+  }
+
 
   template <class T, class U>
     void getGenRecoMatches(const std::vector<T*> & recovec,

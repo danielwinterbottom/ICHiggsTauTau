@@ -1292,7 +1292,11 @@ class HTTCategories : public ModuleBase {
   double pjbhdeta_;
   int prob_region_;
   unsigned n_pjets_;
-
+  
+  double ipdeltaphi_;
+  double ipdeltaphistar_;
+  double ipdeltaeta_;
+  
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();

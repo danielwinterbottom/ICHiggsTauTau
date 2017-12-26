@@ -88,6 +88,9 @@ namespace ic {
         outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
         outtree_->Branch("wt_ggA_i", &wt_ggA_i_);    
       }
+      outtree_->Branch("ipdeltaeta",&ipdeltaeta_);
+      outtree_->Branch("ipdeltaphi",&ipdeltaphi_); 
+      outtree_->Branch("ipdeltaphistar",&ipdeltaphistar_);
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
@@ -138,6 +141,9 @@ namespace ic {
             outtree_->Branch("wt_ff_inclusive_qcd_dm0_njet0_stat_down", &wt_ff_inclusive_qcd_dm0_njet0_stat_down_ );
             outtree_->Branch("wt_ff_inclusive_qcd_dm0_njet1_stat_up"  , &wt_ff_inclusive_qcd_dm0_njet1_stat_up_   );
             outtree_->Branch("wt_ff_inclusive_qcd_dm0_njet1_stat_down", &wt_ff_inclusive_qcd_dm0_njet1_stat_down_ );
+            outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet0_stat_up"  , &wt_ff_inclusive_qcd_dm1_njet0_stat_up_   );
+            outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet0_stat_down", &wt_ff_inclusive_qcd_dm1_njet0_stat_down_ );
+            outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet0_stat_down", &wt_ff_inclusive_qcd_dm1_njet0_stat_down_ );
             outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet0_stat_up"  , &wt_ff_inclusive_qcd_dm1_njet0_stat_up_   );
             outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet0_stat_down", &wt_ff_inclusive_qcd_dm1_njet0_stat_down_ );
             outtree_->Branch("wt_ff_inclusive_qcd_dm1_njet1_stat_up"  , &wt_ff_inclusive_qcd_dm1_njet1_stat_up_   );
@@ -3481,6 +3487,12 @@ namespace ic {
 
     Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
     Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+    std::vector<Vertex *> const& vertices = event->GetPtrVec<Vertex>("vertices");
+   Vertex *vtx = vertices[0]; 
+    ipdeltaphi_ = IPDeltaPhi(tau1,tau2,vtx);
+    ipdeltaphistar_ = IPDeltaPhiStar(tau1,tau2,vtx);
+    ipdeltaeta_ = IPDeltaEta(tau1,tau2,vtx);
+
     if (tau1) {
       tau_decay_mode_1_ = tau1->decay_mode();
       z_1_ = tau1->vz() + (130. / tan(tau1->vector().theta()));
@@ -4151,12 +4163,6 @@ namespace ic {
         pull_balance_Zh_=-9999;
         convergence_Zh_=-9999;
         m_H_Zh_ = -9999;
-        m_H_Zh_chi2_=-9999;
-        pull_balance_hZ_=-9999;
-        convergence_hZ_=-9999;
-        m_H_hZ_ = -9999;
-        m_H_hZ_chi2_ = -9999;
-        pull_balance_hh_=-9999;
         convergence_hh_=-9999;
         m_H_hh_ = -9999;
         m_H_hh_all_ = -9999;
