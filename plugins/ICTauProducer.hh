@@ -146,7 +146,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
       dest.set_lead_p(src.leadPFChargedHadrCand()->p());
       reco::TrackRef const& trk = src.leadPFChargedHadrCand()->trackRef();
       reco::GsfTrackRef const& gsf = src.leadPFChargedHadrCand()->gsfTrackRef();
-      if (do_vertex_ip_ && vertices_handle->size() > 0) {
+      if ((do_vertex_ip_ && vertices_handle->size() > 0) || true) {
         reco::Vertex const& vtx = vertices_handle->at(0);
         if (trk.isNonnull()) {
           dest.set_lead_dxy_vertex(trk->dxy(vtx.position()));
@@ -171,7 +171,6 @@ void ICTauProducer<T>::produce(edm::Event& event,
       }
       dest.set_constituent_tracks(trk_ids);
     }
-
     dest.set_vx(src.vx());
     dest.set_vy(src.vy());
     dest.set_vz(src.vz());
@@ -238,7 +237,11 @@ void ICTauProducer<pat::Tau>::constructSpecific(
 #if CMSSW_MAJOR_VERSION >= 7
     if(src.leadChargedHadrCand().isNonnull()){
       pat::PackedCandidate const* packedCand = dynamic_cast<pat::PackedCandidate const*>(src.leadChargedHadrCand().get());
+
       if(packedCand){
+        dest.set_svx(packedCand->vx());
+        dest.set_svy(packedCand->vy());
+        dest.set_svz(packedCand->vz());
         dest.set_lead_dz_vertex(packedCand->dz());
         dest.set_lead_dxy_vertex(packedCand->dxy());
         dest.set_lead_p(packedCand->p());
