@@ -345,18 +345,32 @@ cats['qcd_shape_comp']=''
 
 # SM categories
 cats['0jet'] = '(n_jets==0)'
+if options.channel == 'em': cats['0jet'] = '(n_jets==0 && n_bjets==0)'
 cats['vbf'] = '(0)'
 cats['twojets'] = '(n_jets>=2)'
-if options.channel == 'em': cats['vbf'] = '(n_jets==2 && mjj>300)'
+if options.channel == 'em': cats['vbf'] = '(n_jets==2 && mjj>300 && n_bjets==0)'
 if options.channel == 'et': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50)'
 if options.channel == 'mt': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50 && pt_2>40)'
 if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)'
-# for cpsummer16 dijet category replaces vbf category
-cats['dijet'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0'
-cats['dijet_lowM'] = 'n_jets>=2 && jdeta>3 && m_sv<100 && n_bjets==0'
-cats['dijet_highM'] = 'n_jets>=2 && jdeta>3 && m_sv>150 && n_bjets==0'
-cats['dijet_boosted'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && pt_tt>150'
 cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['vbf'])
+if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['vbf'])
+
+if options.era == 'cpsummer16':
+#  cats['dijet'] = 'n_jets>=2 && jdeta>3 && n_bjets==0'
+#  cats['dijet_lowM'] = 'n_jets>=2 && jdeta>3 && m_sv<100 && n_bjets==0'
+#  cats['dijet_highM'] = 'n_jets>=2 && jdeta>3 && m_sv>150 && n_bjets==0'
+#  cats['dijet_lowboost'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt<150'
+#  cats['dijet_boosted'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt>150'
+
+  cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides'
+  if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
+  cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
+  cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
+  cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
+  cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
+  cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
+  if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+
 if options.era == "cpsummer16": cats['boosted'] = '(!(%s) && !(n_jets>=2 && jdeta>3 && n_bjets==0))' % cats['0jet']
 if options.channel == "em":
   cats['0jet'] += '*(n_bjets==0)'    
@@ -367,7 +381,7 @@ if options.channel == "em":
 if options.era in ['smsummer16','cpsummer16']:
   if options.channel == 'et': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)*('+cats[options.cat]+')'
   if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))*('+cats[options.cat]+')'
-  if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM']: cats['w_shape'] = cats['qcd_shape']
+  if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: cats['w_shape'] = cats['qcd_shape']
 
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
@@ -605,13 +619,13 @@ if options.syst_zpt_statpt40 != '':
 if options.syst_zpt_statpt80 != '':
     systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
-if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']:
+if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']:
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
-if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet','dijet_lowM','dijet_highM'] and options.channel in ['em','et','mt','tt']: 
+if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
-    if options.cat in ['dijet','dijet_lowM','dijet_highM']: 
+    if options.cat in ['dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: 
       weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
       weight_down = 'wt*(2-wt_scale_%s_vbf)' % (options.channel)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
@@ -635,7 +649,7 @@ if options.syst_qcd_shape_wsf != '':
     systematics['syst_qcd_shape_wsf_up'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Up', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_shape_wsf_down'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Down', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     if options.cat in ["0jet","boosted"]: w_abs_shift=0.1
-    if options.cat in ["vbf",'dijet','dijet_lowM','dijet_highM']: w_abs_shift=0.3
+    if options.cat in ["vbf",'dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
     systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['QCD','jetFakes'], False)
     systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['QCD','jetFakes'], False)
@@ -696,12 +710,12 @@ else:
           qcd_os_ss_ratio = 1.0
           if options.cat == '0jet': qcd_os_ss_ratio = 1.0
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.28
-          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']: qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: qcd_os_ss_ratio = 1.0
       elif options.channel in ['mt','mj']: 
           qcd_os_ss_ratio = 1.07
           if options.cat == '0jet': qcd_os_ss_ratio = 1.07
           elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
-          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM']: qcd_os_ss_ratio = 1.0
+          elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: qcd_os_ss_ratio = 1.0
       elif options.channel == 'zmm' or options.channel == 'zee':
           qcd_os_ss_ratio = 1.07   
       else:
@@ -2191,6 +2205,22 @@ if not options.no_plot:
         custom_uncerts_up_name,
         custom_uncerts_down_name
         )
+    
+    #plotting.SoverBPlot(nodename,
+    #         plot_file,
+    #         options.channel,
+    #         options.log_y,
+    #         options.log_x,
+    #         options.custom_x_range,
+    #         options.x_axis_max,
+    #         options.x_axis_min,
+    #         options.custom_y_range,
+    #         options.y_axis_max,
+    #         options.y_axis_min,
+    #         x_title,
+    #         options.extra_pad,
+    #         plot_name+'_soverb')
+    
    # hists = [plot_file.Get(nodename+"/bbH-LO700"), plot_file.Get(nodename+"/bbH700") ]
    # plotting.CompareHists(hists,
    #          ['Pythia','amc@NLO'],

@@ -3249,3 +3249,131 @@ def HTTPlotUnrolled(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    
+def SoverBPlot(nodename='',
+             infile=None,
+             channel="",
+             log_y=False,
+             log_x=False,
+             custom_x_range=False,
+             x_axis_max=4000,
+             x_axis_min=0,
+             custom_y_range=False,
+             y_axis_max=4000,
+             y_axis_min=0,
+             x_title="",
+             extra_pad=0,
+             plot_name="plot"):
+    
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    ModTDRStyle(r=0.04, l=0.14)
+    
+    bkg_hist = infile.Get(nodename+'/total_bkg').Clone()
+    signal_hist = infile.Get(nodename+'/ggHf0_htt125').Clone()
+    vbf_hist = infile.Get(nodename+'/qqH_htt125').Clone()
+    
+    def SumHist(h,sroot=False):
+        for i in range(1,h.GetNbinsX()+2):
+          if sroot: h.SetBinContent(i,math.sqrt(h.Integral(i,-1)))  
+          else: h.SetBinContent(i,h.Integral(i,-1))
+    
+    SumHist(signal_hist)
+    SumHist(bkg_hist,True)
+    SumHist(vbf_hist)
+    
+    r_1 = signal_hist.Clone()
+    r_2 = signal_hist.Clone()
+    
+    r_1.Divide(bkg_hist)
+    r_2.Divide(vbf_hist)
+    
+    r_1.SetFillColor(0)
+    r_1.SetLineWidth(3)
+    r_1.SetLineColor(R.kRed)
+    r_1.SetMarkerSize(0)
+    
+    r_2.SetFillColor(0)
+    r_2.SetLineWidth(3)
+    r_2.SetLineColor(R.kBlue)
+    r_2.SetMarkerSize(0)
+ 
+    c1 = R.TCanvas()
+    c1.cd()
+    
+    pads=TwoPadSplit(0.29,0.01,0.01)
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if custom_x_range:
+        if x_axis_max > r_2.GetXaxis().GetXmax(): x_axis_max = r_2.GetXaxis().GetXmax()
+    if(log_x): pads[1].SetLogx(1)
+    axish = createAxisHists(2,r_2,r_2.GetXaxis().GetXmin(),r_2.GetXaxis().GetXmax()-0.01)
+    axish[1].GetXaxis().SetTitle(x_title)
+    axish[1].GetXaxis().SetLabelSize(0.03)
+    axish[1].GetXaxis().SetTitleSize(0.04)
+    axish[1].GetYaxis().SetNdivisions(4)
+    axish[1].GetYaxis().SetTitle("ggH/qqH")
+    axish[1].GetYaxis().SetTitleOffset(1.6)
+    axish[1].GetYaxis().SetTitleSize(0.04)
+    axish[1].GetYaxis().SetLabelSize(0.03)
+    
+    axish[0].GetXaxis().SetTitleSize(0)
+    axish[0].GetXaxis().SetLabelSize(0)
+    if custom_x_range:
+      axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+      axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+    if custom_y_range:
+      axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    axish[1].GetYaxis().SetRangeUser(r_2.GetMinimum()*0.9 ,r_2.GetMaximum()*1.1)
+
+    axish[0].GetYaxis().SetTitle('S/#sqrt{B}')
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+
+    if not custom_y_range:
+        if(log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*r_1.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*r_1.GetMaximum())
+    axish[0].SetLineWidth(0)
+    axish[0].Draw()
+    
+    r_1.Draw("hist same")
+    axish[0].Draw("axissame")
+    
+    #CMS label and title
+    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    
+    if channel == "em": channel_label = "e#mu"
+    if channel == "et": channel_label = "e#tau_{h}"
+    if channel == "mt": channel_label = "#mu#tau_{h}"
+    if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
+    if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
+    if channel == "zee": channel_label = "Z#rightarrow ee"
+    
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,channel_label)
+    
+    pads[1].cd()
+    axish[1].Draw("axis")
+    r_2.Draw("hist same")
+    pads[1].RedrawAxis("G")
+        
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+    c1.SaveAs(plot_name+'.png')
+    
+
