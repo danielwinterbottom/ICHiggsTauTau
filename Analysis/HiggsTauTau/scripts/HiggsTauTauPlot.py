@@ -361,15 +361,27 @@ if options.era == 'cpsummer16':
 #  cats['dijet_highM'] = 'n_jets>=2 && jdeta>3 && m_sv>150 && n_bjets==0'
 #  cats['dijet_lowboost'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt<150'
 #  cats['dijet_boosted'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt>150'
-
-  cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides'
-  if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
-  cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
-  cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
-  cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
-  cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
+  
+  cats['dijet']='n_jets>=2 && mjj>300'
+  if options.channel in ['em','mt','et']: 
+      cats['0jet'] = '(n_jets==0 && n_bjets==0)'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+  cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && m_sv<150' % cats['dijet']
+  cats['dijet_highM']='%s && m_sv>150' % cats['dijet']
+  cats['dijet_lowM']='%s && m_sv<100' % cats['dijet']
+  cats['dijet_lowMjj']='%s && pt_tt<150 && m_sv>100 && m_sv<150 && mjj>500' % cats['dijet']
   cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+  if options.channel in ['em','mt','et']: cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+  
+  # aachen groups cuts
+  #cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides'
+  #if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
+  #cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
+  #cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
+  #cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
+  #cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
+  #cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
+  #if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
 
 if options.era == "cpsummer16": cats['boosted'] = '(!(%s) && !(n_jets>=2 && jdeta>3 && n_bjets==0))' % cats['0jet']
 if options.channel == "em":
@@ -537,7 +549,7 @@ if options.era in ["smsummer16",'cpsummer16']:
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
-if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar' }
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*' }
 # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
