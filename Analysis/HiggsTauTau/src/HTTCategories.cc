@@ -691,16 +691,17 @@ namespace ic {
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
-      outtree_->Branch("sjdphi",             &sjdphi_);
-      outtree_->Branch("spjdphi", &spjdphi_     );
-      outtree_->Branch("min_hj_deta", &min_hj_deta_ );
-      outtree_->Branch("pjdeta", &pjdeta_      );
-      outtree_->Branch("pjahdeta", &pjahdeta_    );
-      outtree_->Branch("pjbhdeta", &pjbhdeta_    );
-      outtree_->Branch("prob_region", &prob_region_ );
-      outtree_->Branch("n_pjets", &n_pjets_ );
-      outtree_->Branch("opp_sides",             &opp_sides_);
-      outtree_->Branch("partons", &partons_);
+      if (strategy_ == strategy::smsummer16){
+        outtree_->Branch("sjdphi",             &sjdphi_);
+        outtree_->Branch("spjdphi", &spjdphi_     );
+        outtree_->Branch("min_hj_deta", &min_hj_deta_ );
+        outtree_->Branch("pjdeta", &pjdeta_      );
+        outtree_->Branch("pjahdeta", &pjahdeta_    );
+        outtree_->Branch("pjbhdeta", &pjbhdeta_    );
+        outtree_->Branch("prob_region", &prob_region_ );
+        outtree_->Branch("n_pjets", &n_pjets_ );
+        outtree_->Branch("opp_sides",             &opp_sides_);
+      }
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
@@ -1080,62 +1081,64 @@ namespace ic {
         outtree_->Branch("jdeta_26",    &jdeta_26_   );
         outtree_->Branch("jdeta_27",    &jdeta_27_   );
         outtree_->Branch("jdeta_28",    &jdeta_28_   );
-        outtree_->Branch("sjdphi_1",     &sjdphi_1_    );
-        outtree_->Branch("sjdphi_2",     &sjdphi_2_    );
-        outtree_->Branch("sjdphi_3",     &sjdphi_3_    );
-        outtree_->Branch("sjdphi_4",     &sjdphi_4_    );
-        outtree_->Branch("sjdphi_5",     &sjdphi_5_    );
-        outtree_->Branch("sjdphi_6",     &sjdphi_6_    );
-        outtree_->Branch("sjdphi_7",     &sjdphi_7_    );
-        outtree_->Branch("sjdphi_8",     &sjdphi_8_    );
-        outtree_->Branch("sjdphi_9",     &sjdphi_9_    );
-        outtree_->Branch("sjdphi_10",    &sjdphi_10_   );
-        outtree_->Branch("sjdphi_11",    &sjdphi_11_   );
-        outtree_->Branch("sjdphi_12",    &sjdphi_12_   );
-        outtree_->Branch("sjdphi_13",    &sjdphi_13_   );
-        outtree_->Branch("sjdphi_14",    &sjdphi_14_   );
-        outtree_->Branch("sjdphi_15",    &sjdphi_15_   );
-        outtree_->Branch("sjdphi_16",    &sjdphi_16_   );
-        outtree_->Branch("sjdphi_17",    &sjdphi_17_   );
-        outtree_->Branch("sjdphi_18",    &sjdphi_18_   );
-        outtree_->Branch("sjdphi_19",    &sjdphi_19_   );
-        outtree_->Branch("sjdphi_20",    &sjdphi_20_   );
-        outtree_->Branch("sjdphi_21",    &sjdphi_21_   );
-        outtree_->Branch("sjdphi_22",    &sjdphi_22_   );
-        outtree_->Branch("sjdphi_23",    &sjdphi_23_   );
-        outtree_->Branch("sjdphi_24",    &sjdphi_24_   );
-        outtree_->Branch("sjdphi_25",    &sjdphi_25_   );
-        outtree_->Branch("sjdphi_26",    &sjdphi_26_   );
-        outtree_->Branch("sjdphi_27",    &sjdphi_27_   );
-        outtree_->Branch("sjdphi_28",    &sjdphi_28_   );
-        outtree_->Branch("opp_sides_1",     &opp_sides_1_    );
-        outtree_->Branch("opp_sides_2",     &opp_sides_2_    );
-        outtree_->Branch("opp_sides_3",     &opp_sides_3_    );
-        outtree_->Branch("opp_sides_4",     &opp_sides_4_    );
-        outtree_->Branch("opp_sides_5",     &opp_sides_5_    );
-        outtree_->Branch("opp_sides_6",     &opp_sides_6_    );
-        outtree_->Branch("opp_sides_7",     &opp_sides_7_    );
-        outtree_->Branch("opp_sides_8",     &opp_sides_8_    );
-        outtree_->Branch("opp_sides_9",     &opp_sides_9_    );
-        outtree_->Branch("opp_sides_10",    &opp_sides_10_   );
-        outtree_->Branch("opp_sides_11",    &opp_sides_11_   );
-        outtree_->Branch("opp_sides_12",    &opp_sides_12_   );
-        outtree_->Branch("opp_sides_13",    &opp_sides_13_   );
-        outtree_->Branch("opp_sides_14",    &opp_sides_14_   );
-        outtree_->Branch("opp_sides_15",    &opp_sides_15_   );
-        outtree_->Branch("opp_sides_16",    &opp_sides_16_   );
-        outtree_->Branch("opp_sides_17",    &opp_sides_17_   );
-        outtree_->Branch("opp_sides_18",    &opp_sides_18_   );
-        outtree_->Branch("opp_sides_19",    &opp_sides_19_   );
-        outtree_->Branch("opp_sides_20",    &opp_sides_20_   );
-        outtree_->Branch("opp_sides_21",    &opp_sides_21_   );
-        outtree_->Branch("opp_sides_22",    &opp_sides_22_   );
-        outtree_->Branch("opp_sides_23",    &opp_sides_23_   );
-        outtree_->Branch("opp_sides_24",    &opp_sides_24_   );
-        outtree_->Branch("opp_sides_25",    &opp_sides_25_   );
-        outtree_->Branch("opp_sides_26",    &opp_sides_26_   );
-        outtree_->Branch("opp_sides_27",    &opp_sides_27_   );
-        outtree_->Branch("opp_sides_28",    &opp_sides_28_   );
+        if( strategy_ == strategy::smsummer16){
+          outtree_->Branch("sjdphi_1",     &sjdphi_1_    );
+          outtree_->Branch("sjdphi_2",     &sjdphi_2_    );
+          outtree_->Branch("sjdphi_3",     &sjdphi_3_    );
+          outtree_->Branch("sjdphi_4",     &sjdphi_4_    );
+          outtree_->Branch("sjdphi_5",     &sjdphi_5_    );
+          outtree_->Branch("sjdphi_6",     &sjdphi_6_    );
+          outtree_->Branch("sjdphi_7",     &sjdphi_7_    );
+          outtree_->Branch("sjdphi_8",     &sjdphi_8_    );
+          outtree_->Branch("sjdphi_9",     &sjdphi_9_    );
+          outtree_->Branch("sjdphi_10",    &sjdphi_10_   );
+          outtree_->Branch("sjdphi_11",    &sjdphi_11_   );
+          outtree_->Branch("sjdphi_12",    &sjdphi_12_   );
+          outtree_->Branch("sjdphi_13",    &sjdphi_13_   );
+          outtree_->Branch("sjdphi_14",    &sjdphi_14_   );
+          outtree_->Branch("sjdphi_15",    &sjdphi_15_   );
+          outtree_->Branch("sjdphi_16",    &sjdphi_16_   );
+          outtree_->Branch("sjdphi_17",    &sjdphi_17_   );
+          outtree_->Branch("sjdphi_18",    &sjdphi_18_   );
+          outtree_->Branch("sjdphi_19",    &sjdphi_19_   );
+          outtree_->Branch("sjdphi_20",    &sjdphi_20_   );
+          outtree_->Branch("sjdphi_21",    &sjdphi_21_   );
+          outtree_->Branch("sjdphi_22",    &sjdphi_22_   );
+          outtree_->Branch("sjdphi_23",    &sjdphi_23_   );
+          outtree_->Branch("sjdphi_24",    &sjdphi_24_   );
+          outtree_->Branch("sjdphi_25",    &sjdphi_25_   );
+          outtree_->Branch("sjdphi_26",    &sjdphi_26_   );
+          outtree_->Branch("sjdphi_27",    &sjdphi_27_   );
+          outtree_->Branch("sjdphi_28",    &sjdphi_28_   );
+          outtree_->Branch("opp_sides_1",     &opp_sides_1_    );
+          outtree_->Branch("opp_sides_2",     &opp_sides_2_    );
+          outtree_->Branch("opp_sides_3",     &opp_sides_3_    );
+          outtree_->Branch("opp_sides_4",     &opp_sides_4_    );
+          outtree_->Branch("opp_sides_5",     &opp_sides_5_    );
+          outtree_->Branch("opp_sides_6",     &opp_sides_6_    );
+          outtree_->Branch("opp_sides_7",     &opp_sides_7_    );
+          outtree_->Branch("opp_sides_8",     &opp_sides_8_    );
+          outtree_->Branch("opp_sides_9",     &opp_sides_9_    );
+          outtree_->Branch("opp_sides_10",    &opp_sides_10_   );
+          outtree_->Branch("opp_sides_11",    &opp_sides_11_   );
+          outtree_->Branch("opp_sides_12",    &opp_sides_12_   );
+          outtree_->Branch("opp_sides_13",    &opp_sides_13_   );
+          outtree_->Branch("opp_sides_14",    &opp_sides_14_   );
+          outtree_->Branch("opp_sides_15",    &opp_sides_15_   );
+          outtree_->Branch("opp_sides_16",    &opp_sides_16_   );
+          outtree_->Branch("opp_sides_17",    &opp_sides_17_   );
+          outtree_->Branch("opp_sides_18",    &opp_sides_18_   );
+          outtree_->Branch("opp_sides_19",    &opp_sides_19_   );
+          outtree_->Branch("opp_sides_20",    &opp_sides_20_   );
+          outtree_->Branch("opp_sides_21",    &opp_sides_21_   );
+          outtree_->Branch("opp_sides_22",    &opp_sides_22_   );
+          outtree_->Branch("opp_sides_23",    &opp_sides_23_   );
+          outtree_->Branch("opp_sides_24",    &opp_sides_24_   );
+          outtree_->Branch("opp_sides_25",    &opp_sides_25_   );
+          outtree_->Branch("opp_sides_26",    &opp_sides_26_   );
+          outtree_->Branch("opp_sides_27",    &opp_sides_27_   );
+          outtree_->Branch("opp_sides_28",    &opp_sides_28_   );
+        }
       }
                                                                 
       //Variables needed for control plots need only be generated for central systematics
@@ -3572,68 +3575,56 @@ namespace ic {
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       
-      
-      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
-        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
-      }
-      else{
-        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
-      }
-      opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
-      
-      bool lhe_exists = event->ExistsInTree("lheParticles");
-      partons_=0;
-      if(lhe_exists){
-        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
-
-        for(unsigned i = 0; i< lhe_parts.size(); ++i){
-           if(lhe_parts[i]->status() != 1) continue;
-           unsigned id = abs(lhe_parts[i]->pdgid());
-           if ((id >= 1 && id <=6) || id == 21) partons_++;
+      if (strategy_ == strategy::smsummer16){
+        if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
+          sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
         }
-      }
-      
- 
-      n_pjets_=0;
-      if (jets.size()==1) n_pjets_=1;
-      if(jets.size()>=2){
-        double higgs_eta = 0;
-        if (event->Exists("svfitHiggs")) {
-          Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
-          higgs_eta = higgs.eta();
+        else{
+          sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
         }
-        else higgs_eta = (lep1->vector()+lep2->vector()).Rapidity();
-        // sort jets higher and lower than higgs eta_1
-        std::vector<PFJet*> jets_high;
-        std::vector<PFJet*> jets_low;
-        for (unsigned i=0; i<jets.size(); ++i){
-          if (jets[i]->eta() > higgs_eta) jets_high.push_back(jets[i]);    
-          else jets_low.push_back(jets[i]);
+        opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
+        
+        n_pjets_=0;
+        if (jets.size()==1) n_pjets_=1;
+        if(jets.size()>=2){
+          double higgs_eta = 0;
+          if (event->Exists("svfitHiggs")) {
+            Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
+            higgs_eta = higgs.eta();
+          }
+          else higgs_eta = (lep1->vector()+lep2->vector()).Rapidity();
+          // sort jets higher and lower than higgs eta_1
+          std::vector<PFJet*> jets_high;
+          std::vector<PFJet*> jets_low;
+          for (unsigned i=0; i<jets.size(); ++i){
+            if (jets[i]->eta() > higgs_eta) jets_high.push_back(jets[i]);    
+            else jets_low.push_back(jets[i]);
+          }
+          if(jets_low.size()>0) n_pjets_++;
+          if(jets_high.size()>0) n_pjets_++;
+          Candidate pseudo_jet_a;
+          Candidate pseudo_jet_b;
+          for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j->vector());
+          for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j->vector());
+          spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
+          for (unsigned i=0; i<jets.size(); ++i){
+            double dEta = std::fabs(higgs_eta - jets[i]->eta());  
+            if(i==0 || dEta<min_hj_deta_) min_hj_deta_ = dEta;    
+          }
+          pjdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - pseudo_jet_b.vector().Rapidity());
+          pjahdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+          pjbhdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+          if((jets[0]->eta()>higgs_eta&&jets[1]->eta()>higgs_eta)||(jets[0]->eta()<higgs_eta&&jets[1]->eta()<higgs_eta)) prob_region_ = 1;
+          else prob_region_ = 0;
         }
-        if(jets_low.size()>0) n_pjets_++;
-        if(jets_high.size()>0) n_pjets_++;
-        Candidate pseudo_jet_a;
-        Candidate pseudo_jet_b;
-        for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j->vector());
-        for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j->vector());
-        spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
-        for (unsigned i=0; i<jets.size(); ++i){
-          double dEta = std::fabs(higgs_eta - jets[i]->eta());  
-          if(i==0 || dEta<min_hj_deta_) min_hj_deta_ = dEta;    
+        else {
+          spjdphi_ = -9999;
+          min_hj_deta_ = -9999;
+          pjdeta_ =-9999;
+          pjahdeta_ = -9999;
+          pjbhdeta_ = -9999;
+          prob_region_ = -9999;
         }
-        pjdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - pseudo_jet_b.vector().Rapidity());
-        pjahdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
-        pjbhdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
-        if((jets[0]->eta()>higgs_eta&&jets[1]->eta()>higgs_eta)||(jets[0]->eta()<higgs_eta&&jets[1]->eta()<higgs_eta)) prob_region_ = 1;
-        else prob_region_ = 0;
-      }
-      else {
-        spjdphi_ = -9999;
-        min_hj_deta_ = -9999;
-        pjdeta_ =-9999;
-        pjahdeta_ = -9999;
-        pjbhdeta_ = -9999;
-        prob_region_ = -9999;
       }
       
       double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();

@@ -432,7 +432,6 @@ class HTTCategories : public ModuleBase {
   float jdphi_;
   float sjdphi_;
   unsigned opp_sides_;
-  unsigned partons_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
   double gen_match_1_pt_;
