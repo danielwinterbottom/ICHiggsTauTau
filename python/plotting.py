@@ -89,12 +89,11 @@ def SetAxisTitles(plot, channel):
 
 def SetAxisTitles2D(plot, channel):
   if '[' in plot: 
-      isVarBins = True
       var = plot.split('[')[0]
   else:
-      isVarBins = False
       var = plot.split('(')[0]
 
+  isVarBins = '[' in plot
   yvar = var.split(',')[0]
   xvar = var.split(',')[1]
       
@@ -143,24 +142,25 @@ def SetAxisTitles2D(plot, channel):
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
+  titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)','GeV']
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   
   if xvar not in titles: 
-    if not isVarBins: return [xvar,'Events']
+    if not isVarBins: x_titles = [xvar,'Events']
     else: x_titles =  [xvar, 'dN/d'+xvar]
   else:
-    if not isVarBins: return [titles[xvar][0],titles[xvar][1]]
+    if not isVarBins: x_titles = [titles[xvar][0],titles[xvar][1]]
     else: x_titles =  [titles[xvar][0], titles[xvar][2]]
   if yvar not in titles: 
     unit=''
-    if not isVarBins: return [yvar,'Events',unit]
+    if not isVarBins: x_titles = [yvar,'Events',unit]
     else: y_titles =  [yvar, 'dN/d'+yvar,unit]
   else:
     unit = titles[yvar][3]  
-    if not isVarBins: return [titles[yvar][0],titles[yvar][1],unit]
+    if not isVarBins: x_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
     
   return [x_titles, y_titles]
@@ -2914,15 +2914,15 @@ def HTTPlotUnrolled(nodename,
     # Define signal schemes here
     sig_schemes = {}
 
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False , R.kRed) 
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHf0_htt"], False , R.kRed) 
     sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
     
-    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
-    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
-    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104))],
+    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104))],
+    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104))],
     'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
     'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
@@ -3100,7 +3100,7 @@ def HTTPlotUnrolled(nodename,
       for i in range(1,total_datahist.GetNbinsX()+1):
         b = bkghist_blind.GetBinContent(i)  
         s = totsighist.GetBinContent(i) 
-        if PassAutoBlindMetric(s,b,metric=0.1):
+        if PassAutoBlindMetric(s,b,metric=0.001):
           blind_datahist.SetBinContent(i,0)
           blind_datahist.SetBinError(i,0)
     #Blinding by hand using requested range, set to 200-4000 by default:
@@ -3270,7 +3270,7 @@ def SoverBPlot(nodename='',
     ModTDRStyle(r=0.04, l=0.14)
     
     bkg_hist = infile.Get(nodename+'/total_bkg').Clone()
-    signal_hist = infile.Get(nodename+'/ggHf0_htt125').Clone()
+    signal_hist = infile.Get(nodename+'/ggH_htt125').Clone()
     vbf_hist = infile.Get(nodename+'/qqH_htt125').Clone()
     
     def SumHist(h,sroot=False):

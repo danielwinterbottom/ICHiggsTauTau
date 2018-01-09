@@ -278,9 +278,11 @@ if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+        #if options.era in ['cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'
+        #if options.era in ['cpsummer16']: cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -302,6 +304,7 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(pt_1>50 && mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+    #if options.era in ['cpsummer16']: cats['baseline'] = '(pt_1>50 && mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
@@ -321,6 +324,7 @@ cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && pt_1>50 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+#if options.era in ['cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) && pt_1>50 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 
@@ -362,26 +366,26 @@ if options.era == 'cpsummer16':
 #  cats['dijet_lowboost'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt<150'
 #  cats['dijet_boosted'] = 'n_jets>=2 && jdeta>3 && m_sv>100 && m_sv<150 && n_bjets==0 && pt_tt>150'
   
-  cats['dijet']='n_jets>=2 && mjj>300'
-  if options.channel in ['em','mt','et']: 
-      cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
-  cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && m_sv<150' % cats['dijet']
-  cats['dijet_highM']='%s && m_sv>150' % cats['dijet']
-  cats['dijet_lowM']='%s && m_sv<100' % cats['dijet']
-  cats['dijet_lowMjj']='%s && pt_tt<150 && m_sv>100 && m_sv<150 && mjj>500' % cats['dijet']
-  cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  if options.channel in ['em','mt','et']: cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+  #cats['dijet']='n_jets>=2 && mjj>300'
+  #if options.channel in ['em','mt','et']: 
+   #   cats['0jet'] = '(n_jets==0 && n_bjets==0)'
+   #   cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+  #cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && m_sv<150' % cats['dijet']
+  #cats['dijet_highM']='%s && m_sv>150' % cats['dijet']
+  #cats['dijet_lowM']='%s && m_sv<100' % cats['dijet']
+  #cats['dijet_lowMjj']='%s && pt_tt<150 && m_sv>100 && m_sv<150' % cats['dijet']
+  #cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
+  #if options.channel in ['em','mt','et']: cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   
   # aachen groups cuts
-  #cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides'
-  #if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
-  #cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
-  #cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
-  #cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
-  #cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
-  #cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  #if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+  cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides'
+  if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
+  cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
+  cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
+  cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
+  cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
+  cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
+  if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
 
 if options.era == "cpsummer16": cats['boosted'] = '(!(%s) && !(n_jets>=2 && jdeta>3 && n_bjets==0))' % cats['0jet']
 if options.channel == "em":
@@ -549,7 +553,8 @@ if options.era in ["smsummer16",'cpsummer16']:
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
-if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*' }
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar'}
+# 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'
 # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1811,6 +1816,7 @@ def UnrollHist(h2d,inc_y_of=True):
         h1d.SetBinContent(glob_bin+1,content)
         h1d.SetBinError(glob_bin+1,error)
         h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+        if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
     h1d.LabelsOption('v','X')
     return h1d
 
@@ -2102,7 +2108,7 @@ if not options.no_plot:
         y_title = titles[1]
         if options.do_unrolling and is_2d: 
           if options.norm_bins: y_title = titles2d[0][1]
-          else: y_title = titles2d[0][0]
+          else: y_title = titles2d[0][1]
           y_var_titles = titles2d[1]
     else: y_title = options.y_title
     scheme = options.channel
@@ -2218,20 +2224,20 @@ if not options.no_plot:
         custom_uncerts_down_name
         )
     
-    #plotting.SoverBPlot(nodename,
-    #         plot_file,
-    #         options.channel,
-    #         options.log_y,
-    #         options.log_x,
-    #         options.custom_x_range,
-    #         options.x_axis_max,
-    #         options.x_axis_min,
-    #         options.custom_y_range,
-    #         options.y_axis_max,
-    #         options.y_axis_min,
-    #         x_title,
-    #         options.extra_pad,
-    #         plot_name+'_soverb')
+    plotting.SoverBPlot(nodename,
+             plot_file,
+             options.channel,
+             options.log_y,
+             options.log_x,
+             options.custom_x_range,
+             options.x_axis_max,
+             options.x_axis_min,
+             options.custom_y_range,
+             options.y_axis_max,
+             options.y_axis_min,
+             x_title,
+             options.extra_pad,
+             plot_name+'_soverb')
     
    # hists = [plot_file.Get(nodename+"/bbH-LO700"), plot_file.Get(nodename+"/bbH700") ]
    # plotting.CompareHists(hists,

@@ -700,6 +700,7 @@ namespace ic {
       outtree_->Branch("prob_region", &prob_region_ );
       outtree_->Branch("n_pjets", &n_pjets_ );
       outtree_->Branch("opp_sides",             &opp_sides_);
+      outtree_->Branch("partons", &partons_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
@@ -3570,10 +3571,29 @@ namespace ic {
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
-      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
-      else sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
+      
+      
+      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
+        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
+      }
+      else{
+        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
+      }
       opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
       
+      bool lhe_exists = event->ExistsInTree("lheParticles");
+      partons_=0;
+      if(lhe_exists){
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+           if(lhe_parts[i]->status() != 1) continue;
+           unsigned id = abs(lhe_parts[i]->pdgid());
+           if ((id >= 1 && id <=6) || id == 21) partons_++;
+        }
+      }
+      
+ 
       n_pjets_=0;
       if (jets.size()==1) n_pjets_=1;
       if(jets.size()>=2){
