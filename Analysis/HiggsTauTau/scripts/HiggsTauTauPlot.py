@@ -2224,20 +2224,20 @@ if not options.no_plot:
         custom_uncerts_down_name
         )
     
-    plotting.SoverBPlot(nodename,
-             plot_file,
-             options.channel,
-             options.log_y,
-             options.log_x,
-             options.custom_x_range,
-             options.x_axis_max,
-             options.x_axis_min,
-             options.custom_y_range,
-             options.y_axis_max,
-             options.y_axis_min,
-             x_title,
-             options.extra_pad,
-             plot_name+'_soverb')
+   # plotting.SoverBPlot(nodename,
+   #          plot_file,
+   #          options.channel,
+   #          options.log_y,
+   #          options.log_x,
+   #          options.custom_x_range,
+   #          options.x_axis_max,
+   #          options.x_axis_min,
+   #          options.custom_y_range,
+   #          options.y_axis_max,
+   #          options.y_axis_min,
+   #          x_title,
+   #          options.extra_pad,
+   #          plot_name+'_soverb')
     
    # hists = [plot_file.Get(nodename+"/bbH-LO700"), plot_file.Get(nodename+"/bbH700") ]
    # plotting.CompareHists(hists,
