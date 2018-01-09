@@ -76,7 +76,7 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
-      outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
+      if (strategy_ == strategy::smsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -2591,7 +2591,6 @@ namespace ic {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
-    //if(event->Exists("m_vis_shift") && do_z_weights_)  m_vis_ = m_vis_* event->Get<double>("m_vis_shift");
 
     mt_lep_ = MT(lep1,lep2);
     mt_ll_ = MT(ditau, mets);
