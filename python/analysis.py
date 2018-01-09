@@ -172,7 +172,6 @@ class TTreeEvaluator:
         otree = MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
         self.file.Close()
         return otree
-        #return MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
 
 
 class TChainEvaluator(TTreeEvaluator):
