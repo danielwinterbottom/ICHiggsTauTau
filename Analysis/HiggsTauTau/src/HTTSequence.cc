@@ -58,7 +58,6 @@
 #include "HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "HiggsTauTau/interface/TagAndProbe.h"
 #include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
-#include "HiggsTauTau/interface/HTTGenEventInfo.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -802,10 +801,6 @@ BuildModule(jetIDFilter);
     .set_mssm_mass(mass_str)
   );
   return;  
-}
-
-if((output_name.find("GluGluToHToTauTau_amcNLO_M") != output_name.npos || output_name.find("VBFHToTauTau_amcNLO_M")) && !is_data && js["do_gen_info"].asBool()){
-  BuildModule(HTTGenEventInfo("HTTGenEventInfo"));
 }
 
 
