@@ -2861,10 +2861,6 @@ namespace ic {
               if(dm_2_==0) wt_lfake_rate = 0.75;
               if(dm_2_==1) wt_lfake_rate = 1.0;
               event->Add("wt_lfake_rate", wt_lfake_rate);
-              //store m_vis shift to apply in HTTCategories
-              double m_vis_shift = 1.;
-              if(dm_2_==0) m_vis_shift = 1.01;
-              event->Add("m_vis_shift", m_vis_shift);
             }
           }
         } else {
