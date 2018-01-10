@@ -308,7 +308,7 @@ if options.channel == 'tt':
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
-    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto &% trg_muonelectron)'
+    if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
@@ -368,8 +368,8 @@ if options.era == 'cpsummer16':
   
   #cats['dijet']='n_jets>=2 && mjj>300'
   #if options.channel in ['em','mt','et']: 
-   #   cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-   #   cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+  #    cats['0jet'] = '(n_jets==0 && n_bjets==0)'
+  #    cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
   #cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && m_sv<150' % cats['dijet']
   #cats['dijet_highM']='%s && m_sv>150' % cats['dijet']
   #cats['dijet_lowM']='%s && m_sv<100' % cats['dijet']
@@ -388,10 +388,6 @@ if options.era == 'cpsummer16':
   if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
 
 if options.era == "cpsummer16": cats['boosted'] = '(!(%s) && !(n_jets>=2 && jdeta>3 && n_bjets==0))' % cats['0jet']
-if options.channel == "em":
-  cats['0jet'] += '*(n_bjets==0)'    
-  cats['boosted'] += '*(n_bjets==0)'
-  cats['vbf'] += '*(n_bjets==0)'
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']:
