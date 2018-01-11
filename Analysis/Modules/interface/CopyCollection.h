@@ -12,10 +12,12 @@ class CopyCollection : public ModuleBase {
  private:
   std::string input_name_;
   std::string copy_name_;
+  bool deep_copy_ = false;
 
 
  public:
   CopyCollection(std::string const& name, std::string const& input_name, std::string const& copy_name);
+  CopyCollection(std::string const& name, std::string const& input_name, std::string const& copy_name, bool const& deep_copy);
   virtual ~CopyCollection();
 
   virtual int PreAnalysis();
@@ -31,6 +33,13 @@ CopyCollection<T>::CopyCollection(std::string const& name, std::string const& in
 }
 
 template <class T>
+CopyCollection<T>::CopyCollection(std::string const& name, std::string const& input_name, std::string const& copy_name, bool const& deep_copy) : ModuleBase(name) {
+  input_name_ = input_name;
+  copy_name_ = copy_name;
+  deep_copy_ = deep_copy;
+}
+
+template <class T>
 CopyCollection<T>::~CopyCollection() {
   ;
 }
@@ -43,6 +52,9 @@ int CopyCollection<T>::PreAnalysis() {
 template <class T>
 int CopyCollection<T>::Execute(TreeEvent *event) {
   std::vector<T *> vec = event->GetPtrVec<T>(input_name_);
+  if(deep_copy_){
+    for(unsigned i=0; i<vec.size(); ++i) vec.at(i) = new T(*vec.at(i));
+  }
   event->Add(copy_name_, vec);
   return 0;
 }

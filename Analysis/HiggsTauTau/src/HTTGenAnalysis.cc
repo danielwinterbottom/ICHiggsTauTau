@@ -216,6 +216,7 @@ namespace ic {
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
+      outtree_->Branch("partons"     , &partons_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -376,6 +377,18 @@ namespace ic {
 
     double pT=0;
     HiggsPt_=-9999;
+    partons_=0;
+    bool lhe_exists = event->ExistsInTree("lheParticles");
+    if(lhe_exists){
+      std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+      
+      for(unsigned i = 0; i< lhe_parts.size(); ++i){
+           if(lhe_parts[i]->status() != 1) continue;
+           unsigned id = abs(lhe_parts[i]->pdgid());
+           if ((id >= 1 && id <=6) || id == 21) partons_++;
+      }
+    }
+    
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
@@ -388,6 +401,9 @@ namespace ic {
       unsigned genID = std::fabs(part.pdgid());
       bool status_flag_t = part.statusFlags().at(0);
       bool status_flag_tlc = part.statusFlags().at(13);
+      bool status_hard_process = part.statusFlags().at(7);
+      
+      if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212) partons_++;
       
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
@@ -485,8 +501,20 @@ namespace ic {
     ic::Candidate lep1;
     ic::Candidate lep2;
     passed_ = false;
-
-    if(channel_str_ == "em"){
+    
+    if(channel_str_ == "ee"){
+      if(electrons.size() == 2){
+        lep1 = electrons[0];
+        lep2 = electrons[1];
+        passed_ = true;
+      }
+    } else if(channel_str_ == "mm"){
+      if(muons.size() == 2){
+        lep1 = muons[0];
+        lep2 = muons[1];
+        passed_ = true;
+      }
+    } else if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
         lep2 = muons[0];

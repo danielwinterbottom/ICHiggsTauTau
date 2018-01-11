@@ -19,7 +19,7 @@ class HTTSequence {
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
   std::string channel_str, var_str, strategy_str, era_str, mc_str;
   Json::Value js;
-  double tau_pt, tau_eta, tau_iso, tau_dz;
+  double tau_pt, lead_tau_pt, tau_eta, tau_iso, tau_dz;
   double elec_pt, elec_eta, elec_dxy, elec_dz;
   double muon_pt, muon_eta, muon_dxy, muon_dz;
   std::string tau_anti_elec_discr, tau_anti_muon_discr, tau_iso_discr;
@@ -28,15 +28,16 @@ class HTTSequence {
   double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
-  unsigned min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
-  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode;
+  unsigned min_taus, lead_min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
+  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
   bool bjet_regr_correction, tau_scale_mode, make_sync_ntuple, moriond_tau_scale, do_reshape;
   bool is_data, is_embedded, real_tau_sample, do_met_filters, jlepton_fake;
   double pair_dr, tau_shift, mass_shift, elec_shift_barrel, elec_shift_endcap, muon_shift;
-  double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi ;
+  double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi, fakeMu_tau_shift_0pi, fakeMu_tau_shift_1pi ;
   double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0;
   bool do_qcd_scale_wts_;
+  std::string alt_jes_input_set;
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;

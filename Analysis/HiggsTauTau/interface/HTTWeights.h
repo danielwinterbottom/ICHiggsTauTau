@@ -21,6 +21,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, ic::channel, channel)
   CLASS_MEMBER(HTTWeights, ic::mc, mc)
   CLASS_MEMBER(HTTWeights, ic::era, era)
+  CLASS_MEMBER(HTTWeights, ic::strategy, strategy)
   CLASS_MEMBER(HTTWeights, bool, do_trg_weights)
   CLASS_MEMBER(HTTWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HTTWeights, bool, do_single_lepton_trg)
@@ -98,6 +99,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
   CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
+  CLASS_MEMBER(HTTWeights, bool, do_z_weights)
 
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
@@ -112,6 +114,7 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_up_;
   TH1F *ggh_hist_down_;
   std::shared_ptr<RooWorkspace> w_;
+  std::shared_ptr<RooWorkspace> wtrk_; //workspace for trk efficiencies
   std::shared_ptr<RooWorkspace> mssm_w_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
