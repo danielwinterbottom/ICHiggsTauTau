@@ -21,6 +21,8 @@ namespace ic {
 class MELATest : public ModuleBase {
  private:
 
+  typedef std::tuple<unsigned, unsigned, unsigned> tri_unsigned;
+
   TFile *out_file_;
   TTree *out_tree_;
   uint64_t out_event_;
@@ -39,6 +41,9 @@ class MELATest : public ModuleBase {
   unsigned n_jets_;
 
   boost::filesystem::path total_path_;
+  
+  std::map<tri_unsigned, std::pair<float,float> > mela_map;
+
  
   CLASS_MEMBER(MELATest, ic::channel, channel)
   CLASS_MEMBER(MELATest, unsigned, run_mode)

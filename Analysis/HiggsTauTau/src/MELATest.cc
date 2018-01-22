@@ -50,6 +50,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "run_mode"                % run_mode_;
     std::cout << boost::format(param_fmt()) % "dilepton_label"          % dilepton_label_;
     std::cout << boost::format(param_fmt()) % "met_label"               % met_label_;
+    std::cout << boost::format(param_fmt()) % "jets_label"               % jets_label_;
+
 
     // This code first strips the string ".root" from give filename
     // (if found) and appends "_MELA".  This is then taken as the
@@ -102,14 +104,18 @@ namespace ic {
           unsigned    event    = 0;
           unsigned    lumi     = 0;
           unsigned    run      = 0;
+          float D0;
+          float DCP;
 
           otree->SetBranchAddress("event"  , &event);
           otree->SetBranchAddress("lumi"  , &lumi);
           otree->SetBranchAddress("run"  , &run);
+          otree->SetBranchAddress("D0"  , &D0);
+          otree->SetBranchAddress("DCP"  , &DCP);  
 
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            //get values from output files here
+            mela_map[tri_unsigned(run, lumi, event)] = std::make_pair(D0, DCP); 
           }
           ofile->Close();
           delete ofile;
@@ -171,9 +177,11 @@ int MELATest::Execute(TreeEvent *event) {
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));    
-    n_jets_ = jets.size();
-    
-    
+    n_jets_ = jets.size(); 
+    jpx_.clear();
+    jpy_.clear();
+    jpz_.clear();
+    jE_.clear(); 
     for(unsigned i=0; i<n_jets_; ++i){
       jpx_.push_back(jets[i]->vector().Px());
       jpy_.push_back(jets[i]->vector().Py());
@@ -183,6 +191,14 @@ int MELATest::Execute(TreeEvent *event) {
     
     out_tree_->Fill();
     ++event_counter_;
+  }
+
+  if(run_mode_ == 2){
+    auto it = mela_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+    if (it != mela_map.end()) {
+      event->Add("D0", it->second.first);
+      event->Add("DCP", it->second.second);
+    } else { std::cout << "Error, MELA output not found!" << std::endl; throw; }
   }
 
   return 0;
