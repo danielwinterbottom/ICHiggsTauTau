@@ -14,6 +14,7 @@
 #include <string>
 #include <fstream>
 #include <tuple>
+#include "TLorentzVector.h"
 
 namespace ic {
 
@@ -26,28 +27,16 @@ class MELATest : public ModuleBase {
   uint64_t out_lumi_;
   uint64_t out_run_;
   
-  double Hpx_;
-  double Hpy_;
-  double Hpz_;
-  double HE_;
-  double jpx_1_;
-  double jpy_1_;
-  double jpz_1_;
-  double jE_1_; 
-  double jpx_2_;
-  double jpy_2_;
-  double jpz_2_;
-  double jE_2_; 
+  TLorentzVector higgs_;
+  std::vector<TLorentzVector> outjets_;  
 
   boost::filesystem::path total_path_;
  
   CLASS_MEMBER(MELATest, ic::channel, channel)
-  CLASS_MEMBER(MELATest, ic::strategy, strategy)
   CLASS_MEMBER(MELATest, unsigned, run_mode)
   CLASS_MEMBER(MELATest, std::string, outname)
   CLASS_MEMBER(MELATest, unsigned, split)
   CLASS_MEMBER(MELATest, std::string, fullpath)
-  CLASS_MEMBER(MELATest, bool, from_grid)
   CLASS_MEMBER(MELATest, bool, read_all)
   CLASS_MEMBER(MELATest, std::string, met_label)
   CLASS_MEMBER(MELATest, std::string, jets_label)

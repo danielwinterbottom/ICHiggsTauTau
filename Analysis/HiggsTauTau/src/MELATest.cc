@@ -12,7 +12,7 @@
 
 namespace ic {
 
-  MELATest::MELATest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15) {
+  MELATest::MELATest(std::string const& name) : ModuleBase(name), channel_(channel::et)  {
   
     out_file_ = NULL;
     out_tree_ = NULL;
@@ -28,14 +28,13 @@ namespace ic {
     outname_ = "mela_test";
     outputadd_ = "";
     fullpath_ = "MELA/";
-    from_grid_ = false;
-    read_all_ = false;
+    read_all_ = true;
     
     met_label_="pfMET";
     dilepton_label_="ditau";
     jets_label_="ak4PFJetsCHS";
     
-    use_svfit_vec_ = false;
+    use_svfit_vec_ = true;
 
   }
 
@@ -70,36 +69,32 @@ namespace ic {
     }
     std::cout << boost::format(param_fmt()) % "directory"      % fullpath_;
 
-    if(!from_grid_){
-      total_path_ = operator/(fullpath_, folder_p);
-    } else {
-      if(read_all_ && run_mode_==2){
-        std::string chan;
-        if (channel_ == channel::et) chan = "_et_";
-        if (channel_ == channel::mt) chan = "_mt_";
-        if (channel_ == channel::em) chan = "_em_";
-        if (channel_ == channel::tt) chan = "_tt_";
-        std::string::size_type channelpos = outputadd_.find(chan);
-        if(channelpos != std::string::npos){
-          outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
-        } 
+    if(read_all_ && run_mode_==2){
+      std::string chan;
+      if (channel_ == channel::et) chan = "_et_";
+      if (channel_ == channel::mt) chan = "_mt_";
+      if (channel_ == channel::em) chan = "_em_";
+      if (channel_ == channel::tt) chan = "_tt_";
+      std::string::size_type channelpos = outputadd_.find(chan);
+      if(channelpos != std::string::npos){
+        outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
       }
-      boost::filesystem::path nofolder("");
-      total_path_ = operator/(fullpath_,nofolder);
     }
+    boost::filesystem::path nofolder("");
+    total_path_ = operator/(fullpath_,nofolder);
     boost::filesystem::create_directories(total_path_);
     if (run_mode_ == 2) {
       boost::filesystem::directory_iterator it(total_path_);
       for (; it != boost::filesystem::directory_iterator(); ++it) {
         std::string path = it->path().string();
-        if ((!from_grid_ && path.find("output.root") != path.npos)||(path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos)) {
+        if (path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos) {  
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {
             std::cout << "Warning, unable to open file " << path << std::endl;
             continue;
           }
-          TTree *otree = dynamic_cast<TTree *>(ofile->Get("svfit"));
+          TTree *otree = dynamic_cast<TTree *>(ofile->Get("mela"));
           if (!otree) {
             std::cout << "Warning, unable to get tree in file " << path << std::endl;
             continue;
@@ -121,7 +116,6 @@ namespace ic {
         } 
       }
     }
-
   return 0;
 }
 
@@ -144,24 +138,13 @@ int MELATest::Execute(TreeEvent *event) {
         delete out_file_;
         out_file_ = NULL;
       }
-      out_file_ = new TFile((total_path_.string()+"/svfit_"+outputadd_+"_"+boost::lexical_cast<std::string>(file_counter_)+"_input.root").c_str(),"RECREATE");
-      out_tree_ = new TTree("svfit","svfit");
+      out_file_ = new TFile((total_path_.string()+"/mela_"+outputadd_+"_"+boost::lexical_cast<std::string>(file_counter_)+"_input.root").c_str(),"RECREATE");
+      out_tree_ = new TTree("mela","mela");
       out_tree_->Branch("event", &out_event_, "event/i");
       out_tree_->Branch("lumi", &out_lumi_, "lumi/i");
       out_tree_->Branch("run", &out_run_, "run/i");
-      out_tree_->Branch("Hpx", &Hpx_);
-      out_tree_->Branch("Hpy", &Hpy_);
-      out_tree_->Branch("Hpz", &Hpz_);
-      out_tree_->Branch("HE", &HE_);
-      out_tree_->Branch("jpx_1", &jpx_1_);
-      out_tree_->Branch("jpy_1", &jpy_1_);
-      out_tree_->Branch("jpz_1", &jpz_1_);
-      out_tree_->Branch("jE_1" , &jE_1_ );
-      out_tree_->Branch("jpx_2", &jpx_2_);
-      out_tree_->Branch("jpy_2", &jpy_2_);
-      out_tree_->Branch("jpz_2", &jpz_2_);
-      out_tree_->Branch("jE_2" , &jE_2_ );
-  
+      out_tree_->Branch("higgs", &higgs_);
+      out_tree_->Branch("jets", &outjets_);
       ++file_counter_;
     }
   
@@ -173,42 +156,22 @@ int MELATest::Execute(TreeEvent *event) {
     Candidate higgs;
     if (use_svfit_vec_ && event->Exists("svfitHiggs")) higgs = event->Get<Candidate>("svfitHiggs");
     else higgs.set_vector(lep1->vector()+lep2->vector()+met.vector());
-
-    Hpx_= higgs.vector().Px();
-    Hpy_= higgs.vector().Py();
-    Hpz_= higgs.vector().Pz();
-    HE_ = higgs.vector().E();
+    
+    higgs_ = TLorentzVector(higgs.vector().Px(),higgs.vector().Py(),higgs.vector().Pz(),higgs.vector().E());
     
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));    
     unsigned n_jets = jets.size();
     
-    if(n_jets>=1){
-      jpx_1_= jets[0]->vector().Px();
-      jpy_1_= jets[0]->vector().Py();
-      jpz_1_= jets[0]->vector().Pz();
-      jE_1_ = jets[0]->vector().E();    
-    } else {
-      jpx_1_= -9999;
-      jpy_1_= -9999;
-      jpz_1_= -9999;
-      jE_1_ = -9999;  
-    }
-    if(n_jets>=2){
-      jpx_2_= jets[1]->vector().Px();
-      jpy_2_= jets[1]->vector().Py();
-      jpz_2_= jets[1]->vector().Pz();
-      jE_2_ = jets[1]->vector().E();    
-    } else {
-      jpx_2_= -9999;
-      jpy_2_= -9999;
-      jpz_2_= -9999;
-      jE_2_ = -9999;  
-    }
-  
+    outjets_.clear();  
+    for(unsigned i=0; i<n_jets; ++i){
+      outjets_.push_back(TLorentzVector(jets[i]->vector().Px(),jets[i]->vector().Py(),jets[i]->vector().Pz(),jets[i]->vector().E()));
+    }         
+    
+    out_tree_->Fill();
     ++event_counter_;
-  
   }
+
   return 0;
   }
   int MELATest::PostAnalysis() {

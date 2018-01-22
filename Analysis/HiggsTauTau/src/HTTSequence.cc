@@ -70,6 +70,7 @@
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
 #include "HiggsTauTau/interface/NLOWeighting.h"
+#include "HiggsTauTau/interface/MELATest.h"
 
 
 namespace ic {
@@ -1413,6 +1414,26 @@ if(js["do_preselection"].asBool()){
       else return 0;
      }));
  }
+
+unsigned mela_mode = js["mela_mode"].asUInt();
+if(mela_mode!=0){
+  std::string mela_folder;
+  if(js["mela_folder"].asString()!="") {
+    mela_folder = js["mela_folder"].asString();
+  } else {
+    std::cout<<"ERROR: mela_folder not set"<<std::endl; exit(1);
+  }
+  
+  if(js["baseline"]["jes_mode"].asUInt() > 0 && js["baseline"]["split_by_source"].asBool()) mela_folder=mela_folder+"/";
+  else mela_folder=mela_folder+"/"+addit_output_folder+"/";
+
+  MELATest melaTest = MELATest("MELATest") 
+    .set_channel(channel)
+    .set_run_mode(mela_mode)
+    .set_outname(output_name)
+    .set_fullpath(mela_folder);
+  BuildModule(melaTest);
+}
 
 
 if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){

@@ -58,5 +58,6 @@
   <class name="edm::Wrapper<edm::ValueMap<std::vector<int>>>"/>
   <class name="ic::L1TObject"/>
   <class name="std::vector<ic::L1TObject>"/>
+  <class name="std::vector<TLorentzVector>"/>
   <function name="MultiDraw"/>
 </lcgdict>
