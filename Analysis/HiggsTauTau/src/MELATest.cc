@@ -143,8 +143,15 @@ int MELATest::Execute(TreeEvent *event) {
       out_tree_->Branch("event", &out_event_, "event/i");
       out_tree_->Branch("lumi", &out_lumi_, "lumi/i");
       out_tree_->Branch("run", &out_run_, "run/i");
-      out_tree_->Branch("higgs", &higgs_);
-      out_tree_->Branch("jets", &outjets_);
+      out_tree_->Branch("Hpx", &Hpx_);
+      out_tree_->Branch("Hpy", &Hpy_);
+      out_tree_->Branch("Hpz", &Hpz_);
+      out_tree_->Branch("HE", &HE_);
+      out_tree_->Branch("jpx", &jpx_);
+      out_tree_->Branch("jpy", &jpy_);
+      out_tree_->Branch("jpz", &jpz_);
+      out_tree_->Branch("jE", &jE_);
+      out_tree_->Branch("n_jets", &n_jets_);
       ++file_counter_;
     }
   
@@ -152,20 +159,26 @@ int MELATest::Execute(TreeEvent *event) {
     out_event_ = eventInfo->event();
     out_lumi_ = eventInfo->lumi_block();
     out_run_ = eventInfo->run();
-    
-    Candidate higgs;
+
+    ic::Candidate higgs;
     if (use_svfit_vec_ && event->Exists("svfitHiggs")) higgs = event->Get<Candidate>("svfitHiggs");
     else higgs.set_vector(lep1->vector()+lep2->vector()+met.vector());
     
-    higgs_ = TLorentzVector(higgs.vector().Px(),higgs.vector().Py(),higgs.vector().Pz(),higgs.vector().E());
-    
+    Hpx_ = higgs.vector().Px();
+    Hpy_ = higgs.vector().Py();
+    Hpz_ = higgs.vector().Pz();
+    HE_ = higgs.vector().E();
+
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));    
-    unsigned n_jets = jets.size();
+    n_jets_ = jets.size();
     
-    outjets_.clear();  
-    for(unsigned i=0; i<n_jets; ++i){
-      outjets_.push_back(TLorentzVector(jets[i]->vector().Px(),jets[i]->vector().Py(),jets[i]->vector().Pz(),jets[i]->vector().E()));
+    
+    for(unsigned i=0; i<n_jets_; ++i){
+      jpx_.push_back(jets[i]->vector().Px());
+      jpy_.push_back(jets[i]->vector().Py());
+      jpz_.push_back(jets[i]->vector().Pz());
+      jE_.push_back(jets[i]->vector().E());
     }         
     
     out_tree_->Fill();

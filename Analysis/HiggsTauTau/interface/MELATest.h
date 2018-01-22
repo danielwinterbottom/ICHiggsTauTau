@@ -27,8 +27,16 @@ class MELATest : public ModuleBase {
   uint64_t out_lumi_;
   uint64_t out_run_;
   
-  TLorentzVector higgs_;
-  std::vector<TLorentzVector> outjets_;  
+  double Hpx_;
+  double Hpy_;
+  double Hpz_;
+  double HE_;
+
+  std::vector<double> jpx_;  
+  std::vector<double> jpy_;
+  std::vector<double> jpz_;
+  std::vector<double> jE_;
+  unsigned n_jets_;
 
   boost::filesystem::path total_path_;
  

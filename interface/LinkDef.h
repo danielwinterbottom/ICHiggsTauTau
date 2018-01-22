@@ -87,7 +87,5 @@
 
 #pragma link C++ class mithep::TH2DAsymErr+;
 
-#pragma link C++ class std::vector<TLorentzVector>+;
-
 
 #endif

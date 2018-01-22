@@ -35,7 +35,6 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "TLorentzVector.h"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -99,7 +98,6 @@ namespace { struct dictionary {
   edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58;
   ic::L1TObject              dictL1TObject;
   std::vector<ic::L1TObject> dictL1TObjectCollection;
-  std::vector<TLorentzVector> dummy59;
 };
 }
 
