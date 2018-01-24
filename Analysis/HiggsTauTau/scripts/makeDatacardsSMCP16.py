@@ -233,8 +233,8 @@ if SCHEME == 'cpsummer16_aachen':
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
-  VAR_DIJET = 'sjdphi(20,-3.2,3.2)' 
-  VAR_DIJET_WIDEBINS = 'sjdphi(10,-3.2,3.2)' 
+  VAR_DIJET = 'sjdphi(12,-3.2,3.2)' 
+  VAR_DIJET_THINBINS = 'sjdphi(20,-3.2,3.2)' # use this with ic cuts
   
   VAR_0JET_LT_WCR = 'mt_1[80,200]'
   VAR_BOOSTED_WCR = 'mt_1[80,200]'
@@ -288,14 +288,23 @@ if SCHEME == 'cpsummer16_aachen':
     ("8",   "dijet_lowMjj",     "dijet_lowMjj_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss '),
     ("8",   "dijet_boosted",     "dijet_boosted_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss ')
   ]
+  #scheme_em = [
+  #  ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
+  #  ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
+  #  ("19",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+  #  ("19",   "dijet_highM",     "dijet_highM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+  #  ("19",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+  #  ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
+  #]
   scheme_em = [
-    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_highM",     "dijet_highM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
+    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "dijet_highM",     "dijet_highM",  VAR_DIJET, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-35" ')
   ]
+
   bkg_schemes = {
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
@@ -314,7 +323,7 @@ if SCHEME == 'cpsummer16_2d':
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
-  VAR_DIJET = 'pt_tt,sjdphi[0,100,200,300],(15,-3.2,3.2)' 
+  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
   
   VAR_DIJET_TT_QCD = 'sjdphi(1,-3.2,3.2)' 
   
@@ -328,30 +337,24 @@ if SCHEME == 'cpsummer16_2d':
   VAR_BOOSTED_TT_QCDCR = 'm_sv[0,300]' 
 
   scheme_et = [
-    ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
-    ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, '--set_alias="sel:mt_1>80" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
-    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" '),
+    ("21",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" '),
+    ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, ' --set_alias="sel:mt_1>80" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
+    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, ' --set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" '),
     ("21",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
     ("21",   "boosted", "wjets_boosted_cr",  VAR_BOOSTED_WCR, '--set_alias="sel:mt_1>80" --set_alias="boosted:({boosted}&&n_bjets==0)" '),
     ("21",   "boosted",    "antiiso_boosted_cr",  VAR_BOOSTED_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" --set_alias="w_shape:({w_shape}&&iso_1>0.1)" '),
-    ("21",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="sel:mt_1<50" --set_alias="dijet_lowM:({dijet} && m_sv<100)" '),
-    ("21",   "dijet_highM",     "dijet_highM",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="dijet_highM:({dijet} && m_sv>150)" '),
-    #("21",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
-    ("21",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="dijet_boosted:({dijet} && m_sv<150 && m_sv>100)" ')
-
-
+    ("21",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:mt_1<50"  '),
+    ("21",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
   ]
   scheme_mt = [
     ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
     ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, '--set_alias="sel:(mt_1>80&&mt_1<200)" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
-    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" '),
+    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.15)" '),
     ("21",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
     ("21",   "boosted", "wjets_boosted_cr",  VAR_BOOSTED_WCR, '--set_alias="sel:mt_1>80" --set_alias="boosted:({boosted}&&n_bjets==0)" '),
     ("21",   "boosted",    "antiiso_boosted_cr",  VAR_BOOSTED_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.15)" --set_alias="w_shape:({w_shape}&&iso_1>0.15)" '),
-    ("21",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="dijet_lowM:({dijet} && m_sv<100)" '),
-    ("21",   "dijet_highM",     "dijet_highM",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="dijet_highM:({dijet} && m_sv>150)" '),
-    #("21",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
-    ("21",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="dijet_boosted:({dijet} && m_sv<150 && m_sv>100)" ')
+    ("21",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:mt_1<50"  '),
+    ("21",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
 
   ]
   scheme_tt = [
@@ -359,22 +362,16 @@ if SCHEME == 'cpsummer16_2d':
     ("8",   "0jet",    "0jet_qcd_cr",  VAR_0JET_TT_QCDCR, ' --do_ss '),
     ("8",   "boosted", "boosted",  VAR_BOOSTED_TT, ''),
     ("8",   "boosted", "boosted_qcd_cr",  VAR_BOOSTED_TT_QCDCR, ' --do_ss '),
-    ("8",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="dijet_lowM:({dijet} && m_sv<100)" '),
-    ("8",   "dijet_highM",     "dijet_highM",  VAR_DIJET, ' --set_alias="dijet_highM:({dijet} && m_sv>150)" '),
-    #("8",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, ''),
-    ("8",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="dijet_boosted:({dijet} && m_sv<150 && m_sv>100)" '),
-    ("8",   "dijet_lowM",      "dijet_lowM_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss --set_alias="sel:mt_1<50" --set_alias="dijet_lowM:({dijet} && m_sv<100)" '),
-    ("8",   "dijet_highM",      "dijet_highM_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss --set_alias="dijet_highM:({dijet} && m_sv>150)" '),
-    #("8",   "dijet_lowMjj",     "dijet_lowMjj_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss '),
-    ("8",   "dijet_boosted",     "dijet_boosted_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss --set_alias="dijet_boosted:({dijet} && m_sv<150 && m_sv>100)" ')
+    ("8",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' '),
+    ("8",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' '),
+    ("8",   "dijet_lowboost",      "dijet_lowboost_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss '),
+    ("8",   "dijet_boosted",     "dijet_boosted_qcd_cr",  VAR_DIJET_TT_QCD, ' --do_ss ')
   ]
   scheme_em = [
-    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35 '), 
-    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35 '), 
-    ("19",   "dijet_lowM",     "dijet_lowM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10 '),
-    ("19",   "dijet_highM",     "dijet_highM",  VAR_DIJET, ' --set_alias="sel:pzeta>-10 '),
-    ("19",   "dijet_lowMjj",     "dijet_lowMjj",  VAR_DIJET, ' --set_alias="sel:pzeta>-10 '),
-    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10 ')
+    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
   ]
   bkg_schemes = {
     'et' : 'et_default',

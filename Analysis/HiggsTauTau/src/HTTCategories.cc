@@ -693,6 +693,9 @@ namespace ic {
       outtree_->Branch("jdphi",             &jdphi_);
       if (strategy_ == strategy::smsummer16){
         outtree_->Branch("sjdphi",             &sjdphi_);
+        outtree_->Branch("D0", &D0_);
+        outtree_->Branch("DCP", &DCP_);
+        outtree_->Branch("D0star", &D0star_);
         outtree_->Branch("spjdphi", &spjdphi_     );
         outtree_->Branch("min_hj_deta", &min_hj_deta_ );
         outtree_->Branch("pjdeta", &pjdeta_      );
@@ -3575,6 +3578,12 @@ namespace ic {
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       
       if (strategy_ == strategy::smsummer16){
+        if (event->Exists("D0")) D0_ = event->Get<float>("D0");
+        else D0_ = -9999;
+        if (event->Exists("DCP")) DCP_ = event->Get<float>("DCP");
+        else DCP_ = -9999;
+        D0star_ = D0_*DCP_/fabs(DCP_);
+
         if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
           sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
         }

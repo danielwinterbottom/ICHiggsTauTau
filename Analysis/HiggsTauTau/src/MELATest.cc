@@ -24,7 +24,7 @@ namespace ic {
 
     file_counter_ = 0;
     event_counter_ = 0;
-    split_ = 5000;
+    split_ = 300000;
     outname_ = "mela_test";
     outputadd_ = "";
     fullpath_ = "MELA/";
@@ -198,7 +198,7 @@ int MELATest::Execute(TreeEvent *event) {
     if (it != mela_map.end()) {
       event->Add("D0", it->second.first);
       event->Add("DCP", it->second.second);
-    } else { std::cout << "Error, MELA output not found!" << std::endl; throw; }
+    } else { std::cout << "Warning, MELA output not found!" << std::endl; }
   }
 
   return 0;

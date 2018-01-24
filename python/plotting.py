@@ -140,6 +140,7 @@ def SetAxisTitles2D(plot, channel):
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)','GeV']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
+  titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
