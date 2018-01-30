@@ -364,66 +364,51 @@ cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['vbf'])
 if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['vbf'])
 
 if options.era == 'cpsummer16':
-  
-  #if options.channel == 'tt':
-  #  cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-  #  cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-  
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
       cats['dijet_boosted']='%s && pt_tt>150 && n_bjets==0' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<150 && n_bjets==0' % cats['dijet']
+      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
+    cats['0jet'] = '(n_jets==0)'
     cats['dijet']='n_jets>=2 && mjj>300'
     cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
     cats['dijet_lowboost']='%s && pt_tt<150' % cats['dijet']
-  #cats['dijet_highM']='%s && m_sv>150' % cats['dijet']
-  #cats['dijet_lowM']='%s && m_sv<100' % cats['dijet']
-  #cats['dijet_lowMjj']='%s && pt_tt<150 && m_sv>100 && m_sv<150' % cats['dijet']
-  #cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  #if options.channel in ['em','mt','et']: cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+    cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
   
   # aachen groups cuts
-  if options.channel == 'mt':
-    cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-    cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-  if options.channel == 'et':
-    cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)' 
-    cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
-  if options.channel == 'tt':
-    cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-    cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+  #if options.channel == 'mt':
+  #  cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+  #  cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+  #if options.channel == 'et':
+  #  cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)' 
+  #  cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+  #if options.channel == 'tt':
+  #  cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+  #  cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+ # 
+ # cats['0jet'] = 'n_jets==0'
+ # if options.channel == 'mt': 
+ #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_2>40&&pt_tt>50)))'
+ # if options.channel == 'et':
+ #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_tt>50)))'
+ # if options.channel == 'em':
+ #   cats['boosted'] = '((n_jets==1)||(n_jets==2&&!(mjj>300&&pzeta>-10))||(n_jets>2))'
+ # if options.channel == 'tt':
+ #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(jdeta>2.5&&pt_tt>100)))'
   
-  cats['0jet'] = 'n_jets==0'
-  if options.channel == 'mt': 
-    cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_2>40&&pt_tt>50)))'
-  if options.channel == 'et':
-    cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_tt>50)))'
-  if options.channel == 'em':
-    cats['boosted'] = '((n_jets==1)||(n_jets==2&&!(mjj>300&&pzeta>-10))||(n_jets>2))'
-  if options.channel == 'tt':
-    cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(jdeta>2.5&&pt_tt>100)))'
-  
-  cats['dijet_boosted'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt>150.)*(m_sv>100)'
-  cats['dijet_highM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv>100)'
-  cats['dijet_lowM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv<100)'
-  cats['dijet_lowMjj'] = '(mjj>300)*(mjj<500)*(n_jets>1)'
-  
-  if options.channel == 'em':
-    cats['dijet_boosted']+='&& n_bjets<1'
-    cats['dijet_highM']+='&& n_bjets<1'
-    cats['dijet_lowM']+='&& n_bjets<1'
-    cats['dijet_lowMjj']+='&& n_bjets<1'
-  
-  #cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>300'
-  #if options.channel == 'em': cats['dijet']='n_jets>=2 && jdeta>=2 && mjj>200 && opp_sides && n_bjets==0'
-  #cats['dijet_boosted']='%s && pt_tt>150 && m_sv>100 && mjj>500' % cats['dijet']
-  #cats['dijet_highM']='%s && pt_tt<150 && m_sv>100 && mjj>500' % cats['dijet']
-  #cats['dijet_lowM']='%s && pt_tt<150 && m_sv<100 && mjj>500' % cats['dijet']
-  #cats['dijet_lowMjj']='%s && pt_tt<150 && mjj<500' % cats['dijet']
-  #cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  #if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+ # cats['dijet_boosted'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt>150.)*(m_sv>100)'
+ # cats['dijet_highM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv>100)'
+ # cats['dijet_lowM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv<100)'
+ # cats['dijet_lowMjj'] = '(mjj>300)*(mjj<500)*(n_jets>1)'
+ # 
+ # if options.channel == 'em':
+ #   cats['dijet_boosted']+='&& n_bjets<1'
+ #   cats['dijet_highM']+='&& n_bjets<1'
+ #   cats['dijet_lowM']+='&& n_bjets<1'
+ #   cats['dijet_lowMjj']+='&& n_bjets<1'
+ # 
   # end of aachen cuts
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
@@ -585,7 +570,7 @@ if options.era in ["smsummer16",'cpsummer16']:
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
-if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHf0_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHf0p5_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHf1_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
 # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1846,7 +1831,9 @@ def UnrollHist(h2d,inc_y_of=True):
         error = h2d.GetBinError(i,j)
         h1d.SetBinContent(glob_bin+1,content)
         h1d.SetBinError(glob_bin+1,error)
-        h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+        if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+        else:
+          h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
         if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
     h1d.LabelsOption('v','X')
     return h1d
