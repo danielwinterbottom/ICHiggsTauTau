@@ -32,6 +32,10 @@ class GenTrees : public ModuleBase {
   double zmassgen_ = -1;
   double zptlhe_ = -1;  
   double zmasslhe_ = -1;
+  double vispT_ = -1;
+  double visM_ = -1;
+  double genpT_ = -1;
+  double genM_ = -1;
   double pt_1_ = 0;
   double pt_2_ = 0;
   double eta_1_ = -999;
@@ -44,6 +48,8 @@ class GenTrees : public ModuleBase {
   double gen_jet_pt_2_ = 0;
   double gen_jet_eta_1_ = -999;
   double gen_jet_eta_2_ = -999;
+  double m_bb_=-1;
+  double m_jj_=-1;
 
 
 

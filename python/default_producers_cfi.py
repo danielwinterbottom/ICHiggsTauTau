@@ -479,7 +479,7 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 ## [GenParticle from LHE]
 icGenParticleFromLHEParticlesProducer = cms.EDProducer('ICGenParticleFromLHEParticlesProducer',
   branch  = cms.string("lheParticles"),
-  input   = cms.InputTag("source")
+  input   = cms.InputTag("externalLHEProducer")
 )
 ## [GenParticle from LHE]
 

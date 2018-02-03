@@ -7,11 +7,13 @@ import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing('python')
-options.register('output','file:///afs/cern.ch/work/a/adewit/private/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/DY01_biasweight_genonly_eventtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('output','file:///afs/cern.ch/work/a/adewit/private/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/HIG-RunIIFall17wmLHEGS-00597_1.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+#options.register('output','file:///afs/cern.ch/work/a/adewit/private/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/DY01_biasweight4_genonly_eventtree_100k.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('output','file:///vols/cms/amd12/biaswttest/DY01_noweight_eventtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('output','file:///vols/cms/amd12/DY01_nobiaswt_evvtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('input','file:///vols/cms/amd12/biaswttest/DY01_noweight.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
-options.register('input','file:///afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7/DY01_biasweight_genonly.root', VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+#options.register('input','file:///afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7/DY01_biasweight4_genonly.root', VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('input','file:///eos/cms/store/group/phys_generator/perrozzi/HIG-RunIIFall17wmLHEGS-00597/HIG-RunIIFall17wmLHEGS-00597-9306.root', VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('input','file:///vols/build/cms/amd12/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/dy01_nobiaswt_out.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 
 options.parseArguments()
@@ -32,7 +34,7 @@ process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('PhysicsTools.PatAlgos.slimming.metFilterPaths_cff')
-process.load('PhysicsTools.PatAlgos.slimming.prunedGenParticles_cfi')
+#process.load('PhysicsTools.PatAlgos.slimming.prunedGenParticles_cfi')
 process.load('PhysicsTools.PatAlgos.slimming.genParticles_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
@@ -44,10 +46,11 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(-1)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 500
+
 
 # Input source
 process.source = cms.Source("PoolSource",
@@ -124,7 +127,7 @@ process.MINIAODSIMoutput_step = cms.EndPath(process.MINIAODSIMoutput)
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
-    input               = cms.InputTag('genParticles', '', 'GEN'),
+    input               = cms.InputTag('prunedGenParticles', '', 'PAT'),
     includeMothers      = cms.bool(True),
     includeDaughters    = cms.bool(True),
     includeStatusFlags  = cms.bool(True)
@@ -165,7 +168,8 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
     isSlimmed           = cms.bool(False)
     )
 
-process.icGenParticleFromLHEParticlesProducer = producers.icGenParticleFromLHEParticlesProducer.clone()
+process.icGenParticleFromLHEParticlesProducer = producers.icGenParticleFromLHEParticlesProducer.clone(
+  input   = cms.InputTag("source"))
 
 process.icSlimmedEventInfoProducer = producers.icSlimmedEventInfoProducer.clone()
 
@@ -193,4 +197,19 @@ process.schedule = cms.Schedule(process.p)
 #process.options.numberOfStreams=cms.untracked.uint32(0)
 
 # customisation of the process.
+
+from Configuration.DataProcessing.Utils import addMonitoring
+
+process = addMonitoring(process)
+
+process.load('Configuration.StandardSequences.PATMC_cff')
+process.load('PhysicsTools.HepMCCandAlgos.genParticles_cfi')
+process.load('RecoJets.Configuration.GenJetParticles_cff')
+process.load('RecoJets.Configuration.RecoGenJets_cff')
+
+process.genParticles.src = cms.InputTag("generatorSmeared")
+
+from PhysicsTools.PatAlgos.slimming.miniAOD_tools import miniAOD_customizeAllMC
+
+process=miniAOD_customizeAllMC(process)
 
