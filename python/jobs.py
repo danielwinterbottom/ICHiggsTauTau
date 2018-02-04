@@ -26,6 +26,23 @@ eval `scramv1 runtime -sh`
 cd %(PWD)s
 """
 
+CONDOR_TEMPLATE = """executable = %(EXE)s
+arguments = $(ProcId)
+output                = %(TASK)s.$(ClusterId).$(ProcId).out
+error                 = %(TASK)s.$(ClusterId).$(ProcId).err
+log                   = %(TASK)s.$(ClusterId).log
+
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
+periodic_release =  (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
+%(EXTRA)s
+queue %(NUMBER)s
+
+"""
+
 ERROR_CAPTURE = """
 function error_exit
 {
@@ -62,7 +79,7 @@ class Jobs:
 
     def attach_job_args(self, group):
         group.add_argument('--job-mode', default=self.job_mode, choices=[
-                           'interactive', 'script', 'lxbatch', 'NAF', 'ts'], help='Task execution mode')
+                           'interactive', 'script', 'lxbatch', 'condor', 'NAF', 'ts'], help='Task execution mode')
         group.add_argument('--task-name', default=self.task_name,
                            help='Task name, used for job script and log filenames for batch system tasks')
         group.add_argument('--dir', default=self.task_dir,
@@ -232,6 +249,37 @@ class Jobs:
                 if self.tracking and not self.dry_run:
                     os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
+        if self.job_mode == 'condor':
+            outscriptname = 'condor_%s.sh' % self.task_name
+            subfilename = 'condor_%s.sub' % self.task_name
+            print '>> condor job script will be %s' % outscriptname
+            outscript = open(outscriptname, "w")
+            DO_JOB_PREFIX = JOB_PREFIX % ({
+              'CMSSW_BASE': os.environ['CMSSW_BASE'],
+              'SCRAM_ARCH': os.environ['SCRAM_ARCH'],
+              'PWD': (os.environ['PWD'] if self.args.cwd else '${INITIALDIR}')
+            })
+            outscript.write(DO_JOB_PREFIX)
+            jobs = 0
+            for i, j in enumerate(range(0, len(self.job_queue), self.merge)):
+                outscript.write('\nif [ $1 -eq %i ]; then\n' % jobs)
+                jobs += 1
+                for line in self.job_queue[j:j + self.merge]:
+                    newline = line
+                    outscript.write('  ' + newline + '\n')
+                outscript.write('fi')
+            outscript.close()
+            subfile = open(subfilename, "w")
+            condor_settings = CONDOR_TEMPLATE % {
+              'EXE': outscriptname,
+              'TASK': self.task_name,
+              'EXTRA': self.bopts.decode('string_escape'),
+              'NUMBER': jobs
+            }
+            subfile.write(condor_settings)
+            subfile.close()
+            run_command(self.dry_run, 'condor_submit %s' % (subfilename))
+
         if self.job_mode in ['lxbatch', 'NAF', 'ts'] and self.tracking:
             print '>> Status summary: %s' % self.task_name
             for status in status_result:
