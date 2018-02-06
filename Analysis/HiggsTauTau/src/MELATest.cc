@@ -77,6 +77,9 @@ namespace ic {
       if (channel_ == channel::mt) chan = "_mt_";
       if (channel_ == channel::em) chan = "_em_";
       if (channel_ == channel::tt) chan = "_tt_";
+      if (channel_ == channel::zmm) chan = "_zmm_";
+      if (channel_ == channel::zee) chan = "_zee_";
+
       std::string::size_type channelpos = outputadd_.find(chan);
       if(channelpos != std::string::npos){
         outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
@@ -167,7 +170,8 @@ int MELATest::Execute(TreeEvent *event) {
     out_run_ = eventInfo->run();
 
     ic::Candidate higgs;
-    if (use_svfit_vec_ && event->Exists("svfitHiggs")) higgs = event->Get<Candidate>("svfitHiggs");
+    if (channel_ == channel::zmm || channel_ == channel::zee) higgs.set_vector(lep1->vector()+lep2->vector());
+    else if (use_svfit_vec_ && event->Exists("svfitHiggs")) higgs = event->Get<Candidate>("svfitHiggs");
     else higgs.set_vector(lep1->vector()+lep2->vector()+met.vector());
     
     Hpx_ = higgs.vector().Px();
