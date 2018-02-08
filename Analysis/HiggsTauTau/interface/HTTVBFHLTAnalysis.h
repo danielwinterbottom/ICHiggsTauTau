@@ -38,10 +38,17 @@ class HTTVBFHLTAnalysis : public ModuleBase {
     bool passedVBF_3jets;
     bool passedMETMHT;
     bool passedIsoMu;
+    bool OneTightMuon_;
     
     //HLT passthrough
     bool VBFPassed_;
     bool VBFL1Passed_;
+    bool VBFCaloMETPassed_;
+    bool VBFCaloMETNCPassed_;
+    bool VBFPFMETPassed_;
+    
+    bool VBFL1_reconstructed_Passed_;
+    bool VBFL1_dphi_Passed_;
     bool METMHTPassed_;
     bool IsoMuPassed_;
     
@@ -59,6 +66,9 @@ class HTTVBFHLTAnalysis : public ModuleBase {
     double vbf_pf_jeta_4_;
     double vbf_pf_mjj_;
     double vbf_pf_mjj30_;
+    
+    double vbf_pf_jdphi_;
+    double vbf_pf_jdeta_;
     
     
     double vbf_all_pf_jpt_1_;
@@ -118,6 +128,8 @@ class HTTVBFHLTAnalysis : public ModuleBase {
     double leading_jeta_1_;
     double leading_jeta_2_;
     double leading_mjj_;
+    double leading_jdeta_;
+    double leading_jdphi_;
     
     
     double offline_jpt_1_;
