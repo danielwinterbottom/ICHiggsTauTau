@@ -2392,7 +2392,9 @@ def CompareHists(hists=[],
              norm_hists=False,
              plot_name="plot",
              label="",
-             norm_bins=True):
+             norm_bins=True,
+             uncert_hist=None,
+             uncert_title=''):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2471,6 +2473,14 @@ def CompareHists(hists=[],
     axish[0].Draw()
     
     hs.Draw("nostack hist same")
+    
+    if uncert_hist is not None:
+      uncert_hist.SetFillColor(CreateTransparentColor(12,0.4))
+      uncert_hist.SetLineColor(CreateTransparentColor(12,0.4))
+      uncert_hist.SetMarkerSize(0)
+      uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
+      uncert_hist.Draw("e2same")
+    hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
     
@@ -2483,6 +2493,7 @@ def CompareHists(hists=[],
 
     for legi,hist in enumerate(legend_hists):
         legend.AddEntry(hist,legend_titles[legi],"l")
+    if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
     legend.Draw("same")
     
     #CMS label and title
@@ -2522,7 +2533,11 @@ def CompareHists(hists=[],
             #    for i in range(1,h.GetNbinsX()+1): h.SetBinError(i,0.00001)
             #    first_hist=False
             ratio_hs.Add(h.Clone())
-            hist_count+=1   
+            hist_count+=1
+        if uncert_hist is not None:
+          h = uncert_hist.Clone()
+          h.Divide(div_hist)
+          h.Draw("e2same")   
         ratio_hs.Draw("nostack l same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()

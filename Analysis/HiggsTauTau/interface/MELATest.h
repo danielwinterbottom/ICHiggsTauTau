@@ -6,6 +6,8 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "boost/filesystem.hpp"
 #include "boost/unordered_map.hpp"
 #include "boost/functional/hash.hpp"
@@ -28,7 +30,10 @@ class MELATest : public ModuleBase {
   uint64_t out_event_;
   uint64_t out_lumi_;
   uint64_t out_run_;
-  
+
+  JetCorrectionUncertainty *uncert_;
+  JetCorrectorParameters *params_;  
+ 
   double Hpx_;
   double Hpy_;
   double Hpz_;
@@ -55,6 +60,10 @@ class MELATest : public ModuleBase {
   CLASS_MEMBER(MELATest, std::string, jets_label)
   CLASS_MEMBER(MELATest, std::string, dilepton_label)
   CLASS_MEMBER(MELATest, bool, use_svfit_vec)
+  CLASS_MEMBER(MELATest, std::string, add_name)
+  CLASS_MEMBER(MELATest, std::string, jes_uncert_file)
+  CLASS_MEMBER(MELATest, std::string, jes_uncert_set)
+  CLASS_MEMBER(MELATest, unsigned, jes_shift_mode)
 
 
   unsigned file_counter_;

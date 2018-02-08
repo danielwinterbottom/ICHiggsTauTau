@@ -35,6 +35,10 @@ namespace ic {
     jets_label_="ak4PFJetsCHS";
     
     use_svfit_vec_ = true;
+    add_name_="";
+    jes_uncert_file_="input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_uncert_set_="Total";
+    jes_shift_mode_ = 0;
 
   }
 
@@ -46,11 +50,14 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "MELATest" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
-
+    
     std::cout << boost::format(param_fmt()) % "run_mode"                % run_mode_;
     std::cout << boost::format(param_fmt()) % "dilepton_label"          % dilepton_label_;
     std::cout << boost::format(param_fmt()) % "met_label"               % met_label_;
     std::cout << boost::format(param_fmt()) % "jets_label"               % jets_label_;
+    
+    params_ = new JetCorrectorParameters(jes_uncert_file_, jes_uncert_set_);
+    uncert_ = new JetCorrectionUncertainty(*params_);
 
 
     // This code first strips the string ".root" from give filename
@@ -63,6 +70,7 @@ namespace ic {
     if ( foundpos != std::string::npos )
       outname_.erase(outname_.begin() + foundpos, outname_.begin() + foundpos + sub.length());
     outputadd_ = outname_; 
+    if(add_name_!="") outputadd_+="_"+add_name_;
     outname_ += "_MELA";
     boost::filesystem::path folder_p(outname_);
     std::cout << boost::format(param_fmt()) % "folder"         % outname_;
@@ -178,20 +186,32 @@ int MELATest::Execute(TreeEvent *event) {
     Hpy_ = higgs.vector().Py();
     Hpz_ = higgs.vector().Pz();
     HE_ = higgs.vector().E();
-
+    
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));    
-    n_jets_ = jets.size(); 
+    std::vector<PFJet> shifted_jets;
+    for(unsigned i=0; i<jets.size(); ++i){
+      PFJet jet = *jets.at(i);
+      if (jes_shift_mode_ == 0) continue;
+      uncert_->setJetPt(jet.pt());
+      uncert_->setJetEta(jet.eta());
+      double shift = 0.0;
+      if(jes_shift_mode_ == 1) shift = -1*uncert_->getUncertainty(false);
+      else if (jes_shift_mode_ == 2) shift = uncert_->getUncertainty(true);
+      jet.set_vector(jet.vector() * (1.0+shift));
+      if (fabs(jet.eta()) > 4.7 || jet.pt() < 30) continue;
+      shifted_jets.push_back(jet);
+    }
+    n_jets_ = shifted_jets.size(); 
     jpx_.clear();
     jpy_.clear();
     jpz_.clear();
     jE_.clear(); 
     for(unsigned i=0; i<n_jets_; ++i){
-      jpx_.push_back(jets[i]->vector().Px());
-      jpy_.push_back(jets[i]->vector().Py());
-      jpz_.push_back(jets[i]->vector().Pz());
-      jE_.push_back(jets[i]->vector().E());
-    }         
+      jpx_.push_back(shifted_jets[i].vector().Px());
+      jpy_.push_back(shifted_jets[i].vector().Py());
+      jpz_.push_back(shifted_jets[i].vector().Pz());
+      jE_.push_back(shifted_jets[i].vector().E());
+    } 
     
     out_tree_->Fill();
     ++event_counter_;
@@ -200,8 +220,13 @@ int MELATest::Execute(TreeEvent *event) {
   if(run_mode_ == 2){
     auto it = mela_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
     if (it != mela_map.end()) {
-      event->Add("D0", it->second.first);
-      event->Add("DCP", it->second.second);
+      if(jes_shift_mode_ == 0){
+        event->Add("D0", it->second.first);
+        event->Add("DCP", it->second.second);
+      } else {
+        event->Add("D0_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.first);
+        event->Add("DCP_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.second);
+      }
     } else { std::cout << "Warning, MELA output not found!" << std::endl; }
   }
 
