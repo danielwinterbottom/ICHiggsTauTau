@@ -54,3 +54,68 @@ mkdir -p -v $1/EFAKE0PI_DOWN
 mkdir -p -v $1/EFAKE0PI_UP
 mkdir -p -v $1/EFAKE1PI_DOWN
 mkdir -p -v $1/EFAKE1PI_UP
+mkdir -p -v $1/MUFAKE0PI_DOWN
+mkdir -p -v $1/MUFAKE0PI_UP
+mkdir -p -v $1/MUFAKE1PI_DOWN
+mkdir -p -v $1/MUFAKE1PI_UP
+mkdir -p -v $1/METUNCL_UP
+mkdir -p -v $1/METUNCL_DOWN
+mkdir -p -v $1/METCL_UP
+mkdir -p -v $1/METCL_DOWN
+
+if [ $2 ]; then
+  mkdir -p -v $1/JES_1_DOWN
+  mkdir -p -v $1/JES_1_UP
+  mkdir -p -v $1/JES_2_DOWN
+  mkdir -p -v $1/JES_2_UP
+  mkdir -p -v $1/JES_3_DOWN
+  mkdir -p -v $1/JES_3_UP
+  mkdir -p -v $1/JES_4_DOWN
+  mkdir -p -v $1/JES_4_UP
+  mkdir -p -v $1/JES_5_DOWN
+  mkdir -p -v $1/JES_5_UP
+  mkdir -p -v $1/JES_6_DOWN
+  mkdir -p -v $1/JES_6_UP
+  mkdir -p -v $1/JES_7_DOWN
+  mkdir -p -v $1/JES_7_UP
+  mkdir -p -v $1/JES_8_DOWN
+  mkdir -p -v $1/JES_8_UP
+  mkdir -p -v $1/JES_9_DOWN
+  mkdir -p -v $1/JES_9_UP
+  mkdir -p -v $1/JES_10_DOWN
+  mkdir -p -v $1/JES_10_UP
+  mkdir -p -v $1/JES_11_DOWN
+  mkdir -p -v $1/JES_11_UP
+  mkdir -p -v $1/JES_12_DOWN
+  mkdir -p -v $1/JES_12_UP
+  mkdir -p -v $1/JES_13_DOWN
+  mkdir -p -v $1/JES_13_UP
+  mkdir -p -v $1/JES_14_DOWN
+  mkdir -p -v $1/JES_14_UP
+  mkdir -p -v $1/JES_15_DOWN
+  mkdir -p -v $1/JES_15_UP
+  mkdir -p -v $1/JES_16_DOWN
+  mkdir -p -v $1/JES_16_UP
+  mkdir -p -v $1/JES_17_DOWN
+  mkdir -p -v $1/JES_17_UP
+  mkdir -p -v $1/JES_18_DOWN
+  mkdir -p -v $1/JES_18_UP
+  mkdir -p -v $1/JES_19_DOWN
+  mkdir -p -v $1/JES_19_UP
+  mkdir -p -v $1/JES_20_DOWN
+  mkdir -p -v $1/JES_20_UP
+  mkdir -p -v $1/JES_21_DOWN
+  mkdir -p -v $1/JES_21_UP
+  mkdir -p -v $1/JES_22_DOWN
+  mkdir -p -v $1/JES_22_UP
+  mkdir -p -v $1/JES_23_DOWN
+  mkdir -p -v $1/JES_23_UP
+  mkdir -p -v $1/JES_24_DOWN
+  mkdir -p -v $1/JES_24_UP
+  mkdir -p -v $1/JES_25_DOWN
+  mkdir -p -v $1/JES_25_UP
+  mkdir -p -v $1/JES_26_DOWN
+  mkdir -p -v $1/JES_26_UP
+  mkdir -p -v $1/JES_27_DOWN
+  mkdir -p -v $1/JES_27_UP
+fi

@@ -25,6 +25,8 @@ namespace ic {
     tau_scale_ = 1.0;
     allowed_tau_modes_ = "";
     gen_taus_label_ = "genParticlesTaus";
+    metcl_mode_ = 0;
+    metuncl_mode_ = 0;
   }
 
   HTTPairSelector::~HTTPairSelector() {
@@ -225,7 +227,19 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-    Met *pfmet = pfMet_vec.at(0); 
+    Met *pfmet = pfMet_vec.at(0);
+    // shift MET for systematic shifts
+    if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
+    else if(metuncl_mode_!=0 || metcl_mode_!=0){
+      std::string shift_type = "NoShift";  
+      if(metcl_mode_==1) shift_type = "JetEnDown";
+      if(metcl_mode_==2) shift_type = "JetEnUp";
+      if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+      if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+      double pt = pfmet->GetShiftedMet(shift_type).pt();
+      double phi = pfmet->GetShiftedMet(shift_type).phi();
+      pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+    }
     event->Add("pfMET", pfmet);
    
    // ************************************************************************
@@ -237,7 +251,7 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       //double t_scale = tau_scale_;
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
@@ -256,7 +270,7 @@ namespace ic {
       Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
       Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
@@ -305,7 +319,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16 && strategy_ != strategy::smsummer16) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;

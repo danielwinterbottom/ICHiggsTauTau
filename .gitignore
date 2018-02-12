@@ -33,3 +33,9 @@ jobs/
 
 #backups
 *~
+
+# jobs files
+job_*.sh
+parajob_*.sh
+*.sh.o*
+*.sh.e*
