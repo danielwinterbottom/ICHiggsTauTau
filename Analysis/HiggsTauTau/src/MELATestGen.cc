@@ -1,18 +1,35 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/MELATest.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/MELATestGen.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "boost/lexical_cast.hpp"
 #include <boost/algorithm/string.hpp>
-#include "HiggsTauTau/interface/SVFitService.h"
 #include <stdlib.h>
 #include "boost/format.hpp"
 #include "boost/filesystem.hpp"
 
+std::vector<ic::GenParticle> GetDecayProducts (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
+  if(p.daughters().size() == 0){
+    unsigned ID = std::fabs(p.pdgid());
+    if(ID == 11) outputID = 11;
+    else if(ID == 13) outputID = 13;
+    if(!(ID==12 || ID==14 || ID==16)){
+      v.push_back(p);
+    }
+  }
+  else{
+    for(size_t i = 0; i < p.daughters().size(); ++i ){
+      ic::GenParticle d = *gen_particles[p.daughters().at(i)];
+      GetDecayProducts(v,d, gen_particles, outputID);
+    }
+  }
+  return v;
+}
+
 namespace ic {
 
-  MELATest::MELATest(std::string const& name) : ModuleBase(name), channel_(channel::et)  {
+  MELATestGen::MELATestGen(std::string const& name) : ModuleBase(name), channel_(channel::et)  {
   
     out_file_ = NULL;
     out_tree_ = NULL;
@@ -24,7 +41,7 @@ namespace ic {
 
     file_counter_ = 0;
     event_counter_ = 0;
-    split_ = 300000;
+    split_ = 100000;
     outname_ = "mela_test";
     outputadd_ = "";
     fullpath_ = "MELA/";
@@ -35,29 +52,22 @@ namespace ic {
     jets_label_="ak4PFJetsCHS";
     
     use_svfit_vec_ = true;
-    add_name_="";
-    jes_uncert_file_="input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt";
-    jes_uncert_set_="Total";
-    jes_shift_mode_ = 0;
 
   }
 
-  MELATest::~MELATest() {
+  MELATestGen::~MELATestGen() {
     ;
   }
 
-  int MELATest::PreAnalysis() {
+  int MELATestGen::PreAnalysis() {
     std::cout << "-------------------------------------" << std::endl;
-    std::cout << "MELATest" << std::endl;
+    std::cout << "MELATestGen" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
-    
+
     std::cout << boost::format(param_fmt()) % "run_mode"                % run_mode_;
     std::cout << boost::format(param_fmt()) % "dilepton_label"          % dilepton_label_;
     std::cout << boost::format(param_fmt()) % "met_label"               % met_label_;
     std::cout << boost::format(param_fmt()) % "jets_label"               % jets_label_;
-    
-    params_ = new JetCorrectorParameters(jes_uncert_file_, jes_uncert_set_);
-    uncert_ = new JetCorrectionUncertainty(*params_);
 
 
     // This code first strips the string ".root" from give filename
@@ -70,7 +80,6 @@ namespace ic {
     if ( foundpos != std::string::npos )
       outname_.erase(outname_.begin() + foundpos, outname_.begin() + foundpos + sub.length());
     outputadd_ = outname_; 
-    if(add_name_!="") outputadd_+="_"+add_name_;
     outname_ += "_MELA";
     boost::filesystem::path folder_p(outname_);
     std::cout << boost::format(param_fmt()) % "folder"         % outname_;
@@ -85,9 +94,6 @@ namespace ic {
       if (channel_ == channel::mt) chan = "_mt_";
       if (channel_ == channel::em) chan = "_em_";
       if (channel_ == channel::tt) chan = "_tt_";
-      if (channel_ == channel::zmm) chan = "_zmm_";
-      if (channel_ == channel::zee) chan = "_zee_";
-
       std::string::size_type channelpos = outputadd_.find(chan);
       if(channelpos != std::string::npos){
         outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
@@ -101,7 +107,6 @@ namespace ic {
       for (; it != boost::filesystem::directory_iterator(); ++it) {
         std::string path = it->path().string();
         if (path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos) {  
-          if(jes_shift_mode_>0 && path.find(jes_uncert_set_.c_str()) == path.npos) continue;  
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {
@@ -137,15 +142,13 @@ namespace ic {
   return 0;
 }
 
-int MELATest::Execute(TreeEvent *event) {
+int MELATestGen::Execute(TreeEvent *event) {
 
   if (run_mode_ == 0) return 0;
 
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-  std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(dilepton_label_);
-  Candidate const* lep1 = dilepton.at(0)->GetCandidate("lepton1");
-  Candidate const* lep2 = dilepton.at(0)->GetCandidate("lepton2");
-  Met met = *(event->GetPtr<Met>(met_label_));
+  std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+  std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
 
   if (run_mode_ == 1) {
     if (event_counter_%split_ == 0) {
@@ -177,43 +180,68 @@ int MELATest::Execute(TreeEvent *event) {
     out_event_ = eventInfo->event();
     out_lumi_ = eventInfo->lumi_block();
     out_run_ = eventInfo->run();
-
-    ic::Candidate higgs;
-    if (channel_ == channel::zmm || channel_ == channel::zee) higgs.set_vector(lep1->vector()+lep2->vector());
-    else if (use_svfit_vec_ && event->Exists("svfitHiggs")) higgs = event->Get<Candidate>("svfitHiggs");
-    else higgs.set_vector(lep1->vector()+lep2->vector()+met.vector());
+    
+    ic::GenParticle higgs;
+    std::vector<ic::GenParticle> higgs_products;
+    for(unsigned i=0; i<gen_particles.size(); ++i){
+      ic::GenParticle part = *gen_particles[i];  
+      unsigned genID = std::fabs(part.pdgid());
+      if((part.statusFlags()[FromHardProcessBeforeFSR] || part.statusFlags()[IsLastCopy]) && genID == 25) {
+          higgs = part;
+      }
+      
+      bool status_flag_t = part.statusFlags().at(0);
+      bool status_flag_tlc = part.statusFlags().at(13);
+      
+      if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      std::vector<ic::GenParticle> family;
+      unsigned outputID = 15;
+      GetDecayProducts(family, part, gen_particles, outputID);
+      if(family.size()==1 && (outputID ==11 || outputID ==13)){
+        higgs_products.push_back(family[0]);
+      } else {
+        ic::GenParticle had_tau;
+        int charge = 0;
+        int pdgid = 15;
+        for(unsigned j=0; j<family.size(); ++j){
+          had_tau.set_vector(had_tau.vector() + family[j].vector());
+          charge += family[j].charge();
+        }
+        pdgid = 15*charge;
+        had_tau.set_charge(charge);
+        had_tau.set_pdgid(pdgid);
+        higgs_products.push_back(had_tau);
+      }
+    }
     
     Hpx_ = higgs.vector().Px();
     Hpy_ = higgs.vector().Py();
     Hpz_ = higgs.vector().Pz();
     HE_ = higgs.vector().E();
+
+    ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));    
     
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::vector<PFJet> shifted_jets;
-    for(unsigned i=0; i<jets.size(); ++i){
-      PFJet jet = *jets.at(i);
-      if (jes_shift_mode_ != 0){
-        uncert_->setJetPt(jet.pt());
-        uncert_->setJetEta(jet.eta());
-        double shift = 0.0;
-        if(jes_shift_mode_ == 1) shift = -1*uncert_->getUncertainty(false);
-        else if (jes_shift_mode_ == 2) shift = uncert_->getUncertainty(true);
-        jet.set_vector(jet.vector() * (1.0+shift));    
+    for(unsigned i=0; i<gen_jets.size(); ++i){
+      ic::GenJet jet = *gen_jets[i];
+      bool MatchedToPrompt = false;
+      for(unsigned j=0; j<higgs_products.size(); ++j){
+        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
       }
-      if (fabs(jet.eta()) > 4.7 || jet.pt() < 30) continue;
-      shifted_jets.push_back(jet);
+      //remove jets that are matched to Higgs decay products
+      if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
     }
-    n_jets_ = shifted_jets.size(); 
+    
+    n_jets_ = gen_jets.size(); 
     jpx_.clear();
     jpy_.clear();
     jpz_.clear();
     jE_.clear(); 
     for(unsigned i=0; i<n_jets_; ++i){
-      jpx_.push_back(shifted_jets[i].vector().Px());
-      jpy_.push_back(shifted_jets[i].vector().Py());
-      jpz_.push_back(shifted_jets[i].vector().Pz());
-      jE_.push_back(shifted_jets[i].vector().E());
-    } 
+      jpx_.push_back(gen_jets[i]->vector().Px());
+      jpy_.push_back(gen_jets[i]->vector().Py());
+      jpz_.push_back(gen_jets[i]->vector().Pz());
+      jE_.push_back(gen_jets[i]->vector().E());
+    }         
     
     out_tree_->Fill();
     ++event_counter_;
@@ -222,19 +250,14 @@ int MELATest::Execute(TreeEvent *event) {
   if(run_mode_ == 2){
     auto it = mela_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
     if (it != mela_map.end()) {
-      if(jes_shift_mode_ == 0){
-        event->Add("D0", it->second.first);
-        event->Add("DCP", it->second.second);
-      } else {
-        event->Add("D0_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.first);
-        event->Add("DCP_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.second);
-      }
+      event->Add("D0", it->second.first);
+      event->Add("DCP", it->second.second);
     } else { std::cout << "Warning, MELA output not found!" << std::endl; }
   }
 
   return 0;
   }
-  int MELATest::PostAnalysis() {
+  int MELATestGen::PostAnalysis() {
     if (out_file_) {
       out_file_->Write();
       delete out_tree_;
@@ -245,7 +268,7 @@ int MELATest::Execute(TreeEvent *event) {
     return 0;
   }
 
-  void MELATest::PrintInfo() {
+  void MELATestGen::PrintInfo() {
     ;
   }
 

@@ -1467,6 +1467,7 @@ if(mela_mode!=0){
         .set_run_mode(mela_mode)
         .set_outname(output_name)
         .set_fullpath(mela_folder)
+        .set_read_all(false)
         .set_add_name(source)
         .set_jes_uncert_file(jes_input_file)
         .set_jes_uncert_set(source)
