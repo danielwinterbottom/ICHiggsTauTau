@@ -101,6 +101,7 @@ namespace ic {
       for (; it != boost::filesystem::directory_iterator(); ++it) {
         std::string path = it->path().string();
         if (path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos) {  
+          if(jes_shift_mode_>0 && path.find(jes_uncert_set_.c_str()) == path.npos) continue;  
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {
@@ -191,13 +192,14 @@ int MELATest::Execute(TreeEvent *event) {
     std::vector<PFJet> shifted_jets;
     for(unsigned i=0; i<jets.size(); ++i){
       PFJet jet = *jets.at(i);
-      if (jes_shift_mode_ == 0) continue;
-      uncert_->setJetPt(jet.pt());
-      uncert_->setJetEta(jet.eta());
-      double shift = 0.0;
-      if(jes_shift_mode_ == 1) shift = -1*uncert_->getUncertainty(false);
-      else if (jes_shift_mode_ == 2) shift = uncert_->getUncertainty(true);
-      jet.set_vector(jet.vector() * (1.0+shift));
+      if (jes_shift_mode_ != 0){
+        uncert_->setJetPt(jet.pt());
+        uncert_->setJetEta(jet.eta());
+        double shift = 0.0;
+        if(jes_shift_mode_ == 1) shift = -1*uncert_->getUncertainty(false);
+        else if (jes_shift_mode_ == 2) shift = uncert_->getUncertainty(true);
+        jet.set_vector(jet.vector() * (1.0+shift));    
+      }
       if (fabs(jet.eta()) > 4.7 || jet.pt() < 30) continue;
       shifted_jets.push_back(jet);
     }

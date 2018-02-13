@@ -39,6 +39,8 @@ parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
 parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true', default=False,
                   help="Do not add shape systematics")
+parser.add_option("--total_jes", dest="total_jes", action='store_true', default=False,
+                  help="Do not split JES by source")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
                   help="Add shapes for evaluating normalisation uncerts")
 parser.add_option("--year", dest="year", type='string', default='',
@@ -116,7 +118,10 @@ extra_channel = {
       "tt" : ' ',
       "em" : ' '
   }
-jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
+if not options.total_jes:
+  jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
+else: 
+  jes_systematics = ' --syst_scale_j="CMS_scale_j_13TeV" '
 common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
 em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
 et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
@@ -318,13 +323,21 @@ if SCHEME == 'cpsummer16_2d':
   
   VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
   VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
+
+  #VAR_0JET_LT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+  #VAR_0JET_EM = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+
+
   VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
   
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
   VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
-  
+  #VAR_DIJET = 'm_sv,sjdphi[0,100,150],(20,-3.2,3.2)'  
+  #VAR_DIJET = 'm_sv,D0[0,100,150],(10,0,1)'   
+  VAR_DIJET = 'm_sv,D0star[0,80,100,115,130,150],(12,-1,1)' 
+ 
   VAR_DIJET_TT_QCD = 'sjdphi(1,-3.2,3.2)' 
   
   VAR_0JET_LT_WCR = 'mt_1[80,200]'
