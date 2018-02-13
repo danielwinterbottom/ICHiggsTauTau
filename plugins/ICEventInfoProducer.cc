@@ -40,6 +40,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
+      do_embedding_weights_(config.getParameter<bool>("includeEmbeddingWeights")),
       do_ht_(config.getParameter<bool>("includeHT")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
@@ -107,6 +108,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithBranch(config, branch_);
   PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
+  PrintOptional(1, do_embedding_weights_, "includeEmbeddingWeights");  
   PrintOptional(1, do_ht_, "includeHT");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
@@ -183,6 +185,10 @@ void ICEventInfoProducer::produce(edm::Event& event,
 
   edm::Handle<LHEEventProduct> lhe_handle;
   edm::Handle<GenEventInfoProduct> gen_info_handle;
+  if(do_embedding_weights_){
+    event.getByLabel("generator",gen_info_handle);
+    info_->set_weight("wt_embedding", gen_info_handle->weight());
+  }
   if(!event.isRealData()){
     event.getByLabel("generator",gen_info_handle);
     if(gen_info_handle.isValid()){
