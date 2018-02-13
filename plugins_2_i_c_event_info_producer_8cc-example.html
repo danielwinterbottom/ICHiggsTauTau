@@ -141,6 +141,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      do_vertex_count_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexCount&quot;</span>)),</div>
 <div class="line">      input_vertices_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_lhe_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLHEWeights&quot;</span>)),</div>
+<div class="line">      do_embedding_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeEmbeddingWeights&quot;</span>)),</div>
 <div class="line">      do_ht_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeHT&quot;</span>)),</div>
 <div class="line">      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
 <div class="line">      input_csc_filter_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)),</div>
@@ -208,6 +209,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"></div>
 <div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a>(config, branch_);</div>
 <div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_lhe_weights_, <span class="stringliteral">&quot;includeLHEWeights&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_embedding_weights_, <span class="stringliteral">&quot;includeEmbeddingWeights&quot;</span>);  </div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_ht_, <span class="stringliteral">&quot;includeHT&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_jets_rho_, <span class="stringliteral">&quot;includeJetRho&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_leptons_rho_, <span class="stringliteral">&quot;includeLeptonRho&quot;</span>);</div>
@@ -284,6 +286,10 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;LHEEventProduct&gt; lhe_handle;</div>
 <div class="line">  edm::Handle&lt;GenEventInfoProduct&gt; gen_info_handle;</div>
+<div class="line">  <span class="keywordflow">if</span>(do_embedding_weights_){</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<span class="stringliteral">&quot;generator&quot;</span>,gen_info_handle);</div>
+<div class="line">    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_embedding&quot;</span>, gen_info_handle-&gt;weight());</div>
+<div class="line">  }</div>
 <div class="line">  <span class="keywordflow">if</span>(!event.isRealData()){</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(<span class="stringliteral">&quot;generator&quot;</span>,gen_info_handle);</div>
 <div class="line">    <span class="keywordflow">if</span>(gen_info_handle.isValid()){</div>
