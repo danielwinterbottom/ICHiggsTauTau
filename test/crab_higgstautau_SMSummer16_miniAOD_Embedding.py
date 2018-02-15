@@ -20,6 +20,7 @@ config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
 config.Data.inputDBS='phys03'
+config.Data.allowNonValidInputDataset = True
 
 if __name__ == '__main__':
 
@@ -67,7 +68,7 @@ if __name__ == '__main__':
     tasks.append(('EmbeddingElMuE', '/EmbeddingRun2016E/ElMuFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElMuF', '/EmbeddingRun2016F/ElMuFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElMuG', '/EmbeddingRun2016G/ElMuFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElMuH', '/EmbeddingRun2016H/ElMuFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingElMuH', '/EmbeddingRun2016H/ElMuFinalState-imputPromptDoubleMu_mirror_miniAOD-v4/USER'))
 
     tasks.append(('EmbeddingTauTauB', '/EmbeddingRun2016B/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     tasks.append(('EmbeddingTauTauC', '/EmbeddingRun2016C/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
@@ -75,7 +76,7 @@ if __name__ == '__main__':
     tasks.append(('EmbeddingTauTauE', '/EmbeddingRun2016E/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     tasks.append(('EmbeddingTauTauF', '/EmbeddingRun2016F/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     tasks.append(('EmbeddingTauTauG', '/EmbeddingRun2016G/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingTauTauH', '/EmbeddingRun2016H/TauTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))    
+    tasks.append(('EmbeddingTauTauH', '/EmbeddingRun2016H/TauTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v3/USER'))    
 
     for task in tasks:
         print task[0]
