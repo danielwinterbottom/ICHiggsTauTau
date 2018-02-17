@@ -9,8 +9,8 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'root://xrootd.unl.edu//store/user/jbechtel/MuTau_data_2016_CMSSW826_freiburg/TauEmbedding_MuTau_data_2016_CMSSW826_Run2016B/1/merged_0.root', parser.VarParsing.multiplicity.singleton,               
-#opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/130000/10B3D2AA-286C-E711-B57F-141877410B85.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/Tau/MINIAOD/PromptReco-v3/000/284/036/00000/36B9BD65-5B9F-E611-820B-02163E0126D3.root', parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string, "input file")
@@ -376,7 +376,8 @@ process.icVertexSequence = cms.Sequence(
   process.icGenVertexProducer
 )
 
-process.icVertexSequence.remove(process.icGenVertexProducer)
+if isData :
+  process.icVertexSequence.remove(process.icGenVertexProducer)
 
 ################################################################
 # PFCandidates
@@ -1560,7 +1561,7 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
 process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
 
 if release in ['80XMINIAOD']:
-  process.icGenParticleProducer.input=cms.InputTag("prunedGenParticles","","MERGE") #Store ALL pruned gen particles
+  process.icGenParticleProducer.input=cms.InputTag("prunedGenParticles","","PAT") #Store ALL pruned gen particles
 
 
 process.load("RecoJets.Configuration.GenJetParticles_cff")
@@ -1597,7 +1598,7 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
 
 if release in ['80XMINIAOD']:
   process.icGenJetProducer.branch = cms.string("genJetsReclustered")
-  process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","MERGE")
+  process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","PAT")
   process.icGenJetProducer.isSlimmed  = cms.bool(True)
   process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
     branch = cms.string("genJets"),
@@ -1607,24 +1608,38 @@ if release in ['80XMINIAOD']:
     isSlimmed = cms.bool(True)
   ) 
 
-
-process.icGenSequence += (
-  process.prunedGenParticles+
-  process.icGenParticleProducer
-)
+process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 if release in ['80XMINIAOD']:
-  process.icGenSequence.remove(process.prunedGenParticles)
-  process.icGenSequence += (
-    process.ak4GenJetsNoNuBSM+
-    process.selectedGenJets+
-    process.icGenJetProducer+
-    process.icGenJetProducerFromSlimmed
-  )
+  process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
 
-if doHT:
+
+if not isData:
   process.icGenSequence += (
-    process.icGenParticleProducerFromLHEParticles
+    process.prunedGenParticles+
+    process.icGenParticleProducer
   )
+  if release in ['80XMINIAOD']:
+    process.icGenSequence.remove(process.prunedGenParticles)
+    process.icGenSequence += (
+      process.ak4GenJetsNoNuBSM+
+      process.selectedGenJets+
+      process.icGenJetProducer+
+      process.icGenJetProducerFromSlimmed+
+      process.icPileupInfoProducer
+    )
+  if release in [ '76X']:
+    process.icGenSequence += (
+      process.genParticlesForJets+
+      process.ak4GenJetsNoNuBSM+
+      process.selectedGenJets+
+      process.icGenJetProducer+
+      process.icPileupInfoProducer
+    )
+
+  if doHT:
+    process.icGenSequence += (
+      process.icGenParticleProducerFromLHEParticles
+    )
 
 
 #process.load("RecoJets.JetProducers.ak4GenJets_cfi")
@@ -1689,8 +1704,1618 @@ process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
   input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
   doBXloop = cms.bool(v_doBXloop)
 )
+################################################################
+# L1 Objects
+################################################################
 
-#################################################################
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+
 
 process.patTriggerPath = cms.Path()
 if release in ['80XMINIAOD']:
@@ -1720,6 +3345,8 @@ if release in ['80XMINIAOD']:
    inputPrescales = cms.InputTag("patTrigger")
   )
 
+  if isReHLT:
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT")
 
   if isData:
     process.icTriggerSequence += cms.Sequence(
@@ -1727,9 +3354,6 @@ if release in ['80XMINIAOD']:
      #process.patTriggerEvent+
      process.icTriggerPathProducer
     )
-
-
-
 
 process.icEle12Mu23ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -2312,7 +3936,10 @@ if release in ['80XMINIAOD']:
     mod = getattr(process, name)
     mod.inputIsStandAlone = cms.bool(True)
     mod.input = cms.InputTag("selectedPatTrigger")
-    mod.inputTriggerResults = cms.InputTag("TriggerResults","","SIMembedding")
+  if isReHLT:
+    for name in process.icTriggerObjectSequence.moduleNames():
+      mod = getattr(process, name)
+      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
 
 ################################################################
 # EventInfo
@@ -2335,7 +3962,6 @@ else: lheTag = 'externalLHEProducer'
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
-  includeEmbeddingWeights = cms.bool(True),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -2415,6 +4041,9 @@ process.p = cms.Path(
   process.icEventProducer
 )
 
+if not isData and not isReHLT:
+  process.p.remove(process.icTriggerSequence)
+  process.p.remove(process.icTriggerObjectSequence)
 
 # process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 process.schedule = cms.Schedule(process.p)
