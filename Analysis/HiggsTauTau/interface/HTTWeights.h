@@ -96,10 +96,12 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
+  CLASS_MEMBER(HTTWeights, std::string, embedding_scalefactor_file)
   CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
   CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
   CLASS_MEMBER(HTTWeights, bool, do_z_weights)
+  CLASS_MEMBER(HTTWeights, bool, is_embedded)
 
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;

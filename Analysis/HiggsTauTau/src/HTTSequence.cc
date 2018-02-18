@@ -961,7 +961,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
 
 
- if(is_embedded){
+ if(is_embedded&&era_type != era::data_2016){
   BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
@@ -1065,7 +1065,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
-       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
+       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && era_type == era::data_2016)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
                .set_mc(mc_type)
@@ -1094,7 +1094,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
-  if (js["do_pu_wt"].asBool()&&!is_data) {
+  if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
     BuildModule( PileupWeight("PileupWeight")
         .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
   }
@@ -2077,6 +2077,8 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     }else{
       httWeights.set_strategy(strategy::smsummer16);
       httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
+      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embedding.root");
+      httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
       httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm);
