@@ -58,6 +58,10 @@ mkdir -p -v $1/MUFAKE0PI_DOWN
 mkdir -p -v $1/MUFAKE0PI_UP
 mkdir -p -v $1/MUFAKE1PI_DOWN
 mkdir -p -v $1/MUFAKE1PI_UP
+mkdir -p -v $1/MUSCALE_DOWN
+mkdir -p -v $1/MUSCALE_UP
+mkdir -p -v $1/ESCALE_DOWN
+mkdir -p -v $1/ESCALE_UP
 mkdir -p -v $1/METUNCL_UP
 mkdir -p -v $1/METUNCL_DOWN
 mkdir -p -v $1/METCL_UP

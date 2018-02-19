@@ -500,6 +500,7 @@ namespace ic {
       } else if(channel_==channel::tt) {
         wt_stitching = 2.1*(((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
       }
+      if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
       eventInfo->set_weight("wt_stitching", wt_stitching);  
     }
 
