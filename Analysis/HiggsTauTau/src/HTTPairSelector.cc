@@ -260,6 +260,35 @@ namespace ic {
           }
         }
       }
+      if (channel_ == channel::et && event->Exists("elec_scales")) {
+        double t_scale_ = 1.0;  
+        Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
+        if (it != elec_scales.end()) {
+          t_scale_ = it->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+        double metx = met->vector().px();
+        double mety = met->vector().py();
+        double metet = met->vector().energy();
+        double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
+        double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
+        metx = metx + dx;
+        mety = mety + dy;
+        metet = sqrt(metx*metx + mety*mety);
+        ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      }
+      if (channel_ == channel::mt && event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton1"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
+        }
+      }
     }
 
    // ************************************************************************
@@ -311,6 +340,13 @@ namespace ic {
       metet = sqrt(metx*metx + mety*mety);
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      if (event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton2"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
+        }
+      }
     }
 
     // ************************************************************************

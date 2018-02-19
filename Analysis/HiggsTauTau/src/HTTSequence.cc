@@ -442,16 +442,17 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  vh_filter_mode = json["vh_filter_mode"].asUInt();
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
+ e_scale_mode = json["baseline"]["e_scale_mode"].asBool();
+ mu_scale_mode = json["baseline"]["mu_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
- if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
- else muon_shift = 1.0;
+ muon_shift = json["baseline"]["muon_es_shift"].asDouble();
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
  tau_shift = 1.0;//Just to set it to something
+ }
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
- }
  tau_shift_1prong0pi0 = 1.0;
  tau_shift_1prong1pi0 = 1.0;
  tau_shift_3prong0pi0 = 1.0;
@@ -2304,6 +2305,16 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
+  
+  if(e_scale_mode >0 && !is_data && is_embedded && strategy_type == strategy::smsummer16){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -2408,6 +2419,13 @@ if( strategy_type == strategy::paper2013) {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded){
+   BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+      .set_input_label("muons")
+      .set_shift_label("muon_scales")
+      .set_shift(muon_shift));
+ }
 
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -2502,6 +2520,13 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
 void HTTSequence::BuildEMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded){
+   BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+      .set_input_label("muons")
+      .set_shift_label("muon_scales")
+      .set_shift(muon_shift));
+ }
 
  if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
    BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")

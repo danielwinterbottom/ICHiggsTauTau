@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Nov20_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "mt", "et", "tt"],
+    "channels":     [ "mt", "et", "tt", "em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -56,7 +56,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan22/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Feb14/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -70,7 +70,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -309,16 +309,32 @@
     },
     "scale_e_lo": {
       "baseline": {
-        "addit_output_folder" : "TSCALE_DOWN",
-        "tau_scale_mode" : true,
-        "elec_es_shift": 0.99
+        "addit_output_folder" : "ESCALE_DOWN",
+        "e_scale_mode": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975
       }
     },
     "scale_e_hi": {
       "baseline": {
-        "addit_output_folder" : "TSCALE_UP",
-        "tau_scale_mode": true,
-        "elec_es_shift": 1.01
+        "addit_output_folder" : "ESCALE_UP",
+        "e_scale_mode": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025
+      }
+    },
+    "scale_mu_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUSCALE_DOWN",
+        "mu_scale_mode": true,
+        "muon_es_shift": 0.99
+      }
+    },
+    "scale_mu_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUSCALE_UP",
+        "mu_scale_mode": true,
+        "muon_es_shift": 1.01
       }
     },
     "scale_j_lo": {
