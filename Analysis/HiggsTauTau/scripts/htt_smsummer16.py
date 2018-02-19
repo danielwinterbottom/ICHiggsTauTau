@@ -30,8 +30,9 @@ parser.add_option("--submit", dest="submit",
                   " Using the --submit option overrides both the default and the environment variable. " % vars())
 
 parser.add_option("--data", dest="proc_data", action='store_true', default=False,
-                  help="Process data samples (including embedded)")
-
+                  help="Process data samples")
+parser.add_option("--embed", dest="proc_embed", action='store_true', default=False,
+                  help="Process embedded sampes")
 parser.add_option("--calc_lumi", dest="calc_lumi", action='store_true', default=False,
                   help="Run on data and only write out lumi mask jsons")
 
@@ -253,7 +254,7 @@ if options.proc_mssm_nlo_qsh:
 #       'GluGluToRadionToHHTo2B2Tau_M-'+mass
 #    ]
 
-if options.proc_data or options.proc_all or options.calc_lumi:
+if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
   if not no_json:
     with open(CONFIG,"r") as input:
       with open ("config_for_python.json","w") as output:
@@ -269,7 +270,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     channels=cfg["job"]["channels"]
   else:
     channels=['mt','et','tt','em','zmm','zee']
-  
+
+if options.proc_data or options.proc_all or options.calc_lumi:  
 
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
@@ -346,6 +348,41 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
           os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+        
+if options.proc_embed or options.proc_all:        
+        
+  embed_samples = []
+  data_eras = ['B','C','D','E','F','G','H']
+  for chn in channels:
+    for era in data_eras:
+      if 'em' in chn:
+        embed_samples+=['EmbeddingElMu'+era]
+      if 'et' in chn:
+        embed_samples+=['EmbeddingElTau'+era]
+      if 'mt' in chn:
+        embed_samples+=['EmbeddingMuTau'+era]
+      if 'tt' in chn:
+        embed_samples+=['EmbeddingTauTau'+era]
+
+        
+
+
+  EMBEDFILELIST="./filelists/Nov20_MC_80X"
+  
+  for sa in embed_samples:
+    JOB='%s_2016' % (sa)
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
+    nperjob = 40
+    
+    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
+      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+      if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    if parajobs: 
+      os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+      PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
+      os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
 
