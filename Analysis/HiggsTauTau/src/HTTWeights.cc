@@ -384,26 +384,27 @@ namespace ic {
     }
     if(embedding_scalefactor_file_!="" && is_embedded_) {
         TFile f(embedding_scalefactor_file_.c_str());
-        w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+        wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
         
         fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
+              wembed_->function("m_id_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
         fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trg_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              wembed_->function("m_iso_binned_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_data"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_trg_data")->functor(wembed_->argSet("m_pt,m_eta")));
+        fns_["m_trg_mc"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_trg_mc")->functor(wembed_->argSet("m_pt,m_eta")));
         
         fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
+              wembed_->function("e_id_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
         fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              wembed_->function("e_iso_binned_ratio")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+             wembed_->function("e_trg_binned_data")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+             wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
@@ -484,6 +485,22 @@ namespace ic {
         event->Add("wt_ggh_pt_up", weight_up);
         event->Add("wt_ggh_pt_down", weight_down);
       }
+    }
+    if(is_embedded_ && era_==era::data_2016){
+      // For 2016 embedded samples need an extra weight to account for computing efficiency
+      double wt_stitching = 1.0;  
+      int run = eventInfo->run();
+      if(channel_==channel::mt){
+        wt_stitching = 1.192*(((run >= 272007) && (run < 275657))*(1.0/0.899)+((run >= 275657) && (run < 276315))*(1.0/0.881)+((run >= 276315) && (run < 276831))*(1.0/0.877)+((run >= 276831) && (run < 277772))*(1.0/0.939)+((run >= 277772) && (run < 278820))*(1.0/0.936)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.962));  
+      } else if(channel_==channel::et) {
+        wt_stitching = 1.250*(((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.945)+((run >= 276831) && (run < 277772))*(1.0/0.945)+((run >= 277772) && (run < 278820))*(1.0/0.915)+((run >= 278820) && (run < 280919))*(1.0/0.903)+((run >= 280919) && (run < 284045))*(1.0/0.933));    
+      } else if(channel_==channel::em) {
+        wt_stitching = 1.140*(((run >= 272007) && (run < 275657))*(1.0/0.891)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.953)+((run >= 276831) && (run < 277772))*(1.0/0.947)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.906)+((run >= 280919) && (run < 284045))*(1.0/0.950));  
+          
+      } else if(channel_==channel::tt) {
+        wt_stitching = 2.1*(((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
+      }
+      eventInfo->set_weight("wt_stitching", wt_stitching);  
     }
 
     if (do_topquark_weights_) {
@@ -1437,8 +1454,8 @@ namespace ic {
                       if(pt>=23){
                         // use signle muon trigger for pt_1>23
                         if(is_embedded_){
-                          mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());    
-                          mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+                          mu_trg = fns_["m_trg_data"]->eval(args_desy.data());    
+                          mu_trg_mc = fns_["m_trg_mc"]->eval(args_desy.data());
                         } else {
                           mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
                           mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
