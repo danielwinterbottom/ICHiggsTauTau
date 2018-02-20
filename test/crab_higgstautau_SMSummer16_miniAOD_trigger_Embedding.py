@@ -61,7 +61,7 @@ if __name__ == '__main__':
     tasks.append(('EmbeddingMuMuE', '/EmbeddingRun2016E/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuMuF', '/EmbeddingRun2016F/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuMuG', '/EmbeddingRun2016G/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuMuH', '/EmbeddingRun2016H/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuH', '/EmbeddingRun2016H/MuonEmbedding-imputPromptDoubleMu_miniAOD-v2/USER'))
 
     tasks.append(('EmbeddingElElB', '/EmbeddingRun2016B/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
     tasks.append(('EmbeddingElElC', '/EmbeddingRun2016C/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v2/USER'))
