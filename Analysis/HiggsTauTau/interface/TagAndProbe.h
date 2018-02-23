@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <string>
 
@@ -27,6 +28,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, probe_id)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, tag_id)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_tag_pt)
   
   TTree *outtree_;
   
@@ -79,6 +81,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   strategy_(strategy::mssmsummer16) {
   ditau_label_ = "ditau";
   fs_ = NULL;
+  extra_l1_tag_pt_ = 34.0;
 }
 
 template <class T>
@@ -169,7 +172,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -181,7 +184,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
       iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
@@ -190,7 +193,21 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
-    } 
+    }
+    if(extra_l1_tag_pt_>0){
+      std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
+      bool found_match_tag_1 = false;
+      bool found_match_tag_2 = false;
+      for(unsigned eg=0; eg<l1electrons.size(); ++eg){
+        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()!=0){
+          // must pass L1 eta, pT and iso cuts and be matched by DR to the tagging electron
+          if(DR(l1electrons[eg],lep1)<0.5) found_match_tag_1 = true;
+          if(DR(l1electrons[eg],lep2)<0.5) found_match_tag_2 = true;
+        }
+      }
+      trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
+      trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
+    }
   }
   
   if(fs_) outtree_->Fill();

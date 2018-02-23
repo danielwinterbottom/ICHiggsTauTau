@@ -2244,7 +2244,7 @@ BuildModule(WMuNuCategories("WMuNuCategories")
     .set_write_tree(true));
 
  }
-if((channel == channel::tpzmm || channel == channel::tpzee) && strategy_type == strategy::mssmsummer16){
+if((channel == channel::tpzmm || channel == channel::tpzee) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) ){
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
