@@ -461,6 +461,11 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
         embed_id_num.SetName("id_embed")
         embed_iso_num.SetName("iso_embed")
         embed_idiso_num.SetName("idiso_embed")
+        
+        hists.append(embed_trg_num)
+        hists.append(embed_id_num)
+        hists.append(embed_iso_num)
+        hists.append(embed_idiso_num)
     
     # set overflow pT bins to same value as last bin and write to file
     for hist in hists:
