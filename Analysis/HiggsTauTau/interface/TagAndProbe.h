@@ -29,6 +29,8 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, probe_id)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, tag_id)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_tag_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
   
   TTree *outtree_;
   
@@ -82,6 +84,8 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   ditau_label_ = "ditau";
   fs_ = NULL;
   extra_l1_tag_pt_ = 34.0;
+  extra_l1_probe_pt_ = 0.;
+  extra_hlt_probe_pt_ = 0.;
 }
 
 template <class T>
@@ -122,6 +126,7 @@ int TagAndProbe<T>::PreAnalysis() {
 
 template <class T>
 int TagAndProbe<T>::Execute(TreeEvent *event){
+
     
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   event_ = (unsigned long long) eventInfo->event();
@@ -169,6 +174,17 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
     trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
     trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    if(extra_hlt_probe_pt_>0){
+      if(trg_probe_1_) { 
+        unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
+        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
+      }
+      if(trg_probe_2_){
+        unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
+        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
+      }
+      
+    }
   }
   
   if(channel_ == channel::tpzmm){
@@ -181,6 +197,20 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
+    }
+    if(extra_l1_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1muons = event->GetPtrVec<ic::L1TObject>("L1Muons");
+      bool found_match_probe_1 = false;
+      bool found_match_probe_2 = false;
+      for(unsigned mu=0; mu<l1muons.size(); ++mu){
+        if(l1muons[mu]->vector().Pt()>extra_l1_probe_pt_){
+          // must pass L1 pT cut and be matched by DR to the tagging muon
+          if(DR(l1muons[mu],lep1)<0.5) found_match_probe_1 = true;
+          if(DR(l1muons[mu],lep2)<0.5) found_match_probe_2 = true;
+        }
+      }
+      trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
+      trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
   }
   if(channel_ == channel::tpzee){

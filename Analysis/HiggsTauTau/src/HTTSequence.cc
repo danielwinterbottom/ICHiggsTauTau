@@ -685,7 +685,7 @@ void HTTSequence::BuildSequence(){
        BuildModule(httStitching); 
     }
       
-    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu){
+    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm){
         HTTStitching httStitching = HTTStitching("HTTStitching")  
         .set_era(era_type)
         .set_fs(fs.get());
@@ -2082,7 +2082,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm);
+      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm);
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -2093,7 +2093,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-    httWeights.set_do_zpt_weight(true);
+    httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm);
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
@@ -2113,23 +2113,24 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   
 
     BuildModule(httWeights);
-    
-    HTTStitching httStitching = HTTStitching("HTTStitching")  
-        .set_era(era_type)
-        .set_fs(fs.get());
-         if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
-           output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
-        httStitching.set_do_w_soup(true);
-        httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-        httStitching.SetWInputYields(57026058 + 29705748,45345007,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
-       }
-       if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-         httStitching.set_do_dy_soup(true);
-         httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-         httStitching.SetDYInputYields(95857236 + 49144274,62620979, 19970551, 5856110, 4197868);
-       }
-   
-    BuildModule(httStitching);   
+    if(channel!=channel::tpzee&&channel!=channel::tpzmm){
+      HTTStitching httStitching = HTTStitching("HTTStitching")  
+          .set_era(era_type)
+          .set_fs(fs.get());
+           if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+             output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+          httStitching.set_do_w_soup(true);
+          httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+          httStitching.SetWInputYields(57026058 + 29705748,45345007,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
+         }
+         if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+           httStitching.set_do_dy_soup(true);
+           httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+           httStitching.SetDYInputYields(95857236 + 49144274,62620979, 19970551, 5856110, 4197868);
+         }
+      
+      BuildModule(httStitching);   
+    }
   }
 
 
@@ -2255,10 +2256,24 @@ if((channel == channel::tpzmm || channel == channel::tpzee) && (strategy_type ==
         .set_channel(channel)
         .set_strategy(strategy_type)
         .set_ditau_label("ditau")
-        .set_tag_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-        .set_tag_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
-        .set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-        .set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+        .set_tag_trg_objects("triggerObjectsIsoMu24")
+        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        // for single muon trigger:
+        //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
+        //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+        // for muon leg of mu+tau cross trigger:
+        //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
+        //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
+        // for mu8 leg of EMu cross-trigger
+        //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+        //.set_probe_trg_filters("hltL3pfL1sDoubleMu114ORDoubleMu125L1f0L2pf0L3PreFiltered8")
+        // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
+        .set_probe_trg_objects("triggerObjectsMu17Mu8")
+        .set_probe_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17")
+        .set_extra_hlt_probe_pt(23.)
+        .set_extra_l1_probe_pt(20.)
+        
+
         .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
     );
@@ -2271,8 +2286,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee) && (strategy_type ==
         .set_ditau_label("ditau")
         .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
         .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
-        .set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
-        .set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+        // for single electron trigger
+        //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+        //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+        // for Ele23 leg of EMu cross-trigger
+        //.set_probe_trg_objects("triggerObjectsEle23Ele12")
+        //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg1Filter")
+        // for Ele12 leg of EMu cross-trigger
+        .set_probe_trg_objects("triggerObjectsEle23Ele12")
+        .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg2Filter")
         .set_probe_id(elec_probe_id)
         .set_tag_id(elec_probe_id)
     );  

@@ -217,6 +217,7 @@ namespace ic {
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
       outtree_->Branch("partons"     , &partons_);
+      outtree_->Branch("parton_pt"     , &parton_pt_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
@@ -392,11 +393,11 @@ namespace ic {
     bool lhe_exists = event->ExistsInTree("lheParticles");
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
-      
+      parton_pt_=0;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
-           if ((id >= 1 && id <=6) || id == 21) partons_++;
+           if ((id >= 1 && id <=6) || id == 21){ partons_++; if(lhe_parts[i]->pt()>parton_pt_) parton_pt_ = lhe_parts[i]->pt();}
       }
     }
     

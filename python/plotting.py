@@ -1012,11 +1012,16 @@ def GraphDifference(graph1,graph2,relative):
 def GraphDivide(num, den):
     res = num.Clone()
     for i in xrange(num.GetN()):
-        res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
+        if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
+        else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     if type(res) is R.TGraphAsymmErrors:
         for i in xrange(num.GetN()):
-            res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
-            res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
+            if den.Eval(res.GetX()[i]) == 0: 
+              res.GetEYhigh()[i] = 0
+              res.GetEYlow()[i] = 0
+            else: 
+              res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
+              res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
 
     return res
 
@@ -2897,12 +2902,17 @@ def TagAndProbePlot(graphs=[],
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         div_hist = graphs[0].GetHistogram().Clone()
-        sf_graph=GraphDivide(graphs[0],graphs[1])
-
-        sf_graph.SetLineWidth(3)
-        sf_graph.SetLineColor(R.kBlack)
-        sf_graph.SetMarkerSize(0)
-        sf_graph.Draw("p")
+ 
+        num = graphs[0].Clone()
+        ratio_graphs=[]
+        for i in range(1,len(graphs)):
+          sf_graph=GraphDivide(num,graphs[i].Clone())
+          sf_graph.SetLineWidth(3)
+          sf_graph.SetLineColor(colourlist[i])
+          sf_graph.SetMarkerSize(0)
+          ratio_graphs.append(sf_graph.Clone())
+        for x in ratio_graphs:  
+          x.Draw("p")
 
         pads[1].RedrawAxis("G")
     pads[0].cd()

@@ -664,7 +664,7 @@ namespace ic {
         }   
       }
     }
-    if (do_tau_id_sf_ && channel_!= channel::em) {
+    if (do_tau_id_sf_ && channel_!= channel::em  && channel_!= channel::tpzee  && channel_!= channel::tpzmm) {
       double tau_sf_1 = 1.0;
       double tau_sf_2 = 1.0;
       if (channel_ != channel::tt){
