@@ -3031,129 +3031,129 @@ void HTTSequence::BuildTPMTPairs() {
 
       }));
  
-
-      // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
-      BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
-        .set_input_vec_label(js["taus"].asString())
-        .set_output_vec_label("genmatched_taus")
-        .set_gen_match(mcorigin::tauHad));
+      if(!is_data){
+        // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
+        BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
+          .set_input_vec_label(js["taus"].asString())
+          .set_output_vec_label("genmatched_taus")
+          .set_gen_match(mcorigin::tauHad));
   
-      BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
-        "genmatched_taus", "genmatched_taus_1prong0pi0"));
-      
-      BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
-        "genmatched_taus", "genmatched_taus_1prong1pi0"));
+        BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
+          "genmatched_taus", "genmatched_taus_1prong0pi0"));
+        
+        BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
+          "genmatched_taus", "genmatched_taus_1prong1pi0"));
   
-      BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
-        "genmatched_taus", "genmatched_taus_3prong0pi0"));
+        BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
+          "genmatched_taus", "genmatched_taus_3prong0pi0"));
   
-      BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
+        BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
+          .set_input_label("genmatched_taus_1prong0pi0")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 0;
+          }));
+        
+        BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
+          .set_input_label("genmatched_taus_1prong1pi0")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 1;
+          }));
+  
+        BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
+          .set_input_label("genmatched_taus_3prong0pi0")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 10;
+          }));
+         
+        BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
         .set_input_label("genmatched_taus_1prong0pi0")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 0;
-        }));
-      
-      BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
+        .set_save_shifts(true) 
+        .set_shift_label("scales_taues_1prong0pi0") 
+        .set_shift(tau_shift_1prong0pi0));
+  
+        BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
         .set_input_label("genmatched_taus_1prong1pi0")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 1;
-        }));
+        .set_save_shifts(true) 
+        .set_shift_label("scales_taues_1prong1pi0") 
+        .set_shift(tau_shift_1prong1pi0));
   
-      BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
+        BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
         .set_input_label("genmatched_taus_3prong0pi0")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 10;
-        }));
-       
-      BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
-      .set_input_label("genmatched_taus_1prong0pi0")
-      .set_save_shifts(true) 
-      .set_shift_label("scales_taues_1prong0pi0") 
-      .set_shift(tau_shift_1prong0pi0));
-  
-      BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
-      .set_input_label("genmatched_taus_1prong1pi0")
-      .set_save_shifts(true) 
-      .set_shift_label("scales_taues_1prong1pi0") 
-      .set_shift(tau_shift_1prong1pi0));
-  
-      BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
-      .set_input_label("genmatched_taus_3prong0pi0")
-      .set_save_shifts(true) 
-      .set_shift_label("scales_taues_3prong0pi0") 
-      .set_shift(tau_shift_3prong0pi0));
+        .set_save_shifts(true) 
+        .set_shift_label("scales_taues_3prong0pi0") 
+        .set_shift(tau_shift_3prong0pi0));
 
-      BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
-        .set_input_vec_label(js["taus"].asString())
-        .set_output_vec_label("fakeE_genmatched_taus")
-        .set_gen_match(mcorigin::promptE));
-      
-      BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
-        "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
-      
-      BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
-        "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
-      
-      BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+        BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
+          .set_input_vec_label(js["taus"].asString())
+          .set_output_vec_label("fakeE_genmatched_taus")
+          .set_gen_match(mcorigin::promptE));
+        
+        BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+          "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
+        
+        BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+          "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+        
+        BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+          .set_input_label("fakeE_genmatched_taus_0pi")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 0;
+          }));
+        
+        BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+          .set_input_label("fakeE_genmatched_taus_1pi")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 1;
+          }));
+         
+        BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
         .set_input_label("fakeE_genmatched_taus_0pi")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 0;
-        }));
-      
-      BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+        .set_save_shifts(true)
+        .set_shift_label("scales_efaketaues_1prong0pi0")
+        .set_shift(fakeE_tau_shift_0pi));
+        
+        BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
         .set_input_label("fakeE_genmatched_taus_1pi")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 1;
-        }));
-       
-      BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
-      .set_input_label("fakeE_genmatched_taus_0pi")
-      .set_save_shifts(true)
-      .set_shift_label("scales_efaketaues_1prong0pi0")
-      .set_shift(fakeE_tau_shift_0pi));
+        .set_save_shifts(true)
+        .set_shift_label("scales_efaketaues_1prong1pi0")
+        .set_shift(fakeE_tau_shift_1pi));
       
-      BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
-      .set_input_label("fakeE_genmatched_taus_1pi")
-      .set_save_shifts(true)
-      .set_shift_label("scales_efaketaues_1prong1pi0")
-      .set_shift(fakeE_tau_shift_1pi));
-    
-      BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
-        .set_input_vec_label(js["taus"].asString())
-        .set_output_vec_label("fakeMu_genmatched_taus")
-        .set_gen_match(mcorigin::promptMu));
-      
-      BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
-        "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
-      
-      BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
-        "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
-      
-      BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+        BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
+          .set_input_vec_label(js["taus"].asString())
+          .set_output_vec_label("fakeMu_genmatched_taus")
+          .set_gen_match(mcorigin::promptMu));
+        
+        BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+          "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
+        
+        BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+          "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
+        
+        BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+          .set_input_label("fakeMu_genmatched_taus_0pi")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 0;
+          }));
+        
+        BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+          .set_input_label("fakeMu_genmatched_taus_1pi")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 1;
+          }));
+         
+        BuildModule(EnergyShifter<Tau>("FakeMu1Prong0PiEnergyShifter")
         .set_input_label("fakeMu_genmatched_taus_0pi")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 0;
-        }));
-      
-      BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+        .set_save_shifts(true)
+        .set_shift_label("scales_mufaketaues_1prong0pi0")
+        .set_shift(fakeMu_tau_shift_0pi));
+        
+        BuildModule(EnergyShifter<Tau>("FakeMu1Prong1PiEnergyShifter")
         .set_input_label("fakeMu_genmatched_taus_1pi")
-        .set_predicate([=](Tau const* t) {
-          return  t->decay_mode() == 1;
-        }));
-       
-      BuildModule(EnergyShifter<Tau>("FakeMu1Prong0PiEnergyShifter")
-      .set_input_label("fakeMu_genmatched_taus_0pi")
-      .set_save_shifts(true)
-      .set_shift_label("scales_mufaketaues_1prong0pi0")
-      .set_shift(fakeMu_tau_shift_0pi));
-      
-      BuildModule(EnergyShifter<Tau>("FakeMu1Prong1PiEnergyShifter")
-      .set_input_label("fakeMu_genmatched_taus_1pi")
-      .set_save_shifts(true)
-      .set_shift_label("scales_mufaketaues_1prong1pi0")
-      .set_shift(fakeMu_tau_shift_1pi));
+        .set_save_shifts(true)
+        .set_shift_label("scales_mufaketaues_1prong1pi0")
+        .set_shift(fakeMu_tau_shift_1pi));
   
-  
+    }
     BuildModule(SimpleFilter<Tau>("TauFilter")
         .set_input_label(js["taus"].asString()).set_min(min_taus)
         .set_predicate([=](Tau const* t) {

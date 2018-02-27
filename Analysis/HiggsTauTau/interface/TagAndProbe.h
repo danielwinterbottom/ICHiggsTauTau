@@ -63,6 +63,9 @@ class TagAndProbe : public ModuleBase {
   bool iso_tight_;
   bool pass_antilep_;
   bool lepton_veto_;
+  int dm_;
+  double mt_1_;
+  unsigned n_bjets_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -133,6 +136,9 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("iso_tight"  , &iso_tight_ );     
       outtree_->Branch("pass_antilep"  , &pass_antilep_ );  
       outtree_->Branch("lepton_veto"  , &lepton_veto_ );
+      outtree_->Branch("dm"  , &dm_ );
+      outtree_->Branch("mt_1"  , &mt_1_ );
+      outtree_->Branch("n_bjets"  , &n_bjets_ );
     }
   }    
   return 0;
@@ -271,6 +277,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
       iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
       iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      dm_ = tau->decay_mode();
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -283,6 +290,23 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       }
       trg_probe_2_ = trg_probe_2_ && found_match_probe;
     }
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    mt_1_ = MT(lep1, mets);
+    
+    std::string jets_label = "ak4PFJetsCHS";
+    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp = 0.8484;
+    std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label);
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    
+    n_bjets_ = bjets.size();
   }
   
   
