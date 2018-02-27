@@ -141,9 +141,23 @@ if options.channel == 'tpzee':
   trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
   id_tag_1 = baseline_tag1+'*(%s)' % iso_cut_2
   id_tag_2 = baseline_tag2+'*(%s)' % iso_cut_1
+if options.channel == 'tpmt':
+  iso_cut_1='iso_1<0.15'
+  iso_cut_2='iso_tight'
+  if options.aiso1:  
+    iso_cut_2='iso_medium'
+  if options.aiso2:
+    iso_cut_2='iso_loose'  
+
+  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1)'
+
+  idiso_probe_2 = '(id_probe_2&&%s&&pass_antilep)' % iso_cut_2
+  trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2&&pass_antilep)' % iso_cut_2 # reqires probe to pass id/iso cut as well!
+  tau_idiso_tag_1 = baseline_tag1 
 
 iso_tag_1 = baseline_tag1+'*(id_tag_2)'
 iso_tag_2 = baseline_tag2+'*(id_tag_1)'
+
 # All functions defined here
 
 def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
