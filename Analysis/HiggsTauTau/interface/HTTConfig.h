@@ -189,6 +189,7 @@ struct channel_def {
 		zmm,
         tpzee,
         tpzmm,
+        tpmt,
         wmnu,
 		mtmet,
 		etmet
@@ -206,6 +207,7 @@ inline std::string Channel2String(channel const& in) {
 		(channel::zmm, "zmm")
 		(channel::tpzee, "tpzee")
 		(channel::tpzmm, "tpzmm")
+        (channel::tpmt, "tpmt")
 		(channel::wmnu, "wmnu")
 		(channel::etmet, "etmet")
 		(channel::mtmet, "mtmet");
@@ -227,6 +229,7 @@ inline channel String2Channel(std::string const& in) {
 	("zmm", channel::zmm)
 	("tpzee", channel::tpzee)
 	("tpzmm", channel::tpzmm)
+    ("tpmt", channel::tpmt)
 	("wmnu", channel::wmnu)
 	("etmet", channel::etmet)
 	("mtmet", channel::mtmet);

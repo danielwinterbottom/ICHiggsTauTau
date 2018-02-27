@@ -57,6 +57,12 @@ class TagAndProbe : public ModuleBase {
   bool id_probe_2_;
   bool id_tag_1_;
   bool id_tag_2_;
+  bool iso_vloose_;
+  bool iso_loose_; 
+  bool iso_medium_;
+  bool iso_tight_;
+  bool pass_antilep_;
+  bool lepton_veto_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -120,6 +126,14 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
+    if(channel_ == channel::tpmt){
+      outtree_->Branch("iso_vloose" , &iso_vloose_);
+      outtree_->Branch("iso_loose"  , &iso_loose_ );
+      outtree_->Branch("iso_medium" , &iso_medium_);
+      outtree_->Branch("iso_tight"  , &iso_tight_ );     
+      outtree_->Branch("pass_antilep"  , &pass_antilep_ );  
+      outtree_->Branch("lepton_veto"  , &lepton_veto_ );
+    }
   }    
   return 0;
 }
@@ -223,6 +237,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
+      
+      lepton_veto_ = event->Get<bool>("dimuon_veto") && event->Get<bool>("extra_elec_veto") && event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_tag_pt_>0){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
@@ -239,6 +255,36 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
     }
   }
+  
+  if(channel_ == channel::tpmt){
+    // add extra lepton veto!  
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+      T muon = dynamic_cast<T>(lep1);
+      Tau const* tau = dynamic_cast<Tau const*>(lep2);
+      iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+      id_tag_1_ = tag_id_(muon);
+      id_tag_2_ = 0;
+      id_probe_1_ = 0;
+      id_probe_2_ = tau->GetTauID("decayModeFinding");
+      pass_antilep_ = tau->GetTauID("againstMuonTight3") && tau->GetTauID("againstElectronVLooseMVA6");
+      iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+      iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+      iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+      iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+    }
+    if(extra_l1_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+      bool found_match_probe = false;
+      for(unsigned ta=0; ta<l1taus.size(); ++ta){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_){
+          // must pass L1 pT cut and be matched by DR to the tau
+          if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
+        }
+      }
+      trg_probe_2_ = trg_probe_2_ && found_match_probe;
+    }
+  }
+  
   
   if(fs_) outtree_->Fill();
   

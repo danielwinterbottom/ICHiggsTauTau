@@ -110,7 +110,7 @@ namespace ic {
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoET) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
@@ -165,7 +165,7 @@ namespace ic {
         if(channel_ ==  channel::et) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
@@ -282,7 +282,7 @@ namespace ic {
         ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
         met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
       }
-      if (channel_ == channel::mt && event->Exists("muon_scales")) {
+      if ((channel_ == channel::mt || channel_ == channel::tpmt) && event->Exists("muon_scales")) {
         Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton1"));
         auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
         if(es_shifts.count(muon->id()) > 0){
@@ -364,7 +364,7 @@ namespace ic {
           for (unsigned i = 0; i < particles.size(); ++i) {
             if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
           }
-        } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
+        } else if (channel_ == channel::mt || channel_ == channel::mtmet || channel_ == channel::tpmt) {
           // Add all status 3 muons with pT > 8 to sel_particles
          for (unsigned i = 0; i < particles.size(); ++i) {
            if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
