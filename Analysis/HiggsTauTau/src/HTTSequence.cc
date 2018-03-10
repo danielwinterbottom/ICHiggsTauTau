@@ -696,7 +696,7 @@ void HTTSequence::BuildSequence(){
        BuildModule(httStitching); 
     }
       
-    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm){
+    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt){
         HTTStitching httStitching = HTTStitching("HTTStitching")  
         .set_era(era_type)
         .set_fs(fs.get());
@@ -2094,7 +2094,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm);
+      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt);
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -2105,7 +2105,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-    httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm);
+    httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt);
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
@@ -2125,7 +2125,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   
 
     BuildModule(httWeights);
-    if(channel!=channel::tpzee&&channel!=channel::tpzmm){
+    if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt){
       HTTStitching httStitching = HTTStitching("HTTStitching")  
           .set_era(era_type)
           .set_fs(fs.get());
@@ -2314,6 +2314,22 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
     else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+    
+    std::string trg_filters = "hltPFTau32TrackPt1Reg,hltPFTau32TrackPt1Reg"; 
+    std::string trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+    if(!is_data || is_embedded){
+      trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+      trg_filters = "hltPFTau32TrackPt1Reg,hltPFTau32TrackPt1Reg";    
+    } else if (is_data &&  output_name.find("SingleMuonH") != output_name.npos){
+      trg_objs = "triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+      trg_filters = "hltPFTau32TrackPt1Reg";    
+    } else if (is_data && output_name.find("SingleMuonH") == output_name.npos){
+      trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32";  
+      trg_filters = "hltPFTau32TrackPt1Reg";    
+    }
+    trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";    
+    trg_filters = "hltPFTau20TrackLooseIsoAgainstMuon,hltPFTau20TrackLooseIsoAgainstMuon";
+    trg_filters = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20,hltOverlapFilterIsoMu19LooseIsoPFTau20"; // use these in HTTFilters?
                            
     BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
         .set_fs(fs.get())
@@ -2321,11 +2337,11 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         .set_strategy(strategy_type)
         .set_ditau_label("ditau")
         .set_tag_trg_objects("triggerObjectsIsoMu24")
-        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09") 
-        .set_probe_trg_objects("triggerObjectsIsoMu19erMediumCombinedIsoTau32") //triggerObjectsIsoMu19erMediumIsoTau32
-        .set_probe_trg_filters("hltPFTau32TrackPt1Reg")
-        .set_extra_hlt_probe_pt(35.)
-        .set_extra_l1_probe_pt(28.)
+        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        .set_probe_trg_objects(trg_objs)
+        .set_probe_trg_filters(trg_filters)
+        //.set_extra_hlt_probe_pt(35.)
+        //.set_extra_l1_probe_pt(28.)
         .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
     );
@@ -2996,7 +3012,18 @@ void HTTSequence::BuildTPZMMPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildTPMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
+      js["muons"].asString(),"loose_muons"));
+ 
+ BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
+      .set_input_label("loose_muons").set_min(0)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 5    &&
+                m->is_global() ;
 
+      }));
+ 
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
@@ -3157,12 +3184,18 @@ void HTTSequence::BuildTPMTPairs() {
     BuildModule(SimpleFilter<Tau>("TauFilter")
         .set_input_label(js["taus"].asString()).set_min(min_taus)
         .set_predicate([=](Tau const* t) {
-          return  t->pt()                     >  tau_pt     &&
-                  fabs(t->eta())              <  tau_eta    &&
-                  fabs(t->lead_dz_vertex())   <  tau_dz     &&
-                  fabs(t->charge())           == 1;
+          return  t->pt()                     >  20.        &&
+                  fabs(t->eta())              <  2.3        &&
+                  fabs(t->lead_dz_vertex())   <  0.2        &&
+                  fabs(t->charge())           == 1          &&
+                  t->GetTauID("decayModeFinding") > 0.5;
   
         }));
+    
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+    .set_input_label(js["taus"].asString())
+    .set_reference_label("loose_muons")
+    .set_min_dr(0.5));
   
     BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
         .set_input_label_first("sel_muons")
