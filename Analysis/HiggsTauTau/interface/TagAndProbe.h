@@ -66,6 +66,9 @@ class TagAndProbe : public ModuleBase {
   int dm_;
   double mt_1_;
   unsigned n_bjets_;
+  double pzeta_;
+  unsigned gen_match_1_;
+  unsigned gen_match_2_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -129,6 +132,8 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
+    outtree_->Branch("gen_match_1", &gen_match_1_);
+    outtree_->Branch("gen_match_2", &gen_match_2_);
     if(channel_ == channel::tpmt){
       outtree_->Branch("iso_vloose" , &iso_vloose_);
       outtree_->Branch("iso_loose"  , &iso_loose_ );
@@ -139,6 +144,7 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("dm"  , &dm_ );
       outtree_->Branch("mt_1"  , &mt_1_ );
       outtree_->Branch("n_bjets"  , &n_bjets_ );
+      outtree_->Branch("pzeta"  , &pzeta_ );
     }
   }    
   return 0;
@@ -168,6 +174,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   deta_ = eta_1_-eta_2_;
   dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
   os_ = PairOppSign(ditau);
+  
+  if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+  if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
   
   trg_tag_1_ = false;
   trg_tag_2_ = false;
@@ -244,7 +253,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
       
-      lepton_veto_ = event->Get<bool>("dimuon_veto") && event->Get<bool>("extra_elec_veto") && event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_tag_pt_>0){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
@@ -278,6 +286,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
       iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
       dm_ = tau->decay_mode();
+      
+      lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -293,6 +303,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     Met const* mets = NULL;
     mets = event->GetPtr<Met>("pfMET");
     mt_1_ = MT(lep1, mets);
+    
+    pzeta_ = PZeta(ditau, mets, 0.85);
     
     std::string jets_label = "ak4PFJetsCHS";
     std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";

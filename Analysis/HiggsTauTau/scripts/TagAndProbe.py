@@ -69,9 +69,8 @@ print '###############################################'
 print ''
 
 # Add data sample names
-if options.channel == 'tpzmm': 
+if options.channel == 'tpzmm' or options.channel == 'tpmt': 
     data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
-    #data_samples = ['SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
@@ -149,14 +148,15 @@ if options.channel == 'tpmt':
   if options.aiso2:
     iso_cut_2='iso_loose'  
 
-  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1)'
+  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
 
-  idiso_probe_2 = '(id_probe_2&&%s&&pass_antilep)' % iso_cut_2
-  trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2&&pass_antilep)' % iso_cut_2 # reqires probe to pass id/iso cut as well!
-  tau_idiso_tag_1 = baseline_tag1 
+  idiso_probe_2 = '(%s)' % iso_cut_2
+  trg_tag_1 = baseline_tag1+'*(%s)' % iso_cut_2 # reqires probe to pass id/iso cut as well!
+  
+  # add W-jets MC samples. mt channel eta bins 0,1.5,2.1. tt channels no eta bins. antimuon different for mt and tt so add additional bool 
 
 iso_tag_1 = baseline_tag1+'*(id_tag_2)'
-iso_tag_2 = baseline_tag2+'*(id_tag_1)'
+if options.channel != 'tpmt': iso_tag_2 = baseline_tag2+'*(id_tag_1)'
 
 # All functions defined here
 
@@ -176,14 +176,20 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
 
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
+    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
 
 def GetDataNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
+    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('data'+add_name, samples, plot, full_selection)
 
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
+    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('EmbedZLL'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
@@ -213,11 +219,17 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
       trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
       if options.em_iso: trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,30,40,50,100,200,1000]'    
       trg_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
+      
+    if options.channel == 'tpmt':
+      idiso_pt_bins = '[20,25,30,40,50,100,200,1000]'
+      idiso_eta_bins = '[0,2.1]'
+      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
+      trg_eta_bins = '[0,2.1]'
     
-    trg_plot_probe_1 = 'eta_1,pt_1'+trg_eta_bins+','+trg_pt_bins
-    trg_plot_probe_2 = 'eta_2,pt_2'+trg_eta_bins+','+trg_pt_bins
-    idiso_plot_probe_1 = 'eta_1,pt_1'+idiso_eta_bins+','+idiso_pt_bins
-    idiso_plot_probe_2 = 'eta_2,pt_2'+idiso_eta_bins+','+idiso_pt_bins
+    trg_plot_probe_1 = 'abs(eta_1),pt_1'+trg_eta_bins+','+trg_pt_bins
+    trg_plot_probe_2 = 'abs(eta_2),pt_2'+trg_eta_bins+','+trg_pt_bins
+    idiso_plot_probe_1 = 'abs(eta_1),pt_1'+idiso_eta_bins+','+idiso_pt_bins
+    idiso_plot_probe_2 = 'abs(eta_2),pt_2'+idiso_eta_bins+','+idiso_pt_bins
 
     GenerateZLL(ana, '_trg_tag1_denum', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
     GenerateZLL(ana, '_trg_tag2_denum', ztt_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
@@ -488,6 +500,151 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
       for i in range(1,hist.GetNbinsY()+1): 
         hist.SetBinContent(hist.GetNbinsX()+1,i,hist.GetBinContent(hist.GetNbinsX(),i))
       hist.Write()
+      
+def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
+      
+    if options.channel == 'tpmt':
+      idiso_pt_bins = '[20,25,30,40,50,100]'
+      idiso_eta_bins = '[0,1.5,2.1]'
+      trg_pt_bins = '[10,20,22,24,26,28,30,35,40,50,100]'
+      trg_eta_bins = '[0,2.1]'
+    
+    trg_plot_probe_2 = 'abs(eta_2),pt_2'+trg_eta_bins+','+trg_pt_bins
+    idiso_plot_probe_2 = 'abs(eta_2),pt_2'+idiso_eta_bins+','+idiso_pt_bins
+
+    GenerateZLL(ana, '_trg_tag1_denum', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
+    GenerateZLL(ana, '_trg_tag1_num', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)   
+    GenerateData(ana, '_trg_tag1_denum', data_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
+    GenerateData(ana, '_trg_tag1_num', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
+    
+    GenerateZLL(ana, '_idiso_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
+    GenerateZLL(ana, '_idiso_tag1_num', ztt_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)   
+    GenerateData(ana, '_idiso_tag1_denum', data_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
+    GenerateData(ana, '_idiso_tag1_num', data_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)
+
+    if options.embedded:
+       
+      GenerateEmbedded(ana, '_trg_tag1_denum', embed_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
+      GenerateEmbedded(ana, '_trg_tag1_num', embed_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
+  
+      GenerateEmbedded(ana, '_idiso_tag1_denum', embed_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
+      GenerateEmbedded(ana, '_idiso_tag1_num', embed_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)
+    
+    ana.Run()
+    ana.nodes.Output(outfile)
+    
+    zll_trg_denum = outfile.Get(nodename+'/ZLL_trg_tag1_denum')
+    zll_trg_num = outfile.Get(nodename+'/ZLL_trg_tag1_num')
+    
+    data_trg_denum = outfile.Get(nodename+'/data_trg_tag1_denum')
+    data_trg_num = outfile.Get(nodename+'/data_trg_tag1_num')
+    
+    zll_idiso_denum = outfile.Get(nodename+'/ZLL_idiso_tag1_denum')
+    zll_idiso_num = outfile.Get(nodename+'/ZLL_idiso_tag1_num')
+    
+    data_idiso_denum = outfile.Get(nodename+'/data_idiso_tag1_denum')
+    data_idiso_num = outfile.Get(nodename+'/data_idiso_tag1_num')
+    
+    data_trg_num_proj   = data_trg_num.ProjectionX()
+    zll_trg_num_proj    = zll_trg_num.ProjectionX()
+    data_idiso_num_proj = data_idiso_num.ProjectionX()
+    zll_idiso_num_proj  = zll_idiso_num.ProjectionX()
+    
+    data_trg_denum_proj   = data_trg_denum.ProjectionX()
+    zll_trg_denum_proj    = zll_trg_denum.ProjectionX()
+    data_idiso_denum_proj = data_idiso_denum.ProjectionX()
+    zll_idiso_denum_proj  = zll_idiso_denum.ProjectionX()
+    
+    data_trg_gr   = ROOT.TGraphAsymmErrors(data_trg_num.GetNbinsX())
+    data_idiso_gr = ROOT.TGraphAsymmErrors(data_idiso_num.GetNbinsX())
+    mc_trg_gr   = ROOT.TGraphAsymmErrors(zll_trg_num.GetNbinsX())
+    mc_idiso_gr = ROOT.TGraphAsymmErrors(zll_idiso_num.GetNbinsX())
+    
+    data_trg_gr.Divide(data_trg_num_proj,data_trg_denum_proj,"n")
+    mc_trg_gr.Divide(zll_trg_num_proj,zll_trg_denum_proj,"n") 
+    data_idiso_gr.Divide(data_idiso_num_proj,data_idiso_denum_proj,"n")
+    mc_idiso_gr.Divide(zll_idiso_num_proj,zll_idiso_denum_proj,"n")
+    
+    if options.embedded:
+      
+      embed_trg_denum = outfile.Get(nodename+'/EmbedZLL_trg_tag1_denum')
+      embed_trg_num = outfile.Get(nodename+'/EmbedZLL_trg_tag1_num')
+      
+      embed_idiso_denum = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_denum')
+      embed_idiso_num = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_num')
+      
+      embed_trg_num_proj   = embed_trg_num.ProjectionX()
+      embed_idiso_num_proj = embed_idiso_num.ProjectionX()
+      
+      embed_trg_denum_proj   = embed_trg_denum.ProjectionX()
+      embed_idiso_denum_proj = embed_idiso_denum.ProjectionX()
+      
+      embed_trg_gr   = ROOT.TGraphAsymmErrors(embed_trg_num.GetNbinsX())
+      embed_idiso_gr = ROOT.TGraphAsymmErrors(embed_idiso_num.GetNbinsX())
+      
+      embed_trg_gr.Divide(embed_trg_num_proj,embed_trg_denum_proj,"n")
+      embed_idiso_gr.Divide(embed_idiso_num_proj,embed_idiso_denum_proj,"n")
+    
+    if options.channel == 'tpmt': sfs_output_name = options.outputfolder+'/tau_SFs.root'
+    sfs_output = ROOT.TFile(sfs_output_name, 'RECREATE')
+    sfs_output.cd()
+    
+    data_trg_gr.Write('data_trg_proj')
+    mc_trg_gr.Write('mc_trg_proj')
+    data_idiso_gr.Write('data_idiso_proj')
+    mc_idiso_gr.Write('mc_idiso_proj')
+    
+    trg_graphs = [sfs_output.Get('data_trg_proj'),sfs_output.Get('mc_trg_proj')]
+    idiso_graphs = [sfs_output.Get('data_idiso_proj'),sfs_output.Get('mc_idiso_proj')]
+    
+    if options.embedded:
+        
+      embed_trg_gr.Write('embed_trg_proj')
+      embed_idiso_gr.Write('embed_idiso_proj')
+      
+      trg_graphs.append(sfs_output.Get('embed_trg_proj'))
+      idiso_graphs.append(sfs_output.Get('embed_idiso_proj'))
+    
+    if options.channel == 'tpmt': 
+        x_title = 'P_{T}^{#tau} (GeV)'
+        plot_name = 'tau_efficiency_'
+
+    if options.era=='mssmsummer16': x_max = 1000
+    else: x_max = 100
+    leg_labels=['data','MC']
+    if options.embedded: leg_labels=['data','MC','Embedded']
+    plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
+    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
+
+    
+    data_trg_num.Divide(data_trg_denum)
+    zll_trg_num.Divide(zll_trg_denum)
+    data_idiso_num.Divide(data_idiso_denum)
+    zll_idiso_num.Divide(zll_idiso_denum)
+    
+    data_trg_num.SetName("trg_data")
+    zll_trg_num.SetName("trg_mc")
+    data_idiso_num.SetName("idiso_data")
+    zll_idiso_num.SetName("idiso_mc")
+    
+    hists = [data_trg_num,zll_trg_num,data_idiso_num,zll_idiso_num]
+    
+    if options.embedded:
+        embed_trg_num.Divide(embed_trg_denum)
+        embed_idiso_num.Divide(embed_idiso_denum)
+        
+        embed_trg_num.SetName("trg_embed")
+        embed_idiso_num.SetName("idiso_embed")
+        
+        hists.append(embed_trg_num)
+        hists.append(embed_idiso_num)
+    
+    # set overflow pT bins to same value as last bin and write to file
+    for hist in hists:
+      for i in range(1,hist.GetNbinsY()+1): 
+        hist.SetBinContent(hist.GetNbinsX()+1,i,hist.GetBinContent(hist.GetNbinsX(),i))
+      hist.Write()
+      
 
 # Create output file
 
@@ -501,6 +658,7 @@ ana.nodes.AddNode(ListNode(nodename))
 ana.remaps = {}
 if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
 elif options.channel == 'tpzee': ana.remaps['SingleElectron'] = 'data_obs'
+elif options.channel == 'tpmt': ana.remaps['SingleMuon'] = 'data_obs'
 
 
 # Add all data files
@@ -509,7 +667,6 @@ for sample_name in data_samples:
 
 # Add all MC background files
 for sample_name in ztt_samples:
-    print options.folder+'/'+sample_name+'_'+options.channel+'*.root'
     ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
 
 if options.embedded:
@@ -517,6 +674,7 @@ if options.embedded:
   for sample_name in embed_samples:
       ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
 
-RunTagAndProbePlotting(ana, 'wt', outfile)
+if options.channel == 'tpmt': RunTauTagAndProbePlotting(ana, 'wt', outfile)
+else: RunTagAndProbePlotting(ana, 'wt', outfile)
 
  

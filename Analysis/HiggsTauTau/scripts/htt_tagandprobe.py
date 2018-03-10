@@ -149,7 +149,7 @@ if options.proc_data:
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras: 
-         if 'mt' in chn or 'zmm' or 'tpzmm' or 'tpmt' in chn:
+         if 'mt' in chn or 'zmm' or 'tpzmm' in chn or 'tpmt' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleMuon'+era]
@@ -158,7 +158,7 @@ if options.proc_data:
                 'SingleMuon'+era+'v2']
                data_samples+=[   
                 'SingleMuon'+era+'v3']
-         if 'et' in chn or 'zee' or 'tpzee' in chn:
+         if 'et' in chn or 'zee' in chn or 'tpzee' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleElectron'+era]
