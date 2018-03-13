@@ -33,6 +33,8 @@ class HTTTriggerFilter : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  
+  std::set<std::size_t> trig_list_;
 
 };
 
