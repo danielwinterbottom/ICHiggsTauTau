@@ -95,55 +95,57 @@ if options.channel == 'tpzmm':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_2<0.15'
   if options.aiso1:
-    iso_cut_1='iso_1>=0.15&&iso_1<0.3'  
-    iso_cut_2='iso_2>=0.15&&iso_2<0.3'
+    iso_cut_1='iso_1>=0.15&&iso_1<0.25'  
+    iso_cut_2='iso_2>=0.15&&iso_2<0.25'
   if options.aiso2:
-    iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
-    iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
+    iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
+    iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
   if options.em_iso:
     iso_cut_1='iso_1<0.2'    
     iso_cut_2='iso_2<0.2'
     if options.aiso1:
       iso_cut_1='iso_1>=0.2&&iso_1<0.3'  
       iso_cut_2='iso_2>=0.2&&iso_2<0.3'
+    if options.aiso2:
+      iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
+      iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
       
   baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
   baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
 
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
-  idiso_probe_1 = '(id_probe_1&&%s)' % iso_cut_1
-  idiso_probe_2 = '(id_probe_2&&%s)' % iso_cut_2
   trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
   trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
-  id_tag_1 = baseline_tag1+'*(%s)' % iso_cut_2
-  id_tag_2 = baseline_tag2+'*(%s)' % iso_cut_1
+  id_tag_1 = baseline_tag1 
+  id_tag_2 = baseline_tag2 
 if options.channel == 'tpzee':
   iso_cut_1='iso_1<0.1'
   iso_cut_2='iso_2<0.1'
   if options.aiso1:
-    iso_cut_1='iso_1>=0.1&&iso_1<0.3'  
-    iso_cut_2='iso_2>=0.1&&iso_2<0.3'
+    iso_cut_1='iso_1>=0.1&&iso_1<0.25'  
+    iso_cut_2='iso_2>=0.1&&iso_2<0.25'
   if options.aiso2:
-    iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
-    iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
+    iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
+    iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
   if options.em_iso:
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
       iso_cut_1='iso_1>=0.15&&iso_1<0.3'  
       iso_cut_2='iso_2>=0.15&&iso_2<0.3'
+    if options.aiso2:
+      iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
+      iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1)'
-  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2)'
+  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
-  idiso_probe_1 = '(id_probe_1&&%s)' % iso_cut_1
-  idiso_probe_2 = '(id_probe_2&&%s)' % iso_cut_2
   trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
   trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
-  id_tag_1 = baseline_tag1+'*(%s)' % iso_cut_2
-  id_tag_2 = baseline_tag2+'*(%s)' % iso_cut_1
+  id_tag_1 = baseline_tag1 
+  id_tag_2 = baseline_tag2
 if options.channel == 'tpmt':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_tight'
@@ -181,19 +183,16 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
 
 def GetDataNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('data'+add_name, samples, plot, full_selection)
 
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    #full_selection = BuildCutString(wt, sel, cat, 'os', '1')
     return ana.SummedFactory('EmbedZLL'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
@@ -270,15 +269,6 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     GenerateData(ana, '_iso_tag1_num', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
     GenerateData(ana, '_iso_tag2_num', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)
     
-    GenerateZLL(ana, '_idiso_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
-    GenerateZLL(ana, '_idiso_tag2_denum', ztt_samples, idiso_plot_probe_1, wt, baseline_tag2, '1')
-    GenerateZLL(ana, '_idiso_tag1_num', ztt_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)
-    GenerateZLL(ana, '_idiso_tag2_num', ztt_samples, idiso_plot_probe_1, wt, baseline_tag2, idiso_probe_1)    
-    GenerateData(ana, '_idiso_tag1_denum', data_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
-    GenerateData(ana, '_idiso_tag2_denum', data_samples, idiso_plot_probe_1, wt, baseline_tag2, '1')
-    GenerateData(ana, '_idiso_tag1_num', data_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)
-    GenerateData(ana, '_idiso_tag2_num', data_samples, idiso_plot_probe_1, wt, baseline_tag2, idiso_probe_1)
-    
     
     if options.embedded:
        
@@ -296,11 +286,7 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
       GenerateEmbedded(ana, '_iso_tag2_denum', embed_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
       GenerateEmbedded(ana, '_iso_tag1_num', embed_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
       GenerateEmbedded(ana, '_iso_tag2_num', embed_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)
-  
-      GenerateEmbedded(ana, '_idiso_tag1_denum', embed_samples, idiso_plot_probe_2, wt, baseline_tag1, '1')
-      GenerateEmbedded(ana, '_idiso_tag2_denum', embed_samples, idiso_plot_probe_1, wt, baseline_tag2, '1')
-      GenerateEmbedded(ana, '_idiso_tag1_num', embed_samples, idiso_plot_probe_2, wt, baseline_tag1, idiso_probe_2)
-      GenerateEmbedded(ana, '_idiso_tag2_num', embed_samples, idiso_plot_probe_1, wt, baseline_tag2, idiso_probe_1)
+
     
     ana.Run()
     ana.nodes.Output(outfile)
@@ -334,16 +320,7 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     data_iso_denum.Add(outfile.Get(nodename+'/data_iso_tag2_denum'))
     data_iso_num = outfile.Get(nodename+'/data_iso_tag1_num')
     data_iso_num.Add(outfile.Get(nodename+'/data_iso_tag2_num'))
-    
-    zll_idiso_denum = outfile.Get(nodename+'/ZLL_idiso_tag1_denum')
-    zll_idiso_denum.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_denum'))
-    zll_idiso_num = outfile.Get(nodename+'/ZLL_idiso_tag1_num')
-    zll_idiso_num.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_num'))
-    
-    data_idiso_denum = outfile.Get(nodename+'/data_idiso_tag1_denum')
-    data_idiso_denum.Add(outfile.Get(nodename+'/data_idiso_tag2_denum'))
-    data_idiso_num = outfile.Get(nodename+'/data_idiso_tag1_num')
-    data_idiso_num.Add(outfile.Get(nodename+'/data_idiso_tag2_num'))
+
     
     data_trg_num_proj   = data_trg_num.ProjectionX()
     zll_trg_num_proj    = zll_trg_num.ProjectionX()
@@ -351,8 +328,6 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     zll_id_num_proj     = zll_id_num.ProjectionX()
     data_iso_num_proj   = data_iso_num.ProjectionX()
     zll_iso_num_proj    = zll_iso_num.ProjectionX()
-    data_idiso_num_proj = data_idiso_num.ProjectionX()
-    zll_idiso_num_proj  = zll_idiso_num.ProjectionX()
     
     data_trg_denum_proj   = data_trg_denum.ProjectionX()
     zll_trg_denum_proj    = zll_trg_denum.ProjectionX()
@@ -360,17 +335,13 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     zll_id_denum_proj     = zll_id_denum.ProjectionX()
     data_iso_denum_proj   = data_iso_denum.ProjectionX()
     zll_iso_denum_proj    = zll_iso_denum.ProjectionX()
-    data_idiso_denum_proj = data_idiso_denum.ProjectionX()
-    zll_idiso_denum_proj  = zll_idiso_denum.ProjectionX()
     
     data_trg_gr   = ROOT.TGraphAsymmErrors(data_trg_num.GetNbinsX())
     data_iso_gr   = ROOT.TGraphAsymmErrors(data_iso_num.GetNbinsX())
     data_id_gr    = ROOT.TGraphAsymmErrors(data_id_num.GetNbinsX())
-    data_idiso_gr = ROOT.TGraphAsymmErrors(data_idiso_num.GetNbinsX())
     mc_trg_gr   = ROOT.TGraphAsymmErrors(zll_trg_num.GetNbinsX())
     mc_iso_gr   = ROOT.TGraphAsymmErrors(zll_iso_num.GetNbinsX())
     mc_id_gr    = ROOT.TGraphAsymmErrors(zll_id_num.GetNbinsX())
-    mc_idiso_gr = ROOT.TGraphAsymmErrors(zll_idiso_num.GetNbinsX())
     
     data_trg_gr.Divide(data_trg_num_proj,data_trg_denum_proj,"n")
     mc_trg_gr.Divide(zll_trg_num_proj,zll_trg_denum_proj,"n") 
@@ -378,8 +349,6 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     mc_id_gr.Divide(zll_id_num_proj,zll_id_denum_proj,"n")
     data_iso_gr.Divide(data_iso_num_proj,data_iso_denum_proj,"n")
     mc_iso_gr.Divide(zll_iso_num_proj,zll_iso_denum_proj,"n")
-    data_idiso_gr.Divide(data_idiso_num_proj,data_idiso_denum_proj,"n")
-    mc_idiso_gr.Divide(zll_idiso_num_proj,zll_idiso_denum_proj,"n")
     
     if options.embedded:
       
@@ -397,31 +366,23 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
       embed_iso_denum.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_denum'))
       embed_iso_num = outfile.Get(nodename+'/EmbedZLL_iso_tag1_num')
       embed_iso_num.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_num'))
-      
-      embed_idiso_denum = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_denum')
-      embed_idiso_denum.Add(outfile.Get(nodename+'/EmbedZLL_idiso_tag2_denum'))
-      embed_idiso_num = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_num')
-      embed_idiso_num.Add(outfile.Get(nodename+'/EmbedZLL_idiso_tag2_num'))
+    
       
       embed_trg_num_proj   = embed_trg_num.ProjectionX()
       embed_id_num_proj    = embed_id_num.ProjectionX()
       embed_iso_num_proj   = embed_iso_num.ProjectionX()
-      embed_idiso_num_proj = embed_idiso_num.ProjectionX()
       
       embed_trg_denum_proj   = embed_trg_denum.ProjectionX()
       embed_id_denum_proj    = embed_id_denum.ProjectionX()
       embed_iso_denum_proj   = embed_iso_denum.ProjectionX()
-      embed_idiso_denum_proj = embed_idiso_denum.ProjectionX()
       
       embed_trg_gr   = ROOT.TGraphAsymmErrors(embed_trg_num.GetNbinsX())
       embed_iso_gr   = ROOT.TGraphAsymmErrors(embed_iso_num.GetNbinsX())
       embed_id_gr    = ROOT.TGraphAsymmErrors(embed_id_num.GetNbinsX())
-      embed_idiso_gr = ROOT.TGraphAsymmErrors(embed_idiso_num.GetNbinsX())
       
       embed_trg_gr.Divide(embed_trg_num_proj,embed_trg_denum_proj,"n")
       embed_id_gr.Divide(embed_id_num_proj,embed_id_denum_proj,"n")
       embed_iso_gr.Divide(embed_iso_num_proj,embed_iso_denum_proj,"n")
-      embed_idiso_gr.Divide(embed_idiso_num_proj,embed_idiso_denum_proj,"n")
     
     if options.channel == 'tpzmm': sfs_output_name = options.outputfolder+'/muon_SFs.root'
     if options.channel == 'tpzee': sfs_output_name = options.outputfolder+'/electron_SFs.root'
@@ -430,29 +391,24 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     
     data_trg_gr.Write('data_trg_proj')
     mc_trg_gr.Write('mc_trg_proj')
-    data_id_gr.Write('data_id_proj') 
+    #data_id_gr.Write('data_id_proj') 
     mc_id_gr.Write('mc_id_proj') 
-    data_iso_gr.Write('data_iso_proj')
+    #data_iso_gr.Write('data_iso_proj')
     mc_iso_gr.Write('mc_iso_proj')
-    data_idiso_gr.Write('data_idiso_proj')
-    mc_idiso_gr.Write('mc_idiso_proj')
     
     trg_graphs = [sfs_output.Get('data_trg_proj'),sfs_output.Get('mc_trg_proj')]
-    id_graphs = [sfs_output.Get('data_id_proj'),sfs_output.Get('mc_id_proj')]
-    iso_graphs = [sfs_output.Get('data_iso_proj'),sfs_output.Get('mc_iso_proj')]
-    idiso_graphs = [sfs_output.Get('data_idiso_proj'),sfs_output.Get('mc_idiso_proj')]
+    id_graphs = [data_id_gr,sfs_output.Get('mc_id_proj')]
+    iso_graphs = [data_iso_gr,sfs_output.Get('mc_iso_proj')]
     
     if options.embedded:
         
       embed_trg_gr.Write('embed_trg_proj')
       embed_id_gr.Write('embed_id_proj') 
       embed_iso_gr.Write('embed_iso_proj')
-      embed_idiso_gr.Write('embed_idiso_proj')
       
       trg_graphs.append(sfs_output.Get('embed_trg_proj'))
       id_graphs.append(sfs_output.Get('embed_id_proj'))
       iso_graphs.append(sfs_output.Get('embed_iso_proj'))
-      idiso_graphs.append(sfs_output.Get('embed_idiso_proj'))
     
     if options.channel == 'tpzmm': 
         x_title = 'P_{T}^{#mu} (GeV)'
@@ -467,8 +423,12 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     if options.embedded: leg_labels=['data','MC','Embedded']
     plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
     plotting.TagAndProbePlot(id_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'id',"ID")
-    plotting.TagAndProbePlot(iso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.77,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'iso',"isolation")
-    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
+    plotting.TagAndProbePlot(iso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'iso',"isolation")
+    
+    if options.embedded:
+      plotting.TagAndProbePlot([mc_id_gr,embed_id_gr],['MC','Embedded'],"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'id_nodata',"ID")
+      plotting.TagAndProbePlot([mc_iso_gr,embed_iso_gr],['MC','Embedded'],"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'iso_nodata',"isolation")
+
 
     
     data_trg_num.Divide(data_trg_denum)
@@ -477,8 +437,6 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     zll_id_num.Divide(zll_id_denum)
     data_iso_num.Divide(data_iso_denum)
     zll_iso_num.Divide(zll_iso_denum)
-    data_idiso_num.Divide(data_idiso_denum)
-    zll_idiso_num.Divide(zll_idiso_denum)
     
     data_trg_num.SetName("trg_data")
     zll_trg_num.SetName("trg_mc")
@@ -486,26 +444,22 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     zll_id_num.SetName("id_mc")
     data_iso_num.SetName("iso_data")
     zll_iso_num.SetName("iso_mc")
-    data_idiso_num.SetName("idiso_data")
-    zll_idiso_num.SetName("idiso_mc")
     
-    hists = [data_trg_num,zll_trg_num,data_id_num,zll_id_num,data_iso_num,zll_iso_num,data_idiso_num,zll_idiso_num]
+    #hists = [data_trg_num,zll_trg_num,data_id_num,zll_id_num,data_iso_num,zll_iso_num]
+    hists = [data_trg_num,zll_trg_num,zll_id_num,zll_iso_num]
     
     if options.embedded:
         embed_trg_num.Divide(embed_trg_denum)
         embed_id_num.Divide(embed_id_denum)
         embed_iso_num.Divide(embed_iso_denum)
-        embed_idiso_num.Divide(embed_idiso_denum)
         
         embed_trg_num.SetName("trg_embed")
         embed_id_num.SetName("id_embed")
         embed_iso_num.SetName("iso_embed")
-        embed_idiso_num.SetName("idiso_embed")
         
         hists.append(embed_trg_num)
         hists.append(embed_id_num)
         hists.append(embed_iso_num)
-        hists.append(embed_idiso_num)
     
     # set overflow pT bins to same value as last bin and write to file
     for hist in hists:
