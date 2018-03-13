@@ -22,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False }
+defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "ttbins":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -51,6 +51,8 @@ parser.add_argument("--aiso1", dest="aiso1", action='store_true',
     help="Compute scale-factors or anti-isolated region 1.")
 parser.add_argument("--aiso2", dest="aiso2", action='store_true',
     help="Compute scale-factors or anti-isolated region 2.")
+parser.add_argument("--ttbins", dest="ttbins", action='store_true',
+    help="Use tt channel trigger bins.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -65,6 +67,7 @@ print 'embedded          =', options.embedded
 print 'em_iso            =', options.em_iso
 print 'aiso1             =', options.aiso1
 print 'aiso2             =', options.aiso2
+print 'ttbins            =', options.ttbins
 print '###############################################'
 print ''
 
@@ -104,8 +107,9 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.2&&iso_1<0.3'  
       iso_cut_2='iso_2>=0.2&&iso_2<0.3'
       
-  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1)'
-  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2)'
+  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
+  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
+
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
   idiso_probe_1 = '(id_probe_1&&%s)' % iso_cut_1
@@ -207,18 +211,26 @@ def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='
 def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     
     if options.channel == 'tpzmm':
-      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200,1000]'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
-      if options.em_iso: trg_pt_bins = '[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
+      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200,1000]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+      trg_pt_bins = '[15,18,19,20,21,22,23,24,25,30,40,50,60,80,100,200,1000]'
+      if options.em_iso: 
+        idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
+        idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
+        trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+        trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
     
     if options.channel == 'tpzee':
-      idiso_pt_bins = '[10,20,25,30,40,50,100,200,1000]'
       idiso_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
-      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
-      if options.em_iso: trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,30,40,50,100,200,1000]'    
+      idiso_pt_bins = '[10,20,25,30,40,50,100,200,1000]'
       trg_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
+      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
+      if options.em_iso: 
+          idiso_eta_bins = '[0,1.48,2.1,2.5]'
+          idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
+          trg_eta_bins = '[0,1.48,2.1,2.5]'
+          trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    
       
     if options.channel == 'tpmt':
       idiso_pt_bins = '[20,25,30,40,50,100,200,1000]'
@@ -453,10 +465,10 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     else: x_max = 100
     leg_labels=['data','MC']
     if options.embedded: leg_labels=['data','MC','Embedded']
-    plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
-    plotting.TagAndProbePlot(id_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'id',"ID")
-    plotting.TagAndProbePlot(iso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'iso',"isolation")
-    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
+    plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
+    plotting.TagAndProbePlot(id_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'id',"ID")
+    plotting.TagAndProbePlot(iso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.77,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'iso',"isolation")
+    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
 
     
     data_trg_num.Divide(data_trg_denum)
@@ -507,6 +519,7 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
       idiso_pt_bins = '[20,25,30,40,50,100]'
       idiso_eta_bins = '[0,1.5,2.1]'
       trg_pt_bins = '[10,20,22,24,26,28,30,35,40,50,100]'
+      if options.ttbins:  trg_pt_bins = '[30,35,38,40,42,44,48,52,56,60,70,80,100]'
       trg_eta_bins = '[0,2.1]'
     
     trg_plot_probe_2 = 'abs(eta_2),pt_2'+trg_eta_bins+','+trg_pt_bins
@@ -613,8 +626,8 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
     else: x_max = 100
     leg_labels=['data','MC']
     if options.embedded: leg_labels=['data','MC','Embedded']
-    plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
-    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.85,1.15",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
+    plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
+    plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
 
     
     data_trg_num.Divide(data_trg_denum)
