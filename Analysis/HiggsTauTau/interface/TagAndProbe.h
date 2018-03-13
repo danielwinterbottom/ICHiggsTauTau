@@ -24,6 +24,8 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, fwlite::TFileService*, fs)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_filters)
+  CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_objects)
+  CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, probe_id)
@@ -98,6 +100,8 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   extra_l1_tag_pt_ = 34.0;
   extra_l1_probe_pt_ = 0.;
   extra_hlt_probe_pt_ = 0.;
+  tag_add_trg_objects_="";
+  tag_add_trg_filters_="";
 }
 
 template <class T>
@@ -184,7 +188,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   trg_probe_2_ = false;
   
   std::vector<std::string> tag_objs = SplitString(tag_trg_objects_);
-  std::vector<std::string> tag_filts = SplitString(tag_trg_filters_);    
+  std::vector<std::string> tag_filts = SplitString(tag_trg_filters_);  
+  std::vector<std::string> tag_add_objs = SplitString(tag_add_trg_objects_);
+  std::vector<std::string> tag_add_filts = SplitString(tag_add_trg_filters_);  
   std::vector<std::string> probe_objs = SplitString(probe_trg_objects_);
   std::vector<std::string> probe_filts = SplitString(probe_trg_filters_);
   
@@ -196,6 +202,18 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_tag = event->GetPtrVec<TriggerObject>(tag_objs[i]);
     trg_tag_1_ = IsFilterMatched(ditau->At(0), objs_tag, tag_filts[i], 0.5) || trg_tag_1_;
     trg_tag_2_ = IsFilterMatched(ditau->At(1), objs_tag, tag_filts[i], 0.5) || trg_tag_2_;
+  }
+  if(tag_add_trg_objects_!=""){
+    bool add_trg_tag_1 = false; 
+    bool add_trg_tag_2 = false;
+    std::vector<TriggerObject *> add_objs_tag;
+    for(unsigned i=0; i<tag_add_objs.size(); ++i){
+      add_objs_tag = event->GetPtrVec<TriggerObject>(tag_add_objs[i]);
+      add_trg_tag_1 = IsFilterMatched(ditau->At(0), add_objs_tag, tag_add_filts[i], 0.5) || add_trg_tag_1;
+      add_trg_tag_2 = IsFilterMatched(ditau->At(1), add_objs_tag, tag_add_filts[i], 0.5) || add_trg_tag_2;
+    }
+    trg_tag_1_ = trg_tag_1_ && add_trg_tag_1;
+    trg_tag_2_ = trg_tag_2_ && add_trg_tag_2;
   }
   
   std::vector<TriggerObject *> objs_probe;

@@ -2090,7 +2090,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     }else{
       httWeights.set_strategy(strategy::smsummer16);
       httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
-      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_embedding_v1.root");
+      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embedding.root");
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
@@ -2279,6 +2279,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         // for mu8 leg of EMu cross-trigger
         .set_probe_trg_objects("triggerObjectsMu17Mu8,triggerObjectsMu17Mu8")
         .set_probe_trg_filters("hltL3pfL1sDoubleMu114ORDoubleMu125L1f0L2pf0L3PreFiltered8,hltL3pfL1sDoubleMu114L1f0L2pf0L3PreFiltered8")
+        ////.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
+        ////.set_tag_add_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17") // need these lines to make sure the high pT leg was fired
         // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
         //.set_probe_trg_objects("triggerObjectsMu17Mu8")
         //.set_probe_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17")
@@ -2307,6 +2309,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         // for Ele12 leg of EMu cross-trigger
         //.set_probe_trg_objects("triggerObjectsEle23Ele12")
         //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg2Filter")
+        ////.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
+        ////.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg1Filter") // need these lines to make sure the high pT leg was fired
         .set_probe_id(elec_probe_id)
         .set_tag_id(elec_probe_id)
     );  
@@ -2319,17 +2323,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::string trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
     if(!is_data || is_embedded){
       trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-      trg_filters = "hltPFTau32TrackPt1Reg,hltPFTau32TrackPt1Reg";    
+      trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg,hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
     } else if (is_data &&  output_name.find("SingleMuonH") != output_name.npos){
       trg_objs = "triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-      trg_filters = "hltPFTau32TrackPt1Reg";    
+      trg_filters = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
     } else if (is_data && output_name.find("SingleMuonH") == output_name.npos){
       trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32";  
-      trg_filters = "hltPFTau32TrackPt1Reg";    
+      trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg";    
     }
-    trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";    
-    trg_filters = "hltPFTau20TrackLooseIsoAgainstMuon,hltPFTau20TrackLooseIsoAgainstMuon";
-    trg_filters = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20,hltOverlapFilterIsoMu19LooseIsoPFTau20"; // use these in HTTFilters?
+    //trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";    
+    //trg_filters = "hltPFTau20TrackLooseIsoAgainstMuon,hltPFTau20TrackLooseIsoAgainstMuon";
+    //trg_filters = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20,hltOverlapFilterIsoMu19LooseIsoPFTau20"; // use these in HTTFilters?
                            
     BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
         .set_fs(fs.get())
@@ -2340,7 +2344,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
         .set_probe_trg_objects(trg_objs)
         .set_probe_trg_filters(trg_filters)
-        //.set_extra_hlt_probe_pt(35.)
+        .set_extra_hlt_probe_pt(35.)
         //.set_extra_l1_probe_pt(28.)
         .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
