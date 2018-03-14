@@ -48,13 +48,29 @@ namespace ic {
 
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_particles;
+    std::vector<GenParticle *> undecayed_taus;
+    
+    double gen_match_undecayed_1_pt = -1;
+    double gen_match_undecayed_2_pt = -1;
+    double gen_match_undecayed_1_eta = -1;
+    double gen_match_undecayed_2_eta = -1;
+    
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_particles.push_back(particles[i]);
       }
+      if(status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
     }
-
+    
+    if(undecayed_taus.size()>0){
+      gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
+      gen_match_undecayed_1_eta = undecayed_taus[0]->eta();
+    }
+    if(undecayed_taus.size()>1){
+      gen_match_undecayed_2_pt = undecayed_taus[1]->pt();
+      gen_match_undecayed_2_eta = undecayed_taus[1]->eta();
+    }
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
@@ -166,6 +182,10 @@ namespace ic {
    event->Add("gen_match_2",gen_match_2);
    event->Add("gen_match_1_pt", gen_match_1_pt);
    event->Add("gen_match_2_pt", gen_match_2_pt);
+   event->Add("gen_match_undecayed_1_pt", gen_match_undecayed_1_pt);
+   event->Add("gen_match_undecayed_2_pt", gen_match_undecayed_2_pt);
+   event->Add("gen_match_undecayed_1_eta", gen_match_undecayed_1_eta);
+   event->Add("gen_match_undecayed_2_eta", gen_match_undecayed_2_eta);
 /*   event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
    event->Add("subleading_lepton_match_pt",subleading_lepton_match_pt);
    event->Add("leading_lepton_match_DR",leading_lepton_match_DR);

@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <string>
 #include <fstream>
@@ -34,7 +35,6 @@ class HTTTriggerFilter : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   
-  std::set<std::size_t> trig_list_;
 
 };
 

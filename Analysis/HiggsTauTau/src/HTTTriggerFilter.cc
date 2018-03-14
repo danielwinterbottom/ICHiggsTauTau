@@ -873,18 +873,15 @@ namespace ic {
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
         passed_mutaucross_singlel1 = leg1_match && leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
-        //////////////////////////////////////////////////////////
-        std::set<std::size_t> set1 = ListTriggerFilters(cross_objs_singlel1);
-        std::set<std::size_t> set2 = ListTriggerFilters(cross_objs_singlel1);
-        trig_list_.insert(set1.begin(), set1.end());
-        trig_list_.insert(set2.begin(), set2.end());
-        set1.insert(set2.begin(), set2.end());
-        event->Add("triggers_passed",set1);
-        /////////////////////////////////////////////////////////////////
         bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
         bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
         passed_mutaucross = alt_leg1_match && alt_leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
         if(passed_mutaucross_singlel1 || passed_mutaucross) dileptons_pass.push_back(dileptons[i]);
+        if(is_embedded_&& dileptons[i]->At(0)->pt()<high_leg_pt){
+          // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
+          passed_mutaucross = true;
+          passed_mutaucross_singlel1 = true;
+        }
       }
     }
     event->Add("trg_mutaucross", passed_mutaucross_singlel1 || passed_mutaucross);
@@ -1031,21 +1028,35 @@ namespace ic {
     }
     event->Add("trg_doubletau", passed_doubletau);
     
-    /****************************************/
-    // for embedding tau lep efficiency measurment
-    std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-      bool found_l1_match_1 = false;
-      bool found_l1_match_2 = false;
-      for(unsigned ta=0; ta<l1taus.size(); ++ta){
-        if(l1taus[ta]->vector().Pt()>28&&fabs(l1taus[ta]->vector().Rapidity())<2.1){
-          // must pass L1 pT cut and be matched by DR to the tau
-          if(DR(l1taus[ta],dileptons[i]->At(0))<0.5) found_l1_match_1 = true;
-          if(DR(l1taus[ta],dileptons[i]->At(1))<0.5) found_l1_match_2 = true;
-        }
-      }
-      bool hlt_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
-      bool hlt_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
-    //***************************************/
+    ///****************************************/
+    //// for embedding tau lep efficiency measurment
+    //std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+    //  std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label); 
+    //  bool found_l1_match_1 = false;
+    //  bool found_l1_match_2 = false;
+    //  double iso_tau_pt=0;
+    //  double tau_pt=0;
+    //  for(unsigned ta=0; ta<l1taus.size(); ++ta){
+    //    if(l1taus[ta]->vector().Pt()>28&&fabs(l1taus[ta]->vector().Rapidity())<2.15&&l1taus[ta]->isolation()>0){
+    //      // must pass L1 pT cut and be matched by DR to the tau
+    //      if(DR(l1taus[ta],dileptons[0]->At(0))<0.5) found_l1_match_1 = true;
+    //      if(DR(l1taus[ta],dileptons[0]->At(1))<0.5) found_l1_match_2 = true;
+    //    }
+    //  }
+    //  for(unsigned ta=0; ta<l1taus.size(); ++ta){
+    //    if(l1taus[ta]->vector().Pt()>50&&fabs(l1taus[ta]->vector().Rapidity())<2.15){
+    //      // must pass L1 pT cut and be matched by DR to the tau
+    //      if(DR(l1taus[ta],dileptons[0]->At(0))<0.5) found_l1_match_1 = true;
+    //      if(DR(l1taus[ta],dileptons[0]->At(1))<0.5) found_l1_match_2 = true;
+    //    }
+    //  }
+    //  bool hlt_match_1 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs, leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[0]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
+    //  bool hlt_match_2 = IsFilterMatchedWithIndex(dileptons[0]->At(1), objs, leg2_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[0]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
+    //  event->Add("l1_match_1", found_l1_match_1);
+    //  event->Add("l1_match_2", found_l1_match_2);
+    //  event->Add("hlt_match_1", hlt_match_1);
+    //  event->Add("hlt_match_2", hlt_match_2);
+    ////***************************************/
     
     bool passed_singletau_1 = false;
     bool passed_singletau_2 = false;
@@ -1113,9 +1124,6 @@ namespace ic {
 }
 
   int HTTTriggerFilter::PostAnalysis() {
-    std::cout << "------ trigger filter list ---------------"  << std::endl;
-    for ( auto it = trig_list_.begin(); it != trig_list_.end(); it++ ) std::cout << *it << std::endl;
-    std::cout << "------------------------------------------" << std::endl;
     return 0;
   }
 

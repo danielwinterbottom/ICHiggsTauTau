@@ -271,6 +271,10 @@ namespace ic {
                   w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
               fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
                   w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+              fns_["t_fake_TightIso_mt_data"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_fake_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
+              fns_["t_genuine_TightIso_mt_data"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_genuine_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
             }
           }
           if (strategy_ != strategy::smsummer16) {
@@ -365,21 +369,10 @@ namespace ic {
              w_->function("t_iso_mva_t_pt40_eta2p1_sf")->functor(w_->argSet("t_pt,t_eta,t_dm")));
         } 
         if(do_tracking_eff_) {
-          if(strategy_ == strategy::smsummer16){  
-            TFile f("input/scale_factors/htt_scalefactors_v16_5.root");
-            wtrk_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
-            f.Close();
-            
-            fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                wtrk_->function("m_trk_ratio")->functor(wtrk_->argSet("m_eta")));
-            fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                wtrk_->function("e_trk_ratio")->functor(wtrk_->argSet("e_pt,e_eta")));
-          } else {
-            fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
-            fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));  
-          }
+          fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+          fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));  
         }
     }
     if(embedding_scalefactor_file_!="" && is_embedded_) {
@@ -395,6 +388,10 @@ namespace ic {
               wembed_->function("m_aiso1_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
         fns_["m_aiso2_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_aiso2_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
+        //fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+        //     wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+        //fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+        //     wembed_->function("m_trg_binned_mc")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_data"] = std::shared_ptr<RooFunctor>(
              wembed_->function("m_trg_data")->functor(wembed_->argSet("m_pt,m_eta")));
         fns_["m_trg_mc"] = std::shared_ptr<RooFunctor>(
@@ -408,10 +405,21 @@ namespace ic {
               wembed_->function("e_aiso1_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
         fns_["e_aiso2_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("e_aiso2_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
-        fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("e_trg_binned_data")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
-        fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        //fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+        //     wembed_->function("e_trg_binned_data")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        //fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+        //     wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg_data"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("e_trg_data")->functor(wembed_->argSet("e_pt,e_eta")));
+        fns_["e_trg_mc"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("e_trg_mc")->functor(wembed_->argSet("e_pt,e_eta")));
+        
+        fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_pt,gt_eta")));
+        fns_["m_sel_vvliso_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_vvliso_ratio")->functor(wembed_->argSet("gt_pt,gt_eta")));
+        fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("t1_eta,t1_eta")));
 
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
@@ -499,17 +507,26 @@ namespace ic {
       double wt_stitching = 1.0;  
       int run = eventInfo->run();
       if(channel_==channel::mt){
-        wt_stitching = 1.192*(((run >= 272007) && (run < 275657))*(1.0/0.899)+((run >= 275657) && (run < 276315))*(1.0/0.881)+((run >= 276315) && (run < 276831))*(1.0/0.877)+((run >= 276831) && (run < 277772))*(1.0/0.939)+((run >= 277772) && (run < 278820))*(1.0/0.936)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.962));  
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.899)+((run >= 275657) && (run < 276315))*(1.0/0.881)+((run >= 276315) && (run < 276831))*(1.0/0.877)+((run >= 276831) && (run < 277772))*(1.0/0.939)+((run >= 277772) && (run < 278820))*(1.0/0.936)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.962));  
       } else if(channel_==channel::et) {
-        wt_stitching = 1.250*(((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.945)+((run >= 276831) && (run < 277772))*(1.0/0.945)+((run >= 277772) && (run < 278820))*(1.0/0.915)+((run >= 278820) && (run < 280919))*(1.0/0.903)+((run >= 280919) && (run < 284045))*(1.0/0.933));    
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.945)+((run >= 276831) && (run < 277772))*(1.0/0.945)+((run >= 277772) && (run < 278820))*(1.0/0.915)+((run >= 278820) && (run < 280919))*(1.0/0.903)+((run >= 280919) && (run < 284045))*(1.0/0.933));    
       } else if(channel_==channel::em) {
-        wt_stitching = 1.140*(((run >= 272007) && (run < 275657))*(1.0/0.891)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.953)+((run >= 276831) && (run < 277772))*(1.0/0.947)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.906)+((run >= 280919) && (run < 284045))*(1.0/0.950));  
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.891)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.953)+((run >= 276831) && (run < 277772))*(1.0/0.947)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.906)+((run >= 280919) && (run < 284045))*(1.0/0.950));  
           
       } else if(channel_==channel::tt) {
-        wt_stitching = 2.1*(((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
       }
       if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
-      eventInfo->set_weight("wt_stitching", wt_stitching);  
+      eventInfo->set_weight("wt_stitching", wt_stitching);
+      //double gen_match_undecayed_1_pt = event->Get<double>("gen_match_undecayed_1_pt");
+      //double gen_match_undecayed_2_pt = event->Get<double>("gen_match_undecayed_2_pt");
+      //double gen_match_undecayed_1_eta = event->Get<double>("gen_match_undecayed_1_eta");
+      //double gen_match_undecayed_2_eta = event->Get<double>("gen_match_undecayed_2_eta");
+      //auto args_1 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta};
+      //auto args_2 = std::vector<double>{gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
+      //auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
+      //double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
+      //eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     }
 
     if (do_topquark_weights_) {
@@ -1221,8 +1238,10 @@ namespace ic {
                     }
                   } else if (strategy_ == strategy::smsummer16){
                     if(is_embedded_){
-                      ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());    
-                      ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+                      //ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());    
+                      //ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+                      ele_trg = fns_["e_trg_data"]->eval(args_desy.data());    
+                      ele_trg_mc = fns_["e_trg_mc"]->eval(args_desy.data());
                     } else {
                       ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());  
                       ele_trg_mc = fns_["e_trgEle25eta2p1WPTight_desy_mc"]->eval(args_desy.data());
@@ -1245,7 +1264,6 @@ namespace ic {
           ele_trg = ele_trg / ele_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
         }
-        if(ele_trg>50) ele_trg = 50;
         weight *= (ele_trg * tau_trg);
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
@@ -1464,6 +1482,8 @@ namespace ic {
                       if(pt>=23){
                         // use signle muon trigger for pt_1>23
                         if(is_embedded_){
+                          //mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());    
+                          //mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
                           mu_trg = fns_["m_trg_data"]->eval(args_desy.data());    
                           mu_trg_mc = fns_["m_trg_mc"]->eval(args_desy.data());
                         } else {
@@ -1484,8 +1504,13 @@ namespace ic {
                           mu_trg_mc = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_mc"]->eval(args_desy.data());
                           mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
                         }
-                        if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        if(!is_embedded_){
+                          if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
+                          else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        } else {
+                          if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_data"]->eval(t_args.data());
+                          else tau_trg = fns_["t_fake_TightIso_mt_data"]->eval(t_args.data());  
+                        }
                       }
                       // may want to add different SFs for anti-iso
                     }  else{
@@ -2255,8 +2280,6 @@ namespace ic {
           if(e_iso<=0.1) e_iso_wt = fns_["e_iso_ratio"]->eval(args_1.data());
           if(e_iso>0.1&&e_iso<=0.2) e_iso_wt = fns_["e_aiso1_ratio"]->eval(args_1.data());
           if(e_iso>0.2&&e_iso<=0.5) e_iso_wt = fns_["e_aiso2_ratio"]->eval(args_1.data());
-          if(e_iso_wt>50) e_iso_wt = 50;
-          if(ele_idiso>50) ele_idiso = 50;
           ele_idiso*=e_iso_wt;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
@@ -2490,8 +2513,6 @@ namespace ic {
                  if(m_iso<=0.15) mu_iso = fns_["m_iso_ratio"]->eval(args_1_2.data());
                  if(m_iso>0.15&&m_iso<=0.25) mu_iso = fns_["m_aiso1_ratio"]->eval(args_1_2.data());
                  if(m_iso>0.25&&m_iso<=0.5) mu_iso = fns_["m_aiso2_ratio"]->eval(args_1_2.data());
-                 if(mu_iso>50) mu_iso = 50;
-                 if(m_idiso>50) m_idiso = 50;
                  m_idiso*=mu_iso;
               } 
               m_idiso_up = 1.0;
@@ -2517,8 +2538,6 @@ namespace ic {
                  if(e_iso<=0.1) e_iso_wt = fns_["e_iso_ratio"]->eval(args_1_1.data());
                  if(e_iso>0.1&&e_iso<=0.2) e_iso_wt = fns_["e_aiso1_ratio"]->eval(args_1_1.data());
                  if(e_iso>0.2&&e_iso<=0.5) e_iso_wt = fns_["e_aiso2_ratio"]->eval(args_1_1.data());
-                 if(e_iso_wt>50) e_iso_wt = 50;
-                 if(e_idiso>50) e_idiso = 50;
                  e_idiso*=e_iso_wt;
             } 
             e_idiso_down=1.0;

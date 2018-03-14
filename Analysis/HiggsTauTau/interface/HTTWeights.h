@@ -116,7 +116,6 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_up_;
   TH1F *ggh_hist_down_;
   std::shared_ptr<RooWorkspace> w_;
-  std::shared_ptr<RooWorkspace> wtrk_; //workspace for trk efficiencies
   std::shared_ptr<RooWorkspace> wembed_;
   std::shared_ptr<RooWorkspace> mssm_w_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
