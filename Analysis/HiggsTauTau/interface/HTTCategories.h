@@ -47,6 +47,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
   CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
   CLASS_MEMBER(HTTCategories, bool, do_z_weights)
+  CLASS_MEMBER(HTTCategories, bool, do_faketaus)
 
  
   TTree *outtree_;
@@ -350,6 +351,7 @@ class HTTCategories : public ModuleBase {
   float lagainstElectronVLooseMVA_2 = 0;
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
+  double sc_eta_;
     
   int tau_decay_mode_1_;
   int tau_decay_mode_2_;
@@ -1382,6 +1384,10 @@ class HTTCategories : public ModuleBase {
   double pjbhdeta_;
   int prob_region_;
   unsigned n_pjets_;
+  
+  double tau_pt_1_;
+  double tau_pt_2_;
+  
 
  public:
   HTTCategories(std::string const& name);

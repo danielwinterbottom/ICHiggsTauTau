@@ -44,6 +44,7 @@ namespace ic {
       do_sm_scale_wts_ = false;
       do_jes_vars_ = false;
       do_z_weights_ = false;
+      do_faketaus_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -76,6 +77,8 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+      outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       if (strategy_ == strategy::smsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -884,6 +887,10 @@ namespace ic {
       if(qcd_study_){
         outtree_->Branch("jet_flav_1", &jet_flav_1_);
         outtree_->Branch("jet_flav_2", &jet_flav_2_);
+      }
+      if(do_faketaus_){
+        outtree_->Branch("tau_pt_1", &tau_pt_1_);
+        outtree_->Branch("tau_pt_2", &tau_pt_2_);      
       }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -2733,6 +2740,7 @@ namespace ic {
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
     
+    
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
@@ -2916,6 +2924,7 @@ namespace ic {
         antimu_2_ = lagainstMuonLoose3_2;
       }
       if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
+        sc_eta_ = elec->sc_eta();
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
@@ -3564,6 +3573,30 @@ namespace ic {
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
     }
+    ////////////////////////////
+    //if (wt_.var_double>50){
+    //    std::cout << "---------------------------------" << std::endl;
+    //    std::cout << "lep1: pT = " << pt_1_.var_double << ", eta = " << eta_1_.var_double  << ", iso = " << iso_1_.var_double << std::endl;
+    //    std::cout << "lep2: pT = " << pt_2_.var_double << ", eta = " << eta_2_.var_double << ", iso = " << iso_2_.var_double << std::endl;
+    //    std::cout << "trg_1 = " << trigweight_1_ << ", idiso_1 = " << idisoweight_1_ << std::endl;
+    //    std::cout << "trg_2 = " << trigweight_2_ << ", idiso_2 = " << idisoweight_2_ << std::endl;
+    //    eventInfo->print_weights();
+    //}
+    ////std::cout << "------ trigger filter list ---------------"  << std::endl;
+    //if(gen_match_1_==4&&gen_match_2_==5&&pt_1_.var_double>25&&pt_2_.var_double>30){
+    //  std::set<std::size_t> triggers_passed = event->Get<std::set<std::size_t>>("triggers_passed"); 
+    //  std::system("echo New Event >> filters.txt");
+    //  for ( auto it = triggers_passed.begin(); it != triggers_passed.end(); it++ ){
+    //      std::stringstream ss;
+    //      ss << *it;
+    //      std::string out_str = "echo " +ss.str()+" >> filters.txt";
+    //      system(out_str.c_str());
+    //  }
+    //}
+    ////std::cout << "------------------------------------------" << std::endl;
+    //
+    ///////////////////////////////////////
+    
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
       tag_trigger_match_1_ = event->Exists("tp_tag_leg1_match") ? event->Get<bool>("tp_tag_leg1_match") : 0;
@@ -4393,6 +4426,15 @@ namespace ic {
       pull_balance_bb_ = -9999;  
       convergence_bb_ = -9999; 
       mbb_h_ = -9999;
+    }
+    
+    if(do_faketaus_&&(channel_==channel::zmm||channel_==channel::em)){
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      tau_pt_1_=-9999;
+      tau_pt_2_=-9999;
+      if(taus.size()>0) tau_pt_1_ = taus[0]->pt();
+      if(taus.size()>1) tau_pt_2_ = taus[1]->pt();
     }
     
     if (write_tree_ && fs_) outtree_->Fill();

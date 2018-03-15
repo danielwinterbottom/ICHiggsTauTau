@@ -56,6 +56,7 @@ class HTTSequence {
   void BuildTPZMMPairs();
   void BuildWMuNu();
   void BuildTPMTPairs();
+  void BuildTPEMPairs();
 
   void BuildTauSelection();
 

@@ -141,7 +141,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    veto_dimuon_dz = 0.2;
    lead_tau_pt=0;
    lead_min_taus=0;
-   if(channel_str == "em"){
+   if(channel_str == "em" || channel_str == "tpem"){
      elec_dxy = 0.02;
      elec_dz = 0.1;
      muon_dxy = 0.02;
@@ -696,7 +696,7 @@ void HTTSequence::BuildSequence(){
        BuildModule(httStitching); 
     }
       
-    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt){
+    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!=channel::tpem){
         HTTStitching httStitching = HTTStitching("HTTStitching")  
         .set_era(era_type)
         .set_fs(fs.get());
@@ -984,6 +984,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::et) BuildETPairs();
   if (channel == channel::mt) BuildMTPairs();
   if (channel == channel::tpmt) BuildTPMTPairs();
+  if (channel == channel::tpem) BuildTPEMPairs();
   if (channel == channel::em) BuildEMPairs();
   if (channel == channel::tt) BuildTTPairs();
   if (channel == channel::zee) BuildZEEPairs();
@@ -1018,7 +1019,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 
    if(channel != channel::wmnu) {
 
-   if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && !js["qcd_study"].asBool()){  
+   if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type!=strategy::mssmsummer16 && strategy_type!=strategy::smsummer16) || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -1076,7 +1077,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 
      }
    } else {
-   if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && !js["qcd_study"].asBool()){  
+   if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && era_type == era::data_2016)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -2094,7 +2095,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt);
+      httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!= channel::tpem);
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -2105,7 +2106,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-    httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt);
+    httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
@@ -2125,7 +2126,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
   
 
     BuildModule(httWeights);
-    if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt){
+    if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
       HTTStitching httStitching = HTTStitching("HTTStitching")  
           .set_era(era_type)
           .set_fs(fs.get());
@@ -2241,6 +2242,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts)
     .set_do_jes_vars(do_jes_vars)
+    .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));
 
  } else {
@@ -2257,7 +2259,7 @@ BuildModule(WMuNuCategories("WMuNuCategories")
     .set_write_tree(true));
 
  }
-if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel::tpmt) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) ){
+if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel::tpmt || channel == channel::tpem) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) ){
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
@@ -2349,7 +2351,24 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
     );
-  } 
+  } if(channel == channel::tpem){  
+    std::function<bool(Muon const*)> muon_probe_id;
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+    else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+    
+    BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+        .set_fs(fs.get())
+        .set_channel(channel)
+        .set_strategy(strategy_type)
+        .set_ditau_label("ditau")
+        .set_tag_trg_objects("triggerObjectsIsoMu24")
+        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        .set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+        .set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+        .set_probe_id(muon_probe_id)
+        .set_tag_id(muon_probe_id)
+    );
+  }
 }
 }
 }
@@ -2964,7 +2983,25 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
-
+  
+  
+  if(js["baseline"]["do_faketaus"].asBool()){
+    BuildModule(SimpleFilter<Tau>("TauFilter")
+        .set_input_label(js["taus"].asString()).set_min(0)
+        .set_predicate([=](Tau const* t) {
+          return  t->pt()                     > 15          &&
+                  fabs(t->eta())              <  2.3        &&
+                  fabs(t->lead_dz_vertex())   <  0.2        &&
+                  fabs(t->charge())           == 1          &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+    
+        }));  
+    BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("ditau")
+      .set_min_dr(0.5));
+  }
+  
 }
 
 // --------------------------------------------------------------------------
@@ -3030,6 +3067,7 @@ void HTTSequence::BuildTPMTPairs() {
  BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
       .set_input_label("loose_muons").set_min(0)
       .set_predicate([=](Muon const* m) {
+          
         return  m->pt()                 > 5    &&
                 m->is_global() ;
 
@@ -3214,6 +3252,85 @@ void HTTSequence::BuildTPMTPairs() {
         .set_candidate_name_first("lepton1")
         .set_candidate_name_second("lepton2")
         .set_output_label("ditau"));
+}
+
+void HTTSequence::BuildTPEMPairs() {
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      js["muons"].asString(), "sel_muons"));
+
+
+  std::function<bool(Muon const*)> MuonID;
+  if(strategy_type==strategy::paper2013){
+    if(special_mode == 21 || special_mode == 22){
+     MuonID = [](Muon const* m) { return HttEMuFakeMuon(m); };
+    } else if(special_mode ==25){
+     MuonID = [](Muon const* m) {return m->pt()>= 0; } ;
+    } else { 
+      MuonID = [](Muon const* m) { return MuonTight(m); };
+    }
+   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16&&strategy_type!=strategy::smsummer16){
+    MuonID = [](Muon const* m) { return MuonMedium(m); };
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
+    MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   }
+
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_muons").set_min(1)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+  
+    BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      js["electrons"].asString(), "sel_electrons"));
+    
+    
+    std::function<bool(Electron const*)> ElecID;
+    if(strategy_type==strategy::paper2013){
+      if(special_mode == 20 || special_mode == 22){
+       ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
+      } else if(special_mode ==25){
+       ElecID = [](Electron const* e) {return e->pt()>=0; } ;//Want this to always return true (and not to get compiler warnings)
+      } else {
+        ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
+      }
+     } else if(strategy_type==strategy::phys14){
+        ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
+     } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
+        ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+        ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+     }
+    
+    
+    BuildModule(SimpleFilter<Electron>("ElectronFilter")
+        .set_input_label("sel_electrons").set_min(1)
+        .set_predicate([=](Electron const* e) {
+          return  e->pt()                 > elec_pt    &&
+                  fabs(e->eta())          < elec_eta   &&
+                  fabs(e->dxy_vertex())   < elec_dxy   &&
+                  fabs(e->dz_vertex())    < elec_dz    &&
+                  ElecID(e) ;
+    
+        }));
+ 
+  
+    BuildModule(CompositeProducer<Electron, Muon>("EMPairProducer")
+      .set_input_label_first("sel_electrons")
+      .set_input_label_second("sel_muons")
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau"));
 }
 
 // --------------------------------------------------------------------------
