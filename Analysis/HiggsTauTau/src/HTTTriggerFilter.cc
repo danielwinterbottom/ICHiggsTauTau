@@ -1026,6 +1026,7 @@ namespace ic {
         }
       }
     }
+    if(is_embedded_) passed_doubletau = true; // tau triggers not simulated correctly in embedded samples so set to true and apply data efficiency as SF in HTTWeights
     event->Add("trg_doubletau", passed_doubletau);
     
     ///****************************************/

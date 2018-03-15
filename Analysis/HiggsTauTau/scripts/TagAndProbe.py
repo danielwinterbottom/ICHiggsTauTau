@@ -87,6 +87,7 @@ embed_samples = []
 if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
 if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
 if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
+if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElEMu','EmbeddingElEMu','EmbeddingElEMu','EmbeddingElMuH']
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -149,6 +150,24 @@ if options.channel == 'tpzee':
   trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
   id_tag_1 = baseline_tag1 
   id_tag_2 = baseline_tag2
+if options.channel == 'tpem': 
+  iso_cut_1='iso_1<0.15'    
+  iso_cut_2='iso_2<0.15'
+  if options.aiso1:
+    iso_cut_1='iso_1>=0.15&&iso_1<0.3'  
+    iso_cut_2='iso_2>=0.15&&iso_2<0.3'
+  if options.aiso2:
+    iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
+    iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
+  
+  baseline_tag1 = '(0)'
+  baseline_tag2 = '(gen_match_1==3)'
+  iso_probe_1 = '(%s)' % iso_cut_1
+  iso_probe_2 = '(%s)' % iso_cut_2
+  trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
+  trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
+  id_tag_1 = baseline_tag1 
+  id_tag_2 = baseline_tag2  
 if options.channel == 'tpmt':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_tight'
@@ -234,6 +253,12 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
           idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
           trg_eta_bins = '[0,1.48,2.1,2.5]'
           trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    
+    
+    if options.channel == 'tpem':
+      idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
+      idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
+      trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+      trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
       
     if options.channel == 'tpmt':
       idiso_pt_bins = '[20,25,30,40,50,100,200,1000]'
@@ -389,7 +414,7 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
       embed_iso_gr.Divide(embed_iso_num_proj,embed_iso_denum_proj,"n")
     
     if options.channel == 'tpzmm': sfs_output_name = options.outputfolder+'/muon_SFs.root'
-    if options.channel == 'tpzee': sfs_output_name = options.outputfolder+'/electron_SFs.root'
+    if options.channel == 'tpzee' or options.channel == 'tpem': sfs_output_name = options.outputfolder+'/electron_SFs.root'
     sfs_output = ROOT.TFile(sfs_output_name, 'RECREATE')
     sfs_output.cd()
     
@@ -417,7 +442,7 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     if options.channel == 'tpzmm': 
         x_title = 'P_{T}^{#mu} (GeV)'
         plot_name = 'muon_efficiency_'
-    if options.channel == 'tpzee':
+    if options.channel == 'tpzee' or options.channel == 'tpem':
         x_title = 'P_{T}^{e} (GeV)'
         plot_name = 'electron_efficiency_'
 
@@ -479,7 +504,9 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0,1.5,2.1]'
       trg_pt_bins = '[10,20,22,24,26,28,30,35,40,50,100]'
       if options.ttbins:  
-        trg_pt_bins = '[30,35,38,40,42,44,48,52,56,60,70,90,200]'
+        #trg_pt_bins = '[30,35,40,45,50,60,80,200]'
+        trg_pt_bins = '[30,35,40,45,50,60,80,100,160]'
+        if options.taudm == '0': trg_pt_bins = '[30,35,40,45,50,60,80,100,160]'
         #trg_eta_bins = '[0,2.1]'
         trg_eta_bins = '[0,2.1]'
     
@@ -674,7 +701,7 @@ ana.nodes.AddNode(ListNode(nodename))
 
 ana.remaps = {}
 if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
-elif options.channel == 'tpzee': ana.remaps['SingleElectron'] = 'data_obs'
+elif options.channel == 'tpzee' or options.channel == 'tpem': ana.remaps['SingleElectron'] = 'data_obs'
 elif options.channel == 'tpmt': ana.remaps['SingleMuon'] = 'data_obs'
 
 

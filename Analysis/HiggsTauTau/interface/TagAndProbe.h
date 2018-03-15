@@ -338,6 +338,40 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     
     n_bjets_ = bjets.size();
   }
+  if(channel_ == channel::tpem){
+    // add extra lepton veto!  
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+      Electron const* elec = dynamic_cast<Electron const*>(lep1);
+      //Muon const* muon = dynamic_cast<Muon const*>(lep2);
+      T muon = dynamic_cast<T>(lep2);
+      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+      id_tag_1_ = 0;
+      id_tag_2_ = tag_id_(muon);
+      id_probe_1_ = ElectronHTTIdSpring16(elec, false);
+      id_probe_2_ = 0;
+    }
+
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    mt_1_ = MT(lep1, mets);
+    
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    
+    std::string jets_label = "ak4PFJetsCHS";
+    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp = 0.8484;
+    std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label);
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    
+    n_bjets_ = bjets.size();
+  }
   
   
   if(fs_) outtree_->Fill();
