@@ -22,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "ttbins":False }
+defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "ttbins":False, "taudm":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -53,6 +53,8 @@ parser.add_argument("--aiso2", dest="aiso2", action='store_true',
     help="Compute scale-factors or anti-isolated region 2.")
 parser.add_argument("--ttbins", dest="ttbins", action='store_true',
     help="Use tt channel trigger bins.")
+parser.add_argument("--taudm", dest="taudm", type=str,
+    help="If specified then does efficincies for set tau decay mode.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -68,6 +70,7 @@ print 'em_iso            =', options.em_iso
 print 'aiso1             =', options.aiso1
 print 'aiso2             =', options.aiso2
 print 'ttbins            =', options.ttbins
+print 'tau decay mode    =', options.taudm
 print '###############################################'
 print ''
 
@@ -155,6 +158,7 @@ if options.channel == 'tpmt':
     iso_cut_2='iso_loose'  
 
   baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
+  if options.taudm: baseline_tag1+="&&dm==%s" % options.taudm
 
   idiso_probe_2 = '(%s)' % iso_cut_2
   trg_tag_1 = baseline_tag1+'*(%s)' % iso_cut_2 # reqires probe to pass id/iso cut as well!
@@ -472,9 +476,12 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
     if options.channel == 'tpmt':
       idiso_pt_bins = '[20,25,30,40,50,100]'
       idiso_eta_bins = '[0,1.5,2.1]'
+      trg_eta_bins = '[0,1.5,2.1]'
       trg_pt_bins = '[10,20,22,24,26,28,30,35,40,50,100]'
-      if options.ttbins:  trg_pt_bins = '[30,35,38,40,42,44,48,52,56,60,70,80,100]'
-      trg_eta_bins = '[0,2.1]'
+      if options.ttbins:  
+        trg_pt_bins = '[30,35,38,40,42,44,48,52,56,60,70,90,200]'
+        #trg_eta_bins = '[0,2.1]'
+        trg_eta_bins = '[0,2.1]'
     
     trg_plot_probe_2 = 'abs(eta_2),pt_2'+trg_eta_bins+','+trg_pt_bins
     idiso_plot_probe_2 = 'abs(eta_2),pt_2'+idiso_eta_bins+','+idiso_pt_bins
@@ -532,6 +539,26 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
     data_idiso_gr.Divide(data_idiso_num_proj,data_idiso_denum_proj,"n")
     mc_idiso_gr.Divide(zll_idiso_num_proj,zll_idiso_denum_proj,"n")
     
+    if options.ttbins:
+      # for efficiencies binned in eta
+      mc_trg_num_proj_bin1   = zll_trg_num.ProjectionX("",1,1)
+      #mc_trg_num_proj_bin2   = zll_trg_num.ProjectionX("",2,2)
+      mc_trg_denum_proj_bin1   = zll_trg_denum.ProjectionX("",1,1)
+      #mc_trg_denum_proj_bin2   = zll_trg_denum.ProjectionX("",2,2)
+      mc_trg_gr_bin1   = ROOT.TGraphAsymmErrors(zll_trg_num.GetNbinsX())
+      #mc_trg_gr_bin2   = ROOT.TGraphAsymmErrors(zll_trg_num.GetNbinsX())
+      mc_trg_gr_bin1.Divide(mc_trg_num_proj_bin1,mc_trg_denum_proj_bin1,"n")
+      #mc_trg_gr_bin2.Divide(mc_trg_num_proj_bin2,mc_trg_denum_proj_bin2,"n")
+    
+      data_trg_num_proj_bin1   = data_trg_num.ProjectionX("",1,1)
+      #data_trg_num_proj_bin2   = data_trg_num.ProjectionX("",2,2)
+      data_trg_denum_proj_bin1   = data_trg_denum.ProjectionX("",1,1)
+      #data_trg_denum_proj_bin2   = data_trg_denum.ProjectionX("",2,2)
+      data_trg_gr_bin1   = ROOT.TGraphAsymmErrors(data_trg_num.GetNbinsX())
+      #data_trg_gr_bin2   = ROOT.TGraphAsymmErrors(data_trg_num.GetNbinsX())
+      data_trg_gr_bin1.Divide(data_trg_num_proj_bin1,data_trg_denum_proj_bin1,"n")
+      #data_trg_gr_bin2.Divide(data_trg_num_proj_bin2,data_trg_denum_proj_bin2,"n")
+    
     if options.embedded:
       
       embed_trg_denum = outfile.Get(nodename+'/EmbedZLL_trg_tag1_denum')
@@ -551,6 +578,17 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
       
       embed_trg_gr.Divide(embed_trg_num_proj,embed_trg_denum_proj,"n")
       embed_idiso_gr.Divide(embed_idiso_num_proj,embed_idiso_denum_proj,"n")
+      
+      if options.ttbins:
+        # for efficiencies binned in eta
+        embed_trg_num_proj_bin1   = embed_trg_num.ProjectionX("",1,1)
+        #embed_trg_num_proj_bin2   = embed_trg_num.ProjectionX("",2,2)
+        embed_trg_denum_proj_bin1   = embed_trg_denum.ProjectionX("",1,1)
+        #embed_trg_denum_proj_bin2   = embed_trg_denum.ProjectionX("",2,2)
+        embed_trg_gr_bin1   = ROOT.TGraphAsymmErrors(embed_trg_num.GetNbinsX())
+        #embed_trg_gr_bin2   = ROOT.TGraphAsymmErrors(embed_trg_num.GetNbinsX())
+        embed_trg_gr_bin1.Divide(embed_trg_num_proj_bin1,embed_trg_denum_proj_bin1,"n")
+        #embed_trg_gr_bin2.Divide(embed_trg_num_proj_bin2,embed_trg_denum_proj_bin2,"n")
     
     if options.channel == 'tpmt': sfs_output_name = options.outputfolder+'/tau_SFs.root'
     sfs_output = ROOT.TFile(sfs_output_name, 'RECREATE')
@@ -561,6 +599,12 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
     data_idiso_gr.Write('data_idiso_proj')
     mc_idiso_gr.Write('mc_idiso_proj')
     
+    if options.ttbins:
+      data_trg_gr_bin1.Write('data_trg_proj_bin1')    
+      #data_trg_gr_bin2.Write('data_trg_proj_bin2')
+      mc_trg_gr_bin1.Write('mc_trg_proj_bin1')    
+      #mc_trg_gr_bin2.Write('mc_trg_proj_bin2')
+    
     trg_graphs = [sfs_output.Get('data_trg_proj'),sfs_output.Get('mc_trg_proj')]
     idiso_graphs = [sfs_output.Get('data_idiso_proj'),sfs_output.Get('mc_idiso_proj')]
     
@@ -568,6 +612,10 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
         
       embed_trg_gr.Write('embed_trg_proj')
       embed_idiso_gr.Write('embed_idiso_proj')
+      
+      if options.ttbins:
+        embed_trg_gr_bin1.Write('embed_trg_proj_bin1')    
+        #embed_trg_gr_bin2.Write('embed_trg_proj_bin2')
       
       trg_graphs.append(sfs_output.Get('embed_trg_proj'))
       idiso_graphs.append(sfs_output.Get('embed_idiso_proj'))
@@ -577,12 +625,14 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
         plot_name = 'tau_efficiency_'
 
     if options.era=='mssmsummer16': x_max = 1000
-    else: x_max = 100
+    else: x_max = 200
     leg_labels=['data','MC']
     if options.embedded: leg_labels=['data','MC','Embedded']
     plotting.TagAndProbePlot(trg_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg',"trigger")
     plotting.TagAndProbePlot(idiso_graphs,leg_labels,"",True,False,options.era=='mssmsummer16',"0.7,1.3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'idiso',"ID-isolation")
-
+    if options.ttbins:
+      plotting.TagAndProbePlot([data_trg_gr_bin1,embed_trg_gr_bin1],['data','Embedded'],"",True,False,options.era=='mssmsummer16',"2,3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg_bin1',"trigger")
+      #plotting.TagAndProbePlot([data_trg_gr_bin2,embed_trg_gr_bin2],['data','Embedded'],"",True,False,options.era=='mssmsummer16',"1.7,3",True,x_max,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+'trg_bin2',"trigger #eta > 1.5")
     
     data_trg_num.Divide(data_trg_denum)
     zll_trg_num.Divide(zll_trg_denum)
