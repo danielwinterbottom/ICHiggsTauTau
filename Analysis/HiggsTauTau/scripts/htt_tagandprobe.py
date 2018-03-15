@@ -149,7 +149,7 @@ if options.proc_data:
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras: 
-         if 'mt' in chn or 'zmm' or 'tpzmm' in chn or 'tpmt' in chn:
+         if 'mt' in chn or 'zmm' in chn or 'tpzmm' in chn or 'tpmt' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleMuon'+era]
@@ -158,7 +158,7 @@ if options.proc_data:
                 'SingleMuon'+era+'v2']
                data_samples+=[   
                 'SingleMuon'+era+'v3']
-         if 'et' in chn or 'zee' in chn or 'tpzee' in chn:
+         if 'et' in chn or 'zee' in chn or 'tpzee' in chn or 'tpem' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleElectron'+era]
@@ -167,7 +167,7 @@ if options.proc_data:
                 'SingleElectron'+era+'v2']
                data_samples+=[   
                 'SingleElectron'+era+'v3']
-
+ 
   DATAFILELIST="./filelists/Trigger_Data_80X"
 
 
@@ -198,16 +198,22 @@ if options.proc_embed:
         embed_samples+=['EmbeddingElEl'+era]
       if 'tpzmm' in chn:
         embed_samples+=['EmbeddingMuMu'+era]  
+      if 'tpem' in chn:
+        embed_samples+=['EmbeddingElMu'+era]   
 
         
 
 
   EMBEDFILELIST="./filelists/Trigger_MC_80X"
+  EMBEDFILELISTEM="./filelists/Nov20_MC_80X"
   
   for sa in embed_samples:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Trigger_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
-    nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
+    nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+    if 'tpem' in chn: 
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTEM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+      nfiles = sum(1 for line in open('%(EMBEDFILELISTEM)s_%(sa)s.dat' % vars()))
     nperjob = 40
     
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
