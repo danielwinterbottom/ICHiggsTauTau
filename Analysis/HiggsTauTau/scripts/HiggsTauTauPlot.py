@@ -822,6 +822,8 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
+    if options.channel in ['et','mt','tt']: wt+='*1.05263'
+    if options.channel == 'tt': wt+='*1.05263'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
@@ -858,7 +860,7 @@ def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
     ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
     ana.nodes[nodename].AddNode(ztt_node)
 def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
-    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
+    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)    
     
 def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
