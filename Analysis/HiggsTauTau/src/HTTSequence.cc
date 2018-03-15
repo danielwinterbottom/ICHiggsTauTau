@@ -2493,6 +2493,13 @@ if( strategy_type == strategy::paper2013) {
 void HTTSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
+ if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded){
+   BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+      .set_input_label("muons")
+      .set_shift_label("muon_scales")
+      .set_shift(muon_shift));
+ }
+ 
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
