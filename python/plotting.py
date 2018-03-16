@@ -2784,7 +2784,9 @@ def TagAndProbePlot(graphs=[],
              y_title="",
              extra_pad=0,
              plot_name="plot",
-             label=""):
+             label="",
+             fits=None,
+             ratio_fits=None):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2808,8 +2810,7 @@ def TagAndProbePlot(graphs=[],
         
     c1 = R.TCanvas()
     c1.cd()
-    mg.Draw('p')
-    
+        
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
@@ -2867,6 +2868,16 @@ def TagAndProbePlot(graphs=[],
     axish[0].Draw()
     
     mg.Draw('p')
+    
+    mg.Draw('p')
+    if fits is not None:
+      fit_count=0  
+      for i in fits:
+        i.SetLineWidth(2)
+        i.SetLineColor(colourlist[fit_count])
+        i.Draw('same')
+        fit_count+=1
+    
     axish[0].Draw("axissame")
        
     #Setup legend
@@ -2913,6 +2924,15 @@ def TagAndProbePlot(graphs=[],
           ratio_graphs.append(sf_graph.Clone())
         for x in ratio_graphs:  
           x.Draw("p")
+          
+        if ratio_fits is not None:
+          fit_count=0  
+          for i in ratio_fits:
+            i.SetLineWidth(2)
+            #i.SetLineColor(colourlist[fit_count+1])
+            i.SetLineColor(R.kBlack)
+            i.Draw('same')
+            fit_count+=1
 
         pads[1].RedrawAxis("G")
     pads[0].cd()
