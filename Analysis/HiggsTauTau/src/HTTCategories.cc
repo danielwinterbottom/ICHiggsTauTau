@@ -891,6 +891,8 @@ namespace ic {
       if(do_faketaus_){
         outtree_->Branch("tau_pt_1", &tau_pt_1_);
         outtree_->Branch("tau_pt_2", &tau_pt_2_);      
+        outtree_->Branch("tau_id_1", &tau_id_1_);
+        outtree_->Branch("tau_id_2", &tau_id_2_);
       }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -4433,8 +4435,22 @@ namespace ic {
       std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
       tau_pt_1_=-9999;
       tau_pt_2_=-9999;
-      if(taus.size()>0) tau_pt_1_ = taus[0]->pt();
-      if(taus.size()>1) tau_pt_2_ = taus[1]->pt();
+      tau_id_1_=0;
+      tau_id_2_=0;
+      if(taus.size()>0){
+        tau_pt_1_ = taus[0]->pt();
+        if(taus[0]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[0]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[0]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[0]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
+      if(taus.size()>1){
+        tau_pt_2_ = taus[1]->pt();
+        if(taus[1]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[1]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[1]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[1]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
     }
     
     if (write_tree_ && fs_) outtree_->Fill();

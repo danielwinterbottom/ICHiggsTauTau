@@ -205,7 +205,7 @@ sample_list = [
    'EmbeddingMuMuH'
 	]
 
-channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt']
+channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 

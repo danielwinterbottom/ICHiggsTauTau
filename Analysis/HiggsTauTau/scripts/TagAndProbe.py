@@ -77,7 +77,7 @@ print ''
 # Add data sample names
 if options.channel == 'tpzmm' or options.channel == 'tpmt': 
     data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
-if  options.channel == 'tpzee': 
+if  options.channel == 'tpzee' or options.channel == 'tpem': 
     data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
 # Add MC sample names   
@@ -87,7 +87,7 @@ embed_samples = []
 if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
 if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
 if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
-if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElEMu','EmbeddingElEMu','EmbeddingElEMu','EmbeddingElMuH']
+if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -176,7 +176,7 @@ if options.channel == 'tpmt':
   if options.aiso2:
     iso_cut_2='iso_loose'  
 
-  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
+  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&n_bjets==0&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
   if options.taudm: baseline_tag1+="&&dm==%s" % options.taudm
 
   idiso_probe_2 = '(%s)' % iso_cut_2
@@ -505,7 +505,8 @@ def RunTauTagAndProbePlotting(ana, wt='wt', outfile=None):
       trg_pt_bins = '[10,20,22,24,26,28,30,35,40,50,100]'
       if options.ttbins:  
         #trg_pt_bins = '[30,35,40,45,50,60,80,200]'
-        trg_pt_bins = '[30,35,40,45,50,60,80,100,160]'
+        #trg_pt_bins = '[30,35,40,45,50,60,80,100,160]'
+        trg_pt_bins = '[20,25,30,32,34,36,38,42,44,48,52,58,64,80,120,160]'
         if options.taudm == '0': trg_pt_bins = '[30,35,40,45,50,60,80,100,160]'
         #trg_eta_bins = '[0,2.1]'
         trg_eta_bins = '[0,2.1]'

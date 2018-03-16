@@ -1387,6 +1387,8 @@ class HTTCategories : public ModuleBase {
   
   double tau_pt_1_;
   double tau_pt_2_;
+  unsigned tau_id_1_;
+  unsigned tau_id_2_;
   
 
  public:

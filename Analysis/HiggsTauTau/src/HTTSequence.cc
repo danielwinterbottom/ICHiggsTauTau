@@ -2820,6 +2820,24 @@ if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smsprin
         return PairOneWithPt(c, 24.0);
       }));
   }
+  
+  
+  if(js["baseline"]["do_faketaus"].asBool()){
+    BuildModule(SimpleFilter<Tau>("TauFilter")
+        .set_input_label(js["taus"].asString()).set_min(0)
+        .set_predicate([=](Tau const* t) {
+          return  t->pt()                     > 15          &&
+                  fabs(t->eta())              <  2.3        &&
+                  fabs(t->lead_dz_vertex())   <  0.2        &&
+                  fabs(t->charge())           == 1          &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+    
+        }));  
+    BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("ditau")
+      .set_min_dr(0.5));
+  }
 
 
 
@@ -3286,8 +3304,7 @@ void HTTSequence::BuildTPEMPairs() {
         return  m->pt()                 > muon_pt    &&
                 fabs(m->eta())          < muon_eta   &&
                 fabs(m->dxy_vertex())   < muon_dxy   &&
-                fabs(m->dz_vertex())    < muon_dz   &&
-                MuonID(m);
+                fabs(m->dz_vertex())    < muon_dz;   
 
       }));
   
@@ -3319,8 +3336,7 @@ void HTTSequence::BuildTPEMPairs() {
           return  e->pt()                 > elec_pt    &&
                   fabs(e->eta())          < elec_eta   &&
                   fabs(e->dxy_vertex())   < elec_dxy   &&
-                  fabs(e->dz_vertex())    < elec_dz    &&
-                  ElecID(e) ;
+                  fabs(e->dz_vertex())    < elec_dz;  
     
         }));
  
