@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16'
+#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_2d'
 
 import sys
 from optparse import OptionParser
@@ -119,7 +119,7 @@ extra_channel = {
       "em" : ' '
   }
 if not options.total_jes:
-  jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
+  jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" --syst_scale_j="CMS_scale_j_13TeV" '
 else: 
   jes_systematics = ' --syst_scale_j="CMS_scale_j_13TeV" '
 common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
@@ -336,7 +336,7 @@ if SCHEME == 'cpsummer16_2d':
   VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
   #VAR_DIJET = 'm_sv,sjdphi[0,100,150],(20,-3.2,3.2)'  
   #VAR_DIJET = 'm_sv,D0[0,100,150],(10,0,1)'   
-  VAR_DIJET = 'm_sv,D0star[0,80,100,115,130,150],(12,-1,1)' 
+  #VAR_DIJET = 'm_sv,D0star[0,80,100,115,130,150],(12,-1,1)' 
  
   VAR_DIJET_TT_QCD = 'sjdphi(1,-3.2,3.2)' 
   
