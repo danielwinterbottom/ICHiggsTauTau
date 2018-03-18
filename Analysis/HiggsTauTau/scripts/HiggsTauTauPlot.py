@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False, "embedding":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -229,7 +229,8 @@ parser.add_argument("--no_default", dest="no_default", action='store_true',
     help="If option is speficied then don't do nominal histograms.")
 parser.add_argument("--extra_name", dest="extra_name", type=str,
     help="If set, adds an additional string to the output datacard name")
-
+parser.add_argument("--embedding", dest="embedding", action='store_true',
+    help="If option is speficied then use embedded samples for ZTT templates.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -521,6 +522,14 @@ if options.era in ["smsummer16",'cpsummer16']:
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
     
+if options.embedding:
+    extra_top_sel = ''
+    if options.channel == 'mt': extra_top_sel = '!((gen_match_1 == 4) && (gen_match_2 == 5))'
+    if options.channel == 'et': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 5))'
+    if options.channel == 'tt': extra_top_sel = '!((gen_match_1 == 5) && (gen_match_2 == 5))'
+    if options.channel == 'em': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 4))'
+    for sel in top_sels: top_sels[sel]+='&&'+extra_top_sel
+    
 # Add data sample names
 if options.channel == 'mt': 
     data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD']
@@ -560,6 +569,12 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16']:
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
+    if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
+    if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF','EmbeddingElTauG','EmbeddingElTauH']
+    if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
+    if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF','EmbeddingTauTauG','EmbeddingTauTauH']
+    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
+    if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
     
 if options.era in ["smsummer16",'cpsummer16']:
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
@@ -804,7 +819,13 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
     else: OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
-
+def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    if options.channel in ['et','mt','tt']: wt+='*1.05263'
+    if options.channel == 'tt': wt+='*1.05263'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
+    return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
@@ -838,6 +859,9 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
 def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
     ana.nodes[nodename].AddNode(ztt_node)
+def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+    ana.nodes[nodename].AddNode(embed_node)    
     
 def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
@@ -1063,8 +1087,12 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   subtract_node.AddNode(ttj_node)
   subtract_node.AddNode(vvt_node)
   subtract_node.AddNode(vvj_node)
-  ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
-  subtract_node.AddNode(ztt_node)
+  if options.embedding:
+    embed_node = GetEmbeddedNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+    subtract_node.AddNode(embed_node)
+  else:
+    ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+    subtract_node.AddNode(ztt_node)
   if options.era in ['smsummer16','cpsummer16']: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
@@ -1753,7 +1781,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         
         if 'ZTT' not in samples_to_skip:
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
+            if options.embedding: GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+            else: GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
         if 'TT' not in samples_to_skip:    
@@ -1771,7 +1800,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
             elif options.channel == 'et' or options.channel == 'mt': method = 12
         if 'ZTT' not in samples_to_skip:
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
+            if options.embedding: GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+            else: GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if 'TT' not in samples_to_skip:    
@@ -1784,8 +1814,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
-            GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
+        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
+        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
 
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
@@ -1990,7 +2020,12 @@ while len(systematics) > 0:
       # Add all MC background files
       for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
           ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
-       
+          
+      # Add embedded samples if using
+      if options.embedding: 
+        for sample_name in embed_samples:
+          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+          
       # Add all MC signal files
       
       if options.analysis == 'sm':
@@ -2301,3 +2336,4 @@ if options.era in ["smsummer16",'cpsummer16']:
       
 outfile.Close()
           
+

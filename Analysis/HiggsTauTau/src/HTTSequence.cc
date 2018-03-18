@@ -1431,7 +1431,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
  if(era_type == era::data_2015 || era_type == era::data_2016){
    svFitTest.set_legacy_svfit(false);
-   svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
+   svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
    svFitTest.set_read_svfit_mt(true);
    svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
    svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
@@ -1440,7 +1440,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
 
 BuildModule(svFitTest);
 
-if(js["do_preselection"].asBool()){
+if(js["do_preselection"].asBool() || !js["baseline"]["do_faketaus"].asBool()){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
       //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have

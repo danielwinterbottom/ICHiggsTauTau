@@ -541,9 +541,9 @@ namespace ic {
       double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
       // global scale factors not used anymore
       //if(channel_==channel::mt)      wt_embedding_yield = 1.192;
-      //else if(channel_==channel::et) wt_embedding_yield = 1.25;
-      //else if(channel_==channel::em) wt_embedding_yield = 1.14;
-      //else if(channel_==channel::tt) wt_embedding_yield = 2.1;
+      //if(channel_==channel::et) wt_embedding_yield = 1.25;
+      //if(channel_==channel::em) wt_embedding_yield = 1.14;
+      //if(channel_==channel::tt) wt_embedding_yield = 2.1;
       eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     }
 
