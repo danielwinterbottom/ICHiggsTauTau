@@ -85,7 +85,9 @@ def MultiDraw(self, Formulae, Compiled=False):
 
         var_binned_x = False
         var_binned_y = False
+        var_binned_z = False
         is_2d = False
+        is_3d = False
         if origFormula[-1] == ')':
             pos_open = origFormula.rfind('(')
             pos_close = origFormula.rfind(')')
@@ -112,16 +114,34 @@ def MultiDraw(self, Formulae, Compiled=False):
             if pos_open_y is -1 or pos_close_y is -1 or pos_open_y > pos_close_y:
                 raise RuntimeError('You bus')
             bin_args_y = GetBinningArgs(formula[pos_open_y + 1:pos_close_y], var_binned_y)
-            formula = formula[:pos_open_y].split(',')
+            formula = origFormula[:pos_open_y].strip()
+            if formula[-1] == ',':
+                is_3d = True
+                if formula[-2] == ')':
+                    pos_open_z = formula.rfind('(')
+                    pos_close_z = formula.rfind(')')
+                if formula[-2] == ']':
+                    var_binned_z = True
+                    pos_open_z = formula.rfind('[')
+                    pos_close_z = formula.rfind(']')
+                if pos_open_z is -1 or pos_close_z is -1 or pos_open_z > pos_close_z:
+                    raise RuntimeError('You bus')
+                bin_args_z = GetBinningArgs(formula[pos_open_z + 1:pos_close_z], var_binned_z)
+                formula = formula[:pos_open_z].split(',') 
+            else:
+                formula = formula[:pos_open_y].split(',') 
         else:
             formula = [formula]
-
+        
+        
         ROOT.TH1.AddDirectory(False)
-        if not is_2d:
+        if not is_2d and not is_3d:
             hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *bin_args_x)
-        else:
+        elif not is_3d:
             hist = ROOT.TH2F(origFormula+':'+weight, origFormula, *(bin_args_x + bin_args_y))
-
+        else: 
+            hist = ROOT.TH3F(origFormula+':'+weight, origFormula, *(bin_args_x + bin_args_y + bin_args_z))
+        
         if len(split_var) > 1:
             hist.GetXaxis().SetTitle(split_var[1])
         if len(split_var) > 2:
@@ -129,6 +149,8 @@ def MultiDraw(self, Formulae, Compiled=False):
             hist.GetYaxis().SetTitle(split_var[1])
 
         if is_2d:
+            results.append(ROOT.TObject())
+        if is_3d:
             results.append(ROOT.TObject())
         results.append(hist)
 
