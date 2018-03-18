@@ -132,8 +132,7 @@ def MultiDraw(self, Formulae, Compiled=False):
                 formula = formula[:pos_open_y].split(',') 
         else:
             formula = [formula]
-        
-        
+
         ROOT.TH1.AddDirectory(False)
         if not is_2d and not is_3d:
             hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *bin_args_x)
@@ -147,19 +146,23 @@ def MultiDraw(self, Formulae, Compiled=False):
         if len(split_var) > 2:
             hist.GetXaxis().SetTitle(split_var[2])
             hist.GetYaxis().SetTitle(split_var[1])
+        if len(split_var) > 2:
+            hist.GetXaxis().SetTitle(split_var[3])
+            hist.GetYaxis().SetTitle(split_var[2])
+            hist.GetZaxis().SetTitle(split_var[1])
 
         if is_2d:
             results.append(ROOT.TObject())
         if is_3d:
             results.append(ROOT.TObject())
         results.append(hist)
-
+ 
         # The following two 'if' clauses check that the next formula is different
         # to the previous one. If it is not, we add an ordinary TObject.
         # Then, the dynamic cast in MultiDraw.cxx fails, giving 'NULL', and
         # The previous value is used. This saves the recomputing of identical
         # values
-
+        
         for form in formula:
             f = ROOT.TTreeFormula("formula%i" % i, form, self)
             f.SetTitle(form)
@@ -168,7 +171,7 @@ def MultiDraw(self, Formulae, Compiled=False):
             f.SetQuickLoad(True)
             formulae.append(f)
             formulaeStr.append(form)
-
+            
             f = ROOT.TTreeFormula("weight%i" % i, weight, self)
             f.SetTitle(weight)
             if not f.GetTree():
@@ -228,7 +231,7 @@ def MultiDraw(self, Formulae, Compiled=False):
 
     fManager.Sync()
     self.SetNotify(fManager)
-
+    
     # Draw everything!
     _MultiDraw(self,
                MakeTObjArray(formulae),
