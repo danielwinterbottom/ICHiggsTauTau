@@ -23,6 +23,7 @@ namespace ic {
     gDirectory->cd(objectpath.c_str());
 
     T result = *(dynamic_cast<T*>(gDirectory->Get(objectname.c_str())));
+    file->Close();
     return result;
   }
 

@@ -106,7 +106,7 @@ namespace ic {
         if(era_ != era::data_2016){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else{
-          if(strategy_ == strategy::mssmsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -124,7 +124,7 @@ namespace ic {
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
@@ -195,7 +195,7 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16) tight_wp = 0.8484;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) tight_wp = 0.8484;
         if(jet_flavour == 5){
           if(era_!=era::data_2016){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);

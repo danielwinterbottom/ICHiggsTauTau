@@ -10,4 +10,5 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class CrystalBallEfficiency+;
+#pragma link C++ class RooSpline1D+;
 #endif
