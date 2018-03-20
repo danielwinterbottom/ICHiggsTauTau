@@ -101,7 +101,7 @@ def MultiDraw(self, Formulae, Compiled=False):
         formula = origFormula[:pos_open].strip()
 
         # Check if this is a 2D histogram with syntax
-        # [var_y],[var_x],[binning_y],[binning_x]
+        # [var_y],[var_x][binning_y],[binning_x]
         if formula[-1] == ',':
             is_2d = True
             if formula[-2] == ')':
@@ -115,6 +115,8 @@ def MultiDraw(self, Formulae, Compiled=False):
                 raise RuntimeError('You bus')
             bin_args_y = GetBinningArgs(formula[pos_open_y + 1:pos_close_y], var_binned_y)
             formula = origFormula[:pos_open_y].strip()
+            # Check if this is a 3D histogram with syntax
+            # [var_y],[var_x],[var_z][binning_y],[binning_x],[binning_z] 
             if formula[-1] == ',':
                 is_3d = True
                 if formula[-2] == ')':
