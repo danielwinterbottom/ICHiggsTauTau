@@ -213,9 +213,9 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         'VBFHiggs0M_M-125',
         'VBFHiggs0Mf05ph0_M-125',
-        'VBFHiggs0PM_M-125',
-        'GluGluToHToTauTau_amcNLO_M-125',
-        'VBFHToTauTau_amcNLO_M-125'
+        'VBFHiggs0PM_M-125'#,
+        #'GluGluToHToTauTau_amcNLO_M-125',
+        #'VBFHToTauTau_amcNLO_M-125'
     ]  
     
 if options.proc_mssm or options.proc_all:
@@ -374,9 +374,13 @@ if options.proc_embed or options.proc_all:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
-      nperjob = 40  
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^scale_j_hi^scale_j_lo','')  
-      
+      nperjob = 40
+      if 'scale_j_' in FLATJSONPATCH: continue
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','')  
+      if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
+      if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
+      if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
+      if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
       nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
