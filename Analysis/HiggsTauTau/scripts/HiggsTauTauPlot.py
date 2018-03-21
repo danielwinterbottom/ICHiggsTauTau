@@ -1844,11 +1844,16 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateReWeightedMSSMSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)    
             
 
-def Get1DBinNum(h2d,xbin,ybin,inc_y_of=True):
+def Get1DBinNumFrom2D(h2d,xbin,ybin):
     Nxbins = h2d.GetNbinsX()
     return (ybin-1)*Nxbins + xbin -1
 
-def UnrollHist(h2d,inc_y_of=True):
+def Get1DBinNumFrom3D(h3d,xbin,ybin,zbin):
+    Nxbins = h3d.GetNbinsX()
+    Nybins = h3d.GetNbinsY()
+    return (zbin-1)*Nxbins*Nybins + (ybin-1)*Nxbins + xbin -1
+
+def UnrollHist2D(h2d,inc_y_of=True):
     # inc_y_of = True includes the y over-flow bins
     if inc_y_of: n = 1
     else: n = 0
@@ -1856,7 +1861,7 @@ def UnrollHist(h2d,inc_y_of=True):
     h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
     for i in range(1,h2d.GetNbinsX()+1):
       for j in range(1,h2d.GetNbinsY()+1+n):
-        glob_bin = Get1DBinNum(h2d,i,j)
+        glob_bin = Get1DBinNumFrom2D(h2d,i,j)
         content = h2d.GetBinContent(i,j)
         error = h2d.GetBinError(i,j)
         h1d.SetBinContent(glob_bin+1,content)
@@ -1865,6 +1870,29 @@ def UnrollHist(h2d,inc_y_of=True):
         else:
           h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
         if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+    h1d.LabelsOption('v','X')
+    return h1d
+
+def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
+    if inc_y_of: ny = 1
+    else: ny = 0
+    if inc_z_of: nz = 1
+    else: nz = 0
+    
+    Nbins = (h3d.GetNbinsZ()+nz)*(h3d.GetNbinsY()+ny)*(h3d.GetNbinsX())
+    h1d = ROOT.TH1D(h3d.GetName(), '', Nbins, 0, Nbins)
+    for i in range(1,h3d.GetNbinsX()+1):
+      for j in range(1,h3d.GetNbinsY()+1+ny):
+        for k in range(1,h3d.GetNbinsZ()+1+nz):    
+          glob_bin = Get1DBinNumFrom3D(h3d,i,j,k)
+          content = h3d.GetBinContent(i,j,k)
+          error = h3d.GetBinError(i,j,k)
+          h1d.SetBinContent(glob_bin+1,content)
+          h1d.SetBinError(glob_bin+1,error)
+          if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
+          else:
+            h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
+          if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
     h1d.LabelsOption('v','X')
     return h1d
 
@@ -1926,11 +1954,15 @@ def NormSignals(outfile,add_name):
 
 # Create output file
 is_2d=False
+is_3d=False
 var_name = options.var.split('[')[0]
 var_name = var_name.split('(')[0]
-if ',' in var_name:
+if var_name.count(',') == 1:
     is_2d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]
+if var_name.count(',') == 2:
+    is_3d = True
+    var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]    
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
@@ -2111,7 +2143,7 @@ if is_2d and options.do_unrolling:
     hist = directory.Get(hist_name).Clone()
     if not isinstance(hist,ROOT.TDirectory):
       include_of = True
-      h1d = UnrollHist(hist,include_of)
+      h1d = UnrollHist2D(hist,include_of)
       hists_to_add.append(h1d)
       if first_hist:
         first_hist=False
@@ -2120,9 +2152,39 @@ if is_2d and options.do_unrolling:
         for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
         if include_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
+# sm 3D unrolling
+if is_3d and options.do_unrolling:
+  x_lines = []
+  y_labels = []
+  z_labels = []
+  first_hist = True
+  # loop over all TH3Ds and for each one unroll to produce TH1D and add to datacard
+  directory = outfile.Get(nodename)
+  outfile.cd(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()
+    hist = directory.Get(hist_name).Clone()
+    if not isinstance(hist,ROOT.TDirectory):
+      include_y_of = False
+      include_z_of = True
+      h1d = UnrollHist3D(hist,include_y_of,include_z_of)
+      hists_to_add.append(h1d)
+      if first_hist:
+        first_hist=False
+        Nxbins = hist.GetNbinsX()
+        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+        if include_y_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
+        for j in range(1,hist.GetNbinsZ()+1): z_labels.append([hist.GetZaxis().GetBinLowEdge(j),hist.GetZaxis().GetBinLowEdge(j+1)])
+        if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
+  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
 outfile.Close()
 
-if is_2d and not options.do_unrolling: exit(0) # 2d plotting cosmetics not currently supported
+
+if is_2d and not options.do_unrolling: exit(0) # add options for is_3d as well!
 plot_file = ROOT.TFile(output_name, 'READ')
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
@@ -2170,7 +2232,7 @@ if not options.no_plot:
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
     if options.do_unrolling and is_2d:
-        auto_blind=True
+        auto_blind=False
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 
