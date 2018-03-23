@@ -1354,12 +1354,34 @@ if(channel != channel::wmnu) {
      
    } 
  }
+ 
+ if(js["baseline"]["split_by_region"].asBool()){
+   // Split jet energy uncertainties by sources where sources are grouped depending on the detector region:
+   // region 0 = full detector (eta<5)
+   // region 1 = central detector (eta<3)  
+   // region 2 = HF (eta>3)
+   std::vector<std::string> sources = {};
+   
+   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","RelativeBal","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
+   if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
+   
+   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+    .set_input_label(jets_label)
+    .set_jes_shift_mode(jes_mode)
+    .set_uncert_file(jes_input_file)
+    .set_uncert_set(jes_input_set)
+    .set_uncert_sets(sources)
+    .set_sum_uncerts(true)
+    );
+ } else{  
     
- BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-  .set_input_label(jets_label)
-  .set_jes_shift_mode(jes_mode)
-  .set_uncert_file(jes_input_file)
-  .set_uncert_set(jes_input_set));
+   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+    .set_input_label(jets_label)
+    .set_jes_shift_mode(jes_mode)
+    .set_uncert_file(jes_input_file)
+    .set_uncert_set(jes_input_set));
+ }
 
 }
   

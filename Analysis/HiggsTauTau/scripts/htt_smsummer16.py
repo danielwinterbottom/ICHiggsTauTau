@@ -162,7 +162,7 @@ total = float(len(flatjsonlistdysig))
 flatjsons = []
 # this makes sure the JES's are submitted as seperate jobs (solves memory issues)
 for i in flatjsonlistdysig:
-  if 'scale_j' in i:
+  if 'scale_j' in i and 'hf' not in i and 'cent' not in i and 'full' not in i:
     flatjsons.append('job:sequences:all:'+i)
     flatjsonlistdysig.remove(i)
     scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
@@ -543,7 +543,8 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')  
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 50
