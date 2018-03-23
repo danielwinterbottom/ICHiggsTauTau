@@ -372,13 +372,13 @@ if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' %
 if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-      cats['dijet']='n_jets>=2 && mjj>400 && n_bjets==0'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
       cats['dijet_boosted']='%s && pt_tt>150 && n_bjets==0' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<150 && n_bjets==0' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'
-    cats['dijet']='n_jets>=2 && mjj>400'
+    cats['dijet']='n_jets>=2 && mjj>300'
     cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
     cats['dijet_lowboost']='%s && pt_tt<150' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
@@ -1484,7 +1484,7 @@ def NormWFakeSysts(ana,outfile='output.root'):
         hist_name = key.GetName()
         hist = directory.Get(hist_name)
         if not isinstance(hist,ROOT.TDirectory):
-           if 'W' not in hist_name or options.syst_w_fake_rate not in hist_name: continue
+           if 'W' not in hist_name or options.syst_w_fake_rate not in hist_name or 'Wplus' in hist_name or 'Wminus' in hist_name or 'WH' in hist_name: continue
            if isinstance(hist,ROOT.TH2): norm = nominal_scale/hist.Integral(-1,-1,-1,-1)
            else: norm = nominal_scale/hist.Integral(-1,-1)
            hist.Scale(norm)
@@ -1881,7 +1881,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
             GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
-
+    
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel, cat_relax, cats_unmodified['w_shape_comp'], 8, qcd_os_ss_ratio, not options.do_ss)    
@@ -2188,7 +2188,7 @@ while len(systematics) > 0:
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-if options.era in ["smsummer16",'cpsummer16'] and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
+if options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
 
 if options.syst_embedding_tt and options.embedding: TTBarEmbeddingSyst(ana,outfile,options.syst_embedding_tt)
 
@@ -2452,7 +2452,7 @@ outfile =  ROOT.TFile(output_name, 'UPDATE')
 for add_name in add_names: 
     if options.era not in ["smsummer16",'cpsummer16']: NormSignals(outfile,add_name)
 
-# for smsummer16 need to ad WplusH and WminusH templates into one - note this may need normalizing to 1pb again!
+# for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16']:
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
