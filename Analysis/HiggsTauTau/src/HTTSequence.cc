@@ -1362,7 +1362,7 @@ if(channel != channel::wmnu) {
    // region 2 = HF (eta>3)
    std::vector<std::string> sources = {};
    
-   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","RelativeBal","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
    

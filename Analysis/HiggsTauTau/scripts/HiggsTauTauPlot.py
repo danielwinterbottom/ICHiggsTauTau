@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_scale_j_rbal":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", "syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -107,6 +107,14 @@ parser.add_argument("--syst_w_fake_rate", dest="syst_w_fake_rate", type=str, def
     help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_scale_j_rbal", dest="syst_scale_j_rbal", type=str,
+    help="If this string is set then the RelativeBal jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_scale_j_full", dest="syst_scale_j_full", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta<5)")
+parser.add_argument("--syst_scale_j_cent", dest="syst_scale_j_cent", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = central region (eta<3)")
+parser.add_argument("--syst_scale_j_hf", dest="syst_scale_j_hf", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta>3)")
 parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", type=str,
     help="If this string is set then the jet scale systematic is performed split by source with the set string appended to the resulting histogram name. The string should contrain the substring  \'SOUCE\' which will be replaced by the JES source name")
 parser.add_argument("--jes_sources", dest="jes_sources", type=str,
@@ -663,6 +671,18 @@ if options.syst_jfake_e != '':
 if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_rbal != '':
+    systematics['syst_scale_j_rbal_up'] = ('JESRBAL_UP' , '_'+options.syst_scale_j_rbal+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_rbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_rbal+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_full != '':
+    systematics['syst_scale_j_full_up'] = ('JESFULL_UP' , '_'+options.syst_scale_j_full+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_full_down'] = ('JESFULL_DOWN' , '_'+options.syst_scale_j_full+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_cent != '':
+    systematics['syst_scale_j_cent_up'] = ('JESCENT_UP' , '_'+options.syst_scale_j_cent+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_cent_down'] = ('JESCENT_DOWN' , '_'+options.syst_scale_j_cent+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_hf != '':
+    systematics['syst_scale_j_hf_up'] = ('JESHF_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_down'] = ('JESHF_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)    
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT'], False)
@@ -2190,7 +2210,7 @@ if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compa
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
 
-if options.syst_embedding_tt and options.embedding: TTBarEmbeddingSyst(ana,outfile,options.syst_embedding_tt)
+if options.syst_embedding_tt and options.embedding and systematic == 'default': TTBarEmbeddingSyst(ana,outfile,options.syst_embedding_tt)
 
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)

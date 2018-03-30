@@ -56,17 +56,17 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec18/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Dec11_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Mar19_SVFit/",
     "svfit_override" : "",
-    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jan22_MELA/",
-    "mela_mode" : 0,
+    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
+    "mela_mode" : 1,
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
@@ -351,6 +351,22 @@
         "jes_mode" : 2,
         "split_by_source" : true
 //        "btag_mode" : 4
+      }
+    },
+    "scale_j_relbal_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRBAL_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeBal"
+      }
+    },
+    "scale_j_relbal_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRBAL_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeBal"
       }
     },
     "scale_j_full_lo": {

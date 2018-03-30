@@ -1922,8 +1922,6 @@ namespace ic {
                   tau1_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_1.data());
                   if(is_embedded_){
                     tau1_trg_mc = 1;
-                    //if(tau1->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")<0.5) tau1_trg = fns_["t_genuine_MediumIso_tt_data"]->eval(args_1.data());
-                    //if(tau1->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")<0.5) tau1_trg = fns_["t_genuine_LooseIso_tt_data"]->eval(args_1.data());
                   }
                   else tau1_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
                 } else {
@@ -1935,8 +1933,6 @@ namespace ic {
                   tau2_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_2.data());
                   if(is_embedded_){
                     tau2_trg_mc = 1;
-                    //if(tau2->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")<0.5) tau2_trg = fns_["t_genuine_MediumIso_tt_data"]->eval(args_2.data());
-                    //if(tau2->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")<0.5) tau2_trg = fns_["t_genuine_LooseIso_tt_data"]->eval(args_2.data());
                   }
                   else tau2_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
                 } else {
