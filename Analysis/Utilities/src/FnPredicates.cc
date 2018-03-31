@@ -62,7 +62,18 @@ namespace ic {
     }
     return std::make_pair(matched,index_vals);
   }
-
+  
+  std::set<std::size_t> ListTriggerFilters(std::vector<TriggerObject *> const& objs){
+    std::set<std::size_t> filters;  
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      for(unsigned j=0; j<labels.size(); j++){
+        filters.insert(labels[j]);    
+      }
+    }  
+    return filters;
+  }
+  
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
   }

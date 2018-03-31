@@ -44,6 +44,7 @@ namespace ic {
       do_sm_scale_wts_ = false;
       do_jes_vars_ = false;
       do_z_weights_ = false;
+      do_faketaus_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -76,6 +77,8 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+      outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       if (strategy_ == strategy::smsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -884,6 +887,12 @@ namespace ic {
       if(qcd_study_){
         outtree_->Branch("jet_flav_1", &jet_flav_1_);
         outtree_->Branch("jet_flav_2", &jet_flav_2_);
+      }
+      if(do_faketaus_){
+        outtree_->Branch("tau_pt_1", &tau_pt_1_);
+        outtree_->Branch("tau_pt_2", &tau_pt_2_);      
+        outtree_->Branch("tau_id_1", &tau_id_1_);
+        outtree_->Branch("tau_id_2", &tau_id_2_);
       }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -2362,7 +2371,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) && !is_data_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) && !is_data_ && !is_embedded_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -2732,6 +2741,7 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+    
     
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -3564,6 +3574,7 @@ namespace ic {
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
     }
+    
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
       tag_trigger_match_1_ = event->Exists("tp_tag_leg1_match") ? event->Get<bool>("tp_tag_leg1_match") : 0;
@@ -4111,6 +4122,7 @@ namespace ic {
       D0star_27_    = DCP_27_/fabs(DCP_27_)*D0_27_ ;
       D0star_28_    = DCP_28_/fabs(DCP_28_)*D0_28_ ;
     }
+    
 
     if (channel_ == channel::tt && strategy_ == strategy::fall15){
       if (n_loose_bjets_ >= 1) {
@@ -4392,6 +4404,29 @@ namespace ic {
       pull_balance_bb_ = -9999;  
       convergence_bb_ = -9999; 
       mbb_h_ = -9999;
+    }
+    
+    if(do_faketaus_&&(channel_==channel::zmm||channel_==channel::em)){
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      tau_pt_1_=-9999;
+      tau_pt_2_=-9999;
+      tau_id_1_=0;
+      tau_id_2_=0;
+      if(taus.size()>0){
+        tau_pt_1_ = taus[0]->pt();
+        if(taus[0]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[0]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[0]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[0]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
+      if(taus.size()>1){
+        tau_pt_2_ = taus[1]->pt();
+        if(taus[1]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[1]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[1]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[1]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
     }
     
     if (write_tree_ && fs_) outtree_->Fill();

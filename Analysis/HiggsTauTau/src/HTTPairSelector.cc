@@ -110,7 +110,7 @@ namespace ic {
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoET) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
@@ -165,7 +165,7 @@ namespace ic {
         if(channel_ ==  channel::et) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
@@ -260,6 +260,35 @@ namespace ic {
           }
         }
       }
+      if (channel_ == channel::et && event->Exists("elec_scales")) {
+        double t_scale_ = 1.0;  
+        Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
+        if (it != elec_scales.end()) {
+          t_scale_ = it->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+        double metx = met->vector().px();
+        double mety = met->vector().py();
+        double metet = met->vector().energy();
+        double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
+        double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
+        metx = metx + dx;
+        mety = mety + dy;
+        metet = sqrt(metx*metx + mety*mety);
+        ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      }
+      if ((channel_ == channel::mt || channel_ == channel::tpmt) && event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton1"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
+        }
+      }
     }
 
    // ************************************************************************
@@ -311,6 +340,13 @@ namespace ic {
       metet = sqrt(metx*metx + mety*mety);
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      if (event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton2"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
+        }
+      }
     }
 
     // ************************************************************************
@@ -328,7 +364,7 @@ namespace ic {
           for (unsigned i = 0; i < particles.size(); ++i) {
             if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
           }
-        } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
+        } else if (channel_ == channel::mt || channel_ == channel::mtmet || channel_ == channel::tpmt) {
           // Add all status 3 muons with pT > 8 to sel_particles
          for (unsigned i = 0; i < particles.size(); ++i) {
            if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);

@@ -30,8 +30,9 @@ parser.add_option("--submit", dest="submit",
                   " Using the --submit option overrides both the default and the environment variable. " % vars())
 
 parser.add_option("--data", dest="proc_data", action='store_true', default=False,
-                  help="Process data samples (including embedded)")
-
+                  help="Process data samples")
+parser.add_option("--embed", dest="proc_embed", action='store_true', default=False,
+                  help="Process embedded sampes")
 parser.add_option("--calc_lumi", dest="calc_lumi", action='store_true', default=False,
                   help="Run on data and only write out lumi mask jsons")
 
@@ -161,7 +162,7 @@ total = float(len(flatjsonlistdysig))
 flatjsons = []
 # this makes sure the JES's are submitted as seperate jobs (solves memory issues)
 for i in flatjsonlistdysig:
-  if 'scale_j' in i:
+  if 'scale_j' in i and 'hf' not in i and 'cent' not in i and 'full' not in i and 'relbal' not in i:
     flatjsons.append('job:sequences:all:'+i)
     flatjsonlistdysig.remove(i)
     scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
@@ -212,9 +213,9 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         'VBFHiggs0M_M-125',
         'VBFHiggs0Mf05ph0_M-125',
-        'VBFHiggs0PM_M-125',
-        'GluGluToHToTauTau_amcNLO_M-125',
-        'VBFHToTauTau_amcNLO_M-125'
+        'VBFHiggs0PM_M-125'#,
+        #'GluGluToHToTauTau_amcNLO_M-125',
+        #'VBFHToTauTau_amcNLO_M-125'
     ]  
     
 if options.proc_mssm or options.proc_all:
@@ -253,7 +254,7 @@ if options.proc_mssm_nlo_qsh:
 #       'GluGluToRadionToHHTo2B2Tau_M-'+mass
 #    ]
 
-if options.proc_data or options.proc_all or options.calc_lumi:
+if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
   if not no_json:
     with open(CONFIG,"r") as input:
       with open ("config_for_python.json","w") as output:
@@ -269,7 +270,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     channels=cfg["job"]["channels"]
   else:
     channels=['mt','et','tt','em','zmm','zee']
-  
+
+if options.proc_data or options.proc_all or options.calc_lumi:  
 
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
@@ -346,6 +348,51 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
           os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+        
+if options.proc_embed or options.proc_all:        
+        
+  embed_samples = []
+  data_eras = ['B','C','D','E','F','G','H']
+  for chn in channels:
+    for era in data_eras:
+      if 'em' in chn:
+        embed_samples+=['EmbeddingElMu'+era]
+      if 'et' in chn:
+        embed_samples+=['EmbeddingElTau'+era]
+      if 'mt' in chn:
+        embed_samples+=['EmbeddingMuTau'+era]
+      if 'tt' in chn:
+        embed_samples+=['EmbeddingTauTau'+era]
+
+        
+
+
+  EMBEDFILELIST="./filelists/Nov20_MC_80X"
+  
+  for sa in embed_samples:
+    job_num=0  
+    JOB='%s_2016' % (sa)
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    for FLATJSONPATCH in flatjsons: 
+      nperjob = 40
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
+
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','')  
+      if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
+      if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
+      if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
+      if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
+      nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+        job_num+=1
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+      if parajobs: 
+        os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+        PARAJOBSUBMIT = getParaJobSubmit(job_num)
+        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 
 
@@ -470,6 +517,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
           CONFIG='scripts/taues_config.json'
           JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
           nperjob = 10
+        FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if ('DY' in sa or 'EWKZ' in sa) and 'scale_j' not in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/50.)))
@@ -496,7 +544,8 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')  
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 50

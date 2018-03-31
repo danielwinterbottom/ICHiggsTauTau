@@ -150,13 +150,17 @@ namespace ic {
           //2012 Triggers
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
         }
-        if (is_embedded_) {
+        if (is_embedded_ && era_!= era::data_2016) {
           path_found = false;
           if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) {
             path_found = true;
             break;
+          } else if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos || name.find("HLT_IsoTkMu22_v")!=name.npos || name.find("HLT_IsoMu22_eta2p1_v") || name.find("HLT_IsoTkMu22_eta2p1_v")!=name.npos)){
+            path_found = true;
+            break;
           }
-        }
+        } 
+
          if (path_found) break;
       }
       if (!path_found) return 1;
@@ -756,7 +760,7 @@ namespace ic {
         }
       }
     }
-    if (!is_data_ && is_embedded_) {
+    if (!is_data_ && is_embedded_ && era_ != era::data_2016) {
       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8");
       if (objs.size() > 0) {
         return 0;
@@ -765,7 +769,7 @@ namespace ic {
       }
     }
 
-    if (is_embedded_) return 0; // Don't do object matching for embedded events
+    if (is_embedded_ && era_ != era::data_2016) return 0; // Don't do object matching for run1  embedded events 
 
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
@@ -869,11 +873,15 @@ namespace ic {
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
         passed_mutaucross_singlel1 = leg1_match && leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
-        
         bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
         bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
         passed_mutaucross = alt_leg1_match && alt_leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
         if(passed_mutaucross_singlel1 || passed_mutaucross) dileptons_pass.push_back(dileptons[i]);
+        if(is_embedded_&& dileptons[i]->At(0)->pt()<high_leg_pt){
+          // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
+          passed_mutaucross = true;
+          passed_mutaucross_singlel1 = true;
+        }
       }
     }
     event->Add("trg_mutaucross", passed_mutaucross_singlel1 || passed_mutaucross);
@@ -1018,6 +1026,7 @@ namespace ic {
         }
       }
     }
+    if(is_embedded_) passed_doubletau = true; // tau triggers not simulated correctly in embedded samples so set to true and apply data efficiency as SF in HTTWeights
     event->Add("trg_doubletau", passed_doubletau);
     
     bool passed_singletau_1 = false;

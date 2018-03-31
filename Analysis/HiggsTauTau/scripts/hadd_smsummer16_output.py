@@ -160,14 +160,56 @@ sample_list = [
    'VBFHiggs0Mf05ph0_M-125',
    'VBFHiggs0PM_M-125',
    'GluGluToHToTauTau_amcNLO_M-125',
-   'VBFHToTauTau_amcNLO_M-125'
+   'VBFHToTauTau_amcNLO_M-125',
+   'EmbeddingMuTauB',
+   'EmbeddingMuTauC',
+   'EmbeddingMuTauD',
+   'EmbeddingMuTauE',
+   'EmbeddingMuTauF',
+   'EmbeddingMuTauG',
+   'EmbeddingMuTauH',
+   'EmbeddingElMuB',
+   'EmbeddingElMuC',
+   'EmbeddingElMuD',
+   'EmbeddingElMuE',
+   'EmbeddingElMuF',
+   'EmbeddingElMuG',
+   'EmbeddingElMuH',
+   'EmbeddingElTauB',
+   'EmbeddingElTauC',
+   'EmbeddingElTauD',
+   'EmbeddingElTauE',
+   'EmbeddingElTauF',
+   'EmbeddingElTauG',
+   'EmbeddingElTauH',
+   'EmbeddingTauTauB',
+   'EmbeddingTauTauC',
+   'EmbeddingTauTauD',
+   'EmbeddingTauTauE',
+   'EmbeddingTauTauF',
+   'EmbeddingTauTauG',
+   'EmbeddingTauTauH',
+   'EmbeddingElElB',
+   'EmbeddingElElC',
+   'EmbeddingElElD',
+   'EmbeddingElElE',
+   'EmbeddingElElF',
+   'EmbeddingElElG',
+   'EmbeddingElElH',
+   'EmbeddingMuMuB',
+   'EmbeddingMuMuC',
+   'EmbeddingMuMuD',
+   'EmbeddingMuMuE',
+   'EmbeddingMuMuF',
+   'EmbeddingMuMuG',
+   'EmbeddingMuMuH'
 	]
 
-channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
+channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
-subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','JES_1_UP','JES_1_DOWN','JES_2_UP','JES_2_DOWN','JES_3_UP','JES_3_DOWN','JES_4_UP','JES_4_DOWN','JES_5_UP','JES_5_DOWN','JES_6_UP','JES_6_DOWN','JES_7_UP','JES_7_DOWN','JES_8_UP','JES_8_DOWN','JES_9_UP','JES_9_DOWN','JES_10_UP','JES_10_DOWN','JES_11_UP','JES_11_DOWN','JES_12_UP','JES_12_DOWN','JES_13_UP','JES_13_DOWN','JES_14_UP','JES_14_DOWN','JES_15_UP','JES_15_DOWN','JES_16_UP','JES_16_DOWN','JES_17_UP','JES_17_DOWN','JES_18_UP','JES_18_DOWN','JES_19_UP','JES_19_DOWN','JES_20_UP','JES_20_DOWN','JES_21_UP','JES_21_DOWN','JES_22_UP','JES_22_DOWN','JES_23_UP','JES_23_DOWN','JES_24_UP','JES_24_DOWN','JES_25_UP','JES_25_DOWN','JES_26_UP','JES_26_DOWN','JES_27_UP','JES_27_DOWN']
+subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN']
 
 nfiles={}
 

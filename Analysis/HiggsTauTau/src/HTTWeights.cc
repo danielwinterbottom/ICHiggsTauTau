@@ -99,6 +99,8 @@ namespace ic {
     mssm_higgspt_file_        = "";
     do_mssm_higgspt_          = false;
     do_z_weights_         = false;
+    embedding_scalefactor_file_ = "";
+    is_embedded_ = false;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -269,6 +271,10 @@ namespace ic {
                   w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
               fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
                   w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+              fns_["t_fake_TightIso_mt_data"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_fake_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
+              fns_["t_genuine_TightIso_mt_data"] = std::shared_ptr<RooFunctor>(
+                  w_->function("t_genuine_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
             }
           }
           if (strategy_ != strategy::smsummer16) {
@@ -329,6 +335,8 @@ namespace ic {
                 w_->function("t_fake_MediumIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
             fns_["t_genuine_MediumIso_tt_data"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_genuine_MediumIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_genuine_LooseIso_tt_data"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_LooseIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
             fns_["t_fake_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_fake_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
             fns_["t_genuine_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -363,22 +371,69 @@ namespace ic {
              w_->function("t_iso_mva_t_pt40_eta2p1_sf")->functor(w_->argSet("t_pt,t_eta,t_dm")));
         } 
         if(do_tracking_eff_) {
-          if(strategy_ == strategy::smsummer16){  
-            TFile f("input/scale_factors/htt_scalefactors_v16_5.root");
-            wtrk_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
-            f.Close();
-            
-            fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                wtrk_->function("m_trk_ratio")->functor(wtrk_->argSet("m_eta")));
-            fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                wtrk_->function("e_trk_ratio")->functor(wtrk_->argSet("e_pt,e_eta")));
-          } else {
-            fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
-            fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));  
-          }
+          fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+          fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));  
         }
+    }
+    if(embedding_scalefactor_file_!="" && is_embedded_) {
+        
+        fns_["m_idiso_em_ic_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_idiso_em_ic_embed_ratio")->functor(w_->argSet("m_pt,m_eta")));
+        fns_["m_trg8_binned_ic_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg8_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg8_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg8_binned_ic_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg23_binned_ic_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg23_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg23_binned_ic_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg19_binned_ic_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg19_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg19_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg19_binned_ic_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+
+        fns_["e_idiso_em_ic_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_idiso_em_ic_embed_ratio")->functor(w_->argSet("e_pt,e_eta")));
+        fns_["e_trg12_binned_ic_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg12_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg12_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg12_binned_ic_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg23_binned_ic_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg23_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg23_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg23_binned_ic_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        
+        TFile f(embedding_scalefactor_file_.c_str());
+        wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+        f.Close();
+        
+        fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("m_id_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
+        fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("m_iso_binned_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_trg_binned_mc")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+        
+        fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("e_id_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
+        fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("e_iso_binned_ratio")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("e_trg_binned_data")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
+        
+        fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
+        fns_["m_sel_vvliso_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_vvliso_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
+        fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_eta,gt2_eta")));
+
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
@@ -459,6 +514,37 @@ namespace ic {
         event->Add("wt_ggh_pt_up", weight_up);
         event->Add("wt_ggh_pt_down", weight_down);
       }
+    }
+    if(is_embedded_ && era_==era::data_2016){
+      // For 2016 embedded samples need an extra weight to account for computing efficiency
+      double wt_stitching = 1.0;  
+      int run = eventInfo->run();
+      if(channel_==channel::mt){
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.899)+((run >= 275657) && (run < 276315))*(1.0/0.881)+((run >= 276315) && (run < 276831))*(1.0/0.877)+((run >= 276831) && (run < 277772))*(1.0/0.939)+((run >= 277772) && (run < 278820))*(1.0/0.936)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.962));  
+      } else if(channel_==channel::et) {
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.945)+((run >= 276831) && (run < 277772))*(1.0/0.945)+((run >= 277772) && (run < 278820))*(1.0/0.915)+((run >= 278820) && (run < 280919))*(1.0/0.903)+((run >= 280919) && (run < 284045))*(1.0/0.933));    
+      } else if(channel_==channel::em) {
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.891)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.953)+((run >= 276831) && (run < 277772))*(1.0/0.947)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.906)+((run >= 280919) && (run < 284045))*(1.0/0.950));  
+          
+      } else if(channel_==channel::tt) {
+        wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
+      }
+      if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
+      eventInfo->set_weight("wt_stitching", wt_stitching);
+      double gen_match_undecayed_1_pt = event->Get<double>("gen_match_undecayed_1_pt");
+      double gen_match_undecayed_2_pt = event->Get<double>("gen_match_undecayed_2_pt");
+      double gen_match_undecayed_1_eta = event->Get<double>("gen_match_undecayed_1_eta");
+      double gen_match_undecayed_2_eta = event->Get<double>("gen_match_undecayed_2_eta");
+      auto args_1 = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_1_pt};
+      auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
+      auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
+      double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
+      // global scale factors not used anymore
+      //if(channel_==channel::mt)      wt_embedding_yield = 1.192;
+      //if(channel_==channel::et) wt_embedding_yield = 1.25;
+      //if(channel_==channel::em) wt_embedding_yield = 1.14;
+      //if(channel_==channel::tt) wt_embedding_yield = 2.1;
+      eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     }
 
     if (do_topquark_weights_) {
@@ -613,7 +699,7 @@ namespace ic {
         }   
       }
     }
-    if (do_tau_id_sf_ && channel_!= channel::em) {
+    if (do_tau_id_sf_ && channel_!= channel::em  && channel_!= channel::tpzee  && channel_!= channel::tpzmm && channel_!= channel::tpmt && channel_!= channel::tpem) {
       double tau_sf_1 = 1.0;
       double tau_sf_2 = 1.0;
       if (channel_ != channel::tt){
@@ -1169,11 +1255,16 @@ namespace ic {
                       ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
                     }
                   } else if (strategy_ == strategy::smsummer16){
-                    ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());  
-                    ele_trg_mc = fns_["e_trgEle25eta2p1WPTight_desy_mc"]->eval(args_desy.data());
-                    if(e_iso>0.1){
-                      ele_trg = fns_["e_trgEle25eta2p1WPTight_aiso0p1to0p3_desy_data"]->eval(args_desy.data());  
-                      ele_trg_mc = fns_["e_trgEle25eta2p1WPTight_aiso0p1to0p3_desy_mc"]->eval(args_desy.data());    
+                    if(is_embedded_){
+                      ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());    
+                      ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+                    } else {
+                      ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());  
+                      ele_trg_mc = fns_["e_trgEle25eta2p1WPTight_desy_mc"]->eval(args_desy.data());
+                      if(e_iso>0.1){
+                        ele_trg = fns_["e_trgEle25eta2p1WPTight_aiso0p1to0p3_desy_data"]->eval(args_desy.data());  
+                        ele_trg_mc = fns_["e_trgEle25eta2p1WPTight_aiso0p1to0p3_desy_mc"]->eval(args_desy.data());    
+                      }
                     }
                   }
               } else {
@@ -1405,25 +1496,40 @@ namespace ic {
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
                       if(pt>=23){
-                        // use signle muon trigger for pt_1>23  
-                        mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
-                        mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
-                        if(m_iso>0.15){
-                          mu_trg_mc = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(args_desy.data());
-                          mu_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
+                        // use signle muon trigger for pt_1>23
+                        if(is_embedded_){
+                          mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());    
+                          mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+                        } else {
+                          mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
+                          mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
+                          if(m_iso>0.15){
+                            mu_trg_mc = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(args_desy.data());
+                            mu_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
+                          }
                         }
                       } else {
                         auto t_args = std::vector<double>{t_pt,t_eta};
                         // use cross triggers for pt_1<23
                         unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-                        mu_trg_mc = fns_["m_trgMu19leg_eta2p1_desy_mc"]->eval(args_desy.data());
-                        mu_trg = fns_["m_trgMu19leg_eta2p1_desy_data"]->eval(args_desy.data());
-                        if(m_iso>0.15){
-                          mu_trg_mc = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_mc"]->eval(args_desy.data());
-                          mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
+                        if(!is_embedded_){
+                          mu_trg_mc = fns_["m_trgMu19leg_eta2p1_desy_mc"]->eval(args_desy.data());
+                          mu_trg = fns_["m_trgMu19leg_eta2p1_desy_data"]->eval(args_desy.data());
+                          if(m_iso>0.15){
+                            mu_trg_mc = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_mc"]->eval(args_desy.data());
+                            mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
+                          }
+                        } else {
+                          mu_trg_mc = fns_["m_trg19_binned_ic_embed"]->eval(args_1.data());
+                          mu_trg = fns_["m_trg19_binned_ic_data"]->eval(args_1.data());
                         }
-                        if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        if(!is_embedded_){
+                          if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
+                          else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        } else {
+                          if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_data"]->eval(t_args.data());
+                          else tau_trg = fns_["t_fake_TightIso_mt_data"]->eval(t_args.data());  
+                        }
                       }
                       // may want to add different SFs for anti-iso
                     }  else{
@@ -1455,8 +1561,10 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->eta());
+        double e_iso = PF03IsolationVal(elec, 0.5, 0);
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
+        double m_iso = PF04IsolationVal(muon, 0.5, 0);
         double m_trg = 1.0;
         double m_trg_mc = 1.0;
         double e_trg = 1.0;
@@ -1635,17 +1743,31 @@ namespace ic {
           }*/         
           auto args_1 = std::vector<double>{e_pt,e_eta};
           auto args_2 = std::vector<double>{m_pt,m_eta};
+          auto args_1_2 = std::vector<double>{e_pt,e_eta,e_iso};
+          auto args_2_2 = std::vector<double>{m_pt,m_eta,m_iso};
           //17 is actually 23 but just so I don't have to change the bit below where the efficiency is calculated. Probably one to fix at some point
-          m_trg_17 = fns_["m_trgMu23leg_desy_data"]->eval(args_2.data());
-          m_trg_8  = fns_["m_trgMu8leg_desy_data"]->eval(args_2.data());
-          e_trg_17 = fns_["e_trgEle23leg_desy_data"]->eval(args_1.data());
-          e_trg_12  = fns_["e_trgEle12leg_desy_data"]->eval(args_1.data());
-          
-          if(mc_ == mc::summer16_80X){
-            m_trg_17_mc = fns_["m_trgMu23leg_desy_mc"]->eval(args_2.data());
-            m_trg_8_mc  = fns_["m_trgMu8leg_desy_mc"]->eval(args_2.data());
-            e_trg_17_mc = fns_["e_trgEle23leg_desy_mc"]->eval(args_1.data());
-            e_trg_12_mc  = fns_["e_trgEle12leg_desy_mc"]->eval(args_1.data());
+          if(!is_embedded_){
+            m_trg_17 = fns_["m_trgMu23leg_desy_data"]->eval(args_2.data());
+            m_trg_8  = fns_["m_trgMu8leg_desy_data"]->eval(args_2.data());
+            e_trg_17 = fns_["e_trgEle23leg_desy_data"]->eval(args_1.data());
+            e_trg_12  = fns_["e_trgEle12leg_desy_data"]->eval(args_1.data());
+            
+            if(mc_ == mc::summer16_80X){
+              m_trg_17_mc = fns_["m_trgMu23leg_desy_mc"]->eval(args_2.data());
+              m_trg_8_mc  = fns_["m_trgMu8leg_desy_mc"]->eval(args_2.data());
+              e_trg_17_mc = fns_["e_trgEle23leg_desy_mc"]->eval(args_1.data());
+              e_trg_12_mc  = fns_["e_trgEle12leg_desy_mc"]->eval(args_1.data());
+            }
+          } else {
+            m_trg_17 = fns_["m_trg23_binned_ic_data"]->eval(args_2_2.data());
+            m_trg_8  = fns_["m_trg8_binned_ic_data"]->eval(args_2_2.data());
+            e_trg_17 = fns_["e_trg23_binned_ic_data"]->eval(args_1_2.data());
+            e_trg_12  = fns_["e_trg12_binned_ic_data"]->eval(args_1_2.data());
+
+            m_trg_17_mc = fns_["m_trg23_binned_ic_embed"]->eval(args_2_2.data());
+            m_trg_8_mc  = fns_["m_trg8_binned_ic_embed"]->eval(args_2_2.data());
+            e_trg_17_mc = fns_["e_trg23_binned_ic_embed"]->eval(args_1_2.data());
+            e_trg_12_mc  = fns_["e_trg12_binned_ic_embed"]->eval(args_1_2.data());
           }
         }
        if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
@@ -1661,7 +1783,7 @@ namespace ic {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
-
+        if(e_trg>2.) e_trg=2.;
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
         event->Add("trigweight_1", e_trg);
@@ -1798,17 +1920,25 @@ namespace ic {
                 if(strategy_ == strategy::smsummer16) isoWP = "Tight";
                 if(gm1_ == 5){ 
                   tau1_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_1.data());
-                  tau1_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
+                  if(is_embedded_){
+                    tau1_trg_mc = 1;
+                  }
+                  else tau1_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
                 } else {
                   tau1_trg = fns_["t_fake_"+isoWP+"Iso_tt_data"]->eval(args_1.data());
-                  tau1_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
+                  if(is_embedded_) tau1_trg_mc = 1;  
+                  else tau1_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
                 } 
                 if(gm2_ == 5){ 
                   tau2_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_2.data());
-                  tau2_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
+                  if(is_embedded_){
+                    tau2_trg_mc = 1;
+                  }
+                  else tau2_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
                 } else {
                   tau2_trg = fns_["t_fake_"+isoWP+"Iso_tt_data"]->eval(args_2.data());
-                  tau2_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
+                  if(is_embedded_) tau2_trg_mc = 1;
+                  else tau2_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
                 }
               } else{ 
                 if(gm1_ == 5){ 
@@ -2178,14 +2308,21 @@ namespace ic {
            if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if (mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
+        } else if (mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16 && !is_embedded_){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
            ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if (mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
+        } else if (mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16 && !is_embedded_){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            ele_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args_1.data());
            if(e_iso>0.1) ele_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args_1.data());
+        } else if (mc_ == mc::summer16_80X&&is_embedded_) {
+          auto args_1 = std::vector<double>{pt,e_signed_eta};
+          auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
+          ele_idiso = fns_["e_id_ratio"]->eval(args_1.data());
+          double e_iso_wt = 1.0;
+          e_iso_wt = fns_["e_iso_binned_ratio"]->eval(args_2.data());
+          ele_idiso*=e_iso_wt;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           if (do_id_weights_) ele_iso = 1.0;
@@ -2245,11 +2382,18 @@ namespace ic {
            if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
+        } else if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16 && !is_embedded_){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
-           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data());
+        } else if(mc_ == mc::summer16_80X && is_embedded_){
+           auto args_1 = std::vector<double>{pt,m_signed_eta};
+           auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data());
+           double mu_iso = 1.0;
+           mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2.data());
+           mu_idiso*=mu_iso;
+        } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16 && !is_embedded_){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            if(m_iso>0.15) mu_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args_1.data());
@@ -2403,7 +2547,18 @@ namespace ic {
             if(gm2_!=6 || !do_jlepton_fake_){
               auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
               auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-              m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+              if(!is_embedded_) m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+              else {
+                 double mu_iso = 1.0;
+                 if (m_iso<0.2) {
+                   m_idiso = fns_["m_idiso_em_ic_embed_ratio"]->eval(args_1_2.data());
+                 }
+                 else {
+                   m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data());
+                   mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
+                 }
+                 m_idiso*=mu_iso;
+              } 
               m_idiso_up = 1.0;
               m_idiso_down = 1.0;
             } else {
@@ -2420,7 +2575,18 @@ namespace ic {
            if(gm1_!=6 || !do_jlepton_fake_){
             auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-            e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+            if(!is_embedded_) e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+            else {
+                 double e_iso_wt = 1.0;
+                 if(e_iso<0.15) {
+                   e_idiso = fns_["e_idiso_em_ic_embed_ratio"]->eval(args_1_1.data());
+                 }
+                 else {
+                   e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data());
+                   e_iso_wt = fns_["e_iso_binned_ratio"]->eval(args_2_1.data());
+                 }
+                 e_idiso*=e_iso_wt;
+            } 
             e_idiso_down=1.0;
             e_idiso_up=1.0;
            } else {
