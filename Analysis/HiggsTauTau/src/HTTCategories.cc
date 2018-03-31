@@ -3575,29 +3575,6 @@ namespace ic {
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
     }
-    ////////////////////////////
-    //if (wt_.var_double>50){
-    //    std::cout << "---------------------------------" << std::endl;
-    //    std::cout << "lep1: pT = " << pt_1_.var_double << ", eta = " << eta_1_.var_double  << ", iso = " << iso_1_.var_double << std::endl;
-    //    std::cout << "lep2: pT = " << pt_2_.var_double << ", eta = " << eta_2_.var_double << ", iso = " << iso_2_.var_double << std::endl;
-    //    std::cout << "trg_1 = " << trigweight_1_ << ", idiso_1 = " << idisoweight_1_ << std::endl;
-    //    std::cout << "trg_2 = " << trigweight_2_ << ", idiso_2 = " << idisoweight_2_ << std::endl;
-    //    eventInfo->print_weights();
-    //}
-    ////std::cout << "------ trigger filter list ---------------"  << std::endl;
-    //if(gen_match_1_==4&&gen_match_2_==5&&pt_1_.var_double>25&&pt_2_.var_double>30){
-    //  std::set<std::size_t> triggers_passed = event->Get<std::set<std::size_t>>("triggers_passed"); 
-    //  std::system("echo New Event >> filters.txt");
-    //  for ( auto it = triggers_passed.begin(); it != triggers_passed.end(); it++ ){
-    //      std::stringstream ss;
-    //      ss << *it;
-    //      std::string out_str = "echo " +ss.str()+" >> filters.txt";
-    //      system(out_str.c_str());
-    //  }
-    //}
-    ////std::cout << "------------------------------------------" << std::endl;
-    //
-    ///////////////////////////////////////
     
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){

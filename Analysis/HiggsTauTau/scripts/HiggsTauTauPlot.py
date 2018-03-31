@@ -333,7 +333,7 @@ elif options.channel == 'zee':
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
-#if options.era in ['smsummer16','cpsummer16']: cats['w_sdb'] = 'mt_1>80.'
+if options.era in ['smsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
@@ -1032,7 +1032,6 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt=
           subtract_node_os = GetSubtractNode(ana,'_os',plot,plot_unmodified,wt,control_sel,cat_nobtag,cat_nobtag_data,method,qcd_os_ss_ratio,True,False) 
           subtract_node_ss = GetSubtractNode(ana,'_ss',plot,plot_unmodified,wt,control_sel,cat_nobtag,cat_nobtag_data,method,qcd_os_ss_ratio,False,False)
       elif method == 23:
-          # test me!
           cat_nopt = '('+cats['dijet']+')*('+cats['baseline']+')'
           cat_nopt_data = '('+cats_unmodified['dijet']+')*('+cats_unmodified['baseline']+')'
           full_selection = BuildCutString(wt, sel, cat_nopt, OSSS)

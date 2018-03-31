@@ -4,7 +4,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
-#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <string>
 #include <fstream>

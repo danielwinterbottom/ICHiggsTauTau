@@ -1029,36 +1029,6 @@ namespace ic {
     if(is_embedded_) passed_doubletau = true; // tau triggers not simulated correctly in embedded samples so set to true and apply data efficiency as SF in HTTWeights
     event->Add("trg_doubletau", passed_doubletau);
     
-    ///****************************************/
-    //// for embedding tau lep efficiency measurment
-    //std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-    //  std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label); 
-    //  bool found_l1_match_1 = false;
-    //  bool found_l1_match_2 = false;
-    //  double iso_tau_pt=0;
-    //  double tau_pt=0;
-    //  for(unsigned ta=0; ta<l1taus.size(); ++ta){
-    //    if(l1taus[ta]->vector().Pt()>28&&fabs(l1taus[ta]->vector().Rapidity())<2.15&&l1taus[ta]->isolation()>0){
-    //      // must pass L1 pT cut and be matched by DR to the tau
-    //      if(DR(l1taus[ta],dileptons[0]->At(0))<0.5) found_l1_match_1 = true;
-    //      if(DR(l1taus[ta],dileptons[0]->At(1))<0.5) found_l1_match_2 = true;
-    //    }
-    //  }
-    //  for(unsigned ta=0; ta<l1taus.size(); ++ta){
-    //    if(l1taus[ta]->vector().Pt()>50&&fabs(l1taus[ta]->vector().Rapidity())<2.15){
-    //      // must pass L1 pT cut and be matched by DR to the tau
-    //      if(DR(l1taus[ta],dileptons[0]->At(0))<0.5) found_l1_match_1 = true;
-    //      if(DR(l1taus[ta],dileptons[0]->At(1))<0.5) found_l1_match_2 = true;
-    //    }
-    //  }
-    //  bool hlt_match_1 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs, leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[0]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
-    //  bool hlt_match_2 = IsFilterMatchedWithIndex(dileptons[0]->At(1), objs, leg2_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[0]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
-    //  event->Add("l1_match_1", found_l1_match_1);
-    //  event->Add("l1_match_2", found_l1_match_2);
-    //  event->Add("hlt_match_1", hlt_match_1);
-    //  event->Add("hlt_match_2", hlt_match_2);
-    ////***************************************/
-    
     bool passed_singletau_1 = false;
     bool passed_singletau_2 = false;
     if (do_singletau_ && (channel_ == channel::tt || channel_ == channel::mt || channel_ == channel::et || channel_ == channel::zmm || channel_ == channel::zee)){
