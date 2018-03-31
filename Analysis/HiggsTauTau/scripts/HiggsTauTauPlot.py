@@ -341,6 +341,12 @@ if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(((mva_old
 #if options.era in ['cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) && pt_1>50 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
+# CR categories
+cats['ztt_control'] = '(m_sv>60&&m_sv<100)'
+cats['ztt_control_dijet'] = '(m_sv>60&&m_sv<100 && n_jets>1)'
+if options.channel == 'em':
+  cats['ztt_control'] = '(m_sv>60&&m_sv<100 && n_bjets==0)'
+  cats['ztt_control_dijet'] = '(m_sv>60&&m_sv<100 && n_jets>1 && n_bjets==0)'
 
 # MSSM categories
 cats['btag'] = '(n_bjets>=1)'
@@ -1154,7 +1160,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   subtract_node.AddNode(ttj_node)
   subtract_node.AddNode(vvt_node)
   subtract_node.AddNode(vvj_node)
-  if options.embedding and False: # for now do subtraction of ZTT using MC but should be changed if we switch to embedding!
+  if options.embedding: # for now do subtraction of ZTT using MC but should be changed if we switch to embedding!
     embed_node = GetEmbeddedNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(embed_node)
   else:

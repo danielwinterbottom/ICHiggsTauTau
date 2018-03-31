@@ -1484,11 +1484,13 @@ if(mela_mode!=0){
   
   if(js["baseline"]["jes_mode"].asUInt() == 0 || !js["baseline"]["split_by_source"].asBool()){
     mela_folder=mela_folder+"/"+addit_output_folder+"/";
-
+    double mela_split = 300000;
+    if(is_embedded) mela_split = 10000;
     MELATest melaTest = MELATest("MELATest") 
       .set_channel(channel)
       .set_run_mode(mela_mode)
       .set_outname(output_name)
+      .set_split(mela_split)
       .set_fullpath(mela_folder);
     BuildModule(melaTest);
   }
