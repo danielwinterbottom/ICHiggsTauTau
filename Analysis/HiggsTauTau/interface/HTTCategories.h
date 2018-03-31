@@ -351,7 +351,6 @@ class HTTCategories : public ModuleBase {
   float lagainstElectronVLooseMVA_2 = 0;
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
-  double sc_eta_;
     
   int tau_decay_mode_1_;
   int tau_decay_mode_2_;

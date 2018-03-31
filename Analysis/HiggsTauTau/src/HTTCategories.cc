@@ -2926,7 +2926,6 @@ namespace ic {
         antimu_2_ = lagainstMuonLoose3_2;
       }
       if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
-        sc_eta_ = elec->sc_eta();
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
