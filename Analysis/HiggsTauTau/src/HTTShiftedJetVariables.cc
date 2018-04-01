@@ -51,33 +51,19 @@ namespace ic {
     double n_bjets = bjets.size();
     double n_lowpt_jets = lowpt_jets.size();
     
-    double jpt_1 = -9999;
-    double jpt_2 = -9999;
     double mjj = -9999;
-    double jdeta = -9999;
     double sjdphi = -9999;
-    int opp_sides = -9999;
     
-    if(n_lowpt_jets>0){
-      jpt_1 = lowpt_jets[0]->pt();    
-    }
     if(n_lowpt_jets>1){
-      jpt_2 = lowpt_jets[1]->pt();  
-      jdeta = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) sjdphi =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       else sjdphi =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
       mjj = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
-      opp_sides = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
     }
 
     event->Add("n_jets_"+ std::to_string(JES2UInt(source_)), n_jets);
     event->Add("n_bjets_"+ std::to_string(JES2UInt(source_)), n_bjets);
-    event->Add("jpt_1_"+ std::to_string(JES2UInt(source_)), jpt_1);
-    event->Add("jpt_2_"+ std::to_string(JES2UInt(source_)), jpt_2);
     event->Add("mjj_"+ std::to_string(JES2UInt(source_)), mjj);
-    event->Add("jdeta_"+ std::to_string(JES2UInt(source_)), jdeta);
     event->Add("sjdphi_"+ std::to_string(JES2UInt(source_)), sjdphi);
-    event->Add("opp_sides_"+ std::to_string(JES2UInt(source_)), opp_sides);
     
     // remove all of the deep copied jet collection from the event once it is no longer needed otherwise get problems due to using too much memory
     jets = event->GetPtrVec<PFJet>(jets_label_);

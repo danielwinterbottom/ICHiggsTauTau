@@ -387,8 +387,8 @@ if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
-      cats['dijet_boosted']='%s && pt_tt>150 && n_bjets==0' % cats['dijet']
-      cats['dijet_lowboost']='%s && pt_tt<150 && n_bjets==0' % cats['dijet']
+      cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
+      cats['dijet_lowboost']='%s && pt_tt<150' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'

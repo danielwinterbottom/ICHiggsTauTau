@@ -520,9 +520,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
         FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-        if ('DY' in sa or 'EWKZ' in sa) and 'scale_j' not in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/50.)))
-        elif 'scale_j' not in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
-        else: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_channels)/3.)))
+        n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
+        nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

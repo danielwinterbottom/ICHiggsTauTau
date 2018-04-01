@@ -443,6 +443,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
               event->Add("svfitMass", (std::get<1>(it->second)).M());
               event->Add("svfitHiggs", std::get<1>(it->second));
               event->Add("svfitMT", std::get<2>(it->second));
+              p4_map.erase(it);
             }
           }
         } else {
