@@ -11,6 +11,7 @@ import string
 import os
 import re
 from array import array
+import numpy as np
 ROOT.gSystem.Load('libUserCodeICHiggsTauTau')
 
 def split_vals(vals):
@@ -59,7 +60,9 @@ def GetBinningArgs(arg, is_variable):
         str_binning = [x.strip() for x in arg.split(',')]
         binning = []
         if len(str_binning) == 3:
-            return [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
+            step = (float(str_binning[2]) - float(str_binning[1]))/float(str_binning[0])
+            binning = np.arange(float(str_binning[1]), float(str_binning[2])+step,step)
+            return [len(binning)-1, array('d',binning)]
         else:
             return None
 
@@ -140,7 +143,7 @@ def MultiDraw(self, Formulae, Compiled=False):
             hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *bin_args_x)
         elif not is_3d:
             hist = ROOT.TH2F(origFormula+':'+weight, origFormula, *(bin_args_x + bin_args_y))
-        else: 
+        else:
             hist = ROOT.TH3F(origFormula+':'+weight, origFormula, *(bin_args_x + bin_args_y + bin_args_z))
         
         if len(split_var) > 1:
