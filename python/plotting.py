@@ -2387,6 +2387,20 @@ def HTTPlot(nodename,
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
         pads[1].RedrawAxis("G")
+
+        #Draw uncertainty band
+        # these lines will highlight bins with bb uncertainty > 90%
+        large_uncert_hist = ratio_bkghist.Clone()
+        no_large_uncerts = True
+        for i in range(1,large_uncert_hist.GetNbinsX()+1):
+          if large_uncert_hist.GetBinError(i) <= 0.9: large_uncert_hist.SetBinError(i,0)
+          else: no_large_uncerts = False
+        large_uncert_hist.SetFillColor(CreateTransparentColor(2,0.4))
+        large_uncert_hist.SetLineColor(CreateTransparentColor(2,0.4))
+        large_uncert_hist.SetMarkerSize(0)
+        large_uncert_hist.SetMarkerColor(CreateTransparentColor(2,0.4))
+        if not no_large_uncerts: large_uncert_hist.Draw("e2same")
+
         
     pads[0].cd()
     pads[0].GetFrame().Draw()

@@ -1462,7 +1462,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
 
 BuildModule(svFitTest);
 
-if(js["do_preselection"].asBool() || !js["baseline"]["do_faketaus"].asBool()){
+if(js["do_preselection"].asBool() && !js["baseline"]["do_faketaus"].asBool()){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
       //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have

@@ -203,6 +203,7 @@ class HTTCategories : public ModuleBase {
   bool antimu_1_;
   bool antiele_2_;
   bool antimu_2_;
+  bool antimu_loose_2_;
   double z_1_;
   double z_2_;
   float m_1_;

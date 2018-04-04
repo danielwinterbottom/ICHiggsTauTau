@@ -679,6 +679,7 @@ namespace ic {
       outtree_->Branch("antimu_1",          &antimu_1_);
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
+      outtree_->Branch("antimu_loose_2",    &antimu_loose_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("dilepton_veto",     &dilepton_veto_);
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
@@ -3052,6 +3053,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
+        antimu_loose_2_ = lagainstMuonLoose3_2;
       }
     }
     if (channel_ == channel::em) {
