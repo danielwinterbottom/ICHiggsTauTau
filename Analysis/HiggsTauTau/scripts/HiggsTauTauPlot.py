@@ -279,6 +279,9 @@ print 'do_ff_systs       ='  ,  options.do_ff_systs
 print '###############################################'
 print ''
 
+vbf_background = False
+if options.era == 'cpsummer16': vbf_background = True
+
 compare_w_shapes = False
 compare_qcd_shapes = False
 if options.scheme == "qcd_shape": compare_qcd_shapes = True
@@ -294,6 +297,7 @@ if options.analysis == 'sm':
         if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
+          cats['baseline_loosemu'] = '(iso_1<0.15 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singlemuon && pt_1>23)'
           cats['pass'] = 'mva_olddm_tight_2>0.5' 
           cats['fail'] = 'mva_olddm_tight_2<0.5'
         #if options.era in ['cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
@@ -391,14 +395,14 @@ if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
-      cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
-      cats['dijet_lowboost']='%s && pt_tt<150' % cats['dijet']
+      cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
+      cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'
     cats['dijet']='n_jets>=2 && mjj>300'
-    cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
-    cats['dijet_lowboost']='%s && pt_tt<150' % cats['dijet']
+    cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
+    cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
   
   # aachen groups cuts
@@ -869,8 +873,8 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    if options.channel in ['et','mt','tt']: wt+='*1.05263'
-    if options.channel == 'tt': wt+='*1.05263'
+    if options.channel in ['et','mt','tt']: wt+='*1.0526315789473684'
+    if options.channel == 'tt': wt+='*1.0526315789473684'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
@@ -1215,14 +1219,21 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
                 shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot_unmodified, shape_selection), subtract_node)
         
         if cats['qcd_shape'] != "" or w_shift is not None:
+            add_shape = False
             if cats['qcd_shape'] == '': shape_cat = cat
-            else: shape_cat = cats['qcd_shape']
+            else: 
+              shape_cat = cats['qcd_shape']
+              add_shape = True
             if cats['qcd_shape'] == '': shape_cat_data = cat_data
-            else: shape_cat_data = cats_unmodified['qcd_shape']
-            shape_selection = BuildCutString(weight, sel, shape_cat_data, '!os')
-            if method == 21: subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,shape_cat,shape_cat_data,22,1,False,True,w_shift)
-            else: subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,shape_cat,shape_cat_data,method,1,False,True,w_shift)
-            shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot_unmodified, shape_selection), subtract_node)
+            else: 
+              shape_cat_data = cats_unmodified['qcd_shape']
+              add_shape = True
+            if add_shape:
+              shape_selection = BuildCutString(weight, sel, shape_cat_data, '!os')
+              if method == 21: subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,shape_cat,shape_cat_data,22,1,False,True,w_shift)
+              else: subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,shape_cat,shape_cat_data,method,1,False,True,w_shift)
+              shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot_unmodified, shape_selection), subtract_node)
+            else: shape_node = None
         
         full_selection = BuildCutString(weight, sel, cat_data, '!os')
         if method == 21: 
@@ -1980,11 +1991,11 @@ def UnrollHist2D(h2d,inc_y_of=True):
         error = h2d.GetBinError(i,j)
         h1d.SetBinContent(glob_bin+1,content)
         h1d.SetBinError(glob_bin+1,error)
-        if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
-        else:
-          h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
-        if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
-    h1d.LabelsOption('v','X')
+        #if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+        #else:
+        #  h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+        #if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+    #h1d.LabelsOption('v','X')
     return h1d
 
 def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
@@ -2003,11 +2014,11 @@ def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
           error = h3d.GetBinError(i,j,k)
           h1d.SetBinContent(glob_bin+1,content)
           h1d.SetBinError(glob_bin+1,error)
-          if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
-          else:
-            h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
-          if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
-    h1d.LabelsOption('v','X')
+          #if 'sjdphi' in plot: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
+          #else:
+          #  h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
+         # if 'sdphi' in options.var: h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.1f-%.1f' % (h3d.GetXaxis().GetBinLowEdge(i),h3d.GetXaxis().GetBinLowEdge(i+1)))
+    #h1d.LabelsOption('v','X')
     return h1d
 
 def NormSignals(outfile,add_name):
@@ -2237,7 +2248,6 @@ while len(systematics) > 0:
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-print (options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8) or options.era in ["tauid2016"]
 if (options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8) or options.era in ["tauid2016"]: NormWFakeSysts(ana,outfile)
 #NormEmbedToMC(ana,outfile) # this is to check embedding sensitivity after scaling embedding to MC yields
 
@@ -2426,7 +2436,8 @@ if not options.no_plot:
         custom_uncerts_up_name,
         custom_uncerts_down_name,
         scheme,
-        options.embedding
+        options.embedding,
+        vbf_background
         )
     else:    
       plotting.HTTPlotSignal(nodename, 
