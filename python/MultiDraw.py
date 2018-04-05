@@ -61,7 +61,7 @@ def GetBinningArgs(arg, is_variable):
         binning = []
         if len(str_binning) == 3:
             step = (float(str_binning[2]) - float(str_binning[1]))/float(str_binning[0])
-            binning = np.arange(float(str_binning[1]), float(str_binning[2])+step,step)
+            binning = np.arange(float(str_binning[1]), float(str_binning[2])+step/2,step)
             return [len(binning)-1, array('d',binning)]
         else:
             return None
