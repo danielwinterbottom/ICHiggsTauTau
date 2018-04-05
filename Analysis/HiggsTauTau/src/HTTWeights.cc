@@ -711,9 +711,9 @@ namespace ic {
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
         double tau_sf_2_old = (gen_match_2 == 5 && strategy_ != strategy::smsummer16) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
-            tau_sf_2  = (gen_match_2 == 5) ? 0.95 : 1.0;
-            double loose_tau_sf_2 = (gen_match_2 == 5) ? 0.99 : 1.0;
-            double medium_tau_sf_2 = (gen_match_2 == 5) ? 0.97 : 1.0;
+            tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.95 : 1.0;
+            double loose_tau_sf_2 = (gen_match_2 == 5 && !is_embedded_) ? 0.99 : 1.0;
+            double medium_tau_sf_2 = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
             event->Add("wt_tau_id_loose",loose_tau_sf_2/(tau_sf_2));
             event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
         }
