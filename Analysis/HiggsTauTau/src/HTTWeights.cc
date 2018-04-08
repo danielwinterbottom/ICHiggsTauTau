@@ -539,12 +539,21 @@ namespace ic {
       auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
       auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
       double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
+      double wt_embedding_yield_data = wt_embedding_yield; 
+      //std::cout << wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data()) << "    " << fns_["m_sel_idEmb_ratio"]->eval(args_2.data()) << "    " << fns_["m_sel_vvliso_ratio"]->eval(args_1.data()) << "    " << fns_["m_sel_vvliso_ratio"]->eval(args_2.data()) << "    " << fns_["m_sel_trg_ratio"]->eval(args_pair.data()) << std::endl;
+     
       // global scale factors not used anymore
       //if(channel_==channel::mt)      wt_embedding_yield = 1.192;
       //if(channel_==channel::et) wt_embedding_yield = 1.25;
       //if(channel_==channel::em) wt_embedding_yield = 1.14;
       //if(channel_==channel::tt) wt_embedding_yield = 2.1;
+      //
+      if(channel_==channel::mt) wt_embedding_yield = 1.2703;//1.2216; //commented out numbers don't take into accoutn 1.02 zpT reweighting
+      if(channel_==channel::et) wt_embedding_yield = 1.2244;//1.1748;
+      if(channel_==channel::em) wt_embedding_yield = 1.2101;//1.1595;
+      if(channel_==channel::tt) wt_embedding_yield = 1.2005;//1.1289;
       eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
+      event->Add("wt_embed_yield_data", wt_embedding_yield_data/wt_embedding_yield);
     }
 
     if (do_topquark_weights_) {
@@ -904,6 +913,7 @@ namespace ic {
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       if(mc_ != mc::summer16_80X || strategy_== strategy::smsummer16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+          std::cout << wtzpt << std::endl;
           double wtzpt_down=1.0;
           double wtzpt_up = wtzpt*wtzpt;
           eventInfo->set_weight("wt_zpt",wtzpt);
@@ -2995,7 +3005,7 @@ namespace ic {
       double mtau_fakerate_2=1.0;
       if(mc_ == mc::summer16_80X){
         if(channel_ == channel::mt){
-          if(gm2_==2||gm2_==4){
+          if((gm2_==2||gm2_==4)){
             if(fabs(tau->eta()) < 0.4){
               mtau_fakerate_2 = 1.47;
             } else if(fabs(tau->eta()) < 0.8){

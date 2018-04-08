@@ -190,6 +190,8 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
+      outtree_->Branch("mass"       , &mass_       );
+      outtree_->Branch("wtzpt"       , &wtzpt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
@@ -242,6 +244,8 @@ namespace ic {
     count_mm_ = 0;
     count_mt_ = 0;
     count_tt_ = 0;
+
+    GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
     
     return 0;
   }
@@ -252,7 +256,21 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
     
-    if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
+    wt_ = eventInfo->total_weight();
+   // double wt_stitching = 1;
+   //   int run = eventInfo->run();
+   //   if(channel_str_=="mt"){
+   //     wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.899)+((run >= 275657) && (run < 276315))*(1.0/0.881)+((run >= 276315) && (run < 276831))*(1.0/0.877)+((run >= 276831) && (run < 277772))*(1.0/0.939)+((run >= 277772) && (run < 278820))*(1.0/0.936)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.962));
+   //   } else if(channel_str_ == "et") {
+   //     wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.945)+((run >= 276831) && (run < 277772))*(1.0/0.945)+((run >= 277772) && (run < 278820))*(1.0/0.915)+((run >= 278820) && (run < 280919))*(1.0/0.903)+((run >= 280919) && (run < 284045))*(1.0/0.933));
+   //   } else if(channel_str_ == "em") {
+   //     wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.891)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.953)+((run >= 276831) && (run < 277772))*(1.0/0.947)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.906)+((run >= 280919) && (run < 284045))*(1.0/0.950));
+
+   //   } else if(channel_str_ == "tt") {
+   //     wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));
+   //   }
+   // wt_*=wt_stitching;
+
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
       if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
@@ -561,6 +579,8 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
+      mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+      wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       mt_1_ = MT(&lep1, &met);
       mt_2_ = MT(&lep2, &met);
@@ -578,6 +598,7 @@ namespace ic {
       phi_2_ = -9999;
       met_   = -9999;
       pt_tt_ = -9999;
+      mass_= -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;

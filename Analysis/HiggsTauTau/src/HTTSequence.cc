@@ -2084,7 +2084,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     .set_era(era_type)
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
-    .set_do_tau_id_sf(real_tau_sample)
+    .set_do_tau_id_sf(real_tau_sample && !js["do_mt_tagandprobe"].asBool())
     .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
@@ -2521,6 +2521,26 @@ if( strategy_type == strategy::paper2013) {
 
 
   BuildTauSelection();
+  
+  if(js["do_mt_tagandprobe"].asBool()){
+   BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
+        js["muons"].asString(),"loose_muons"));
+
+   BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
+        .set_input_label("loose_muons").set_min(0)
+        .set_predicate([=](Muon const* m) {
+
+          return  m->pt()                 > 5    &&
+                  m->is_global() ;
+
+        }));
+
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("loose_muons")
+      .set_min_dr(0.5));
+  }
+
 
   BuildModule(CompositeProducer<Electron, Tau>("ETPairProducer")
       .set_input_label_first("sel_electrons")
@@ -2542,6 +2562,21 @@ void HTTSequence::BuildMTPairs() {
       .set_shift_label("muon_scales")
       .set_shift(muon_shift));
  }
+  
+ if(js["do_mt_tagandprobe"].asBool()){
+   BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
+        js["muons"].asString(),"loose_muons"));
+
+   BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
+        .set_input_label("loose_muons").set_min(0)
+        .set_predicate([=](Muon const* m) {
+
+          return  m->pt()                 > 5    &&
+                  m->is_global() ;
+
+        }));
+  }
+
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -2621,6 +2656,13 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
 }
 
   BuildTauSelection();
+
+  if(js["do_mt_tagandprobe"].asBool()){
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("loose_muons")
+      .set_min_dr(0.5));
+  }
 
   BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
       .set_input_label_first("sel_muons")

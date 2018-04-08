@@ -748,7 +748,7 @@ namespace ic {
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
-      
+      if(is_embedded_) outtree_->Branch("wt_embed_yield_data",            &wt_embed_yield_data_);
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -1641,6 +1641,7 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    if(is_embedded_ && event->Exists("wt_embed_yield_data")) wt_embed_yield_data_ = event->Get<double>("wt_embed_yield_data"); 
     wt_tau_id_binned_ = 1.0;
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
     wt_tau_id_tight_ = 1.0;
