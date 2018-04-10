@@ -14,47 +14,47 @@ COL_STORE = []
 ##@{
 
 def SetAxisTitles(plot, channel):
-  if '[' in plot: 
+  if '[' in plot:
       isVarBins = True
       var = plot.split('[')[0]
   else:
       isVarBins = False
       var = plot.split('(')[0]
-      
+
   chan_label = '#tau#tau'
   lep1_label = '#tau'
   lep2_label = '#tau'
-  if channel == 'et': 
+  if channel == 'et':
     chan_label = 'e#tau'
     lep1_label = 'e'
     lep2_label = '#tau'
-  elif channel == 'mt': 
+  elif channel == 'mt':
     chan_label = '#mu#tau'
     lep1_label = '#mu'
     lep2_label = '#tau'
-  if channel == 'em': 
+  if channel == 'em':
     chan_label = 'e#mu'
     lep1_label = 'e'
     lep2_label = '#mu'
   elif channel == 'tt':
-    chan_label = '#tau#tau'  
+    chan_label = '#tau#tau'
     lep1_label = '#tau_{1}'
     lep2_label = '#tau_{2}'
-  elif channel == 'zee': 
+  elif channel == 'zee':
     chan_label = 'ee'
     lep1_label = 'e_{1}'
     lep2_label = 'e_{2}'
-  elif channel == 'zmm': 
+  elif channel == 'zmm':
     chan_label = '#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
-  
+
   bin_width=''
   if not isVarBins:
       binning = plot.split('(')[1].split(')')[0].split(',')
       binning = map(float,binning)
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
-      
+
   titles = {}
   titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
@@ -82,8 +82,8 @@ def SetAxisTitles(plot, channel):
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
 
 
-    
-  if var not in titles: 
+
+  if var not in titles:
     if not isVarBins: return [var,'Events']
     else: return [var, 'dN/d'+var]
   else:
@@ -91,7 +91,7 @@ def SetAxisTitles(plot, channel):
     else: return [titles[var][0], titles[var][2]]
 
 def SetAxisTitles2D(plot, channel):
-  if '[' in plot: 
+  if '[' in plot:
       var = plot.split('[')[0]
   else:
       var = plot.split('(')[0]
@@ -99,41 +99,41 @@ def SetAxisTitles2D(plot, channel):
   isVarBins = '[' in plot
   yvar = var.split(',')[0]
   xvar = var.split(',')[1]
-      
+
   chan_label = '#tau#tau'
   lep1_label = '#tau'
   lep2_label = '#tau'
-  if channel == 'et': 
+  if channel == 'et':
     chan_label = 'e#tau'
     lep1_label = 'e'
     lep2_label = '#tau'
-  elif channel == 'mt': 
+  elif channel == 'mt':
     chan_label = '#mu#tau'
     lep1_label = '#mu'
     lep2_label = '#tau'
-  if channel == 'em': 
+  if channel == 'em':
     chan_label = 'e#mu'
     lep1_label = 'e'
     lep2_label = '#mu'
   elif channel == 'tt':
-    chan_label = '#tau#tau'  
+    chan_label = '#tau#tau'
     lep1_label = '#tau_{1}'
     lep2_label = '#tau_{2}'
-  elif channel == 'zee': 
+  elif channel == 'zee':
     chan_label = 'ee'
     lep1_label = 'e_{1}'
     lep2_label = 'e_{2}'
-  elif channel == 'zmm': 
+  elif channel == 'zmm':
     chan_label = '#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
-  
+
   bin_width=''
   if not isVarBins:
       binning = plot.split('(')[1].split(')')[0].split(',')
       binning = map(float,binning)
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
-      
+
   titles = {}
   titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)','GeV']
   titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)','GeV']
@@ -155,24 +155,24 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
-  
-  if xvar not in titles: 
+
+  if xvar not in titles:
     if not isVarBins: x_titles = [xvar,'Events']
     else: x_titles =  [xvar, 'dN/d'+xvar]
   else:
     if not isVarBins: x_titles = [titles[xvar][0],titles[xvar][1]]
     else: x_titles =  [titles[xvar][0], titles[xvar][2]]
-  if yvar not in titles: 
+  if yvar not in titles:
     unit=''
     if not isVarBins: x_titles = [yvar,'Events',unit]
     else: y_titles =  [yvar, 'dN/d'+yvar,unit]
   else:
-    unit = titles[yvar][3]  
+    unit = titles[yvar][3]
     if not isVarBins: x_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
-    
+
   return [x_titles, y_titles]
-  
+
 
 def SetTDRStyle():
     """Sets the PubComm recommended style
@@ -495,7 +495,7 @@ def MultiRatioSplit(split_points, gaps_low, gaps_high):
 
     This is a generalisation of the two pad main/ratio split but for the case
     of multiple ratio pads.
-    
+
     Args:
 
         split_points (list[float]): Height of each ratio pad as a fraction of the
@@ -508,7 +508,7 @@ def MultiRatioSplit(split_points, gaps_low, gaps_high):
         gaps_high (list[float]): Gaps between ratio pad frames created on the
         upper pad side at each boundary. Give a list of zeroes for no gap
         between pad frames.
-    
+
     Returns:
         list[TPad]: List of TPads, indexed from top to bottom on the canvas.
     """
@@ -628,10 +628,10 @@ def GetAxisHist(pad):
 def TFileIsGood(filename):
     """Performs a series of tests on a TFile to ensure that it can be opened
     without errors
-    
+
     Args:
         filename: `str` The name of the TFile to check
-    
+
     Returns:
         `bool` True if the file can opened, is not a zombie, and if ROOT did
         not need to try and recover the contents
@@ -1002,7 +1002,7 @@ def GraphDifference(graph1,graph2,relative):
         xvals.append(graph1.GetX()[i])
         if relative :
             yvals.append(2*abs(graph1.GetY()[i]-graph2.GetY()[i])/(graph1.GetY()[i]+graph2.GetY()[i]))
-        else: 
+        else:
             yvals.append(2*(graph1.GetY()[i]-graph2.GetY()[i])/(graph1.GetY()[i]+graph2.GetY()[i]))
     diff_graph = R.TGraph(len(xvals),array('d',xvals),array('d',yvals))
     diff_graph.Sort()
@@ -1016,10 +1016,10 @@ def GraphDivide(num, den):
         else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     if type(res) is R.TGraphAsymmErrors:
         for i in xrange(num.GetN()):
-            if den.Eval(res.GetX()[i]) == 0: 
+            if den.Eval(res.GetX()[i]) == 0:
               res.GetEYhigh()[i] = 0
               res.GetEYlow()[i] = 0
-            else: 
+            else:
               res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
               res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
 
@@ -1029,13 +1029,13 @@ def GraphDivide(num, den):
 def MakeRatioHist(num, den, num_err, den_err,ZeroFix=False):
     """Make a new ratio TH1 from numerator and denominator TH1s with optional
     error propagation
-    
+
     Args:
         num (TH1): Numerator histogram
         den (TH1): Denominator histogram
         num_err (bool): Propagate the error in the numerator TH1
         den_err (bool): Propagate the error in the denominator TH1
-    
+
     Returns:
         TH1: A new TH1 containing the ratio
     """
@@ -1292,7 +1292,7 @@ def FixBothRanges(pad, fix_y_lo, frac_lo, fix_y_hi, frac_hi):
     @endcode
 
     ![](figures/FixBothRanges.png)
-    
+
     Args:
         pad (TPad): A TPad on which histograms and graphs have already been drawn
         fix_y_lo (float): The y value which will end up a fraction `frac_lo` above
@@ -1423,7 +1423,7 @@ def StandardAxes(xaxis, yaxis, var, units):
 
 def DrawCMSLogo(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, extraText2='', cmsTextSize=0.8):
     """Blah
-    
+
     Args:
         pad (TYPE): Description
         cmsText (TYPE): Description
@@ -1434,7 +1434,7 @@ def DrawCMSLogo(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, ex
         relExtraDY (TYPE): Description
         extraText2 (str): Description
         cmsTextSize (float): Description
-    
+
     Returns:
         TYPE: Description
     """
@@ -1658,7 +1658,7 @@ def DrawLimitBand(pad, graph_dict, draw=['exp2', 'exp1', 'exp0', 'obs'], draw_le
         if draw_legend is None:
             draw_legend = reversed(draw)
         for key in draw_legend:
-            if key in graph_dict: 
+            if key in graph_dict:
                 legend.AddEntry(graph_dict[key],legend_dict[key]['Label'],legend_dict[key]['LegendStyle'])
 
 
@@ -1904,7 +1904,7 @@ def rebin(hist):
     # assume constant binning
     #  binWidthX = hist.GetXaxis().GetBinWidth(1)
     #  binWidthY = hist.GetYaxis().GetBinWidth(1)
-    
+
     #  histRebinned = R.TH2F(histName, histName, 2*hist.GetNbinsX(), hist.GetXaxis().GetXmin()+binWidthX/4, hist.GetXaxis().GetXmax()+binWidthX/4, 2*hist.GetNbinsY(), hist.GetYaxis().GetXmin()+binWidthY/4, hist.GetYaxis().GetXmax()+binWidthY/4)
     histRebinned = R.TH2F(histName, histName, 2 * hist.GetNbinsX() - 1, hist.GetXaxis().GetXmin(),
                           hist.GetXaxis().GetXmax(), 2 * hist.GetNbinsY() - 1, hist.GetYaxis().GetXmin(), hist.GetYaxis().GetXmax())
@@ -1989,14 +1989,14 @@ def Norm2DBins(h):
   for i in range(1,h.GetNbinsX()+1):
     bin_lab = h.GetXaxis().GetBinLabel(i)
     scale = float(bin_lab.split('-')[1]) - float(bin_lab.split('-')[0])
-    content = h.GetBinContent(i) 
+    content = h.GetBinContent(i)
     error = h.GetBinError(i)
     h.SetBinContent(i,content/scale)
     h.SetBinError(i,error/scale)
 
-def HTTPlot(nodename, 
-            infile=None, 
-            signal_scale=1, 
+def HTTPlot(nodename,
+            infile=None,
+            signal_scale=1,
             signal_mass="",
             FF=False,
             norm_bins=True,
@@ -2028,25 +2028,30 @@ def HTTPlot(nodename,
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
             scheme="mt",
             embedding=False,
-            vbf_background=False
+            vbf_background=False,
+            split_sm_scheme=False,
+            ggh_scheme="powheg"
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False )
-    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
+    sig_schemes['sm_ggH_JHU'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False )
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False )
+    sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH("+signal_mass+" GeV)#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
+    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True )
     sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
-    
+
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
-    
+
     ZTT_name='ZTT'
     if embedding: ZTT_name = 'EmbedZTT'
-    if "sm" in signal_scheme: 
+    if "sm" in signal_scheme:
       background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name,"EWKZ"],R.TColor.GetColor(248,206,104))],
       'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name,"EWKZ"],R.TColor.GetColor(248,206,104))],
       'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name,"EWKZ"],R.TColor.GetColor(248,206,104))],
@@ -2055,7 +2060,7 @@ def HTTPlot(nodename,
       #'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ",ZTT_name],R.TColor.GetColor(100,192,232))],
       'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ",ZTT_name,"EWKZ"],R.TColor.GetColor(100,192,232))],
       'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ",ZTT_name,"EWKZ"],R.TColor.GetColor(100,192,232))]}
- 
+
     else:
       background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name],R.TColor.GetColor(248,206,104))],
       'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name],R.TColor.GetColor(248,206,104))],
@@ -2083,17 +2088,17 @@ def HTTPlot(nodename,
 
     if vbf_background:
       for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
-        
+
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
     if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
-    
+
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-    
+
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind:
         for i in range(0,total_datahist.GetNbinsX()):
@@ -2105,7 +2110,7 @@ def HTTPlot(nodename,
     if norm_bins:
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
-        
+
     #Create stacked plot for the backgrounds
     bkg_histos = []
     for i,t in enumerate(background_schemes[scheme]):
@@ -2120,11 +2125,11 @@ def HTTPlot(nodename,
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
-    
+
         if norm_bins:
             h.Scale(1.0,"width")
         bkg_histos.append(h)
-        
+
     stack = R.THStack("hs","")
     bkghist = R.TH1F()
     for hists in bkg_histos:
@@ -2133,16 +2138,16 @@ def HTTPlot(nodename,
           bkghist = hists.Clone()
       else:
           bkghist.Add(hists.Clone())
-      
+
     c1 = R.TCanvas()
-    c1.cd()    
-    
+    c1.cd()
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
@@ -2159,7 +2164,7 @@ def HTTPlot(nodename,
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-    
+
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
@@ -2174,7 +2179,7 @@ def HTTPlot(nodename,
         axish[0].GetXaxis().SetLabelSize(0.03)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(1.6)
@@ -2182,40 +2187,133 @@ def HTTPlot(nodename,
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*bkghist.GetMaximum())
     axish[0].Draw()
-    
+
     #Draw uncertainty band
     bkghist.SetFillColor(CreateTransparentColor(12,0.4))
     bkghist.SetLineColor(CreateTransparentColor(12,0.4))
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
-    
-    sighist = R.TH1F()
-    if signal_mass != "":
-        sig_scheme = sig_schemes[signal_scheme]
-        for i in sig_scheme[1]: 
-            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-            if sighist.GetEntries() == 0: sighist = h
-            else: sighist.Add(h)
-        sighist.SetLineColor(R.kBlue)
-        sighist.SetLineWidth(3)
-        sighist.Scale(signal_scale)
-        if norm_bins: sighist.Scale(1.0,"width")
-        if sig_scheme[2]: 
-            stack.Add(sighist.Clone())
-            if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-        stack.Draw("histsame")
-        if not sig_scheme[2]: sighist.Draw("histsame")
-        
+
+    # for single signal scheme
+    if not split_sm_scheme:
+        sighist = R.TH1F()
+        if signal_mass != "":
+            sig_scheme = sig_schemes[signal_scheme]
+            for i in sig_scheme[1]:
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist.GetEntries() == 0: sighist = h
+                else: sighist.Add(h)
+            sighist.SetLineColor(R.kBlue)
+            sighist.SetLineWidth(3)
+            sighist.Scale(signal_scale)
+            if norm_bins: sighist.Scale(1.0,"width")
+            if sig_scheme[2]:
+                stack.Add(sighist.Clone())
+                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            stack.Draw("histsame")
+            if not sig_scheme[2]: sighist.Draw("histsame")
+
+        else:
+            stack.Draw("histsame")
+
+    # separate out signal into powheg ggH and qqH,
+    # JHU ggH, and VH
     else:
-        stack.Draw("histsame")
-        
+        if ggh_scheme == 'powheg':
+            signal_scheme1 = 'sm_ggH'
+            sighist1 = R.TH1F()
+            if signal_mass != "":
+                sig_scheme1 = sig_schemes[signal_scheme1]
+                for i in sig_scheme1[1]:
+                    h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                    if sighist1.GetEntries() == 0: sighist1 = h
+                    else: sighist1.Add(h)
+                sighist1.SetLineColor(R.kGreen+2)
+                sighist1.SetLineWidth(3)
+                sighist1.Scale(signal_scale)
+                if norm_bins: sighist1.Scale(1.0,"width")
+                if sig_scheme1[2]:
+                    stack.Add(sighist1.Clone())
+                    if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+                stack.Draw("histsame")
+                if not sig_scheme1[2]: sighist1.Draw("histsame")
+
+            else:
+                stack.Draw("histsame")
+
+        elif ggh_scheme == 'JHU':
+            signal_scheme1 = 'sm_ggH_JHU'
+            sighist1 = R.TH1F()
+            if signal_mass != "":
+                sig_scheme1 = sig_schemes[signal_scheme1]
+                for i in sig_scheme1[1]:
+                    h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                    if sighist1.GetEntries() == 0: sighist1 = h
+                    else: sighist1.Add(h)
+                sighist1.SetLineColor(R.kGreen+2)
+                sighist1.SetLineWidth(3)
+                sighist1.Scale(signal_scale)
+                if norm_bins: sighist1.Scale(1.0,"width")
+                if sig_scheme1[2]:
+                    stack.Add(sighist1.Clone())
+                    if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+                stack.Draw("histsame")
+                if not sig_scheme1[2]: sighist1.Draw("histsame")
+
+            else:
+                stack.Draw("histsame")
+
+        else:
+            assert ValueError('ggH scheme not in ["powheg","JHU"]')
+
+        signal_scheme2 = 'sm_qqH'
+        sighist2 = R.TH1F()
+        if signal_mass != "":
+            sig_scheme2 = sig_schemes[signal_scheme2]
+            for i in sig_scheme2[1]:
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist2.GetEntries() == 0: sighist2 = h
+                else: sighist2.Add(h)
+            sighist2.SetLineColor(R.kBlue)
+            sighist2.SetLineWidth(3)
+            sighist2.Scale(signal_scale)
+            if norm_bins: sighist2.Scale(1.0,"width")
+            if sig_scheme2[2]:
+                stack.Add(sighist2.Clone())
+                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            if not sig_scheme2[2]: sighist2.Draw("histsame")
+
+        else:
+            stack.Draw("histsame")
+
+        signal_scheme3 = 'sm_VH'
+        sighist3 = R.TH1F()
+        if signal_mass != "":
+            sig_scheme3 = sig_schemes[signal_scheme3]
+            for i in sig_scheme3[1]:
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist3.GetEntries() == 0: sighist3 = h
+                else: sighist3.Add(h)
+            sighist3.SetLineColor(R.kRed)
+            sighist3.SetLineWidth(3)
+            sighist3.Scale(signal_scale)
+            if norm_bins: sighist3.Scale(1.0,"width")
+            if sig_scheme3[2]:
+                stack.Add(sighist3.Clone())
+                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            if not sig_scheme3[2]: sighist3.Draw("histsame")
+
+        else:
+            stack.Draw("histsame")
+
+
     ## Add another signal mass point
     #sighist2 = R.TH1F()
     #sighist2= infile.Get(nodename+'/ggH350').Clone()
@@ -2228,7 +2326,7 @@ def HTTPlot(nodename,
     #sighist3.SetLineColor(R.kGreen+2)
     #sighist3.SetLineWidth(3)
     #sighist3.Scale(signal_scale)
-    #if norm_bins: 
+    #if norm_bins:
     #    sighist2.Scale(1.0,"width")
     #    sighist3.Scale(1.0,"width")
     #sighist2.Draw("histsame")
@@ -2241,29 +2339,29 @@ def HTTPlot(nodename,
         bkg_uncert_up.Scale(1.0,"width")
         bkg_uncert_down.Scale(1.0,"width")
 
-      for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+      for i in range(1,bkg_uncert_up.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          band_center = max(bin_up,bin_down) - error          
+          band_center = max(bin_up,bin_down) - error
           if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
-          
+
     if add_flat_uncert > 0:
-      for i in range(1,error_hist.GetNbinsX()+1): 
+      for i in range(1,error_hist.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
-          
+
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
-    
+
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.03) 
+    legend = PositionedLegend(0.37,0.3,3,0.03)
     #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
@@ -2279,10 +2377,16 @@ def HTTPlot(nodename,
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
-        legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+        if not split_sm_scheme:
+            legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+        else:
+            legend.AddEntry(sighist1,sig_schemes[signal_scheme1][0],"l")
+            legend.AddEntry(sighist2,sig_schemes[signal_scheme2][0],"l")
+            legend.AddEntry(sighist3,sig_schemes[signal_scheme3][0],"l")
+
     ## Add a second signal mass
-    #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")  
-    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(700 GeV)#rightarrow#tau#tau","l")  
+    #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")
+    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(700 GeV)#rightarrow#tau#tau","l")
     legend.Draw("same")
     if channel == "em": channel_label = "e_{}#mu_{}"
     if channel == "et": channel_label = "e_{}#tau_{h}"
@@ -2296,13 +2400,13 @@ def HTTPlot(nodename,
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.04)
     latex2.DrawLatex(0.145,0.955,channel_label)
-    
+
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
-    
+
     ## category plots for mt and em channel
     ## mt cats plot:
     #line1 = R.TLine()
@@ -2327,13 +2431,13 @@ def HTTPlot(nodename,
     ##latex3.SetTextSize(0.03)
     ##latex3.SetTextAlign(13)
     ##latex3.DrawLatex(90, 10000, "control-region")
-    
+
     ##command to run2_mssm
     ##python scripts/HiggsTauTauPlot_mt.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.00368 --add_stat_to_syst --ratio_range=0.4,1.6
     #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.85,1.15 --x_title="m_{T}^{#mu} (GeV)" --y_title="Events / 5 GeV" #prefit
     #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.85,1.15 --x_title="m_{T}^{#mu} (GeV)" --y_title="Events / 5 GeV" --signal_scale=100 --draw_signal_mass=130 # with signal
-    
-    
+
+
     ## for em cat plots
     #line1 = R.TLine()
     #line1.SetLineStyle(2)
@@ -2352,7 +2456,7 @@ def HTTPlot(nodename,
     #latex2.SetTextAlign(23)
     #latex2.SetTextSize(0.03)
     #latex2.DrawLatex(-30, 46000*1.05, "Low-D_{#zeta}")
-    # 
+    #
     #line3 = R.TLine()
     #line3.SetLineStyle(2)
     #line3.SetLineWidth(2)
@@ -2366,14 +2470,14 @@ def HTTPlot(nodename,
     #latex4.SetTextAlign(23)
     #latex4.SetTextSize(0.03)
     #latex4.DrawLatex(85, 20000, "High-D_{#zeta}")
-   
+
     #command to run2_mssm
-    ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em 
+    ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em
     #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.85,1.15 --channel=em
     #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(22,-80,140)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.85,1.15 --channel=em --y_title="Events / 10 GeV" --signal_scale=200 --draw_signal_mass=130 # with signal
 
 
-    
+
     #Add ratio plot if required
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
@@ -2387,11 +2491,11 @@ def HTTPlot(nodename,
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
         pads[1].RedrawAxis("G")
-        
+
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
 
@@ -2417,7 +2521,7 @@ def CompareHists(hists=[],
              norm_bins=True,
              uncert_hist=None,
              uncert_title=''):
-    
+
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
@@ -2438,16 +2542,16 @@ def CompareHists(hists=[],
         hist_count+=1
         legend_hists.append(h.Clone())
    # hs.Draw("nostack")
-        
+
     c1 = R.TCanvas()
     c1.cd()
-    
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
@@ -2462,7 +2566,7 @@ def CompareHists(hists=[],
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-    
+
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
@@ -2478,7 +2582,7 @@ def CompareHists(hists=[],
         axish[0].GetXaxis().SetTitleSize(0.04)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(1.6)
@@ -2486,16 +2590,16 @@ def CompareHists(hists=[],
     axish[0].GetYaxis().SetLabelSize(0.03)
 
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
-    
+
     hs.Draw("nostack hist same")
-    
+
     if uncert_hist is not None:
       uncert_hist.SetFillColor(CreateTransparentColor(12,0.4))
       uncert_hist.SetLineColor(CreateTransparentColor(12,0.4))
@@ -2504,32 +2608,32 @@ def CompareHists(hists=[],
       uncert_hist.Draw("e2same")
     hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
-    
-    
+
+
     #Setup legend
     legend = PositionedLegend(0.30,0.1,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
-    
+
 
     for legi,hist in enumerate(legend_hists):
         legend.AddEntry(hist,legend_titles[legi],"l")
     if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
     legend.Draw("same")
-    
+
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
-    
+
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,label)
-    
+
     #Add ratio plot if required
     if ratio:
         ratio_hs = R.THStack("ratio_hs","")
@@ -2540,7 +2644,7 @@ def CompareHists(hists=[],
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         div_hist = hists[0].Clone()
-        
+
         for i in range(0,div_hist.GetNbinsX()+2): div_hist.SetBinError(i,0)
         first_hist=True
         for hist in hists:
@@ -2559,19 +2663,19 @@ def CompareHists(hists=[],
         if uncert_hist is not None:
           h = uncert_hist.Clone()
           h.Divide(div_hist)
-          h.Draw("e2same")   
-        ratio_hs.Draw("nostack l same")  
+          h.Draw("e2same")
+        ratio_hs.Draw("nostack l same")
         pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
-    
-def HTTPlotSignal(nodename, 
-            infile=None, 
-            signal_scale=1, 
+
+def HTTPlotSignal(nodename,
+            infile=None,
+            signal_scale=1,
             signal_mass="",
             norm_bins=True,
             channel="mt",
@@ -2605,19 +2709,19 @@ def HTTPlotSignal(nodename,
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"]) 
-    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"]) 
+    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"])
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"])
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"])
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"])
-    
+
     ModTDRStyle(r=0.04, l=0.14)
-    
+
     stack = R.THStack("hs","")
     sighist = R.TH1F()
     sighist_copy = R.TH1F()
     if signal_mass != "":
         sig_scheme = sig_schemes[signal_scheme]
-        for i in sig_scheme[1]: 
+        for i in sig_scheme[1]:
             h = infile.Get(nodename+'/'+i+signal_mass).Clone()
             if sighist.GetEntries() == 0: sighist = h
             else: sighist.Add(h)
@@ -2629,17 +2733,17 @@ def HTTPlotSignal(nodename,
         stack.Add(sighist.Clone())
 
         sighist_copy = sighist.Clone()
-        stack.Draw("histsame")    
-      
+        stack.Draw("histsame")
+
     c1 = R.TCanvas()
-    c1.cd()    
-    
+    c1.cd()
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
@@ -2655,7 +2759,7 @@ def HTTPlotSignal(nodename,
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-    
+
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
@@ -2670,7 +2774,7 @@ def HTTPlotSignal(nodename,
         axish[0].GetXaxis().SetLabelSize(0.03)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(1.6)
@@ -2678,14 +2782,14 @@ def HTTPlotSignal(nodename,
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*sighist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*sighist.GetMaximum())
     axish[0].Draw()
-    
+
     #Draw uncertainty band
     sighist.SetFillColor(CreateTransparentColor(12,0.4))
     sighist.SetLineColor(CreateTransparentColor(12,0.4))
@@ -2700,28 +2804,28 @@ def HTTPlotSignal(nodename,
         bkg_uncert_up.Scale(1.0,"width")
         bkg_uncert_down.Scale(1.0,"width")
 
-      for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+      for i in range(1,bkg_uncert_up.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          band_center = max(bin_up,bin_down) - error          
+          band_center = max(bin_up,bin_down) - error
           if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
-          
+
     if add_flat_uncert > 0:
-      for i in range(1,error_hist.GetNbinsX()+1): 
+      for i in range(1,error_hist.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
-          
-    
+
+
     error_hist.Draw("e2same")
     stack.Draw("hist same")
     axish[0].Draw("axissame")
-    
+
     #Setup legend
     legend = PositionedLegend(0.30,0.1,3,0.03)
     legend.SetTextFont(42)
@@ -2745,13 +2849,13 @@ def HTTPlotSignal(nodename,
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,channel_label)
-    
+
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
-    
+
     #Add ratio plot if required
     if ratio:
         ratio_sighist = MakeRatioHist(error_hist.Clone(),sighist.Clone(),True,False)
@@ -2765,14 +2869,14 @@ def HTTPlotSignal(nodename,
         ratio_sighist.Draw("e2same")
         sighist.DrawCopy("hist same")
         pads[1].RedrawAxis("G")
-        
+
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
-    
+
 def TagAndProbePlot(graphs=[],
              legend_titles=[],
              title="",
@@ -2793,7 +2897,7 @@ def TagAndProbePlot(graphs=[],
              label="",
              fits=None,
              ratio_fits=None):
-    
+
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
@@ -2813,16 +2917,16 @@ def TagAndProbePlot(graphs=[],
         hs.Add(g.GetHistogram())
         graph_count+=1
         legend_graphs.append(g.Clone())
-        
+
     c1 = R.TCanvas()
     c1.cd()
-        
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
@@ -2841,7 +2945,7 @@ def TagAndProbePlot(graphs=[],
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-    
+
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
@@ -2857,58 +2961,58 @@ def TagAndProbePlot(graphs=[],
         axish[0].GetXaxis().SetTitleSize(0.04)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
-    
+
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
-    
+
     mg.Draw('p')
-    
+
     mg.Draw('p')
     if fits is not None:
-      fit_count=0  
+      fit_count=0
       for i in fits:
         i.SetLineWidth(2)
         i.SetLineColor(colourlist[fit_count])
         i.Draw('same')
         fit_count+=1
-    
+
     axish[0].Draw("axissame")
-       
+
     #Setup legend
     legend = PositionedLegend(0.20,0.1,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
-   
+
 
     for legi,graph in enumerate(legend_graphs):
         legend.AddEntry(graph,legend_titles[legi],"l")
     legend.Draw("same")
-    
+
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.13)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
-    
+
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,label)
-    
+
     #Add ratio plot if required
     if ratio:
         #ratio_hs = R.THStack("ratio_hs","")
@@ -2919,7 +3023,7 @@ def TagAndProbePlot(graphs=[],
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         div_hist = graphs[0].GetHistogram().Clone()
- 
+
         num = graphs[0].Clone()
         ratio_graphs=[]
         for i in range(1,len(graphs)):
@@ -2928,11 +3032,11 @@ def TagAndProbePlot(graphs=[],
           sf_graph.SetLineColor(colourlist[i])
           sf_graph.SetMarkerSize(0)
           ratio_graphs.append(sf_graph.Clone())
-        for x in ratio_graphs:  
+        for x in ratio_graphs:
           x.Draw("p")
-          
+
         if ratio_fits is not None:
-          fit_count=0  
+          fit_count=0
           for i in ratio_fits:
             i.SetLineWidth(2)
             #i.SetLineColor(colourlist[fit_count+1])
@@ -2944,13 +3048,13 @@ def TagAndProbePlot(graphs=[],
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     c1.SaveAs(plot_name+'.pdf')
-    c1.SaveAs(plot_name+'.png')    
-    
-def HTTPlotUnrolled(nodename, 
-            infile=None, 
-            signal_scale=1, 
+    c1.SaveAs(plot_name+'.png')
+
+def HTTPlotUnrolled(nodename,
+            infile=None,
+            signal_scale=1,
             signal_mass="",
             FF=False,
             norm_bins=True,
@@ -2990,9 +3094,9 @@ def HTTPlotUnrolled(nodename,
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    
 
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
+
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed)
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
@@ -3021,12 +3125,12 @@ def HTTPlotUnrolled(nodename,
         'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",[ZTT_name],R.TColor.GetColor(248,206,104)),backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
-        
+
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
     if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
-        
+
     #Create stacked plot for the backgrounds
     bkg_histos = []
     for i,t in enumerate(background_schemes[scheme]):
@@ -3035,16 +3139,16 @@ def HTTPlotUnrolled(nodename,
         for j,k in enumerate(plots):
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
-                
+
                 h.SetName(k)
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
-    
+
         bkg_histos.append(h)
-        
+
     stack = R.THStack("hs","")
     bkghist_blind = R.TH1F()
     for hists in bkg_histos:
@@ -3052,27 +3156,27 @@ def HTTPlotUnrolled(nodename,
           bkghist_blind = hists.Clone()
       else:
           bkghist_blind.Add(hists.Clone())
-          
+
     bkghist = R.TH1F()
-    
+
     for hists in bkg_histos:
-      if norm_bins: Norm2DBins(hists)  
+      if norm_bins: Norm2DBins(hists)
       stack.Add(hists.Clone())
       if bkghist.GetEntries()==0:
           bkghist = hists.Clone()
       else:
           bkghist.Add(hists.Clone())
-    
-      
+
+
     c1 = R.TCanvas()
-    c1.cd()    
-    
+    c1.cd()
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
 
@@ -3106,7 +3210,7 @@ def HTTPlotUnrolled(nodename,
         axish[0].GetXaxis().SetLabelSize(0.03)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(0.8)
@@ -3114,71 +3218,71 @@ def HTTPlotUnrolled(nodename,
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
-        if log_y: 
+        if log_y:
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*bkghist.GetMaximum())
     axish[0].Draw()
-    
+
     #Draw uncertainty band
     bkghist.SetFillColor(CreateTransparentColor(12,0.4))
     bkghist.SetLineColor(CreateTransparentColor(12,0.4))
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
-    
+
     totsighist = R.TH1F()
     sighist = R.TH1F()
     sighists = []
     sighist_blind = []
     if signal_mass != "":
         for signal_scheme in sig_schemes:
-          sighist = R.TH1F()  
+          sighist = R.TH1F()
           sig_scheme = sig_schemes[signal_scheme]
-          for i in sig_scheme[1]: 
+          for i in sig_scheme[1]:
               h = infile.Get(nodename+'/'+i+signal_mass).Clone()
               if sighist.GetEntries() == 0: sighist = h
               else: sighist.Add(h)
           sighist.SetLineColor(sig_scheme[3])
           sighist.SetLineWidth(2)
           sighist.Scale(signal_scale)
-          if sig_scheme[2]: 
+          if sig_scheme[2]:
               s = sighist.Clone()
               if norm_bins: Norm2DBins(s)
               stack.Add(s)
-              if not custom_y_range: 
+              if not custom_y_range:
                 axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-          sighist_blind.append(sighist.Clone())      
+          sighist_blind.append(sighist.Clone())
           if norm_bins: Norm2DBins(sighist)
           stack.Draw("histsame")
           sighist.SetName(signal_scheme)
           sighists.append(sighist.Clone())
           #if not sig_scheme[2]: sighist.Draw("histsame")
         for sig in sighists: sig.Draw("histsame")
-            
+
     else:
         stack.Draw("histsame")
-        
+
     totsighist = R.TH1F()
     for hists in sighist_blind:
       if totsighist.GetEntries()==0:
           totsighist = hists.Clone()
       else:
           totsighist.Add(hists.Clone())
-    
+
     #blinding histograms, autoblind option overwrites others
-    
+
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-    
+
     # Auto blinding option
     if auto_blind:
       for i in range(1,total_datahist.GetNbinsX()+1):
-        b = bkghist_blind.GetBinContent(i)  
-        s = totsighist.GetBinContent(i) 
+        b = bkghist_blind.GetBinContent(i)
+        s = totsighist.GetBinContent(i)
         if PassAutoBlindMetric(s,b,metric=0.00001) or True:
           blind_datahist.SetBinContent(i,0)
           blind_datahist.SetBinError(i,0)
@@ -3192,8 +3296,8 @@ def HTTPlotUnrolled(nodename,
             blind_datahist.SetBinError(i+1,0)
     if norm_bins:
         Norm2DBins(blind_datahist)
-        Norm2DBins(total_datahist)    
-        
+        Norm2DBins(total_datahist)
+
     error_hist = bkghist.Clone()
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
@@ -3202,31 +3306,31 @@ def HTTPlotUnrolled(nodename,
         Norm2DBins(bkg_uncert_up)
         Norm2DBins(bkg_uncert_down)
 
-      for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+      for i in range(1,bkg_uncert_up.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          band_center = max(bin_up,bin_down) - error          
+          band_center = max(bin_up,bin_down) - error
           if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
-          
+
     if add_flat_uncert > 0:
-      for i in range(1,error_hist.GetNbinsX()+1): 
+      for i in range(1,error_hist.GetNbinsX()+1):
           stat_error=error_hist.GetBinError(i)
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
-    
+
     #if norm_bins:
-      #Norm2DBins(error_hist)    
+      #Norm2DBins(error_hist)
       #Norm2DBins(blind_datahist)
-          
+
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
-    
+
     #Setup legend
     legend = PositionedLegend(0.13,0.45,7,0.02)
     legend.SetTextFont(42)
@@ -3259,7 +3363,7 @@ def HTTPlotUnrolled(nodename,
     latex2.SetTextAlign(23)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.46,0.92,channel_label)
-    
+
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.01, -0.16, 1.0, '', 0.4)
@@ -3278,11 +3382,11 @@ def HTTPlotUnrolled(nodename,
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
         pads[1].RedrawAxis("G")
-        
+
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     if x_lines is not None:
       line = R.TLine()
       line.SetLineWidth(2)
@@ -3298,9 +3402,9 @@ def HTTPlotUnrolled(nodename,
           ymax = axish[1].GetMaximum()
           ymin = axish[1].GetMinimum()
           line.DrawLine(x,ymin,x,ymax)
-        
+
     if y_labels_vec is not None:
-      pads[0].cd()  
+      pads[0].cd()
       unit = y_labels_vec[1][2]
       var = y_labels_vec[1][0]
       if '(' in var: var = var.split(' ')[0]
@@ -3310,25 +3414,25 @@ def HTTPlotUnrolled(nodename,
       latex.SetTextAngle(0)
       latex.SetTextColor(R.kBlack)
       latex.SetTextSize(0.028)
-      
+
       Nybins = len(y_bins)
       if Nybins > 5: latex.SetTextSize(0.023)
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
         if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
-        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit)
         if "tau decay mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
           if i == 2: y_bin_label = "3 prong"
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
-        
-    
+
+
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
-    
+
 def SoverBPlot(nodename='',
              infile=None,
              channel="",
@@ -3343,46 +3447,46 @@ def SoverBPlot(nodename='',
              x_title="",
              extra_pad=0,
              plot_name="plot"):
-    
+
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
-    
+
     bkg_hist = infile.Get(nodename+'/total_bkg').Clone()
     signal_hist = infile.Get(nodename+'/ggH_htt125').Clone()
     vbf_hist = infile.Get(nodename+'/qqH_htt125').Clone()
-    
+
     def SumHist(h,sroot=False):
         for i in range(1,h.GetNbinsX()+2):
-          if sroot: h.SetBinContent(i,math.sqrt(h.Integral(i,-1)))  
+          if sroot: h.SetBinContent(i,math.sqrt(h.Integral(i,-1)))
           else: h.SetBinContent(i,h.Integral(i,-1))
-    
+
     SumHist(signal_hist)
     SumHist(bkg_hist,True)
     SumHist(vbf_hist)
-    
+
     r_1 = signal_hist.Clone()
     r_2 = signal_hist.Clone()
-    
+
     r_1.Divide(bkg_hist)
     r_2.Divide(vbf_hist)
-    
+
     r_1.SetFillColor(0)
     r_1.SetLineWidth(3)
     r_1.SetLineColor(R.kRed)
     r_1.SetMarkerSize(0)
-    
+
     r_2.SetFillColor(0)
     r_2.SetLineWidth(3)
     r_2.SetLineColor(R.kBlue)
     r_2.SetMarkerSize(0)
- 
+
     c1 = R.TCanvas()
     c1.cd()
-    
+
     pads=TwoPadSplit(0.29,0.01,0.01)
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
@@ -3397,7 +3501,7 @@ def SoverBPlot(nodename='',
     axish[1].GetYaxis().SetTitleOffset(1.6)
     axish[1].GetYaxis().SetTitleSize(0.04)
     axish[1].GetYaxis().SetLabelSize(0.03)
-    
+
     axish[0].GetXaxis().SetTitleSize(0)
     axish[0].GetXaxis().SetLabelSize(0)
     if custom_x_range:
@@ -3413,46 +3517,46 @@ def SoverBPlot(nodename='',
     axish[0].GetYaxis().SetLabelSize(0.03)
 
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*r_1.GetMaximum() - math.log10(axish[0].GetMinimum())))))
-        else: 
+        else:
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*r_1.GetMaximum())
     axish[0].SetLineWidth(0)
     axish[0].Draw()
-    
+
     r_1.Draw("hist same")
     axish[0].Draw("axissame")
-    
+
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    
+
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
     if channel == "mt": channel_label = "#mu#tau_{h}"
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
-    
+
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,channel_label)
-    
+
     pads[1].cd()
     axish[1].Draw("axis")
     r_2.Draw("hist same")
     pads[1].RedrawAxis("G")
-        
+
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
-    
+
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
-    
+
 
