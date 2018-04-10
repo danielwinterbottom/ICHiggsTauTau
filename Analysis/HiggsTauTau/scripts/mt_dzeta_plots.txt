@@ -1,0 +1,83 @@
+# Add lines and latex to plottin.py and use command to make plots
+
+# commented out lines add lines and labels to mT regions. Run using:
+# python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --channel=mt  --method=17   --var="mt_1(28,0,140)"  --outputfolder="./"   --ratio  --y_title="Events / 5.0 GeV" --x_title="m_{T} (GeV)" --cat=inclusive --folder=/vols/cms/dw515/Offline/output/MSSM/May29/ --add_flat_uncert=0.04887 --add_stat_to_syst --uncert_title="Background uncertainty" --extra_pad=0.4
+
+
+line1 = R.TLine(40,0,40,21000);
+line1.SetLineStyle(2)
+line1.SetLineWidth(2)
+line1.Draw()
+line2 = R.TLine(70,0,70,21000);
+line2.SetLineStyle(2)
+line2.SetLineWidth(2)
+line2.Draw()
+
+tight_lable = R.TLatex()
+tight_lable.SetNDC()
+tight_lable.SetTextAngle(0)
+tight_lable.SetTextColor(R.kBlack)
+tight_lable.SetTextSize(0.028)
+tight_lable.DrawLatex(0.17,0.72,'#splitline{tight}{signal-region}')
+
+loosemt_lable = R.TLatex()
+loosemt_lable.SetNDC()
+loosemt_lable.SetTextAngle(0)
+loosemt_lable.SetTextColor(R.kBlack)
+loosemt_lable.SetTextSize(0.028)
+loosemt_lable.DrawLatex(0.385,0.72,'#splitline{loose-m_{T}}{signal-region}')
+
+highmt_lable = R.TLatex()
+highmt_lable.SetNDC()
+highmt_lable.SetTextAngle(0)
+highmt_lable.SetTextColor(R.kBlack)
+highmt_lable.SetTextSize(0.028)
+highmt_lable.DrawLatex(0.7,0.5,'#splitline{high-m_{T}}{control-region}')
+
+
+# dzeta plots
+# use command:
+# python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --channel=em  --method=19   --var="pzeta(20,-90,110)"  --outputfolder="./"   --ratio  --y_title="Events / 10.0 GeV" --x_title="D_{#zeta} (GeV)" --cat=inclusive --folder=/vols/cms/amd12/MSSMFull2016/Apr05_may22em/ --add_flat_uncert=0.05115 --add_stat_to_syst --uncert_title="Background uncertainty" --extra_pad=0.4
+
+#add these lines to plotting.py
+
+line1 = R.TLine(-50,0,-50,46000);
+line1.SetLineStyle(2)
+line1.SetLineWidth(2)
+line1.Draw()
+line2 = R.TLine(-10,0,-10,46000);
+line2.SetLineStyle(2)
+line2.SetLineWidth(2)
+line2.Draw()
+line3 = R.TLine(30,0,30,46000);
+line3.SetLineStyle(2)
+line3.SetLineWidth(2)
+line3.Draw()
+
+cr_label = R.TLatex()
+cr_label.SetNDC()
+cr_label.SetTextAngle(0)
+cr_label.SetTextColor(R.kBlack)
+cr_label.SetTextSize(0.028)
+cr_label.DrawLatex(0.18,0.72,'#splitline{control}{region}')
+
+lowpzeta_label = R.TLatex()
+lowpzeta_label.SetNDC()
+lowpzeta_label.SetTextAngle(0)
+lowpzeta_label.SetTextColor(R.kBlack)
+lowpzeta_label.SetTextSize(0.028)
+lowpzeta_label.DrawLatex(0.35,0.72,'low-D_{#zeta}')
+
+medpzeta_label = R.TLatex()
+medpzeta_label.SetNDC()
+medpzeta_label.SetTextAngle(0)
+medpzeta_label.SetTextColor(R.kBlack)
+medpzeta_label.SetTextSize(0.028)
+medpzeta_label.DrawLatex(0.49,0.72,'medium-D_{#zeta}')
+
+highpzeta_label = R.TLatex()
+highpzeta_label.SetNDC()
+highpzeta_label.SetTextAngle(0)
+highpzeta_label.SetTextColor(R.kBlack)
+highpzeta_label.SetTextSize(0.028)
+highpzeta_label.DrawLatex(0.75,0.5,'high-D_{#zeta}')

@@ -193,6 +193,24 @@ class EventInfo {
     }
     return weight;
   }
+  
+  // Print the full set of enabled weights 
+  inline void print_weights() const {
+    std::cout << "-------------------------" << std::endl;
+    std::cout << "Weight name    |  Value  " << std::endl;
+    std::cout << "-------------------------" << std::endl;
+    SDMap::const_iterator it;
+    for (it = weights_.begin(); it != weights_.end(); ++it) {
+      SBMap::const_iterator st_it = weight_status_.find(it->first);
+      if (st_it != weight_status_.end()) {
+        if (!st_it->second) continue;
+      }
+      std::string name(it->first);
+      if(name.length()<13)name.append(13-name.length(), ' ');
+      printf("%.13s  |  %.3f  \n",name.c_str(),it->second);
+    }
+    std::cout << "-------------------------" << std::endl;
+  }
 
   /// Return `true` if the weight with `label` is enabled, `false` otherwise
   inline bool weight_is_enabled(std::string label) {

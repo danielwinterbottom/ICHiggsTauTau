@@ -165,15 +165,16 @@ if options.proc_mssm or options.proc_all:
     ]
 nlo_signal_mc = [ ]    
 if options.proc_mssm_nlo:
-  bbhmasses = ['80','130','200','350','700','1200','1800', '3200']
+  bbhmasses = ['100','1000','110','120','1200','130','140','1400','160','1600','180','1800','200','2000','2300','250','2600','2900','3200','350','400','450','500','600','700','80','800','90','900']
   for mass in bbhmasses :
     nlo_signal_mc += [
       'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
     ]
+nlo_qsh_signal_mc = [ ]
 if options.proc_mssm_nlo_qsh:
   bbhmasses = ['80','130','200','350','700','1200','1800','3200']
   for mass in bbhmasses :
-    nlo_signal_mc += [
+    nlo_qsh_signal_mc += [
       'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshUp', 'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshDown'
     ]
 
@@ -245,12 +246,12 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
 
 
-  DATAFILELIST="./filelists/Apr05_Data_80X"
+  DATAFILELIST="./filelists/Jun16_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr05_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -261,7 +262,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr05_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
@@ -400,12 +401,12 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       
-NLO_FILELIST='filelists/May23_MC_80X'
+NLO_FILELIST='filelists/Jul22_MC_80X'
       
 if options.proc_mssm_nlo or options.proc_mssm_nlo_qsh:
   for sa in nlo_signal_mc:
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May23_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jul22_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     FLATJSONPATCH=FLATJSONPATCHDYSIG
     if os.path.exists('%(NLO_FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(NLO_FILELIST)s_%(sa)s.dat' % vars()))
@@ -415,4 +416,19 @@ if options.proc_mssm_nlo or options.proc_mssm_nlo_qsh:
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       
+NLO_QSH_FILELIST='filelists/May23_MC_80X'
+
+if options.proc_mssm_nlo_qsh:
+  for sa in nlo_qsh_signal_mc:
+    JOB='%s_2016' % (sa)
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_QSH_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May23_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    FLATJSONPATCH=FLATJSONPATCHDYSIG
+    if os.path.exists('%(NLO_QSH_FILELIST)s_%(sa)s.dat' %vars()):
+      nfiles = sum(1 for line in open('%(NLO_QSH_FILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 50
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
 

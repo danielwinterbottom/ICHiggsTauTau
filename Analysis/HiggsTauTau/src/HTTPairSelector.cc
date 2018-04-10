@@ -25,6 +25,8 @@ namespace ic {
     tau_scale_ = 1.0;
     allowed_tau_modes_ = "";
     gen_taus_label_ = "genParticlesTaus";
+    metcl_mode_ = 0;
+    metuncl_mode_ = 0;
   }
 
   HTTPairSelector::~HTTPairSelector() {
@@ -108,7 +110,7 @@ namespace ic {
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoET) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
@@ -163,7 +165,7 @@ namespace ic {
         if(channel_ ==  channel::et) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
-        if(channel_ ==  channel::mt) { 
+        if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
@@ -225,8 +227,20 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-    Met *pfmet = pfMet_vec.at(0); 
-    if(!event->Exists("pfMET")) event->Add("pfMET", pfmet);
+    Met *pfmet = pfMet_vec.at(0);
+    // shift MET for systematic shifts
+    if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
+    else if(metuncl_mode_!=0 || metcl_mode_!=0){
+      std::string shift_type = "NoShift";  
+      if(metcl_mode_==1) shift_type = "JetEnDown";
+      if(metcl_mode_==2) shift_type = "JetEnUp";
+      if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+      if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+      double pt = pfmet->GetShiftedMet(shift_type).pt();
+      double phi = pfmet->GetShiftedMet(shift_type).phi();
+      pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+    }
+    event->Add("pfMET", pfmet);
    
    // ************************************************************************
    // Scale met for the tau energy scale shift
@@ -237,13 +251,42 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       //double t_scale = tau_scale_;
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
           if(es_shifts.count(tau->id()) > 0){
              this->CorrectMETForShift(met, es_shifts.at(tau->id()));
           }
+        }
+      }
+      if (channel_ == channel::et && event->Exists("elec_scales")) {
+        double t_scale_ = 1.0;  
+        Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
+        if (it != elec_scales.end()) {
+          t_scale_ = it->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+        double metx = met->vector().px();
+        double mety = met->vector().py();
+        double metet = met->vector().energy();
+        double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
+        double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
+        metx = metx + dx;
+        mety = mety + dy;
+        metet = sqrt(metx*metx + mety*mety);
+        ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      }
+      if ((channel_ == channel::mt || channel_ == channel::tpmt) && event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton1"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
         }
       }
     }
@@ -256,7 +299,7 @@ namespace ic {
       Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
       Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
@@ -297,6 +340,13 @@ namespace ic {
       metet = sqrt(metx*metx + mety*mety);
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      if (event->Exists("muon_scales")) {
+        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton2"));
+        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
+        if(es_shifts.count(muon->id()) > 0){
+          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
+        }
+      }
     }
 
     // ************************************************************************
@@ -305,7 +355,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16 && strategy_ != strategy::smsummer16) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
@@ -314,7 +364,7 @@ namespace ic {
           for (unsigned i = 0; i < particles.size(); ++i) {
             if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
           }
-        } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
+        } else if (channel_ == channel::mt || channel_ == channel::mtmet || channel_ == channel::tpmt) {
           // Add all status 3 muons with pT > 8 to sel_particles
          for (unsigned i = 0; i < particles.size(); ++i) {
            if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);

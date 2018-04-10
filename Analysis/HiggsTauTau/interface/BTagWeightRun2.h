@@ -31,6 +31,7 @@ class BTagWeightRun2 : public ModuleBase {
    CLASS_MEMBER(BTagWeightRun2, bool, do_reshape)
    CLASS_MEMBER(BTagWeightRun2, unsigned, btag_mode) 
    CLASS_MEMBER(BTagWeightRun2, unsigned, bfake_mode)
+   CLASS_MEMBER(BTagWeightRun2, std::string, add_name)
    //1 Down 2 Up (promote-demote) || 
    //3 JES Down 4 Jes Up 5 LF Down 6 LF Up  7 HF down 8 HFUp 9HFStats1Down 10 HFStats1Up 11 HFStats2Down 12 HFStats2Up 13 LFStats1Down 14 LFStats1Up 
    //15 LFStats2Down 16 LFStats2Up 17 CFErrIDown 18CFErr1Up 19 CFErr2Down 20 CFerr2Up

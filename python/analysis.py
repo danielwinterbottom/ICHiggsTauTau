@@ -60,6 +60,8 @@ class Shape(object):
             return self._hist.Integral(0, self._hist.GetNbinsX() + 1)
         elif self._hist.GetDimension() == 2:
             return self._hist.Integral(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1)
+        elif self._hist.GetDimension() == 3:
+            return self._hist.Integral(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, 0, self._hist.GetNbinsZ() + 1)
 
     def _IntErr(self):
         err = ROOT.Double()
@@ -67,6 +69,8 @@ class Shape(object):
             val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, err)
         elif self._hist.GetDimension() == 2:
             val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, err)
+        elif self._hist.GetDimension() == 3:
+            val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, 0, self._hist.GetNbinsZ() + 1, err)
         return ufloat(val, err)
 
     @property
@@ -169,7 +173,9 @@ class TTreeEvaluator:
 
     def Draw(self, draw_list, compiled=False):
         self.PrepareTree()
-        return MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
+        otree = MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
+        self.file.Close()
+        return otree
 
 
 class TChainEvaluator(TTreeEvaluator):
@@ -187,8 +193,9 @@ class TChainEvaluator(TTreeEvaluator):
 
 
 class BaseNode:
-    def __init__(self, name):
+    def __init__(self, name, WriteSubnodes=True):
         self.name = name
+        self.WriteSubnodes = WriteSubnodes    
 
     def GetNameStr(self):
         return '%s::%s' % (self.__class__.__name__, self.name)
@@ -217,7 +224,8 @@ class BaseNode:
         objects = self.Objects()
         for key, val in objects.iteritems():
             WriteToTFile(val, file, '%s/%s' % (prefix, key))
-        for node in self.SubNodes():
+        if self.WriteSubnodes:
+          for node in self.SubNodes():
             node.Output(file, '%s/%s' % (prefix, self.OutputPrefix(node)))
 
     def Run(self):
@@ -230,8 +238,8 @@ class BaseNode:
 
 
 class BasicNode(BaseNode):
-    def __init__(self, name, sample, variable, selection, factors=list()):
-        BaseNode.__init__(self, name)
+    def __init__(self, name, sample, variable, selection, factors=list(),WriteSubnodes=True):
+        BaseNode.__init__(self, name,WriteSubnodes)
         self.sample = sample
         self.variable = variable
         self.selection = selection
@@ -325,8 +333,8 @@ class SubtractNode(BaseNode):
             node.AddRequests(manifest)
 
 class HttQCDNode(BaseNode):
-    def __init__(self, name, data, subtract, factor, qcd_shape=None, ratio_num_node=None, ratio_den_node=None):
-        BaseNode.__init__(self, name)
+    def __init__(self, name, data, subtract, factor, qcd_shape=None, ratio_num_node=None, ratio_den_node=None,WriteSubnodes=True):
+        BaseNode.__init__(self, name,WriteSubnodes)
         self.shape = None
         self.data_node = data
         self.subtract_node = subtract
@@ -500,7 +508,7 @@ class HttWQCDCombinedNode(BaseNode):
             node.AddRequests(manifest)
             
 class HttWNode(BaseNode):
-    def __init__(self, name, data, subtract, w_control, w_signal, w_shape):
+    def __init__(self, name, data, subtract, w_control, w_signal, w_shape, extra_num_node=None, extra_den_node=None):
         BaseNode.__init__(self, name)
         self.shape = None
         self.data_node = data
@@ -508,12 +516,21 @@ class HttWNode(BaseNode):
         self.w_control_node = w_control
         self.w_signal_node = w_signal
         self.w_shape = w_shape
+        self.extra_num_node = extra_num_node
+        self.extra_den_node = extra_den_node
 
     def RunSelf(self):
-        if self.w_shape is None:
-            self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape
+        if self.data_node is None:
+          if self.w_shape is None:
+            self.shape = self.w_signal_node.shape
+          else: self.shape = self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape  
         else:
-            self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape
+          if self.w_shape is None:
+              self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape
+          else:
+              self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape
+        if self.extra_num_node is not None and self.extra_den_node is not None:
+            self.shape *= self.extra_num_node.shape.rate / self.extra_den_node.shape.rate
 
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -522,9 +539,13 @@ class HttWNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        subnodes = [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
+        if self.data_node is None: subnodes = [self.w_signal_node]
+        else: subnodes = [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
         if self.w_shape is not None:
             subnodes.append(self.w_shape)
+        if self.extra_num_node is not None and self.extra_den_node is not None:
+            subnodes.append(self.extra_num_node) 
+            subnodes.append(self.extra_den_node)    
         return subnodes
 
     def AddRequests(self, manifest):
@@ -586,6 +607,7 @@ class Analysis(object):
         self.info = {}
         self.remaps = {}
         self.compiled = False
+        self.WriteSubnodes = True
 
     def Run(self):
         manifest = []
@@ -630,6 +652,9 @@ class Analysis(object):
                 self.trees[newname] = TTreeEvaluator(tree, f)
             testf.Close()
             #print self.trees
+    
+    def writeSubnodes(self,WriteSubnodes):
+        self.WriteSubnodes = WriteSubnodes
 
     def AddInfo(self, file, scaleTo=None,add_name=None):
         with open(file) as jsonfile:
@@ -663,7 +688,7 @@ class Analysis(object):
         if add_name is not None: 
             name+=add_name
             sample+=add_name
-        return BasicNode(name, sample, var, sel, factors=myfactors)
+        return BasicNode(name, sample, var, sel, factors=myfactors,WriteSubnodes=self.WriteSubnodes)
 
     def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
         res = SummedNode(name)
