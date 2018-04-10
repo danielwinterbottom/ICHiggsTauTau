@@ -245,8 +245,10 @@ parser.add_argument("--embedding", dest="embedding", action='store_true',
     help="If option is speficied then use embedded samples for ZTT templates.")
 parser.add_argument("--syst_embedding_tt", dest="syst_embedding_tt", type=str,
     help="If set, adds systematic templates for embedding corresponding to TTbar shift of +/-10\% ")
+parser.add_argument("--split_sm_scheme", dest="split_sm_scheme", action='store_true',
+    help="If set, splits the SM signal scheme into ggH, qqH and VH")
 parser.add_argument("--ggh_scheme", dest="ggh_scheme", type=str,
-    help="Decide which ggH scheme to plot with (powheg or JHU)")
+    help="Decide which ggH scheme to plot with in split SM scheme mode (powheg or JHU)")
 options = parser.parse_args(remaining_argv)
 
 print ''
