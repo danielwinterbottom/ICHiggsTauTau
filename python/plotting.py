@@ -2028,13 +2028,18 @@ def HTTPlot(nodename,
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
             scheme="mt",
             embedding=False,
-            vbf_background=False
+            vbf_background=False,
+            split_sm_scheme=False,
+            ggh_scheme="powheg"
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False )
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_htt"], False )
+    sig_schemes['sm_ggH_JHU'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_htt"], False )
+    sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True )
     sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
@@ -2196,23 +2201,27 @@ def HTTPlot(nodename,
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
 
-    sighist = R.TH1F()
-    if signal_mass != "":
-        sig_scheme = sig_schemes[signal_scheme]
-        for i in sig_scheme[1]:
-            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-            if sighist.GetEntries() == 0: sighist = h
-            else: sighist.Add(h)
-        sighist.SetLineColor(R.kBlue)
-        sighist.SetLineWidth(3)
-        sighist.Scale(signal_scale)
-        if norm_bins: sighist.Scale(1.0,"width")
-        if sig_scheme[2]:
-            stack.Add(sighist.Clone())
-            if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-        stack.Draw("histsame")
-        if not sig_scheme[2]: sighist.Draw("histsame")
+    # for single signal scheme
+    if not split_sm_scheme:
+        sighist = R.TH1F()
+        if signal_mass != "":
+            sig_scheme = sig_schemes[signal_scheme]
+            for i in sig_scheme[1]:
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist.GetEntries() == 0: sighist = h
+                else: sighist.Add(h)
+            sighist.SetLineColor(R.kBlue)
+            sighist.SetLineWidth(3)
+            sighist.Scale(signal_scale)
+            if norm_bins: sighist.Scale(1.0,"width")
+            if sig_scheme[2]:
+                stack.Add(sighist.Clone())
+                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            stack.Draw("histsame")
+            if not sig_scheme[2]: sighist.Draw("histsame")
 
+    # separate out signal into powheg ggH and qqH,
+    # JHU ggH, and VH
     else:
         sighists = dict()
 
