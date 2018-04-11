@@ -2221,6 +2221,7 @@ def HTTPlot(nodename,
             if not sig_scheme[2]: sighist.Draw("histsame")
             
     # separate out signal into powheg ggH and qqH,
+    # JHU ggH, and VH
     else:
         sighists = dict()
 
