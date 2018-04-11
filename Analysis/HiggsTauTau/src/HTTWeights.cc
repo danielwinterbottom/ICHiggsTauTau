@@ -548,6 +548,8 @@ namespace ic {
           
       } else if(channel_==channel::tt) {
         wt_stitching = (((run >= 272007) && (run < 275657))*(1.0/0.897)+((run >= 275657) && (run < 276315))*(1.0/0.908)+((run >= 276315) && (run < 276831))*(1.0/0.950)+((run >= 276831) && (run < 277772))*(1.0/0.861)+((run >= 277772) && (run < 278820))*(1.0/0.941)+((run >= 278820) && (run < 280919))*(1.0/0.908)+((run >= 280919) && (run < 284045))*(1.0/0.949));  
+      } else if(channel_==channel::zmm){
+        wt_stitching = ((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.954)+((run >= 276831) && (run < 277772))*(1.0/0.946)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.855)+((run >= 280919) && (run < 284045))*(1.0/0.876);  
       }
       if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
       eventInfo->set_weight("wt_stitching", wt_stitching);
@@ -1556,7 +1558,8 @@ namespace ic {
                             mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
                           }
                         } else {
-                          mu_trg_mc = fns_["m_trg19_binned_ic_embed"]->eval(args_1.data());
+                          //mu_trg_mc = fns_["m_trg19_binned_ic_embed"]->eval(args_1.data());
+                          mu_trg_mc = 1; //until embedded tau triggers are fixed!  
                           mu_trg = fns_["m_trg19_binned_ic_data"]->eval(args_1.data());
                         }
                         if(!is_embedded_){
@@ -2243,19 +2246,26 @@ namespace ic {
                mu1_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                mu2_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_2.data());
              } else if (strategy_ == strategy::smsummer16){
-               auto argsdesy_1 = std::vector<double>{pt1,m1_signed_eta};
-               auto argsdesy_2 = std::vector<double>{pt2,m2_signed_eta};
-               mu1_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_1.data()); 
-               mu2_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_2.data());
-               mu1_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_1.data());
-               mu2_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_2.data());
-               if(m_iso_1>0.15){
-                 mu1_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(argsdesy_1.data()); 
-                 mu1_trg_mc=fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(argsdesy_1.data());
-               }
-               if(m_iso_2>0.15){
-                 mu2_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(argsdesy_2.data());
-                 mu2_trg_mc=fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(argsdesy_2.data());
+               if (is_embedded_) {
+                 mu1_trg = fns_["m_trg_binned_data"]->eval(args_1.data()); 
+                 mu2_trg = 1;
+                 mu1_trg_mc=fns_["m_trg_binned_mc"]->eval(args_1.data());
+                 mu2_trg_mc=1;    
+               } else {   
+                 auto argsdesy_1 = std::vector<double>{pt1,m1_signed_eta};
+                 auto argsdesy_2 = std::vector<double>{pt2,m2_signed_eta};
+                 mu1_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_1.data()); 
+                 mu2_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_2.data());
+                 mu1_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_1.data());
+                 mu2_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_2.data());
+                 if(m_iso_1>0.15){
+                   mu1_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(argsdesy_1.data()); 
+                   mu1_trg_mc=fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(argsdesy_1.data());
+                 }
+                 if(m_iso_2>0.15){
+                   mu2_trg = fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_data"]->eval(argsdesy_2.data());
+                   mu2_trg_mc=fns_["m_trgMu22OR_eta2p1_aiso0p15to0p3_desy_mc"]->eval(argsdesy_2.data());
+                 }
                }
                
              } else{
@@ -2711,10 +2721,15 @@ namespace ic {
            auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
            
            if(strategy_ == strategy::smsummer16){
-             m_1_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args1_1.data());
-             m_2_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args2_1.data());  
-             if(m_1_iso>0.15) m_1_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args1_1.data());
-             if(m_2_iso>0.15) m_2_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args2_1.data()); 
+             if(is_embedded_){  
+               m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data())*fns_["m_iso_binned_ratio"]->eval(args1_2.data());
+               m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data())*fns_["m_iso_binned_ratio"]->eval(args2_2.data());
+             } else {
+               m_1_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args1_1.data());
+               m_2_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args2_1.data());  
+               if(m_1_iso>0.15) m_1_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args1_1.data());
+               if(m_2_iso>0.15) m_2_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args2_1.data()); 
+             }
            } else {
              m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
              m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;

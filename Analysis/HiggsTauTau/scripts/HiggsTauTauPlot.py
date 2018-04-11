@@ -563,7 +563,7 @@ if options.era in ["smsummer16",'cpsummer16','tauid2016']:
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
     
 if options.embedding:
-    extra_top_sel = ''
+    extra_top_sel = '1'
     if options.channel == 'mt': extra_top_sel = '!((gen_match_1 == 4) && (gen_match_2 == 5))'
     if options.channel == 'et': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 5))'
     if options.channel == 'tt': extra_top_sel = '!((gen_match_1 == 5) && (gen_match_2 == 5))'
@@ -880,12 +880,13 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    #if options.channel in ['et','mt','tt']: wt_=wt+'*1.02'
+    if options.channel in ['et','mt','tt']: wt_=wt+'*1.02'
     #if options.channel == 'et' or options.channel == 'mt': wt_=wt+'*1.0526315789473684*1.08'
     #if options.channel == 'tt': wt_=wt+'*1.0526315789473684*1.0526315789473684*1.08*1.08'
-    #if options.channel == 'tt': wt_=wt+'*1.02*1.02'
-    full_selection = BuildCutString(wt+'*wt_embed_yield_data', sel, cat, OSSS, z_sels['ztt_sel'])
+    if options.channel == 'tt': wt_=wt+'*1.02*1.02'
+    full_selection = BuildCutString(wt_+'*wt_embed_yield_data', sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
+
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
@@ -897,6 +898,12 @@ def GetZLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
     else: OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
     return ana.SummedFactory('ZL'+add_name, samples, plot, full_selection)
+
+def GetZLEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
+    return ana.SummedFactory('EmbedZL'+add_name, samples, plot, full_selection)
 
 def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
@@ -922,6 +929,9 @@ def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
 def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)    
+def GenerateZLEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    embed_node = GetZLEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+    ana.nodes[nodename].AddNode(embed_node)  
     
 def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
@@ -1176,7 +1186,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   subtract_node.AddNode(ttj_node)
   subtract_node.AddNode(vvt_node)
   subtract_node.AddNode(vvj_node)
-  if options.embedding: # for now do subtraction of ZTT using MC but should be changed if we switch to embedding!
+  if options.embedding and options.channel != 'zmm': 
     embed_node = GetEmbeddedNode(ana, "", embed_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(embed_node)
   else:
@@ -1930,12 +1940,13 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             if options.channel == 'tt': method = 8
             elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
             elif options.channel == 'et' or options.channel == 'mt': method = 12
-        if 'EmbedZTT' not in samples_to_skip and options.embedding:    
+        if 'EmbedZTT' not in samples_to_skip and options.embedding and options.channel != 'zmm':    
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+            if options.embedding and options.channel =='zmm': GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:

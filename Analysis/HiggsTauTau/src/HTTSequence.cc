@@ -1230,7 +1230,8 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
-    .set_ditau_label("ditau"));
+    .set_ditau_label("ditau")
+    .set_channel(channel));
 }
 
 if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
