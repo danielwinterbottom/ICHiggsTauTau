@@ -2226,93 +2226,46 @@ def HTTPlot(nodename,
     # separate out signal into powheg ggH and qqH,
     # JHU ggH, and VH
     else:
+        sighists = dict()
+
         if ggh_scheme == 'powheg':
-            signal_scheme1 = 'sm_ggH'
-            sighist1 = R.TH1F()
+            signal_split_schemes = ['sm_ggH','sm_qqH','sm_VH']
+        if ggh_scheme == 'JHU':
+            signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
+
+        for index,split_scheme in enumerate(signal_split_schemes):
+            sighists[split_scheme] = R.TH1F()
             if signal_mass != "":
-                sig_scheme1 = sig_schemes[signal_scheme1]
-                for i in sig_scheme1[1]:
+                sig_scheme = sig_schemes[split_scheme]
+                for i in sig_scheme[1]:
                     h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-                    if sighist1.GetEntries() == 0: sighist1 = h
-                    else: sighist1.Add(h)
-                sighist1.SetLineColor(R.kGreen+2)
-                sighist1.SetLineWidth(3)
-                sighist1.Scale(signal_scale)
-                if norm_bins: sighist1.Scale(1.0,"width")
-                if sig_scheme1[2]:
-                    stack.Add(sighist1.Clone())
-                    if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-                stack.Draw("histsame")
-                if not sig_scheme1[2]: sighist1.Draw("histsame")
+                    if sighists[split_scheme].GetEntries() == 0:
+                        sighists[split_scheme] = h
+                    else:
+                        sighists[split_scheme].Add(h)
+
+                if split_scheme in ['sm_ggH','sm_ggH_JHU']:
+                    sighists[split_scheme].SetLineColor(R.kGreen+2)
+                if split_scheme == 'sm_qqH':
+                    sighists[split_scheme].SetLineColor(R.kBlue)
+                if split_scheme == 'sm_VH':
+                    sighists[split_scheme].SetLineColor(R.kRed)
+
+                sighists[split_scheme].SetLineWidth(3)
+                sighists[split_scheme].Scale(signal_scale)
+                if norm_bins:
+                    sighists[split_scheme].Scale(1.0,"width")
+                if sig_scheme[2]:
+                    stack.Add(sighists[split_scheme].Clone())
+                    if not custom_y_range:
+                        axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+                if index == 0:
+                    stack.Draw("histsame")
+                if not sig_scheme[2]:
+                    sighists[split_scheme].Draw("histsame")
 
             else:
                 stack.Draw("histsame")
-
-        elif ggh_scheme == 'JHU':
-            signal_scheme1 = 'sm_ggH_JHU'
-            sighist1 = R.TH1F()
-            if signal_mass != "":
-                sig_scheme1 = sig_schemes[signal_scheme1]
-                for i in sig_scheme1[1]:
-                    h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-                    if sighist1.GetEntries() == 0: sighist1 = h
-                    else: sighist1.Add(h)
-                sighist1.SetLineColor(R.kGreen+2)
-                sighist1.SetLineWidth(3)
-                sighist1.Scale(signal_scale)
-                if norm_bins: sighist1.Scale(1.0,"width")
-                if sig_scheme1[2]:
-                    stack.Add(sighist1.Clone())
-                    if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-                stack.Draw("histsame")
-                if not sig_scheme1[2]: sighist1.Draw("histsame")
-
-            else:
-                stack.Draw("histsame")
-
-        else:
-            assert ValueError('ggH scheme not in ["powheg","JHU"]')
-
-        signal_scheme2 = 'sm_qqH'
-        sighist2 = R.TH1F()
-        if signal_mass != "":
-            sig_scheme2 = sig_schemes[signal_scheme2]
-            for i in sig_scheme2[1]:
-                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-                if sighist2.GetEntries() == 0: sighist2 = h
-                else: sighist2.Add(h)
-            sighist2.SetLineColor(R.kBlue)
-            sighist2.SetLineWidth(3)
-            sighist2.Scale(signal_scale)
-            if norm_bins: sighist2.Scale(1.0,"width")
-            if sig_scheme2[2]:
-                stack.Add(sighist2.Clone())
-                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-            if not sig_scheme2[2]: sighist2.Draw("histsame")
-
-        else:
-            stack.Draw("histsame")
-
-        signal_scheme3 = 'sm_VH'
-        sighist3 = R.TH1F()
-        if signal_mass != "":
-            sig_scheme3 = sig_schemes[signal_scheme3]
-            for i in sig_scheme3[1]:
-                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-                if sighist3.GetEntries() == 0: sighist3 = h
-                else: sighist3.Add(h)
-            sighist3.SetLineColor(R.kRed)
-            sighist3.SetLineWidth(3)
-            sighist3.Scale(signal_scale)
-            if norm_bins: sighist3.Scale(1.0,"width")
-            if sig_scheme3[2]:
-                stack.Add(sighist3.Clone())
-                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-            if not sig_scheme3[2]: sighist3.Draw("histsame")
-
-        else:
-            stack.Draw("histsame")
-
 
     ## Add another signal mass point
     #sighist2 = R.TH1F()
@@ -2380,9 +2333,8 @@ def HTTPlot(nodename,
         if not split_sm_scheme:
             legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
         else:
-            legend.AddEntry(sighist1,sig_schemes[signal_scheme1][0],"l")
-            legend.AddEntry(sighist2,sig_schemes[signal_scheme2][0],"l")
-            legend.AddEntry(sighist3,sig_schemes[signal_scheme3][0],"l")
+            for split_scheme in signal_split_schemes:
+                legend.AddEntry(sighists[split_scheme],sig_schemes[split_scheme][0],"l")
 
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")
