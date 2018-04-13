@@ -240,7 +240,7 @@ namespace ic {
       double phi = pfmet->GetShiftedMet(shift_type).phi();
       pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
     }
-    event->Add("pfMET", pfmet);
+    if(!event->Exists("pfMET")) event->Add("pfMET", pfmet);
    
    // ************************************************************************
    // Scale met for the tau energy scale shift

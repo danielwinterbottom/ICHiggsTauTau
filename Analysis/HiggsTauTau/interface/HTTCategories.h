@@ -1259,6 +1259,7 @@ class HTTCategories : public ModuleBase {
   double tau_pt_2_;
   unsigned tau_id_1_;
   unsigned tau_id_2_;
+  double pt_tt_nomu_;
 
  public:
   HTTCategories(std::string const& name);

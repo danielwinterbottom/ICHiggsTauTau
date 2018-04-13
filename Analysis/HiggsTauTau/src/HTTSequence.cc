@@ -108,7 +108,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
-  w_extrap_study_ = false;
+  w_extrap_study_ = true;
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
@@ -1514,48 +1514,48 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
       .set_min_dr(0.5));
 
     
-  //  BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
-  //      .set_input_label_first("sel_muons_nomu")
-  //      .set_input_label_second(js["taus"].asString())
-  //      .set_candidate_name_first("lepton1")
-  //      .set_candidate_name_second("lepton2")
-  //      .set_output_label("ditau2"));
-  //  
-  //  HTTPairSelector httPairSelector_extrap = HTTPairSelector("HTTPairSelector_extrap")
-  //   .set_channel(channel::mt)
-  //   .set_fs(fs.get())
-  //   .set_pair_label("ditau2")
-  //   .set_met_label(met_label)
-  //   .set_strategy(strategy_type)
-  //   .set_mva_met_from_vector(mva_met_mode==1)
-  //   .set_faked_tau_selector(faked_tau_selector)
-  //   .set_hadronic_tau_selector(hadronic_tau_selector)
-  //   .set_ztt_mode(ztautau_mode)
-  //   .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
-  //   .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
-  //   .set_tau_scale(tau_shift)
-  //   .set_use_most_isolated(true)
-  //   .set_use_os_preference(false)
-  //   .set_allowed_tau_modes(allowed_tau_modes);
-  // 
-  // if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16){
-  //   httPairSelector_extrap.set_gen_taus_label("genParticles");
-  // }
-  // 
-  // BuildModule(httPairSelector_extrap);    
-  //
-  //  
-  //  BuildModule(SimpleFilter<CompositeCandidate>("PairFilter_MTPair")
-  //      .set_input_label("ditau2").set_min(1)
-  //      .set_predicate([=](CompositeCandidate const* c) {
-  //        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-  //            > 0.5;
-  //      }));
-  //  
-  //  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-  //    .set_input_label(jets_label)
-  //    .set_reference_label("ditau2")
-  //    .set_min_dr(0.5));
+    BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
+        .set_input_label_first("sel_muons_nomu")
+        .set_input_label_second(js["taus"].asString())
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau2"));
+    
+    HTTPairSelector httPairSelector_extrap = HTTPairSelector("HTTPairSelector_extrap")
+     .set_channel(channel::mt)
+     .set_fs(fs.get())
+     .set_pair_label("ditau2")
+     .set_met_label(met_label)
+     .set_strategy(strategy_type)
+     .set_mva_met_from_vector(mva_met_mode==1)
+     .set_faked_tau_selector(faked_tau_selector)
+     .set_hadronic_tau_selector(hadronic_tau_selector)
+     .set_ztt_mode(ztautau_mode)
+     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
+     .set_tau_scale(tau_shift)
+     .set_use_most_isolated(true)
+     .set_use_os_preference(false)
+     .set_allowed_tau_modes(allowed_tau_modes);
+   
+    if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+     httPairSelector_extrap.set_gen_taus_label("genParticles");
+   }
+   
+   BuildModule(httPairSelector_extrap);    
+  
+    
+    BuildModule(SimpleFilter<CompositeCandidate>("PairFilter_MTPair")
+        .set_input_label("ditau2").set_min(1)
+        .set_predicate([=](CompositeCandidate const* c) {
+          return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+              > 0.5;
+        }));
+    
+    BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+      .set_input_label(jets_label)
+      .set_reference_label("ditau2")
+      .set_min_dr(0.5));
   }
 
 /*

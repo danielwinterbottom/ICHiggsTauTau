@@ -130,6 +130,7 @@ namespace ic {
         outtree_->Branch("tau_antimuon" , &tau_antimuon  );
         outtree_->Branch("mt_1_nomu"    , &mt_1_nomu     );
         outtree_->Branch("os_mu_tau"   , &os_mu_tau     );
+        outtree_->Branch("pt_tt_nomu"   , &pt_tt_nomu_     );
      }
           
       if(add_nlo_weights_) {
@@ -3511,38 +3512,6 @@ namespace ic {
     
           
     if(w_extrap_study_){          
-        
-        std::vector<ic::Muon*> sel_muons_nomu = event->GetPtrVec<ic::Muon>("sel_muons_nomu");
-
-        mu_pt = sel_muons_nomu[0]->pt();
-        mt_1_nomu = MT(sel_muons_nomu[0],mets);
-        
-        isTau=false;        
-        std::vector<ic::Tau*> taus = event->GetPtrVec<ic::Tau>("taus");
-        std::vector<ic::Tau*> sel_taus;
-        for(unsigned i=0; i<taus.size();++i){
-          ic::Tau *tau = taus[i];
-          bool anti_elec = tau->GetTauID("againstElectronVLooseMVA6");
-          bool anti_muon = tau->GetTauID("againstMuonTight3");
-          bool v_loose_tau = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
-          bool os_tau_mu = tau->charge()*sel_muons_nomu[0]->charge() < 0;
-          os_tau_mu = true;
-          if(anti_elec&&anti_muon&&v_loose_tau&&os_tau_mu) sel_taus.push_back(tau);
-        }
-    
-        std::sort(sel_taus.begin(), sel_taus.end(), SortByIso);
-        std::vector<ic::Tau*> taus_to_match;
-        if (sel_taus.size() > 0){
-          taus_to_match.push_back(sel_taus[0]);
-          isTau = true;
-          ic::erase_if(jets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
-          ic::erase_if(lowpt_jets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
-          ic::erase_if(bjets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
-          os_mu_tau = sel_muons_nomu[0]->charge()*taus_to_match[0]->charge() < 0;
-          tau_id_loose = sel_taus[0]->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
-          tau_id_medium = sel_taus[0]->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
-          tau_id_tight = sel_taus[0]->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
-        }
 
         n_jets_ = jets.size();
         n_lowpt_jets_ = lowpt_jets.size();
@@ -3552,8 +3521,11 @@ namespace ic {
         if(event->Exists("ditau2")){
           std::vector<CompositeCandidate *> const& ditau_vec2 = event->GetPtrVec<CompositeCandidate>("ditau2");
           CompositeCandidate const* ditau2 = ditau_vec2.at(0);
+          pt_tt_nomu_ =(ditau2->vector() + pfmet->vector()).pt();
           Candidate const* extrap_lep1 = ditau2->GetCandidate("lepton1");
           Candidate const* extrap_lep2 = ditau2->GetCandidate("lepton2");
+          mt_1_nomu = MT(extrap_lep1, mets);
+          mu_pt = extrap_lep1->pt();
           os_mu_tau = extrap_lep1->charge()*extrap_lep2->charge() < 0;
           Tau const* tau = dynamic_cast<Tau const*>(extrap_lep2);
           tau_pt = extrap_lep2->pt();
