@@ -522,6 +522,13 @@ top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
 vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
 
+if options.channel == 'zee' or  options.channel == 'zmm':
+  top_sels['ttt_sel'] = z_sels['zl_sel']
+  top_sels['ttj_sel'] = '!('+z_sels['zl_sel']+')'
+  vv_sels['vvt_sel'] = z_sels['zl_sel']
+  vv_sels['vvj_sel'] = '!('+z_sels['zl_sel']+')'
+
+
 top_sels_embed = {}
 if options.channel == 'mt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 4) && (gen_match_2 == 5))'
 if options.channel == 'et': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 5))'

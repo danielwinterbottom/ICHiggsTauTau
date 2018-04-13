@@ -2598,6 +2598,7 @@ namespace ic {
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
+    //std::cout << pt_1_.var_double << "    " << eta_1_.var_double << "    " << pt_2_.var_double << "    " << eta_2_.var_double << std::endl;
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();

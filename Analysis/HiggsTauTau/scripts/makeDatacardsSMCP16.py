@@ -7,7 +7,7 @@ from optparse import OptionParser
 import os
 import string
 
-CHANNELS= ['et', 'mt', 'em','tt']
+CHANNELS= ['et', 'mt', 'em','tt', 'zmm']
 
 def validate_channel(channel):
   assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
@@ -122,7 +122,8 @@ extra_channel = {
       "et" : ' ',
       "mt" : ' ',
       "tt" : ' ',
-      "em" : ' '
+      "em" : ' ',
+      "zmm" : ' ',
   }
 jes_systematics=''
 if not options.no_split_jes:
@@ -140,18 +141,21 @@ em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
 et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
 mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
+zmm_shape_systematics=' --folder=/vols/cms/dw515/Offline/output/SM/Apr09/ '
+
 
 if options.embedding:
   mt_shape_systematics+=' --syst_mu_scale="CMS_scale_m_13TeV" ' 
   et_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" '
   em_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_m_13TeV" '
-  common_shape_systematics!=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
+  common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
       "mt" : ' '+common_shape_systematics+ ' '+mt_shape_systematics,
       "tt" : ' '+common_shape_systematics+ ' '+tt_shape_systematics,
-      "em" : ' '+common_shape_systematics+ ' '+em_shape_systematics
+      "em" : ' '+common_shape_systematics+ ' '+em_shape_systematics,
+      "zmm" : ' '+common_shape_systematics+ ' '+zmm_shape_systematics
   }
 
 if options.no_shape_systs:
@@ -159,7 +163,8 @@ if options.no_shape_systs:
       "et" : ' ',
       "mt" : ' ',
       "tt" : ' ',
-      "em" : ' '
+      "em" : ' ',
+      "zmm" : ' '
   }
 
 
@@ -238,7 +243,7 @@ if SCHEME == 'cpsummer16':
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
     'em' : 'em_default',
-    'tt' : 'tt_default'
+    'tt' : 'tt_default',
   }
   ANA = 'sm'
   
@@ -346,10 +351,8 @@ if SCHEME == 'cpsummer16_2d':
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
   #VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
-  #VAR_DIJET = 'm_sv,sjdphi[0,100,150],(20,-3.2,3.2)'  
-  #VAR_DIJET = 'm_sv,D0[0,100,150],(10,0,1)'   
-  #VAR_DIJET = 'm_sv,D0star[0,80,100,115,130,150],(12,-1,1)' 
-  VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
+  VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(6,0,1)'
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
 
  
   VAR_DIJET_TT_QCD = 'sjdphi(1,-3.2,3.2)' 
@@ -375,6 +378,7 @@ if SCHEME == 'cpsummer16_2d':
 
   ]
   scheme_mt = [
+    ("21",   "inclusive",    "met_cr",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --set_alias="inclusive:(m_vis>50&&m_vis<80)" '),  
     ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
     ("21",   "0jet",    "wjets_0jet_cr",  VAR_WCR, '--set_alias="sel:(mt_1>70)" '),
     ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.15)" '),
@@ -402,13 +406,18 @@ if SCHEME == 'cpsummer16_2d':
     ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
     ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
     ("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
+    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "inclusive",    "ttbar",  'm_sv[0,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
+  ]
+  scheme_zmm = [
+    ("8",   "inclusive",    "met_cr",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', '  --set_alias="inclusive:(m_vis>70&&m_vis<120)" ')
   ]
   bkg_schemes = {
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
     'em' : 'em_default',
-    'tt' : 'tt_default'
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
   }
   ANA = 'sm'
 
@@ -417,7 +426,8 @@ cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
   'em' : scheme_em,
-  'tt' : scheme_tt
+  'tt' : scheme_tt,
+  'zmm': scheme_zmm
 }
 
 
@@ -432,6 +442,7 @@ for ch in channels:
     var     = x[3]
     opts    = x[4]
     extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
+    if options.embedding: extra+=' --embedding'
     extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
     

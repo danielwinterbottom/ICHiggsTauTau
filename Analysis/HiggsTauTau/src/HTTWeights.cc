@@ -421,6 +421,10 @@ namespace ic {
         fns_["e_trg23_binned_ic_embed"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg23_binned_ic_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
         
+        fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
+
+        
         TFile fembed(embedding_scalefactor_file_.c_str());
         wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         fembed.Close();
@@ -451,8 +455,8 @@ namespace ic {
              wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
         fns_["m_sel_vvliso_ratio"] = std::shared_ptr<RooFunctor>(
              wembed_->function("m_sel_vvliso_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
-        fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_eta,gt2_eta")));
+        //fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+        //     wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_eta,gt2_eta")));
 
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
@@ -559,8 +563,10 @@ namespace ic {
       double gen_match_undecayed_2_eta = event->Get<double>("gen_match_undecayed_2_eta");
       auto args_1 = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_1_pt};
       auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
-      auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
-      double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
+      //auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
+      auto args_4 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta,gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
+      //double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
+      double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
       double wt_embedding_yield_data = wt_embedding_yield; 
       //std::cout << gen_match_undecayed_1_eta << "    " << gen_match_undecayed_1_pt << "    " << gen_match_undecayed_2_eta << "    " << gen_match_undecayed_2_pt << std::endl;
       //std::cout << "m_sel_idEmb_ratio (1) = " << fns_["m_sel_idEmb_ratio"]->eval(args_1.data()) << std::endl;

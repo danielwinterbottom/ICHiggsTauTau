@@ -22,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "ttbins":False, "taudm":"" }
+defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TagAndProbe/SingleLepton/" , "paramfile":"scripts/Params_2016_smsummer16.json","era":"smsummer16", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "ttbins":False, "taudm":"", "embed_sel":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -55,6 +55,8 @@ parser.add_argument("--ttbins", dest="ttbins", action='store_true',
     help="Use tt channel trigger bins.")
 parser.add_argument("--taudm", dest="taudm", type=str,
     help="If specified then does efficincies for set tau decay mode.")
+parser.add_argument("--embed_sel", dest="embed_sel", action='store_true',
+    help="Do scale-factors for embedding trgger selection")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -116,11 +118,18 @@ if options.channel == 'tpzmm':
       
   baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
   baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
+  
+  if options.embed_sel:
+    baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
+    baseline_tag2 = '(m_vis>80&&m_vis<100&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'    
 
+  if options.embed_sel:
+    iso_cut_1="1"
+    iso_cut_2="1"
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
-  trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
-  trg_tag_2 = baseline_tag2+'*(%s&&id_tag_1)' % iso_cut_1
+  trg_tag_1 = baseline_tag1+'*(%s&&id_probe_1)' % iso_cut_2
+  trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
   id_tag_1 = baseline_tag1 
   id_tag_2 = baseline_tag2 
 if options.channel == 'tpzee':
@@ -241,8 +250,16 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
         idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
         idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
         trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-        trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
-    
+        trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    
+      if options.embed_sel:
+        #trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
+        #trg_eta_bins = '(24,0,2.4)'
+        #trg_pt_bins='[20,40]'
+        trg_eta_bins = '[0,0.1,0.2,0.3,0.8,0.9,1.2,1.6,1.8,2.1,2.4]' # mu 17
+        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' 'mu8
+        trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
+        trg_eta_bins='[0,2.4]'
+        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]'
     if options.channel == 'tpzee':
       idiso_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
       idiso_pt_bins = '[10,20,25,30,40,50,100,200,1000]'
