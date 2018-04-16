@@ -120,6 +120,7 @@ namespace ic {
       }
       if(w_extrap_study_){
         outtree_->Branch("isTau", &isTau );
+        outtree_->Branch("wt_jetfake_down", &wt_jetfake_down);
         outtree_->Branch("tau_pt"       , &tau_pt        );
         outtree_->Branch("mu_pt"        , &mu_pt         );
         outtree_->Branch("tau_id_vloose", &tau_id_vloose );
@@ -3529,6 +3530,8 @@ namespace ic {
           os_mu_tau = extrap_lep1->charge()*extrap_lep2->charge() < 0;
           Tau const* tau = dynamic_cast<Tau const*>(extrap_lep2);
           tau_pt = extrap_lep2->pt();
+          if(eventInfo->weight_defined("wt_jetfake")) wt_jetfake_down = 1./eventInfo->weight("wt_jetfake");
+          else wt_jetfake_down = 1.;
           tau_antielec = tau->HasTauID("againstElectronVLooseMVA6") ? tau->GetTauID("againstElectronVLooseMVA6") :0. ;
           tau_antimuon = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
           tau_id_vloose = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") : 0.;

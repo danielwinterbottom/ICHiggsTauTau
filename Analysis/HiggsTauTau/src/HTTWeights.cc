@@ -204,6 +204,9 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+        
+        fns_["t_jetfake_dy_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_jetfake_dy_ratio")->functor(w_->argSet("t_pt")));
             
         if(do_trg_weights_ || do_idiso_weights_) {
           if (strategy_ != strategy::smsummer16) {
@@ -504,10 +507,18 @@ namespace ic {
   int HTTWeights::Execute(TreeEvent *event) {
 
     std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+    
     //std::vector<CompositeCandidate *> dilepton;
 
     double weight = 1.0;
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    
+    if(channel_ == channel::zmm && event->Exists("ditau2")&& do_zpt_weight_){
+      std::vector<CompositeCandidate *> const& dilepton2 = event->GetPtrVec<CompositeCandidate>("ditau2");
+      auto args = std::vector<double>{dilepton2[0]->GetCandidate("lepton2")->pt()};
+      double wt_jetfake = fns_["t_jetfake_dy_ratio"]->eval(args.data());
+      eventInfo->set_weight("wt_jetfake", wt_jetfake);
+    }
 
     if (ggh_mass_ != "") {
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -956,7 +967,6 @@ namespace ic {
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       if(mc_ != mc::summer16_80X || strategy_== strategy::smsummer16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
-          std::cout << wtzpt << std::endl;
           double wtzpt_down=1.0;
           double wtzpt_up = wtzpt*wtzpt;
           eventInfo->set_weight("wt_zpt",wtzpt);

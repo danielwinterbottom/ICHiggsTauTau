@@ -129,6 +129,7 @@ class HTTCategories : public ModuleBase {
   branch_var trigger_object_pt_2;
   branch_var trigger_object_eta_2;
 */
+ double wt_jetfake_down;
  float n_pu_;
   branch_var m_sv_;
   branch_var mt_sv_;
