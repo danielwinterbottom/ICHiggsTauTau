@@ -38,6 +38,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_tt_2016.pdf ztt_control_plots/mjj_ztt
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" --embedding
 mv ztt_control_plots/jdeta_ztt_control_dijet_tt_2016.pdf ztt_control_plots/jdeta_ztt_control_tt_2016_embed.pdf
 
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_tt_2016.pdf ztt_control_plots/D0_ztt_control_tt_2016_embed.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_tt_2016.pdf ztt_control_plots/DCP_ztt_control_tt_2016_embed.pdf
+
+
 # MC plots 
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control --norm_bins  --var="m_sv(20,0,200)" 
@@ -76,6 +83,12 @@ mv ztt_control_plots/mjj_ztt_control_dijet_tt_2016.pdf ztt_control_plots/mjj_ztt
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" 
 mv ztt_control_plots/jdeta_ztt_control_dijet_tt_2016.pdf ztt_control_plots/jdeta_ztt_control_tt_2016_mc.pdf
 
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_tt_2016.pdf ztt_control_plots/D0_ztt_control_tt_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=tt --ratio  --method=8 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_tt_2016.pdf ztt_control_plots/DCP_ztt_control_tt_2016_mc.pdf
+
 # mt channel plots
 
 # embedding plots
@@ -107,8 +120,6 @@ mv ztt_control_plots/pt_tt_ztt_control_mt_2016.pdf ztt_control_plots/pt_tt_ztt_c
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control --norm_bins --extra_pad=0.4 --var="n_jets(4,0,4)" --embedding
 mv ztt_control_plots/n_jets_ztt_control_mt_2016.pdf ztt_control_plots/n_jets_ztt_control_mt_2016_embed.pdf
 
-#python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="sjdphi(10,-3.5,3.5)" --embedding
-
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins --extra_pad=0.5 --var="sjdphi(10,-3.5,3.5)" --embedding
 mv ztt_control_plots/sjdphi_ztt_control_dijet_mt_2016.pdf ztt_control_plots/sjdphi_ztt_control_mt_2016_embed.pdf
 
@@ -117,6 +128,12 @@ mv ztt_control_plots/mjj_ztt_control_dijet_mt_2016.pdf ztt_control_plots/mjj_ztt
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" --embedding
 mv ztt_control_plots/jdeta_ztt_control_dijet_mt_2016.pdf ztt_control_plots/jdeta_ztt_control_mt_2016_embed.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_mt_2016.pdf ztt_control_plots/D0_ztt_control_mt_2016_embed.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_mt_2016.pdf ztt_control_plots/DCP_ztt_control_mt_2016_embed.pdf
 
 # MC plots 
 
@@ -155,6 +172,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_mt_2016.pdf ztt_control_plots/mjj_ztt
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" 
 mv ztt_control_plots/jdeta_ztt_control_dijet_mt_2016.pdf ztt_control_plots/jdeta_ztt_control_mt_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_mt_2016.pdf ztt_control_plots/D0_ztt_control_mt_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=mt --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_mt_2016.pdf ztt_control_plots/DCP_ztt_control_mt_2016_mc.pdf
+
 
 # et channel plot 
 
@@ -196,6 +220,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_et_2016.pdf ztt_control_plots/mjj_ztt
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" --embedding
 mv ztt_control_plots/jdeta_ztt_control_dijet_et_2016.pdf ztt_control_plots/jdeta_ztt_control_et_2016_embed.pdf
 
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_et_2016.pdf ztt_control_plots/D0_ztt_control_et_2016_embed.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_et_2016.pdf ztt_control_plots/DCP_ztt_control_et_2016_embed.pdf
+
+
 # MC plots 
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control --norm_bins  --var="m_sv(20,0,200)" 
@@ -233,6 +264,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_et_2016.pdf ztt_control_plots/mjj_ztt
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" 
 mv ztt_control_plots/jdeta_ztt_control_dijet_et_2016.pdf ztt_control_plots/jdeta_ztt_control_et_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_et_2016.pdf ztt_control_plots/D0_ztt_control_et_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=et --set_alias="sel:(mt_1<50)" --ratio  --method=21 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_et_2016.pdf ztt_control_plots/DCP_ztt_control_et_2016_mc.pdf
+
 
 # em channel plots
 
@@ -274,6 +312,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_em_2016.pdf ztt_control_plots/mjj_ztt
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" --embedding
 mv ztt_control_plots/jdeta_ztt_control_dijet_em_2016.pdf ztt_control_plots/jdeta_ztt_control_em_2016_embed.pdf
 
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_em_2016.pdf ztt_control_plots/D0_ztt_control_em_2016_embed.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --embedding --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_em_2016.pdf ztt_control_plots/DCP_ztt_control_em_2016_embed.pdf
+
+
 # MC plots 
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control --norm_bins  --var="m_sv(20,0,200)" 
@@ -311,6 +356,13 @@ mv ztt_control_plots/mjj_ztt_control_dijet_em_2016.pdf ztt_control_plots/mjj_ztt
 
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="jdeta[0,0.5,1,1.5,2,2.5,3,3.5,4,5,7]" 
 mv ztt_control_plots/jdeta_ztt_control_dijet_em_2016.pdf ztt_control_plots/jdeta_ztt_control_em_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="D0(10,0,1)" --extra_pad=0.55
+mv ztt_control_plots/D0_ztt_control_dijet_em_2016.pdf ztt_control_plots/D0_ztt_control_em_2016_mc.pdf
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg --channel=em --set_alias="sel:(pzeta>-10)" --ratio  --method=19 --outputfolder=ztt_control_plots/ --draw_signal_mass="" --cat=ztt_control_dijet --norm_bins  --var="DCP(10,-1,1)" --extra_pad=0.55
+mv ztt_control_plots/DCP_ztt_control_dijet_em_2016.pdf ztt_control_plots/DCP_ztt_control_em_2016_mc.pdf
+
 
 rm ztt_control_plots/*.png ztt_control_plots/*.root
 

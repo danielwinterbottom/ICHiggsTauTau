@@ -1230,7 +1230,8 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
-    .set_ditau_label("ditau"));
+    .set_ditau_label("ditau")
+    .set_channel(channel));
 }
 
 if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -1462,7 +1463,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
 
 BuildModule(svFitTest);
 
-if(js["do_preselection"].asBool() || !js["baseline"]["do_faketaus"].asBool()){
+if(js["do_preselection"].asBool() && !js["baseline"]["do_faketaus"].asBool()){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
       //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have
@@ -2084,7 +2085,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     .set_era(era_type)
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
-    .set_do_tau_id_sf(real_tau_sample)
+    .set_do_tau_id_sf(real_tau_sample && !js["do_mt_tagandprobe"].asBool())
     .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
@@ -2288,14 +2289,34 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
     else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-                           
+    std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+    std::function<bool(Muon const*)> MuonVVLIso = [](Muon const* m) { return MuonTkIsoVal(m) < 0.4; };
     BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
         .set_fs(fs.get())
         .set_channel(channel)
         .set_strategy(strategy_type)
         .set_ditau_label("ditau")
-        .set_tag_trg_objects("triggerObjectsIsoMu24")
-        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        //.set_tag_trg_objects("triggerObjectsIsoMu24")
+        //.set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        // for mu8 leg of MuMu cross-trigger
+        //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+        //.set_extra_hlt_probe_pt(8.)
+        // for mu17 leg of MuMu cross-trigger
+        //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+        //.set_extra_hlt_probe_pt(17.)
+        
+        // DZ filter
+        .set_tag_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+        .set_tag_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+        
+        .set_probe_trg_objects("triggerObjectsMu17TkMu8DZ,triggerObjectsMu17Mu8DZ")
+        .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2")
+        //.set_extra_hlt_probe_pt(17.)
+        
+        .set_probe_id(MuonLooseID)
+        .set_tag_id(muon_probe_id)
         // for single muon trigger:
         //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
         //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
@@ -2303,8 +2324,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
         //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
         // for mu8 leg of EMu cross-trigger
-        .set_probe_trg_objects("triggerObjectsMu17Mu8,triggerObjectsMu17Mu8")
-        .set_probe_trg_filters("hltL3pfL1sDoubleMu114ORDoubleMu125L1f0L2pf0L3PreFiltered8,hltL3pfL1sDoubleMu114L1f0L2pf0L3PreFiltered8")
+        //.set_probe_trg_objects("triggerObjectsMu17Mu8,triggerObjectsMu17Mu8")
+        //.set_probe_trg_filters("hltL3pfL1sDoubleMu114ORDoubleMu125L1f0L2pf0L3PreFiltered8,hltL3pfL1sDoubleMu114L1f0L2pf0L3PreFiltered8")
         ////.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
         ////.set_tag_add_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17") // need these lines to make sure the high pT leg was fired
         // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
@@ -2314,8 +2335,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         //.set_extra_l1_probe_pt(20.)
         
 
-        .set_probe_id(muon_probe_id)
-        .set_tag_id(muon_probe_id)
+        //.set_probe_id(muon_probe_id)
+        //.set_tag_id(muon_probe_id)
     );
   } else if(channel == channel::tpzee){
     std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
@@ -2521,6 +2542,26 @@ if( strategy_type == strategy::paper2013) {
 
 
   BuildTauSelection();
+  
+  if(js["do_mt_tagandprobe"].asBool()){
+   BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
+        js["muons"].asString(),"loose_muons"));
+
+   BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
+        .set_input_label("loose_muons").set_min(0)
+        .set_predicate([=](Muon const* m) {
+
+          return  m->pt()                 > 5    &&
+                  m->is_global() ;
+
+        }));
+
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("loose_muons")
+      .set_min_dr(0.5));
+  }
+
 
   BuildModule(CompositeProducer<Electron, Tau>("ETPairProducer")
       .set_input_label_first("sel_electrons")
@@ -2542,6 +2583,21 @@ void HTTSequence::BuildMTPairs() {
       .set_shift_label("muon_scales")
       .set_shift(muon_shift));
  }
+  
+ if(js["do_mt_tagandprobe"].asBool()){
+   BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
+        js["muons"].asString(),"loose_muons"));
+
+   BuildModule(SimpleFilter<Muon>("LooseMuonFilter")
+        .set_input_label("loose_muons").set_min(0)
+        .set_predicate([=](Muon const* m) {
+
+          return  m->pt()                 > 5    &&
+                  m->is_global() ;
+
+        }));
+  }
+
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -2621,6 +2677,13 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
 }
 
   BuildTauSelection();
+
+  if(js["do_mt_tagandprobe"].asBool()){
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("loose_muons")
+      .set_min_dr(0.5));
+  }
 
   BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
       .set_input_label_first("sel_muons")
@@ -2993,6 +3056,7 @@ void HTTSequence::BuildZMMPairs() {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
+   
    
   BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(2)

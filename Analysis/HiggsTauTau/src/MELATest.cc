@@ -225,9 +225,11 @@ int MELATest::Execute(TreeEvent *event) {
       if(jes_shift_mode_ == 0){
         event->Add("D0", it->second.first);
         event->Add("DCP", it->second.second);
+        mela_map.erase(it);
       } else {
         event->Add("D0_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.first);
         event->Add("DCP_" + std::to_string(JES2UInt(jes_uncert_set_)), it->second.second);
+        mela_map.erase(it);
       }
     } else { std::cout << "Warning, MELA output not found!" << std::endl; }
   }

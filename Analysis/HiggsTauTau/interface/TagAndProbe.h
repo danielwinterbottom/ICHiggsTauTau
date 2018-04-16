@@ -33,6 +33,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, double, extra_l1_tag_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
+  CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   
   TTree *outtree_;
   
@@ -102,6 +103,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   extra_hlt_probe_pt_ = 0.;
   tag_add_trg_objects_="";
   tag_add_trg_filters_="";
+  loose_iso_trgprobe_=false;
 }
 
 template <class T>
@@ -202,6 +204,15 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_tag = event->GetPtrVec<TriggerObject>(tag_objs[i]);
     trg_tag_1_ = IsFilterMatched(ditau->At(0), objs_tag, tag_filts[i], 0.5) || trg_tag_1_;
     trg_tag_2_ = IsFilterMatched(ditau->At(1), objs_tag, tag_filts[i], 0.5) || trg_tag_2_;
+    
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(tag_filts[i]);
+    //for (unsigned j = 0; j < objs_tag.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_tag[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_tag_1_ = true;
+    //}
+    ///////
   }
   if(tag_add_trg_objects_!=""){
     bool add_trg_tag_1 = false; 
@@ -221,6 +232,16 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
     trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
     trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(probe_filts[i]);
+    //for (unsigned j = 0; j < objs_probe.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_probe[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_probe_1_ = true;
+    //}
+    ////
+    
     if(extra_hlt_probe_pt_>0){
       if(trg_probe_1_) { 
         unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
@@ -240,10 +261,15 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
       iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+      if(loose_iso_trgprobe_){
+        trg_probe_1_ = trg_probe_1_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;   
+        trg_probe_2_ = trg_probe_2_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;
+      }
       id_tag_1_ = tag_id_(muon1);
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
+    
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1muons = event->GetPtrVec<ic::L1TObject>("L1Muons");
