@@ -1242,7 +1242,6 @@ class HTTCategories : public ModuleBase {
   double pjbhdeta_;
   int prob_region_;
   unsigned n_pjets_;
-  double wt_embed_yield_data_;  
   double tau_pt_1_;
   double tau_pt_2_;
   unsigned tau_id_1_;
