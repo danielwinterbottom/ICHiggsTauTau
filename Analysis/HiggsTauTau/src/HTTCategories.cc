@@ -1642,7 +1642,6 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     //eventInfo->print_weights();
-    if(is_embedded_ && event->Exists("wt_embed_yield_data")) wt_embed_yield_data_ = event->Get<double>("wt_embed_yield_data"); 
     wt_tau_id_binned_ = 1.0;
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
     wt_tau_id_tight_ = 1.0;
@@ -2598,7 +2597,6 @@ namespace ic {
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
-    //std::cout << pt_1_.var_double << "    " << eta_1_.var_double << "    " << pt_2_.var_double << "    " << eta_2_.var_double << std::endl;
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();

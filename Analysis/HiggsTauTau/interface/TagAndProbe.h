@@ -202,16 +202,16 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   std::vector<TriggerObject *> objs_tag;
   for(unsigned i=0; i<tag_objs.size(); ++i){
     objs_tag = event->GetPtrVec<TriggerObject>(tag_objs[i]);
-    //trg_tag_1_ = IsFilterMatched(ditau->At(0), objs_tag, tag_filts[i], 0.5) || trg_tag_1_;
-    //trg_tag_2_ = IsFilterMatched(ditau->At(1), objs_tag, tag_filts[i], 0.5) || trg_tag_2_;
+    trg_tag_1_ = IsFilterMatched(ditau->At(0), objs_tag, tag_filts[i], 0.5) || trg_tag_1_;
+    trg_tag_2_ = IsFilterMatched(ditau->At(1), objs_tag, tag_filts[i], 0.5) || trg_tag_2_;
     
-    // added this bit for DZ filter! 
-    std::size_t hash = CityHash64(tag_filts[i]);
-    for (unsigned j = 0; j < objs_tag.size(); ++j) {
-      std::vector<std::size_t> const& labels = objs_tag[j]->filters();
-      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
-      trg_tag_1_ = true;
-    }
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(tag_filts[i]);
+    //for (unsigned j = 0; j < objs_tag.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_tag[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_tag_1_ = true;
+    //}
     ///////
   }
   if(tag_add_trg_objects_!=""){
@@ -230,16 +230,16 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
-    //trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
-    //trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
+    trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
     
-    // added this bit for DZ filter! 
-    std::size_t hash = CityHash64(probe_filts[i]);
-    for (unsigned j = 0; j < objs_probe.size(); ++j) {
-      std::vector<std::size_t> const& labels = objs_probe[j]->filters();
-      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
-      trg_probe_1_ = true;
-    }
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(probe_filts[i]);
+    //for (unsigned j = 0; j < objs_probe.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_probe[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_probe_1_ = true;
+    //}
     ////
     
     if(extra_hlt_probe_pt_>0){

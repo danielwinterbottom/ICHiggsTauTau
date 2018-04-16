@@ -447,9 +447,9 @@ if options.era == 'cpsummer16':
   # end of aachen cuts
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
-#if options.era in ['smsummer16','cpsummer16']:
-#  if options.channel in ['et','mt']: cats['qcd_shape'] = '('+cats['baseline_loose']+')*('+cats[options.cat]+')'
-#  if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: cats['w_shape'] = cats['qcd_shape']
+if options.era in ['smsummer16','cpsummer16']:
+  if options.channel in ['et','mt']: cats['qcd_shape'] = '('+cats['baseline_loose']+')*('+cats[options.cat]+')'
+  if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: cats['w_shape'] = cats['qcd_shape']
 
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
@@ -887,11 +887,9 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    if options.channel in ['et','mt','tt']: wt_=wt+'*1.02'
-    #if options.channel == 'et' or options.channel == 'mt': wt_=wt+'*1.0526315789473684*1.08'
-    #if options.channel == 'tt': wt_=wt+'*1.0526315789473684*1.0526315789473684*1.08*1.08'
+    if options.channel in ['et','mt']: wt_=wt+'*1.02'
     if options.channel == 'tt': wt_=wt+'*1.02*1.02'
-    full_selection = BuildCutString(wt_+'*wt_embed_yield_data', sel, cat, OSSS, z_sels['ztt_sel'])
+    full_selection = BuildCutString(wt_, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):

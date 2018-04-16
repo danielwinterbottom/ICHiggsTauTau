@@ -563,18 +563,8 @@ namespace ic {
       double gen_match_undecayed_2_eta = event->Get<double>("gen_match_undecayed_2_eta");
       auto args_1 = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_1_pt};
       auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
-      //auto args_pair = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_2_eta};
       auto args_4 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta,gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
-      //double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_vvliso_ratio"]->eval(args_1.data())*fns_["m_sel_vvliso_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_pair.data());
       double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
-      double wt_embedding_yield_data = wt_embedding_yield; 
-      //std::cout << gen_match_undecayed_1_eta << "    " << gen_match_undecayed_1_pt << "    " << gen_match_undecayed_2_eta << "    " << gen_match_undecayed_2_pt << std::endl;
-      //std::cout << "m_sel_idEmb_ratio (1) = " << fns_["m_sel_idEmb_ratio"]->eval(args_1.data()) << std::endl;
-      //std::cout << "m_sel_idEmb_ratio (2) = " << fns_["m_sel_idEmb_ratio"]->eval(args_2.data()) << std::endl;
-      //std::cout << "m_sel_vvliso_ratio (1) = " << fns_["m_sel_vvliso_ratio"]->eval(args_1.data()) << std::endl;
-      //std::cout << "m_sel_vvliso_ratio (2) = " << fns_["m_sel_vvliso_ratio"]->eval(args_2.data()) << std::endl;
-      //std::cout << "m_sel_trg_ratio = " << fns_["m_sel_trg_ratio"]->eval(args_pair.data()) << std::endl;
-
      
       // global scale factors not used anymore
       //if(channel_==channel::mt)      wt_embedding_yield = 1.192;
@@ -582,12 +572,11 @@ namespace ic {
       //if(channel_==channel::em) wt_embedding_yield = 1.14;
       //if(channel_==channel::tt) wt_embedding_yield = 2.1;
       //
-      if(channel_==channel::mt) wt_embedding_yield = 1.2703;//1.2216; //commented out numbers don't take into accoutn 1.02 zpT reweighting
-      if(channel_==channel::et) wt_embedding_yield = 1.2244;//1.1748;
-      if(channel_==channel::em) wt_embedding_yield = 1.2101;//1.1595;
-      if(channel_==channel::tt) wt_embedding_yield = 1.2005;//1.1289;
+      //if(channel_==channel::mt) wt_embedding_yield = 1.2703;
+      //if(channel_==channel::et) wt_embedding_yield = 1.2244;
+      //if(channel_==channel::em) wt_embedding_yield = 1.2101;
+      //if(channel_==channel::tt) wt_embedding_yield = 1.2005;
       eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
-      event->Add("wt_embed_yield_data", wt_embedding_yield_data/wt_embedding_yield);
     }
 
     if (do_topquark_weights_) {
