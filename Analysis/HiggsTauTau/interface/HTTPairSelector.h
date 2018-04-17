@@ -37,6 +37,8 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, std::string, allowed_tau_modes)
   CLASS_MEMBER(HTTPairSelector, std::string, gen_taus_label)
   CLASS_MEMBER(HTTPairSelector, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTPairSelector, unsigned, metcl_mode)
+  CLASS_MEMBER(HTTPairSelector, unsigned, metuncl_mode)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
 

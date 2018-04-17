@@ -40,6 +40,11 @@ namespace ic {
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
       do_qcd_scale_wts_ = false;
       do_pdf_wts_ = false;
+      do_mssm_higgspt_ = false;
+      do_sm_scale_wts_ = false;
+      do_jes_vars_ = false;
+      do_z_weights_ = false;
+      do_faketaus_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -72,6 +77,20 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+      outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
+      if (strategy_ == strategy::smsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
+      if(do_mssm_higgspt_){
+        outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
+        outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
+        outtree_->Branch("wt_ggh_i", &wt_ggh_i_);
+        outtree_->Branch("wt_ggH_t", &wt_ggH_t_);
+        outtree_->Branch("wt_ggH_b", &wt_ggH_b_);
+        outtree_->Branch("wt_ggH_i", &wt_ggH_i_);
+        outtree_->Branch("wt_ggA_t", &wt_ggA_t_);
+        outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
+        outtree_->Branch("wt_ggA_i", &wt_ggA_i_);    
+      }
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
@@ -660,6 +679,7 @@ namespace ic {
       outtree_->Branch("antimu_1",          &antimu_1_);
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
+      outtree_->Branch("antimu_loose_2",    &antimu_loose_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("dilepton_veto",     &dilepton_veto_);
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
@@ -674,6 +694,20 @@ namespace ic {
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
+      outtree_->Branch("jdphi",             &jdphi_);
+      if (strategy_ == strategy::smsummer16){
+        outtree_->Branch("sjdphi",             &sjdphi_);
+        outtree_->Branch("D0", &D0_);
+        outtree_->Branch("DCP", &DCP_);
+        outtree_->Branch("spjdphi", &spjdphi_     );
+        outtree_->Branch("min_hj_deta", &min_hj_deta_ );
+        outtree_->Branch("pjdeta", &pjdeta_      );
+        outtree_->Branch("pjahdeta", &pjahdeta_    );
+        outtree_->Branch("pjbhdeta", &pjbhdeta_    );
+        outtree_->Branch("prob_region", &prob_region_ );
+        outtree_->Branch("n_pjets", &n_pjets_ );
+        outtree_->Branch("opp_sides",             &opp_sides_);
+      }
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
@@ -709,7 +743,11 @@ namespace ic {
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
-      
+      outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
+      outtree_->Branch("jpt_1",             &jpt_1_.var_double);
+      outtree_->Branch("jpt_2",             &jpt_2_.var_double);
+      outtree_->Branch("jeta_1",            &jeta_1_.var_double);
+      outtree_->Branch("jeta_2",            &jeta_2_.var_double);
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -849,6 +887,12 @@ namespace ic {
         outtree_->Branch("jet_flav_1", &jet_flav_1_);
         outtree_->Branch("jet_flav_2", &jet_flav_2_);
       }
+      if(do_faketaus_){
+        outtree_->Branch("tau_pt_1", &tau_pt_1_);
+        outtree_->Branch("tau_pt_2", &tau_pt_2_);      
+        outtree_->Branch("tau_id_1", &tau_id_1_);
+        outtree_->Branch("tau_id_2", &tau_id_2_);
+      }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
         //Extra variables needed for tag and probe
@@ -866,7 +910,7 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
         outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
-        if(strategy_ == strategy::mssmsummer16){
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
           outtree_->Branch("wt_zpt_stat_m400pt0_up"    , &wt_zpt_stat_m400pt0_up     );
           outtree_->Branch("wt_zpt_stat_m400pt40_up"   , &wt_zpt_stat_m400pt40_up    );
           outtree_->Branch("wt_zpt_stat_m400pt80_up"   , &wt_zpt_stat_m400pt80_up    );
@@ -878,6 +922,180 @@ namespace ic {
           outtree_->Branch("wt_zpt_ttup"               , &wt_zpt_ttup                );
           outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
         }
+        
+      if(do_jes_vars_){
+        outtree_->Branch("n_jets_1",    &n_jets_1_   );
+        outtree_->Branch("n_jets_2",    &n_jets_2_   );
+        outtree_->Branch("n_jets_3",    &n_jets_3_   );
+        outtree_->Branch("n_jets_4",    &n_jets_4_   );
+        outtree_->Branch("n_jets_5",    &n_jets_5_   );
+        outtree_->Branch("n_jets_6",    &n_jets_6_   );
+        outtree_->Branch("n_jets_7",    &n_jets_7_   );
+        outtree_->Branch("n_jets_8",    &n_jets_8_   );
+        outtree_->Branch("n_jets_9",    &n_jets_9_   );
+        outtree_->Branch("n_jets_10",   &n_jets_10_  );
+        outtree_->Branch("n_jets_11",   &n_jets_11_  );
+        outtree_->Branch("n_jets_12",   &n_jets_12_  );
+        outtree_->Branch("n_jets_13",   &n_jets_13_  );
+        outtree_->Branch("n_jets_14",   &n_jets_14_  );
+        outtree_->Branch("n_jets_15",   &n_jets_15_  );
+        outtree_->Branch("n_jets_16",   &n_jets_16_  );
+        outtree_->Branch("n_jets_17",   &n_jets_17_  );
+        outtree_->Branch("n_jets_18",   &n_jets_18_  );
+        outtree_->Branch("n_jets_19",   &n_jets_19_  );
+        outtree_->Branch("n_jets_20",   &n_jets_20_  );
+        outtree_->Branch("n_jets_21",   &n_jets_21_  );
+        outtree_->Branch("n_jets_22",   &n_jets_22_  );
+        outtree_->Branch("n_jets_23",   &n_jets_23_  );
+        outtree_->Branch("n_jets_24",   &n_jets_24_  );
+        outtree_->Branch("n_jets_25",   &n_jets_25_  );
+        outtree_->Branch("n_jets_26",   &n_jets_26_  );
+        outtree_->Branch("n_jets_27",   &n_jets_27_  );
+        outtree_->Branch("n_jets_28",   &n_jets_28_  );
+        outtree_->Branch("n_bjets_1",   &n_bjets_1_  );
+        outtree_->Branch("n_bjets_2",   &n_bjets_2_  );
+        outtree_->Branch("n_bjets_3",   &n_bjets_3_  );
+        outtree_->Branch("n_bjets_4",   &n_bjets_4_  );
+        outtree_->Branch("n_bjets_5",   &n_bjets_5_  );
+        outtree_->Branch("n_bjets_6",   &n_bjets_6_  );
+        outtree_->Branch("n_bjets_7",   &n_bjets_7_  );
+        outtree_->Branch("n_bjets_8",   &n_bjets_8_  );
+        outtree_->Branch("n_bjets_9",   &n_bjets_9_  );
+        outtree_->Branch("n_bjets_10",  &n_bjets_10_ );
+        outtree_->Branch("n_bjets_11",  &n_bjets_11_ );
+        outtree_->Branch("n_bjets_12",  &n_bjets_12_ );
+        outtree_->Branch("n_bjets_13",  &n_bjets_13_ );
+        outtree_->Branch("n_bjets_14",  &n_bjets_14_ );
+        outtree_->Branch("n_bjets_15",  &n_bjets_15_ );
+        outtree_->Branch("n_bjets_16",  &n_bjets_16_ );
+        outtree_->Branch("n_bjets_17",  &n_bjets_17_ );
+        outtree_->Branch("n_bjets_18",  &n_bjets_18_ );
+        outtree_->Branch("n_bjets_19",  &n_bjets_19_ );
+        outtree_->Branch("n_bjets_20",  &n_bjets_20_ );
+        outtree_->Branch("n_bjets_21",  &n_bjets_21_ );
+        outtree_->Branch("n_bjets_22",  &n_bjets_22_ );
+        outtree_->Branch("n_bjets_23",  &n_bjets_23_ );
+        outtree_->Branch("n_bjets_24",  &n_bjets_24_ );
+        outtree_->Branch("n_bjets_25",  &n_bjets_25_ );
+        outtree_->Branch("n_bjets_26",  &n_bjets_26_ );
+        outtree_->Branch("n_bjets_27",  &n_bjets_27_ );
+        outtree_->Branch("n_bjets_28",  &n_bjets_28_ );
+        outtree_->Branch("mjj_1",       &mjj_1_      );
+        outtree_->Branch("mjj_2",       &mjj_2_      );
+        outtree_->Branch("mjj_3",       &mjj_3_      );
+        outtree_->Branch("mjj_4",       &mjj_4_      );
+        outtree_->Branch("mjj_5",       &mjj_5_      );
+        outtree_->Branch("mjj_6",       &mjj_6_      );
+        outtree_->Branch("mjj_7",       &mjj_7_      );
+        outtree_->Branch("mjj_8",       &mjj_8_      );
+        outtree_->Branch("mjj_9",       &mjj_9_      );
+        outtree_->Branch("mjj_10",      &mjj_10_     );
+        outtree_->Branch("mjj_11",      &mjj_11_     );
+        outtree_->Branch("mjj_12",      &mjj_12_     );
+        outtree_->Branch("mjj_13",      &mjj_13_     );
+        outtree_->Branch("mjj_14",      &mjj_14_     );
+        outtree_->Branch("mjj_15",      &mjj_15_     );
+        outtree_->Branch("mjj_16",      &mjj_16_     );
+        outtree_->Branch("mjj_17",      &mjj_17_     );
+        outtree_->Branch("mjj_18",      &mjj_18_     );
+        outtree_->Branch("mjj_19",      &mjj_19_     );
+        outtree_->Branch("mjj_20",      &mjj_20_     );
+        outtree_->Branch("mjj_21",      &mjj_21_     );
+        outtree_->Branch("mjj_22",      &mjj_22_     );
+        outtree_->Branch("mjj_23",      &mjj_23_     );
+        outtree_->Branch("mjj_24",      &mjj_24_     );
+        outtree_->Branch("mjj_25",      &mjj_25_     );
+        outtree_->Branch("mjj_26",      &mjj_26_     );
+        outtree_->Branch("mjj_27",      &mjj_27_     );
+        outtree_->Branch("mjj_28",      &mjj_28_     );
+        if( strategy_ == strategy::smsummer16){
+          outtree_->Branch("sjdphi_1",     &sjdphi_1_    );
+          outtree_->Branch("sjdphi_2",     &sjdphi_2_    );
+          outtree_->Branch("sjdphi_3",     &sjdphi_3_    );
+          outtree_->Branch("sjdphi_4",     &sjdphi_4_    );
+          outtree_->Branch("sjdphi_5",     &sjdphi_5_    );
+          outtree_->Branch("sjdphi_6",     &sjdphi_6_    );
+          outtree_->Branch("sjdphi_7",     &sjdphi_7_    );
+          outtree_->Branch("sjdphi_8",     &sjdphi_8_    );
+          outtree_->Branch("sjdphi_9",     &sjdphi_9_    );
+          outtree_->Branch("sjdphi_10",    &sjdphi_10_   );
+          outtree_->Branch("sjdphi_11",    &sjdphi_11_   );
+          outtree_->Branch("sjdphi_12",    &sjdphi_12_   );
+          outtree_->Branch("sjdphi_13",    &sjdphi_13_   );
+          outtree_->Branch("sjdphi_14",    &sjdphi_14_   );
+          outtree_->Branch("sjdphi_15",    &sjdphi_15_   );
+          outtree_->Branch("sjdphi_16",    &sjdphi_16_   );
+          outtree_->Branch("sjdphi_17",    &sjdphi_17_   );
+          outtree_->Branch("sjdphi_18",    &sjdphi_18_   );
+          outtree_->Branch("sjdphi_19",    &sjdphi_19_   );
+          outtree_->Branch("sjdphi_20",    &sjdphi_20_   );
+          outtree_->Branch("sjdphi_21",    &sjdphi_21_   );
+          outtree_->Branch("sjdphi_22",    &sjdphi_22_   );
+          outtree_->Branch("sjdphi_23",    &sjdphi_23_   );
+          outtree_->Branch("sjdphi_24",    &sjdphi_24_   );
+          outtree_->Branch("sjdphi_25",    &sjdphi_25_   );
+          outtree_->Branch("sjdphi_26",    &sjdphi_26_   );
+          outtree_->Branch("sjdphi_27",    &sjdphi_27_   );
+          outtree_->Branch("sjdphi_28",    &sjdphi_28_   );
+          outtree_->Branch("D0_1"   , &D0_1_  );
+          outtree_->Branch("D0_2"   , &D0_2_  );
+          outtree_->Branch("D0_3"   , &D0_3_  );
+          outtree_->Branch("D0_4"   , &D0_4_  );
+          outtree_->Branch("D0_5"   , &D0_5_  );
+          outtree_->Branch("D0_6"   , &D0_6_  );
+          outtree_->Branch("D0_7"   , &D0_7_  );
+          outtree_->Branch("D0_8"   , &D0_8_  );
+          outtree_->Branch("D0_9"   , &D0_9_  );
+          outtree_->Branch("D0_10"  , &D0_10_ );
+          outtree_->Branch("D0_11"  , &D0_11_ );
+          outtree_->Branch("D0_12"  , &D0_12_ );
+          outtree_->Branch("D0_13"  , &D0_13_ );
+          outtree_->Branch("D0_14"  , &D0_14_ );
+          outtree_->Branch("D0_15"  , &D0_15_ );
+          outtree_->Branch("D0_16"  , &D0_16_ );
+          outtree_->Branch("D0_17"  , &D0_17_ );
+          outtree_->Branch("D0_18"  , &D0_18_ );
+          outtree_->Branch("D0_19"  , &D0_19_ );
+          outtree_->Branch("D0_20"  , &D0_20_ );
+          outtree_->Branch("D0_21"  , &D0_21_ );
+          outtree_->Branch("D0_22"  , &D0_22_ );
+          outtree_->Branch("D0_23"  , &D0_23_ );
+          outtree_->Branch("D0_24"  , &D0_24_ );
+          outtree_->Branch("D0_25"  , &D0_25_ );
+          outtree_->Branch("D0_26"  , &D0_26_ );
+          outtree_->Branch("D0_27"  , &D0_27_ );
+          outtree_->Branch("D0_28"  , &D0_28_ );
+          
+          outtree_->Branch("DCP_1"   , &DCP_1_  );
+          outtree_->Branch("DCP_2"   , &DCP_2_  );
+          outtree_->Branch("DCP_3"   , &DCP_3_  );
+          outtree_->Branch("DCP_4"   , &DCP_4_  );
+          outtree_->Branch("DCP_5"   , &DCP_5_  );
+          outtree_->Branch("DCP_6"   , &DCP_6_  );
+          outtree_->Branch("DCP_7"   , &DCP_7_  );
+          outtree_->Branch("DCP_8"   , &DCP_8_  );
+          outtree_->Branch("DCP_9"   , &DCP_9_  );
+          outtree_->Branch("DCP_10"  , &DCP_10_ );
+          outtree_->Branch("DCP_11"  , &DCP_11_ );
+          outtree_->Branch("DCP_12"  , &DCP_12_ );
+          outtree_->Branch("DCP_13"  , &DCP_13_ );
+          outtree_->Branch("DCP_14"  , &DCP_14_ );
+          outtree_->Branch("DCP_15"  , &DCP_15_ );
+          outtree_->Branch("DCP_16"  , &DCP_16_ );
+          outtree_->Branch("DCP_17"  , &DCP_17_ );
+          outtree_->Branch("DCP_18"  , &DCP_18_ );
+          outtree_->Branch("DCP_19"  , &DCP_19_ );
+          outtree_->Branch("DCP_20"  , &DCP_20_ );
+          outtree_->Branch("DCP_21"  , &DCP_21_ );
+          outtree_->Branch("DCP_22"  , &DCP_22_ );
+          outtree_->Branch("DCP_23"  , &DCP_23_ );
+          outtree_->Branch("DCP_24"  , &DCP_24_ );
+          outtree_->Branch("DCP_25"  , &DCP_25_ );
+          outtree_->Branch("DCP_26"  , &DCP_26_ );
+          outtree_->Branch("DCP_27"  , &DCP_27_ );
+          outtree_->Branch("DCP_28"  , &DCP_28_ );
+        }
+      }
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -906,12 +1124,8 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("nearjpt_1",             &nearjpt_1_);
         outtree_->Branch("j1_dm",             &j1_dm_);
-        outtree_->Branch("jpt_2",             &jpt_2_.var_double);
-        outtree_->Branch("jeta_1",            &jeta_1_.var_double);
-        outtree_->Branch("jeta_2",            &jeta_2_.var_double);
         outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
         outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
@@ -924,7 +1138,39 @@ namespace ic {
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
         outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
-*/
+*/        
+        if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_){
+          outtree_->Branch("wt_scale_et_0jet"   , &wt_scale_et_0jet_    );
+          outtree_->Branch("wt_scale_et_boosted" , &wt_scale_et_boosted_ );
+          outtree_->Branch("wt_scale_et_vbf"    , &wt_scale_et_vbf_     );
+          outtree_->Branch("wt_scale_mt_0jet"   , &wt_scale_mt_0jet_    );
+          outtree_->Branch("wt_scale_mt_boosted" , &wt_scale_mt_boosted_ );
+          outtree_->Branch("wt_scale_mt_vbf"    , &wt_scale_mt_vbf_     );
+          outtree_->Branch("wt_scale_em_0jet"   , &wt_scale_em_0jet_    );
+          outtree_->Branch("wt_scale_em_boosted" , &wt_scale_em_boosted_ );
+          outtree_->Branch("wt_scale_em_vbf"    , &wt_scale_em_vbf_     );
+          outtree_->Branch("wt_scale_tt_0jet"   , &wt_scale_tt_0jet_    );
+          outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
+          outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
+        }
+        if(do_z_weights_){
+          outtree_->Branch("wt_z_mjj",      &wt_z_mjj_);   
+          outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
+          outtree_->Branch("wt_z_mjj_down",    &wt_z_mjj_down_);    
+        }
+        if(strategy_ == strategy::smsummer16){
+          outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
+          outtree_->Branch("wt_tau_id_dm0_down" ,    &wt_tau_id_dm0_down_); 
+          outtree_->Branch("wt_tau_id_dm1_up"   ,    &wt_tau_id_dm1_up_);   
+          outtree_->Branch("wt_tau_id_dm1_down" ,    &wt_tau_id_dm1_down_); 
+          outtree_->Branch("wt_tau_id_dm10_up"  ,    &wt_tau_id_dm10_up_);  
+          outtree_->Branch("wt_tau_id_dm10_down",    &wt_tau_id_dm10_down_); 
+          outtree_->Branch("wt_lfake_dm0_up"    ,    &wt_lfake_dm0_up_);    
+          outtree_->Branch("wt_lfake_dm0_down"  ,    &wt_lfake_dm0_down_);  
+          outtree_->Branch("wt_lfake_dm1_up"    ,    &wt_lfake_dm1_up_);    
+          outtree_->Branch("wt_lfake_dm1_down"  ,    &wt_lfake_dm1_down_);     
+        }
+
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
@@ -1201,7 +1447,7 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
@@ -1374,6 +1620,7 @@ namespace ic {
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
+      synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
 
     }
     return 0;
@@ -1387,12 +1634,13 @@ namespace ic {
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
-    
+    if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    //eventInfo->print_weights();
     wt_tau_id_binned_ = 1.0;
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
     wt_tau_id_tight_ = 1.0;
@@ -1419,6 +1667,18 @@ namespace ic {
     if (event->Exists("wt_tau2_id_tight")) wt_tau2_id_tight_  = event->Get<double>("wt_tau2_id_tight");
     wt_tau2_id_vtight_ = 1.0;
     if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
+    
+    if(do_mssm_higgspt_){
+      wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
+      wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
+      wt_ggh_i_ = event->Exists("wt_ggh_i") ? event->Get<double>("wt_ggh_i") : 1.0;
+      wt_ggH_t_ = event->Exists("wt_ggH_t") ? event->Get<double>("wt_ggH_t") : 1.0;
+      wt_ggH_b_ = event->Exists("wt_ggH_b") ? event->Get<double>("wt_ggH_b") : 1.0;
+      wt_ggH_i_ = event->Exists("wt_ggH_i") ? event->Get<double>("wt_ggH_i") : 1.0;
+      wt_ggA_t_ = event->Exists("wt_ggA_t") ? event->Get<double>("wt_ggA_t") : 1.0;
+      wt_ggA_b_ = event->Exists("wt_ggA_b") ? event->Get<double>("wt_ggA_b") : 1.0;
+      wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
+    }
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -1845,8 +2105,10 @@ namespace ic {
       }
     }
     
+    
    if(do_qcd_scale_wts_){
      // note some of these labels may be generator dependent so need to make sure you check before using them
+      
      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
@@ -1856,6 +2118,17 @@ namespace ic {
      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+
+     // W-jets weights are numbered 1-9 - be careful this doesn't overwrite scale weights for other samples with some other weight!
+     if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
+     if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
+     if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
+     if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
+     if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
+     if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
+     if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
+     if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
+     if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
    }
    if(do_pdf_wts_){ 
      //pdf variation weights
@@ -1968,7 +2241,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) && !is_data_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) && !is_data_ && !is_embedded_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -2106,10 +2379,10 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
-    if(strategy_ == strategy::mssmsummer16) btag_wp = 0.8484;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) loose_btag_wp = 0.46;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) btag_wp = 0.8484;
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) loose_btag_wp = 0.46;
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -2177,8 +2450,10 @@ namespace ic {
     extramuon_veto_ = false;
     minimal_extraelec_veto_ = false;
     minimal_extramuon_veto_ = false;
+    bool dilep_veto_=false;
     if(channel_ == channel::et) { 
         if(event->Exists("dielec_veto")) dilepton_veto_ = event->Get<bool>("dielec_veto");
+        if(event->Exists("dimuon_veto")) dilep_veto_ = event->Get<bool>("dimuon_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2186,6 +2461,7 @@ namespace ic {
     }
     if(channel_ == channel::mt) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+        if(event->Exists("dielec_veto")) dilep_veto_ = event->Get<bool>("dielec_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2200,6 +2476,10 @@ namespace ic {
 
     }
     if(channel_ == channel::tt) {
+        if(strategy_==strategy::smsummer16){
+          if(event->Exists("dimuon_veto")) dilep_veto_ = event->Get<bool>("dimuon_veto");
+          if(event->Exists("dielec_veto")) dilep_veto_ = dilep_veto_ || event->Get<bool>("dielec_veto");
+        }
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2207,6 +2487,8 @@ namespace ic {
 
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+    
+    if(strategy_==strategy::smsummer16 && !make_sync_ntuple_) dilepton_veto_ = dilep_veto_ || dilepton_veto_;
 
     n_vtx_ = eventInfo->good_vertices();
     /*trigger_object_pt_1 = 0;
@@ -2255,7 +2537,7 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
-    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16) pfmet = event->GetPtr<Met>("pfMET");
+    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) pfmet = event->GetPtr<Met>("pfMET");
 
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
     //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
@@ -2329,6 +2611,7 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+    
     
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -2512,7 +2795,7 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
@@ -2708,7 +2991,7 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
-       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
@@ -2782,6 +3065,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
+        antimu_loose_2_ = lagainstMuonLoose3_2;
       }
     }
     if (channel_ == channel::em) {
@@ -2819,7 +3103,7 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
@@ -3012,7 +3296,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -3130,7 +3414,7 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         mva_1_ = ElectronHTTIdSpring15(elec1, false);
@@ -3150,7 +3434,7 @@ namespace ic {
         mva_1_ = MuonMedium(muon1);
         mva_2_ = MuonMedium(muon2);
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
         mva_1_ = MuonMediumHIPsafe(muon1);
@@ -3161,6 +3445,7 @@ namespace ic {
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
     }
+    
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
       tag_trigger_match_1_ = event->Exists("tp_tag_leg1_match") ? event->Get<bool>("tp_tag_leg1_match") : 0;
@@ -3259,7 +3544,65 @@ namespace ic {
       jctm_2_ = lowpt_jets[1]->charged_multiplicity_nopu();
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
-      jdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector()));
+      jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
+      
+      if (strategy_ == strategy::smsummer16){
+        if (event->Exists("D0")) D0_ = event->Get<float>("D0");
+        else D0_ = -9999;
+        if (event->Exists("DCP")) DCP_ = event->Get<float>("DCP");
+        else DCP_ = -9999;
+
+        if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
+          sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
+        }
+        else{
+          sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
+        }
+        opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
+        
+        n_pjets_=0;
+        if (jets.size()==1) n_pjets_=1;
+        if(jets.size()>=2){
+          double higgs_eta = 0;
+          if (event->Exists("svfitHiggs")) {
+            Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
+            higgs_eta = higgs.eta();
+          }
+          else higgs_eta = (lep1->vector()+lep2->vector()).Rapidity();
+          // sort jets higher and lower than higgs eta_1
+          std::vector<PFJet*> jets_high;
+          std::vector<PFJet*> jets_low;
+          for (unsigned i=0; i<jets.size(); ++i){
+            if (jets[i]->eta() > higgs_eta) jets_high.push_back(jets[i]);    
+            else jets_low.push_back(jets[i]);
+          }
+          if(jets_low.size()>0) n_pjets_++;
+          if(jets_high.size()>0) n_pjets_++;
+          Candidate pseudo_jet_a;
+          Candidate pseudo_jet_b;
+          for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j->vector());
+          for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j->vector());
+          spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
+          for (unsigned i=0; i<jets.size(); ++i){
+            double dEta = std::fabs(higgs_eta - jets[i]->eta());  
+            if(i==0 || dEta<min_hj_deta_) min_hj_deta_ = dEta;    
+          }
+          pjdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - pseudo_jet_b.vector().Rapidity());
+          pjahdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+          pjbhdeta_ = std::fabs(pseudo_jet_a.vector().Rapidity() - higgs_eta);
+          if((jets[0]->eta()>higgs_eta&&jets[1]->eta()>higgs_eta)||(jets[0]->eta()<higgs_eta&&jets[1]->eta()<higgs_eta)) prob_region_ = 1;
+          else prob_region_ = 0;
+        }
+        else {
+          spjdphi_ = -9999;
+          min_hj_deta_ = -9999;
+          pjdeta_ =-9999;
+          pjahdeta_ = -9999;
+          pjbhdeta_ = -9999;
+          prob_region_ = -9999;
+        }
+      }
+      
       double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
       double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;
@@ -3303,6 +3646,212 @@ namespace ic {
       jdeta_lowpt_ = -9999;
       n_jetsingap_lowpt_ = 9999;
     }
+    
+    if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_ && !systematic_shift_){
+      // weights needed for SM scale uncertainties are computer here rather than in HTTWeights - since these are parametarized as a function of the offline mjj and pt_tt which are computer in HTTCategories anyway
+      wt_scale_et_0jet_  = 0.973 + 0.0003405 * pt_2_.var_double;
+      wt_scale_et_boosted_ = 0.986 - 0.0000278 *pt_tt_.var_double;
+      wt_scale_et_vbf_  = 0.971 + 0.0000327 * mjj_.var_double;
+      wt_scale_mt_0jet_ = 0.929 + 0.0001702 * pt_2_.var_double;
+      wt_scale_mt_boosted_ = 0.919 + 0.0010055 * pt_tt_.var_double;
+      wt_scale_mt_vbf_ = 1.026 +0.000066 * mjj_.var_double;
+      wt_scale_em_0jet_ = 0.942 - 0.0000170 * pt_2_.var_double;
+      wt_scale_em_boosted_ = 0.936 + 0.0008871 * pt_tt_.var_double;
+      wt_scale_em_vbf_ = 1.032 + 0.000102 * mjj_.var_double;
+      wt_scale_tt_0jet_ = 0.814 + 0.0027094 * pt_1_.var_double;
+      wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
+      wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
+    }
+    if(do_z_weights_ && !systematic_shift_){
+      wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  
+      wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
+      wt_z_mjj_down_ = event->Exists("wt_z_mjj_down") ? event->Get<double>("wt_z_mjj_down") : 1.0;   
+    }
+    if(strategy_ == strategy::smsummer16){
+      wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm0_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_tau_id_dm1_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm1_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_tau_id_dm10_up_    = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm10_down_  = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_lfake_rate_        = event->Exists("wt_lfake_rate") ? event->Get<double>("wt_lfake_rate") : 1.0;
+      wt_lfake_dm0_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_down") : 1.0;
+      wt_lfake_dm0_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
+      wt_lfake_dm1_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
+      wt_lfake_dm1_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_down") : 1.0;     
+    }
+
+    if(do_jes_vars_){
+      n_jets_1_    = event->Exists("n_jets_1")    ? event->Get<double>("n_jets_1")   : -9999;                
+      n_jets_2_    = event->Exists("n_jets_2")    ? event->Get<double>("n_jets_2")   : -9999;
+      n_jets_3_    = event->Exists("n_jets_3")    ? event->Get<double>("n_jets_3")   : -9999;
+      n_jets_4_    = event->Exists("n_jets_4")    ? event->Get<double>("n_jets_4")   : -9999;
+      n_jets_5_    = event->Exists("n_jets_5")    ? event->Get<double>("n_jets_5")   : -9999;
+      n_jets_6_    = event->Exists("n_jets_6")    ? event->Get<double>("n_jets_6")   : -9999;
+      n_jets_7_    = event->Exists("n_jets_7")    ? event->Get<double>("n_jets_7")   : -9999;
+      n_jets_8_    = event->Exists("n_jets_8")    ? event->Get<double>("n_jets_8")   : -9999;
+      n_jets_9_    = event->Exists("n_jets_9")    ? event->Get<double>("n_jets_9")   : -9999;
+      n_jets_10_   = event->Exists("n_jets_10")   ? event->Get<double>("n_jets_10")  : -9999;
+      n_jets_11_   = event->Exists("n_jets_11")   ? event->Get<double>("n_jets_11")  : -9999;
+      n_jets_12_   = event->Exists("n_jets_12")   ? event->Get<double>("n_jets_12")  : -9999;
+      n_jets_13_   = event->Exists("n_jets_13")   ? event->Get<double>("n_jets_13")  : -9999;
+      n_jets_14_   = event->Exists("n_jets_14")   ? event->Get<double>("n_jets_14")  : -9999;
+      n_jets_15_   = event->Exists("n_jets_15")   ? event->Get<double>("n_jets_15")  : -9999;
+      n_jets_16_   = event->Exists("n_jets_16")   ? event->Get<double>("n_jets_16")  : -9999;
+      n_jets_17_   = event->Exists("n_jets_17")   ? event->Get<double>("n_jets_17")  : -9999;
+      n_jets_18_   = event->Exists("n_jets_18")   ? event->Get<double>("n_jets_18")  : -9999;
+      n_jets_19_   = event->Exists("n_jets_19")   ? event->Get<double>("n_jets_19")  : -9999;
+      n_jets_20_   = event->Exists("n_jets_20")   ? event->Get<double>("n_jets_20")  : -9999;
+      n_jets_21_   = event->Exists("n_jets_21")   ? event->Get<double>("n_jets_21")  : -9999;
+      n_jets_22_   = event->Exists("n_jets_22")   ? event->Get<double>("n_jets_22")  : -9999;
+      n_jets_23_   = event->Exists("n_jets_23")   ? event->Get<double>("n_jets_23")  : -9999;
+      n_jets_24_   = event->Exists("n_jets_24")   ? event->Get<double>("n_jets_24")  : -9999;
+      n_jets_25_   = event->Exists("n_jets_25")   ? event->Get<double>("n_jets_25")  : -9999;
+      n_jets_26_   = event->Exists("n_jets_26")   ? event->Get<double>("n_jets_26")  : -9999;
+      n_jets_27_   = event->Exists("n_jets_27")   ? event->Get<double>("n_jets_27")  : -9999;
+      n_jets_28_   = event->Exists("n_jets_28")   ? event->Get<double>("n_jets_28")  : -9999;
+      n_bjets_1_   = event->Exists("n_bjets_1")   ? event->Get<double>("n_bjets_1")  : -9999;
+      n_bjets_2_   = event->Exists("n_bjets_2")   ? event->Get<double>("n_bjets_2")  : -9999;
+      n_bjets_3_   = event->Exists("n_bjets_3")   ? event->Get<double>("n_bjets_3")  : -9999;
+      n_bjets_4_   = event->Exists("n_bjets_4")   ? event->Get<double>("n_bjets_4")  : -9999;
+      n_bjets_5_   = event->Exists("n_bjets_5")   ? event->Get<double>("n_bjets_5")  : -9999;
+      n_bjets_6_   = event->Exists("n_bjets_6")   ? event->Get<double>("n_bjets_6")  : -9999;
+      n_bjets_7_   = event->Exists("n_bjets_7")   ? event->Get<double>("n_bjets_7")  : -9999;
+      n_bjets_8_   = event->Exists("n_bjets_8")   ? event->Get<double>("n_bjets_8")  : -9999;
+      n_bjets_9_   = event->Exists("n_bjets_9")   ? event->Get<double>("n_bjets_9")  : -9999;
+      n_bjets_10_  = event->Exists("n_bjets_10")  ? event->Get<double>("n_bjets_10") : -9999;
+      n_bjets_11_  = event->Exists("n_bjets_11")  ? event->Get<double>("n_bjets_11") : -9999;
+      n_bjets_12_  = event->Exists("n_bjets_12")  ? event->Get<double>("n_bjets_12") : -9999;
+      n_bjets_13_  = event->Exists("n_bjets_13")  ? event->Get<double>("n_bjets_13") : -9999;
+      n_bjets_14_  = event->Exists("n_bjets_14")  ? event->Get<double>("n_bjets_14") : -9999;
+      n_bjets_15_  = event->Exists("n_bjets_15")  ? event->Get<double>("n_bjets_15") : -9999;
+      n_bjets_16_  = event->Exists("n_bjets_16")  ? event->Get<double>("n_bjets_16") : -9999;
+      n_bjets_17_  = event->Exists("n_bjets_17")  ? event->Get<double>("n_bjets_17") : -9999;
+      n_bjets_18_  = event->Exists("n_bjets_18")  ? event->Get<double>("n_bjets_18") : -9999;
+      n_bjets_19_  = event->Exists("n_bjets_19")  ? event->Get<double>("n_bjets_19") : -9999;
+      n_bjets_20_  = event->Exists("n_bjets_20")  ? event->Get<double>("n_bjets_20") : -9999;
+      n_bjets_21_  = event->Exists("n_bjets_21")  ? event->Get<double>("n_bjets_21") : -9999;
+      n_bjets_22_  = event->Exists("n_bjets_22")  ? event->Get<double>("n_bjets_22") : -9999;
+      n_bjets_23_  = event->Exists("n_bjets_23")  ? event->Get<double>("n_bjets_23") : -9999;
+      n_bjets_24_  = event->Exists("n_bjets_24")  ? event->Get<double>("n_bjets_24") : -9999;
+      n_bjets_25_  = event->Exists("n_bjets_25")  ? event->Get<double>("n_bjets_25") : -9999;
+      n_bjets_26_  = event->Exists("n_bjets_26")  ? event->Get<double>("n_bjets_26") : -9999;
+      n_bjets_27_  = event->Exists("n_bjets_27")  ? event->Get<double>("n_bjets_27") : -9999;
+      n_bjets_28_  = event->Exists("n_bjets_28")  ? event->Get<double>("n_bjets_28") : -9999;
+      mjj_1_       = event->Exists("mjj_1")       ? event->Get<double>("mjj_1")      : -9999;
+      mjj_2_       = event->Exists("mjj_2")       ? event->Get<double>("mjj_2")      : -9999;
+      mjj_3_       = event->Exists("mjj_3")       ? event->Get<double>("mjj_3")      : -9999;
+      mjj_4_       = event->Exists("mjj_4")       ? event->Get<double>("mjj_4")      : -9999;
+      mjj_5_       = event->Exists("mjj_5")       ? event->Get<double>("mjj_5")      : -9999;
+      mjj_6_       = event->Exists("mjj_6")       ? event->Get<double>("mjj_6")      : -9999;
+      mjj_7_       = event->Exists("mjj_7")       ? event->Get<double>("mjj_7")      : -9999;
+      mjj_8_       = event->Exists("mjj_8")       ? event->Get<double>("mjj_8")      : -9999;
+      mjj_9_       = event->Exists("mjj_9")       ? event->Get<double>("mjj_9")      : -9999;
+      mjj_10_      = event->Exists("mjj_10")      ? event->Get<double>("mjj_10")     : -9999;
+      mjj_11_      = event->Exists("mjj_11")      ? event->Get<double>("mjj_11")     : -9999;
+      mjj_12_      = event->Exists("mjj_12")      ? event->Get<double>("mjj_12")     : -9999;
+      mjj_13_      = event->Exists("mjj_13")      ? event->Get<double>("mjj_13")     : -9999;
+      mjj_14_      = event->Exists("mjj_14")      ? event->Get<double>("mjj_14")     : -9999;
+      mjj_15_      = event->Exists("mjj_15")      ? event->Get<double>("mjj_15")     : -9999;
+      mjj_16_      = event->Exists("mjj_16")      ? event->Get<double>("mjj_16")     : -9999;
+      mjj_17_      = event->Exists("mjj_17")      ? event->Get<double>("mjj_17")     : -9999;
+      mjj_18_      = event->Exists("mjj_18")      ? event->Get<double>("mjj_18")     : -9999;
+      mjj_19_      = event->Exists("mjj_19")      ? event->Get<double>("mjj_19")     : -9999;
+      mjj_20_      = event->Exists("mjj_20")      ? event->Get<double>("mjj_20")     : -9999;
+      mjj_21_      = event->Exists("mjj_21")      ? event->Get<double>("mjj_21")     : -9999;
+      mjj_22_      = event->Exists("mjj_22")      ? event->Get<double>("mjj_22")     : -9999;
+      mjj_23_      = event->Exists("mjj_23")      ? event->Get<double>("mjj_23")     : -9999;
+      mjj_24_      = event->Exists("mjj_24")      ? event->Get<double>("mjj_24")     : -9999;
+      mjj_25_      = event->Exists("mjj_25")      ? event->Get<double>("mjj_25")     : -9999;
+      mjj_26_      = event->Exists("mjj_26")      ? event->Get<double>("mjj_26")     : -9999;
+      mjj_27_      = event->Exists("mjj_27")      ? event->Get<double>("mjj_27")     : -9999;
+      mjj_28_      = event->Exists("mjj_28")      ? event->Get<double>("mjj_28")     : -9999;
+      sjdphi_1_     = event->Exists("sjdphi_1")     ? event->Get<double>("sjdphi_1")    : -9999;
+      sjdphi_2_     = event->Exists("sjdphi_2")     ? event->Get<double>("sjdphi_2")    : -9999;
+      sjdphi_3_     = event->Exists("sjdphi_3")     ? event->Get<double>("sjdphi_3")    : -9999;
+      sjdphi_4_     = event->Exists("sjdphi_4")     ? event->Get<double>("sjdphi_4")    : -9999;
+      sjdphi_5_     = event->Exists("sjdphi_5")     ? event->Get<double>("sjdphi_5")    : -9999;
+      sjdphi_6_     = event->Exists("sjdphi_6")     ? event->Get<double>("sjdphi_6")    : -9999;
+      sjdphi_7_     = event->Exists("sjdphi_7")     ? event->Get<double>("sjdphi_7")    : -9999;
+      sjdphi_8_     = event->Exists("sjdphi_8")     ? event->Get<double>("sjdphi_8")    : -9999;
+      sjdphi_9_     = event->Exists("sjdphi_9")     ? event->Get<double>("sjdphi_9")    : -9999;
+      sjdphi_10_    = event->Exists("sjdphi_10")    ? event->Get<double>("sjdphi_10")   : -9999;
+      sjdphi_11_    = event->Exists("sjdphi_11")    ? event->Get<double>("sjdphi_11")   : -9999;
+      sjdphi_12_    = event->Exists("sjdphi_12")    ? event->Get<double>("sjdphi_12")   : -9999;
+      sjdphi_13_    = event->Exists("sjdphi_13")    ? event->Get<double>("sjdphi_13")   : -9999;
+      sjdphi_14_    = event->Exists("sjdphi_14")    ? event->Get<double>("sjdphi_14")   : -9999;
+      sjdphi_15_    = event->Exists("sjdphi_15")    ? event->Get<double>("sjdphi_15")   : -9999;
+      sjdphi_16_    = event->Exists("sjdphi_16")    ? event->Get<double>("sjdphi_16")   : -9999;
+      sjdphi_17_    = event->Exists("sjdphi_17")    ? event->Get<double>("sjdphi_17")   : -9999;
+      sjdphi_18_    = event->Exists("sjdphi_18")    ? event->Get<double>("sjdphi_18")   : -9999;
+      sjdphi_19_    = event->Exists("sjdphi_19")    ? event->Get<double>("sjdphi_19")   : -9999;
+      sjdphi_20_    = event->Exists("sjdphi_20")    ? event->Get<double>("sjdphi_20")   : -9999;
+      sjdphi_21_    = event->Exists("sjdphi_21")    ? event->Get<double>("sjdphi_21")   : -9999;
+      sjdphi_22_    = event->Exists("sjdphi_22")    ? event->Get<double>("sjdphi_22")   : -9999;
+      sjdphi_23_    = event->Exists("sjdphi_23")    ? event->Get<double>("sjdphi_23")   : -9999;
+      sjdphi_24_    = event->Exists("sjdphi_24")    ? event->Get<double>("sjdphi_24")   : -9999;
+      sjdphi_25_    = event->Exists("sjdphi_25")    ? event->Get<double>("sjdphi_25")   : -9999;
+      sjdphi_26_    = event->Exists("sjdphi_26")    ? event->Get<double>("sjdphi_26")   : -9999;
+      sjdphi_27_    = event->Exists("sjdphi_27")    ? event->Get<double>("sjdphi_27")   : -9999;
+      sjdphi_28_    = event->Exists("sjdphi_28")    ? event->Get<double>("sjdphi_28")   : -9999;
+      D0_1_    = event->Exists("D0_1")    ? event->Get<int>("D0_1")   : -9999;
+      D0_2_    = event->Exists("D0_2")    ? event->Get<int>("D0_2")   : -9999;
+      D0_3_    = event->Exists("D0_3")    ? event->Get<int>("D0_3")   : -9999;
+      D0_4_    = event->Exists("D0_4")    ? event->Get<int>("D0_4")   : -9999;
+      D0_5_    = event->Exists("D0_5")    ? event->Get<int>("D0_5")   : -9999;
+      D0_6_    = event->Exists("D0_6")    ? event->Get<int>("D0_6")   : -9999;
+      D0_7_    = event->Exists("D0_7")    ? event->Get<int>("D0_7")   : -9999;
+      D0_8_    = event->Exists("D0_8")    ? event->Get<int>("D0_8")   : -9999;
+      D0_9_    = event->Exists("D0_9")    ? event->Get<int>("D0_9")   : -9999;
+      D0_10_    = event->Exists("D0_10")    ? event->Get<int>("D0_10")   : -9999;
+      D0_11_    = event->Exists("D0_11")    ? event->Get<int>("D0_11")   : -9999;
+      D0_12_    = event->Exists("D0_12")    ? event->Get<int>("D0_12")   : -9999;
+      D0_13_    = event->Exists("D0_13")    ? event->Get<int>("D0_13")   : -9999;
+      D0_14_    = event->Exists("D0_14")    ? event->Get<int>("D0_14")   : -9999;
+      D0_15_    = event->Exists("D0_15")    ? event->Get<int>("D0_15")   : -9999;
+      D0_16_    = event->Exists("D0_16")    ? event->Get<int>("D0_16")   : -9999;
+      D0_17_    = event->Exists("D0_17")    ? event->Get<int>("D0_17")   : -9999;
+      D0_18_    = event->Exists("D0_18")    ? event->Get<int>("D0_18")   : -9999;
+      D0_19_    = event->Exists("D0_19")    ? event->Get<int>("D0_19")   : -9999;
+      D0_20_    = event->Exists("D0_20")    ? event->Get<int>("D0_20")   : -9999;
+      D0_21_    = event->Exists("D0_21")    ? event->Get<int>("D0_21")   : -9999;
+      D0_22_    = event->Exists("D0_22")    ? event->Get<int>("D0_22")   : -9999;
+      D0_23_    = event->Exists("D0_23")    ? event->Get<int>("D0_23")   : -9999;
+      D0_24_    = event->Exists("D0_24")    ? event->Get<int>("D0_24")   : -9999;
+      D0_25_    = event->Exists("D0_25")    ? event->Get<int>("D0_25")   : -9999;
+      D0_26_    = event->Exists("D0_26")    ? event->Get<int>("D0_26")   : -9999;
+      D0_27_    = event->Exists("D0_27")    ? event->Get<int>("D0_27")   : -9999;
+      D0_28_    = event->Exists("D0_28")    ? event->Get<int>("D0_28")   : -9999;
+      DCP_1_    = event->Exists("DCP_1")    ? event->Get<int>("DCP_1")   : -9999;
+      DCP_2_    = event->Exists("DCP_2")    ? event->Get<int>("DCP_2")   : -9999;
+      DCP_3_    = event->Exists("DCP_3")    ? event->Get<int>("DCP_3")   : -9999;
+      DCP_4_    = event->Exists("DCP_4")    ? event->Get<int>("DCP_4")   : -9999;
+      DCP_5_    = event->Exists("DCP_5")    ? event->Get<int>("DCP_5")   : -9999;
+      DCP_6_    = event->Exists("DCP_6")    ? event->Get<int>("DCP_6")   : -9999;
+      DCP_7_    = event->Exists("DCP_7")    ? event->Get<int>("DCP_7")   : -9999;
+      DCP_8_    = event->Exists("DCP_8")    ? event->Get<int>("DCP_8")   : -9999;
+      DCP_9_    = event->Exists("DCP_9")    ? event->Get<int>("DCP_9")   : -9999;
+      DCP_10_    = event->Exists("DCP_10")    ? event->Get<int>("DCP_10")   : -9999;
+      DCP_11_    = event->Exists("DCP_11")    ? event->Get<int>("DCP_11")   : -9999;
+      DCP_12_    = event->Exists("DCP_12")    ? event->Get<int>("DCP_12")   : -9999;
+      DCP_13_    = event->Exists("DCP_13")    ? event->Get<int>("DCP_13")   : -9999;
+      DCP_14_    = event->Exists("DCP_14")    ? event->Get<int>("DCP_14")   : -9999;
+      DCP_15_    = event->Exists("DCP_15")    ? event->Get<int>("DCP_15")   : -9999;
+      DCP_16_    = event->Exists("DCP_16")    ? event->Get<int>("DCP_16")   : -9999;
+      DCP_17_    = event->Exists("DCP_17")    ? event->Get<int>("DCP_17")   : -9999;
+      DCP_18_    = event->Exists("DCP_18")    ? event->Get<int>("DCP_18")   : -9999;
+      DCP_19_    = event->Exists("DCP_19")    ? event->Get<int>("DCP_19")   : -9999;
+      DCP_20_    = event->Exists("DCP_20")    ? event->Get<int>("DCP_20")   : -9999;
+      DCP_21_    = event->Exists("DCP_21")    ? event->Get<int>("DCP_21")   : -9999;
+      DCP_22_    = event->Exists("DCP_22")    ? event->Get<int>("DCP_22")   : -9999;
+      DCP_23_    = event->Exists("DCP_23")    ? event->Get<int>("DCP_23")   : -9999;
+      DCP_24_    = event->Exists("DCP_24")    ? event->Get<int>("DCP_24")   : -9999;
+      DCP_25_    = event->Exists("DCP_25")    ? event->Get<int>("DCP_25")   : -9999;
+      DCP_26_    = event->Exists("DCP_26")    ? event->Get<int>("DCP_26")   : -9999;
+      DCP_27_    = event->Exists("DCP_27")    ? event->Get<int>("DCP_27")   : -9999;
+      DCP_28_    = event->Exists("DCP_28")    ? event->Get<int>("DCP_28")   : -9999;
+    }
+    
 
     if (channel_ == channel::tt && strategy_ == strategy::fall15){
       if (n_loose_bjets_ >= 1) {
@@ -3584,6 +4133,29 @@ namespace ic {
       pull_balance_bb_ = -9999;  
       convergence_bb_ = -9999; 
       mbb_h_ = -9999;
+    }
+    
+    if(do_faketaus_&&(channel_==channel::zmm||channel_==channel::em)){
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      tau_pt_1_=-9999;
+      tau_pt_2_=-9999;
+      tau_id_1_=0;
+      tau_id_2_=0;
+      if(taus.size()>0){
+        tau_pt_1_ = taus[0]->pt();
+        if(taus[0]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[0]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[0]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[0]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
+      if(taus.size()>1){
+        tau_pt_2_ = taus[1]->pt();
+        if(taus[1]->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 1;
+        if(taus[1]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 2;
+        if(taus[1]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 3;
+        if(taus[1]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT")) tau_id_1_ = 4;
+      }
     }
     
     if (write_tree_ && fs_) outtree_->Fill();

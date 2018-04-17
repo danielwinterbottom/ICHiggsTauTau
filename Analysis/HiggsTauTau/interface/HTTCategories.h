@@ -43,6 +43,12 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, std::string, ff_categories)
   CLASS_MEMBER(HTTCategories, bool, do_qcd_scale_wts)
   CLASS_MEMBER(HTTCategories, bool, do_pdf_wts)
+  CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
+  CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
+  CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
+  CLASS_MEMBER(HTTCategories, bool, do_z_weights)
+  CLASS_MEMBER(HTTCategories, bool, do_faketaus)
+
  
   TTree *outtree_;
   TTree *synctree_;
@@ -197,6 +203,7 @@ class HTTCategories : public ModuleBase {
   bool antimu_1_;
   bool antiele_2_;
   bool antimu_2_;
+  bool antimu_loose_2_;
   double z_1_;
   double z_2_;
   float m_1_;
@@ -425,6 +432,10 @@ class HTTCategories : public ModuleBase {
   int convergence_bb_; //Defined if n_jets >= 2
   branch_var jdeta_;     // Defined if n_jets >= 2
   float jdphi_;
+  float sjdphi_;
+  float D0_;
+  float DCP_;
+  unsigned opp_sides_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
   double gen_match_1_pt_;
@@ -873,6 +884,7 @@ class HTTCategories : public ModuleBase {
   bool trg_doubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
+  bool trg_mutaucross_;
   
   double wt_tau_id_binned_;
   double wt_tau_id_loose_;
@@ -1013,6 +1025,228 @@ class HTTCategories : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
+  
+  double wt_ggh_t_;
+  double wt_ggh_b_;
+  double wt_ggh_i_;
+  double wt_ggH_t_;
+  double wt_ggH_b_;
+  double wt_ggH_i_;
+  double wt_ggA_t_;
+  double wt_ggA_b_;
+  double wt_ggA_i_;
+  
+  double wt_scale_et_0jet_;  
+  double wt_scale_et_boosted_;
+  double wt_scale_et_vbf_;   
+  double wt_scale_mt_0jet_;  
+  double wt_scale_mt_boosted_;
+  double wt_scale_mt_vbf_;   
+  double wt_scale_em_0jet_;  
+  double wt_scale_em_boosted_;
+  double wt_scale_em_vbf_;   
+  double wt_scale_tt_0jet_;  
+  double wt_scale_tt_boosted_;
+  double wt_scale_tt_vbf_;
+  
+  double n_jets_1_;
+  double n_jets_2_;
+  double n_jets_3_;
+  double n_jets_4_;
+  double n_jets_5_;
+  double n_jets_6_;
+  double n_jets_7_;
+  double n_jets_8_;
+  double n_jets_9_;
+  double n_jets_10_;
+  double n_jets_11_;
+  double n_jets_12_;
+  double n_jets_13_;
+  double n_jets_14_;
+  double n_jets_15_;
+  double n_jets_16_;
+  double n_jets_17_;
+  double n_jets_18_;
+  double n_jets_19_;
+  double n_jets_20_;
+  double n_jets_21_;
+  double n_jets_22_;
+  double n_jets_23_;
+  double n_jets_24_;
+  double n_jets_25_;
+  double n_jets_26_;
+  double n_jets_27_;
+  double n_jets_28_;
+  double n_bjets_1_;
+  double n_bjets_2_;
+  double n_bjets_3_;
+  double n_bjets_4_;
+  double n_bjets_5_;
+  double n_bjets_6_;
+  double n_bjets_7_;
+  double n_bjets_8_;
+  double n_bjets_9_;
+  double n_bjets_10_;
+  double n_bjets_11_;
+  double n_bjets_12_;
+  double n_bjets_13_;
+  double n_bjets_14_;
+  double n_bjets_15_;
+  double n_bjets_16_;
+  double n_bjets_17_;
+  double n_bjets_18_;
+  double n_bjets_19_;
+  double n_bjets_20_;
+  double n_bjets_21_;
+  double n_bjets_22_;
+  double n_bjets_23_;
+  double n_bjets_24_;
+  double n_bjets_25_;
+  double n_bjets_26_;
+  double n_bjets_27_;
+  double n_bjets_28_;
+  double mjj_1_;
+  double mjj_2_;
+  double mjj_3_;
+  double mjj_4_;
+  double mjj_5_;
+  double mjj_6_;
+  double mjj_7_;
+  double mjj_8_;
+  double mjj_9_;
+  double mjj_10_;
+  double mjj_11_;
+  double mjj_12_;
+  double mjj_13_;
+  double mjj_14_;
+  double mjj_15_;
+  double mjj_16_;
+  double mjj_17_;
+  double mjj_18_;
+  double mjj_19_;
+  double mjj_20_;
+  double mjj_21_;
+  double mjj_22_;
+  double mjj_23_;
+  double mjj_24_;
+  double mjj_25_;
+  double mjj_26_;
+  double mjj_27_;
+  double mjj_28_;
+  double sjdphi_1_;
+  double sjdphi_2_;
+  double sjdphi_3_;
+  double sjdphi_4_;
+  double sjdphi_5_;
+  double sjdphi_6_;
+  double sjdphi_7_;
+  double sjdphi_8_;
+  double sjdphi_9_;
+  double sjdphi_10_;
+  double sjdphi_11_;
+  double sjdphi_12_;
+  double sjdphi_13_;
+  double sjdphi_14_;
+  double sjdphi_15_;
+  double sjdphi_16_;
+  double sjdphi_17_;
+  double sjdphi_18_;
+  double sjdphi_19_;
+  double sjdphi_20_;
+  double sjdphi_21_;
+  double sjdphi_22_;
+  double sjdphi_23_;
+  double sjdphi_24_;
+  double sjdphi_25_;
+  double sjdphi_26_;
+  double sjdphi_27_;
+  double sjdphi_28_;
+  
+  float D0_1_  ;
+  float D0_2_  ;
+  float D0_3_  ;
+  float D0_4_  ;
+  float D0_5_  ;
+  float D0_6_  ;
+  float D0_7_  ;
+  float D0_8_  ;
+  float D0_9_  ;
+  float D0_10_ ;
+  float D0_11_ ;
+  float D0_12_ ;
+  float D0_13_ ;
+  float D0_14_ ;
+  float D0_15_ ;
+  float D0_16_ ;
+  float D0_17_ ;
+  float D0_18_ ;
+  float D0_19_ ;
+  float D0_20_ ;
+  float D0_21_ ;
+  float D0_22_ ;
+  float D0_23_ ;
+  float D0_24_ ;
+  float D0_25_ ;
+  float D0_26_ ;
+  float D0_27_ ;
+  float D0_28_ ;
+
+  float DCP_1_  ;
+  float DCP_2_  ;
+  float DCP_3_  ;
+  float DCP_4_  ;
+  float DCP_5_  ;
+  float DCP_6_  ;
+  float DCP_7_  ;
+  float DCP_8_  ;
+  float DCP_9_  ;
+  float DCP_10_ ;
+  float DCP_11_ ;
+  float DCP_12_ ;
+  float DCP_13_ ;
+  float DCP_14_ ;
+  float DCP_15_ ;
+  float DCP_16_ ;
+  float DCP_17_ ;
+  float DCP_18_ ;
+  float DCP_19_ ;
+  float DCP_20_ ;
+  float DCP_21_ ;
+  float DCP_22_ ;
+  float DCP_23_ ;
+  float DCP_24_ ;
+  float DCP_25_ ;
+  float DCP_26_ ;
+  float DCP_27_ ;
+  float DCP_28_ ;
+  
+  double wt_z_mjj_;
+  double wt_z_mjj_down_;
+  double wt_z_mjj_up_;
+  double wt_tau_id_dm0_up_;
+  double wt_tau_id_dm0_down_;
+  double wt_tau_id_dm1_up_;
+  double wt_tau_id_dm1_down_;
+  double wt_tau_id_dm10_up_;
+  double wt_tau_id_dm10_down_;  
+  double wt_lfake_dm0_up_;
+  double wt_lfake_dm0_down_;
+  double wt_lfake_dm1_up_;
+  double wt_lfake_dm1_down_;
+  double wt_lfake_rate_;
+  
+  double spjdphi_;
+  double min_hj_deta_;
+  double pjdeta_;
+  double pjahdeta_;
+  double pjbhdeta_;
+  int prob_region_;
+  unsigned n_pjets_;
+  double tau_pt_1_;
+  double tau_pt_2_;
+  unsigned tau_id_1_;
+  unsigned tau_id_2_;
+  
 
  public:
   HTTCategories(std::string const& name);

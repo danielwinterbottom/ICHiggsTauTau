@@ -11,8 +11,10 @@
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "TRandom3.h"
-
+#include "RooWorkspace.h"
+#include "RooFunctor.h"
 #include <string>
+#include "Utilities/interface/FnRootTools.h"
 
 namespace ic {
   
@@ -31,6 +33,7 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, double, max_tau_eta  )
   CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
   CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
+  CLASS_MEMBER(HTTGenAnalysis, std::string, mssm_mass  )
   
   TTree *outtree_;
   TRandom3  *rand;
@@ -71,6 +74,8 @@ class HTTGenAnalysis : public ModuleBase {
   double jdeta_;
   double m_vis_;
   double pt_tt_;
+  double wtzpt_;
+  double mass_;
   double wt_;
   double HiggsPt_;
   std::string decayType;
@@ -89,6 +94,15 @@ class HTTGenAnalysis : public ModuleBase {
   double geneta_2_;
   double n_jets_offline_;
   double n_bjets_offline_;
+  
+  unsigned partons_;
+  double parton_pt_;
+  float D0_;
+  float DCP_;
+  float D0star_;
+  double sjdphi_;
+  
+  double pT_A_;
   
   double scale1_;
   double scale2_;
@@ -203,7 +217,20 @@ class HTTGenAnalysis : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
-
+  std::shared_ptr<RooWorkspace> mssm_w_;
+  std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
+  
+  double wt_ggh_t_;
+  double wt_ggh_b_;
+  double wt_ggh_i_;
+  double wt_ggH_t_;
+  double wt_ggH_b_;
+  double wt_ggH_i_;
+  double wt_ggA_t_;
+  double wt_ggA_b_;
+  double wt_ggA_i_;
+  
+  TH2D z_pt_weights_sm_;
   
  public:
   HTTGenAnalysis(std::string const& name);

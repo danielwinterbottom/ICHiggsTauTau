@@ -44,19 +44,30 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
   std::vector<T*> input_vec = event->GetPtrVec<T>(input_vec_label_);
   std::vector<T*> output_vec;
   
-  std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
-  std::vector<GenParticle *> sel_particles;
-  for (unsigned i=0; i < particles.size(); ++i){
-    std::vector<bool> status_flags_start = particles[i]->statusFlags();
-    if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct])){
-      sel_particles.push_back(particles[i]);
-    }
-  }
-  
-  std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
   std::vector<GenJet *> gen_taus_ptr;
-  for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
-  ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
+  std::vector<GenParticle *> sel_particles;
+  
+  if(event->Exists("genHadTaus") && event->Exists("genLeps")){
+    // We don't want to have to find leptons/tau jets more than once so these will be added to the event the first time this module is run and reused when called multiple times  
+    gen_taus_ptr = event->GetPtrVec<GenJet>("genHadTaus");    
+    sel_particles = event->GetPtrVec<GenParticle>("genLeps");
+  }
+  else {
+    std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
+    for (unsigned i=0; i < particles.size(); ++i){
+      std::vector<bool> status_flags_start = particles[i]->statusFlags();
+      if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct])){
+        sel_particles.push_back(particles[i]);
+      }
+    }
+    
+    std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
+    for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+    ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
+    
+    event->Add("genHadTaus", gen_taus_ptr);
+    event->Add("genLeps", sel_particles);
+  }
   
   for(unsigned i=0; i<input_vec.size(); ++i){
     std::vector<T *> lepton;
