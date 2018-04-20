@@ -1021,8 +1021,21 @@ def GraphDivide(num, den):
               res.GetEYlow()[i] = 0
             else: 
               res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
-              res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
 
+    return res
+
+def GraphDivideErrors(num, den):
+    res = num.Clone()
+    for i in xrange(num.GetN()):
+        if type(res) is R.TGraphAsymmErrors:
+          if den.Eval(res.GetX()[i]) == 0: 
+              res.GetEYhigh()[i] = 0
+              res.GetEYlow()[i] = 0  
+          else:    
+              res.GetEYhigh()[i] = math.sqrt((res.GetEYhigh()[i]/res.GetY()[i])**2 + (den.GetEYhigh()[i]/den.GetY()[i])**2)
+              res.GetEYlow()[i] = math.sqrt((res.GetEYlow()[i]/res.GetY()[i])**2 + (den.GetEYlow()[i]/den.GetY()[i])**2)
+        if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
+        else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     return res
 
 
@@ -2858,6 +2871,7 @@ def TagAndProbePlot(graphs=[],
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("SF")
+        #axish[1].GetYaxis().SetTitle("Embed/MC")
         axish[1].GetYaxis().CenterTitle()
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
@@ -2944,10 +2958,18 @@ def TagAndProbePlot(graphs=[],
         num = graphs[0].Clone()
         ratio_graphs=[]
         for i in range(1,len(graphs)):
-          sf_graph=GraphDivide(num,graphs[i].Clone())
+          sf_graph=GraphDivideErrors(num,graphs[i].Clone())
           sf_graph.SetLineWidth(3)
-          sf_graph.SetLineColor(colourlist[i])
+          sf_graph.SetLineColor(colourlist[0])
           sf_graph.SetMarkerSize(0)
+          #f = R.TF1('f','pol1') 
+          #f.SetParameter(0,1.)
+          #sf_graph.Fit('f')
+          #sf_graph.GetFunction('f').SetLineColor(R.kBlack)
+          #sf_graph.GetFunction('f').SetLineWidth(2)
+          #R.gStyle.SetStatY(0.38)
+          #R.gStyle.SetStatY(0.355)
+          #R.gStyle.SetStatX(0.96)
           ratio_graphs.append(sf_graph.Clone())
         for x in ratio_graphs:  
           x.Draw("p")

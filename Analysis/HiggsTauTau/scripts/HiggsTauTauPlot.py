@@ -887,8 +887,8 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    if options.channel in ['et','mt']: wt_=wt+'*1.02'
-    if options.channel == 'tt': wt_=wt+'*1.02*1.02'
+    if options.channel in ['et','mt']: wt_=wt#+'*1.02'
+    if options.channel == 'tt': wt_=wt#+'*1.02*1.02'
     full_selection = BuildCutString(wt_, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
@@ -1064,8 +1064,8 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt=
           subtract_node_os = GetSubtractNode(ana,'_os',plot,plot_unmodified,wt,control_sel,cat_nobtag,cat_nobtag_data,method,qcd_os_ss_ratio,True,False) 
           subtract_node_ss = GetSubtractNode(ana,'_ss',plot,plot_unmodified,wt,control_sel,cat_nobtag,cat_nobtag_data,method,qcd_os_ss_ratio,False,False)
       elif method == 23:
-          cat_nopt = '('+cats['dijet']+')*('+cats['baseline']+')'
-          cat_nopt_data = '('+cats_unmodified['dijet']+')*('+cats_unmodified['baseline']+')'
+          cat_nopt = '('+cats['dijet_lowboost']+')*('+cats['baseline']+')'
+          cat_nopt_data = '('+cats_unmodified['dijet_lowboost']+')*('+cats_unmodified['baseline']+')'
           full_selection = BuildCutString(wt, sel, cat_nopt, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nopt, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nopt, 'os', '')
@@ -1143,7 +1143,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt=
     if method in [24]:
       data_node = None
       cat_nopt = '('+cats['dijet']+')*('+cats['baseline']+')'
-      cat_nopt_data = '('+cats_unmodified['dijet']+')*('+cats_unmodified['baseline']+')'
+      cat_nopt_data = '('+cats_unmodified['dijet_lowboost']+')*('+cats_unmodified['baseline']+')'
       wsf_num = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat, cat_data, 8, qcd_factor, True)
       wsf_denum = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat_nopt, cat_nopt_data, 8, qcd_factor, True)  
     if method in [25]:
