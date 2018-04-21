@@ -455,11 +455,11 @@ if SCHEME == 'cpsummer16_neww':
     ("12",   "boosted",    "boosted_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
     ("12",   "boosted",    "boosted_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
     ("12",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
-    ("12",   "dijet_lowboost",    "dijet_wjets_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" '),
-    ("12",   "dijet_lowboost",    "dijet_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
-    ("12",   "dijet_lowboost",    "dijet_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
-    ("23",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
-
+    ("12",   "dijet_lowboost",    "dijet_lowboost_wjets_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" '),
+    ("12",   "dijet_lowboost",    "dijet_lowboost_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
+    ("12",   "dijet_lowboost",    "dijet_lowboost_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
+    ("23",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
+    ("23",   "dijet_boosted",    "dijet_boosted_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss ')
   ]
   scheme_mt = [
     ("12",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" '),
@@ -471,11 +471,11 @@ if SCHEME == 'cpsummer16_neww':
     ("12",   "boosted",    "boosted_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
     ("12",   "boosted",    "boosted_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
     ("12",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
-    ("12",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
-    ("12",   "dijet_lowboost",    "dijet_wjets_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" '),
-    ("12",   "dijet_lowboost",    "dijet_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
-    ("12",   "dijet_lowboost",    "dijet_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
-    ("23",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
+    ("12",   "dijet_lowboost",    "dijet_lowboost_wjets_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" '),
+    ("12",   "dijet_lowboost",    "dijet_lowboost_wjets_ss_cr",  VAR_WCR, ' --set_alias="sel:mt_1>70" --do_ss '),
+    ("12",   "dijet_lowboost",    "dijet_lowboost_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss '),
+    ("23",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
+    ("23",   "dijet_boosted",    "dijet_boosted_qcd_cr",  VAR_QCDCR, ' --set_alias="sel:mt_1<50" --do_ss ')
 
   ]
   scheme_tt = [
