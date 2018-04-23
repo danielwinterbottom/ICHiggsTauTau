@@ -2586,8 +2586,10 @@ namespace ic {
             if(gm2_!=6 || !do_jlepton_fake_){
               auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
               auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-              if(!is_embedded_) m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
-              else {
+              if(!is_embedded_){
+                 m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+                 if(m_iso>0.2) m_idiso = fns_["m_iso_binned_ratio"]->eval(args_2_2.data())*fns_["m_id_ratio"]->eval(args_1_2.data());
+              } else {
                  double mu_iso = 1.0;
                  m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data());
                  if (m_iso<0.2) {
@@ -2614,7 +2616,10 @@ namespace ic {
            if(gm1_!=6 || !do_jlepton_fake_){
             auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-            if(!is_embedded_) e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+            if(!is_embedded_){ 
+              if(e_iso<0.15) e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+              else e_idiso = fns_["e_iso_binned_ratio"]->eval(args_2_1.data())*fns_["e_id_ratio"]->eval(args_1_1.data());
+            }
             else {
                  double e_iso_wt = 1.0;
                  e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data());
@@ -2948,8 +2953,8 @@ namespace ic {
             } else etau_fakerate_2=1.90;
             if(strategy_==strategy::smsummer16){
               if(fabs(tau->eta()) < 1.460){
-               etau_fakerate_2 = 1.40;//1.50;
-              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.9;//2.;
+               etau_fakerate_2 = 1.40;
+              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.9;
               event->Add("wt_lfake_rate_up",1.12);
               event->Add("wt_lfake_rate_down",0.88);
               double wt_lfake_rate = 1.0;

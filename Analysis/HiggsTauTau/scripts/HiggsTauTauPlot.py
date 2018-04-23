@@ -402,6 +402,7 @@ if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+      #if options.channel == 'em': cats['dijet']='n_jets==2 && mjj>300 && n_bjets==0'
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
@@ -831,6 +832,8 @@ else:
           elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: qcd_os_ss_ratio = 1.0
       elif options.channel == 'zmm' or options.channel == 'zee':
           qcd_os_ss_ratio = 1.07   
+      elif options.channel == 'em': 
+          qcd_os_ss_ratio = 1.0
       else:
           qcd_os_ss_ratio = 1.0  
     else:
@@ -1482,6 +1485,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
     sig_total = ufloat(0.000000001,0.000000001)
     for node in nodes:
         if options.method == 18 and 'jetFakes' == node.name: continue
+        if options.channel == 'em' and node.name == 'W': continue
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
@@ -1855,6 +1859,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     for node in nodes:
         if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
             if options.method == 18 and 'jetFakes' == node.name: continue
+            if options.channel == 'em' and node.name == 'W': continue
             if add_name not in node.name: continue
             if first_hist:
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
@@ -2181,7 +2186,7 @@ while len(systematics) > 0:
       if options.add_wt is not "": weight+="*"+options.add_wt
       if options.channel == "tt" and options.era == 'mssmsummer16': weight+='*wt_tau_id_medium'
       if options.channel == "tt" and options.era in ['smsummer16','cpsummer16']: weight+='*wt_tau_id_tight'
-      if options.cat == '0jet': weight+='*wt_lfake_rate'
+      if options.cat == '0jet' and options.era in ['smsummer16']: weight+='*wt_lfake_rate'
 
       samples_to_skip = systematics[systematic][3]
       add_names.append(add_name)
@@ -2357,7 +2362,7 @@ plot_file = ROOT.TFile(output_name, 'READ')
 #    w_os_ss = w_os_total/w_ss_total
 #    w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
 #
-#    #print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
+#    print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
 
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"

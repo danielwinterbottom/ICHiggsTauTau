@@ -41,8 +41,8 @@ parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true'
                   help="Do not add shape systematics")
 parser.add_option("--total_jes", dest="total_jes", action='store_true', default=False,
                   help="Do total JES uncertainties.")
-parser.add_option("--no_split_jes", dest="no_split_jes", action='store_true', default=False,
-                  help="If set then the JES uncertainties split by source are not added")
+parser.add_option("--split_jes", dest="split_jes", action='store_true', default=False,
+                  help="If set then the JES uncertainties split by source are added")
 parser.add_option("--regional_jes", dest="regional_jes", action='store_true', default=False,
                   help="Split JES by sources grouped regionally")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
@@ -126,7 +126,7 @@ extra_channel = {
       "zmm" : ' ',
   }
 jes_systematics=''
-if not options.no_split_jes:
+if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
   
 common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
@@ -137,7 +137,7 @@ if options.total_jes:
   common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
 
 
-em_shape_systematics=' --syst_tau_scale="CMS_scale_e_em_13TeV" '
+em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" '
 et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_et_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_eFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_eFakeTau_1prong1pizero_13TeV"  '
 mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_qcd_shape_wsf="WSFUncert_mt_cat_13TeV" --syst_tau_id_dm0="CMS_tauDMReco_1prong_13TeV" --syst_tau_id_dm1="CMS_tauDMReco_1prong1pizero_13TeV" --syst_tau_id_dm10="CMS_tauDMReco_3prong_13TeV" --syst_lfake_dm0="CMS_mFakeTau_1prong_13TeV" --syst_lfake_dm1="CMS_mFakeTau_1prong1pizero_13TeV" '
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
@@ -438,7 +438,7 @@ if SCHEME == 'cpsummer16_neww':
   #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
 
  
-  VAR_DIJET_TT_QCD = 'sjdphi(1,-3.2,3.2)' 
+  VAR_DIJET_TT_QCD = 'm_sv[0,300]'
   
   VAR_WCR = 'mt_1[70,200]'
   VAR_QCDCR = 'mt_1[0,70]'
@@ -480,13 +480,13 @@ if SCHEME == 'cpsummer16_neww':
   ]
   scheme_tt = [
     ("8",   "0jet",    "0jet",  VAR_0JET_TT, ''),
-    ("8",   "0jet",    "0jet_qcd_cr",  VAR_TT_QCDCR, ' --do_ss '),
+    ("8",   "0jet",    "0jet_qcd_cr",  VAR_TT_QCDCR, ' --set_alias="baseline:({tt_qcd_norm})" '),
     ("8",   "boosted", "boosted",  VAR_BOOSTED_TT, ''),
-    ("8",   "boosted", "boosted_qcd_cr",  VAR_TT_QCDCR, ' --do_ss '),
+    ("8",   "boosted", "boosted_qcd_cr",  VAR_TT_QCDCR, ' --set_alias="baseline:({tt_qcd_norm})" '),
     ("8",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' '),
     ("8",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' '),
-    ("8",   "dijet_lowboost",      "dijet_lowboost_qcd_cr",  VAR_TT_QCDCR, ' --do_ss '),
-    ("8",   "dijet_boosted",     "dijet_boosted_qcd_cr",  VAR_TT_QCDCR, ' --do_ss ')
+    ("8",   "dijet_lowboost",      "dijet_lowboost_qcd_cr",  VAR_TT_QCDCR, ' --set_alias="baseline:({tt_qcd_norm})" '),
+    ("8",   "dijet_boosted",     "dijet_boosted_qcd_cr",  VAR_TT_QCDCR, ' --set_alias="baseline:({tt_qcd_norm})" ')
   ]
   scheme_em = [
     ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
