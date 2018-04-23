@@ -188,7 +188,7 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
-  if options.analysis == 'sm': masses = ['110', '120', '125', '130', '140']
+  if options.analysis == 'sm': masses = ['125']
   else: masses = ['125']
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
@@ -198,7 +198,6 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'ZHToTauTau_M-'+mass,
       'WplusHToTauTau_M-'+mass,
       'WminusHToTauTau_M-'+mass#,
-      #'TTHToTauTau_M-'+mass
     ]
   if options.proc_sm:  
     signal_mc += [
@@ -382,7 +381,7 @@ if options.proc_embed or options.proc_all:
       nperjob = 10
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
 
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','')  
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','')  
       if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
       if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
       if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
@@ -427,40 +426,29 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    'TT',
-    #'WJetsToLNu',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'VVTo2L2Nu',
-    'VVTo2L2Nu-ext1',
-    'ZZTo2L2Q',
-    #'ZZTo4L',
-    'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
-    #'WWToLNuQQ',
-    #'WWToLNuQQ-ext',
-    'WZJToLLLNu',
-    'WZTo1L3Nu',
-    'WZTo2L2Q',
-    'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
-    'T-tW',
-    'Tbar-tW',
-    #'DYJetsToLL',
+    #'TT',
+    #'VVTo2L2Nu',
+    #'VVTo2L2Nu-ext1',
+    #'ZZTo2L2Q',
+    #'ZZTo4L-amcat',
+    #'WWTo1L1Nu2Q',
+    #'WZJToLLLNu',
+    #'WZTo1L3Nu',
+    #'WZTo2L2Q',
+    #'WZTo1L1Nu2Q',
+    #'T-t',
+    #'Tbar-t',
+    #'T-tW',
+    #'Tbar-tW',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
-    #'DYJetsToLL_M-10to50-ext',
-    #'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
-    #'DY1JetsToLL_M-10-50-LO',
-    #'DY2JetsToLL_M-10-50-LO',
-    #'DY3JetsToLL_M-10-50-LO',
-    #'DYJetsToLL_M-150-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
+    'WJetsToLNu-LO',
+    'WJetsToLNu-LO-ext',
     'W1JetsToLNu-LO',
     'W2JetsToLNu-LO',
     'W2JetsToLNu-LO-ext',
@@ -472,21 +460,20 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'WGToLNuG',
     'WGToLNuG-ext',
     'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    'WGstarToLNuMuMu',
+    'QCDMuEnrichedPt15'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-      'EWKWMinus2Jets_WToLNu-ext1',
-      'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu',
-      'EWKWPlus2Jets_WToLNu-ext1',
-      'EWKWPlus2Jets_WToLNu-ext2',
-      'EWKWPlus2Jets_WToLNu',
-      'EWKZ2Jets_ZToLL-ext',
-      'EWKZ2Jets_ZToLL',
-      'EWKZ2Jets_ZToNuNu-ext',
-      'EWKZ2Jets_ZToNuNu'    
+    #  'EWKWMinus2Jets_WToLNu-ext1',
+    #  'EWKWMinus2Jets_WToLNu-ext2',
+    #  'EWKWMinus2Jets_WToLNu',
+    #  'EWKWPlus2Jets_WToLNu-ext1',
+    #  'EWKWPlus2Jets_WToLNu-ext2',
+    #  'EWKWPlus2Jets_WToLNu',
+    #  'EWKZ2Jets_ZToLL-ext',
+    #  'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
@@ -526,6 +513,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
         FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+        if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
+          FLATJSONPATCH = FLATJSONPATCH.replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))

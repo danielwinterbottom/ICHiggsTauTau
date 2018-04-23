@@ -77,15 +77,16 @@
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+  if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
+  do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos);
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
-    if(json["baseline"]["jes_mode"].asUInt() > 0 && (json["baseline"]["split_by_source"].asBool()||json["strategy"].asString()=="smsummer16")) svfit_folder=svfit_folder+"/";
+    if(json["baseline"]["jes_mode"].asUInt() > 0 && ((json["baseline"]["split_by_source"].asBool() && !json["baseline"]["split_by_region"].asBool()) || do_recoil)) svfit_folder=svfit_folder+"/";
     else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   }
   svfit_override = json["svfit_override"].asString();
-  if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   output_folder=output_folder+"/"+addit_output_folder+"/";
@@ -519,6 +520,7 @@ void HTTSequence::BuildSequence(){
     if( (output_name.find("VV") != output_name.npos) || (output_name.find("ZZ") != output_name.npos) || (output_name.find("WZ") !=output_name.npos) || (output_name.find("WW") != output_name.npos)) jlepton_fake = true; //Applied for diboson
     if( (output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) jlepton_fake = true; //Applied for DY
   }
+
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -1017,6 +1019,159 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
 
+if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_do_legacy(true)
+    .set_jet_label(jets_label));
+}
+
+BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
+
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+if(strategy_type == strategy::paper2013) {
+  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
+} else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+  jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
+} else {
+  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+}
+BuildModule(jetIDFilter);
+
+
+ if (jes_mode > 0 && !is_data ){
+  std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
+  std::string jes_input_set  = "SubTotalDataMC";
+  if (era_type == era::data_2012_rereco) {
+    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_set  = "SubTotalMC";
+  }
+  if (era_type == era::data_2015) {
+    jes_input_file = "input/jec/Fall15_25nsV2_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_set  = "Total";
+  }
+  if (era_type == era::data_2016) {
+    jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
+    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    jes_input_set  = "Total";
+  }
+  
+  if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
+  
+  if(js["baseline"]["split_by_source"].asBool()){
+   // if using split_by_source option then make a copy for the jet collection for each of the JES shifts. The collections need will need JES shifts applied as well as all other of the usual selections/corrections e.g ID. b-tag Sfs... . These collections will be used later to produce shifted jet variables (e.g mjj, n_jets...)
+      
+   TH2F bbtag_eff;
+   TH2F cbtag_eff;
+   TH2F othbtag_eff;
+   
+    if(strategy_type == strategy::fall15){
+      if(channel != channel::tt){
+        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+      } else {
+        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
+        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
+        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
+      }
+    }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+    } else {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+    }   
+     
+   for(unsigned i=1; i<=28; ++i){
+       
+     std::string source = UInt2JES(i);
+     std::string shift_jets_label = jets_label+source;
+     
+     // copy jet collection for each JES shift
+     BuildModule(CopyCollection<PFJet>("CopyJetsForJES"+source,jets_label,shift_jets_label,true));
+     
+     // shift jet energies
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty"+source)
+       .set_input_label(shift_jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(source));
+
+     // Do b-tag weights for shifted jets
+     if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
+        BuildModule(BTagWeightRun2("BTagWeightRun2"+source)
+         .set_channel(channel)
+         .set_era(era_type)
+         .set_strategy(strategy_type)
+         .set_jet_label(shift_jets_label)
+         .set_bbtag_eff(new TH2F(bbtag_eff))
+         .set_cbtag_eff(new TH2F(cbtag_eff))
+         .set_othbtag_eff(new TH2F(othbtag_eff))
+         .set_do_reshape(do_reshape)
+         .set_btag_mode(btag_mode)
+         .set_bfake_mode(bfake_mode)
+         .set_add_name(source));
+     }
+    
+     // compute jet variables for shifted jets
+     BuildModule(HTTShiftedJetVariables("HTTShiftedJetVariables"+source)
+       .set_jets_label(shift_jets_label)
+       .set_source(source));
+     
+   } 
+ }
+ 
+ if(js["baseline"]["split_by_region"].asBool()){
+   // Split jet energy uncertainties by sources where sources are grouped depending on the detector region:
+   // region 0 = full detector (eta<5)
+   // region 1 = central detector (eta<3)  
+   // region 2 = HF (eta>3)
+   std::vector<std::string> sources = {};
+   
+   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
+   if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
+   
+   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+    .set_input_label(jets_label)
+    .set_jes_shift_mode(jes_mode)
+    .set_uncert_file(jes_input_file)
+    .set_uncert_set(jes_input_set)
+    .set_uncert_sets(sources)
+    .set_sum_uncerts(true)
+    );
+ } else{  
+    
+   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+    .set_input_label(jets_label)
+    .set_jes_shift_mode(jes_mode)
+    .set_uncert_file(jes_input_file)
+    .set_uncert_set(jes_input_set));
+ }
+
+}
+  
+
+
+if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_do_legacy(false)
+    .set_era(era_type)
+    .set_jet_label(jets_label));
+}
+
+
    if(channel != channel::wmnu) {
 
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
@@ -1055,7 +1210,8 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
        .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
        .set_allowed_tau_modes(allowed_tau_modes)
        .set_metuncl_mode(metuncl_mode)
-       .set_metcl_mode(metcl_mode);
+       .set_metcl_mode(metcl_mode)
+       .set_shift_jes(!do_recoil);
    
      if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
        httPairSelector.set_gen_taus_label("genParticles");
@@ -1234,30 +1390,6 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy
     .set_channel(channel));
 }
 
-if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
-   BuildModule(BTagCheck("BTagCheck")
-    .set_fs(fs.get())
-    .set_channel(channel)
-    .set_era(era_type)
-    .set_strategy(strategy_type)
-    .set_do_legacy(true)
-    .set_jet_label(jets_label));
-}
-
-BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
-
-SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-.set_input_label(jets_label);
-if(strategy_type == strategy::paper2013) {
-  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
-} else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
-  jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
-} else {
-  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
-}
-BuildModule(jetIDFilter);
-
-
 if(channel != channel::wmnu) {
   BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
     .set_input_label(jets_label)
@@ -1268,135 +1400,6 @@ if(channel != channel::wmnu) {
     .set_input_label(jets_label)
     .set_reference_label("sel_muons")
     .set_min_dr(0.5));
-}
-
-
- if (jes_mode > 0 && !is_data ){
-  std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
-  std::string jes_input_set  = "SubTotalDataMC";
-  if (era_type == era::data_2012_rereco) {
-    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
-    jes_input_set  = "SubTotalMC";
-  }
-  if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Fall15_25nsV2_DATA_UncertaintySources_AK4PFchs.txt";
-    jes_input_set  = "Total";
-  }
-  if (era_type == era::data_2016) {
-    jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
-    jes_input_set  = "Total";
-  }
-  
-  if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
-  
-  if(js["baseline"]["split_by_source"].asBool()){
-   // if using split_by_source option then make a copy for the jet collection for each of the JES shifts. The collections need will need JES shifts applied as well as all other of the usual selections/corrections e.g ID. b-tag Sfs... . These collections will be used later to produce shifted jet variables (e.g mjj, n_jets...)
-      
-   TH2F bbtag_eff;
-   TH2F cbtag_eff;
-   TH2F othbtag_eff;
-   
-    if(strategy_type == strategy::fall15){
-      if(channel != channel::tt){
-        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
-        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
-        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
-      } else {
-        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
-        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
-        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
-      }
-    }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
-      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
-      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
-      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
-    } else {
-      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
-      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
-      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
-    }   
-     
-   for(unsigned i=1; i<=28; ++i){
-       
-     std::string source = UInt2JES(i);
-     std::string shift_jets_label = jets_label+source;
-     
-     // copy jet collection for each JES shift
-     BuildModule(CopyCollection<PFJet>("CopyJetsForJES"+source,jets_label,shift_jets_label,true));
-     
-     // shift jet energies
-     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty"+source)
-       .set_input_label(shift_jets_label)
-       .set_jes_shift_mode(jes_mode)
-       .set_uncert_file(jes_input_file)
-       .set_uncert_set(source));
-
-     // Do b-tag weights for shifted jets
-     if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
-        BuildModule(BTagWeightRun2("BTagWeightRun2"+source)
-         .set_channel(channel)
-         .set_era(era_type)
-         .set_strategy(strategy_type)
-         .set_jet_label(shift_jets_label)
-         .set_bbtag_eff(new TH2F(bbtag_eff))
-         .set_cbtag_eff(new TH2F(cbtag_eff))
-         .set_othbtag_eff(new TH2F(othbtag_eff))
-         .set_do_reshape(do_reshape)
-         .set_btag_mode(btag_mode)
-         .set_bfake_mode(bfake_mode)
-         .set_add_name(source));
-     }
-    
-     // compute jet variables for shifted jets
-     BuildModule(HTTShiftedJetVariables("HTTShiftedJetVariables"+source)
-       .set_jets_label(shift_jets_label)
-       .set_source(source));
-     
-   } 
- }
- 
- if(js["baseline"]["split_by_region"].asBool()){
-   // Split jet energy uncertainties by sources where sources are grouped depending on the detector region:
-   // region 0 = full detector (eta<5)
-   // region 1 = central detector (eta<3)  
-   // region 2 = HF (eta>3)
-   std::vector<std::string> sources = {};
-   
-   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
-   if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
-   if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
-   
-   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-    .set_input_label(jets_label)
-    .set_jes_shift_mode(jes_mode)
-    .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set)
-    .set_uncert_sets(sources)
-    .set_sum_uncerts(true)
-    );
- } else{  
-    
-   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-    .set_input_label(jets_label)
-    .set_jes_shift_mode(jes_mode)
-    .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set));
- }
-
-}
-  
-
-
-if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
-   BuildModule(BTagCheck("BTagCheck")
-    .set_fs(fs.get())
-    .set_channel(channel)
-    .set_era(era_type)
-    .set_strategy(strategy_type)
-    .set_do_legacy(false)
-    .set_era(era_type)
-    .set_jet_label(jets_label));
 }
 
 
@@ -1415,7 +1418,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
   }
 
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && channel!=channel::wmnu){
+ if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && channel!=channel::wmnu && do_recoil){ 
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)

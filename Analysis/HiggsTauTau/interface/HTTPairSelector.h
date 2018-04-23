@@ -39,6 +39,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTPairSelector, unsigned, metcl_mode)
   CLASS_MEMBER(HTTPairSelector, unsigned, metuncl_mode)
+  CLASS_MEMBER(HTTPairSelector, bool, shift_jes)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
 
