@@ -1022,7 +1022,6 @@ def GraphDivide(num, den):
             else: 
               res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
               res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
-              print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
     return res
 
