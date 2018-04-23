@@ -78,7 +78,7 @@ namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
-  do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos);
+  do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos || output_name.find("EWKW")!=output_name.npos || output_name.find("EWKZ")!=output_name.npos || output_name.find("VBFH")!=output_name.npos || output_name.find("GluGluH")!=output_name.npos || output_name.find("ZHiggs")!=output_name.npos || output_name.find("WHiggs")!=output_name.npos );
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
@@ -1439,12 +1439,12 @@ if(channel != channel::wmnu) {
      .set_met_label(met_label)
      .set_scale_shift(0.04));
    }*/
-
+  //!(json["baseline"]["jes_mode"].asUInt() > 0 && ((json["baseline"]["split_by_source"].asBool() && !json["baseline"]["split_by_region"].asBool()) || do_recoil))
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_strategy(strategy_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode(new_svfit_mode)
+    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ((js["baseline"]["split_by_source"].asBool() && !js["baseline"]["split_by_region"].asBool()) || do_recoil)) ? 0 : new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(40000)
