@@ -936,7 +936,6 @@ namespace ic {
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       if(mc_ != mc::summer16_80X || strategy_== strategy::smsummer16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
-          std::cout << wtzpt << std::endl;
           double wtzpt_down=1.0;
           double wtzpt_up = wtzpt*wtzpt;
           eventInfo->set_weight("wt_zpt",wtzpt);

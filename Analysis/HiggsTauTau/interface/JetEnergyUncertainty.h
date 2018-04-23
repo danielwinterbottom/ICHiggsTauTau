@@ -9,6 +9,8 @@
 #include <string>
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 
 namespace ic {
 
@@ -72,9 +74,11 @@ int JetEnergyUncertainty<T>::PreAnalysis() {
 template <class T>
 int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
-  if(!sum_uncerts_){  
+  if(!sum_uncerts_){
+    ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
+    ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
     for (unsigned i = 0; i < vec.size(); ++i) {
-      if (fabs(vec[i]->eta()) > 5.0) continue;
+      before+=vec[i]->vector();
       uncert_->setJetPt(vec[i]->pt());
       uncert_->setJetEta(vec[i]->eta());
       if (jes_shift_mode_ == 1) {
@@ -85,10 +89,14 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
         double shift = uncert_->getUncertainty(true); //up
         vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
       }
+      after+=vec[i]->vector();
     }
+    event->Add("jes_shift", after-before);
   } else if (sum_uncerts_){
+    ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
+    ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
     for (unsigned i = 0; i < vec.size(); ++i) {
-      if (fabs(vec[i]->eta()) > 5.0) continue;
+      before+=vec[i]->vector();  
       double shift=0;
       for (unsigned j=0; j<uncerts_.size(); ++j){
         uncerts_[j]->setJetPt(vec[i]->pt());
@@ -106,7 +114,9 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       if (jes_shift_mode_ == 2) {
         vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
       }
-    }  
+      after+=vec[i]->vector();
+    }
+    event->Add("jes_shift", after-before);
   }
   return 0;
 }
