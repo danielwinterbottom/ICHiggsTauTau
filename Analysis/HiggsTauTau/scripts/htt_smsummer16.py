@@ -426,20 +426,20 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    #'TT',
-    #'VVTo2L2Nu',
-    #'VVTo2L2Nu-ext1',
-    #'ZZTo2L2Q',
-    #'ZZTo4L-amcat',
-    #'WWTo1L1Nu2Q',
-    #'WZJToLLLNu',
-    #'WZTo1L3Nu',
-    #'WZTo2L2Q',
-    #'WZTo1L1Nu2Q',
-    #'T-t',
-    #'Tbar-t',
-    #'T-tW',
-    #'Tbar-tW',
+    'TT',
+    'VVTo2L2Nu',
+    'VVTo2L2Nu-ext1',
+    'ZZTo2L2Q',
+    'ZZTo4L-amcat',
+    'WWTo1L1Nu2Q',
+    'WZJToLLLNu',
+    'WZTo1L3Nu',
+    'WZTo2L2Q',
+    'WZTo1L1Nu2Q',
+    'T-t',
+    'Tbar-t',
+    'T-tW',
+    'Tbar-tW',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
     'DYJetsToLL_M-10-50-LO',
@@ -466,14 +466,14 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-    #  'EWKWMinus2Jets_WToLNu-ext1',
-    #  'EWKWMinus2Jets_WToLNu-ext2',
-    #  'EWKWMinus2Jets_WToLNu',
-    #  'EWKWPlus2Jets_WToLNu-ext1',
-    #  'EWKWPlus2Jets_WToLNu-ext2',
-    #  'EWKWPlus2Jets_WToLNu',
-    #  'EWKZ2Jets_ZToLL-ext',
-    #  'EWKZ2Jets_ZToLL'
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
