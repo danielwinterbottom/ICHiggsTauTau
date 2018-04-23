@@ -27,6 +27,7 @@ namespace ic {
     gen_taus_label_ = "genParticlesTaus";
     metcl_mode_ = 0;
     metuncl_mode_ = 0;
+    shift_jes_ = false;
   }
 
   HTTPairSelector::~HTTPairSelector() {
@@ -347,6 +348,16 @@ namespace ic {
           this->CorrectMETForShift(met, es_shifts.at(muon->id()));
         }
       }
+    }
+    
+    // ************************************************************************
+    // Scale met for the jet energy scale shift in fully hadronic channel
+    // ************************************************************************
+
+    if(event->Exists("jes_shift") && shift_jes_){
+      Met * met = event->GetPtr<Met>(met_label_);
+      ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
+      this->CorrectMETForShift(met, jes_shift);
     }
 
     // ************************************************************************

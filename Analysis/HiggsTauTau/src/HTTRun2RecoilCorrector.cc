@@ -51,8 +51,7 @@ namespace ic {
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
-      std::cout << "process file = " << process_file << std::endl;
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -60,16 +59,16 @@ namespace ic {
 
    if(met_scale_mode_ > 0 || met_res_mode_ > 0) disable_met_sys =false;
    
-    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos)){
+    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos) || (sample_.find("EWKW")!=sample_.npos)){
       disable_recoil_corrs = false;
       is_wjets = true;
     }
 
-    if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) ) {
+    if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || (sample_.find("EWKZ")!=sample_.npos) ) {
       disable_recoil_corrs = false;
     }
 
-    if (sample_.find("HToTauTau")!=sample_.npos){
+    if (sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos){ 
      disable_recoil_corrs = false;
     }
     
@@ -174,7 +173,7 @@ namespace ic {
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
     MEtSys::ProcessType processType;
-    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
+    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("EWKZ")!=sample_.npos  || sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos ){
         processType = MEtSys::ProcessType::BOSON;
     } else if (sample_.find("TT")!=sample_.npos){
        processType = MEtSys::ProcessType::TOP;
