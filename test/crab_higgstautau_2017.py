@@ -8,7 +8,7 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=1','doHT=0', 'globalTag=94X_mc2017_realistic_v14']
+config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=1','doHT=0', 'globalTag=94X_dataRun2_v6']
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
