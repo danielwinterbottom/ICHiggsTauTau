@@ -162,6 +162,8 @@ if options.channel == 'tpzee':
 if options.channel == 'tpem': 
   iso_cut_1='iso_1<0.15'    
   iso_cut_2='iso_2<0.15'
+  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os&&gen_match_1==3&&gen_match_2==4)'
+  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os&&gen_match_1==3&&gen_match_2==4)'
   if options.aiso1:
     iso_cut_1='iso_1>=0.15&&iso_1<0.3'  
     iso_cut_2='iso_2>=0.15&&iso_2<0.3'
@@ -170,7 +172,7 @@ if options.channel == 'tpem':
     iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
   baseline_tag1 = '(0)'
-  baseline_tag2 = '(gen_match_1==3)'
+  baseline_tag2 = '(gen_match_1==3&&gen_match_2==4)'
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
   trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
@@ -185,7 +187,7 @@ if options.channel == 'tpmt':
   if options.aiso2:
     iso_cut_2='iso_loose'  
 
-  baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&n_bjets==0&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
+  #baseline_tag1 = '(m_vis>40&&m_vis<80&&mt_1<30&&pzeta>-25&&n_bjets==0&&lepton_veto==0&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&id_probe_2&&pass_antilep)'
   if options.taudm: baseline_tag1+="&&dm==%s" % options.taudm
 
   idiso_probe_2 = '(%s)' % iso_cut_2

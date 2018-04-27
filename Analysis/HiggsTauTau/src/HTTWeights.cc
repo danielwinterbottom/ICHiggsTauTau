@@ -223,6 +223,14 @@ namespace ic {
             fns_["m_trgOR4_binned_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgOR4_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           }}
+          fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -424,6 +432,8 @@ namespace ic {
         fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
+        fns_["doubletau_corr"] = std::shared_ptr<RooFunctor>(
+              w_->function("doubletau_corr")->functor(w_->argSet("dR")));
         
         TFile fembed(embedding_scalefactor_file_.c_str());
         wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
@@ -1949,6 +1959,14 @@ namespace ic {
                 double decay_mode_2 = tau2->decay_mode();
                 auto args_1 = std::vector<double>{pt_1,decay_mode_1};  
                 auto args_2 = std::vector<double>{pt_2,decay_mode_2};
+
+                if(is_embedded_) {
+                  double dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(tau1->vector(),tau2->vector())); 
+                  auto arg_dR = std::vector<double>{dR};
+                  double wt_trg_corr = fns_["doubletau_corr"]->eval(arg_dR.data());
+                  event->Add("wt_trg_corr", wt_trg_corr);
+                }
+
                 std::string isoWP = "Medium";
                 if(strategy_ == strategy::smsummer16) isoWP = "Tight";
                 if(gm1_ == 5){ 
@@ -3055,7 +3073,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.5;
             }
-            if(strategy_==strategy::smsummer16){
+            if(strategy_==strategy::smsummer16 and false){ // using bad-muon filters numbers for now
               if(fabs(tau->eta()) < 0.4){
                 mtau_fakerate_2 = 1.26;
               } else if(fabs(tau->eta()) < 0.8){
@@ -3090,7 +3108,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.39;
             }
-            if(strategy_==strategy::smsummer16){
+            if(strategy_==strategy::smsummer16 and false){
              if(fabs(tau->eta()) < 0.4){
                mtau_fakerate_2=1.01;
              } else if(fabs(tau->eta()) < 0.8){

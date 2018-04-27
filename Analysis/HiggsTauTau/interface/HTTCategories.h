@@ -1246,6 +1246,7 @@ class HTTCategories : public ModuleBase {
   double tau_pt_2_;
   unsigned tau_id_1_;
   unsigned tau_id_2_;
+  double wt_trg_corr_;
   
 
  public:

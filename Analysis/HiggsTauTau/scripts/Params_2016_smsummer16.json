@@ -96,15 +96,15 @@
     "evt": 972471.0
   },
   "GluGluH2JetsToTauTau_M125_CPmixing_sm": {
-    "xs": 0.3987,
+    "xs": 0.399064,
     "evt": 1482400
   },
   "GluGluH2JetsToTauTau_M125_CPmixing_maxmix": {
-    "xs": 0.7893,
+    "xs": 0.798182,
     "evt": 1496800
   },
   "GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar": {
-    "xs": 0.3858,
+    "xs": 0.393961,
     "evt": 1478400
   },
   "GluGluToHToTauTau_amcNLO_M-125": {

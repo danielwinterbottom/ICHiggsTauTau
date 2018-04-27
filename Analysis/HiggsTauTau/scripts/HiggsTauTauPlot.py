@@ -552,7 +552,7 @@ if options.channel in ['mj']:
   top_sels['ttt_sel'] = '(0)' 
   top_sels['ttj_sel'] = '(1)'
   
-if options.era in ["smsummer16",'cpsummer16','tauid2016']:
+if options.era in ["smsummer16"]:
   if options.channel in ['mt','et']:
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2!=6&&gen_match_2!=5)'
@@ -569,6 +569,31 @@ if options.era in ["smsummer16",'cpsummer16','tauid2016']:
     vv_sels['vvj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
+
+if options.era in ['cpsummer16','tauid2016']:
+  # define these selections to make them more compatible with the fake-factor method and embedded samples
+  if options.channel =='em':
+    z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
+    z_sels['ztt_sel'] = '(gen_match_2==4 && gen_match_1==3)'
+  if options.channel =='mt':
+    z_sels['ztt_sel'] = '(gen_match_2==5 && gen_match_1==4)'
+  if options.channel =='et':
+    z_sels['ztt_sel'] = '(gen_match_2==5 && gen_match_1==3)'
+  if options.channel in ['mt','et']:
+    z_sels['zj_sel'] = '(gen_match_2==6)'
+    z_sels['zl_sel'] = '(gen_match_2!=6&&!(%s))' % z_sels['ztt_sel']
+    vv_sels['vvt_sel'] = '(gen_match_2<6)'
+    vv_sels['vvj_sel'] = '(gen_match_2==6)'
+    top_sels['ttt_sel'] = '(gen_match_2<6)'
+    top_sels['ttj_sel'] = '(gen_match_2==6)'
+  elif options.channel == 'tt':
+    z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
+    z_sels['zl_sel'] = '(!(gen_match_1==6 || gen_match_2==6) && !(gen_match_1==5&&gen_match_2==5))'
+    z_sels['zj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
+    vv_sels['vvt_sel'] = '(!(gen_match_1==6 || gen_match_2==6))'
+    vv_sels['vvj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
+    top_sels['ttt_sel'] = '(!(gen_match_1==6 || gen_match_2==6))'
+    top_sels['ttj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
     
 if options.embedding:
     extra_top_sel = '1'
@@ -890,8 +915,10 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
+    if options.channel == 'em': wt_=wt+'*1.09'
     if options.channel in ['et','mt']: wt_=wt#+'*1.02'
-    if options.channel == 'tt': wt_=wt#+'*1.02*1.02'
+    if options.channel == 'tt': wt_=wt+'*0.99*0.99*wt_trg_corr'
+    else: wt_ = wt
     full_selection = BuildCutString(wt_, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
@@ -1967,8 +1994,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
-            GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
+        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
+        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
     
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']

@@ -176,7 +176,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Nov20_MC_80X'
+FILELIST='filelists/Apr02_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -212,7 +212,13 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         'VBFHiggs0M_M-125',
         'VBFHiggs0Mf05ph0_M-125',
-        'VBFHiggs0PM_M-125'#,
+        'VBFHiggs0PM_M-125',
+        'ZHiggs0M_M-125',
+        'ZHiggs0Mf05ph0_M-125',
+        'ZHiggs0PM_M-125',
+        'WHiggs0M_M-125',
+        'WHiggs0Mf05ph0_M-125',
+        'WHiggs0PM_M-125'
         #'GluGluToHToTauTau_amcNLO_M-125',
         #'VBFHToTauTau_amcNLO_M-125'
     ]  
@@ -479,7 +485,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-    FILELIST='filelists/Nov20_MC_80X'
+    FILELIST='filelists/Apr02_MC_80X'
     central_samples = [
       'QCDMuEnrichedPt15'
   #    'QCDEMEnrichedPt15-20',
@@ -530,7 +536,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
-  if options.analysis == 'sm': SIG_FILELIST='filelists/Nov20_MC_80X' 
+  if options.analysis == 'sm': SIG_FILELIST='filelists/Apr02_MC_80X' 
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)

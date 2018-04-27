@@ -202,7 +202,13 @@ sample_list = [
    'EmbeddingMuMuE',
    'EmbeddingMuMuF',
    'EmbeddingMuMuG',
-   'EmbeddingMuMuH'
+   'EmbeddingMuMuH',
+   'ZHiggs0M_M-125',
+   'ZHiggs0Mf05ph0_M-125',
+   'ZHiggs0PM_M-125',
+   'WHiggs0M_M-125',
+   'WHiggs0Mf05ph0_M-125',
+   'WHiggs0PM_M-125'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
