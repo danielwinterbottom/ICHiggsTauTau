@@ -282,7 +282,7 @@ print '###############################################'
 print ''
 
 vbf_background = False
-#if options.era == 'cpsummer16': vbf_background = True
+if options.era == 'cpsummer16': vbf_background = True
 
 compare_w_shapes = False
 compare_qcd_shapes = False
@@ -336,7 +336,10 @@ if options.channel == 'tt':
     #if options.era in ['cpsummer16']: cats['baseline'] = '(pt_1>50 && mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
-    cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
+    if options.era == 'mssmsummer16':
+      cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
+    elif options.era in ['smsummer16','cpsummer16']:
+      cats['loose_baseline'] = '(iso_1<0.15 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
@@ -449,7 +452,7 @@ if options.era == 'cpsummer16':
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']:
-  if options.channel in ['et','mt']: cats['qcd_shape'] = '('+cats['baseline_loose']+')*('+cats[options.cat]+')'
+  if options.channel in ['et','mt'] and options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: cats['qcd_shape'] = '('+cats['baseline_loose']+')*('+cats[options.cat]+')'
   if options.cat in ['boosted','vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: cats['w_shape'] = cats['qcd_shape']
 
 
@@ -915,9 +918,8 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    if options.channel == 'em': wt_=wt+'*1.09'
     if options.channel in ['et','mt']: wt_=wt#+'*1.02'
-    if options.channel == 'tt': wt_=wt+'*0.99*0.99*wt_trg_corr'
+    if options.channel == 'tt': wt_=wt#+'*0.99*0.99*wt_trg_corr'
     else: wt_ = wt
     full_selection = BuildCutString(wt_, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
@@ -1265,14 +1267,14 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
         weight = wt
         if method in [15,19]:
             #qcd_os_ss_factor = 1
-            if get_os and options.channel == "em":
-                weight = wt+'*wt_em_qcd'
+            if (get_os or True) and options.channel == "em": # detete the True!!!!
+                weight = wt+'*wt_em_qcd/0.909211'
             if method == 19:
                 shape_selection = BuildCutString(weight, sel, cats_unmodified['em_shape_cat'], '!os')
                 subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,cats['em_shape_cat'],cats_unmodified['em_shape_cat'],method,1,False,True)
                 shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot_unmodified, shape_selection), subtract_node)
-        
-        if cats['qcd_shape'] != "" or w_shift is not None:
+       
+        if cats['qcd_shape'] != "" or (w_shift is not None and w_shift!=1.0):
             add_shape = False
             if cats['qcd_shape'] == '': shape_cat = cat
             else: 
@@ -1910,11 +1912,11 @@ def CompareShapes(compare_w_shapes, compare_qcd_shapes):
       shape_hist.Write()
     if compare_qcd_shapes:
       nominal_hist = outfile.Get(nodename+'/QCD')
-      nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+      nominal_scale = nominal_hist.Integral()
       directory = outfile.Get(nodename)
       outfile.cd(nodename)
       shape_hist = outfile.Get(nodename+'/QCD_shape')
-      shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
+      shape_scale = shape_hist.Integral()
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
       
@@ -1994,15 +1996,22 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
-            GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
-    
+        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
+        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
+   
+        # used to plot em QCD uncerts
+        #GenerateQCD(ana, '_shapeup', data_samples, plot, plot_unmodified, wt+'*wt_em_qcd_shapeup', sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+        #GenerateQCD(ana, '_shapedown', data_samples, plot, plot_unmodified, wt+'*wt_em_qcd_shapedown', sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+  
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel, cat_relax, cats_unmodified['w_shape_comp'], 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
-          cat_relax=cats['qcd_shape_comp']
-          GenerateQCD(ana, '_shape', data_samples, plot, plot_unmodified, wt, sel, cat_relax,cats_unmodified['qcd_shape_comp'], method, qcd_os_ss_ratio, not options.do_ss)
+          if options.channel == 'em':
+            GenerateQCD(ana, '_shape', data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, 19, qcd_os_ss_ratio, not options.do_ss,wshift)
+          else:
+            cat_relax=cats['qcd_shape_comp']
+            GenerateQCD(ana, '_shape', data_samples, plot, plot_unmodified, wt, sel, cat_relax,cats_unmodified['qcd_shape_comp'], method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -2179,11 +2188,7 @@ while len(systematics) > 0:
       ana.remaps['Tau'] = 'data_obs'  
       
   ana.nodes.AddNode(ListNode(nodename))
-  if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
-      ana_up   = Analysis()
-      ana_down = Analysis()
-      ana_up = copy.deepcopy(ana)
-      ana_down = copy.deepcopy(ana)
+
   prev_dir=None    
   for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
       if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
@@ -2290,21 +2295,56 @@ while len(systematics) > 0:
       if options.era == "tauid2016" and options.channel in ['et','mt']: 
           RunPlotting(ana, cats['pass']+'&&'+cats['baseline'], cats_unmodified['pass']+'&&'+cats_unmodified['baseline'], sel, "pass"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
           RunPlotting(ana, cats['fail']+'&&'+cats['baseline'], cats_unmodified['fail']+'&&'+cats_unmodified['baseline'], sel, "fail"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
-      
+     
       if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
           add_names.append("_custom_uncerts_up")
           add_names.append("_custom_uncerts_down")
-          RunPlotting(ana_up, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
-          RunPlotting(ana_down, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
+          RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
+          RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
       
       del systematics[systematic]
   ana.Run()
   ana.nodes.Output(outfile)
+  #if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down
+    #ana_up.Run()
+    #ana_down.Run()
+
   # fix negative bns,empty histograms etc.
   FixBins(ana,outfile)
   for n in add_names: 
     GetTotals(ana,n,outfile)
   PrintSummary(nodename, ['data_obs'], add_names)
+
+# use to plot em QCD uncerts
+#bkg = outfile.Get(nodename+'/total_bkg').Clone() 
+#qcd = outfile.Get(nodename+'/QCD').Clone()
+#qcd_rateup = outfile.Get(nodename+'/QCD').Clone()
+#qcd_ratedown = outfile.Get(nodename+'/QCD').Clone()
+##qcd_sf = 1.12
+#qcd_sf=1.064
+#qcd_rateup.Scale(qcd_sf)
+#qcd_ratedown.Scale(2-qcd_sf)
+#qcd_up = outfile.Get(nodename+'/QCD_shapeup')
+#qcd_down = outfile.Get(nodename+'/QCD_shapedown')
+#bkg.Add(qcd,-1)
+#bkg.Add(qcd_up,-1)
+#bkg.Add(qcd_down,-1)
+#t_bkg = bkg.Clone()
+#t_bkg.Add(qcd)
+#qcd_rateup.Add(bkg)
+#qcd_ratedown.Add(bkg)
+#qcd_up.Add(bkg)
+#qcd_down.Add(bkg)
+#for i in range(1,qcd.GetNbinsX()+1):
+#  nom = t_bkg.GetBinContent(i)
+#  up = math.sqrt((max(qcd_up.GetBinContent(i),qcd_down.GetBinContent(i))-nom)**2 + (qcd_rateup.GetBinContent(i)-nom)**2)
+#  down = math.sqrt((min(qcd_up.GetBinContent(i),qcd_down.GetBinContent(i))-nom)**2 + (qcd_ratedown.GetBinContent(i)-nom)**2)
+#  qcd_up.SetBinContent(i,nom+up)
+#  qcd_down.SetBinContent(i,nom-down)
+#outfile.cd(nodename)
+#qcd_up.Write()
+#qcd_down.Write()
+#outfile.cd()
 
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     

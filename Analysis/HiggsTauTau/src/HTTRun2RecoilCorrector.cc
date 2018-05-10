@@ -23,6 +23,7 @@ namespace ic {
     is_wjets = false;
     met_scale_mode_ = 0;
     met_res_mode_ = 0;
+    njets_mode_ = 0;    
   }
 
   HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
@@ -142,6 +143,7 @@ namespace ic {
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
   if(is_wjets) njets+=1;
+
   double Metx = met->vector().px();
   double Mety = met->vector().py();
   double Mete = met->energy();
@@ -169,6 +171,7 @@ namespace ic {
     
   //Apply systematic shifts to MET if requested  
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
+    if((njets_mode_==1 && njets!=0) || (njets_mode_==2 && njets!=1) || (njets_mode_==3 && njets<2)) return 0;
     float met_Shift_x, met_Shift_y;
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;

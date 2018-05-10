@@ -1031,9 +1031,13 @@ def GraphDivideErrors(num, den):
           if den.Eval(res.GetX()[i]) == 0: 
               res.GetEYhigh()[i] = 0
               res.GetEYlow()[i] = 0  
-          else:    
-              res.GetEYhigh()[i] = math.sqrt((res.GetEYhigh()[i]/res.GetY()[i])**2 + (den.GetEYhigh()[i]/den.GetY()[i])**2)
-              res.GetEYlow()[i] = math.sqrt((res.GetEYlow()[i]/res.GetY()[i])**2 + (den.GetEYlow()[i]/den.GetY()[i])**2)
+          else:
+              if res.GetY()[i] == 0 or den.GetY()[i] == 0:   
+                res.GetEYhigh()[i] = 0
+                res.GetEYlow()[i] = 0
+              else:
+                res.GetEYhigh()[i] = math.sqrt((res.GetEYhigh()[i]/res.GetY()[i])**2 + (den.GetEYhigh()[i]/den.GetY()[i])**2)
+                res.GetEYlow()[i] = math.sqrt((res.GetEYlow()[i]/res.GetY()[i])**2 + (den.GetEYlow()[i]/den.GetY()[i])**2)
         if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
         else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     return res
@@ -2065,8 +2069,12 @@ def HTTPlot(nodename,
       'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
       #'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
       'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
-      'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))]}
- 
+      'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
+      'w':[backgroundComp("W",["W"],R.TColor.GetColor(222,90,106))],
+    'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
+    'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
+    'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))]}
+
     else:
       background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
       'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -2107,7 +2115,7 @@ def HTTPlot(nodename,
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
     if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
-    
+ 
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
@@ -2288,7 +2296,7 @@ def HTTPlot(nodename,
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
-    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
+    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
     else: legend.AddEntry(blind_datahist,"Data","PE")
     #Drawn on legend in reverse order looks better
@@ -2303,6 +2311,9 @@ def HTTPlot(nodename,
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")  
     #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(700 GeV)#rightarrow#tau#tau","l")  
+    if scheme == 'qcd_shape' or scheme == 'w_shape': 
+      ks_score =  error_hist.KolmogorovTest(total_datahist)
+      legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
     legend.Draw("same")
     if channel == "em": channel_label = "e_{}#mu_{}"
     if channel == "et": channel_label = "e_{}#tau_{h}"
@@ -2419,7 +2430,7 @@ def HTTPlot(nodename,
         large_uncert_hist.SetLineColor(CreateTransparentColor(2,0.4))
         large_uncert_hist.SetMarkerSize(0)
         large_uncert_hist.SetMarkerColor(CreateTransparentColor(2,0.4))
-        if not no_large_uncerts: large_uncert_hist.Draw("e2same")
+        #if not no_large_uncerts: large_uncert_hist.Draw("e2same")
 
         
     pads[0].cd()
@@ -2536,7 +2547,7 @@ def CompareHists(hists=[],
       uncert_hist.SetMarkerSize(0)
       uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
       uncert_hist.Draw("e2same")
-    hs.Draw("nostack hist same")
+    hs.Draw("nostack l same")
     axish[0].Draw("axissame")
     
     
@@ -2960,7 +2971,7 @@ def TagAndProbePlot(graphs=[],
         for i in range(1,len(graphs)):
           sf_graph=GraphDivideErrors(num,graphs[i].Clone())
           sf_graph.SetLineWidth(3)
-          sf_graph.SetLineColor(colourlist[0])
+          sf_graph.SetLineColor(colourlist[i])
           sf_graph.SetMarkerSize(0)
           #f = R.TF1('f','pol1') 
           #f.SetParameter(0,1.)
@@ -3081,6 +3092,7 @@ def HTTPlotUnrolled(nodename,
         plots = t['plot_list']
         h = R.TH1F()
         for j,k in enumerate(plots):
+            if not infile.Get(nodename+'/'+k): continue
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 
@@ -3280,7 +3292,7 @@ def HTTPlotUnrolled(nodename,
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
-    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
+    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
     else: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
@@ -3292,6 +3304,9 @@ def HTTPlotUnrolled(nodename,
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
         for sig in sighists: legend.AddEntry(sig,sig_schemes[sig.GetName()][0],"l")
+    if scheme == 'qcd_shape' or scheme == 'w_shape':
+      ks_score =  error_hist.KolmogorovTest(total_datahist)
+      legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
     legend.Draw("same")
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"

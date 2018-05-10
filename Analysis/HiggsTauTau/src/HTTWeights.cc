@@ -202,6 +202,19 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+
+        if(strategy_ == strategy::smsummer16){
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+        }
             
         if(do_trg_weights_ || do_idiso_weights_) {
           if (strategy_ != strategy::smsummer16) {
@@ -390,6 +403,21 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+
+        if(strategy_ == strategy::smsummer16){
+          std::cout << "test" << std::endl;
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+        }
+
         
         if(do_tracking_eff_) {
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -863,6 +891,20 @@ namespace ic {
                qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
                qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
            }
+         } else if (strategy_ == strategy::smsummer16){
+           std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+           ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+           double n_jets = (double)jets.size();
+           double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
+           auto args = std::vector<double>{dR,n_jets};
+           qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
+           qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
+           qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
+
+           double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
+           double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
+           event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
+           event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
          } else {
              if(deltaR < 2){
                qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
@@ -1826,6 +1868,7 @@ namespace ic {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
+        //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_17 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_17 << "    " << m_trg_17_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_17_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
@@ -3073,7 +3116,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.5;
             }
-            if(strategy_==strategy::smsummer16 and false){ // using bad-muon filters numbers for now
+            if(strategy_==strategy::smsummer16){
               if(fabs(tau->eta()) < 0.4){
                 mtau_fakerate_2 = 1.26;
               } else if(fabs(tau->eta()) < 0.8){
@@ -3108,7 +3151,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.39;
             }
-            if(strategy_==strategy::smsummer16 and false){
+            if(strategy_==strategy::smsummer16){
              if(fabs(tau->eta()) < 0.4){
                mtau_fakerate_2=1.01;
              } else if(fabs(tau->eta()) < 0.8){

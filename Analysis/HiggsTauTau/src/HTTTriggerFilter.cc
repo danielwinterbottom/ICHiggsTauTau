@@ -904,6 +904,8 @@ namespace ic {
     }
    
    bool passed_muonelectron = false;
+   bool passed_muonelectron_1 = false;
+   bool passed_muonelectron_2 = false; 
    if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X || mc_ == mc::fall15_76X ||mc_ == mc::spring16_80X || mc_ == mc::summer16_80X)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
@@ -922,6 +924,7 @@ namespace ic {
         if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
           passed_muonelectron = true;  
           dileptons_pass.push_back(dileptons[i]);
+          passed_muonelectron_1 = true;
        /*  double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
          double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
          double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
@@ -932,7 +935,7 @@ namespace ic {
            event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
            event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
          }*/
-        } else {
+        } //else {
           leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
           extra_leg1_match = true;
@@ -945,6 +948,7 @@ namespace ic {
           if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(0)->pt() >24.0;
            if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg){
               passed_muonelectron = true; 
+              passed_muonelectron_2 = true;
               dileptons_pass.push_back(dileptons[i]);
            /*   double leg1_trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
               double leg1_trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
@@ -957,10 +961,12 @@ namespace ic {
                 event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
              }*/
            }
-        }
+        //}
       }
     }
     event->Add("trg_muonelectron", passed_muonelectron);
+    event->Add("trg_muonelectron_1", passed_muonelectron_1);
+    event->Add("trg_muonelectron_2", passed_muonelectron_2);
 
    if (channel_ == channel::tt && mc_ == mc::phys14_72X){
      for(unsigned i = 0; i < dileptons.size(); ++i){

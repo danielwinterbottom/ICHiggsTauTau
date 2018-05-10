@@ -32,6 +32,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, tag_id)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_tag_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_iso_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
   CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   
@@ -104,6 +105,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   tag_add_trg_objects_="";
   tag_add_trg_filters_="";
   loose_iso_trgprobe_=false;
+  extra_l1_iso_probe_pt_=0.;
 }
 
 template <class T>
@@ -298,6 +300,20 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_2_ = probe_id_(elec2);
       
     }
+    if(extra_l1_probe_pt_>0 || extra_l1_iso_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
+      bool found_match_probe_1 = false;
+      bool found_match_probe_2 = false;
+      for(unsigned eg=0; eg<l1electrons.size(); ++eg){
+        if((l1electrons[eg]->vector().Pt()>extra_l1_probe_pt_||extra_l1_probe_pt_==0) || (extra_l1_iso_probe_pt_==0 || (l1electrons[eg]->vector().Pt()>extra_l1_iso_probe_pt_ && l1electrons[eg]->isolation()!=0))){
+        if(DR(l1electrons[eg],lep1)<0.5) found_match_probe_1 = true;
+        if(DR(l1electrons[eg],lep2)<0.5) found_match_probe_2 = true;
+        }
+      }
+      trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
+      trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
+    }
+
     if(extra_l1_tag_pt_>0){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
       bool found_match_tag_1 = false;

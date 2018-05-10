@@ -116,8 +116,8 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
       
-  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
-  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
+  baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
+  baseline_tag2 = '(m_vis>80&&m_vis<100&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
   
   if options.embed_sel:
     baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
@@ -151,8 +151,8 @@ if options.channel == 'tpzee':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  baseline_tag1 = '(m_vis>70&&m_vis<110&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
-  baseline_tag2 = '(m_vis>70&&m_vis<110&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+  baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+  baseline_tag2 = '(m_vis>80&&m_vis<100&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
   iso_probe_1 = '(%s)' % iso_cut_1
   iso_probe_2 = '(%s)' % iso_cut_2
   trg_tag_1 = baseline_tag1+'*(%s&&id_tag_2)' % iso_cut_2
@@ -252,7 +252,9 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
         idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
         idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
         trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-        trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    
+        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]'
+        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # low pt leg
+        #trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
       if options.embed_sel:
         #trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         #trg_eta_bins = '(24,0,2.4)'
@@ -271,7 +273,8 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
           idiso_eta_bins = '[0,1.48,2.1,2.5]'
           idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
           trg_eta_bins = '[0,1.48,2.1,2.5]'
-          trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    
+          #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    # low pt leg
+          trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
     
     if options.channel == 'tpem':
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
@@ -320,20 +323,20 @@ def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
     
     if options.embedded:
        
-      GenerateEmbedded(ana, '_trg_tag1_denum', embed_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
-      GenerateEmbedded(ana, '_trg_tag2_denum', embed_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
-      GenerateEmbedded(ana, '_trg_tag1_num', embed_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_num', embed_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
+      GenerateEmbedded(ana, '_trg_tag1_denum', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, '1')
+      GenerateEmbedded(ana, '_trg_tag2_denum', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, '1')
+      GenerateEmbedded(ana, '_trg_tag1_num', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, trg_probe_2)
+      GenerateEmbedded(ana, '_trg_tag2_num', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, trg_probe_1)
          
-      GenerateEmbedded(ana, '_id_tag1_denum', embed_samples, idiso_plot_probe_2, wt, id_tag_1, '1')
-      GenerateEmbedded(ana, '_id_tag2_denum', embed_samples, idiso_plot_probe_1, wt, id_tag_2, '1')
-      GenerateEmbedded(ana, '_id_tag1_num', embed_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
-      GenerateEmbedded(ana, '_id_tag2_num', embed_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
+      GenerateEmbedded(ana, '_id_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, '1')
+      GenerateEmbedded(ana, '_id_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, '1')
+      GenerateEmbedded(ana, '_id_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, id_probe_2)
+      GenerateEmbedded(ana, '_id_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, id_probe_1)
        
-      GenerateEmbedded(ana, '_iso_tag1_denum', embed_samples, idiso_plot_probe_2, wt, iso_tag_1, '1')
-      GenerateEmbedded(ana, '_iso_tag2_denum', embed_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
-      GenerateEmbedded(ana, '_iso_tag1_num', embed_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_num', embed_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, '1')
+      GenerateEmbedded(ana, '_iso_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, '1')
+      GenerateEmbedded(ana, '_iso_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, iso_probe_1)
 
     
     ana.Run()
