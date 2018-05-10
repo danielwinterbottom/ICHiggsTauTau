@@ -3692,9 +3692,7 @@ if(strategy_type == strategy::paper2013){
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 fabs(t->charge())           == 1          &&
-                //t->GetTauID("decayModeFinding") > 0.5;
-                t->GetTauID("decayModeFindingNewDMs") > 0.5;
-
+                t->GetTauID("decayModeFinding") > 0.5;
 
       }));
    }

@@ -1267,8 +1267,8 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
         weight = wt
         if method in [15,19]:
             #qcd_os_ss_factor = 1
-            if (get_os or True) and options.channel == "em": # detete the True!!!!
-                weight = wt+'*wt_em_qcd/0.909211'
+            if get_os and options.channel == "em":
+                weight = wt+'*wt_em_qcd'#/0.909211'
             if method == 19:
                 shape_selection = BuildCutString(weight, sel, cats_unmodified['em_shape_cat'], '!os')
                 subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,cats['em_shape_cat'],cats_unmodified['em_shape_cat'],method,1,False,True)
@@ -2305,9 +2305,6 @@ while len(systematics) > 0:
       del systematics[systematic]
   ana.Run()
   ana.nodes.Output(outfile)
-  #if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down
-    #ana_up.Run()
-    #ana_down.Run()
 
   # fix negative bns,empty histograms etc.
   FixBins(ana,outfile)

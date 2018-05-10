@@ -917,51 +917,28 @@ namespace ic {
           extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_filter, 0.5).first;
           extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_filter, 0.5).first;
         }
-        //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
-        //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
         bool highpt_leg = dileptons[i]->At(1)->pt() >18.0;
         if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(1)->pt() >24.0;
         if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
           passed_muonelectron = true;  
           dileptons_pass.push_back(dileptons[i]);
           passed_muonelectron_1 = true;
-       /*  double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
-         double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
-         double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
-         double leg2_trigger_object_eta = objs.at(leg2_match_index)->eta();
-         if(store_trigobjpt_){
-           event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
-           event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
-           event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
-           event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
-         }*/
-        } //else {
-          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
-          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
-          extra_leg1_match = true;
-          extra_leg2_match = true;
-          if(alt_extra_filter.find("hlt")!=extra_filter.npos){
-            extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_extra_filter, 0.5).first;
-            extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_extra_filter, 0.5).first;
-          }
-          highpt_leg = dileptons[i]->At(0)->pt() > 18.0;
-          if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(0)->pt() >24.0;
-           if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg){
-              passed_muonelectron = true; 
-              passed_muonelectron_2 = true;
-              dileptons_pass.push_back(dileptons[i]);
-           /*   double leg1_trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
-              double leg1_trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
-              double leg2_trigger_object_pt = alt_objs.at(leg2_match_index)->pt();
-              double leg2_trigger_object_eta = alt_objs.at(leg2_match_index)->eta();
-              if(store_trigobjpt_){
-                event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
-                event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
-                event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
-                event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
-             }*/
-           }
-        //}
+        } 
+        leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
+        leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
+        extra_leg1_match = true;
+        extra_leg2_match = true;
+        if(alt_extra_filter.find("hlt")!=extra_filter.npos){
+          extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_extra_filter, 0.5).first;
+          extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_extra_filter, 0.5).first;
+        }
+        highpt_leg = dileptons[i]->At(0)->pt() > 18.0;
+        if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(0)->pt() >24.0;
+        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg){
+           passed_muonelectron = true; 
+           passed_muonelectron_2 = true;
+           dileptons_pass.push_back(dileptons[i]);
+        }
       }
     }
     event->Add("trg_muonelectron", passed_muonelectron);
