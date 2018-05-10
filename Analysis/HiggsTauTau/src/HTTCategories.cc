@@ -79,6 +79,10 @@ namespace ic {
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
+      outtree_->Branch("wt_trg_corr", &wt_trg_corr_);
+      outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
+      outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      
       if (strategy_ == strategy::smsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -735,12 +739,24 @@ namespace ic {
       outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
+
+      outtree_->Branch("mva_newdm_vloose_1",&lbyVLooseIsolationMVArun2DBnewDMwLT_1);
+      outtree_->Branch("mva_newdm_vloose_2",&lbyVLooseIsolationMVArun2DBnewDMwLT_2);
+      outtree_->Branch("mva_newdm_loose_1",&lbyLooseIsolationMVArun2DBnewDMwLT_1);
+      outtree_->Branch("mva_newdm_loose_2",&lbyLooseIsolationMVArun2DBnewDMwLT_2);
+      outtree_->Branch("mva_newdm_medium_1",&lbyMediumIsolationMVArun2DBnewDMwLT_1);
+      outtree_->Branch("mva_newdm_medium_2",&lbyMediumIsolationMVArun2DBnewDMwLT_2);
+      outtree_->Branch("mva_newdm_tight_1",&lbyTightIsolationMVArun2DBnewDMwLT_1);
+      outtree_->Branch("mva_newdm_tight_2",&lbyTightIsolationMVArun2DBnewDMwLT_2);
+
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      outtree_->Branch("trg_muonelectron_1",    &trg_muonelectron_1_);
+      outtree_->Branch("trg_muonelectron_2",    &trg_muonelectron_2_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
@@ -761,6 +777,8 @@ namespace ic {
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
         outtree_->Branch("wt_em_qcd_up",      &wt_em_qcd_up_);
         outtree_->Branch("wt_em_qcd_down",    &wt_em_qcd_down_);
+        outtree_->Branch("wt_em_qcd_shapeup",      &wt_em_qcd_shapeup_);
+        outtree_->Branch("wt_em_qcd_shapedown",    &wt_em_qcd_shapedown_);
         // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
       }
       if(add_Hhh_variables_) { 
@@ -1116,9 +1134,8 @@ namespace ic {
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
-        //if (channel_ != channel::em){
-          outtree_->Branch("dphi",              &dphi_);
-        //}
+        outtree_->Branch("dphi",              &dphi_);
+        outtree_->Branch("dR",              &dR_);
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
@@ -1632,6 +1649,8 @@ namespace ic {
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    if (event->Exists("trg_muonelectron_1"))   trg_muonelectron_1_   = event->Get<bool>("trg_muonelectron_1");
+    if (event->Exists("trg_muonelectron_2"))   trg_muonelectron_2_   = event->Get<bool>("trg_muonelectron_2");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
@@ -2272,6 +2291,8 @@ namespace ic {
     wt_em_qcd_ = 1.0;
     wt_em_qcd_down_ = 1.0;
     wt_em_qcd_up_ = 1.0;
+    wt_em_qcd_shapedown_ = 1.0;
+    wt_em_qcd_shapeup_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
@@ -2287,6 +2308,8 @@ namespace ic {
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
+    if (event->Exists("wt_em_qcd_shapeup"))      wt_em_qcd_shapeup_ = event->Get<double>("wt_em_qcd_shapeup");
+    if (event->Exists("wt_em_qcd_shapedown"))    wt_em_qcd_shapedown_ = event->Get<double>("wt_em_qcd_shapedown");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
     
@@ -2314,12 +2337,13 @@ namespace ic {
     
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
-  if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 0.0;
-  if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 0.0;
+  if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
+  if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
   if (event->Exists("trigweight_up_1")) wt_trig_up_1_ = event->Get<double>("trigweight_up_1"); else wt_trig_up_1_ = 1.0;
   if (event->Exists("trigweight_up_2")) wt_trig_up_2_ = event->Get<double>("trigweight_up_2"); else wt_trig_up_2_ = 1.0;
   if (event->Exists("trigweight_down_1")) wt_trig_down_1_ = event->Get<double>("trigweight_down_1"); else wt_trig_down_1_ = 1.0;
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
+  wt_trg_corr_ = event->Exists("wt_trg_corr") && is_embedded_ ? event->Get<double>("wt_trg_corr") : 1.0; 
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
   if(channel_==channel::em){
@@ -2597,6 +2621,7 @@ namespace ic {
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
+    dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
     m_1_ = lep1->M();

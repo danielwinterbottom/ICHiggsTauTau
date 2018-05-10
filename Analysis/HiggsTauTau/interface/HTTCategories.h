@@ -91,6 +91,8 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_;
   double wt_em_qcd_down_;
   double wt_em_qcd_up_;
+  double wt_em_qcd_shapedown_;
+  double wt_em_qcd_shapeup_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;
@@ -156,6 +158,7 @@ class HTTCategories : public ModuleBase {
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
   double dphi_;
+  double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
   double emu_csv_;
@@ -881,6 +884,8 @@ class HTTCategories : public ModuleBase {
   bool trg_singleelectron_;
   bool trg_singlemuon_;
   bool trg_muonelectron_;
+  bool trg_muonelectron_1_;
+  bool trg_muonelectron_2_;
   bool trg_doubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
@@ -1246,6 +1251,7 @@ class HTTCategories : public ModuleBase {
   double tau_pt_2_;
   unsigned tau_id_1_;
   unsigned tau_id_2_;
+  double wt_trg_corr_;
   
 
  public:
