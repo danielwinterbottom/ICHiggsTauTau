@@ -919,7 +919,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     if options.channel in ['et','mt']: wt_=wt#+'*1.02'
-    if options.channel == 'tt': wt_=wt#+'*0.99*0.99*wt_trg_corr'
+    if options.channel == 'tt': wt_=wt+'*wt_trg_corr'
     else: wt_ = wt
     full_selection = BuildCutString(wt_, sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)

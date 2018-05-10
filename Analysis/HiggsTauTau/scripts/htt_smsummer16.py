@@ -466,8 +466,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'WGToLNuG',
     'WGToLNuG-ext',
     'WGstarToLNuEE',
-    'WGstarToLNuMuMu',
-    'QCDMuEnrichedPt15'
+    'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
