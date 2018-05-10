@@ -202,6 +202,19 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+
+        if(strategy_ == strategy::smsummer16){
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+        }
             
         if(do_trg_weights_ || do_idiso_weights_) {
           if (strategy_ != strategy::smsummer16) {
@@ -223,6 +236,14 @@ namespace ic {
             fns_["m_trgOR4_binned_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgOR4_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           }}
+          fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -382,6 +403,21 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
+
+        if(strategy_ == strategy::smsummer16){
+          std::cout << "test" << std::endl;
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+        }
+
         
         if(do_tracking_eff_) {
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -424,6 +460,8 @@ namespace ic {
         fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
+        fns_["doubletau_corr"] = std::shared_ptr<RooFunctor>(
+              w_->function("doubletau_corr")->functor(w_->argSet("dR")));
         
         TFile fembed(embedding_scalefactor_file_.c_str());
         wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
@@ -853,6 +891,20 @@ namespace ic {
                qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
                qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
            }
+         } else if (strategy_ == strategy::smsummer16){
+           std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+           ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+           double n_jets = (double)jets.size();
+           double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
+           auto args = std::vector<double>{dR,n_jets};
+           qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
+           qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
+           qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
+
+           double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
+           double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
+           event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
+           event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
          } else {
              if(deltaR < 2){
                qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
@@ -1816,6 +1868,7 @@ namespace ic {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
+        //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_17 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_17 << "    " << m_trg_17_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_17_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
@@ -1949,6 +2002,14 @@ namespace ic {
                 double decay_mode_2 = tau2->decay_mode();
                 auto args_1 = std::vector<double>{pt_1,decay_mode_1};  
                 auto args_2 = std::vector<double>{pt_2,decay_mode_2};
+
+                if(is_embedded_) {
+                  double dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(tau1->vector(),tau2->vector())); 
+                  auto arg_dR = std::vector<double>{dR};
+                  double wt_trg_corr = fns_["doubletau_corr"]->eval(arg_dR.data());
+                  event->Add("wt_trg_corr", wt_trg_corr);
+                }
+
                 std::string isoWP = "Medium";
                 if(strategy_ == strategy::smsummer16) isoWP = "Tight";
                 if(gm1_ == 5){ 
@@ -2585,8 +2646,10 @@ namespace ic {
             if(gm2_!=6 || !do_jlepton_fake_){
               auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
               auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-              if(!is_embedded_) m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
-              else {
+              if(!is_embedded_){
+                 m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+                 if(m_iso>0.2) m_idiso = fns_["m_iso_binned_ratio"]->eval(args_2_2.data())*fns_["m_id_ratio"]->eval(args_1_2.data());
+              } else {
                  double mu_iso = 1.0;
                  m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data());
                  if (m_iso<0.2) {
@@ -2613,7 +2676,10 @@ namespace ic {
            if(gm1_!=6 || !do_jlepton_fake_){
             auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-            if(!is_embedded_) e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+            if(!is_embedded_){ 
+              if(e_iso<0.15) e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());  
+              else e_idiso = fns_["e_iso_binned_ratio"]->eval(args_2_1.data())*fns_["e_id_ratio"]->eval(args_1_1.data());
+            }
             else {
                  double e_iso_wt = 1.0;
                  e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data());
@@ -2947,8 +3013,8 @@ namespace ic {
             } else etau_fakerate_2=1.90;
             if(strategy_==strategy::smsummer16){
               if(fabs(tau->eta()) < 1.460){
-               etau_fakerate_2 = 1.40;//1.50;
-              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.9;//2.;
+               etau_fakerate_2 = 1.40;
+              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.9;
               event->Add("wt_lfake_rate_up",1.12);
               event->Add("wt_lfake_rate_down",0.88);
               double wt_lfake_rate = 1.0;

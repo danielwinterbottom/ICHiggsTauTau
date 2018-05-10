@@ -512,7 +512,7 @@ void HTTSequence::BuildSequence(){
                         || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
-  if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
+  if (era_type == era::data_2016 && !is_data) real_tau_sample = true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
   if (channel == channel::em && (strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
     //Apply jet->lepton fake rates?
@@ -1316,7 +1316,7 @@ if (strategy_type == strategy::mssmsummer16){
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
-  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+  if(strategy_type != strategy::mssmsummer16){
     BuildModule(GenericModule("TPTriggerInformation")
       .set_function([=](ic::TreeEvent *event){
          std::string trig_obj_label_tag;
@@ -1418,7 +1418,7 @@ if(channel != channel::wmnu) {
   }
 
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && channel!=channel::wmnu && do_recoil){ 
+ if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) && channel!=channel::wmnu && do_recoil){ 
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1431,6 +1431,24 @@ if(channel != channel::wmnu) {
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
+
+ if(strategy_type == strategy::smsummer16 && channel!=channel::wmnu && do_recoil){
+    unsigned njets_mode = js["njets_mode"].asUInt();
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(met_label)
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool())
+     .set_njets_mode(njets_mode)
+     );
+  }
+
 
 /*
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
@@ -2119,7 +2137,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     }else{
       httWeights.set_strategy(strategy::smsummer16);
       httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
-      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_7_embedded.root");
+      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
       bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
@@ -2292,15 +2310,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
     else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-    std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
-    std::function<bool(Muon const*)> MuonVVLIso = [](Muon const* m) { return MuonTkIsoVal(m) < 0.4; };
+    //std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+    //std::function<bool(Muon const*)> MuonVVLIso = [](Muon const* m) { return MuonTkIsoVal(m) < 0.4; };
     BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
         .set_fs(fs.get())
         .set_channel(channel)
         .set_strategy(strategy_type)
         .set_ditau_label("ditau")
-        //.set_tag_trg_objects("triggerObjectsIsoMu24")
-        //.set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        .set_tag_trg_objects("triggerObjectsIsoMu24")
+        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
         // for mu8 leg of MuMu cross-trigger
         //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
         //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
@@ -2311,14 +2329,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         //.set_extra_hlt_probe_pt(17.)
         
         // DZ filter
-        .set_tag_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-        .set_tag_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+        //.set_tag_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+        //.set_tag_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
         
-        .set_probe_trg_objects("triggerObjectsMu17TkMu8DZ,triggerObjectsMu17Mu8DZ")
-        .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2")
+        //.set_probe_trg_objects("triggerObjectsMu17TkMu8DZ,triggerObjectsMu17Mu8DZ")
+        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2")
         //.set_extra_hlt_probe_pt(17.)
         
-        .set_probe_id(MuonLooseID)
+        .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
         // for single muon trigger:
         //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
@@ -2327,16 +2345,19 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
         //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
         // for mu8 leg of EMu cross-trigger
-        //.set_probe_trg_objects("triggerObjectsMu17Mu8,triggerObjectsMu17Mu8")
-        //.set_probe_trg_filters("hltL3pfL1sDoubleMu114ORDoubleMu125L1f0L2pf0L3PreFiltered8,hltL3pfL1sDoubleMu114L1f0L2pf0L3PreFiltered8")
-        ////.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
-        ////.set_tag_add_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17") // need these lines to make sure the high pT leg was fired
+        .set_probe_trg_objects("triggerObjectsMu17Mu8")
+        .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+        .set_extra_hlt_probe_pt(8.)
+        .set_extra_l1_probe_pt(5.)
+        //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
+        //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired
         // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
         //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-        //.set_probe_trg_filters("hltL3fL1sDoubleMu114L1f0L2f10OneMuL3Filtered17")
+        //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
         //.set_extra_hlt_probe_pt(23.)
         //.set_extra_l1_probe_pt(20.)
-        
+        //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
+        //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired 
 
         //.set_probe_id(muon_probe_id)
         //.set_tag_id(muon_probe_id)
@@ -2353,16 +2374,20 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         // for single electron trigger
         //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
         //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
-        // for Ele23 leg of EMu cross-trigger
+        //// for Ele23 leg of EMu cross-trigger
         .set_probe_trg_objects("triggerObjectsEle23Ele12")
-        .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg1Filter")
+        .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+        .set_extra_l1_probe_pt(20.)
+        .set_extra_l1_iso_probe_pt(18.)
         // for Ele12 leg of EMu cross-trigger
         //.set_probe_trg_objects("triggerObjectsEle23Ele12")
-        //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg2Filter")
-        ////.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
-        ////.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLEtLeg1Filter") // need these lines to make sure the high pT leg was fired
+        //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+        //.set_extra_l1_probe_pt(10.)
+        //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
+        //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
         .set_probe_id(elec_probe_id)
         .set_tag_id(elec_probe_id)
+        // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
     );  
   } else if(channel == channel::tpmt){  
     std::function<bool(Muon const*)> muon_probe_id;
