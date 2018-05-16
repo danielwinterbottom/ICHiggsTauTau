@@ -148,7 +148,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      muon_dxy = 0.02;
      muon_dz = 0.1;
      pair_dr = 0.3;
-    if(era_type == era::data_2015 || era_type == era::data_2016){
+    if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
        if(js["store_hltpaths"].asBool()){
          elec_dxy = 0.045;
          elec_dz = 0.2;
@@ -226,7 +226,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_eta = 2.1;
    tau_pt  = 20;
    tau_eta = 2.3;
-   } else if (era_type == era::data_2016){
+   } else if (era_type == era::data_2016 || era_type == era::data_2017){
    if(js["store_hltpaths"].asBool()){
      min_taus = 1;
      pair_dr = 0.5;
@@ -246,7 +246,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        elec_pt = 26;
        tau_pt = 30;
       }
-      if (strategy_type == strategy::smsummer16){
+      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
        elec_pt = 26;
        tau_pt = 20;
       }
@@ -307,7 +307,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     tau_eta = 2.3;
     min_taus = 1;
     pair_dr = 0.5;
-  } else if(era_type == era::data_2016){
+  } else if(era_type == era::data_2016 || era_type == era::data_2017){
     if(js["store_hltpaths"].asBool()){
       muon_pt = 16.0;
       muon_eta = 2.4;
@@ -323,11 +323,11 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       tau_eta = 2.3;
       min_taus = 1;
       pair_dr = 0.5;
-      if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+      if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::mssmsummer16){
         tau_pt = 30;
         muon_pt = 23;
       }
-      if (strategy_type == strategy::smsummer16){
+      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
        tau_pt = 20;
        muon_pt = 20;
       }
@@ -357,7 +357,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  if (channel_str == "tt"){
   tau_pt = 45;
 
-  if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+  if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
     tau_pt=40;
     lead_tau_pt=40;
     if(js["store_hltpaths"].asBool()) tau_pt = 25;
@@ -400,7 +400,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    pair_dr = 0.5;
    muon_pt = 10;
    muon_eta = 2.4;
-   if(strategy_type == strategy::mssmsummer16){
+   if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
      muon_dz = 0.2;
      muon_dxy = 0.045;
    }
@@ -411,7 +411,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    pair_dr = 0.5;
    elec_pt = 10;
    elec_eta = 2.5;
-   if(strategy_type == strategy::mssmsummer16){
+   if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
      elec_dz = 0.2;
      elec_dxy = 0.045;
    }
@@ -472,14 +472,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  fakeE_tau_shift_1pi = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
- if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+ if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
    tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
    tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
    tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
  }
- if(strategy_type == strategy::smsummer16){
+ if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
  }
@@ -512,9 +512,9 @@ void HTTSequence::BuildSequence(){
                         || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
-  if (era_type == era::data_2016 && !is_data) real_tau_sample = true;
+  if ((era_type == era::data_2016 || era_type == era::data_2017) && !is_data) real_tau_sample = true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
-  if (channel == channel::em && (strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+  if (channel == channel::em && (strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
     //Apply jet->lepton fake rates?
     if( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) jlepton_fake = true; //Applied for W+Jets...
     if( (output_name.find("VV") != output_name.npos) || (output_name.find("ZZ") != output_name.npos) || (output_name.find("WZ") !=output_name.npos) || (output_name.find("WW") != output_name.npos)) jlepton_fake = true; //Applied for diboson
@@ -631,8 +631,12 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2016){
     data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
-    if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
+    if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
   }
+  if (era_type == era::data_2017){
+    data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+  }
+
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -698,7 +702,7 @@ void HTTSequence::BuildSequence(){
        BuildModule(httStitching); 
     }
       
-    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!=channel::tpem){
+    if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16)&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!=channel::tpem){
         HTTStitching httStitching = HTTStitching("HTTStitching")  
         .set_era(era_type)
         .set_fs(fs.get());
@@ -716,12 +720,31 @@ void HTTSequence::BuildSequence(){
    
        BuildModule(httStitching); 
     }
+    if(strategy_type == strategy::cpsummer17&&channel!=channel::wmnu&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!=channel::tpem){
+        HTTStitching httStitching = HTTStitching("HTTStitching")
+        .set_era(era_type)
+        .set_fs(fs.get());
+         if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+           output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+        httStitching.set_do_w_soup(true);
+        httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+        httStitching.SetWInputYields(57026058,45367044,29878415,19798117,18751462);
+       }
+       if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+         httStitching.set_do_dy_soup(true);
+         httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+         httStitching.SetDYInputYields(96658943,62627174, 19970551, 5856110, 4197868);
+       }
+
+       BuildModule(httStitching);
+    }
+
     
   
   } else{
 
   HTTPrint httPrint("HTTPrint");
-  if(era_type==era::data_2015 || era_type==era::data_2016){
+  if(era_type==era::data_2015 || era_type==era::data_2016  || era_type == era::data_2017){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -901,7 +924,7 @@ BuildModule(jetIDFilter);
   BuildModule(lumiMask);
  }
 
-if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && output_name.find("WGToLNuG")!=output_name.npos){
+if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && output_name.find("WGToLNuG")!=output_name.npos){
   SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
     .set_input_label("genParticles")
     .set_predicate(
@@ -913,7 +936,7 @@ if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 
 }
 
 
-if(ztautau_mode > 0 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15 && strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+if(ztautau_mode > 0 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15 && strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::cpsummer17){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
     .set_predicate(
@@ -975,7 +998,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
 
 
- if(is_embedded&&era_type != era::data_2016){
+ if(is_embedded&&era_type != era::data_2016  && era_type != era::data_2017){
   BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
@@ -1019,7 +1042,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
 
-if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
+if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::cpsummer17)&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -1035,7 +1058,7 @@ SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
 if(strategy_type == strategy::paper2013) {
   jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
-} else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+} else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::cpsummer17){
   jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
 } else {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
@@ -1059,6 +1082,11 @@ BuildModule(jetIDFilter);
     if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
+  if (era_type == era::data_2017) {
+    // update to 2017 file
+    jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_set  = "Total";
+  }
   
   if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
   
@@ -1079,15 +1107,21 @@ BuildModule(jetIDFilter);
         cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
         othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
       }
-    }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+    }  else if (strategy_type == strategy::smspring16 && strategy_type == strategy::mssmspring16){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
-    } else {
+    } else if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
-    }   
+    } else if (strategy_type == strategy::cpsummer17) {
+      // update to 2017
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+    }
+  
      
    for(unsigned i=1; i<=28; ++i){
        
@@ -1105,7 +1139,7 @@ BuildModule(jetIDFilter);
        .set_uncert_set(source));
 
      // Do b-tag weights for shifted jets
-     if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
+     if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
         BuildModule(BTagWeightRun2("BTagWeightRun2"+source)
          .set_channel(channel)
          .set_era(era_type)
@@ -1160,7 +1194,7 @@ BuildModule(jetIDFilter);
   
 
 
-if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&!is_data&&js["do_btag_eff"].asBool()){
+if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -1175,7 +1209,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
    if(channel != channel::wmnu) {
 
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
-     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type!=strategy::mssmsummer16 && strategy_type!=strategy::smsummer16) || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type!=strategy::mssmsummer16 && strategy_type!=strategy::smsummer16 && strategy_type!=strategy::cpsummer16 && strategy_type!=strategy::cpsummer17) || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
@@ -1213,7 +1247,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        .set_metcl_mode(metcl_mode)
        .set_shift_jes(!do_recoil);
    
-     if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+     if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
        httPairSelector.set_gen_taus_label("genParticles");
      }
      
@@ -1234,8 +1268,8 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      }
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
-     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
-       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && era_type == era::data_2016)){
+     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017))){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
                .set_mc(mc_type)
@@ -1316,7 +1350,7 @@ if (strategy_type == strategy::mssmsummer16){
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
-  if(strategy_type != strategy::mssmsummer16){
+  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer17){
     BuildModule(GenericModule("TPTriggerInformation")
       .set_function([=](ic::TreeEvent *event){
          std::string trig_obj_label_tag;
@@ -1382,7 +1416,7 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
 }
 
 
-if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&!is_data&&channel != channel::wmnu){
+if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
@@ -1432,7 +1466,7 @@ if(channel != channel::wmnu) {
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
 
- if(strategy_type == strategy::smsummer16 && channel!=channel::wmnu && do_recoil){
+ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && channel!=channel::wmnu && do_recoil){
     unsigned njets_mode = js["njets_mode"].asUInt();
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -1473,7 +1507,7 @@ if(channel != channel::wmnu) {
     .set_do_preselection(false)
     .set_MC(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
- if(era_type == era::data_2015 || era_type == era::data_2016){
+ if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
    svFitTest.set_read_svfit_mt(true);
@@ -1553,11 +1587,16 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
     }
-  }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+  }  else if (strategy_type == strategy::smspring16 && strategy_type == strategy::mssmspring16){
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
-  } else {
+  } else if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+  } else if(strategy_type == strategy::cpsummer17){
+    // updated for 2017
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
@@ -2060,7 +2099,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     BuildModule(httStitching);   
   }
   
-if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
+if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) &&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
    TH2D et_antiiso1_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_antiiso1_spring16temp.root","/","Ele25_Data_Eff");
@@ -2135,7 +2174,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-      httWeights.set_strategy(strategy::smsummer16);
+      httWeights.set_strategy(strategy_type);
       httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
       if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
       httWeights.set_is_embedded(is_embedded);
@@ -2148,7 +2187,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
     //if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
-    if(channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee) httWeights.set_do_tracking_eff(true);
+    if(strategy_type != strategy::cpsummer17 && (channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -2252,7 +2291,7 @@ if(js["baseline"]["do_ff_weights"].asBool()){
     
 if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
-bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos ) && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
+bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos ) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17);
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
@@ -2305,7 +2344,7 @@ BuildModule(WMuNuCategories("WMuNuCategories")
     .set_write_tree(true));
 
  }
-if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel::tpmt || channel == channel::tpem) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) ){
+if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel::tpmt || channel == channel::tpem) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) ){
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
@@ -2471,7 +2510,7 @@ void HTTSequence::BuildTTPairs(){
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
   
-  if(e_scale_mode >0 && !is_data && is_embedded && strategy_type == strategy::smsummer16){
+  if(e_scale_mode >0 && !is_data && is_embedded){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_shift(elec_shift_barrel)
@@ -2504,7 +2543,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
     } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
     }
 
@@ -2605,7 +2644,7 @@ if( strategy_type == strategy::paper2013) {
 void HTTSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
- if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded){
+ if (mu_scale_mode > 0 && is_embedded){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_shift_label("muon_scales")
@@ -2640,17 +2679,14 @@ void HTTSequence::BuildMTPairs() {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16&&strategy_type!=strategy::smsummer16){
+   } else if (strategy::phys14||strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
    } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
-
-    
-
 
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -2736,13 +2772,13 @@ void HTTSequence::BuildEMPairs() {
       .set_shift(muon_shift));
  }
 
- if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+ if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::cpsummer17){
    BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_shift(tau_shift));
  }
 
- if(tau_scale_mode >0 && !is_data && (strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+ if(tau_scale_mode >0 && !is_data && (strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_shift(elec_shift_barrel)
@@ -2776,7 +2812,7 @@ void HTTSequence::BuildEMPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
    } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
@@ -2845,15 +2881,15 @@ if(strategy_type == strategy::paper2013) {
     if(special_mode == 21 || special_mode == 22){
      MuonID = [](Muon const* m) { return HttEMuFakeMuon(m); };
     } else if(special_mode ==25){
-     MuonID = [](Muon const* m) {return m->pt()>=0; } ;
-    } else { 
+     MuonID = [](Muon const* m) {return m->pt()>= 0; } ;
+    } else {
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16&&strategy_type!=strategy::smsummer16){
+   } else if (strategy::phys14||strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -2928,7 +2964,7 @@ if(strategy_type == strategy::fall15){
         return PairOneWithPt(c, 18.0);
       }));
   }
-if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
       .set_input_label("ditau").set_min(1)
       .set_predicate([=](CompositeCandidate const* c) {
@@ -2972,7 +3008,7 @@ void HTTSequence::BuildZEEPairs() {
   std::function<bool(Electron const*)> ElecID;
    if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 ||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
@@ -3025,7 +3061,7 @@ void HTTSequence::BuildTPZEEPairs() {
   std::function<bool(Electron const*)> ElecID;
    if(strategy_type==strategy::spring15||strategy_type ==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+   } else if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
@@ -3066,7 +3102,7 @@ void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
  
- if (tau_scale_mode > 0 && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+ if (tau_scale_mode > 0 && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
  BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
     .set_input_label("muons")
     .set_shift(muon_shift));
@@ -3080,7 +3116,7 @@ void HTTSequence::BuildZMMPairs() {
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -3153,7 +3189,7 @@ void HTTSequence::BuildTPZMMPairs() {
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -3217,14 +3253,14 @@ void HTTSequence::BuildTPMTPairs() {
      MuonID = [](Muon const* m) { return HttEMuFakeMuon(m); };
     } else if(special_mode ==25){
      MuonID = [](Muon const* m) {return m->pt()>= 0; } ;
-    } else { 
+    } else {
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16&&strategy_type!=strategy::smsummer16){
+   } else if (strategy::phys14||strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -3394,21 +3430,20 @@ void HTTSequence::BuildTPEMPairs() {
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
-
   std::function<bool(Muon const*)> MuonID;
   if(strategy_type==strategy::paper2013){
     if(special_mode == 21 || special_mode == 22){
      MuonID = [](Muon const* m) { return HttEMuFakeMuon(m); };
     } else if(special_mode ==25){
      MuonID = [](Muon const* m) {return m->pt()>= 0; } ;
-    } else { 
+    } else {
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16&&strategy_type!=strategy::smsummer16){
+   } else if (strategy::phys14||strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+   } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -3441,7 +3476,7 @@ void HTTSequence::BuildTPEMPairs() {
         ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
      } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
         ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
         ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
      }
     
@@ -3480,7 +3515,7 @@ void HTTSequence::BuildWMuNu() {
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+  } else if (strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
@@ -3509,23 +3544,7 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
- //if (strategy_type == strategy::smsummer16 && js["do_preselection"].asBool() && !js["make_sync_ntuple"].asBool()){
- // // Pre-filter some events without taus not passing loose ID/iso selections to improve run times - don't do this is do_preselection option is false or when we are making sync ntuples
- // BuildModule(SimpleFilter<Tau>("TauPreFilter")
- //     .set_input_label(js["taus"].asString()).set_min(min_taus)
- //     .set_predicate([=](Tau const* t) {
- //       return  fabs(t->eta())              <  tau_eta    &&
- //               fabs(t->lead_dz_vertex())   <  tau_dz     &&
- //               fabs(t->charge())           == 1          &&
- //               t->GetTauID("decayModeFinding") > 0.5     &&
- //               t->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5 &&       
- //               t->GetTauID("againstElectronVLooseMVA6") > 0.5 &&
- //               t->GetTauID("againstMuonLoose3") > 0.5;
- //
- //     }));
- //}
- 
- if (tau_scale_mode > 0 && !is_data&& (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+ if (tau_scale_mode > 0 && !is_data&& (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
     // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
@@ -3579,7 +3598,7 @@ void HTTSequence::BuildTauSelection(){
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
-  if (!is_data && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+  if (!is_data && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
     BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("fakeE_genmatched_taus")
@@ -3617,7 +3636,7 @@ void HTTSequence::BuildTauSelection(){
   }
 
   //adding a fake mu tau ES shifter
-  if (!is_data && strategy_type == strategy::smsummer16){
+  if (!is_data && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)){
     BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("fakeMu_genmatched_taus")
@@ -3684,7 +3703,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -3829,7 +3848,7 @@ void HTTSequence::BuildDiElecVeto() {
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
    }
-       else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+       else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
        vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
@@ -3895,7 +3914,7 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
-    } else if(strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+    } else if(strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       vetoMuonFilter.set_predicate([=](Muon const* m) {
         return  m->pt()                 > veto_dimuon_pt    &&
                 fabs(m->eta())          < veto_dimuon_eta   &&
@@ -3922,7 +3941,7 @@ void HTTSequence::BuildDiElecVeto() {
 			});
 	
 // Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
-	if(strategy_type==strategy::phys14 || strategy_type==strategy::spring15 ||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) {
+	if(strategy_type==strategy::phys14 || strategy_type==strategy::spring15 ||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) {
 	  vetoMuonPairFilter.set_veto_name("dimuon_veto");
 		vetoMuonPairFilter.set_no_filter(true);
 	}
@@ -3976,7 +3995,7 @@ void HTTSequence::BuildExtraElecVeto(){
       });
   }
   
- if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+ if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
       extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
@@ -4034,7 +4053,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 MuonMediumHIPsafe(m)                     &&
                 PF04IsolationVal(m, 0.5,0) < 0.3;
       });
-   } else if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+   } else if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
             std::function<bool(Muon const*)> ExtraMuonID;
             if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
             else ExtraMuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };

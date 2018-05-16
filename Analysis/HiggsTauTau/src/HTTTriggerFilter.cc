@@ -321,7 +321,7 @@ namespace ic {
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
           alt_trk_leg1_filter =  "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
-          if (strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+          if (strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
             alt_er_trig_obj_label = "triggerObjectsIsoMu22Eta2p1";
             alt_er_leg1_filter =  "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
             alt_er_trk_trig_obj_label = "triggerObjectsIsoTkMu22Eta2p1";
@@ -440,7 +440,7 @@ namespace ic {
           trig_obj_label = "triggerObjectsDoubleMediumTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
             alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
             alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
             alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
@@ -630,7 +630,7 @@ namespace ic {
           alt_er_leg1_filter =  "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_er_trk_trig_obj_label = "triggerObjectsIsoTkMu22Eta2p1";
           alt_er_trk_leg1_filter = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
-          high_leg_pt = 23.; // may not need this for smsummer16
+          high_leg_pt = 23.;
           // cross triggers
           trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";

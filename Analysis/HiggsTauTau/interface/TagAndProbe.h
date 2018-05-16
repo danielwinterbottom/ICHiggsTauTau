@@ -258,7 +258,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -289,7 +289,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
       iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
@@ -332,7 +332,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(channel_ == channel::tpmt){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon = dynamic_cast<T>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -382,7 +382,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   if(channel_ == channel::tpem){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);
