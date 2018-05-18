@@ -116,7 +116,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
-  if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
+  if(js["mc"].asString()=="" && era_str != "data_2017"){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
   mc_str = js["mc"].asString();
   if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
   era_str = js["era"].asString();
@@ -634,7 +634,7 @@ void HTTSequence::BuildSequence(){
     if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
   }
   if (era_type == era::data_2017){
-    data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+    data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
   }
 
 
@@ -2347,87 +2347,117 @@ BuildModule(WMuNuCategories("WMuNuCategories")
 if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel::tpmt || channel == channel::tpem) && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) ){
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
-    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
-    else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-    //std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
-    //std::function<bool(Muon const*)> MuonVVLIso = [](Muon const* m) { return MuonTkIsoVal(m) < 0.4; };
-    BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
-        .set_fs(fs.get())
-        .set_channel(channel)
-        .set_strategy(strategy_type)
-        .set_ditau_label("ditau")
-        .set_tag_trg_objects("triggerObjectsIsoMu24")
-        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
-        // for mu8 leg of MuMu cross-trigger
-        //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-        //.set_extra_hlt_probe_pt(8.)
-        // for mu17 leg of MuMu cross-trigger
-        //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-        //.set_extra_hlt_probe_pt(17.)
-        
-        // DZ filter
-        //.set_tag_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-        //.set_tag_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-        
-        //.set_probe_trg_objects("triggerObjectsMu17TkMu8DZ,triggerObjectsMu17Mu8DZ")
-        //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2")
-        //.set_extra_hlt_probe_pt(17.)
-        
-        .set_probe_id(muon_probe_id)
-        .set_tag_id(muon_probe_id)
-        // for single muon trigger:
-        //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-        //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
-        // for muon leg of mu+tau cross trigger:
-        //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
-        //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
-        // for mu8 leg of EMu cross-trigger
-        .set_probe_trg_objects("triggerObjectsMu17Mu8")
-        .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-        .set_extra_hlt_probe_pt(8.)
-        .set_extra_l1_probe_pt(5.)
-        //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
-        //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired
-        // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
-        //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-        //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-        //.set_extra_hlt_probe_pt(23.)
-        //.set_extra_l1_probe_pt(20.)
-        //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
-        //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired 
+    
+    if(strategy_type==strategy::cpsummer17){
+        muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+        );
+    } else {
+      if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+      else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+      //std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+      BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+          // for mu8 leg of MuMu cross-trigger
+          //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(8.)
+          // for mu17 leg of MuMu cross-trigger
+          //.set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(17.)
+          
+          // DZ filter
+          //.set_tag_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          //.set_tag_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          
+          //.set_probe_trg_objects("triggerObjectsMu17TkMu8DZ,triggerObjectsMu17Mu8DZ")
+          //.set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2")
+          //.set_extra_hlt_probe_pt(17.)
+          
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          // for single muon trigger:
+          //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+          // for muon leg of mu+tau cross trigger:
+          //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
+          //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
+          // for mu8 leg of EMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
+          //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired
+          // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(23.)
+          //.set_extra_l1_probe_pt(20.)
+          //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
+          //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired 
 
-        //.set_probe_id(muon_probe_id)
-        //.set_tag_id(muon_probe_id)
-    );
+          //.set_probe_id(muon_probe_id)
+          //.set_tag_id(muon_probe_id)
+      );
+    }
   } else if(channel == channel::tpzee){
-    std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
-    BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
-        .set_fs(fs.get())
-        .set_channel(channel)
-        .set_strategy(strategy_type)
-        .set_ditau_label("ditau")
-        .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
-        .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
-        // for single electron trigger
-        //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
-        //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
-        //// for Ele23 leg of EMu cross-trigger
-        .set_probe_trg_objects("triggerObjectsEle23Ele12")
-        .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-        .set_extra_l1_probe_pt(20.)
-        .set_extra_l1_iso_probe_pt(18.)
-        // for Ele12 leg of EMu cross-trigger
-        //.set_probe_trg_objects("triggerObjectsEle23Ele12")
-        //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-        //.set_extra_l1_probe_pt(10.)
-        //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
-        //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
-        .set_probe_id(elec_probe_id)
-        .set_tag_id(elec_probe_id)
-        // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
-    );  
+    if(strategy_type == strategy::cpsummer17){
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+      );
+    } else {
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+          .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          // for single electron trigger
+          //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+          //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          //// for Ele23 leg of EMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsEle23Ele12")
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          .set_extra_l1_probe_pt(20.)
+          .set_extra_l1_iso_probe_pt(18.)
+          // for Ele12 leg of EMu cross-trigger
+          //.set_probe_trg_objects("triggerObjectsEle23Ele12")
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          //.set_extra_l1_probe_pt(10.)
+          //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
+          //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_probe_id)
+          // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
+      );  
+    }
   } else if(channel == channel::tpmt){  
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };

@@ -232,8 +232,15 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
-    trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
-    trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    bool pass_extra_filter_1 = true;
+    bool pass_extra_filter_2 = true;
+    if(probe_objs[i] == ""){
+      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle32L1DoubleEG");
+      pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+      pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+    }
+    trg_probe_1_ = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1) || trg_probe_1_;
+    trg_probe_2_ = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2) || trg_probe_2_;
     
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);

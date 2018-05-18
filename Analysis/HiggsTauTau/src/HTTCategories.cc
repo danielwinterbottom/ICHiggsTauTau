@@ -1353,7 +1353,6 @@ namespace ic {
       synctree_->Branch("pfmt_1", &pfmt_1_.var_float, "pfmt_1/F");
       synctree_->Branch("puppimt_1", &puppimt_1_.var_float, "puppimt_1/F");
       // Non-triggering electron ID MVA score
-      synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
 
       synctree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_, "tau_decay_mode_2/I");
       synctree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_,"tau_decay_mode_1/I");
@@ -2606,10 +2605,6 @@ namespace ic {
       puppipzetamiss_ = PZeta(ditau, puppimet,0.0);
     }
 
-    if(channel_ == channel::em || channel_ == channel::et){
-      Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      id_e_mva_nt_loose_1_ = elec->GetIdIso("mvaNonTrigSpring15");
-    }
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
@@ -2819,7 +2814,7 @@ namespace ic {
       }
       if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
-        mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
+        mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
         lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -3128,7 +3123,7 @@ namespace ic {
       if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
-        mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
+        mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
       lPhotonPtSum_1 = 0.;
       lPhotonPtSum_2 = 0.;
@@ -3439,8 +3434,10 @@ namespace ic {
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
-        mva_1_ = ElectronHTTIdSpring15(elec1, false);
-        mva_2_ = ElectronHTTIdSpring15(elec2, false);
+        if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
+          mva_1_ = ElectronHTTIdSpring15(elec1, false);
+          mva_2_ = ElectronHTTIdSpring15(elec2, false);
+        }
       }
       d0_1_ = elec1->dxy_vertex();
       dz_1_ = elec1->dz_vertex();

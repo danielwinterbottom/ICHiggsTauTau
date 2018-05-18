@@ -44,6 +44,7 @@ namespace ic {
 		std::string alt_trk_trig_obj_label;
                 std::string alt_er_trig_obj_label;
                 std::string alt_er_trk_trig_obj_label;
+                std::string alt_trig_obj_label_2;
     std::string leg1_filter;
     std::string leg2_filter;
 		std::string extra_leg2_filter;
@@ -53,6 +54,8 @@ namespace ic {
 		std::string alt_trk_leg1_filter;
                 std::string alt_er_leg1_filter;
                 std::string alt_er_trk_leg1_filter;
+                std::string alt_leg1_filter_2;
+                std::string extra_filter_2;
 /*    std::string alt_trig_obj_label_2;
     std::string alt_leg1_filter_2;*/
 		std::string alt_leg2_filter;
@@ -103,9 +106,8 @@ namespace ic {
           //2015 triggers
        if (run >= 250985 && run <= 271035  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos)) path_found = true;
        if (run >= 271036 /*&& run <= 258654*/  && (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v") != name.npos) && do_singlelepton_) path_found = true;
-       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-       //if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
-       //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 250985 && run <= 284044  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
+       if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
@@ -122,8 +124,8 @@ namespace ic {
           if (run >= 250985 && run <= 256464 && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos)) path_found = true;
           if (run >= 256630  && run <= 271035 && (name.find("HLT_IsoMu18_v") != name.npos)) path_found = true;
           if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos || name.find("HLT_IsoTkMu22_v")!=name.npos || name.find("HLT_IsoMu22_eta2p1_v") || name.find("HLT_IsoTkMu22_eta2p1_v")!=name.npos) && do_singlelepton_) path_found = true;
-          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-          //if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
+          if (run >= 271036  && run <= 284044 && (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
+          if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
           // Look for Mu Low trigger first
@@ -235,7 +237,7 @@ namespace ic {
           alt_leg1_filter = "hltEle23WPLooseGsfTrackIsoFilter";
           high_leg_pt = 24.;
         }
-        if (run >= 271036 /*&& run <= xxxxx*/){
+        if (run >= 271036 && run <= 284044){
           trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
           leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
@@ -243,6 +245,18 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
+        }
+        if(run >= 294927){
+          trig_obj_label = "triggerObjectsEle24Tau30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle27";
+          alt_leg1_filter = "hltEle27WPTightGsfTrackIsoFilter";
+          alt_trig_obj_label_2 = "triggerObjectsEle32L1DoubleEG";
+          alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
+          extra_filter_2 = "hltEGL1SingleEGOrFilter";
+          high_leg_pt = 28.;
         }
 
        // if (run >= 258655 /*&& run <= xxxxxxxx*/){
@@ -316,7 +330,7 @@ namespace ic {
           alt_leg1_filter =  "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
           high_leg_pt = 19.;
         }
-        if (run >= 271036 /*&& run <= xxxxxx*/) {
+        if (run >= 271036 && run <= 284044 ) {
           alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
@@ -328,7 +342,6 @@ namespace ic {
             alt_er_trk_leg1_filter = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
           }
           high_leg_pt = 23.;
-          // cross triggers
           trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -337,6 +350,17 @@ namespace ic {
           alt_cross_leg1_filter = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";
+        }
+        if (run >= 294927) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
+          alt_trk_leg1_filter =  "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07";
+          high_leg_pt = 21.;
+          trig_obj_label = "triggerObjectsIsoMu20Tau27";
+          leg1_filter = "hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+          leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
 
       }
@@ -561,7 +585,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
-          } else if(mc_ == mc::summer16_80X){
+          } else if(mc_ == mc::summer16_80X && strategy_ != strategy::cpsummer17){
           trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
           leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
@@ -569,6 +593,18 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
+          } else if (strategy_ == strategy::cpsummer17){
+          trig_obj_label = "triggerObjectsEle24Tau30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle27";
+          alt_leg1_filter = "hltEle27WPTightGsfTrackIsoFilter";
+          alt_trig_obj_label_2 = "triggerObjectsEle32L1DoubleEG";
+          alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
+          extra_filter_2 = "hltEGL1SingleEGOrFilter";
+          high_leg_pt = 28.;
+
           }
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (mc_ == mc::fall11_42X) {
@@ -617,7 +653,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
           high_leg_pt = 23.;
-        } else if (mc_ ==mc::summer16_80X){
+        } else if (mc_ ==mc::summer16_80X && strategy_ != strategy::cpsummer17){
           trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -639,9 +675,19 @@ namespace ic {
           alt_cross_trig_obj_label = "triggerObjectsIsoMu19LooseTau20";
           alt_cross_leg1_filter = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
-          alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";
-          
+          alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";  
+        } else if (strategy_ == strategy::cpsummer17) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
+          alt_trk_leg1_filter =  "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07";
+          high_leg_pt = 21.;
+          trig_obj_label = "triggerObjectsIsoMu20Tau27";
+          leg1_filter = "hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+          leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
+
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label            = "triggerObjectsMu8Ele17";
@@ -793,29 +839,22 @@ namespace ic {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = false;
         bool leg2_match = false;
-        //unsigned leg1_match_index = 0;
-        //unsigned leg2_match_index = 0;
        if(do_leptonplustau_){
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_leg2_filter,0.5).first;
          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_leg2_filter,0.5).first;
-         //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
-         //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
          }
        if (leg1_match && leg2_match){
          dileptons_pass.push_back(dileptons[i]);
-         /*double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
-         double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
-         double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
-         double leg2_trigger_object_eta = objs.at(leg2_match_index)->eta();
-         if(store_trigobjpt_){
-           event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
-           event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
-           event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
-           event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
-         }*/
         } else if(do_singlelepton_) {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
+
+         if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& strategy_==strategy::cpsummer17) {
+            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+            std::vector<TriggerObject *> l1_objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle35"); // For the Ele32 trigger we need to make sure the electron is matched to the SingleElectron L1 filter since this path is also seeded by the L1 double electron triggers but this filter does not exist for the previous trigger objects so we much take it from an un-prescaled trigger
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), l1_objs, extra_filter_2,0.5).first);
+         }
+
          
          if(channel_==channel::mt && mc_==mc::spring16_80X) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
@@ -823,7 +862,7 @@ namespace ic {
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
          }
          
-         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) ) {
+         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) && strategy_!=strategy::cpsummer17 ) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
             std::vector<TriggerObject *> alt_er_objs = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
@@ -832,10 +871,9 @@ namespace ic {
             ic::erase_if_not(alt_er_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_er_trk_min_online_pt);
 
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
-            
-            //if (channel_==channel::zmm || channel_ == channel::tpzmm){
-            //    leg2_match = (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first);
-            //}   //commented out to only allow lead muon to fire trigger
+         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& strategy_==strategy::cpsummer17 ) {
+            std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
+            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
          }
          
          bool highpt_leg2 = false;
@@ -843,48 +881,40 @@ namespace ic {
            if(mc_ != mc::summer16_80X) leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first; 
            highpt_leg2 = dileptons[i]->At(1)->pt()>high_leg_pt;
          }
-         //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).second;
-//					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
          if ((leg1_match&&highpt_leg) || (leg2_match&&highpt_leg2)){
            dileptons_pass.push_back(dileptons[i]);
            if (channel_ == channel::et || channel_ == channel::zee) passed_singleelectron = true;
            if (channel_ == channel::mt || channel_ == channel::zmm) passed_singlemuon = true;
-           
-          /* double trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
-           double trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
-           if(store_trigobjpt_){
-             event->Add("leg1_trig_obj_pt",trigger_object_pt);
-             event->Add("leg1_trig_obj_eta",trigger_object_eta);
-           }*/
          }
         }
       }
     }
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
-    
     // mutau cross triggers for smsummer16 (keeping seperate from usual do_leptonplustau_ option as we want to use these in OR with single mu)
-    bool passed_mutaucross_singlel1 = false;
     bool passed_mutaucross = false;
+    bool passed_mutaucross_alt = false;
     if (channel_ == channel::mt){
       std::vector<TriggerObject *> const& cross_objs_singlel1 = event->GetPtrVec<TriggerObject>(trig_obj_label);  
-      std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(alt_cross_trig_obj_label); 
       for(unsigned i = 0; i < dileptons.size(); ++i){  
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
-        passed_mutaucross_singlel1 = leg1_match && leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
-        bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
-        bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
-        passed_mutaucross = alt_leg1_match && alt_leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
-        if(passed_mutaucross_singlel1 || passed_mutaucross) dileptons_pass.push_back(dileptons[i]);
+        passed_mutaucross = leg1_match && leg2_match;
+        if(alt_cross_trig_obj_label != ""){ 
+          std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(alt_cross_trig_obj_label);
+          bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
+          bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
+          passed_mutaucross_alt = alt_leg1_match && alt_leg2_match; 
+        }
+        if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
         if(is_embedded_&& dileptons[i]->At(0)->pt()<high_leg_pt){
           // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
           passed_mutaucross = true;
-          passed_mutaucross_singlel1 = true;
+          passed_mutaucross_alt = true;
         }
       }
     }
-    event->Add("trg_mutaucross", passed_mutaucross_singlel1 || passed_mutaucross);
+    event->Add("trg_mutaucross", passed_mutaucross || passed_mutaucross_alt);
 
     if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);

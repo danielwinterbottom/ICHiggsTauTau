@@ -145,7 +145,6 @@ class HTTCategories : public ModuleBase {
   branch_var pfmt_tot_;
   branch_var pfmt_1_;
   branch_var puppimt_1_;
-  float id_e_mva_nt_loose_1_ = 0;
   branch_var mt_2_;
   branch_var pfmt_2_;
   double mt_ll_;
