@@ -1064,6 +1064,83 @@ namespace ic {
     );
   }
 
+  bool VetoElectronIDFall17(Electron const* elec, double const& rho) {
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    double dEtaInSeed = elec->deta_sc_tk_at_vtx() - elec->sc_eta() + elec->sc_seed_eta();
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    double sc_energy = elec->sc_energy();
+
+    return (!elec->has_matched_conversion()
+       && ( (in_barrel
+       && elec->sigma_IetaIeta()           < 0.0128
+       && fabs(dEtaInSeed)                 < 0.00523
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.159
+       && elec->hadronic_over_em()         < 0.05 + 1.12/sc_energy + 0.0368*rho/sc_energy 
+       && ooemoop                          < 0.193
+       && elec->gsf_tk_nhits()             <=2
+       ) ||
+      (!in_barrel
+       && elec->sigma_IetaIeta()           < 0.0445
+       && fabs(dEtaInSeed)                 < 0.00984
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.157
+       && elec->hadronic_over_em()         < 0.05 + 0.5/sc_energy + 0.201*rho/sc_energy
+       && ooemoop                          < 0.0962
+       && elec->gsf_tk_nhits()             <=3
+       )
+      )
+    );
+  }
+
+ bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp) {
+   //Do some cut-based pre-selection
+   if (elec->has_matched_conversion()) return false;
+     if (elec->gsf_tk_nhits() > 1) return false;
+     double eta = fabs(elec->sc_eta());
+     double pt = fabs(elec->pt());
+     double idmva = elec->GetIdIso("mvaRun2Fall17");
+     double c=0;
+     double tau=0;
+     double A=0;
+     if (eta <= 0.8) {
+        if (pt > 10.){
+          c = loose_wp ? 0.9616542816132922 : 0.9825268564943458;
+          tau = loose_wp ? 8.757943837889817 : 8.702601455860762;
+          A = loose_wp ? 3.1390200321591206 : 1.1974861596609097;
+        } else {
+          c = loose_wp ? 0.9165112826974601 : 0.9530240956555949;
+          tau = loose_wp ? 2.7381703555094217 : 2.7591425841003647;
+          A = loose_wp ? 1.03549199648109 : 0.4669644718545271; 
+        }
+      } 
+      if (eta > 0.8 && eta <= 1.479) {
+        if (pt > 10.){
+          c = loose_wp ? 0.9319258011430132 : 0.9727509457929913;
+          tau = loose_wp ? 8.846057432565809 : 8.179525631018565;
+          A = loose_wp ? 3.5985063793347787 : 1.7111755094657688;
+        } else {
+          c = loose_wp ? 0.8655738322220173 : 0.9336564763961019;
+          tau = loose_wp ? 2.4027944652597073 : 2.709276284272272;
+          A = loose_wp ? 0.7975615613282494 : 0.33512286599215946;
+        }
+      }
+      if (eta > 1.479){
+        if (pt > 10.){
+          c = loose_wp ? 0.8899260780999244 : 0.9562619539540145;
+          tau = loose_wp ? 10.124234115859881 : 8.109845366281608;
+          A = loose_wp ? 4.352791250718547 : 3.013927699126942;
+        } else {
+          c = loose_wp ? -3016.035055227131 : 0.9313133688365339;
+          tau = loose_wp ? -52140.61856333602 : 1.5821934800715558;
+          A = loose_wp ? -3016.3029387236506 : 3.8889462619659265;
+        }
+      } 
+    double wp = c - A*exp(-pt/tau);
+    bool pass_mva = idmva > wp;
+    return pass_mva;
+  }
+
+
   
  double PUW03IsolationVal(Muon const* muon){
    double charged_iso = muon->dr03_pfiso_charged();

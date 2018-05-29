@@ -2419,7 +2419,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     }
   } else if(channel == channel::tpzee){
     if(strategy_type == strategy::cpsummer17){
-      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2573,9 +2573,12 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
     } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+    } else if(strategy_type == strategy::cpsummer17){
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
     }
+
 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -2842,9 +2845,12 @@ void HTTSequence::BuildEMPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
    } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+   } else if(strategy_type == strategy::cpsummer17){
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
    }
+
 
 
 
@@ -3038,9 +3044,12 @@ void HTTSequence::BuildZEEPairs() {
   std::function<bool(Electron const*)> ElecID;
    if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 ||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+   } else if(strategy_type == strategy::cpsummer17){
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
    }
+
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
@@ -3091,9 +3100,12 @@ void HTTSequence::BuildTPZEEPairs() {
   std::function<bool(Electron const*)> ElecID;
    if(strategy_type==strategy::spring15||strategy_type ==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-   } else if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+   } else if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+   } else if(strategy_type == strategy::cpsummer17){
+       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
    }
+
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)
@@ -3506,8 +3518,10 @@ void HTTSequence::BuildTPEMPairs() {
         ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
      } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
         ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
-     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
         ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+     } else if(strategy_type == strategy::cpsummer17){
+        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
      }
     
     
@@ -3877,22 +3891,38 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
-   }
-       else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+   } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
        vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz    &&
-                //ElectronHTTIdSpring15(e,true)                   &&
                 VetoElectronIDSpring16(e)                   &&
-                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
+  } else if(strategy_type == strategy::cpsummer17){
+        BuildModule(GenericModule("VetoElecIDFilter")
+        .set_function([=](ic::TreeEvent *event){
+           EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+           std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
+           ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->lepton_rho()));
+           return 0;
+        }));    
+
+        vetoElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_dielec_pt    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+ 
   }
 
 
+
   BuildModule(vetoElecFilter);
+
 
   BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
       .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
@@ -4025,7 +4055,7 @@ void HTTSequence::BuildExtraElecVeto(){
       });
   }
   
- if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+ if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
@@ -4036,6 +4066,19 @@ void HTTSequence::BuildExtraElecVeto(){
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
+
+  if(strategy_type == strategy::cpsummer17){
+      extraElecFilter.set_no_filter(true);
+      extraElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_elec_pt    &&
+                fabs(e->eta())          < veto_elec_eta   &&
+                fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+                fabs(e->dz_vertex())    < veto_elec_dz    &&
+                ElectronHTTIdFall17(e, true)           &&
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+  }
+
 
 
 BuildModule(extraElecFilter);

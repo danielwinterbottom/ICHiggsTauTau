@@ -6,7 +6,7 @@
 
 - [ ] Create a new version of HTTCategories - this module has got very large and messy and takes ages to compile. It would be better to make a new version of this module adding only the variables/weights we need to 2017/2016 analyses
 
-- [ ] Update the electron/muon IDs to 2017 trainings/cuts. This is largly done for the muons but needs to be added for the electrons (for 2017 the MVA cut is varied as a function of pT - can be found on the EGamma pog twiki: https://twiki.cern.ch/twiki/bin/view/CMS/Egamma2017DataRecommendations)
+- [x] Update the electron/muon IDs to 2017 trainings/cuts. This is largly done for the muons but needs to be added for the electrons (for 2017 the MVA cut is varied as a function of pT - can be found on the EGamma pog twiki: https://twiki.cern.ch/twiki/bin/view/CMS/Egamma2017DataRecommendations)
 
 - [ ] Update the single lepton triggers: For 2017 there are several lower pT triggers that are prescaled for part of datataking but I think these should still be used in an OR with the other un-prescaled single-lepton trigger since the pT threholds for these triggers are getting quite high. I have set these up based on the information on the twikis about the which trigger are prescaled but we should check that the trigger I have included in the OR are actually needed (check if not using them in the OR changes the acceptance). There are also some additional triggers that weren;t excplcitly reccomended by the POGS but could increase the trigger efficincy (e.g for the single muon trigger tehre is a Mu24 path with eta restriction) We should check this adding these in the trigger OR impoprves the trigger efficiency or not and if it does we should include them.
 
