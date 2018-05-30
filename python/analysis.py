@@ -10,6 +10,7 @@ import sys
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 import numpy as np
 import math
+from array import array
 
 ROOT.TH1.AddDirectory(0)
 
@@ -599,6 +600,73 @@ class HttWOSSSNode(BaseNode):
     def AddRequests(self, manifest):
         for node in self.SubNodes():
             node.AddRequests(manifest)
+            
+class HttFFNode(BaseNode):
+    def __init__(self, name, data, real_node=None, w_node=None, tt_node=None, ff_qcd_node=None, ff_w_node=None, ff_tt_node=None, mc_qcd_node=None, mc_w_node=None, mc_tt_node=None, WriteSubnodes=True):
+        BaseNode.__init__(self, name,WriteSubnodes)
+        self.shape = None
+        self.data_node = data
+        self.real_node = real_node
+        self.w_node    = w_node
+        self.tt_node   = tt_node
+        self.ff_qcd_node   = ff_qcd_node
+        self.ff_w_node   = ff_w_node
+        self.ff_tt_node   = ff_tt_node
+        self.mc_qcd_node   = mc_qcd_node
+        self.mc_w_node   = mc_w_node
+        self.mc_tt_node   = mc_tt_node
+
+    def RunSelf(self):
+        qcd = self.data_node.shape - self.real_node.shape - self.w_node.shape - self.tt_node.shape
+        fake = self.data_node.shape - self.real_node.shape 
+        qcd_frac = qcd.hist.Clone()
+        w_frac = self.w_node.shape.hist.Clone()
+        tt_frac = self.tt_node.shape.hist.Clone()
+        qcd_frac.Divide(self.data_node.shape.hist)
+        w_frac.Divide(self.data_node.shape.hist)
+        tt_frac.Divide(self.data_node.shape.hist)
+        #qcd_frac.Divide(fake.hist)
+        #w_frac.Divide(fake.hist)
+        #tt_frac.Divide(fake.hist)
+    
+        nbins = self.data_node.shape.hist.GetNbinsX()*self.data_node.shape.hist.GetNbinsY()*self.data_node.shape.hist.GetNbinsZ()
+        qcd_frac.SetError(array('d',list(0 for i in xrange(0,nbins))))
+        w_frac.SetError(array('d',list(0 for i in xrange(0,nbins))))
+        tt_frac.SetError(array('d',list(0 for i in xrange(0,nbins))))
+        self.ff_qcd_node.shape.hist.Multiply(qcd_frac)
+        self.ff_qcd_node.shape.rate = self.ff_qcd_node.shape._IntErr()
+        self.ff_w_node.shape.hist.Multiply(w_frac)
+        self.ff_w_node.shape.rate = self.ff_w_node.shape._IntErr()
+        self.ff_tt_node.shape.hist.Multiply(tt_frac)
+        self.ff_tt_node.shape.rate = self.ff_tt_node.shape._IntErr()
+
+        self.mc_qcd_node.shape.hist.Multiply(qcd_frac)
+        self.mc_qcd_node.shape.rate = self.mc_qcd_node.shape._IntErr()
+        self.mc_w_node.shape.hist.Multiply(w_frac)
+        self.mc_w_node.shape.rate = self.mc_w_node.shape._IntErr()
+        self.mc_tt_node.shape.hist.Multiply(tt_frac)
+        self.mc_tt_node.shape.rate = self.mc_tt_node.shape._IntErr()
+        
+        self.shape =  self.ff_qcd_node.shape + self.ff_w_node.shape + self.ff_tt_node.shape #- self.mc_qcd_node.shape - self.mc_w_node.shape - self.mc_tt_node.shape
+        
+        #print self.shape.hist.Integral(-1,-1),  self.ff_qcd_node.shape.hist.Integral(-1,-1), self.ff_w_node.shape.hist.Integral(-1,-1), self.ff_tt_node.shape.hist.Integral(-1,-1),  self.mc_qcd_node.shape.hist.Integral(-1,-1), self.mc_w_node.shape.hist.Integral(-1,-1), self.mc_tt_node.shape.hist.Integral(-1,-1)
+        #for i in range(1,self.shape.hist.GetNbinsX()+1):
+        #   print qcd_frac.GetBinContent(i),  w_frac.GetBinContent(i) , tt_frac.GetBinContent(i),  qcd_frac.GetBinContent(i)+tt_frac.GetBinContent(i)+w_frac.GetBinContent(i)
+        #  print self.shape.hist.GetBinContent(i),      self.ff_qcd_node.shape.hist.GetBinContent(i), self.ff_w_node.shape.hist.GetBinContent(i), self.ff_tt_node.shape.hist.GetBinContent(i)
+
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self, node=None):
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        subnodes = [self.data_node,self.real_node,self.w_node,self.tt_node,self.ff_qcd_node,self.ff_w_node,self.ff_tt_node,self.mc_qcd_node,self.mc_w_node,self.mc_tt_node]
+        return subnodes
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)            
 
 class Analysis(object):
     def __init__(self):

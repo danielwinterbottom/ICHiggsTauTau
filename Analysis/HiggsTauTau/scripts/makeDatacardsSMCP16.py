@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_2d'
+#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'et,mt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_neww' --regional_jes
 
 import sys
 from optparse import OptionParser
@@ -129,7 +129,7 @@ jes_systematics=''
 if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
   
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV"  --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
 
 if options.regional_jes:
   common_shape_systematics += ' --syst_scale_j_full="CMS_scale_j_eta0to5_13TeV" --syst_scale_j_cent="CMS_scale_j_eta0to3_13TeV" --syst_scale_j_hf="CMS_scale_j_eta3to5_13TeV" --syst_scale_j_rbal="CMS_scale_j_RelativeBal_13TeV" '
@@ -433,12 +433,12 @@ if SCHEME == 'cpsummer16_neww':
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
-  #VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
+  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
   #VAR_DIJET = 'm_sv,jdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
   #VAR_DIJET = 'm_sv,(jeta_1>jeta_2)[0,80,100,115,130,150],(2,0,2)'
   #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(6,0,1)'
   #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(1,0,1)'
-  VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,1],(6,0,1)'
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,1],(6,0,1)'
 
   #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
 
@@ -511,13 +511,26 @@ if SCHEME == 'cpsummer16_neww':
     'zmm' : 'zmm_default'
   }
   ANA = 'sm'
+  
+if SCHEME == 'ff_fracs':
+  VAR = 'm_vis[0,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240]'
+  VAR_BOOSTED = 'm_vis[0,40,50,60,70,80,90,100,110,120,130,140,150,160,180,200,240]'
+
+  scheme_mt = [
+    ("12",   "inclusive", "inclusive",  VAR, ' --set_alias="sel:mt_1<50" --set_alias="baseline:(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1>23)))" '),
+
+  ]
+
+  bkg_schemes = {
+    'mt' : 'mt_with_zmm'
+  }
+  ANA = 'sm'  
 
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
   'em' : scheme_em,
-  'tt' : scheme_tt,
-  'zmm': scheme_zmm
+  'tt' : scheme_tt
 }
 
 

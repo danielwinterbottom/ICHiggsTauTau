@@ -1472,7 +1472,7 @@ if(channel != channel::wmnu) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
-    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
+    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool() || true);
  if(era_type == era::data_2015 || era_type == era::data_2016){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
@@ -2238,7 +2238,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-if(js["baseline"]["do_ff_weights"].asBool()){
+if(js["baseline"]["do_ff_weights"].asBool() && addit_output_folder==""){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
       .set_ditau_label("ditau")

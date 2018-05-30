@@ -20,6 +20,7 @@ namespace ic {
     categories_ = "inclusive";
     do_systematics_= false;
     ff_file_= "20170330_tight";
+    fracs_file_ = "";
   }
 
   HTTFakeFactorWeights::~HTTFakeFactorWeights() {
@@ -38,10 +39,23 @@ namespace ic {
     
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
+    if(strategy_ == strategy::smsummer16) category_names_ = {"inclusive"};
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
-      std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
+      std::string ff_file_name;
+      if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
+      if(strategy_ == strategy::smsummer16){
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/fakeFactors_"+ff_file_+".root";
+        TFile *fracs_file = new TFile((baseDir+"/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+"ff_fracs.root").c_str());
+        w_fracs_   = (TH1D*)fracs_file->Get("W_fracs");
+        qcd_fracs_ = (TH1D*)fracs_file->Get("QCD_fracs");
+        tt_fracs_  = (TH1D*)fracs_file->Get("TT_fracs");
+        realtau_sf_ = (TH1D*)fracs_file->Get("realtau_sf");
+        w_fracs_->SetDirectory(0); qcd_fracs_->SetDirectory(0); tt_fracs_->SetDirectory(0); realtau_sf_->SetDirectory(0);
+        fracs_file->Close();
+        delete fracs_file;
+      }
       ff_file_name = baseDir + ff_file_name;
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
@@ -95,55 +109,158 @@ namespace ic {
     
     double n_jets_ = jets.size();
     
-    std::vector<double> inputs(6);
-    std::vector<double> tt_inputs_1(6);
-    std::vector<double> tt_inputs_2(6);
-    if(channel_ == channel::et || channel_ == channel::mt){
-      inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_;    
-    } else if (channel_ == channel::tt){
-      double mt_tot_ = sqrt(pow(MT(lep1, met),2) + pow(MT(lep2, met),2) + pow(MT(lep1, lep2),2));  
-      tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = mt_tot_;
-      tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = mt_tot_;
-    }
+    std::vector<double> inputs;
+    std::vector<double> tt_inputs_1;
+    std::vector<double> tt_inputs_2;
+    if(strategy_ == strategy::mssmsummer16) {
+      inputs.resize(6);
+      tt_inputs_1.resize(6);
+      tt_inputs_2.resize(6);
+      if(channel_ == channel::et || channel_ == channel::mt){
+        inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_;    
+      } else if (channel_ == channel::tt){
+        double mt_tot_ = sqrt(pow(MT(lep1, met),2) + pow(MT(lep2, met),2) + pow(MT(lep1, lep2),2));  
+        tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = mt_tot_;
+        tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = mt_tot_;
+      }
+      // Need to loop over all categories and add a ff weight to the event for each
+      for(unsigned i=0; i<category_names_.size(); ++i){
+        std::string map_key = category_names_[i];
+        
+        // Retrieve fake factors and add to event as weights
+        if(channel_ == channel::et || channel_ == channel::mt){
+          double ff_nom = fake_factors_[map_key]->value(inputs);
+          event->Add("wt_ff_"+map_key, ff_nom);
+          
+          if(do_systematics_){
+            std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down" ,"ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
+            for(unsigned j=0; j<systematics.size(); ++j){
+              std::string syst = systematics[j];
+              double ff_syst = fake_factors_[map_key]->value(inputs,syst);
+              std::string syst_name = "wt_"+map_key+"_"+syst;
+              event->Add(syst_name, ff_syst);
+            } 
+          }
+        } else if(channel_ == channel::tt){
+          double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
+          double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
+          event->Add("wt_ff_"+map_key, ff_nom_1);
+          event->Add("wt_ff_"+map_key+"_2", ff_nom_2);
+          
+          if(do_systematics_){
+            std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down", "ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down", "ff_dy_frac_syst_up", "ff_dy_frac_syst_down"};
+            
+            for(unsigned j=0; j<systematics.size(); ++j){
+              std::string syst = systematics[j];
+              double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1,syst)*0.5;
+              double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2,syst)*0.5;
+              std::string syst_name = "wt_"+map_key+"_"+syst;
+              event->Add(syst_name+"_1", ff_syst_1);
+              event->Add(syst_name+"_2", ff_syst_2);
+            } 
+          }
+        }
+      }
+    } else if(strategy_ == strategy::smsummer16) {
+      inputs.resize(9);
+      tt_inputs_1.resize(5);
+      tt_inputs_2.resize(5);
+      if(channel_ == channel::et || channel_ == channel::mt){
+        inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_; inputs[6] = qcd_fracs_->GetBinContent(qcd_fracs_->FindBin(m_vis_)); inputs[7] = w_fracs_->GetBinContent(w_fracs_->FindBin(m_vis_)); inputs[8] = tt_fracs_->GetBinContent(tt_fracs_->FindBin(m_vis_));
+        event->Add("wt_ff_realtau", realtau_sf_->GetBinContent(realtau_sf_->FindBin(m_vis_)));
+      } else if (channel_ == channel::tt){
+        tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_;
+        tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_;
+      }
+      //std::vector<double> inputs_qcd = inputs;
+      //std::vector<double> inputs_w = inputs;
+      //std::vector<double> inputs_tt = inputs;
+      //std::vector<double> inputs_mix = inputs;
+
+      std::vector<double> tt_inputs_1_qcd = tt_inputs_1;
+      std::vector<double> tt_inputs_1_w = tt_inputs_1;
+      std::vector<double> tt_inputs_1_tt = tt_inputs_1;
+      std::vector<double> tt_inputs_1_dy = tt_inputs_1;
+      std::vector<double> tt_inputs_2_qcd = tt_inputs_2;
+      std::vector<double> tt_inputs_2_w = tt_inputs_2;
+      std::vector<double> tt_inputs_2_tt = tt_inputs_2;
+      std::vector<double> tt_inputs_2_dy = tt_inputs_2;
+      //inputs_qcd.push_back(1.0); inputs_qcd.push_back(0.0); inputs_qcd.push_back(0.0);
+      //inputs_w.push_back(0.0); inputs_w.push_back(1.0); inputs_w.push_back(0.0);
+      //inputs_tt.push_back(0.0); inputs_tt.push_back(0.0); inputs_tt.push_back(1.0);
+      //inputs_mix.push_back(0.4); inputs_mix.push_back(0.4); inputs_mix.push_back(0.0);
     
-    // Need to loop over all categories and add a ff weight to the event for each
-    for(unsigned i=0; i<category_names_.size(); ++i){
-      std::string map_key = category_names_[i];
+
+      tt_inputs_1_qcd.push_back(1.0); tt_inputs_1_qcd.push_back(0.0); tt_inputs_1_qcd.push_back(0.0); tt_inputs_1_qcd.push_back(0.0);
+      tt_inputs_1_w.push_back(0.0); tt_inputs_1_w.push_back(1.0); tt_inputs_1_w.push_back(0.0); tt_inputs_1_w.push_back(0.0);
+      tt_inputs_1_tt.push_back(0.0); tt_inputs_1_tt.push_back(0.0); tt_inputs_1_tt.push_back(1.0); tt_inputs_1_tt.push_back(0.0);
+      tt_inputs_2_qcd.push_back(1.0); tt_inputs_2_qcd.push_back(0.0); tt_inputs_2_qcd.push_back(0.0); tt_inputs_2_qcd.push_back(0.0);
+      tt_inputs_2_w.push_back(0.0); tt_inputs_2_w.push_back(1.0); tt_inputs_2_w.push_back(0.0); tt_inputs_2_w.push_back(0.0);
+      tt_inputs_2_tt.push_back(0.0); tt_inputs_2_tt.push_back(0.0); tt_inputs_2_tt.push_back(1.0); tt_inputs_2_tt.push_back(0.0);
       
+      std::string map_key = "inclusive";
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
         double ff_nom = fake_factors_[map_key]->value(inputs);
-        event->Add("wt_ff_"+map_key, ff_nom);
+        //double ff_nom_qcd = fake_factors_[map_key]->value(inputs_qcd);
+        //double ff_nom_w = fake_factors_[map_key]->value(inputs_w);
+        //double ff_nom_tt = fake_factors_[map_key]->value(inputs_tt);
+        //std::cout << ff_nom_qcd << "    " << ff_nom_w << "    " << fake_factors_[map_key]->value(inputs_mix) << std::endl;
+        event->Add("wt_ff_qcd", ff_nom);
+        //event->Add("wt_ff_w", ff_nom_w);
+        //event->Add("wt_ff_tt", ff_nom_tt);
         
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down" ,"ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
-          for(unsigned j=0; j<systematics.size(); ++j){
-            std::string syst = systematics[j];
-            double ff_syst = fake_factors_[map_key]->value(inputs,syst);
-            std::string syst_name = "wt_"+map_key+"_"+syst;
-            event->Add(syst_name, ff_syst);
-          } 
+          //for(unsigned j=0; j<systematics.size(); ++j){
+          //  std::string syst = systematics[j];
+          //  double ff_syst_qcd = fake_factors_[map_key]->value(inputs_qcd,syst);
+          //  double ff_syst_w = fake_factors_[map_key]->value(inputs_w,syst);
+          //  double ff_syst_tt = fake_factors_[map_key]->value(inputs_tt,syst);
+          //  std::string syst_name = "wt_"+syst;
+          //  event->Add(syst_name+"_qcd", ff_syst_qcd);
+          //  event->Add(syst_name+"_w", ff_syst_w);
+          //  event->Add(syst_name+"_tt", ff_syst_tt);
+          //} 
         }
       } else if(channel_ == channel::tt){
-        double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
-        double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
-        event->Add("wt_ff_"+map_key, ff_nom_1);
-        event->Add("wt_ff_"+map_key+"_2", ff_nom_2);
+        double ff_nom_1_qcd = fake_factors_[map_key]->value(tt_inputs_1_qcd)*0.5;
+        double ff_nom_2_qcd = fake_factors_[map_key]->value(tt_inputs_2_qcd)*0.5;
+        double ff_nom_1_w = fake_factors_[map_key]->value(tt_inputs_1_w)*0.5*0.5;
+        double ff_nom_2_w = fake_factors_[map_key]->value(tt_inputs_2_w)*0.5*0.5;
+        double ff_nom_1_tt = fake_factors_[map_key]->value(tt_inputs_1_tt)*0.5*0.5;
+        double ff_nom_2_tt = fake_factors_[map_key]->value(tt_inputs_2_tt)*0.5*0.5;
+        event->Add("wt_ff_qcd_1", ff_nom_1_qcd);
+        event->Add("wt_ff_qcd_2", ff_nom_2_qcd);
+        event->Add("wt_ff_w_1",   ff_nom_1_w);
+        event->Add("wt_ff_w_2",   ff_nom_2_w);
+        event->Add("wt_ff_tt_1",  ff_nom_1_tt);
+        event->Add("wt_ff_tt_2",  ff_nom_2_tt);
         
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down", "ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down", "ff_dy_frac_syst_up", "ff_dy_frac_syst_down"};
           
           for(unsigned j=0; j<systematics.size(); ++j){
             std::string syst = systematics[j];
-            double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1,syst)*0.5;
-            double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2,syst)*0.5;
-            std::string syst_name = "wt_"+map_key+"_"+syst;
-            event->Add(syst_name+"_1", ff_syst_1);
-            event->Add(syst_name+"_2", ff_syst_2);
+            double ff_syst_1_qcd = fake_factors_[map_key]->value(tt_inputs_1_qcd,syst)*0.5;
+            double ff_syst_2_qcd = fake_factors_[map_key]->value(tt_inputs_2_qcd,syst)*0.5;
+            double ff_syst_1_w = fake_factors_[map_key]->value(tt_inputs_1_w,syst)*0.5*0.5;
+            double ff_syst_2_w = fake_factors_[map_key]->value(tt_inputs_2_w,syst)*0.5*0.5;
+            double ff_syst_1_tt = fake_factors_[map_key]->value(tt_inputs_1_tt,syst)*0.5*0.5;
+            double ff_syst_2_tt = fake_factors_[map_key]->value(tt_inputs_2_tt,syst)*0.5*0.5;
+            std::string syst_name = "wt_"+syst;
+            event->Add(syst_name+"_qcd_1", ff_syst_1_qcd);
+            event->Add(syst_name+"_qcd_2", ff_syst_2_qcd);
+            event->Add(syst_name+"_w_1", ff_syst_1_w);
+            event->Add(syst_name+"_w_2", ff_syst_2_w);
+            event->Add(syst_name+"_tt_1", ff_syst_1_tt);
+            event->Add(syst_name+"_tt_2", ff_syst_2_tt);
           } 
         }
       }
     }
+    
+    
 
     return 0;
   }

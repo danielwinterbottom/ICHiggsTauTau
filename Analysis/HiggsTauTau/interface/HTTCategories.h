@@ -93,6 +93,9 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_up_;
   double wt_em_qcd_shapedown_;
   double wt_em_qcd_shapeup_;
+  double wt_em_qcd_extrapdown_;
+  double wt_em_qcd_extrapup_;
+  double wt_em_qcd_bothaiso_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;
@@ -180,6 +183,7 @@ class HTTCategories : public ModuleBase {
   int q_2_;
   int jet_flav_1_;
   int jet_flav_2_;
+  int jet_flav_3_;
   bool tag_trigger_match_1_;
   bool tag_trigger_match_2_;
   bool probe_trigger_match_1_;
@@ -470,7 +474,17 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
-
+  
+  double wt_ff_qcd_;
+  double wt_ff_w_;
+  double wt_ff_tt_;
+  double wt_ff_dy_;
+  double wt_ff_qcd_2_;
+  double wt_ff_w_2_;
+  double wt_ff_tt_2_;
+  double wt_ff_dy_2_;
+  double wt_ff_realtau_;
+  
   
   double ff_weight_inclusive_;
   double ff_weight_inclusive_2_;
@@ -1252,6 +1266,12 @@ class HTTCategories : public ModuleBase {
   unsigned tau_id_1_;
   unsigned tau_id_2_;
   double wt_trg_corr_;
+
+  double e_min_dR_;
+  double m_min_dR_;
+  double ej_dR_;
+  double mj_dR_;
+  double jdR_;
   
 
  public:
