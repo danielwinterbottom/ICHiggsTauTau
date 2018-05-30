@@ -2099,7 +2099,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     BuildModule(httStitching);   
   }
   
-if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) &&channel!=channel::wmnu){
+if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) &&channel!=channel::wmnu){
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
    TH2D z_pt_weights_sm; GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm);
 
@@ -2127,10 +2127,10 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
-    if(strategy_type != strategy::cpsummer17 && (channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
+    if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
   }
 
-  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) && strategy_type != strategy::cpsummer17){
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
   }
 
@@ -2171,6 +2171,75 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     }
   }
 
+  if(strategy_type == strategy::cpsummer17 &&channel!=channel::wmnu){
+    TH2D z_pt_weights_sm; GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm);
+  
+    HTTWeights httWeights = HTTWeights("HTTWeights")   
+     .set_channel(channel)
+     .set_era(era_type)
+     .set_mc(mc_type)
+     .set_do_tau_id_weights(real_tau_sample)
+     .set_do_tau_id_sf(real_tau_sample && !js["do_mt_tagandprobe"].asBool())
+     .set_do_jlepton_fake(jlepton_fake)
+     .set_do_em_qcd_weights(true)
+     .set_ditau_label("ditau")
+     .set_jets_label(jets_label)
+     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
+     .set_do_cross_trg(js["do_leptonplustau"].asBool())
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
+     httWeights.set_strategy(strategy_type);
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
+     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
+     httWeights.set_is_embedded(is_embedded);
+     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
+   if (!is_data ) {
+     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()&&false).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(false);
+     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(false);
+     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(false);
+     if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(false);
+   }
+  
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+     httWeights.set_do_zpt_weight(false&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+   }
+  
+   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+     httWeights.set_do_tau_fake_weights(true);
+   }
+   if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
+     httWeights.set_do_mssm_higgspt(true); 
+     httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2_mssm_mode.root");
+     std::string mass_str = output_name;
+     mass_str.erase(0, mass_str.find("_M-")+3);
+     mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));
+     httWeights.set_mssm_mass(mass_str);
+   }
+  
+   
+  
+     BuildModule(httWeights);
+     if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+       HTTStitching httStitching = HTTStitching("HTTStitching")  
+           .set_era(era_type)
+           .set_fs(fs.get());
+            if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+              output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+           httStitching.set_do_w_soup(true);
+           // W numbers need updating
+           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+           httStitching.SetWInputYields(57026058 + 29705748,45345007,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
+          }
+          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+            httStitching.set_do_dy_soup(true);
+            httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+            httStitching.SetDYInputYields(48632630+49082157,34833034, 9691457, 1147725, 4296905);
+          }
+       
+       BuildModule(httStitching);   
+     }
+   }
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -2369,7 +2438,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
           .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
           .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_probe_id)
       );
+        ;
     } else {
       std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")

@@ -234,8 +234,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
     bool pass_extra_filter_1 = true;
     bool pass_extra_filter_2 = true;
-    if(probe_objs[i] == ""){
-      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle32L1DoubleEG");
+    if(probe_objs[i] == "triggerObjectsEle32L1DoubleEG"){
+      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle35");
       pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
       pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
     }

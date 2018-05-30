@@ -2332,7 +2332,7 @@ namespace ic {
     if (event->Exists("wt_zpt_ttdown"             )) wt_zpt_ttdown              = event->Get<double>("wt_zpt_ttdown"             );
     
   mc_weight_ = 0.0;
-  if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
+  if (!is_embedded_ && eventInfo->weight_defined("pileup")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
   if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
   if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
   if (event->Exists("trigweight_up_1")) wt_trig_up_1_ = event->Get<double>("trigweight_up_1"); else wt_trig_up_1_ = 1.0;

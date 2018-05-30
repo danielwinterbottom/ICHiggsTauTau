@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "zmm", "zee" ],
+    "channels":     [ "tpzee", "tpzmm", "zee", "zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -79,7 +79,7 @@
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
-    "do_pu_wt"      : true,
+    "do_pu_wt"      : false,
     "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_80bins.root",
     "mc_pu_file"    : "input/pileup/MC_Moriond17_PU25ns_V1.root",
     "run_trg_filter": false,
