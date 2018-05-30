@@ -2136,7 +2136,7 @@ if(strategy_type == strategy::smsummer16 &&channel!=channel::wmnu){
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
       httWeights.set_strategy(strategy::smsummer16);
-      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
+      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
       if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
       httWeights.set_is_embedded(is_embedded);
       httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
