@@ -143,17 +143,16 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
-  if options.analysis == 'sm': masses = ['125']
-  else: masses = ['125']
+  masses = ['125']
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
       'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass,
+      'VBFHToTauTau_M-'+mass,
+      'GluGluHToTauTau_M-'+mass,
       'ZHToTauTau_M-'+mass,
-      #'ttHToTauTau_M-'+mass
+      'ttHToTauTau_M-'+mass
     ]
  # if options.proc_sm:  
  #   signal_mc += [
@@ -299,7 +298,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 #        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 
-if options.proc_bkg or options.proc_all or options.qcd_study:
+if options.proc_bkg or options.proc_all:
   central_samples = [
      'DY1JetsToLL-LO',
      'DY2JetsToLL-LO',
@@ -307,7 +306,30 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
      'DY4JetsToLL-LO',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO',
-     'DYJetsToLL_M-10-50-LO'
+     'DYJetsToLL_M-10-50-LO',
+     'ZZTo4L',
+     'ZZTo4L-ext1',
+     'ZZTo2L2Q',
+     'ZZTo2L2Nu',
+     'WZTo3LNu',
+     'WZTo2L2Q',
+     'WZTo1L1Nu2Q',
+     'WWToLNuQQ',
+     'WWTo4Q',
+     'WWTo2L2Nu',
+     'WWTo1L1Nu2Q',
+     'W4JetsToLNu-LO',
+     'W3JetsToLNu-LO',
+     'Tbar-tW',
+     'Tbar-t',
+     'TTToSemiLeptonic',
+     'TTToHadronic',
+     'TTTo2L2Nu',
+     'T-tW',
+     'T-t',
+     'EWKZ2Jets',
+     'EWKWPlus2Jets',
+     'EWKWMinus2Jets'
      ]
   
 
@@ -344,8 +366,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.proc_sm or options.proc_all:
-  if options.analysis == 'sm': SIG_FILELIST='filelists/Apr27_MC_94X' 
-  else: SIG_FILELIST = FILELIST
+  SIG_FILELIST='filelists/Apr27_MC_94X' 
+  SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
