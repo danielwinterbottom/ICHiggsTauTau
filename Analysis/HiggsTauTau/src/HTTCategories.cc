@@ -72,6 +72,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
       outtree_->Branch("event",             &event_);
+      outtree_->Branch("npu",               &n_pu_, "n_pu/F");
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
