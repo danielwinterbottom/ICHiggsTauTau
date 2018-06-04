@@ -11,6 +11,12 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
 
+ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
+ROOT.TH1.AddDirectory(0)
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+ROOT.gROOT.SetBatch(ROOT.kTRUE)
+ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
+
 CHANNELS= ['tpzmm','tpzee']
 
 conf_parser = argparse.ArgumentParser(
@@ -70,6 +76,517 @@ print 'draw_hists        =', options.draw_hists
 print '###############################################'
 print ''
 
+# All functions defined here
+
+def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
+    full_selection = '(1)'
+    if wt != '':
+        full_selection = '('+wt+')'
+    if sel != '':
+        full_selection += '*('+sel+')'
+    if sign != '':
+        full_selection += '*('+sign+')'
+    if bkg_sel != '':
+        full_selection += '*('+bkg_sel+')'
+    if cat != '':
+        full_selection += '*('+cat+')'
+    return full_selection
+
+def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+
+    return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
+
+def GetDataNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    return ana.SummedFactory('data'+add_name, samples, plot, full_selection)
+
+def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    return ana.SummedFactory('EmbedZLL'+add_name, samples, plot, full_selection)
+
+def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(zll_node)
+
+def GenerateData(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    data_node = GetDataNode(ana, add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(data_node)
+
+def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(embed_node)
+
+def Produce3DHistograms(ana, wt='wt', outfile=None):
+    mass_bins = '(40,70,110)'
+    if options.channel == 'tpzmm':
+      gen_cuts='gen_match_1==2&&gen_match_2==2'
+      idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200]'
+      trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+      trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
+      if options.em_iso: 
+        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]' # low pt leg
+        #trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
+
+    if options.channel == 'tpzee':
+      gen_cuts='gen_match_1==1&&gen_match_2==1'  
+      idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
+      idiso_pt_bins = '[13,15,20,25,30,40,50,100,200]'
+      trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
+      trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,100,200]'
+      if options.em_iso: 
+          #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]'    # low pt leg
+          trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]' # high pt leg
+          
+    trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
+    trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
+    idiso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
+    idiso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
+
+    GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
+    GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
+    GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
+    GenerateZLL(ana, '_trg_tag2_pass', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)    
+    GenerateData(ana, '_trg_tag1_fail', data_samples, trg_plot_probe_2, wt, trg_tag_1, '!%s' % trg_probe_2)
+    GenerateData(ana, '_trg_tag2_fail', data_samples, trg_plot_probe_1, wt, trg_tag_2, '!%s' % trg_probe_1)
+    GenerateData(ana, '_trg_tag1_pass', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
+    GenerateData(ana, '_trg_tag2_pass', data_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
+    
+    GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
+    GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
+    GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
+    GenerateZLL(ana, '_id_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)    
+    GenerateData(ana, '_id_tag1_fail', data_samples, idiso_plot_probe_2, wt, id_tag_1, '!%s' % id_probe_2)
+    GenerateData(ana, '_id_tag2_fail', data_samples, idiso_plot_probe_1, wt, id_tag_2, '!%s' % id_probe_1)
+    GenerateData(ana, '_id_tag1_pass', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
+    GenerateData(ana, '_id_tag2_pass', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
+    
+    GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+    GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+    GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+    GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
+    GenerateData(ana, '_iso_tag1_fail', data_samples, idiso_plot_probe_2, wt, iso_tag_1, '!%s' % iso_probe_2)
+    GenerateData(ana, '_iso_tag2_fail', data_samples, idiso_plot_probe_1, wt, iso_tag_2, '!%s' % iso_probe_1)
+    GenerateData(ana, '_iso_tag1_pass', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
+    GenerateData(ana, '_iso_tag2_pass', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
+    
+    GenerateZLL(ana, '_idiso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
+    GenerateZLL(ana, '_idiso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
+    GenerateZLL(ana, '_idiso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
+    GenerateZLL(ana, '_idiso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)   
+    GenerateData(ana, '_idiso_tag1_fail', data_samples, idiso_plot_probe_2, wt, idiso_tag_1, '!%s' % idiso_probe_2)
+    GenerateData(ana, '_idiso_tag2_fail', data_samples, idiso_plot_probe_1, wt, idiso_tag_2, '!%s' % idiso_probe_1)
+    GenerateData(ana, '_idiso_tag1_pass', data_samples, idiso_plot_probe_2, wt, idiso_tag_1, idiso_probe_2)
+    GenerateData(ana, '_idiso_tag2_pass', data_samples, idiso_plot_probe_1, wt, idiso_tag_2, idiso_probe_1)
+    
+    if options.embedded:
+       
+      GenerateEmbedded(ana, '_trg_tag1_fail', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
+      GenerateEmbedded(ana, '_trg_tag2_fail', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
+      GenerateEmbedded(ana, '_trg_tag1_pass', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1+'&&'+gen_cuts, trg_probe_2)
+      GenerateEmbedded(ana, '_trg_tag2_pass', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2+'&&'+gen_cuts, trg_probe_1)
+         
+      GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
+      GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
+      GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1+'&&'+gen_cuts, id_probe_2)
+      GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2+'&&'+gen_cuts, id_probe_1)
+       
+      GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2+'&&'+gen_cuts, iso_probe_1)
+      
+      GenerateEmbedded(ana, '_idiso_tag1_fail', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
+      GenerateEmbedded(ana, '_idiso_tag2_fail', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
+      GenerateEmbedded(ana, '_idiso_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
+      GenerateEmbedded(ana, '_idiso_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)
+    
+    ana.Run()
+    ana.nodes.Output(outfile)
+    
+    outfile.cd()
+    
+    zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
+    zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
+    zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
+    zll_trg_pass.Add(outfile.Get(nodename+'/ZLL_trg_tag2_pass'))
+    zll_trg_fail.SetName('ZLL_trg_fail')
+    zll_trg_pass.SetName('ZLL_trg_pass')
+    zll_trg_fail.Write('ZLL_trg_fail')
+    zll_trg_pass.Write('ZLL_trg_pass')
+    
+    data_trg_fail = outfile.Get(nodename+'/data_trg_tag1_fail').Clone()
+    data_trg_fail.Add(outfile.Get(nodename+'/data_trg_tag2_fail'))
+    data_trg_pass = outfile.Get(nodename+'/data_trg_tag1_pass').Clone()
+    data_trg_pass.Add(outfile.Get(nodename+'/data_trg_tag2_pass'))
+    data_trg_fail.SetName('data_trg_fail')
+    data_trg_pass.SetName('data_trg_pass')
+    data_trg_fail.Write('data_trg_fail')
+    data_trg_pass.Write('data_trg_pass')
+    
+    zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
+    zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
+    zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
+    zll_id_pass.Add(outfile.Get(nodename+'/ZLL_id_tag2_pass'))
+    zll_id_fail.SetName('ZLL_id_fail')
+    zll_id_pass.SetName('ZLL_id_pass')
+    zll_id_fail.Write('ZLL_id_fail')
+    zll_id_pass.Write('ZLL_id_pass')
+    
+    data_id_fail = outfile.Get(nodename+'/data_id_tag1_fail').Clone()
+    data_id_fail.Add(outfile.Get(nodename+'/data_id_tag2_fail'))
+    data_id_pass = outfile.Get(nodename+'/data_id_tag1_pass').Clone()
+    data_id_pass.Add(outfile.Get(nodename+'/data_id_tag2_pass'))
+    data_id_fail.SetName('data_id_fail')
+    data_id_pass.SetName('data_id_pass')
+    data_id_fail.Write('data_id_fail')
+    data_id_pass.Write('data_id_pass')
+    
+    zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
+    zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
+    zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
+    zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
+    zll_iso_fail.SetName('ZLL_iso_fail')
+    zll_iso_pass.SetName('ZLL_iso_pass')
+    zll_iso_fail.Write('ZLL_iso_fail')
+    zll_iso_pass.Write('ZLL_iso_pass')
+    
+    data_iso_fail = outfile.Get(nodename+'/data_iso_tag1_fail').Clone()
+    data_iso_fail.Add(outfile.Get(nodename+'/data_iso_tag2_fail'))
+    data_iso_pass = outfile.Get(nodename+'/data_iso_tag1_pass').Clone()
+    data_iso_pass.Add(outfile.Get(nodename+'/data_iso_tag2_pass'))
+    data_iso_fail.SetName('data_iso_fail')
+    data_iso_pass.SetName('data_iso_pass')
+    data_iso_fail.Write('data_iso_fail')
+    data_iso_pass.Write('data_iso_pass')
+    
+    zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
+    zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
+    zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
+    zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
+    zll_iso_fail.SetName('ZLL_iso_fail')
+    zll_iso_pass.SetName('ZLL_iso_pass')
+    zll_iso_fail.Write('ZLL_iso_fail')
+    zll_iso_pass.Write('ZLL_iso_pass')
+    
+    data_idiso_fail = outfile.Get(nodename+'/data_idiso_tag1_fail').Clone()
+    data_idiso_fail.Add(outfile.Get(nodename+'/data_idiso_tag2_fail'))
+    data_idiso_pass = outfile.Get(nodename+'/data_idiso_tag1_pass').Clone()
+    data_idiso_pass.Add(outfile.Get(nodename+'/data_idiso_tag2_pass'))
+    data_idiso_fail.SetName('data_idiso_fail')
+    data_idiso_pass.SetName('data_idiso_pass')
+    data_idiso_fail.Write('data_idiso_fail')
+    data_idiso_pass.Write('data_idiso_pass')
+    
+    zll_idiso_fail = outfile.Get(nodename+'/ZLL_idiso_tag1_fail').Clone()
+    zll_idiso_fail.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_fail'))
+    zll_idiso_pass = outfile.Get(nodename+'/ZLL_idiso_tag1_pass').Clone()
+    zll_idiso_pass.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_pass'))
+    zll_idiso_fail.SetName('ZLL_idiso_fail')
+    zll_idiso_pass.SetName('ZLL_idiso_pass')
+    zll_idiso_fail.Write('ZLL_idiso_fail')
+    zll_idiso_pass.Write('ZLL_idiso_pass')
+    
+    if options.embedded:
+      
+      embed_trg_fail = outfile.Get(nodename+'/EmbedZLL_trg_tag1_fail').Clone()
+      embed_trg_fail.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_fail'))
+      embed_trg_pass = outfile.Get(nodename+'/EmbedZLL_trg_tag1_pass').Clone()
+      embed_trg_pass.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_pass'))
+      embed_trg_fail.SetName('embed_trg_fail')
+      embed_trg_pass.SetName('embed_trg_pass')
+      embed_trg_fail.Write('embed_trg_fail')
+      embed_trg_pass.Write('embed_trg_pass')
+      
+      embed_id_fail = outfile.Get(nodename+'/EmbedZLL_id_tag1_fail').Clone()
+      embed_id_fail.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_fail'))
+      embed_id_pass = outfile.Get(nodename+'/EmbedZLL_id_tag1_pass').Clone()
+      embed_id_pass.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_pass'))
+      embed_id_fail.SetName('embed_id_fail')
+      embed_id_pass.SetName('embed_id_pass')
+      embed_id_fail.Write('embed_id_fail')
+      embed_id_pass.Write('embed_id_pass')
+      
+      embed_iso_fail = outfile.Get(nodename+'/EmbedZLL_iso_tag1_fail').Clone()
+      embed_iso_fail.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_fail'))
+      embed_iso_pass = outfile.Get(nodename+'/EmbedZLL_iso_tag1_pass').Clone()
+      embed_iso_pass.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_pass'))
+      embed_iso_fail.SetName('embed_iso_fail')
+      embed_iso_pass.SetName('embed_iso_pass')
+      embed_iso_fail.Write('embed_iso_fail')
+      embed_iso_pass.Write('embed_iso_pass')
+      
+      embed_idiso_fail = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_fail').Clone()
+      embed_idiso_fail.Add(outfile.Get(nodename+'/EmbedZLL_idiso_tag2_fail'))
+      embed_idiso_pass = outfile.Get(nodename+'/EmbedZLL_idiso_tag1_pass').Clone()
+      embed_idiso_pass.Add(outfile.Get(nodename+'/EmbedZLL_idiso_tag2_pass'))
+      embed_idiso_fail.SetName('embed_idiso_fail')
+      embed_idiso_pass.SetName('embed_idiso_pass')
+      embed_idiso_fail.Write('embed_idiso_fail')
+      embed_idiso_pass.Write('embed_idiso_pass')
+
+def Get1DHistsFrom3D(passhist3d,failhist3d):
+  # z = eta, y = pt, x = mass
+  hists = []
+  for j in range(1,passhist3d.GetNbinsY()+1):
+      for k in range(1,passhist3d.GetNbinsZ()+1):
+        ymin = passhist3d.GetYaxis().GetBinLowEdge(j)    
+        ymax = passhist3d.GetYaxis().GetBinUpEdge(j)
+        zmin = passhist3d.GetZaxis().GetBinLowEdge(k)
+        zmax = passhist3d.GetZaxis().GetBinUpEdge(k)
+        passname1d = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (passhist3d.GetName(),ymin,ymax,zmin,zmax)
+        failname1d = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (failhist3d.GetName(),ymin,ymax,zmin,zmax)
+        passhist1d = passhist3d.ProjectionX(passname1d,j,j,k,k)
+        failhist1d = failhist3d.ProjectionX(failname1d,j,j,k,k)
+        hists.append((passhist1d,failhist1d,ymin,ymax,zmin,zmax))
+  return hists
+      
+def CreateWorkspace(name,infile,outfile):
+  wsp = ROOT.RooWorkspace('wsp_'+name, '')
+  hists = Get1DHistsFrom3D(infile.Get('%s_pass' % name),infile.Get('%s_fail' % name))  
+  hist2d = infile.Get('%s_pass' % name).Project3D("zy")
+  hist2d.Reset()
+  hist2d.SetName('%s_eff' % name)
+  hist2d.SetTitle('')
+  hist2d.GetXaxis().SetTitle('pt')
+  hist2d.GetYaxis().SetTitle('eta')
+  wsp = ROOT.RooWorkspace('wsp_'+name, '')
+  var = wsp.factory('m_vis[100,50,150]')    
+  
+  outfile.cd()
+  outfile.mkdir(name)
+  ROOT.gDirectory.cd(name)
+  
+  for hist in hists:
+    hist[0].Write()
+    hist[1].Write()
+    dat = wsp.imp(ROOT.RooDataHist(hist[0].GetName().replace('_pass',''), '', ROOT.RooArgList(var),
+                  ROOT.RooFit.Index(wsp.factory('cat[fail,pass]')),
+                  ROOT.RooFit.Import('fail', hist[1]),
+                  ROOT.RooFit.Import('pass', hist[0])))
+  
+  wsp.Write()
+  hist2d.Write()
+  wsp.Delete()
+  
+def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponential',doFit=True):
+  wsp = infile.Get(name+'/wsp_'+name)
+  pdf_args = [ ]
+  nparams = 1
+
+  if sig_model == 'DoubleVCorr':
+    nparams = 6
+    pdf_args.extend(
+            [
+                "Voigtian::signal1Pass(m_vis, mean1[90,80,100], width[2.495], sigma1[2,1,3])",
+                "Voigtian::signal2Pass(m_vis, mean2[90,80,100], width,        sigma2[4,2,10])",
+                "SUM::signalPass(vFrac[0.8,0,1]*signal1Pass, signal2Pass)",
+                "Voigtian::signal1Fail(m_vis, mean1[90,80,100], width[2.495], sigma1[2,1,3])",
+                "Voigtian::signal2Fail(m_vis, mean2[90,80,100], width,        sigma2[4,2,10])",
+                "SUM::signalFail(vFrac[0.8,0,1]*signal1Fail, signal2Fail)",
+            ]
+        )
+  elif sig_model == 'DoubleVUncorr':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,80,100], widthp[2.495], sigma1p[2,1,3])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,80,100], widthp,        sigma2p[4,2,10])",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,80,100], widthf[2.495], sigma1f[2,1,3])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,80,100], widthf,        sigma2f[4,2,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
+            
+  if bkg_model == 'Exponential':
+      nparams += 2        
+      pdf_args.extend(
+              [
+                  "Exponential::backgroundPass(m_vis, lp[-0.1,-1,0.1])",
+                  "Exponential::backgroundFail(m_vis, lf[-0.1,-1,0.1])"
+              ]
+          )
+  elif bkg_model == 'CMSShape':
+      nparams += 4
+      pdf_args.extend(
+              [
+                  "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,90], betaPass[0.001,0,0.1], gammaPass[0.001,0,0.1], peak[90])",
+                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,90], betaFail[0.001,0,0.1], gammaFail[0.001,0,0.1], peak[90])",
+              ]
+          )
+  elif bkg_model == 'Chebychev':
+      pdf_args.extend(
+              [
+                  "RooChebychev::backgroundPass(m_vis, {a0p[0.25,0,0.5], a1p[-0.25,-1,0.1],a2p[0.,-0.25,0.25]})",
+                  "RooChebychev::backgroundFail(m_vis, {a0f[0.25,0,0.5], a1f[-0.25,-1,0.1],a2f[0.,-0.25,0.25]})",
+              ]
+          )
+  
+  for arg in pdf_args:
+    wsp.factory(arg)
+  nparams=0
+  model_args = [
+      "expr::nSignalPass('efficiency*fSigAll*numTot',efficiency[0,1], fSigAll[0.9,0,1],numTot[1,0,1e10])",
+      "expr::nSignalFail('(1-efficiency)*fSigAll*numTot',efficiency,fSigAll,numTot)",
+      "expr::nBkgPass('effBkg*(1-fSigAll)*numTot',effBkg[0.9,0,1],fSigAll,numTot)",
+      "expr::nBkgFail('(1-effBkg)*(1-fSigAll)*numTot',effBkg,fSigAll,numTot)",
+      "SUM::passing(nSignalPass*signalPass,nBkgPass*backgroundPass)",
+      "SUM::failing(nSignalFail*signalFail,nBkgFail*backgroundFail)",
+      "cat[fail,pass]",
+      "SIMUL::model(cat,fail=failing,pass=passing)"
+  ]
+  for arg in model_args:
+    wsp.factory(arg)
+  
+  hist2d = infile.Get(name+'/%s_eff' % name)
+  res = []
+  
+  for i in range(1,hist2d.GetNbinsX()+1):
+    for j in range(1,hist2d.GetNbinsY()+1):
+      xmin = hist2d.GetXaxis().GetBinLowEdge(i)    
+      xmax = hist2d.GetXaxis().GetBinUpEdge(i)
+      ymin = hist2d.GetYaxis().GetBinLowEdge(j)
+      ymax = hist2d.GetYaxis().GetBinUpEdge(j)  
+      dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
+  
+      yield_tot = wsp.data(dat).sumEntries()
+      yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
+      wsp.var("numTot").setVal(yield_tot)
+      wsp.var("efficiency").setVal(yield_pass/yield_tot)
+      wsp.var("efficiency").setError(0.)
+      
+      if doFit:
+        wsp.pdf("model").fitTo(wsp.data(dat),
+                               ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
+                               ROOT.RooFit.Offset(True),
+                               ROOT.RooFit.Extended(True),
+                               ROOT.RooFit.PrintLevel(-1))
+        
+        fitres = wsp.pdf("model").fitTo(wsp.data(dat),
+                                        ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
+                                        ROOT.RooFit.Offset(True),
+                                        ROOT.RooFit.Extended(True),
+                                        ROOT.RooFit.PrintLevel(-1),
+                                        ROOT.RooFit.Save())
+        fitres.Print()
+        
+        canv = ROOT.TCanvas('%s' % (dat), "%s" % (dat))
+        pad_left = ROOT.TPad('left', '', 0., 0., 0.5, 1.)
+        pad_left.SetTicky(1)
+        pad_left.SetTickx(1)
+        pad_left.Draw()
+        pad_right = ROOT.TPad('right', '', 0.5, 0., 1., 1.)
+        pad_right.SetTicky(1)
+        pad_right.SetTickx(1)
+        pad_right.Draw()
+        pads = [pad_left, pad_right]
+        
+        latex = ROOT.TLatex()
+        latex.SetNDC()
+        
+        ROOT.TGaxis.SetExponentOffset(-0.08, -0.02)
+        
+        splitData = wsp.data(dat).split(wsp.cat('cat'))
+        xframe = wsp.var("m_vis").frame(ROOT.RooFit.Title("Passing"))
+        width = (wsp.var("m_vis").getMax() - wsp.var("m_vis").getMin()) / splitData.At(1).numEntries()
+        splitData.At(1).plotOn(xframe, ROOT.RooFit.Name("DataPass"))
+        wsp.pdf("passing").plotOn(xframe,
+                                  ROOT.RooFit.Slice(wsp.cat('cat'), "pass"),
+                                  ROOT.RooFit.LineColor(ROOT.kBlue),
+                                  ROOT.RooFit.Name("AllPass"))
+        wsp.pdf("passing").plotOn(xframe,
+                                  ROOT.RooFit.Slice(wsp.cat('cat'), "pass"),
+                                  ROOT.RooFit.Components('backgroundPass'),
+                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
+                                  ROOT.RooFit.LineColor(ROOT.kBlue),
+                                  ROOT.RooFit.Name("BkgPass"))
+        pads[0].cd()
+        
+        xframe.Draw()
+        
+        axis = plotting.GetAxisHist(pads[0])
+        if options.channel == 'tpzee':
+          plotting.Set(axis.GetXaxis().SetTitle('m_{ee} (GeV)'))
+        else:
+          plotting.Set(axis.GetXaxis().SetTitle('m_{#mu#mu} (GeV)'))
+        plotting.Set(axis.GetYaxis().SetTitle('Events / %g GeV' % width))
+        plotting.Set(axis.SetTitle(''))
+        plotting.Set(axis.GetYaxis().SetTitleOffset(1.4))
+        
+        titlelatex = ROOT.TLatex()
+        titlelatex.SetNDC()
+        titlelatex.SetTextSize(0.035)
+        titlelatex.DrawLatex(0.12, 0.96, 'p_{T}: [%g, %g] GeV #eta: [%g, %g]' % (xmin, xmax, ymin, ymax))
+        
+        latex.SetTextSize(0.035)
+        font = latex.GetTextFont()
+        latex.DrawLatex(0.12, 0.92, 'Pass Region')
+        latex.SetTextFont(42)
+        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
+        latex.DrawLatex(0.6, 0.7, '#varepsilon = %.4f #pm %.4f' % (wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
+        ROOT.gStyle.SetLegendBorderSize(1)
+        legend1 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
+        legend1.AddEntry(xframe.findObject("DataPass"), "data", "ep")
+        if options.channel == 'tpzee': legend1.AddEntry(xframe.findObject("AllPass"), "Z #rightarrow ee + BG", "l")
+        else: legend1.AddEntry(xframe.findObject("AllPass"), "Z #rightarrow #mu#mu + BG", "l")
+        legend1.AddEntry(xframe.findObject("BkgPass"), "BG", "l")
+        legend1.Draw()
+        
+        xframe2 = wsp.var("m_vis").frame(ROOT.RooFit.Title("Failing"))
+        splitData.At(0).plotOn(xframe2, ROOT.RooFit.Name("DataFail"))
+        wsp.pdf("failing").plotOn(xframe2,
+                                  ROOT.RooFit.Slice(wsp.cat('cat'), "fail"),
+                                  ROOT.RooFit.LineColor(ROOT.kRed),
+                                  ROOT.RooFit.Name("AllFail"))
+        wsp.pdf("failing").plotOn(xframe2,
+                                  ROOT.RooFit.Slice(wsp.cat('cat'), "fail"),
+                                  ROOT.RooFit.Components('backgroundFail'),
+                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
+                                  ROOT.RooFit.LineColor(ROOT.kRed),
+                                  ROOT.RooFit.Name("BkgFail"))
+        pads[1].cd()
+        xframe2.Draw()
+        axis = plotting.GetAxisHist(pads[1])
+        if options.channel== 'tpzee':
+            plotting.Set(axis.GetXaxis().SetTitle('m_{ee} (GeV)'))
+        else:
+            plotting.Set(axis.GetXaxis().SetTitle('m_{#mu#mu} (GeV)'))
+        plotting.Set(axis.GetYaxis().SetTitle('Events / %g GeV' % width))
+        plotting.Set(axis.SetTitle(''))
+        plotting.Set(axis.GetYaxis().SetTitleOffset(1.4))
+        
+        
+        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
+        latex.SetTextFont(font)
+        latex.DrawLatex(0.15, 0.92, 'Fail Region')
+        
+        
+        legend2 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
+        legend2.AddEntry(xframe2.findObject("DataFail"), "data", "ep")
+        if options.channel == 'tpzee': legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow ee + BG", "l")
+        else: legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow #mu#mu + BG", "l")
+        legend2.AddEntry(xframe2.findObject("BkgFail"), "BG", "l")
+        legend2.Draw()
+        
+        canv.Print(options.outputfolder +'/'+dat+'_'+options.channel+'.pdf')
+        
+      res.append((dat, wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
+      hist2d.SetBinContent(i,j,wsp.var('efficiency').getVal())
+      hist2d.SetBinError(i,j,wsp.var('efficiency').getError())
+ 
+  outfile.cd()
+  for i in xrange(1, hist2d.GetNbinsY()+1):
+    ymin = hist2d.GetYaxis().GetBinLowEdge(i)    
+    ymax = hist2d.GetYaxis().GetBinUpEdge(i)  
+    slice = hist2d.ProjectionX(('%s_eta_%.1f_to_%.1f' % (hist2d.GetName(), ymin, ymax)).replace('.','p'), i, i)
+    slice.SetTitle('%.1f #ge |#eta| < %.1f' % (ymin,ymax))
+    gr = ROOT.TGraphAsymmErrors(slice)
+    gr.SetName('gr_'+slice.GetName())
+    gr.Write()
+  hist2d.Write()
+    
 # Add data sample names
 if options.channel == 'tpzmm': 
     if options.era == 'summer17': data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
@@ -153,381 +670,18 @@ if options.channel == 'tpzee':
 iso_probe_1 = '(%s)' % iso_cut_1
 iso_probe_2 = '(%s)' % iso_cut_2
 
+idiso_probe_1 = '(%s && %s)' % (id_probe_1,iso_cut_1)
+idiso_probe_2 = '(%s && %s)' % (id_probe_2,iso_cut_2)
+
 id_tag_1 = baseline_tag1 
 id_tag_2 = baseline_tag2 
+idiso_tag_1 = baseline_tag1 
+idiso_tag_2 = baseline_tag2 
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_1)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_2)' % iso_cut_1
 
-# All functions defined here
-
-def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
-    full_selection = '(1)'
-    if wt != '':
-        full_selection = '('+wt+')'
-    if sel != '':
-        full_selection += '*('+sel+')'
-    if sign != '':
-        full_selection += '*('+sign+')'
-    if bkg_sel != '':
-        full_selection += '*('+bkg_sel+')'
-    if cat != '':
-        full_selection += '*('+cat+')'
-    return full_selection
-
-def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
-    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
-
-def GetDataNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
-    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    return ana.SummedFactory('data'+add_name, samples, plot, full_selection)
-
-def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
-    if options.channel == 'tpmt': full_selection = BuildCutString(wt, sel, cat, 'os-(os==0)', '1')
-    return ana.SummedFactory('EmbedZLL'+add_name, samples, plot, full_selection)
-
-def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat)
-    ana.nodes[nodename].AddNode(zll_node)
-
-def GenerateData(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    data_node = GetDataNode(ana, add_name, samples, plot, wt, sel, cat)
-    ana.nodes[nodename].AddNode(data_node)
-
-def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat)
-    ana.nodes[nodename].AddNode(embed_node)
-
-def Produce3DHistograms(ana, wt='wt', outfile=None):
-    mass_bins = '[50,60,70,80,90,100,110,120,130,140,150]'
-    if options.channel == 'tpzmm':
-      idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200,1000]'
-      trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      trg_pt_bins = '[15,18,19,20,21,22,23,24,25,30,40,50,60,80,100,200,1000]'
-      if options.em_iso: 
-        idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
-        idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
-        trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # low pt leg
-        #trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
-
-    if options.channel == 'tpzee':
-      idiso_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
-      idiso_pt_bins = '[10,20,25,30,40,50,100,200,1000]'
-      trg_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
-      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
-      if options.em_iso: 
-          idiso_eta_bins = '[0,1.48,2.1,2.5]'
-          idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
-          trg_eta_bins = '[0,1.48,2.1,2.5]'
-          #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    # low pt leg
-          trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
-          
-    trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-    trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-    idiso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
-    idiso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
-
-    GenerateZLL(ana, '_trg_tag1_denum', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
-    GenerateZLL(ana, '_trg_tag2_denum', ztt_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
-    GenerateZLL(ana, '_trg_tag1_num', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
-    GenerateZLL(ana, '_trg_tag2_num', ztt_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)    
-    GenerateData(ana, '_trg_tag1_denum', data_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
-    GenerateData(ana, '_trg_tag2_denum', data_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
-    GenerateData(ana, '_trg_tag1_num', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
-    GenerateData(ana, '_trg_tag2_num', data_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
-    
-    GenerateZLL(ana, '_id_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, id_tag_1, '1')
-    GenerateZLL(ana, '_id_tag2_denum', ztt_samples, idiso_plot_probe_1, wt, id_tag_2, '1')
-    GenerateZLL(ana, '_id_tag1_num', ztt_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
-    GenerateZLL(ana, '_id_tag2_num', ztt_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)    
-    GenerateData(ana, '_id_tag1_denum', data_samples, idiso_plot_probe_2, wt, id_tag_1, '1')
-    GenerateData(ana, '_id_tag2_denum', data_samples, idiso_plot_probe_1, wt, id_tag_2, '1')
-    GenerateData(ana, '_id_tag1_num', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
-    GenerateData(ana, '_id_tag2_num', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
-    
-    GenerateZLL(ana, '_iso_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1, '1')
-    GenerateZLL(ana, '_iso_tag2_denum', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
-    GenerateZLL(ana, '_iso_tag1_num', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-    GenerateZLL(ana, '_iso_tag2_num', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)   
-    GenerateData(ana, '_iso_tag1_denum', data_samples, idiso_plot_probe_2, wt, iso_tag_1, '1')
-    GenerateData(ana, '_iso_tag2_denum', data_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
-    GenerateData(ana, '_iso_tag1_num', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-    GenerateData(ana, '_iso_tag2_num', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
-    
-    if options.embedded:
-       
-      GenerateEmbedded(ana, '_trg_tag1_denum', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, '1')
-      GenerateEmbedded(ana, '_trg_tag2_denum', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, '1')
-      GenerateEmbedded(ana, '_trg_tag1_num', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_num', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, trg_probe_1)
-         
-      GenerateEmbedded(ana, '_id_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, '1')
-      GenerateEmbedded(ana, '_id_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, '1')
-      GenerateEmbedded(ana, '_id_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, id_probe_2)
-      GenerateEmbedded(ana, '_id_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, id_probe_1)
-       
-      GenerateEmbedded(ana, '_iso_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, '1')
-      GenerateEmbedded(ana, '_iso_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, '1')
-      GenerateEmbedded(ana, '_iso_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, iso_probe_1)
-    
-    ana.Run()
-    ana.nodes.Output(outfile)
-    
-#def RunTagAndProbePlotting(ana, wt='wt', outfile=None):
-#    
-#    if options.channel == 'tpzmm':
-#      idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-#      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200,1000]'
-#      trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-#      trg_pt_bins = '[15,18,19,20,21,22,23,24,25,30,40,50,60,80,100,200,1000]'
-#      if options.em_iso: 
-#        idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
-#        idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
-#        trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-#        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]'
-#        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # low pt leg
-#        #trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
-#      if options.embed_sel:
-#        #trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
-#        #trg_eta_bins = '(24,0,2.4)'
-#        #trg_pt_bins='[20,40]'
-#        trg_eta_bins = '[0,0.1,0.2,0.3,0.8,0.9,1.2,1.6,1.8,2.1,2.4]' # mu 17
-#        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' 'mu8
-#        trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
-#        trg_eta_bins='[0,2.4]'
-#        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]'
-#    if options.channel == 'tpzee':
-#      idiso_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
-#      idiso_pt_bins = '[10,20,25,30,40,50,100,200,1000]'
-#      trg_eta_bins = '[0,1,1.4442,1.56,2.1,2.5]'
-#      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
-#      if options.em_iso: 
-#          idiso_eta_bins = '[0,1.48,2.1,2.5]'
-#          idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
-#          trg_eta_bins = '[0,1.48,2.1,2.5]'
-#          #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'    # low pt leg
-#          trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
-#    
-#    if options.channel == 'tpem':
-#      idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'  
-#      idiso_pt_bins = '[10,15,20,25,30,40,50,60,70,100,1000]'
-#      trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-#      trg_pt_bins = '[10,13,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]'
-#      
-#    if options.channel == 'tpmt':
-#      idiso_pt_bins = '[20,25,30,40,50,100,200,1000]'
-#      idiso_eta_bins = '[0,2.1]'
-#      trg_pt_bins = '[10,20,22,24,26,28,30,40,50,100,200,1000]'
-#      trg_eta_bins = '[0,2.1]'
-#    
-#    trg_plot_probe_1 = 'abs(eta_1),pt_1'+trg_eta_bins+','+trg_pt_bins
-#    trg_plot_probe_2 = 'abs(eta_2),pt_2'+trg_eta_bins+','+trg_pt_bins
-#    idiso_plot_probe_1 = 'abs(eta_1),pt_1'+idiso_eta_bins+','+idiso_pt_bins
-#    idiso_plot_probe_2 = 'abs(eta_2),pt_2'+idiso_eta_bins+','+idiso_pt_bins
-#
-#    GenerateZLL(ana, '_trg_tag1_denum', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
-#    GenerateZLL(ana, '_trg_tag2_denum', ztt_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
-#    GenerateZLL(ana, '_trg_tag1_num', ztt_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
-#    GenerateZLL(ana, '_trg_tag2_num', ztt_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)    
-#    GenerateData(ana, '_trg_tag1_denum', data_samples, trg_plot_probe_2, wt, trg_tag_1, '1')
-#    GenerateData(ana, '_trg_tag2_denum', data_samples, trg_plot_probe_1, wt, trg_tag_2, '1')
-#    GenerateData(ana, '_trg_tag1_num', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
-#    GenerateData(ana, '_trg_tag2_num', data_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
-#    
-#    GenerateZLL(ana, '_id_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, id_tag_1, '1')
-#    GenerateZLL(ana, '_id_tag2_denum', ztt_samples, idiso_plot_probe_1, wt, id_tag_2, '1')
-#    GenerateZLL(ana, '_id_tag1_num', ztt_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
-#    GenerateZLL(ana, '_id_tag2_num', ztt_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)    
-#    GenerateData(ana, '_id_tag1_denum', data_samples, idiso_plot_probe_2, wt, id_tag_1, '1')
-#    GenerateData(ana, '_id_tag2_denum', data_samples, idiso_plot_probe_1, wt, id_tag_2, '1')
-#    GenerateData(ana, '_id_tag1_num', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
-#    GenerateData(ana, '_id_tag2_num', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
-#    
-#    GenerateZLL(ana, '_iso_tag1_denum', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1, '1')
-#    GenerateZLL(ana, '_iso_tag2_denum', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
-#    GenerateZLL(ana, '_iso_tag1_num', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-#    GenerateZLL(ana, '_iso_tag2_num', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)   
-#    GenerateData(ana, '_iso_tag1_denum', data_samples, idiso_plot_probe_2, wt, iso_tag_1, '1')
-#    GenerateData(ana, '_iso_tag2_denum', data_samples, idiso_plot_probe_1, wt, iso_tag_2, '1')
-#    GenerateData(ana, '_iso_tag1_num', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-#    GenerateData(ana, '_iso_tag2_num', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)
-#    
-#    
-#    if options.embedded:
-#       
-#      GenerateEmbedded(ana, '_trg_tag1_denum', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, '1')
-#      GenerateEmbedded(ana, '_trg_tag2_denum', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, '1')
-#      GenerateEmbedded(ana, '_trg_tag1_num', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1, trg_probe_2)
-#      GenerateEmbedded(ana, '_trg_tag2_num', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2, trg_probe_1)
-#         
-#      GenerateEmbedded(ana, '_id_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, '1')
-#      GenerateEmbedded(ana, '_id_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, '1')
-#      GenerateEmbedded(ana, '_id_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1, id_probe_2)
-#      GenerateEmbedded(ana, '_id_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2, id_probe_1)
-#       
-#      GenerateEmbedded(ana, '_iso_tag1_denum', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, '1')
-#      GenerateEmbedded(ana, '_iso_tag2_denum', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, '1')
-#      GenerateEmbedded(ana, '_iso_tag1_num', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1, iso_probe_2)
-#      GenerateEmbedded(ana, '_iso_tag2_num', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2, iso_probe_1)
-#
-#    
-#    ana.Run()
-#    ana.nodes.Output(outfile)
-#    
-#    zll_trg_denum = outfile.Get(nodename+'/ZLL_trg_tag1_denum')
-#    zll_trg_denum.Add(outfile.Get(nodename+'/ZLL_trg_tag2_denum'))
-#    zll_trg_num = outfile.Get(nodename+'/ZLL_trg_tag1_num')
-#    zll_trg_num.Add(outfile.Get(nodename+'/ZLL_trg_tag2_num'))
-#    
-#    data_trg_denum = outfile.Get(nodename+'/data_trg_tag1_denum')
-#    data_trg_denum.Add(outfile.Get(nodename+'/data_trg_tag2_denum'))
-#    data_trg_num = outfile.Get(nodename+'/data_trg_tag1_num')
-#    data_trg_num.Add(outfile.Get(nodename+'/data_trg_tag2_num'))
-#    
-#    zll_id_denum = outfile.Get(nodename+'/ZLL_id_tag1_denum')
-#    zll_id_denum.Add(outfile.Get(nodename+'/ZLL_id_tag2_denum'))
-#    zll_id_num = outfile.Get(nodename+'/ZLL_id_tag1_num')
-#    zll_id_num.Add(outfile.Get(nodename+'/ZLL_id_tag2_num'))
-#    
-#    data_id_denum = outfile.Get(nodename+'/data_id_tag1_denum')
-#    data_id_denum.Add(outfile.Get(nodename+'/data_id_tag2_denum'))
-#    data_id_num = outfile.Get(nodename+'/data_id_tag1_num')
-#    data_id_num.Add(outfile.Get(nodename+'/data_id_tag2_num'))
-#    
-#    zll_iso_denum = outfile.Get(nodename+'/ZLL_iso_tag1_denum')
-#    zll_iso_denum.Add(outfile.Get(nodename+'/ZLL_iso_tag2_denum'))
-#    zll_iso_num = outfile.Get(nodename+'/ZLL_iso_tag1_num')
-#    zll_iso_num.Add(outfile.Get(nodename+'/ZLL_iso_tag2_num'))
-#    
-#    data_iso_denum = outfile.Get(nodename+'/data_iso_tag1_denum')
-#    data_iso_denum.Add(outfile.Get(nodename+'/data_iso_tag2_denum'))
-#    data_iso_num = outfile.Get(nodename+'/data_iso_tag1_num')
-#    data_iso_num.Add(outfile.Get(nodename+'/data_iso_tag2_num'))
-#
-#    
-#    data_trg_num_proj   = data_trg_num.ProjectionX()
-#    zll_trg_num_proj    = zll_trg_num.ProjectionX()
-#    data_id_num_proj    = data_id_num.ProjectionX()
-#    zll_id_num_proj     = zll_id_num.ProjectionX()
-#    data_iso_num_proj   = data_iso_num.ProjectionX()
-#    zll_iso_num_proj    = zll_iso_num.ProjectionX()
-#    
-#    data_trg_denum_proj   = data_trg_denum.ProjectionX()
-#    zll_trg_denum_proj    = zll_trg_denum.ProjectionX()
-#    data_id_denum_proj    = data_id_denum.ProjectionX()
-#    zll_id_denum_proj     = zll_id_denum.ProjectionX()
-#    data_iso_denum_proj   = data_iso_denum.ProjectionX()
-#    zll_iso_denum_proj    = zll_iso_denum.ProjectionX()
-#    
-#    data_trg_gr   = ROOT.TGraphAsymmErrors(data_trg_num.GetNbinsX())
-#    data_iso_gr   = ROOT.TGraphAsymmErrors(data_iso_num.GetNbinsX())
-#    data_id_gr    = ROOT.TGraphAsymmErrors(data_id_num.GetNbinsX())
-#    mc_trg_gr   = ROOT.TGraphAsymmErrors(zll_trg_num.GetNbinsX())
-#    mc_iso_gr   = ROOT.TGraphAsymmErrors(zll_iso_num.GetNbinsX())
-#    mc_id_gr    = ROOT.TGraphAsymmErrors(zll_id_num.GetNbinsX())
-#    
-#    data_trg_gr.Divide(data_trg_num_proj,data_trg_denum_proj,"n")
-#    mc_trg_gr.Divide(zll_trg_num_proj,zll_trg_denum_proj,"n") 
-#    data_id_gr.Divide(data_id_num_proj,data_id_denum_proj,"n")
-#    mc_id_gr.Divide(zll_id_num_proj,zll_id_denum_proj,"n")
-#    data_iso_gr.Divide(data_iso_num_proj,data_iso_denum_proj,"n")
-#    mc_iso_gr.Divide(zll_iso_num_proj,zll_iso_denum_proj,"n")
-#    
-#    if options.embedded:
-#      
-#      embed_trg_denum = outfile.Get(nodename+'/EmbedZLL_trg_tag1_denum')
-#      embed_trg_denum.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_denum'))
-#      embed_trg_num = outfile.Get(nodename+'/EmbedZLL_trg_tag1_num')
-#      embed_trg_num.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_num'))
-#      
-#      embed_id_denum = outfile.Get(nodename+'/EmbedZLL_id_tag1_denum')
-#      embed_id_denum.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_denum'))
-#      embed_id_num = outfile.Get(nodename+'/EmbedZLL_id_tag1_num')
-#      embed_id_num.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_num'))
-#      
-#      embed_iso_denum = outfile.Get(nodename+'/EmbedZLL_iso_tag1_denum')
-#      embed_iso_denum.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_denum'))
-#      embed_iso_num = outfile.Get(nodename+'/EmbedZLL_iso_tag1_num')
-#      embed_iso_num.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_num'))
-#    
-#      
-#      embed_trg_num_proj   = embed_trg_num.ProjectionX()
-#      embed_id_num_proj    = embed_id_num.ProjectionX()
-#      embed_iso_num_proj   = embed_iso_num.ProjectionX()
-#      
-#      embed_trg_denum_proj   = embed_trg_denum.ProjectionX()
-#      embed_id_denum_proj    = embed_id_denum.ProjectionX()
-#      embed_iso_denum_proj   = embed_iso_denum.ProjectionX()
-#      
-#      embed_trg_gr   = ROOT.TGraphAsymmErrors(embed_trg_num.GetNbinsX())
-#      embed_iso_gr   = ROOT.TGraphAsymmErrors(embed_iso_num.GetNbinsX())
-#      embed_id_gr    = ROOT.TGraphAsymmErrors(embed_id_num.GetNbinsX())
-#      
-#      embed_trg_gr.Divide(embed_trg_num_proj,embed_trg_denum_proj,"n")
-#      embed_id_gr.Divide(embed_id_num_proj,embed_id_denum_proj,"n")
-#      embed_iso_gr.Divide(embed_iso_num_proj,embed_iso_denum_proj,"n")
-#    
-#    if options.channel == 'tpzmm': sfs_output_name = options.outputfolder+'/muon_SFs.root'
-#    if options.channel == 'tpzee' or options.channel == 'tpem': sfs_output_name = options.outputfolder+'/electron_SFs.root'
-#    sfs_output = ROOT.TFile(sfs_output_name, 'RECREATE')
-#    sfs_output.cd()
-#    
-#    data_trg_gr.Write('data_trg_proj')
-#    mc_trg_gr.Write('mc_trg_proj')
-#    #data_id_gr.Write('data_id_proj') 
-#    mc_id_gr.Write('mc_id_proj') 
-#    #data_iso_gr.Write('data_iso_proj')
-#    mc_iso_gr.Write('mc_iso_proj')
-#    
-#    trg_graphs = [sfs_output.Get('data_trg_proj'),sfs_output.Get('mc_trg_proj')]
-#    id_graphs = [data_id_gr,sfs_output.Get('mc_id_proj')]
-#    iso_graphs = [data_iso_gr,sfs_output.Get('mc_iso_proj')]
-#
-#    
-#    data_trg_num.Divide(data_trg_denum)
-#    zll_trg_num.Divide(zll_trg_denum)
-#    data_id_num.Divide(data_id_denum)
-#    zll_id_num.Divide(zll_id_denum)
-#    data_iso_num.Divide(data_iso_denum)
-#    zll_iso_num.Divide(zll_iso_denum)
-#    
-#    data_trg_num.SetName("trg_data")
-#    zll_trg_num.SetName("trg_mc")
-#    data_id_num.SetName("id_data")
-#    zll_id_num.SetName("id_mc")
-#    data_iso_num.SetName("iso_data")
-#    zll_iso_num.SetName("iso_mc")
-#    
-#    #hists = [data_trg_num,zll_trg_num,data_id_num,zll_id_num,data_iso_num,zll_iso_num]
-#    hists = [data_trg_num,zll_trg_num,zll_id_num,zll_iso_num]
-#    
-#    if options.embedded:
-#        embed_trg_num.Divide(embed_trg_denum)
-#        embed_id_num.Divide(embed_id_denum)
-#        embed_iso_num.Divide(embed_iso_denum)
-#        
-#        embed_trg_num.SetName("trg_embed")
-#        embed_id_num.SetName("id_embed")
-#        embed_iso_num.SetName("iso_embed")
-#        
-#        hists.append(embed_trg_num)
-#        hists.append(embed_id_num)
-#        hists.append(embed_iso_num)
-#    
-#    # set overflow pT bins to same value as last bin and write to file
-#    for hist in hists:
-#      for i in range(1,hist.GetNbinsY()+1): 
-#        hist.SetBinContent(hist.GetNbinsX()+1,i,hist.GetBinContent(hist.GetNbinsX(),i))
-#      hist.Write()
-      
 
 # Create output file
 
@@ -558,6 +712,51 @@ if options.draw_hists == 1:
   
   Produce3DHistograms(ana, 'wt', outfile)
 else:
-  outfile = ROOT.TFile(output_name)    
+  outfile = ROOT.TFile(output_name)
+  
+wsfilename = output_name.replace('.root','_ws.root')
+wsfile = ROOT.TFile(wsfilename, 'RECREATE')
+wsnames = ['data_id', 'data_iso', 'data_trg', 'data_idiso', 'ZLL_id', 'ZLL_iso', 'ZLL_trg', 'ZLL_idiso']
+if options.embedded: wsnames += ['EmbedZLL_id', 'EmbedZLL_iso', 'EmbedZLL_trg', 'EmbedZLL_idiso']
+for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
+
+sffile_name = options.outputfolder+'/muon_SFs.root'
+if options.channel == 'tpzee': sffile_name = options.outputfolder+'/electron_SFs.root'
+
+sffile = ROOT.TFile(sffile_name, 'RECREATE')
+for name in wsnames:
+  sig_model = 'DoubleVUncorr'  
+  if options.channel == 'tpzmm' and 'trg' in name: sig_model = 'DoubleVCorr'
+  if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
+  if 'id' in name: bkg_model = 'CMSShape'    
+  else: bkg_model = 'Exponential'
+  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
+
+if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
+if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
+
+for i in ['id', 'iso', 'trg', 'idiso']:
+  hist2d = sffile.Get('data_%s_eff' % i)
+  for j in range(1,hist2d.GetNbinsY()+1):
+    ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
+    ymax = hist2d.GetYaxis().GetBinUpEdge(j)
+    leg_labels=['data','MC']
+    
+    graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
+    if options.embedded: 
+      graphs.append(sffile.Get(('gr_EmbedZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
+      leg_labels.append('Embedded')
+    x_title = 'P_{T}^{#mu} (GeV)'
+    ratio_range="0.85,1.15"
+    if options.channel == 'tpzee': 
+        x_title = 'P_{T}^{e} (GeV)'
+        if 'trg' in i: ratio_range="0.7,1.3"
+    label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
+    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='mssmsummer16',ratio_range,True,100,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+  
+outfile.Close()  
+wsfile.Close()
+sffile.Close()
+  
 
  
