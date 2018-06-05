@@ -29,7 +29,7 @@ ignore = options.ignore
 batch = options.batch
 
 JOBWRAPPER      = './scripts/generate_job.sh'
-JOBSUBMIT       = './scripts/submit_ic_batch_job.sh'
+JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
