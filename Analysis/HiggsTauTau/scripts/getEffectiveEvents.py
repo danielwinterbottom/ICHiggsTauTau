@@ -17,6 +17,7 @@ for file_name in os.listdir(dirname):
     if '_mt_2016.root' in file_name: key = file_name.replace('_mt_2016.root','')
     if '_tt_2016.root' in file_name: key = file_name.replace('_tt_2016.root','')
     if '_em_2016.root' in file_name: key = file_name.replace('_em_2016.root','')
+    if '_zmm_2016.root' in file_name: key = file_name.replace('_zmm_2016.root','')
     file_names[key] = file_name
 
 

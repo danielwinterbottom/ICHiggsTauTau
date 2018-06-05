@@ -853,6 +853,7 @@ namespace ic {
             std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
             std::vector<TriggerObject *> l1_objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle35"); // For the Ele32 trigger we need to make sure the electron is matched to the SingleElectron L1 filter since this path is also seeded by the L1 double electron triggers but this filter does not exist for the previous trigger objects so we much take it from an un-prescaled trigger
             leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), l1_objs, extra_filter_2,0.5).first);
+           
          }
 
          
