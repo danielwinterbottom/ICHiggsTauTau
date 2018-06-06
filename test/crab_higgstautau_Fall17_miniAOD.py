@@ -61,8 +61,8 @@ if __name__ == '__main__':
     tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'))  # old
     tasks.append(('WWTo4Q', '/WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    tasks.append(('WWTo4Q', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    tasks.append(('WWToLNuQQ', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'))
+    tasks.append(('WWToLNuQQ', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('WWToLNuQQ-ext', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'))
     tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'))   # old
     tasks.append(('ZZTo2L2Q', '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM')) # old
     tasks.append(('ZZTo4L', '/ZZTo4L_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
@@ -81,8 +81,26 @@ if __name__ == '__main__':
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
-        config.Data.inputDataset = task[1]
-        #submit(config)
+ 
+        if "DY4JetsToLL-LO" in task[0]:
+          # talk to DBS to get list of files in this dataset
+          from dbs.apis.dbsClient import DbsApi
+          dbs = DbsApi('https://cmsweb.cern.ch/dbs/prod/global/DBSReader')
+
+          dataset = task[1]
+          fileDictList=dbs.listFiles(dataset=dataset)
+
+          print ("dataset %s has %d files" % (dataset, len(fileDictList)))
+
+          # DBS client returns a list of dictionaries, but we want a list of Logical File Names
+          lfnList = [ dic['logical_file_name'] for dic in fileDictList ]
+          config.Data.userInputFiles = lfnList
+          config.Data.splitting = 'FileBased'
+          config.Data.unitsPerJob = 1
+        else:
+          config.Data.inputDataset = task[1]
+          config.Data.unitsPerJob = 100000
+          config.Data.splitting = 'EventAwareLumiBased'
             
         if "GluGluHToTauTau_M-125" in task[0] or "VBFHToTauTau_M-125" in task[0] or ("W" in task[0] and "JetsToLNu-LO" in task[0]):
             config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True']
