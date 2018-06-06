@@ -154,29 +154,29 @@ if options.proc_sm or options.proc_all:
       'ZHToTauTau_M-'+mass,
       'ttHToTauTau_M-'+mass
     ]
- # if options.proc_sm:  
- #   signal_mc += [
- #       'GluGluHToWWTo2L2Nu_M-125',
- #       'VBFHToWWTo2L2Nu_M-125'
- #       ]
- # # add cp samples
- # if options.cp_signal:
- #   signal_mc += [
- #       'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
- #       'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
- #       'GluGluH2JetsToTauTau_M125_CPmixing_sm',
- #       'VBFHiggs0M_M-125',
- #       'VBFHiggs0Mf05ph0_M-125',
- #       'VBFHiggs0PM_M-125',
- #       'ZHiggs0M_M-125',
- #       'ZHiggs0Mf05ph0_M-125',
- #       'ZHiggs0PM_M-125',
- #       'WHiggs0M_M-125',
- #       'WHiggs0Mf05ph0_M-125',
- #       'WHiggs0PM_M-125'
- #       #'GluGluToHToTauTau_amcNLO_M-125',
- #       #'VBFHToTauTau_amcNLO_M-125'
- #   ]  
+ if options.proc_sm:  
+   signal_mc += [
+       'GluGluHToWWTo2L2Nu_M-125',
+       'VBFHToWWTo2L2Nu_M-125'
+       ]
+ # add cp samples
+ if options.cp_signal:
+   signal_mc += [
+       'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
+       'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+       'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+       'VBFHiggs0M_M-125',
+       'VBFHiggs0Mf05ph0_M-125',
+       'VBFHiggs0PM_M-125',
+       'ZHiggs0M_M-125',
+       'ZHiggs0Mf05ph0_M-125',
+       'ZHiggs0PM_M-125',
+       'WHiggs0M_M-125',
+       'WHiggs0Mf05ph0_M-125',
+       'WHiggs0PM_M-125'
+       #'GluGluToHToTauTau_amcNLO_M-125',
+       #'VBFHToTauTau_amcNLO_M-125'
+   ]  
     
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -217,7 +217,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   if options.calc_lumi:
     for sa in data_samples:
-        JOB='%s_2016' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr27_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
@@ -232,7 +232,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   else:
     for sa in data_samples:
-        JOB='%s_2016' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr27_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
@@ -271,7 +271,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 #  
 #  for sa in embed_samples:
 #    job_num=0  
-#    JOB='%s_2016' % (sa)
+#    JOB='%s_2017' % (sa)
 #    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
 #    if 'EmbeddingMuMu' in sa:
 #      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Trigger_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
@@ -334,7 +334,7 @@ if options.proc_bkg or options.proc_all:
   
 
   for sa in central_samples:
-      JOB='%s_2016' % (sa)
+      JOB='%s_2017' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
@@ -369,7 +369,7 @@ if options.proc_sm or options.proc_all:
   SIG_FILELIST='filelists/Apr27_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
-    JOB='%s_2016' % (sa)
+    JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
