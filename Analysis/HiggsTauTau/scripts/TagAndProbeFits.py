@@ -133,9 +133,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
       idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      idiso_pt_bins = '[13,15,20,25,30,40,50,100,200]'
+      idiso_pt_bins = '[13,20,25,30,40,50,100,200]'
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,100,200]'
+      trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
           #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]'    # low pt leg
           trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]' # high pt leg
@@ -401,66 +401,98 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
               ]
           )
               
-  #elif sig_model == 'BWCBConv':
-  #    nparams = 6
-  #    pdf_args.extend(
-  #            [
-  #                "BreitWigner::BW(m_vis, mean[91,89,93], width[2.495])",
-  #                "CBShape::CBPass(m_vis, meanp[0,0,1], sigmap[2,0,10], alphap[1,0,4], np[1,0,3])",
-
-  #                "FFTConvPdf::signalPass(m_vis,BW,CBPass)",
-  #                "CBShape::CBFail(m_vis, meanf[0,0,1], sigmaf[2,0,10], alphaf[1,0,4], nf[1,0,3])",
-  #                "FFTConvPdf::signalFail(m_vis,BW,CBFail)"
-  #            ]
-  #        ) 
-            
-              
+  elif sig_model == 'BWCBConvUncorr':
+      nparams = 9
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass(m_vis, meanp[90,80,100], sigmap[2,0,10], alphap[1,-50,50], np[1,0,50])",
+                  "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
+                  "CBShape::CBFail(m_vis, meanf[90,80,100], sigmaf[2,0,10], alphaf[1,-50,50], nf[1,0,50])",
+                  "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
+              ]
+          ) 
+  elif sig_model == 'BWCBConvCorr':
+      nparams = 5
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass(m_vis, mean[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
+                  "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
+                  "CBShape::CBFail(m_vis, meanf[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
+                  "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
+              ]
+          )            
   elif sig_model == 'BWDoubleCBConvUncorr':
-      nparams = 6
-
+      nparams = 19
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass1(m_vis, meanp[90,80,100], sigmap[2,0,10], alpha1p[1,0,50], n1p[1,0,50])",
-                  "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[2,0,10], alpha2p[-1,-50,0], n2p[1,0,50])",
-                  "CEXPR::steplop('m_vis<=meanp',m_vis,meanp)",
-                  "CEXPR::stephip('m_vis>meanp',m_vis,meanp)",
-                  "SUM::DoubleCBPass(steplop*CBPass1,stephip*CBPass2)",
+                  "CBShape::CBPass1(m_vis, meanp1[90,80,100], sigmap1[2,0,10], alphap1[1,-50,50], np1[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp2[90,80,100], sigmap2[2,0,10], alphap2[1,-50,50], np2[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.8,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
-                  "CBShape::CBFail1(m_vis, meanf[90,80,100], sigmaf[2,0,10], alpha1f[1,0,50], n1f[1,0,50])",
-                  "CBShape::CBFail2(m_vis, meanf[90,80,100], sigmaf[2,0,10], alpha2f[-1,-50,0], n2f[1,0,50])",
-                  "CEXPR::steplof('m_vis<=meanf',m_vis,meanf)",
-                  "CEXPR::stephif('m_vis>meanf',m_vis,meanf)",
-                  "SUM::DoubleCBFail(steplof*CBFail1,stephif*CBFail2)",
+                  "CBShape::CBFail1(m_vis, meanf1[90,80,100], sigmaf1[2,0,10], alphaf1[1,-50,50], nf1[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf2[90,80,100], sigmaf2[2,0,10], alphaf2[1,-50,50], nf2[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.8,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
-          ) 
-              
+          )           
   elif sig_model == 'BWDoubleCBConvCorr':
-      nparams = 6
-
+      nparams = 15
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,0,10], alpha1[1,0,50], n1[1,0,15])",
-                  "CBShape::CBPass2(m_vis, mean[90,80,100], sigma[2,0,10], alpha2[-1,-50,0], n2[1,0,15])",
-                  "CEXPR::steplo('m_vis<=mean',m_vis,mean)",
-                  "CEXPR::stephi('m_vis>mean',m_vis,mean)",
-                  "SUM::DoubleCBPass(steplo*CBPass1,stephi*CBPass2)",
+                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[4,4,10], alphap[1,-50,50], np[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
-                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,0,10], alpha1[1,0,50], n1[1,0,15])",
-                  "CBShape::CBFail2(m_vis, mean[90,80,100], sigma[2,0,10], alpha2[-1,-50,0], n2[1,0,15])",
-                  "SUM::DoubleCBFail(steplo*CBFail1,stephi*CBFail2)",
+                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf[90,80,100], sigmaf[4,4,10], alphaf[1,-50,50], nf[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.01,0,1]*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )             
+  
+  elif sig_model == 'BWCBGausConvCorr':
+      nparams = 11
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "Gaussian::GaussPass(m_vis, meanp[90,80,100], sigmap[4,2,10])",
+                  "SUM::DoubleCBPass(CBPass, vFracp[0.01,0,1]*GaussPass)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "Gaussian::GaussFail(m_vis, meanf[90,80,100], sigmaf[4,2,10])",
+                  "SUM::DoubleCBFail(CBFail, vFracf[0.01,0,1]*GaussFail)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
           ) 
+  elif sig_model == 'BWCBGausConvUncorr':
+      nparams = 15
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass(m_vis, meanp1[90,80,100], sigmap1[2,1,4], alphap[1,-50,50], np[1,0,50])",
+                  "Gaussian::GaussPass(m_vis, meanp2[90,80,100], sigmap2[4,2,10])",
+                  "SUM::DoubleCBPass(CBPass, vFracp[0.01,0,1]*GaussPass)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail(m_vis, meanf1[90,80,100], sigmaf1[2,1,4], alphaf[1,-50,50], nf[1,0,50])",
+                  "Gaussian::GaussFail(m_vis, meanf2[90,80,100], sigmaf2[4,2,10])",
+                  "SUM::DoubleCBFail(CBFail, vFracf[0.01,0,1]*GaussFail)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )             
+              
+
             
   if bkg_model == 'Exponential':
       nparams += 2        
       pdf_args.extend(
               [
-                  "Exponential::backgroundPass(m_vis, lp[-0.1,-1,1])",
-                  "Exponential::backgroundFail(m_vis, lf[-0.1,-1,1])"
+                  "Exponential::backgroundPass(m_vis, lp[-0.1,-1,0])",
+                  "Exponential::backgroundFail(m_vis, lf[-0.1,-1,0])"
               ]
           )
   elif bkg_model == 'CMSShape':
@@ -504,15 +536,21 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       xmax = hist2d.GetXaxis().GetBinUpEdge(i)
       ymin = hist2d.GetYaxis().GetBinLowEdge(j)
       ymax = hist2d.GetYaxis().GetBinUpEdge(j)  
+      
+      ForceEventCount = False
+      # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
+      if options.era == 'summer17' and ('_iso' in name or '_trg' in name): 
+          if not options.aiso1 and not options.aiso2 and xmin >= 30: ForceEventCount = True
+      
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
       yield_tot = wsp.data(dat).sumEntries()
       yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
       wsp.var("numTot").setVal(yield_tot)
       wsp.var("efficiency").setVal(yield_pass/yield_tot)
-      wsp.var("efficiency").setError(0.)
+      wsp.var("efficiency").setError(math.sqrt(yield_pass)/yield_tot) #not quite correct error
       
-      if doFit:
+      if doFit and not ForceEventCount:
         wsp.pdf("model").fitTo(wsp.data(dat),
                                ROOT.RooFit.Optimize(False),
                                ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
@@ -581,7 +619,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         font = latex.GetTextFont()
         latex.DrawLatex(0.12, 0.92, 'Pass Region')
         latex.SetTextFont(42)
-        latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
+        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
         latex.DrawLatex(0.6, 0.7, '#varepsilon = %.4f #pm %.4f' % (wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
         ROOT.gStyle.SetLegendBorderSize(1)
         legend1 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
@@ -615,7 +653,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         plotting.Set(axis.GetYaxis().SetTitleOffset(1.4))
         
         
-        latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
+        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
         latex.SetTextFont(font)
         latex.DrawLatex(0.15, 0.92, 'Fail Region')
         
@@ -632,6 +670,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       res.append((dat, wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
       hist2d.SetBinContent(i,j,wsp.var('efficiency').getVal())
       hist2d.SetBinError(i,j,wsp.var('efficiency').getError())
+       
  
   outfile.cd()
   for i in xrange(1, hist2d.GetNbinsY()+1):
@@ -773,8 +812,9 @@ else:
   
 wsfilename = output_name.replace('.root','_ws.root')
 wsfile = ROOT.TFile(wsfilename, 'RECREATE')
-#wsnames = ['data_id', 'data_iso', 'data_trg', 'data_idiso', 'ZLL_id', 'ZLL_iso', 'ZLL_trg', 'ZLL_idiso']
-wsnames = ['data_idiso']
+
+wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
+
 if options.embedded: wsnames += ['EmbedZLL_id', 'EmbedZLL_iso', 'EmbedZLL_trg', 'EmbedZLL_idiso']
 for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
 
@@ -788,13 +828,14 @@ for name in wsnames:
   if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
   if 'id' in name: bkg_model = 'CMSShape'    
   else: bkg_model = 'Exponential'
-  sig_model = 'BWDoubleCBConvUncorr'
-  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name or True)
+  if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
+  else: sig_model='BWCBGausConvUncorr'
+  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
 
-for i in ['id', 'iso', 'trg', 'idiso']:
+for i in ['id','iso','trg']:    
   hist2d = sffile.Get('data_%s_eff' % i)
   for j in range(1,hist2d.GetNbinsY()+1):
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
