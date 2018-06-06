@@ -10,6 +10,7 @@ import ConfigParser
 import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
+from UserCode.ICHiggsTauTau.FitFunctions  import doubleSidedCrystalball
 
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
@@ -399,21 +400,75 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+              
+  #elif sig_model == 'BWCBConv':
+  #    nparams = 6
+  #    pdf_args.extend(
+  #            [
+  #                "BreitWigner::BW(m_vis, mean[91,89,93], width[2.495])",
+  #                "CBShape::CBPass(m_vis, meanp[0,0,1], sigmap[2,0,10], alphap[1,0,4], np[1,0,3])",
+
+  #                "FFTConvPdf::signalPass(m_vis,BW,CBPass)",
+  #                "CBShape::CBFail(m_vis, meanf[0,0,1], sigmaf[2,0,10], alphaf[1,0,4], nf[1,0,3])",
+  #                "FFTConvPdf::signalFail(m_vis,BW,CBFail)"
+  #            ]
+  #        ) 
+            
+              
+  elif sig_model == 'BWDoubleCBConvUncorr':
+      nparams = 6
+
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, meanp[90,80,100], sigmap[2,0,10], alpha1p[1,0,50], n1p[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[2,0,10], alpha2p[-1,-50,0], n2p[1,0,50])",
+                  "CEXPR::steplop('m_vis<=meanp',m_vis,meanp)",
+                  "CEXPR::stephip('m_vis>meanp',m_vis,meanp)",
+                  "SUM::DoubleCBPass(steplop*CBPass1,stephip*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, meanf[90,80,100], sigmaf[2,0,10], alpha1f[1,0,50], n1f[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf[90,80,100], sigmaf[2,0,10], alpha2f[-1,-50,0], n2f[1,0,50])",
+                  "CEXPR::steplof('m_vis<=meanf',m_vis,meanf)",
+                  "CEXPR::stephif('m_vis>meanf',m_vis,meanf)",
+                  "SUM::DoubleCBFail(steplof*CBFail1,stephif*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          ) 
+              
+  elif sig_model == 'BWDoubleCBConvCorr':
+      nparams = 6
+
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,0,10], alpha1[1,0,50], n1[1,0,15])",
+                  "CBShape::CBPass2(m_vis, mean[90,80,100], sigma[2,0,10], alpha2[-1,-50,0], n2[1,0,15])",
+                  "CEXPR::steplo('m_vis<=mean',m_vis,mean)",
+                  "CEXPR::stephi('m_vis>mean',m_vis,mean)",
+                  "SUM::DoubleCBPass(steplo*CBPass1,stephi*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,0,10], alpha1[1,0,50], n1[1,0,15])",
+                  "CBShape::CBFail2(m_vis, mean[90,80,100], sigma[2,0,10], alpha2[-1,-50,0], n2[1,0,15])",
+                  "SUM::DoubleCBFail(steplo*CBFail1,stephi*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          ) 
             
   if bkg_model == 'Exponential':
       nparams += 2        
       pdf_args.extend(
               [
-                  "Exponential::backgroundPass(m_vis, lp[-0.1,-1,0.1])",
-                  "Exponential::backgroundFail(m_vis, lf[-0.1,-1,0.1])"
+                  "Exponential::backgroundPass(m_vis, lp[-0.1,-1,1])",
+                  "Exponential::backgroundFail(m_vis, lf[-0.1,-1,1])"
               ]
           )
   elif bkg_model == 'CMSShape':
       nparams += 4
       pdf_args.extend(
               [
-                  "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,90], betaPass[0.001,0,0.1], gammaPass[0.001,0,0.1], peak[90])",
-                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,90], betaFail[0.001,0,0.1], gammaFail[0.001,0,0.1], peak[90])",
+                  "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,0.1], gammaPass[0.001,0,1], peak[90])",
+                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
               ]
           )
   elif bkg_model == 'Chebychev':
@@ -459,6 +514,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       if doFit:
         wsp.pdf("model").fitTo(wsp.data(dat),
+                               ROOT.RooFit.Optimize(False),
                                ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
                                ROOT.RooFit.Offset(True),
                                ROOT.RooFit.Extended(True),
@@ -466,6 +522,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         
         fitres = wsp.pdf("model").fitTo(wsp.data(dat),
                                         ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
+                                        ROOT.RooFit.Optimize(False),
                                         ROOT.RooFit.Offset(True),
                                         ROOT.RooFit.Extended(True),
                                         ROOT.RooFit.PrintLevel(-1),
@@ -524,7 +581,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         font = latex.GetTextFont()
         latex.DrawLatex(0.12, 0.92, 'Pass Region')
         latex.SetTextFont(42)
-        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
+        latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
         latex.DrawLatex(0.6, 0.7, '#varepsilon = %.4f #pm %.4f' % (wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
         ROOT.gStyle.SetLegendBorderSize(1)
         legend1 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
@@ -558,7 +615,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         plotting.Set(axis.GetYaxis().SetTitleOffset(1.4))
         
         
-        #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
+        latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
         latex.SetTextFont(font)
         latex.DrawLatex(0.15, 0.92, 'Fail Region')
         
@@ -716,7 +773,8 @@ else:
   
 wsfilename = output_name.replace('.root','_ws.root')
 wsfile = ROOT.TFile(wsfilename, 'RECREATE')
-wsnames = ['data_id', 'data_iso', 'data_trg', 'data_idiso', 'ZLL_id', 'ZLL_iso', 'ZLL_trg', 'ZLL_idiso']
+#wsnames = ['data_id', 'data_iso', 'data_trg', 'data_idiso', 'ZLL_id', 'ZLL_iso', 'ZLL_trg', 'ZLL_idiso']
+wsnames = ['data_idiso']
 if options.embedded: wsnames += ['EmbedZLL_id', 'EmbedZLL_iso', 'EmbedZLL_trg', 'EmbedZLL_idiso']
 for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
 
@@ -730,7 +788,8 @@ for name in wsnames:
   if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
   if 'id' in name: bkg_model = 'CMSShape'    
   else: bkg_model = 'Exponential'
-  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
+  sig_model = 'BWDoubleCBConvUncorr'
+  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name or True)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'

@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "tpzee", "tpzmm", "zee", "zmm"],
+    "channels":     ["zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data/",
+    "output_folder" : "./",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data_effective/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
