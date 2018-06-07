@@ -314,7 +314,7 @@ if options.proc_bkg or options.proc_all:
      'WZTo3LNu',
      'WZTo2L2Q',
      'WZTo1L1Nu2Q',
-     'WWToLNuQQ',
+     'WWToLNuQQ', # check this one after the new production!
      'WWTo4Q',
      'WWTo2L2Nu',
      'WWTo1L1Nu2Q',

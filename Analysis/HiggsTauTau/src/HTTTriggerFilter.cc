@@ -257,6 +257,7 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
           high_leg_pt = 28.;
+    
         }
 
        // if (run >= 258655 /*&& run <= xxxxxxxx*/){
@@ -585,7 +586,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
-          } else if(mc_ == mc::summer16_80X && strategy_ != strategy::cpsummer17){
+          } else if(mc_ == mc::summer16_80X){
           trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
           leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
@@ -593,7 +594,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
-          } else if (strategy_ == strategy::cpsummer17){
+          } else if (mc_ == mc::mc2017){
           trig_obj_label = "triggerObjectsEle24Tau30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -653,7 +654,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
           high_leg_pt = 23.;
-        } else if (mc_ ==mc::summer16_80X && strategy_ != strategy::cpsummer17){
+        } else if (mc_ ==mc::summer16_80X){
           trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -676,7 +677,7 @@ namespace ic {
           alt_cross_leg1_filter = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";  
-        } else if (strategy_ == strategy::cpsummer17) {
+        } else if (mc_ == mc::mc2017) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -833,7 +834,7 @@ namespace ic {
     bool passed_singlemuon = false;
     bool passed_singleelectron = false;
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) 
-        &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X)) {
+        &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X || mc_ == mc::mc2017)) {
       std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
@@ -849,7 +850,7 @@ namespace ic {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
 
-         if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& strategy_==strategy::cpsummer17) {
+         if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& mc_==mc::mc2017) {
             std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
             std::vector<TriggerObject *> l1_objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle35"); // For the Ele32 trigger we need to make sure the electron is matched to the SingleElectron L1 filter since this path is also seeded by the L1 double electron triggers but this filter does not exist for the previous trigger objects so we much take it from an un-prescaled trigger
             leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), l1_objs, extra_filter_2,0.5).first);
@@ -863,7 +864,7 @@ namespace ic {
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
          }
          
-         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) && strategy_!=strategy::cpsummer17 ) {
+         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) ) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
             std::vector<TriggerObject *> alt_er_objs = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
@@ -872,14 +873,14 @@ namespace ic {
             ic::erase_if_not(alt_er_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_er_trk_min_online_pt);
 
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
-         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& strategy_==strategy::cpsummer17 ) {
+         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& mc_==mc::mc2017 ) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
          }
          
          bool highpt_leg2 = false;
          if (channel_==channel::zmm || channel_ == channel::tpzmm || channel_ == channel::zee || channel_ == channel::tpzee){
-           if(mc_ != mc::summer16_80X) leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first; 
+           if(mc_ != mc::summer16_80X && mc_ != mc::mc2017) leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first; 
            highpt_leg2 = dileptons[i]->At(1)->pt()>high_leg_pt;
          }
          if ((leg1_match&&highpt_leg) || (leg2_match&&highpt_leg2)){
