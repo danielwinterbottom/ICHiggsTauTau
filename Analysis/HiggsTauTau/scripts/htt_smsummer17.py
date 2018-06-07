@@ -154,14 +154,14 @@ if options.proc_sm or options.proc_all:
       'ZHToTauTau_M-'+mass,
       'ttHToTauTau_M-'+mass
     ]
- if options.proc_sm:  
+  if options.proc_sm:  
    signal_mc += [
        'GluGluHToWWTo2L2Nu_M-125',
        'VBFHToWWTo2L2Nu_M-125'
        ]
- # add cp samples
- if options.cp_signal:
-   signal_mc += [
+   # add cp samples
+   if options.cp_signal:
+     signal_mc += [
        'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
        'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
        'GluGluH2JetsToTauTau_M125_CPmixing_sm',
