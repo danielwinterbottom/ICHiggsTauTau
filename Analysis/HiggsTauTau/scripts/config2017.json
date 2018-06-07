@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tpzee", "tpzmm"],
+    "channels":     ["zee", "zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -19,7 +19,7 @@
   "sequence": {
     "do_gen_analysis" : false,
     "era"           : "data_2017",
-    "mc"            : "summer16_80X",
+    "mc"            : "mc2017",
     "strategy"      : "cpsummer17",
     "is_data"       : false,
     "is_embedded"   : false,
