@@ -1472,7 +1472,7 @@ if(channel != channel::wmnu) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
-    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool() || true);
+    .set_do_vloose_preselection((js["baseline"]["do_ff_weights"].asBool() && addit_output_folder=="")|| true);
  if(era_type == era::data_2015 || era_type == era::data_2016){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());

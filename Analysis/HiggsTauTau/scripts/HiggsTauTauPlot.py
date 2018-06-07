@@ -405,15 +405,17 @@ if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+      #cats['dijet']='n_jets>=2 && mjj>300 && jdeta>3 && n_bjets==0'
       #if options.channel == 'em': cats['dijet']='n_jets==2 && mjj>300 && n_bjets==0'
-      cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
-      cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
+      cats['dijet_boosted']='%s && pt_tt>300' % cats['dijet']
+      cats['dijet_lowboost']='%s && pt_tt<300' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'
     cats['dijet']='n_jets>=2 && mjj>300'
-    cats['dijet_boosted']='%s && pt_tt>150' % cats['dijet']
-    cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
+    #cats['dijet']='n_jets>=2 && mjj>300 && jdeta>3'
+    cats['dijet_boosted']='%s && pt_tt>300' % cats['dijet']
+    cats['dijet_lowboost']='%s && pt_tt<300' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
   
   # aachen groups cuts
@@ -850,14 +852,28 @@ else:
     if options.analysis == 'sm':
       if options.channel == 'et':
           qcd_os_ss_ratio = 1.0
-          if options.cat == '0jet': qcd_os_ss_ratio = 1.0
-          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.28
+          if options.cat == '0jet': 
+            #if options.era in ['cpsummer16']: qcd_os_ss_ratio = 0.97
+            #else:
+            qcd_os_ss_ratio = 1.0
+          elif options.cat == 'boosted': 
+            #if options.era in ['cpsummer16']: qcd_os_ss_ratio = 1.61
+            #else:
+            qcd_os_ss_ratio = 1.28
           elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: qcd_os_ss_ratio = 1.0
+          #elif options.cat in ['dijet','dijet_lowboost','dijet_boosted']: qcd_os_ss_ratio = 1.82
       elif options.channel in ['mt','mj']: 
           qcd_os_ss_ratio = 1.07
-          if options.cat == '0jet': qcd_os_ss_ratio = 1.07
-          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
+          if options.cat == '0jet': 
+            #if options.era in ['cpsummer16']: qcd_os_ss_ratio = 1.15
+            #else:
+            qcd_os_ss_ratio = 1.07
+          elif options.cat == 'boosted': 
+            #if options.era in ['cpsummer16']: qcd_os_ss_ratio = 1.18
+            #else:
+            qcd_os_ss_ratio = 1.06
           elif options.cat in ['vbf','dijet','dijet_lowM','dijet_highM','dijet_lowboost','dijet_boosted', 'dijet_lowMjj']: qcd_os_ss_ratio = 1.0
+          #elif options.cat in ['dijet','dijet_lowboost','dijet_boosted']: qcd_os_ss_ratio = 1.23
       elif options.channel == 'zmm' or options.channel == 'zee':
           qcd_os_ss_ratio = 1.07   
       elif options.channel == 'em': 
