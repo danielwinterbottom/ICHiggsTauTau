@@ -453,7 +453,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
     if (fail_state) {
       if (fail_mode_ == 0) {
         std::cout << "Warning, SVFitTest mass not found!" << std::endl;
-        event->Add("svfitMass", double(-100.0));
+        event->Add("svfitMass", double(-9999.0));
       } else if (fail_mode_ == 1) {
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;
