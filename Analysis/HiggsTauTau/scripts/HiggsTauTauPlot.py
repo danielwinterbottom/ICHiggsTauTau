@@ -344,9 +344,11 @@ elif options.channel == 'em':
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
+    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
     
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -658,6 +660,26 @@ if options.era in ["smsummer16",'cpsummer16','tauid2016']:
     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
     gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
+    
+    
+if options.era in ['cpsummer17']:
+    ztt_samples = ['DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO'] 
+    top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext1','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
+    wjets_samples = ['W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    wgam_samples = []
+    ewkz_samples = ['EWKZ2Jets']
+    gghww_samples = []
+    qqhww_samples = []
+    
+    if options.channel in ['mt','zmm','mj']: 
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    if options.channel == 'em': 
+        data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
+    if options.channel == 'et' or options.channel == 'zee': 
+        data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    if options.channel == 'tt': 
+        data_samples = ['TauB','TauC','TauD','TauE','TauF']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
