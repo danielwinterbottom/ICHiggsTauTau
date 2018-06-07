@@ -890,6 +890,8 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   bool trg_mutaucross_;
   
+  bool flagMETFilter_;
+  
   double wt_tau_id_loose_;
   double wt_tau_id_medium_;
   double wt_tau_id_tight_;

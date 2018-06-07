@@ -67,7 +67,7 @@
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr24_SVFit/",
     "svfit_override" : "",
-    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
+    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar29_MELA/",
     "mela_mode" : 0,
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
@@ -95,9 +95,9 @@
       "efaketau_1pi_es_shift": 1.095,
       "mufaketau_0pi_es_shift": 0.998,
       "mufaketau_1pi_es_shift": 1.015,
-      "tau_1prong0pi0_es_shift": 0.982,
-      "tau_1prong1pi0_es_shift": 1.010,
-      "tau_3prong0pi0_es_shift": 1.004,
+      "tau_1prong0pi0_es_shift": 0.995,
+      "tau_1prong1pi0_es_shift": 1.011,
+      "tau_3prong0pi0_es_shift": 1.006,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -226,37 +226,37 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : 0.988
+         "tau_1prong0pi0_es_shift" : 1.007
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : 0.976
+         "tau_1prong0pi0_es_shift" : 0.983
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.016
+         "tau_1prong1pi0_es_shift" : 1.023
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 1.004
+         "tau_1prong1pi0_es_shift" : 0.999
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 1.01
+         "tau_3prong0pi0_es_shift" : 1.018
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.998
+         "tau_3prong0pi0_es_shift" : 0.994
       }
     },
 

@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zee", "zmm"],
+    "channels":     ["zmm", "zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -92,12 +92,12 @@
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
       "efaketau_0pi_es_shift": 1.0,
-      "efaketau_1pi_es_shift": 1.095,
-      "mufaketau_0pi_es_shift": 0.998,
-      "mufaketau_1pi_es_shift": 1.015,
-      "tau_1prong0pi0_es_shift": 0.982,
-      "tau_1prong1pi0_es_shift": 1.010,
-      "tau_3prong0pi0_es_shift": 1.004,
+      "efaketau_1pi_es_shift": 1.0,
+      "mufaketau_0pi_es_shift": 1.0,
+      "mufaketau_1pi_es_shift": 1.0,
+      "tau_1prong0pi0_es_shift": 1.0,
+      "tau_1prong1pi0_es_shift": 1.0,
+      "tau_3prong0pi0_es_shift": 1.0,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,

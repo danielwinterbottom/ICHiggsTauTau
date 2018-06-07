@@ -1637,6 +1637,8 @@ namespace ic {
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
+      
+      synctree_->Branch("flagMETFilter", &flagMETFilter_);
 
     }
     return 0;
@@ -1653,6 +1655,8 @@ namespace ic {
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
+    
+    if (event->Exists("flagMETFilter")) flagMETFilter_ = event->Get<bool>("flagMETFilter");
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");

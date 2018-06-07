@@ -1331,11 +1331,15 @@ if(do_met_filters){
        for(unsigned i=0;i<met_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
        }
+       if(js["make_sync_ntuple"].asBool()){
+         event->Add("flagMETFilter", pass_filters);  
+         return false;    
+       }
        return !pass_filters;
     }));
 }
 
-if (strategy_type == strategy::mssmsummer16){
+if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
   BuildModule(GenericModule("BadMuonFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
