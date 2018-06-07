@@ -10,11 +10,11 @@
 
 - [x] Update the single lepton triggers: For 2017 there are several lower pT triggers that are prescaled for part of datataking but I think these should still be used in an OR with the other un-prescaled single-lepton trigger since the pT threholds for these triggers are getting quite high. I have set these up based on the information on the twikis about the which trigger are prescaled but we should check that the trigger I have included in the OR are actually needed (check if not using them in the OR changes the acceptance). There are also some additional triggers that weren't excplcitly reccomended by the POGS but could increase the trigger efficincy (e.g for the single muon trigger tehre is a Mu24 path with eta restriction) We should check this adding these in the trigger OR impoprves the trigger efficiency or not and if it does we should include them.
 
-- [ ] New Parameters file: make new parameters file with updated event numbers and cross-sectios. Some MC sample may have changed or been split by decay channel (e.g TT) so will need to find new cross sections for these processes
+- [x] New Parameters file: make new parameters file with updated event numbers and cross-sectios. Some MC sample may have changed or been split by decay channel (e.g TT) so will need to find new cross sections for these processes
 
 - [x] Tag and probe measurments: We need to produce SFs for electrons / muons id,iso and trigger. Currently the tag and probe code I wrote only works for the trigger scale-factors since it doesn't not fit the data to properly account for the presense of fakes, this is OK for the trigger SFs since the ID/isolation are applied to the probe leptons so the number of fakes is very small but the number of fakes can be large when measuring the id/iso scale factors. The tag and probe code should be changed to fit the invariant mass distribution (in bins of pT and eta) using function to properly account for the fakes (need to use simultanious fit of pass and fail categories). Once this is updated SFs can be produced and tested using Z->ee/mumu evenst 
 
-- [ ] DY pT/mass weights - measure new weights using di-muon data and apply/test using Z->mumu/ee events
+- [x] DY pT/mass weights - measure new weights using di-muon data and apply/test using Z->mumu/ee events
 
 - [ ] Tau IDs/ SF: I added the next tau ID training to the ntuples, these will need to be applied instead ofthe old IDs in the analyser. Also update the SFs to the recommended ones on the TauPOG twiki. Anti-electron/muon IDs will likly be updated by the Tau POG - add these to nutples when they are available
 
