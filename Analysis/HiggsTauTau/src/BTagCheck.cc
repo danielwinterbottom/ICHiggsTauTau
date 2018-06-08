@@ -105,8 +105,10 @@ namespace ic {
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -122,15 +124,18 @@ namespace ic {
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = PF03IsolationVal(muon, 0.5, 0);
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_1 = PF04IsolationVal(muon, 0.5, 0);  
+          iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
         antimu_pass = tau->GetTauID("againstMuonTight3");
         if(era_ == era::data_2015 && iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
-        if((era_ == era::data_2016 || era_ == era::data_2017) && iso_1<0.15&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+        else if(iso_1<0.15&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
     if(channel_ == channel::em) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -152,6 +157,9 @@ namespace ic {
         if( era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = tau1->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_1 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");  
+          iso_2 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = tau1->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");

@@ -1252,6 +1252,31 @@ class HTTCategories : public ModuleBase {
   unsigned tau_id_1_;
   unsigned tau_id_2_;
   double wt_trg_corr_;
+
+  bool tau_id_olddm_vloose_1_ ; 
+  bool tau_id_newdm_vloose_1_ ;
+  bool tau_id_olddm_loose_1_  ;
+  bool tau_id_newdm_loose_1_  ;
+  bool tau_id_olddm_medium_1_ ;
+  bool tau_id_newdm_medium_1_ ;
+  bool tau_id_olddm_tight_1_  ;
+  bool tau_id_newdm_tight_1_  ;
+  bool tau_id_olddm_vtight_1_ ;
+  bool tau_id_newdm_vtight_1_ ;
+  bool tau_id_olddm_vvtight_1_;
+  bool tau_id_newdm_vvtight_1_;
+  bool tau_id_olddm_vloose_2_ ;
+  bool tau_id_newdm_vloose_2_ ;
+  bool tau_id_olddm_loose_2_  ;
+  bool tau_id_newdm_loose_2_  ;
+  bool tau_id_olddm_medium_2_ ;
+  bool tau_id_newdm_medium_2_ ;
+  bool tau_id_olddm_tight_2_  ;
+  bool tau_id_newdm_tight_2_  ;
+  bool tau_id_olddm_vtight_2_ ;
+  bool tau_id_newdm_vtight_2_ ;
+  bool tau_id_olddm_vvtight_2_;
+  bool tau_id_newdm_vvtight_2_;
   
 
  public:

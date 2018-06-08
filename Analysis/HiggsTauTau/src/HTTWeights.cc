@@ -227,6 +227,10 @@ namespace ic {
                  w_->function("m_trg_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
               fns_["m_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_idiso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
               fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));    
               fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
@@ -235,6 +239,10 @@ namespace ic {
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
             
           } else {
             if (strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16) {
@@ -405,7 +413,7 @@ namespace ic {
                  w_->function("t_trgVTightIsoSS_data")->functor(w_->argSet("t_pt")));
             }
           }
-          if(do_tau_id_sf_ && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16){
+          if(do_tau_id_sf_ && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 && strategy_ != strategy::cpsummer17){
             fns_["t_iso_mva_m_pt30_sf"] = std::shared_ptr<RooFunctor>(
                w_->function("t_iso_mva_m_pt30_sf")->functor(w_->argSet("t_pt,t_eta,t_dm")));
             fns_["t_iso_mva_t_pt40_eta2p1_sf"] = std::shared_ptr<RooFunctor>(
@@ -431,7 +439,6 @@ namespace ic {
         f.Close();
 
         if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
-          std::cout << "test" << std::endl;
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
@@ -811,9 +818,7 @@ namespace ic {
             double medium_tau_sf_2 = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
             event->Add("wt_tau_id_loose",loose_tau_sf_2/(tau_sf_2));
             event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
-        } else if (strategy_ == strategy::cpsummer17){
-          tau_sf_2 = 1.;
-        }
+        } else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.87 : 1.0;
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16) && gen_match_2 == 5){
           event->Add("wt_tau_id_dm_up",1.03);
@@ -836,13 +841,13 @@ namespace ic {
           if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.95 : 1.0;  
           else tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
-        else if(strategy_ == strategy::cpsummer17) tau_sf_1 = 1.0; 
+        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.87 : 1.0; 
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
           if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.95 : 1.0;
           else tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
-        else if(strategy_ == strategy::cpsummer17) tau_sf_2 = 1.0;
+        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.87 : 1.0;
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
         
         double loose_tau_sf_1 = (gen_match_1 == 5 && !is_embedded_) ? 0.99 : 1.0;

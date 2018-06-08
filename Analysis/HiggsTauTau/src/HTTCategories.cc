@@ -731,25 +731,46 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
-      outtree_->Branch("mva_olddm_vloose_1",&lbyVLooseIsolationMVArun2DBoldDMwLT_1);
-      outtree_->Branch("mva_olddm_vloose_2",&lbyVLooseIsolationMVArun2DBoldDMwLT_2);
-      outtree_->Branch("mva_olddm_loose_1",&lbyLooseIsolationMVArun2DBoldDMwLT_1);
-      outtree_->Branch("mva_olddm_loose_2",&lbyLooseIsolationMVArun2DBoldDMwLT_2);
-      outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
-      outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
-      outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
-      outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
-      outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
-      outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
 
-      outtree_->Branch("mva_newdm_vloose_1",&lbyVLooseIsolationMVArun2DBnewDMwLT_1);
-      outtree_->Branch("mva_newdm_vloose_2",&lbyVLooseIsolationMVArun2DBnewDMwLT_2);
-      outtree_->Branch("mva_newdm_loose_1",&lbyLooseIsolationMVArun2DBnewDMwLT_1);
-      outtree_->Branch("mva_newdm_loose_2",&lbyLooseIsolationMVArun2DBnewDMwLT_2);
-      outtree_->Branch("mva_newdm_medium_1",&lbyMediumIsolationMVArun2DBnewDMwLT_1);
-      outtree_->Branch("mva_newdm_medium_2",&lbyMediumIsolationMVArun2DBnewDMwLT_2);
-      outtree_->Branch("mva_newdm_tight_1",&lbyTightIsolationMVArun2DBnewDMwLT_1);
-      outtree_->Branch("mva_newdm_tight_2",&lbyTightIsolationMVArun2DBnewDMwLT_2);
+      if(strategy_==strategy::cpsummer17) {
+        outtree_->Branch("mva_olddm_vloose_1",&tau_id_olddm_vloose_1_);
+        outtree_->Branch("mva_olddm_vloose_2",&tau_id_olddm_vloose_2_);
+        outtree_->Branch("mva_olddm_loose_1",&tau_id_olddm_loose_1_);
+        outtree_->Branch("mva_olddm_loose_2",&tau_id_olddm_loose_2_);
+        outtree_->Branch("mva_olddm_medium_1",&tau_id_olddm_medium_1_);
+        outtree_->Branch("mva_olddm_medium_2",&tau_id_olddm_medium_2_);
+        outtree_->Branch("mva_olddm_tight_1",&tau_id_olddm_tight_1_);
+        outtree_->Branch("mva_olddm_tight_2",&tau_id_olddm_tight_2_);
+        outtree_->Branch("mva_olddm_vtight_1",&tau_id_olddm_vtight_1_);
+        outtree_->Branch("mva_olddm_vtight_2",&tau_id_olddm_vtight_2_);
+        outtree_->Branch("mva_newdm_vloose_1",&tau_id_newdm_tight_1_);
+        outtree_->Branch("mva_newdm_vloose_2",&tau_id_newdm_tight_1_);
+        outtree_->Branch("mva_newdm_loose_1",&tau_id_newdm_loose_1_);
+        outtree_->Branch("mva_newdm_loose_2",&tau_id_newdm_loose_2_);
+        outtree_->Branch("mva_newdm_medium_1",&tau_id_newdm_medium_1_);
+        outtree_->Branch("mva_newdm_medium_2",&tau_id_newdm_medium_2_);
+        outtree_->Branch("mva_newdm_tight_1",&tau_id_newdm_tight_1_);
+        outtree_->Branch("mva_newdm_tight_2",&tau_id_newdm_tight_2_);  
+      } else {    
+        outtree_->Branch("mva_olddm_vloose_1",&lbyVLooseIsolationMVArun2DBoldDMwLT_1);
+        outtree_->Branch("mva_olddm_vloose_2",&lbyVLooseIsolationMVArun2DBoldDMwLT_2);
+        outtree_->Branch("mva_olddm_loose_1",&lbyLooseIsolationMVArun2DBoldDMwLT_1);
+        outtree_->Branch("mva_olddm_loose_2",&lbyLooseIsolationMVArun2DBoldDMwLT_2);
+        outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
+        outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
+        outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
+        outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
+        outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
+        outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
+        outtree_->Branch("mva_newdm_vloose_1",&lbyVLooseIsolationMVArun2DBnewDMwLT_1);
+        outtree_->Branch("mva_newdm_vloose_2",&lbyVLooseIsolationMVArun2DBnewDMwLT_2);
+        outtree_->Branch("mva_newdm_loose_1",&lbyLooseIsolationMVArun2DBnewDMwLT_1);
+        outtree_->Branch("mva_newdm_loose_2",&lbyLooseIsolationMVArun2DBnewDMwLT_2);
+        outtree_->Branch("mva_newdm_medium_1",&lbyMediumIsolationMVArun2DBnewDMwLT_1);
+        outtree_->Branch("mva_newdm_medium_2",&lbyMediumIsolationMVArun2DBnewDMwLT_2);
+        outtree_->Branch("mva_newdm_tight_1",&lbyTightIsolationMVArun2DBnewDMwLT_1);
+        outtree_->Branch("mva_newdm_tight_2",&lbyTightIsolationMVArun2DBnewDMwLT_2);
+      }
 
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
@@ -2879,8 +2900,22 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
+      } 
+      if(strategy_ == strategy::cpsummer17) {
+        iso_2_ = tau->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+        tau_id_olddm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_loose_2_   = tau->HasTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_loose_2_   = tau->HasTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_medium_2_  = tau->HasTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_medium_2_  = tau->HasTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_tight_2_   = tau->HasTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_tight_2_   = tau->HasTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vtight_2_  = tau->HasTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vtight_2_  = tau->HasTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
-
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
@@ -3098,6 +3133,21 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
         antimu_loose_2_ = lagainstMuonLoose3_2;
+      }
+      if(strategy_ == strategy::cpsummer17) {
+        iso_2_ = tau->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+        tau_id_olddm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_loose_2_   = tau->HasTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_loose_2_   = tau->HasTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_medium_2_  = tau->HasTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_medium_2_  = tau->HasTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_tight_2_   = tau->HasTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_tight_2_   = tau->HasTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vtight_2_  = tau->HasTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vtight_2_  = tau->HasTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
     }
     if (channel_ == channel::em) {
@@ -3440,6 +3490,34 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
 
+      }
+      if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = tau1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+        tau_id_olddm_vloose_1_  = tau1->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017")  ? tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vloose_1_  = tau1->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017")  ? tau1->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_loose_1_   = tau1->HasTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017")   ? tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_loose_1_   = tau1->HasTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017")   ? tau1->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_medium_1_  = tau1->HasTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017")  ? tau1->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_medium_1_  = tau1->HasTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017")  ? tau1->GetTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_tight_1_   = tau1->HasTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017")   ? tau1->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_tight_1_   = tau1->HasTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017")   ? tau1->GetTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vtight_1_  = tau1->HasTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017")  ? tau1->GetTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vtight_1_  = tau1->HasTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017")  ? tau1->GetTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vvtight_1_ = tau1->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau1->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vvtight_1_ = tau1->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau1->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        iso_2_ = tau2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+        tau_id_olddm_vloose_2_  = tau2->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017")  ? tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vloose_2_  = tau2->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017")  ? tau2->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_loose_2_   = tau2->HasTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017")   ? tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_loose_2_   = tau2->HasTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017")   ? tau2->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_medium_2_  = tau2->HasTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017")  ? tau2->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_medium_2_  = tau2->HasTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017")  ? tau2->GetTauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_tight_2_   = tau2->HasTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017")   ? tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_tight_2_   = tau2->HasTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017")   ? tau2->GetTauID("byTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vtight_2_  = tau2->HasTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017")  ? tau2->GetTauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vtight_2_  = tau2->HasTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017")  ? tau2->GetTauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
+        tau_id_olddm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
+        tau_id_newdm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
 
     }

@@ -909,7 +909,7 @@ namespace ic {
           passed_mutaucross_alt = alt_leg1_match && alt_leg2_match; 
         }
         if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
-        if(is_embedded_&& dileptons[i]->At(0)->pt()<high_leg_pt){
+        if(is_embedded_){
           // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
           passed_mutaucross = true;
           passed_mutaucross_alt = true;
