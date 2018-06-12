@@ -66,7 +66,7 @@ namespace ic {
       outtree_->Branch("sf",&sf);
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if( era_ == era::data_2016 || era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
     calib  = new const BTagCalibration("csvv2",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
@@ -77,7 +77,7 @@ namespace ic {
     reader_mujets->load(*calib, BTagEntry::FLAV_B,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_C,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_UDSG,"mujets");
-    if(era_ == era::data_2016){
+    if(era_ == era::data_2016 || era_ == era::data_2017){
       reader_comb->load(*calib, BTagEntry::FLAV_B,"comb");
       reader_comb->load(*calib, BTagEntry::FLAV_C,"comb");
       reader_comb->load(*calib, BTagEntry::FLAV_UDSG,"comb");
@@ -103,10 +103,12 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
-        if(era_ != era::data_2016){
+        if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -119,18 +121,21 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Muon const* muon  = dynamic_cast<Muon const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        if(era_ != era::data_2016){
+        if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = PF03IsolationVal(muon, 0.5, 0);
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_1 = PF04IsolationVal(muon, 0.5, 0);  
+          iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
         antimu_pass = tau->GetTauID("againstMuonTight3");
         if(era_ == era::data_2015 && iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
-        if(era_ == era::data_2016 && iso_1<0.15&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+        else if(iso_1<0.15&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
     if(channel_ == channel::em) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -138,20 +143,23 @@ namespace ic {
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
-        if(era_ != era::data_2016){
+        if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);
         } else iso_2 = PF04IsolationVal(muon, 0.5, 0);
         if(era_ == era::data_2015 && iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
-        if(era_ == era::data_2016 && iso_1<0.2&&iso_2<0.15&&os>0) pass_presel=true;
+        if((era_ == era::data_2016 || era_ == era::data_2017) && iso_1<0.2&&iso_2<0.15&&os>0) pass_presel=true;
     }
     if(channel_ == channel::tt) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        if( era_ != era::data_2016){
+        if( era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = tau1->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
+        } else if (strategy_ == strategy::cpsummer17) {
+          iso_1 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");  
+          iso_2 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = tau1->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
@@ -195,9 +203,9 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) tight_wp = 0.8484;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) tight_wp = 0.8484;
         if(jet_flavour == 5){
-          if(era_!=era::data_2016){
+          if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
@@ -208,7 +216,7 @@ namespace ic {
           }
         } else if(jet_flavour == 4){
           hists_->Fill("NTot_cflav",pt,eta,wt);
-          if(era_!=era::data_2016){
+          if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);

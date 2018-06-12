@@ -38,7 +38,7 @@ namespace ic {
       throw;
     }
 
-    if (do_w_soup_ && era_!=era::data_2015 && era_!=era::data_2016) {
+    if (do_w_soup_ && era_!=era::data_2015 && era_!=era::data_2016 && era_ != era::data_2017) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
@@ -50,7 +50,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
-    if (do_w_soup_ && (era_ == era::data_2015 || era_ ==era::data_2016)) {
+    if (do_w_soup_ && (era_ == era::data_2015 || era_ ==era::data_2016 || era_ == era::data_2017)) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
       f1_ = wxs1_/wxs0_;
@@ -74,7 +74,7 @@ namespace ic {
         t_gen_info_->Branch("wt", &t_wt_);
       }
     }
-    if (do_dy_soup_ && era_!=era::data_2015 &&era_!=era::data_2016) {
+    if (do_dy_soup_ && era_!=era::data_2015 &&era_!=era::data_2016 && era_ != era::data_2017) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
@@ -86,7 +86,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
     }
-    if (do_dy_soup_ && (era_==era::data_2015||era_==era::data_2016)) {
+    if (do_dy_soup_ && (era_==era::data_2015||era_==era::data_2016 || era_ == era::data_2017)) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zf1_ = zxs1_/zxs0_;
@@ -194,7 +194,7 @@ namespace ic {
     if (do_w_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015 && era_ != era::data_2016){
+      if(era_ != era::data_2015 && era_ != era::data_2016 && era_ != era::data_2017){
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = false;
         for (unsigned i = 0; i < parts.size(); ++i) {
@@ -205,7 +205,7 @@ namespace ic {
           }
           if (id == 24) count_jets = true; 
         }
-      } else if(era_ == era::data_2015 || era_ == era::data_2016) {
+      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2017) {
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
         t_ht_=0;
@@ -237,7 +237,7 @@ namespace ic {
     if (do_dy_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015&&era_!=era::data_2016){
+      if(era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017){
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = false;
       
@@ -250,7 +250,7 @@ namespace ic {
           }
           if (id == 23) count_jets = true; 
         }
-      } else if(era_ == era::data_2015 || era_ == era::data_2016){ 
+      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2017){ 
         t_ht_=0;
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;

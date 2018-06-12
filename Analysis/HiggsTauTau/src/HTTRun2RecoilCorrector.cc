@@ -23,7 +23,8 @@ namespace ic {
     is_wjets = false;
     met_scale_mode_ = 0;
     met_res_mode_ = 0;
-    njets_mode_ = 0;    
+    njets_mode_ = 0;  
+    do_recoil_=true;
   }
 
   HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
@@ -47,7 +48,7 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
@@ -73,6 +74,7 @@ namespace ic {
      disable_recoil_corrs = false;
     }
     
+    disable_recoil_corrs = disable_recoil_corrs && !do_recoil_;
     if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
       std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
@@ -91,7 +93,6 @@ namespace ic {
 
   int HTTRun2RecoilCorrector::Execute(TreeEvent *event) {
 
-    if (disable_recoil_corrs && disable_met_sys) return 0;
 
     // Get the stuff we need from the event
     Met * met = event->GetPtr<Met>(met_label_);
@@ -139,6 +140,8 @@ namespace ic {
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
   if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
+  if (disable_recoil_corrs && disable_met_sys) return 0;
+  
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();

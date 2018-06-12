@@ -148,7 +148,6 @@ class HTTCategories : public ModuleBase {
   branch_var pfmt_tot_;
   branch_var pfmt_1_;
   branch_var puppimt_1_;
-  float id_e_mva_nt_loose_1_ = 0;
   branch_var mt_2_;
   branch_var pfmt_2_;
   double mt_ll_;
@@ -900,7 +899,8 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   bool trg_mutaucross_;
   
-  double wt_tau_id_binned_;
+  bool flagMETFilter_;
+  
   double wt_tau_id_loose_;
   double wt_tau_id_medium_;
   double wt_tau_id_tight_;
@@ -1262,12 +1262,30 @@ class HTTCategories : public ModuleBase {
   unsigned tau_id_2_;
   double wt_trg_corr_;
 
-  double e_min_dR_;
-  double m_min_dR_;
-  double ej_dR_;
-  double mj_dR_;
-  double jdR_;
-  
+  bool tau_id_olddm_vloose_1_ ; 
+  bool tau_id_newdm_vloose_1_ ;
+  bool tau_id_olddm_loose_1_  ;
+  bool tau_id_newdm_loose_1_  ;
+  bool tau_id_olddm_medium_1_ ;
+  bool tau_id_newdm_medium_1_ ;
+  bool tau_id_olddm_tight_1_  ;
+  bool tau_id_newdm_tight_1_  ;
+  bool tau_id_olddm_vtight_1_ ;
+  bool tau_id_newdm_vtight_1_ ;
+  bool tau_id_olddm_vvtight_1_;
+  bool tau_id_newdm_vvtight_1_;
+  bool tau_id_olddm_vloose_2_ ;
+  bool tau_id_newdm_vloose_2_ ;
+  bool tau_id_olddm_loose_2_  ;
+  bool tau_id_newdm_loose_2_  ;
+  bool tau_id_olddm_medium_2_ ;
+  bool tau_id_newdm_medium_2_ ;
+  bool tau_id_olddm_tight_2_  ;
+  bool tau_id_newdm_tight_2_  ;
+  bool tau_id_olddm_vtight_2_ ;
+  bool tau_id_newdm_vtight_2_ ;
+  bool tau_id_olddm_vvtight_2_;
+  bool tau_id_newdm_vvtight_2_;
 
  public:
   HTTCategories(std::string const& name);

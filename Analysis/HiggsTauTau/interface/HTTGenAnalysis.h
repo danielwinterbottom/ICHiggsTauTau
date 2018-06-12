@@ -102,6 +102,8 @@ class HTTGenAnalysis : public ModuleBase {
   float DCP_;
   float D0star_;
   double sjdphi_;
+
+  float n_pu_;
   
   double pT_A_;
   

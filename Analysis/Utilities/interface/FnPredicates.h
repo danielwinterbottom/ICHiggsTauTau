@@ -88,6 +88,7 @@ namespace ic {
   bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho);
   bool VetoElectronID(Electron const* elec);
   bool VetoElectronIDSpring16(Electron const* elec);
+  bool VetoElectronIDFall17(Electron const* elec, double const& rho);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);
@@ -98,6 +99,7 @@ namespace ic {
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp);
 
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);

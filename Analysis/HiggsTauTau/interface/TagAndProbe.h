@@ -232,8 +232,15 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
-    trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
-    trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    bool pass_extra_filter_1 = true;
+    bool pass_extra_filter_2 = true;
+    if(probe_objs[i] == "triggerObjectsEle32L1DoubleEG"){
+      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle35");
+      pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+      pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+    }
+    trg_probe_1_ = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1) || trg_probe_1_;
+    trg_probe_2_ = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2) || trg_probe_2_;
     
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
@@ -258,7 +265,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -289,7 +296,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
       iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
@@ -332,7 +339,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(channel_ == channel::tpmt){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon = dynamic_cast<T>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -382,7 +389,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   if(channel_ == channel::tpem){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);

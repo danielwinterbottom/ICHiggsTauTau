@@ -225,6 +225,7 @@ namespace ic {
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
       outtree_->Branch("sjdphi"     , &sjdphi_);
+      outtree_->Branch("n_pu",      &n_pu_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -741,6 +742,17 @@ namespace ic {
       }
     } else sjdphi_ = -9999;
 
+
+    std::vector<PileupInfo *> puInfo;
+    float true_int = -1;
+
+    puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
+      for (unsigned i = 0; i < puInfo.size(); ++i) {
+        if (puInfo[i]->bunch_crossing() == 0)
+          true_int = puInfo[i]->true_num_interactions();
+      }
+    
+    n_pu_ = true_int;
     
     auto args = std::vector<double>{pT};
     if(fns_["h_t_ratio"]){
