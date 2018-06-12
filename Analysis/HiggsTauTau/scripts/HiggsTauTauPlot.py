@@ -295,11 +295,7 @@ print '###############################################'
 print ''
 
 vbf_background = False
-<<<<<<< HEAD
-#if options.era == 'cpsummer16': vbf_background = True
-=======
 vbf_background = options.vbf_background
->>>>>>> f1ddfb8de9b363ffe696fc4ff37cdf6499d1e4c8
 
 compare_w_shapes = False
 compare_qcd_shapes = False
