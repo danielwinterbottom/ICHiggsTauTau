@@ -13,7 +13,7 @@ import copy
 
 CHANNELS= ['et', 'mt', 'em','tt','zmm','zee','mj']
 ANALYSIS= ['sm','mssm','Hhh']
-METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19, 20]
+METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
 
 conf_parser = argparse.ArgumentParser(
     description=__doc__,
@@ -426,10 +426,8 @@ if options.era == 'cpsummer16':
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
       cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
-      #cats['dijet']='n_jets>=2 && mjj>300 && jdeta>3 && n_bjets==0'
-      #if options.channel == 'em': cats['dijet']='n_jets==2 && mjj>300 && n_bjets==0'
-      cats['dijet_boosted']='%s && pt_tt>300' % cats['dijet']
-      cats['dijet_lowboost']='%s && pt_tt<300' % cats['dijet']
+      cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
+      cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'
@@ -437,40 +435,6 @@ if options.era == 'cpsummer16':
     cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
     cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
-  
-  # aachen groups cuts
-  #if options.channel == 'mt':
-  #  cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-  #  cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-  #if options.channel == 'et':
-  #  cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)' 
-  #  cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
-  #if options.channel == 'tt':
-  #  cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-  #  cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
- # 
- # cats['0jet'] = 'n_jets==0'
- # if options.channel == 'mt': 
- #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_2>40&&pt_tt>50)))'
- # if options.channel == 'et':
- #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(mjj>300&&pt_tt>50)))'
- # if options.channel == 'em':
- #   cats['boosted'] = '((n_jets==1)||(n_jets==2&&!(mjj>300&&pzeta>-10))||(n_jets>2))'
- # if options.channel == 'tt':
- #   cats['boosted'] = '((n_jets==1)||(n_jets>1&&!(jdeta>2.5&&pt_tt>100)))'
-  
- # cats['dijet_boosted'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt>150.)*(m_sv>100)'
- # cats['dijet_highM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv>100)'
- # cats['dijet_lowM'] = '(mjj>500)*(jdeta>2.0)*(n_jets>1)*(pt_tt<150.)*(m_sv<100)'
- # cats['dijet_lowMjj'] = '(mjj>300)*(mjj<500)*(n_jets>1)'
- # 
- # if options.channel == 'em':
- #   cats['dijet_boosted']+='&& n_bjets<1'
- #   cats['dijet_highM']+='&& n_bjets<1'
- #   cats['dijet_lowM']+='&& n_bjets<1'
- #   cats['dijet_lowMjj']+='&& n_bjets<1'
- # 
-  # end of aachen cuts
   
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16'] and False: # Remove the False when finished!!!!!
@@ -2395,37 +2359,6 @@ while len(systematics) > 0:
     GetTotals(ana,n,outfile)
   PrintSummary(nodename, ['data_obs'], add_names)
 
-# use to plot em QCD uncerts
-#bkg = outfile.Get(nodename+'/total_bkg').Clone() 
-#qcd = outfile.Get(nodename+'/QCD').Clone()
-#qcd_rateup = outfile.Get(nodename+'/QCD').Clone()
-#qcd_ratedown = outfile.Get(nodename+'/QCD').Clone()
-##qcd_sf = 1.12
-#qcd_sf=1.064
-#qcd_rateup.Scale(qcd_sf)
-#qcd_ratedown.Scale(2-qcd_sf)
-#qcd_up = outfile.Get(nodename+'/QCD_shapeup')
-#qcd_down = outfile.Get(nodename+'/QCD_shapedown')
-#bkg.Add(qcd,-1)
-#bkg.Add(qcd_up,-1)
-#bkg.Add(qcd_down,-1)
-#t_bkg = bkg.Clone()
-#t_bkg.Add(qcd)
-#qcd_rateup.Add(bkg)
-#qcd_ratedown.Add(bkg)
-#qcd_up.Add(bkg)
-#qcd_down.Add(bkg)
-#for i in range(1,qcd.GetNbinsX()+1):
-#  nom = t_bkg.GetBinContent(i)
-#  up = math.sqrt((max(qcd_up.GetBinContent(i),qcd_down.GetBinContent(i))-nom)**2 + (qcd_rateup.GetBinContent(i)-nom)**2)
-#  down = math.sqrt((min(qcd_up.GetBinContent(i),qcd_down.GetBinContent(i))-nom)**2 + (qcd_ratedown.GetBinContent(i)-nom)**2)
-#  qcd_up.SetBinContent(i,nom+up)
-#  qcd_down.SetBinContent(i,nom-down)
-#outfile.cd(nodename)
-#qcd_up.Write()
-#qcd_down.Write()
-#outfile.cd()
-
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
@@ -2543,7 +2476,7 @@ if not options.no_plot:
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
-    FF = options.method in [17,18,20]
+    FF = options.method in [17,18]
     if options.do_unrolling and is_2d:
         auto_blind=False
         plotting.HTTPlotUnrolled(nodename, 
