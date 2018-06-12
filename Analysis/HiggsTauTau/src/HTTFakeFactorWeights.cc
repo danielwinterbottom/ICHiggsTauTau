@@ -40,13 +40,13 @@ namespace ic {
     
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
-    if(strategy_ == strategy::smsummer16) category_names_ = {"inclusive"};
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) category_names_ = {"inclusive"};
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/fakeFactors_"+ff_file_+".root";
       }
       ff_file_name = baseDir + ff_file_name;
@@ -198,7 +198,7 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16) {
+    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) {
       double pt_tt = ditau->pt();
       double mjj=0.;
       if(jets.size()>=2) mjj=(jets[0]->vector()+jets[1]->vector()).M();
@@ -251,7 +251,7 @@ namespace ic {
           for(unsigned j=0; j<systematics.size(); ++j){
             std::string syst = systematics[j];
             double ff_syst = fake_factors_[map_key]->value(inputs,syst);
-            std::string syst_name = "wt_"+syst;
+            std::string syst_name = "wt_"+syst+"_1";
             event->Add(syst_name, ff_syst);
           } 
         }

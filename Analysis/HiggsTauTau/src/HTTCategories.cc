@@ -3630,7 +3630,7 @@ namespace ic {
     }
     
 
-    if(cd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
+    if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
       std::vector<Candidate *> leading_lepton;
       std::vector<Candidate *> subleading_lepton;
       leading_lepton.push_back(ditau->GetCandidate("lepton1"));
