@@ -296,8 +296,9 @@ cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-        #if options.era in ['cpsummer16']: cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+        if options.era in ['smsummer16','cpsummer16']: 
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+          cats['baseline_aiso'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
           cats['baseline_loosemu'] = '(iso_1<0.15 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -1358,105 +1359,82 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
     else:
         OSSS = '!os'
         
-    if options.method in [20]:    
-      if options.channel == 'mt': anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-      if options.channel == 'et': anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'
-      ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
-      ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
-      if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
-      wt+='*wt_tau_id_loose' 
-      full_selection = BuildCutString(wt, sel, ff_cat, OSSS, '')
-      full_selection_qcd = BuildCutString(wt+'*wt_ff_qcd', sel, ff_cat, OSSS, '')
-      full_selection_w = BuildCutString(wt+'*wt_ff_w', sel, ff_cat, OSSS, '')
-      full_selection_tt = BuildCutString(wt+'*wt_ff_tt', sel, ff_cat, OSSS, '')
-      data_node = ana.SummedFactory('data', data, plot_unmodified, full_selection)
-
-      realtau_node = GetSubtractNode(ana,'realtau',plot,plot_unmodified,wt,sel,ff_cat+'&&(gen_match_2<6)',ff_cat_data+'&&(gen_match_2<6)',8,1.0,get_os,True)
-      w_node = GetWNode(ana, "W", wjets_samples, data, plot, plot_unmodified, wt, sel, ff_cat+'&&(gen_match_2==6)', ff_cat_data+'&&(gen_match_2==6)',8, 1., get_os)
-      zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, ff_cat, z_sels, get_os)
-      ewkzj_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, ff_cat+'&&(gen_match_2==6)', z_sels, get_os)
-      vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, ff_cat, vv_sels, get_os)
-      ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, ff_cat, top_sels, get_os)
-      w_node.AddNode(zj_node)
-      w_node.AddNode(ewkzj_node)
-      w_node.AddNode(vvj_node)
-
-      ff_qcd = ana.SummedFactory('ff_qcd_data'+add_name, data, plot_unmodified, full_selection_qcd)
-      ff_w = ana.SummedFactory('ff_w_data'+add_name, data, plot_unmodified, full_selection_w)
-      ff_tt = ana.SummedFactory('ff_tt_data'+add_name, data, plot_unmodified, full_selection_tt)
-
-      mc_qcd = GetSubtractNode(ana,'_qcd',plot,plot_unmodified,wt+'*wt_ff_qcd',sel,ff_cat+'&&(gen_match_2<6)',ff_cat_data+'&&(gen_match_2<6)',8,1.0,get_os,True)
-      mc_w = GetSubtractNode(ana,'_w',plot,plot_unmodified,wt+'*wt_ff_w',sel,ff_cat+'&&(gen_match_2<6)',ff_cat_data+'&&(gen_match_2<6)',8,1.0,get_os,True)
-      mc_tt = GetSubtractNode(ana,'_tt',plot,plot_unmodified,wt+'*wt_ff_tt',sel,ff_cat+'&&(gen_match_2<6)',ff_cat_data+'&&(gen_match_2<6)',8,1.0,get_os,True)
-
-      ff_node  = HttFFNode('jetFakes'+add_name, data_node, realtau_node, w_node, ttj_node, ff_qcd, ff_w, ff_tt, mc_qcd, mc_w, mc_tt)
-      ana.nodes[nodename].AddNode(ff_node)
+    # Select data from anti-isolated region
+    if options.channel != "tt":
+        if options.channel == 'mt':
+            if options.era == 'smsummer16' or options.era == 'cpsummer16': anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+            else: anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
+        elif options.channel == 'et': 
+            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            if options.era in ["mssmsummer16"]: anti_isolated_sel +=" && trg_singleelectron"
+            if options.era in ["smsummer16","cpsummer16"]:
+              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)'    
+        ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
+        ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
+        if options.era == 'smsummer16' or options.era == 'cpsummer16':
+          if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
+          else: fake_factor_wt_string = "wt_ff_1"
+          if not options.embedding: fake_factor_wt_string+='*((gen_match_2!=5) + (gen_match_2==5)*wt_ff_realtau_1)' 
+        else:
+          if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
+          else: fake_factor_wt_string = "wt_ff_"+options.cat
+          fake_factor_wt_string+='*wt_tau_id_loose'
+        if wt is not "": wt+="*"+fake_factor_wt_string
+        else: wt=fake_factor_wt_string
     
-    else:
-      # Select data from anti-isolated region
-      if options.channel != "tt":
-          if options.channel == 'mt':
-              if options.era == 'smsummer16' or options.era == 'cpsummer16': anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
-              else: anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-              if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
-          elif options.channel == 'et': 
-              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-              if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
-          ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
-          ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
-          if options.era == 'smsummer16' or options.era == 'cpsummer16':
-            if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
-            else: fake_factor_wt_string = "wt_ff_qcd"
-            fake_factor_wt_string+='*((gen_match_2!=5) + (gen_match_2==5)*wt_ff_realtau)' 
-          else:
-            if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
-            else: fake_factor_wt_string = "wt_ff_"+options.cat
-            fake_factor_wt_string+='*wt_tau_id_loose'
-          if wt is not "": wt+="*"+fake_factor_wt_string
-          else: wt=fake_factor_wt_string
-      
-          full_selection = BuildCutString(wt, sel, ff_cat_data, OSSS, '')
-          # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
-          f1 = ana.SummedFactory('data', data, plot_unmodified, full_selection)
-          f2 = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel+'*(gen_match_2<6)',ff_cat,ff_cat_data,8,1.0,True,True)
-          ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1, f2))
-          
-      if options.channel == 'tt':
-          anti_isolated_sel_1 = '(mva_olddm_medium_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-          anti_isolated_sel_2 = '(mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-          if options.era == "mssmsummer16": 
-            anti_isolated_sel_1 +=" && trg_doubletau"
-            anti_isolated_sel_2 +=" && trg_doubletau"
-          
-          ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
-          ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
-          ff_cat_1_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_1
-          ff_cat_2_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_2
-          if ff_syst_weight is not None: 
-              fake_factor_wt_string_1 = ff_syst_weight+'_1'
-              fake_factor_wt_string_2 = ff_syst_weight+'_2'
-          else:
+        full_selection = BuildCutString(wt, sel, ff_cat_data, OSSS, '')
+        # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
+        f1 = ana.SummedFactory('data', data, plot_unmodified, full_selection)
+        f2 = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel+'&&(gen_match_2<6)',ff_cat,ff_cat_data,8,1.0,True,True)
+        ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1, f2))
+        
+    if options.channel == 'tt':
+        anti_isolated_sel_1 = '(mva_olddm_medium_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        anti_isolated_sel_2 = '(mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == "mssmsummer16": 
+          anti_isolated_sel_1 +=" && trg_doubletau"
+          anti_isolated_sel_2 +=" && trg_doubletau"
+        if options.era in ["smsummer16","cpsummer16"]:
+          anti_isolated_sel_1 = '(mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && pt_1>50 && trg_doubletau)'
+          anti_isolated_sel_2 = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && pt_1>50 && trg_doubletau)'    
+        ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
+        ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
+        ff_cat_1_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_1
+        ff_cat_2_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_2
+        if ff_syst_weight is not None: 
+            fake_factor_wt_string_1 = ff_syst_weight+'_1'
+            fake_factor_wt_string_2 = ff_syst_weight+'_2'
+        else:
+          if options.era in ["smsummer16","cpsummer16"]:
+            fake_factor_wt_string_1 = "wt_ff_1"
+            fake_factor_wt_string_2 = "wt_ff_2"
+          else:    
             fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
             fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
-          if wt is not "": 
-              wt_1=wt+"*"+fake_factor_wt_string_1
-              wt_2=wt+"*"+fake_factor_wt_string_2
-          else: 
-              wt_1=fake_factor_wt_string_1
-              wt_2=fake_factor_wt_string_2
-      
-          full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
-          full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2_data, OSSS, '')
-          
-          ff_total_node = SummedNode('jetFakes'+add_name)
-          f1_total_node = SummedNode('data')
-          f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
-          f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
-          f2_total_node = SummedNode('total_bkg')
-          f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+'*wt_tau1_id_loose',sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,True,True))
-          f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+'*wt_tau2_id_loose',sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,True,True))
-          ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
+            fake_factor_wt_string_1+='*wt_tau1_id_loose'
+            fake_factor_wt_string_2+='*wt_tau2_id_loose'
+        if wt is not "": 
+            wt_1=wt+"*"+fake_factor_wt_string_1
+            wt_2=wt+"*"+fake_factor_wt_string_2
+        else: 
+            wt_1=fake_factor_wt_string_1
+            wt_2=fake_factor_wt_string_2
+            
+
+    
+        full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
+        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2_data, OSSS, '')
         
+        ff_total_node = SummedNode('jetFakes'+add_name)
+        f1_total_node = SummedNode('data')
+        f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
+        f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
+        f2_total_node = SummedNode('total_bkg')
+        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,True,True))
+        ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
+      
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = '',processes=['ggH','qqH','ZH','WminusH','WplusH']):
     if get_os:

@@ -2247,7 +2247,10 @@ if(js["baseline"]["do_ff_weights"].asBool() && addit_output_folder==""){
       .set_strategy(strategy_type)
       .set_categories(js["baseline"]["ff_categories"].asString())
       .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
-      .set_ff_file(js["baseline"]["ff_file"].asString()));
+      .set_ff_file(js["baseline"]["ff_file"].asString())
+      .set_fracs_file(js["baseline"]["ff_fracs_file"].asString())
+      .set_is_embedded(is_embedded)
+      );
 }
     
 if(channel != channel::wmnu) {

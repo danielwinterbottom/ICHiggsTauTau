@@ -1385,6 +1385,7 @@ namespace ic {
           ele_trg = ele_trg / ele_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
         }
+        if(is_embedded_ && ele_trg>2) ele_trg = 2.;
         weight *= (ele_trg * tau_trg);
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);

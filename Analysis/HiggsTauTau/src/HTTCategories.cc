@@ -539,18 +539,11 @@ namespace ic {
             }
           } 
         } else if (strategy_ == strategy::smsummer16) {
-          outtree_->Branch("wt_ff_realtau"  , &wt_ff_realtau_);
-          if(channel_ == channel::et || channel_ == channel::mt){
-            outtree_->Branch("wt_ff_qcd"  , &wt_ff_qcd_);    
-            outtree_->Branch("wt_ff_w"  , &wt_ff_w_);
-            outtree_->Branch("wt_ff_tt"  , &wt_ff_tt_);
-          } else if(channel_ == channel::tt){
-            outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_);    
-            outtree_->Branch("wt_ff_w_1"  , &wt_ff_w_);
-            outtree_->Branch("wt_ff_tt_1"  , &wt_ff_tt_);
-            outtree_->Branch("wt_ff_qcd_2"  , &wt_ff_qcd_2_);    
-            outtree_->Branch("wt_ff_w_2"  , &wt_ff_w_2_);
-            outtree_->Branch("wt_ff_tt_2"  , &wt_ff_tt_2_);
+          outtree_->Branch("wt_ff_realtau_1"  , &wt_ff_realtau_1_);
+          outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
+          if(channel_ == channel::tt){
+            outtree_->Branch("wt_ff_realtau_2"  , &wt_ff_realtau_2_);
+            outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
           }
         }
       }
@@ -2148,22 +2141,13 @@ namespace ic {
           }
         }
       } else if (strategy_ == strategy::smsummer16){
-        if(!is_data_ && event->Exists("wt_ff_realtau") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"))==5)) wt_ff_realtau_ = event->Get<double>("wt_ff_realtau");
-        else wt_ff_realtau_ = 1.0;
-        if(channel_ == channel::et || channel_ == channel::mt){
-          if(event->Exists("wt_ff_qcd")) wt_ff_qcd_ = event->Get<double>("wt_ff_qcd");    
-          if(event->Exists("wt_ff_w")) wt_ff_w_ = event->Get<double>("wt_ff_w");
-          if(event->Exists("wt_ff_tt")) wt_ff_tt_ = event->Get<double>("wt_ff_tt");
-        } else if (channel_ == channel::tt){
-          if(event->Exists("wt_ff_qcd_1")) wt_ff_qcd_ = event->Get<double>("wt_ff_qcd_1");    
-          if(event->Exists("wt_ff_w_1")) wt_ff_w_ = event->Get<double>("wt_ff_w_1");
-          if(event->Exists("wt_ff_tt_1")) wt_ff_tt_ = event->Get<double>("wt_ff_tt_1");
-          if(event->Exists("wt_ff_dy_1")) wt_ff_dy_ = event->Get<double>("wt_ff_dy_1");
-          if(event->Exists("wt_ff_qcd_2")) wt_ff_qcd_2_ = event->Get<double>("wt_ff_qcd_2");    
-          if(event->Exists("wt_ff_w_2")) wt_ff_w_2_ = event->Get<double>("wt_ff_w_2");
-          if(event->Exists("wt_ff_tt_2")) wt_ff_tt_2_ = event->Get<double>("wt_ff_tt_2");
-          if(event->Exists("wt_ff_dy_2")) wt_ff_dy_2_ = event->Get<double>("wt_ff_dy_2");
-        }
+        if(!is_data_ && event->Exists("wt_ff_realtau_1") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"))==5)) wt_ff_realtau_1_ = event->Get<double>("wt_ff_realtau_1");
+        else wt_ff_realtau_1_ = 1.0;
+        if(!is_data_ && event->Exists("wt_ff_realtau_2") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5)) wt_ff_realtau_2_ = event->Get<double>("wt_ff_realtau_2");
+        else wt_ff_realtau_2_ = 1.0;
+        if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
+        if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
+
       }
     }
     
@@ -2920,6 +2904,7 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
+      
 
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -3063,6 +3048,7 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
+       
        if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){

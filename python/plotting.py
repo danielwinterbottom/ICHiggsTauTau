@@ -2106,6 +2106,7 @@ def HTTPlot(nodename,
       for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue  
         schemes = background_schemes[chan]
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':

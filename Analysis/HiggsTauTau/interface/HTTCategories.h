@@ -475,15 +475,10 @@ class HTTCategories : public ModuleBase {
   double em_gf_mva_;
   double em_vbf_mva_;
   
-  double wt_ff_qcd_;
-  double wt_ff_w_;
-  double wt_ff_tt_;
-  double wt_ff_dy_;
-  double wt_ff_qcd_2_;
-  double wt_ff_w_2_;
-  double wt_ff_tt_2_;
-  double wt_ff_dy_2_;
-  double wt_ff_realtau_;
+  double wt_ff_1_;
+  double wt_ff_2_;
+  double wt_ff_realtau_1_;
+  double wt_ff_realtau_2_;
   
   
   double ff_weight_inclusive_;
