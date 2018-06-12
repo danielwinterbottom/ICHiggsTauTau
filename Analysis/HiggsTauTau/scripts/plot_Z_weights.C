@@ -10,6 +10,7 @@ TH2D *h = (TH2D*)f->Get("zptmass_histo");
 h->GetXaxis()->SetTitle("Mass [GeV]");
 h->GetYaxis()->SetTitle("pT [GeV]");
 h->GetZaxis()->SetTitle("weight");
+h->SetStats(0);
 gStyle->SetPalette(1, 0);
 TCanvas c1;
 h_nom = (TH1D*)h->Clone();
