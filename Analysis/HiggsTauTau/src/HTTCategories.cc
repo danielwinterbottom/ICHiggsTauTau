@@ -935,16 +935,11 @@ namespace ic {
        outtree_->Branch("db_iso_1", &l3Hits_1);
        outtree_->Branch("db_iso_2", &l3Hits_2);
       }
-      if(qcd_study_||true){
+      if(qcd_study_){
         outtree_->Branch("jet_flav_1", &jet_flav_1_);
         outtree_->Branch("jet_flav_2", &jet_flav_2_);
         outtree_->Branch("jet_flav_3", &jet_flav_3_);
       }
-      outtree_->Branch("e_min_dR", &e_min_dR_);
-      outtree_->Branch("m_min_dR", &m_min_dR_);
-      outtree_->Branch("ej_dR", &ej_dR_);
-      outtree_->Branch("mj_dR", &mj_dR_);
-      outtree_->Branch("jdR", &jdR_);
       if(do_faketaus_){
         outtree_->Branch("tau_pt_1", &tau_pt_1_);
         outtree_->Branch("tau_pt_2", &tau_pt_2_);      
@@ -3634,38 +3629,8 @@ namespace ic {
       }
     }
     
-    if(channel_ == channel::em){
-      if(jets.size()>0){
-        mj_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),jets[0]->vector())); 
-        ej_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),jets[0]->vector()));
-      } else {
-        mj_dR_ = -9999;
-        ej_dR_ = -9999;
-      }
 
-      unsigned e_min_dR_index = 0;
-      e_min_dR_ = -9999;
-      unsigned m_min_dR_index = 0;
-      m_min_dR_ = -9999;
-
-      for(unsigned i=0;i<uncleaned_jets.size(); ++i){
-        double e_dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),uncleaned_jets[i]->vector())); 
-        double m_dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),uncleaned_jets[i]->vector()));
-        if(m_dR<m_min_dR_ || m_min_dR_<0){
-          m_min_dR_ = m_dR;
-          m_min_dR_index = i;
-        }
-        if(e_dR<e_min_dR_ || e_min_dR_<0){
-          e_min_dR_ = e_dR;
-          e_min_dR_index = i;
-        }
-
-      }
-      if(e_min_dR_>0 && e_min_dR_>0) jdR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(uncleaned_jets[m_min_dR_index]->vector(),uncleaned_jets[e_min_dR_index]->vector()));
-      else jdR_ = -9999;
-    }
-
-    if(true || (qcd_study_ && (channel_ == channel::mt || channel_ == channel::et))){
+    if(cd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
       std::vector<Candidate *> leading_lepton;
       std::vector<Candidate *> subleading_lepton;
       leading_lepton.push_back(ditau->GetCandidate("lepton1"));

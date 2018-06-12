@@ -219,7 +219,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
         'WHiggs0M_M-125',
         'WHiggs0Mf05ph0_M-125',
         'WHiggs0PM_M-125'
-        'GluGluToHToTauTau_amcNLO_M-125',
+        #'GluGluToHToTauTau_amcNLO_M-125',
         #'VBFHToTauTau_amcNLO_M-125'
     ]  
     
