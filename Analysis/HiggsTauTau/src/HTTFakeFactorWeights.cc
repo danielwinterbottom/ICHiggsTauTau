@@ -44,6 +44,7 @@ namespace ic {
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
+      if(strategy_==strategy::cpsummer17) continue;  
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
       if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
@@ -58,7 +59,7 @@ namespace ic {
       delete ff_file;
     }
     
-    if(fracs_file_!="") {
+    if(fracs_file_!="" && strategy_!=strategy::cpsummer17) {
       TFile f(fracs_file_.c_str());
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
@@ -102,11 +103,14 @@ namespace ic {
       
     }
     if(strategy_==strategy::cpsummer17){
-      TFile f("input/fake_factors/zmm_taufakes_2017.pdf");
-      ff_hist_dm0_ = (TH1D*)f.Get("ff_dm0");
-      ff_hist_dm1_ = (TH1D*)f.Get("ff_dm1");
-      ff_hist_dm10_ = (TH1D*)f.Get("ff_dm10");
-      f.Close();    
+      TFile *f = new TFile("input/fake_factors/zmm_taufakes_2017.root");
+      ff_hist_dm0_ = (TH1D*)f->Get("ff_dm0")->Clone();
+      ff_hist_dm1_ = (TH1D*)f->Get("ff_dm1")->Clone();
+      ff_hist_dm10_ = (TH1D*)f->Get("ff_dm10")->Clone();
+      ff_hist_dm0_->SetDirectory(0);
+      ff_hist_dm1_->SetDirectory(0);
+      ff_hist_dm10_->SetDirectory(0);
+      f->Close();    
     }
 
     return 0;

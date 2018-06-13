@@ -429,6 +429,8 @@ namespace ic {
             if(strategy_ == strategy::cpsummer17){
               fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_sceta")));    
+              fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
             } else {
               fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
                   w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
@@ -1160,7 +1162,7 @@ namespace ic {
      if(channel_ == channel::mt){
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        auto args = std::vector<double>{muon->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
        tracking_wt_2 = 1.0;
      } 
      if(channel_ == channel::em){
@@ -1169,15 +1171,15 @@ namespace ic {
        auto args = std::vector<double>{elec->pt(),elec->sc_eta()};
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
       }
       if(channel_ == channel::zmm){
        Muon const* muon_1 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        Muon const* muon_2 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
        auto args = std::vector<double>{muon_1->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon_2->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
       }
       if(channel_ == channel::zee){
        Electron const* elec_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
@@ -1425,6 +1427,7 @@ namespace ic {
         }
         if(is_embedded_ && ele_trg>2) ele_trg = 2.;
         weight *= (ele_trg * tau_trg);
+        if(mc_==mc::mc2017) ele_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
       } else if (channel_ == channel::mt) {
@@ -1937,6 +1940,7 @@ namespace ic {
           m_trg = m_trg / m_trg_mc;
           e_trg = e_trg / e_trg_mc;
         }
+        if(mc_==mc::mc2017) e_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         weight *= (e_trg * m_trg);
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", m_trg);
@@ -2321,6 +2325,7 @@ namespace ic {
           ele1_trg = ele1_trg / ele1_trg_mc;
           ele2_trg = ele2_trg / ele2_trg_mc;
         }
+        if(mc_==mc::mc2017) ele1_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         weight *= (ele1_trg * ele2_trg);
         event->Add("trigweight_1", ele1_trg);
         event->Add("trigweight_2", ele2_trg);

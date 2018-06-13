@@ -882,7 +882,8 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
     for process in processes:
       template_name = 'ff_'+process+'_syst'
       if process is 'qcd' or options.channel == 'tt': template_name = 'ff_'+process+'_'+options.channel+'_syst'
-      weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
+      if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
+      else: weight_name = 'wt_ff_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       if options.channel == 'tt' and process in ['w','tt']: continue
@@ -891,14 +892,16 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           template_name = 'ff_'+process+'_'+dm+'_'+njet
           if process != 'tt': template_name+='_'+options.channel
           template_name+='_stat'
-          weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
+          if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
+          else: weight_name = 'wt_ff_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
     if options.channel == "tt":
       processes = ['dy', 'w', 'tt']
       for process in processes:
         template_name = 'ff_'+process+'_frac_tt_syst'
-        weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
+        if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
+        else: weight_name = 'wt_ff_'+process+'_frac_syst_'
         systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
@@ -1431,7 +1434,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
         if options.era == 'smsummer16' or options.era == 'cpsummer16':
-          if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
+          if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight+'_1'
           else: fake_factor_wt_string = "wt_ff_1"
           if not options.embedding: fake_factor_wt_string+='*((gen_match_2!=5) + (gen_match_2==5)*wt_ff_realtau_1)' 
         else:

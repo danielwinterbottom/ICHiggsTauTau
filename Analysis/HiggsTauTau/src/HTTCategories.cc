@@ -2228,7 +2228,7 @@ namespace ic {
             if(event->Exists("wt_btag_ff_dy_frac_syst_down_2"               )) wt_btag_ff_dy_frac_syst_down_2               = event->Get<double>("wt_btag_ff_dy_frac_syst_down_2");
           }
         }
-      } else if (strategy_ == strategy::smsummer16){
+      } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         if(!is_data_ && event->Exists("wt_ff_realtau_1") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"))==5)) wt_ff_realtau_1_ = event->Get<double>("wt_ff_realtau_1");
         else wt_ff_realtau_1_ = 1.0;
         if(!is_data_ && event->Exists("wt_ff_realtau_2") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5)) wt_ff_realtau_2_ = event->Get<double>("wt_ff_realtau_2");
