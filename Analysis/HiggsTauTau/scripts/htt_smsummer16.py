@@ -155,7 +155,7 @@ with open("config_for_python_channels.json") as config_file:
   cfg = json.load(config_file)
   n_channels=len(cfg["job"]["channels"])
   
-scale = int(math.ceil(float(n_scales*n_channels)/100))
+scale = int(math.ceil(float(n_scales*n_channels)/50))
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -165,7 +165,7 @@ for i in flatjsonlistdysig:
   if 'scale_j' in i and 'hf' not in i and 'cent' not in i and 'full' not in i and 'relbal' not in i:
     flatjsons.append('job:sequences:all:'+i)
     flatjsonlistdysig.remove(i)
-    scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
+    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
     if scale < 1: scale = 1
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
@@ -321,12 +321,12 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
 
 
-  DATAFILELIST="./filelists/Jun16_Data_80X"
+  DATAFILELIST="./filelists/Apr02_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr02_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -341,7 +341,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr02_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
@@ -485,25 +485,25 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   if options.qcd_study:
     FILELIST='filelists/Apr02_MC_80X'
     central_samples = [
-      'QCDEM_Pt120to170',
-      'QCDEM_Pt170to300',
-      'QCDEM_Pt20to30',
-      'QCDEM_Pt300toInf',
-      'QCDEM_Pt30to50',
-      'QCDEM_Pt50to80',
-      'QCDEM_Pt80to120',
-      'QCDMu5_Pt1000toInf',
-      'QCDMu5_Pt120to170',
-      'QCDMu5_Pt15to20',
-      'QCDMu5_Pt170to130',
-      'QCDMu5_Pt20to30',
-      'QCDMu5_Pt300to470',
-      'QCDMu5_Pt30to50',
-      'QCDMu5_Pt470to600',
-      'QCDMu5_Pt50to80',
-      'QCDMu5_Pt600to800',
-      'QCDMu5_Pt800to1000',
-      'QCDMu5_Pt80to120',
+      #'QCDEM_Pt120to170',
+      #'QCDEM_Pt170to300',
+      #'QCDEM_Pt20to30',
+      #'QCDEM_Pt300toInf',
+      #'QCDEM_Pt30to50',
+      #'QCDEM_Pt50to80',
+      #'QCDEM_Pt80to120',
+      #'QCDMu5_Pt1000toInf',
+      #'QCDMu5_Pt120to170',
+      #'QCDMu5_Pt15to20',
+      #'QCDMu5_Pt170to130',
+      #'QCDMu5_Pt20to30',
+      #'QCDMu5_Pt300to470',
+      #'QCDMu5_Pt30to50',
+      #'QCDMu5_Pt470to600',
+      #'QCDMu5_Pt50to80',
+      #'QCDMu5_Pt600to800',
+      #'QCDMu5_Pt800to1000',
+      #'QCDMu5_Pt80to120',
       'QCDMuEnrichedPt15'
        ]
   for sa in central_samples:

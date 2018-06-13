@@ -2122,7 +2122,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
     httWeights.set_strategy(strategy_type);
-    httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
+    httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
     httWeights.set_is_embedded(is_embedded);
     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
@@ -2291,7 +2291,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-if(js["baseline"]["do_ff_weights"].asBool()){
+if(js["baseline"]["do_ff_weights"].asBool() && addit_output_folder==""){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
       .set_ditau_label("ditau")
@@ -2300,7 +2300,10 @@ if(js["baseline"]["do_ff_weights"].asBool()){
       .set_strategy(strategy_type)
       .set_categories(js["baseline"]["ff_categories"].asString())
       .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
-      .set_ff_file(js["baseline"]["ff_file"].asString()));
+      .set_ff_file(js["baseline"]["ff_file"].asString())
+      .set_fracs_file(js["baseline"]["ff_fracs_file"].asString())
+      .set_is_embedded(is_embedded)
+      );
 }
     
 if(channel != channel::wmnu) {
