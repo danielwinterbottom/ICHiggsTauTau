@@ -96,7 +96,8 @@ namespace ic {
 
     // Get the stuff we need from the event
     Met * met = event->GetPtr<Met>(met_label_);
-    std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
+    std::vector<GenParticle *> parts;
+    if(event->ExistsInTree("genParticles")) parts = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_gen_parts;
     std::vector<GenParticle *> sel_vis_parts;
     double genpX=0;

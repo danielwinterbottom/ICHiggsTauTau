@@ -2122,7 +2122,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
     httWeights.set_strategy(strategy_type);
-    httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_embed_v1.root");
+    httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
     httWeights.set_is_embedded(is_embedded);
     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));

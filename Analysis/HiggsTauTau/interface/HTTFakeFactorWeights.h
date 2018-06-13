@@ -38,6 +38,10 @@ class HTTFakeFactorWeights : public ModuleBase {
 
   std::shared_ptr<RooWorkspace> w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
+  
+  TH1D *ff_hist_dm0_;
+  TH1D *ff_hist_dm1_;
+  TH1D *ff_hist_dm10_;
 
 };
 

@@ -101,6 +101,13 @@ namespace ic {
             w_->function("realtau_tt_sf_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
       
     }
+    if(strategy_==strategy::cpsummer17){
+      TFile f("input/fake_factors/zmm_taufakes_2017.pdf");
+      ff_hist_dm0_ = (TH1D*)f.Get("ff_dm0");
+      ff_hist_dm1_ = (TH1D*)f.Get("ff_dm1");
+      ff_hist_dm10_ = (TH1D*)f.Get("ff_dm10");
+      f.Close();    
+    }
 
     return 0;
   }
@@ -262,7 +269,7 @@ namespace ic {
         event->Add("wt_ff_2",  ff_nom_2);
         
         if(do_systematics_){
-          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down"};
+          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down", "ff_dy_frac_syst_up", "ff_dy_frac_syst_down"};
           
           for(unsigned j=0; j<systematics.size(); ++j){
             std::string syst = systematics[j];
@@ -275,6 +282,13 @@ namespace ic {
           } 
         }
       }
+    } else if(strategy_ == strategy::cpsummer17) {
+      double ff_nom;
+      if(tau_decaymode_2_==0)  ff_nom = ff_hist_dm0_->GetBinContent(ff_hist_dm0_->FindBin(pt_2_));
+      if(tau_decaymode_2_==1)  ff_nom = ff_hist_dm1_->GetBinContent(ff_hist_dm1_->FindBin(pt_2_));
+      if(tau_decaymode_2_==10) ff_nom = ff_hist_dm10_->GetBinContent(ff_hist_dm10_->FindBin(pt_2_));
+      event->Add("wt_ff_1", ff_nom);
+      
     }
     
     
