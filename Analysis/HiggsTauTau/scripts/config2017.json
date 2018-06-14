@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","et"],
+    "channels":     ["mt", "et", "zee", "zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -32,7 +32,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_btag_eff":false,
-    "trg_in_mc" : false,
+    "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
