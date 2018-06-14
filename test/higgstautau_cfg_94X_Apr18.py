@@ -1076,7 +1076,7 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu27ObjectProducer+
     process.icIsoMu20Tau27ObjectProducer+
     process.icDoubleEl24ObjectProducer+
-     process.icDoubleMu20ObjectProducer+
+    process.icDoubleMu20ObjectProducer+
     process.icEle27ObjectProducer+
     process.icEle32ObjectProducer+
     process.icEle32L1DoubleEGObjectProducer+
@@ -1155,19 +1155,11 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
   includeFiltersFromTrig = cms.bool(True),
   filters             = cms.PSet(
-   badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
-   badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
+    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
+    badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
   ),
-  filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
+  filtersfromtrig     = cms.vstring("Flag_goodVertices","Flag_globalTightHalo2016Filter","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_BadPFMuonFilter","Flag_BadChargedCandidateFilter","Flag_eeBadScFilter","Flag_ecalBadCalibFilter") 
 )
-
-if isData:
-  process.icEventInfoProducer.filters=cms.PSet(
-    badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
-    badMuonFilter = cms.InputTag("BadPFMuonFilter")
-  )
-  process.icEventInfoProducer.filtersfromtrig = cms.vstring("!Flag_badMuons","!Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
-
 
 process.icEventInfoSequence = cms.Sequence(
   process.BadPFMuonFilter+
