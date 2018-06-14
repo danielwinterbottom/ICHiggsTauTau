@@ -833,7 +833,7 @@ namespace ic {
             double medium_tau_sf_2 = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
             event->Add("wt_tau_id_loose",loose_tau_sf_2/(tau_sf_2));
             event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
-        } else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.87 : 1.0;
+        } else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16) && gen_match_2 == 5){
           event->Add("wt_tau_id_dm_up",1.03);
@@ -856,13 +856,13 @@ namespace ic {
           if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.95 : 1.0;  
           else tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
-        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.87 : 1.0; 
+        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.89 : 1.0; 
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
           if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.95 : 1.0;
           else tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
-        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.87 : 1.0;
+        else if(strategy_ == strategy::cpsummer17 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
         
         double loose_tau_sf_1 = (gen_match_1 == 5 && !is_embedded_) ? 0.99 : 1.0;
@@ -3200,6 +3200,31 @@ namespace ic {
             }
           }
         }  
+      } else if(mc_ == mc::mc2017){
+        if(channel_ == channel::et){
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.460){
+             etau_fakerate_2 = 1.80;
+            } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.53;
+          }
+      } else {
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.460){
+              etau_fakerate_2 = 1.09;
+            } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.19;
+          }
+        }
+        if(channel_ == channel::tt){
+          unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==1||gm1_==3){
+            if(strategy_==strategy::smsummer16 || strategy_==strategy::cpsummer16){
+              if(fabs(tau1->eta()) < 1.460){
+                etau_fakerate_1 = 1.09;
+               } else if(fabs(tau1->eta()) > 1.558)  etau_fakerate_1=1.19;   
+            }
+          }
+        }  
       } else {
         if(channel_ == channel::et){
           if(gm2_==1||gm2_==3){
@@ -3342,6 +3367,54 @@ namespace ic {
               } else if(fabs(tau1->eta()) < 2.3){
                 mtau_fakerate_1=2.3;
               }
+            }
+          }
+        }  
+      } else if(mc_ == mc::mc2017){
+        if(channel_ == channel::mt){
+          if((gm2_==2||gm2_==4)){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2 = 1.17;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2 = 1.29;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2 = 1.14;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=0.93;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=1.61;
+            }
+
+          }
+        } else {
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2=1.06;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2=1.02;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2=1.10;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.03;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=1.94;
+            }
+          }
+        }
+        if(channel_ == channel::tt){
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==2||gm1_==4){
+            if(fabs(tau1->eta()) < 0.4){
+              mtau_fakerate_1=1.06;
+            } else if(fabs(tau1->eta()) < 0.8){
+              mtau_fakerate_1=1.02;
+            } else if(fabs(tau1->eta()) < 1.2){
+              mtau_fakerate_1=1.10;
+            } else if(fabs(tau1->eta()) < 1.7){
+              mtau_fakerate_1=1.03;
+            } else if(fabs(tau1->eta()) < 2.3){
+              mtau_fakerate_1=1.94;
             }
           }
         }  

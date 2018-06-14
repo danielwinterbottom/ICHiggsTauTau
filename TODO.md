@@ -16,9 +16,9 @@
 
 - [x] DY pT/mass weights - measure new weights using di-muon data and apply/test using Z->mumu/ee events
 
-- [ ] Tau IDs/ SF: I added the next tau ID training to the ntuples, these will need to be applied instead ofthe old IDs in the analyser. Also update the SFs to the recommended ones on the TauPOG twiki. Anti-electron/muon IDs will likly be updated by the Tau POG - add these to nutples when they are available
+- [x] Tau IDs/ SF: I added the next tau ID training to the ntuples, these will need to be applied instead ofthe old IDs in the analyser. Also update the SFs to the recommended ones on the TauPOG twiki. Anti-electron/muon IDs will likly be updated by the Tau POG - add these to nutples when they are available
 
-- [ ] Tau energy scales: Apply the POG recommendation. For e->tau and mu->tau fakes we should measure these outselves (see how Adinda did this for MSSM)
+- [x] Tau energy scales: Apply the POG recommendation. For e->tau and mu->tau fakes we should measure these outselves (see how Adinda did this for MSSM)
 
 - [ ] JES corrctions + uncertainties: Check these are applied automatically by using latest global tag (if not will require new ntuples). Get Latest uncertainties .xml file
 
