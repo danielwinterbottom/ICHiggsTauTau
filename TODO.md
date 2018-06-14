@@ -31,3 +31,5 @@
 - [ ] MET recoil corrections - Check if DESY group plan to measure then and if so us ethere measurments (if not we can discuss measring these ourselves but shouldn't be a high priority)
 
 - [ ] SV-fit / MELA / MVA score usage: It is very inefficienct to have to run the analyser repeatadly to add the SV-fit mass and MELA variables to the final trees. It would be better to have some code that can just loop over the trees proeduced without the SVfit/MELA and add these to the branches - something similar to what is done to add the MVA scores to the trees. Options to add either SV-fit or MELA (or both at the same time) would also be useful
+
+- [ ] Apply suggested MET filters once they are on the ntuples (https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2)

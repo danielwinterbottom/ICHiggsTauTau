@@ -8,3 +8,5 @@
 - [ ] Check if any additional MC samples have been added for latest MC production (some di-boson samples + others were still using an older production and W jets was complatly missing)
 
 - [ ] Check if we have things we need for alternative b-taggers on ntuples, if not then add
+
+- [x] Check if MET filters need adding
