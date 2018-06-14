@@ -206,15 +206,21 @@ namespace ic {
 
         if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
+          fns_["em_qcd_osss_binned_bothaiso"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned_bothaiso")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
         }
             
         if(do_trg_weights_ || do_idiso_weights_) {
@@ -423,6 +429,8 @@ namespace ic {
             if(strategy_ == strategy::cpsummer17){
               fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_sceta")));    
+              fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
             } else {
               fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
                   w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
@@ -440,16 +448,23 @@ namespace ic {
 
         if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
+          fns_["em_qcd_osss_binned_bothaiso"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned_bothaiso")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets")));
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
           fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,m_pt,e_pt")));
         }
+        
 
         
         if(do_tracking_eff_) {
@@ -926,8 +941,10 @@ namespace ic {
            ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
            double n_jets = (double)jets.size();
            double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
-           auto args = std::vector<double>{dR,n_jets};
+           auto args = std::vector<double>{dR,n_jets,muon_pt,elec_pt};
            qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
+           double qcd_weight_bothaiso = fns_["em_qcd_osss_binned_bothaiso"]->eval(args.data());
+           event->Add("wt_em_qcd_bothaiso",qcd_weight_bothaiso);
            qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
            qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
 
@@ -935,6 +952,13 @@ namespace ic {
            double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
            event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
            event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
+
+           auto args_nopt = std::vector<double>{dR,n_jets};
+           double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args_nopt.data())/qcd_weight;
+           double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args_nopt.data())/qcd_weight;
+           event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
+           event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
+
          } else {
              if(deltaR < 2){
                qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
@@ -1138,7 +1162,7 @@ namespace ic {
      if(channel_ == channel::mt){
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        auto args = std::vector<double>{muon->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
        tracking_wt_2 = 1.0;
      } 
      if(channel_ == channel::em){
@@ -1147,15 +1171,15 @@ namespace ic {
        auto args = std::vector<double>{elec->pt(),elec->sc_eta()};
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
       }
       if(channel_ == channel::zmm){
        Muon const* muon_1 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        Muon const* muon_2 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
        auto args = std::vector<double>{muon_1->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon_2->eta()};
-       if(strategy_ != strategy::cpsummer17) tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
       }
       if(channel_ == channel::zee){
        Electron const* elec_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
@@ -1401,7 +1425,9 @@ namespace ic {
           ele_trg = ele_trg / ele_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
         }
+        if(is_embedded_ && ele_trg>2) ele_trg = 2.;
         weight *= (ele_trg * tau_trg);
+        if(mc_==mc::mc2017) ele_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
       } else if (channel_ == channel::mt) {
@@ -1914,6 +1940,7 @@ namespace ic {
           m_trg = m_trg / m_trg_mc;
           e_trg = e_trg / e_trg_mc;
         }
+        if(mc_==mc::mc2017) e_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         weight *= (e_trg * m_trg);
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", m_trg);
@@ -2298,6 +2325,7 @@ namespace ic {
           ele1_trg = ele1_trg / ele1_trg_mc;
           ele2_trg = ele2_trg / ele2_trg_mc;
         }
+        if(mc_==mc::mc2017) ele1_trg*=0.991; // HLT Zvtx Efficiency Scale Factor - only applied once per event regardless of how many electron were required to be triggered
         weight *= (ele1_trg * ele2_trg);
         event->Add("trigweight_1", ele1_trg);
         event->Add("trigweight_2", ele2_trg);
@@ -2749,7 +2777,7 @@ namespace ic {
               } else {
                  double mu_iso = 1.0;
                  m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data());
-                 if (m_iso<0.2) {
+                 if (m_iso<0.2 && false) {
                    mu_iso = fns_["m_looseiso_ratio"]->eval(args_1_2.data());
                  }
                  else {
@@ -2780,7 +2808,7 @@ namespace ic {
             else {
                  double e_iso_wt = 1.0;
                  e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data());
-                 if(e_iso<0.15) {
+                 if(e_iso<0.15 && false) {
                    e_iso_wt = fns_["e_looseiso_ratio"]->eval(args_1_1.data());
                  }
                  else {

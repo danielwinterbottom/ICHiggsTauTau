@@ -45,6 +45,7 @@ namespace ic {
     outputadd_ = "";
     fullpath_ = "SVFIT_2012/";
     do_vloose_preselection_ = false;
+    verbose_ = false;
 
     MC_ = false;
   }
@@ -123,12 +124,12 @@ namespace ic {
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {
-            std::cout << "Warning, unable to open file " << path << std::endl;
+            if(verbose_) std::cout << "Warning, unable to open file " << path << std::endl;
             continue;
           }
           TTree *otree = dynamic_cast<TTree *>(ofile->Get("svfit"));
           if (!otree) {
-            std::cout << "Warning, unable to get tree in file " << path << std::endl;
+            if(verbose_) std::cout << "Warning, unable to get tree in file " << path << std::endl;
             continue;
           }
           unsigned    event    = 0;
@@ -440,7 +441,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             fail_state = true;
           } else {
             if (it->second.second < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
+              if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
             } else {
               event->Add("svfitMass", it->second.second);
             }
@@ -456,7 +457,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             fail_state = true;
           } else {
             if ((std::get<1>(it->second)).M() < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
+              if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
             } else {
               event->Add("svfitMass", (std::get<1>(it->second)).M());
               event->Add("svfitHiggs", std::get<1>(it->second));
@@ -470,8 +471,8 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
      }
     if (fail_state) {
       if (fail_mode_ == 0) {
-        std::cout << "Warning, SVFitTest mass not found!" << std::endl;
-        event->Add("svfitMass", double(-9999.0));
+        if(verbose_) std::cout << "Warning, SVFitTest mass not found!" << std::endl;
+        event->Add("svfitMass", double(-100.0));
       } else if (fail_mode_ == 1) {
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;
