@@ -9,8 +9,8 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
-#'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
-'root://xrootd.unl.edu//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/40000/0021369B-9BD8-E711-BFE9-FA163EAA42CB.root'
+'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
+#'root://xrootd.unl.edu//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/40000/0021369B-9BD8-E711-BFE9-FA163EAA42CB.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_dataRun2_v6', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
@@ -65,7 +65,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -810,6 +810,25 @@ process.icIsoMu20Tau27ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
+# mt monitoring paths
+
+process.icDoubleEl24ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoubleEl24"),
+    hltPath = cms.string("LT_DoubleEle24_eta2p1_WPTight_Gsf_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icDoubleMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoubleMu20"),
+    hltPath = cms.string("HLT_DoubleIsoMu20_eta2p1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+
 # et paths
 
 process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1056,6 +1075,8 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu24erObjectProducer+
     process.icIsoMu27ObjectProducer+
     process.icIsoMu20Tau27ObjectProducer+
+    process.icDoubleEl24ObjectProducer+
+     process.icDoubleMu20ObjectProducer+
     process.icEle27ObjectProducer+
     process.icEle32ObjectProducer+
     process.icEle32L1DoubleEGObjectProducer+
@@ -1072,7 +1093,7 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer+ 
     process.icIsoMu24LooseIsoTau20ObjectProducer+
     process.icIsoMu24MediumIsoTau20ObjectProducer+
-    process.icIsoMu24TightIsoTau20ObjectProducer
+    process.icIsoMu24TightIsoTau20ObjectProducer+
     process.icMu23Ele12ObjectProducer+
     process.icMu23Ele12DZObjectProducer+
     process.icMu8Ele23ObjectProducer+
