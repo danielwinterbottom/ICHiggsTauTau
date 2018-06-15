@@ -65,21 +65,21 @@ namespace ic {
       f.Close();
       
       fns_["w_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("w_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["qcd_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("qcd_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["ttbar_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("ttbar_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["realtau_et_sf"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_et_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("realtau_et_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["w_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("w_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["qcd_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("qcd_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["ttbar_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("ttbar_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["realtau_mt_sf"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_mt_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("realtau_mt_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
       fns_["w_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
             w_->function("w_tt_fracs_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
       fns_["qcd_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
@@ -122,7 +122,21 @@ namespace ic {
 
     Met * met = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    std::vector<PFJet*> bjets = jets;
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+    
+    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) btag_wp = 0.8484;
+    if(strategy_ == strategy::cpsummer17) btag_wp = 0.8838;
+    if (event->Exists("retag_result")) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+    } else{ 
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+    } 
+    
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -156,6 +170,7 @@ namespace ic {
     }
     
     double n_jets_ = jets.size();
+    double n_bjets_ = bjets.size();
     
     std::vector<double> inputs;
     std::vector<double> tt_inputs_1;
@@ -213,12 +228,12 @@ namespace ic {
       double pt_tt = ditau->pt();
       double mjj=0.;
       if(jets.size()>=2) mjj=(jets[0]->vector()+jets[1]->vector()).M();
-      auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj};  
       inputs.resize(9);
       tt_inputs_1.resize(9);
       tt_inputs_2.resize(9);
       if(channel_ == channel::et || channel_ == channel::mt){
-        double qcd_frac, w_frac, tt_frac, realtau_sf;
+        auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj,n_bjets_};  
+        double qcd_frac=0.5, w_frac=0.5, tt_frac=0., realtau_sf=1.0;
         if(channel_ == channel::et){
           qcd_frac = fns_["qcd_et_fracs"]->eval(args.data());  
           w_frac = fns_["w_et_fracs"]->eval(args.data());
@@ -226,6 +241,7 @@ namespace ic {
           realtau_sf = fns_["realtau_et_sf"]->eval(args.data()); 
         }
         if(channel_ == channel::mt){
+          auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj,n_bjets_};    
           qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
           w_frac = fns_["w_mt_fracs"]->eval(args.data());
           tt_frac = fns_["ttbar_mt_fracs"]->eval(args.data());
@@ -234,6 +250,7 @@ namespace ic {
         inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_; inputs[6] = qcd_frac; inputs[7] = w_frac; inputs[8] = tt_frac;
         event->Add("wt_ff_realtau_1", realtau_sf);
       } else if (channel_ == channel::tt){
+        auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj};    
         double qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args.data());  
         double w_frac_1 = fns_["w_tt_fracs_1"]->eval(args.data());
         double tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args.data());
