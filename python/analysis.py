@@ -10,6 +10,7 @@ import sys
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 import numpy as np
 import math
+from array import array
 
 ROOT.TH1.AddDirectory(0)
 

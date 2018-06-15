@@ -55,6 +55,7 @@ namespace ic {
                 std::string alt_er_leg1_filter;
                 std::string alt_er_trk_leg1_filter;
                 std::string alt_leg1_filter_2;
+                std::string alt_leg2_filter_2;
                 std::string extra_filter_2;
 /*    std::string alt_trig_obj_label_2;
     std::string alt_leg1_filter_2;*/
@@ -461,7 +462,7 @@ namespace ic {
           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
         }
-        if(run >= 271036 /*&& run <= xxxxx*/){
+        if(run >= 271036 && run <= 284044){
           trig_obj_label = "triggerObjectsDoubleMediumTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
@@ -470,6 +471,17 @@ namespace ic {
             alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
             alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
           }
+        }
+        if(run >= 294927 /*&& run <= xxxxx*/){
+          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
+          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40";
+          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
+          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
         }
       }
       if (channel_ == channel::mtmet) {
@@ -775,7 +787,17 @@ namespace ic {
          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
          alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
          alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-      }
+      } else if(mc_ == mc::mc2017){
+          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
+          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40";
+          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
+          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+        }
     }
       /*
       [2] HLT triggers in MC to "emulate" lepton legs of new triggers in data:
@@ -894,22 +916,24 @@ namespace ic {
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
     // mutau cross triggers for smsummer16 (keeping seperate from usual do_leptonplustau_ option as we want to use these in OR with single mu)
-    bool passed_mutaucross = false;
+    tau1_trg_mc= 1.0;
     bool passed_mutaucross_alt = false;
     if (channel_ == channel::mt){
       std::vector<TriggerObject *> const& cross_objs_singlel1 = event->GetPtrVec<TriggerObject>(trig_obj_label);  
       for(unsigned i = 0; i < dileptons.size(); ++i){  
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
+
         passed_mutaucross = leg1_match && leg2_match;
         if(alt_cross_trig_obj_label != ""){ 
           std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(alt_cross_trig_obj_label);
           bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
           bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
+
           passed_mutaucross_alt = alt_leg1_match && alt_leg2_match; 
         }
         if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
-        if(is_embedded_&& dileptons[i]->At(0)->pt()<high_leg_pt){
+        if(is_embedded_){
           // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
           passed_mutaucross = true;
           passed_mutaucross_alt = true;
@@ -917,6 +941,23 @@ namespace ic {
       }
     }
     event->Add("trg_mutaucross", passed_mutaucross || passed_mutaucross_alt);
+    
+    bool passed_etaucross = false;
+    if (channel_ == channel::et){
+      std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(trig_obj_label);  
+      for(unsigned i = 0; i < dileptons.size(); ++i){  
+        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, extra_leg2_filter,0.5).first;
+        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, extra_leg2_filter,0.5).first;  
+
+        passed_mutaucross = leg1_match && leg2_match;
+        if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
+        if(is_embedded_){
+          // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
+          passed_etaucross = true;
+        }
+      }
+    }
+    event->Add("trg_etaucross", passed_etaucross);
 
     if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
@@ -1022,7 +1063,7 @@ namespace ic {
     }
     
    bool passed_doubletau = false;
-   if (channel_ == channel::tt && mc_ == mc::summer16_80X){
+   if (channel_ == channel::tt && (mc_ == mc::summer16_80X || mc_ == mc::mc2017)){
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
@@ -1038,6 +1079,29 @@ namespace ic {
              passed_doubletau = true;  
              dileptons_pass.push_back(dileptons[i]);
           }
+        }
+        if(!passed_doubletau && alt_trig_obj_label_2!=""){
+            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_2, alt_leg1_filter_2, 0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_2, alt_leg2_filter_2, 0.5).first;
+            if (leg1_match && leg2_match){
+              passed_doubletau = true;  
+              dileptons_pass.push_back(dileptons[i]);
+            }
+        }
+        
+        if(mc_ == mc::mc2017){
+          // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
+          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          std::vector<ic::L1TObject*> passed_l1_taus;
+          for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(l1taus[ta]->isolation() !=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+          }
+          std::vector<Candidate *> match_taus;
+          match_taus.push_back(dileptons[i]->At(0));
+          match_taus.push_back(dileptons[i]->At(1));
+          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
+          passed_doubletau = passed_doubletau && match_l1_parts;
         }
       }
     }

@@ -95,6 +95,7 @@ class HTTGenAnalysis : public ModuleBase {
   double n_jets_offline_;
   double n_bjets_offline_;
   
+  unsigned partons_lhe_;
   unsigned partons_;
   double parton_pt_;
   float D0_;

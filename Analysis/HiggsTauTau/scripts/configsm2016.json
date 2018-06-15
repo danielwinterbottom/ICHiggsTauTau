@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "mt", "em", "tt", "et" ],
+    "channels":     ["em", "et", "mt", "tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Jun08_sync/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/May29/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -69,6 +69,7 @@
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar29_MELA/",
     "mela_mode" : 0,
+    "njets_mode" : 0,
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
@@ -132,10 +133,11 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false, //setting FF to false, don't have the files
+        "do_ff_weights" : true, 
         "do_ff_systematics": false,
-        "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
-        "ff_file" : "20170628_tight"
+        "ff_categories" :"inclusive",
+        "ff_file" : "sm2016_fakefactors",
+        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
           }
     },
  "tt": {
@@ -148,10 +150,11 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
+        "do_ff_weights" : true,
         "do_ff_systematics": false,
-        "ff_categories" :"btag,inclusive,nobtag",
-        "ff_file" : "20170628_medium"
+        "ff_categories" :"inclusive",
+        "ff_file" : "sm2016_fakefactors",
+        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
       }
     },
 
@@ -166,10 +169,11 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
+        "do_ff_weights" : true,
         "do_ff_systematics": false,
-        "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
-        "ff_file" : "20170628_tight"
+        "ff_categories" :"inclusive",
+        "ff_file" : "sm2016_fakefactors",
+        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
       }
     },
     "em": {
@@ -294,7 +298,7 @@
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.03
+        "mufaketau_0pi_es_shift": 1.013
       }
     },
     "scale_mufake_1pi_lo": {
@@ -306,7 +310,7 @@
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.015
+        "mufaketau_1pi_es_shift": 1.03
       }
     },
     "scale_e_lo": {
@@ -447,6 +451,92 @@
       "baseline": {
         "addit_output_folder" : "MET_RES_UP",
         "metres_mode" : 2
+      }
+    },
+    
+    "scale_met_njets0_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS0_DOWN",
+        "metscale_mode" : 1,
+        "njets_mode" : 1
+      }
+    },
+    "scale_met_njets0_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS0_UP",
+        "metscale_mode" : 2,
+        "njets_mode" : 1
+      }
+    },
+    "res_met_njets0_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS0_DOWN",
+        "metres_mode" : 1,
+        "njets_mode" : 1 
+      }
+    },
+    "res_met_njets0_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS0_UP",
+        "metres_mode" : 2,
+        "njets_mode" : 1
+      }
+    },
+
+    "scale_met_njets1_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS1_DOWN",
+        "metscale_mode" : 1,
+        "njets_mode" : 2
+      }
+    },
+    "scale_met_njets1_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS1_UP",
+        "metscale_mode" : 2,
+        "njets_mode" : 2
+      }
+    },
+    "res_met_njets1_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS1_DOWN",
+        "metres_mode" : 1,
+        "njets_mode" : 2
+      }
+    },
+    "res_met_njets1_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS1_UP",
+        "metres_mode" : 2,
+        "njets_mode" : 2
+      }
+    },
+    "scale_met_njets2_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS2_DOWN",
+        "metscale_mode" : 1,
+        "njets_mode" : 3
+      }
+    },
+    "scale_met_njets2_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_NJETS2_UP",
+        "metscale_mode" : 2,
+        "njets_mode" : 3
+      }
+    },
+    "res_met_njets2_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS2_DOWN",
+        "metres_mode" : 1,
+        "njets_mode" : 3
+      }
+    },
+    "res_met_njets2_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_NJETS2_UP",
+        "metres_mode" : 2,
+        "njets_mode" : 3
       }
     },
     "met_cl_lo": {

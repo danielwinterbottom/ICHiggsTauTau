@@ -45,6 +45,7 @@ namespace ic {
     outputadd_ = "";
     fullpath_ = "SVFIT_2012/";
     do_vloose_preselection_ = false;
+    verbose_ = false;
 
     MC_ = false;
   }
@@ -123,12 +124,12 @@ namespace ic {
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {
-            std::cout << "Warning, unable to open file " << path << std::endl;
+            if(verbose_) std::cout << "Warning, unable to open file " << path << std::endl;
             continue;
           }
           TTree *otree = dynamic_cast<TTree *>(ofile->Get("svfit"));
           if (!otree) {
-            std::cout << "Warning, unable to get tree in file " << path << std::endl;
+            if(verbose_) std::cout << "Warning, unable to get tree in file " << path << std::endl;
             continue;
           }
           unsigned    event    = 0;
@@ -210,16 +211,20 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17 || tau_optimisation_){
+        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16  || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        if(strategy_ == strategy::cpsummer17) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           iso_discr_2_ = iso_2_ < 10;
         }
-        if(do_vloose_preselection_) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        if(do_vloose_preselection_) {
+          if(strategy_ == strategy::cpsummer17) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        }
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;*/
         bool lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -253,16 +258,20 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17 || tau_optimisation_){
+        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        if(strategy_ == strategy::cpsummer17) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           iso_discr_2_ = iso_2_ < 10;
         }
-        if(do_vloose_preselection_) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        if(do_vloose_preselection_) {
+          if(strategy_ == strategy::cpsummer17) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        }
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
         lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -299,13 +308,23 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+        if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        if(strategy_ == strategy::cpsummer17) {
+          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");  
+          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        }
         if(do_vloose_preselection_){
-          iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
-          iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT"); 
+          if(strategy_ == strategy::cpsummer17) {
+            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");  
+            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          }
+          else {
+            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+          } 
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
@@ -422,7 +441,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             fail_state = true;
           } else {
             if (it->second.second < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
+              if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
             } else {
               event->Add("svfitMass", it->second.second);
             }
@@ -438,7 +457,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             fail_state = true;
           } else {
             if ((std::get<1>(it->second)).M() < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
+              if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
             } else {
               event->Add("svfitMass", (std::get<1>(it->second)).M());
               event->Add("svfitHiggs", std::get<1>(it->second));
@@ -452,8 +471,8 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
      }
     if (fail_state) {
       if (fail_mode_ == 0) {
-        std::cout << "Warning, SVFitTest mass not found!" << std::endl;
-        event->Add("svfitMass", double(-9999.0));
+        if(verbose_) std::cout << "Warning, SVFitTest mass not found!" << std::endl;
+        event->Add("svfitMass", double(-100.0));
       } else if (fail_mode_ == 1) {
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;

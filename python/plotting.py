@@ -56,6 +56,8 @@ def SetAxisTitles(plot, channel):
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
+  titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
+  titles['iso_2'] = ['iso_{'+lep2_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep2_label+'}']
   titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
@@ -2104,6 +2106,7 @@ def HTTPlot(nodename,
       for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue  
         schemes = background_schemes[chan]
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
@@ -2417,6 +2420,16 @@ def HTTPlot(nodename,
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
+        
+        ## lines below will show seperate lines indicating systematic up and down bands
+        #if do_custom_uncerts:
+        #  bkg_uncert_up.SetLineColor(R.kBlue)
+        #  bkg_uncert_down.SetLineColor(R.kRed)
+        #  bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
+        #  bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
+        #  bkg_uncert_up.Draw('histsame')
+        #  bkg_uncert_down.Draw('histsame')
+
         pads[1].RedrawAxis("G")
 
         #Draw uncertainty band

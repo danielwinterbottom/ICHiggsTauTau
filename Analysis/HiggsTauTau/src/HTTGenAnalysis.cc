@@ -219,6 +219,7 @@ namespace ic {
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
       outtree_->Branch("partons"     , &partons_);
+      outtree_->Branch("partons_lhe"     , &partons_lhe_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
@@ -405,15 +406,16 @@ namespace ic {
 
     double pT=0;
     HiggsPt_=-9999;
+    partons_lhe_=0;
     partons_=0;
     bool lhe_exists = event->ExistsInTree("lheParticles");
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
-      parton_pt_=0;
+      parton_pt_=10.;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
-           if ((id >= 1 && id <=6) || id == 21){ partons_++; if(lhe_parts[i]->pt()>parton_pt_) parton_pt_ = lhe_parts[i]->pt();}
+           if ((id >= 1 && id <=6) || id == 21){ if(lhe_parts[i]->pt()>=10.) {partons_lhe_++;} parton_pt_ = lhe_parts[i]->pt();}
       }
     }
     
@@ -431,7 +433,7 @@ namespace ic {
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
-      if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212) partons_++;
+      if (status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 && part.pt() >= 10.) partons_++;
       
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();

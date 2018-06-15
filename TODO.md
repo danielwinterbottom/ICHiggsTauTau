@@ -16,9 +16,9 @@
 
 - [x] DY pT/mass weights - measure new weights using di-muon data and apply/test using Z->mumu/ee events
 
-- [ ] Tau IDs/ SF: I added the next tau ID training to the ntuples, these will need to be applied instead ofthe old IDs in the analyser. Also update the SFs to the recommended ones on the TauPOG twiki. Anti-electron/muon IDs will likly be updated by the Tau POG - add these to nutples when they are available
+- [x] Tau IDs/ SF: I added the next tau ID training to the ntuples, these will need to be applied instead ofthe old IDs in the analyser. Also update the SFs to the recommended ones on the TauPOG twiki. Anti-electron/muon IDs will likly be updated by the Tau POG - add these to nutples when they are available
 
-- [ ] Tau energy scales: Apply the POG recommendation. For e->tau and mu->tau fakes we should measure these outselves (see how Adinda did this for MSSM)
+- [x] Tau energy scales: Apply the POG recommendation. For e->tau and mu->tau fakes we should measure these outselves (see how Adinda did this for MSSM)
 
 - [ ] JES corrctions + uncertainties: Check these are applied automatically by using latest global tag (if not will require new ntuples). Get Latest uncertainties .xml file
 
@@ -31,3 +31,7 @@
 - [ ] MET recoil corrections - Check if DESY group plan to measure then and if so us ethere measurments (if not we can discuss measring these ourselves but shouldn't be a high priority)
 
 - [ ] SV-fit / MELA / MVA score usage: It is very inefficienct to have to run the analyser repeatadly to add the SV-fit mass and MELA variables to the final trees. It would be better to have some code that can just loop over the trees proeduced without the SVfit/MELA and add these to the branches - something similar to what is done to add the MVA scores to the trees. Options to add either SV-fit or MELA (or both at the same time) would also be useful
+
+- [ ] Apply suggested MET filters once they are on the ntuples (https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2)
+
+- [ ] Update params file after next production. Some sample names may have changed. event numbers will have changed. some ext samples added. DY low mass if now 5-50 GeV so will need to find latest XS for this sample

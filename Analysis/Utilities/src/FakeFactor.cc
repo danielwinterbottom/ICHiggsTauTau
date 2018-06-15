@@ -24,7 +24,9 @@ double FakeFactor::value(const std::vector<double>& xs,
         size_t index)
 /*****************************************************************/
 {
-    // TODO: add xs size check
+    if( xs.size() != m_inputs.size() ){
+        throw std::length_error( "[FakeFactor::value()] Number of inputs does not match length of required inputs." );
+    }
     const auto& indices = indicesVec[index];
     if(indices.size()>1) // Node
     {

@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zmm", "zee"],
+    "channels":     ["et","mt","zee","zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -16,7 +16,7 @@
     "output_postfix":"",
     "sample": "VBF_HToTauTau_M-125"
   },
-  "sequence": {
+  "sequence": {  
     "do_gen_analysis" : false,
     "era"           : "data_2017",
     "mc"            : "mc2017",
@@ -32,7 +32,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_btag_eff":false,
-    "trg_in_mc" : false,
+    "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Jun7/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -95,9 +95,9 @@
       "efaketau_1pi_es_shift": 1.0,
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
-      "tau_1prong0pi0_es_shift": 1.0,
-      "tau_1prong1pi0_es_shift": 1.0,
-      "tau_3prong0pi0_es_shift": 1.0,
+      "tau_1prong0pi0_es_shift": 0.97,
+      "tau_1prong1pi0_es_shift": 0.98,
+      "tau_3prong0pi0_es_shift": 0.99,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -132,7 +132,7 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false, //setting FF to false, don't have the files
+        "do_ff_weights" : true, 
         "do_ff_systematics": false,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170628_tight"
@@ -166,7 +166,7 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
+        "do_ff_weights" : true,
         "do_ff_systematics": false,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170628_tight"
@@ -226,37 +226,37 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : 0.988
+         "tau_1prong0pi0_es_shift" : 1.0
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : 0.976
+         "tau_1prong0pi0_es_shift" : 0.94
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.016
+         "tau_1prong1pi0_es_shift" : 1.01
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 1.004
+         "tau_1prong1pi0_es_shift" : 0.95
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 1.01
+         "tau_3prong0pi0_es_shift" : 1.02
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.998
+         "tau_3prong0pi0_es_shift" : 0.96
       }
     },
 
