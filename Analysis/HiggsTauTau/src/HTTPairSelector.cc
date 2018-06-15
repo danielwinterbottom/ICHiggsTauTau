@@ -108,8 +108,8 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_) {
         if(channel_ ==  channel::et) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoET) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
@@ -120,8 +120,8 @@ namespace ic {
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoTT) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoTT) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
         }
       }
       if (os_dilepton.size() > 0) { // Take OS in preference to SS
@@ -164,7 +164,7 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_ ) {
         if(channel_ ==  channel::et) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
@@ -173,7 +173,7 @@ namespace ic {
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoTT) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
         }
       }
       if (nosign_dilepton.size() > 0) { // No preference for OS over SS
@@ -443,7 +443,7 @@ namespace ic {
     return ScalarPtSum(c1->AsVector()) > ScalarPtSum(c2->AsVector());
   }
 
-  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
@@ -460,6 +460,10 @@ namespace ic {
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
     double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if(strategy==strategy::cpsummer17){
+      t_iso1 = t1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+      t_iso2 = t2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+    }
     //if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
@@ -484,6 +488,10 @@ namespace ic {
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
     double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if(strategy==strategy::cpsummer17){
+      t_iso1 = t1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+      t_iso2 = t2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+    }
    // if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
@@ -510,7 +518,7 @@ namespace ic {
     return e1->pt() > e2->pt();
   }
 
-  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the electrons
     Tau const* t1_1 = static_cast<Tau const*>(c1->At(0));
     Tau const* t1_2 = static_cast<Tau const*>(c2->At(0));
@@ -518,6 +526,10 @@ namespace ic {
     double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
     double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if(strategy==strategy::cpsummer17){
+      t1_iso1 = t1_1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+      t1_iso2 = t1_2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+    }
     // If the iso is different we just use this
     //if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
     if (t1_iso1 != t1_iso2) return t1_iso1 > t1_iso2;
@@ -530,6 +542,10 @@ namespace ic {
     double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
     double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if(strategy==strategy::cpsummer17){
+      t2_iso1 = t2_1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+      t2_iso2 = t2_2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+    }
     // If the iso is different we just use this
     //if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
     if (t2_iso1 != t2_iso2) return t2_iso1 > t2_iso2;

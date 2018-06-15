@@ -1682,7 +1682,7 @@ namespace ic {
                     mu_trg_mc=1;
                 }
             }
-         } else if (mc_ = mc::mc2017) {
+         } else if (mc_ == mc::mc2017) {
            auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
            tau_trg=1;
            tau_trg_mc=1;
@@ -2521,7 +2521,7 @@ namespace ic {
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_2.data());
           ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_2.data());
         }
-        if(mc_==mc::mc20177){
+        if(mc_==mc::mc2017){
           weight *= ele_idiso;
           event->Add("idweight_1", ele_id);
           event->Add("idweight_2", double(1.0));
