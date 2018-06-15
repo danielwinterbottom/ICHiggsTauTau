@@ -954,6 +954,7 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_1_;
   bool trg_singletau_2_;
   bool trg_mutaucross_;
+  bool trg_etaucross_;
   
   bool flagMETFilter_;
   

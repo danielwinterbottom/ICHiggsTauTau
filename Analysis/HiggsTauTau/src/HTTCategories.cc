@@ -856,6 +856,7 @@ namespace ic {
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
+      outtree_->Branch("trg_etaucross",    &trg_etaucross_);
       outtree_->Branch("jpt_1",             &jpt_1_.var_double);
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
@@ -1740,6 +1741,7 @@ namespace ic {
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
+      synctree_->Branch("trg_etaucross", &trg_etaucross_);
       
       synctree_->Branch("flagMETFilter", &flagMETFilter_);
 
@@ -1758,6 +1760,7 @@ namespace ic {
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
+    if (event->Exists("trg_etaucross"))     trg_etaucross_ = event->Get<bool>("trg_etaucross");
     
     if (event->Exists("flagMETFilter")) flagMETFilter_ = event->Get<bool>("flagMETFilter"); 
     else flagMETFilter_ = false;
