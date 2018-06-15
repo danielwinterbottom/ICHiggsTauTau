@@ -212,6 +212,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
              data_samples+=[   
              'Tau'+era]
         
+  data_samples = list(set(data_samples))
 
   DATAFILELIST="./filelists/Apr27_Data_94X"
 

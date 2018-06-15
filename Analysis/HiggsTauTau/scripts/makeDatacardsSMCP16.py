@@ -513,6 +513,9 @@ if SCHEME == 'cpsummer16_neww':
   ANA = 'sm'
   
 if SCHEME == 'ff_fracs':
+  for ch in extra_channel:
+    extra_channel[ch]+=' --syst_eff_b=CMS_eff_b_13TeV --syst_fake_b=CMS_fake_b_13TeV '
+    
   VAR_MT = 'm_vis[0,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240]'
   VAR_MT_0JET = 'm_vis[0,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,200,240]'
   VAR_MT_BOOSTED_LOW = 'm_vis[0,40,50,60,70,80,90,100,110,120,130,140,160,180,200,240]'

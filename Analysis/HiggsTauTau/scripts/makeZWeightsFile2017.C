@@ -1,11 +1,11 @@
-void makeZWeightsFile(std::string outfile){
+void makeZWeightsFile2017(std::string outfile){
 
 double x_bins[10] = {0,50,80,90,100,120,160,200,400,800};
 double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
 int n_xbins = 9;
 int n_ybins = 14;
 TFile *fout = new TFile(outfile.c_str(),"RECREATE");
-std::vector<std::string> file_names = {"datacard_pt_tt_inclusive_zmm_2016_mvis50to80.root", "datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root", "datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root", "datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root", "datacard_pt_tt_inclusive_zmm_2016_mvis120to160.root", "datacard_pt_tt_inclusive_zmm_2016_mvis160to200.root","datacard_pt_tt_inclusive_zmm_2016_mvis200to400.root","datacard_pt_tt_inclusive_zmm_2016_mvis400toinf.root"};
+std::vector<std::string> file_names = {"datacard_pt_tt_inclusive_zmm_2017_mvis50to80.root", "datacard_pt_tt_inclusive_zmm_2017_mvis80to90.root", "datacard_pt_tt_inclusive_zmm_2017_mvis90to100.root", "datacard_pt_tt_inclusive_zmm_2017_mvis100to120.root", "datacard_pt_tt_inclusive_zmm_2017_mvis120to160.root", "datacard_pt_tt_inclusive_zmm_2017_mvis160to200.root","datacard_pt_tt_inclusive_zmm_2017_mvis200to400.root","datacard_pt_tt_inclusive_zmm_2017_mvis400toinf.root"};
     double tt_scale=1.0;
     std::string hist_name = "zptmass_histo";    
     TH2D *h_2dweights = new TH2D(hist_name.c_str(),hist_name.c_str(),n_xbins,x_bins,n_ybins,y_bins);
