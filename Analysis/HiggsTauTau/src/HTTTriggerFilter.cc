@@ -2,6 +2,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
@@ -916,8 +917,9 @@ namespace ic {
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
     // mutau cross triggers for smsummer16 (keeping seperate from usual do_leptonplustau_ option as we want to use these in OR with single mu)
-    tau1_trg_mc= 1.0;
+    // float tau1_trg_mc= 1.0;
     bool passed_mutaucross_alt = false;
+    bool passed_mutaucross = false;
     if (channel_ == channel::mt){
       std::vector<TriggerObject *> const& cross_objs_singlel1 = event->GetPtrVec<TriggerObject>(trig_obj_label);  
       for(unsigned i = 0; i < dileptons.size(); ++i){  

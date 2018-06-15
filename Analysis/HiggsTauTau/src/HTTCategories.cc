@@ -2603,6 +2603,11 @@ namespace ic {
       strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) loose_btag_wp = 0.46;
     if(strategy_ == strategy::cpsummer17) loose_btag_wp = 0.5803;
 
+    // Test DeepCSV btagging
+    /* if(strategy_ == strategy::cpsummer17) btag_label = "pfDeepCSVJetTags:probb";
+    if(strategy_ == strategy::cpsummer17) btag_wp = 0.4941;
+    if(strategy_ == strategy::cpsummer17) loose_btag_wp = 0.1522;*/
+
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;

@@ -203,7 +203,8 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) tight_wp = 0.8484;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tight_wp = 0.8484;
+        else if(strategy_ == strategy::cpsummer17) tight_wp = 0.8838;
         if(jet_flavour == 5){
           if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
