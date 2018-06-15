@@ -108,7 +108,7 @@ namespace ic {
        if (run >= 250985 && run <= 271035  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos)) path_found = true;
        if (run >= 271036 /*&& run <= 258654*/  && (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v") != name.npos) && do_singlelepton_) path_found = true;
        if (run >= 250985 && run <= 284044  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-       if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos)) path_found = true;
+       if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
@@ -126,7 +126,7 @@ namespace ic {
           if (run >= 256630  && run <= 271035 && (name.find("HLT_IsoMu18_v") != name.npos)) path_found = true;
           if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos || name.find("HLT_IsoTkMu22_v")!=name.npos || name.find("HLT_IsoMu22_eta2p1_v") || name.find("HLT_IsoTkMu22_eta2p1_v")!=name.npos) && do_singlelepton_) path_found = true;
           if (run >= 271036  && run <= 284044 && (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-          if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos)) path_found = true;
+          if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos || name.find("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
           // Look for Mu Low trigger first
@@ -142,8 +142,8 @@ namespace ic {
           if (run >= 278820 /*&& run <= xxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos)) path_found = true; 
         }
         if (channel_ == channel::tt){
-          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
-          //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
+          if (run >= 250985 && run <= 284044 && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
+          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
@@ -915,8 +915,9 @@ namespace ic {
     }
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
+
     // mutau cross triggers for smsummer16 (keeping seperate from usual do_leptonplustau_ option as we want to use these in OR with single mu)
-    vool passed_mutaucross = false;
+    bool passed_mutaucross = false;
     bool passed_mutaucross_alt = false;
     if (channel_ == channel::mt){
       std::vector<TriggerObject *> const& cross_objs_singlel1 = event->GetPtrVec<TriggerObject>(trig_obj_label);  
