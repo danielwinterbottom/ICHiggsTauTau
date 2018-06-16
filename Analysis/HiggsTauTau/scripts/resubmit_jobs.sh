@@ -1,6 +1,8 @@
 for i in $(ls jobs/*.log); do 
   if grep -q "Post-analysis" $i; then 
     continue; 
+  elif grep -q "Processing Complete:" $i; then
+    continue;
   else 
     job=$i
     job=${job//.log/".sh"}
