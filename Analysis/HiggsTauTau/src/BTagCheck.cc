@@ -12,6 +12,7 @@ namespace ic {
     jet_label_ = "pfJetsPFlow";
     do_legacy_ = true;
     dilepton_label_ = "ditau";
+    use_deep_csv_ = false;
   }
 
   BTagCheck::~BTagCheck() {
@@ -55,6 +56,8 @@ namespace ic {
       outtree_->Branch("pt",&pt);
       outtree_->Branch("eta",&eta);
       outtree_->Branch("csv_value",&csv);
+      outtree_->Branch("csv_value_deepcsv_b",&csv_b);
+      outtree_->Branch("csv_value_deepcsv_bb",&csv_bb);
       outtree_->Branch("jet_flavour",&jet_flavour);
       outtree_->Branch("gen_match",&gen_match);
       outtree_->Branch("iso_1",&iso_1);
@@ -66,7 +69,8 @@ namespace ic {
       outtree_->Branch("sf",&sf);
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if( era_ == era::data_2016 || era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if(era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if(era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     calib  = new const BTagCalibration("csvv2",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
@@ -95,7 +99,7 @@ namespace ic {
     os=PairOppSign(dilepton.at(0));
     double pass_presel=false;
     
-     bool dilepton_veto_=false,extraelec_veto_=false,extramuon_veto_ = false;
+    bool dilepton_veto_= false, extraelec_veto_= false, extramuon_veto_ = false;
     if(channel_ == channel::et) { 
         if(event->Exists("dielec_veto"))  dilepton_veto_ = event->Get<bool>("dielec_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -170,7 +174,7 @@ namespace ic {
     }
 
 
- leptonveto = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+    leptonveto = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 
 
 
@@ -196,7 +200,14 @@ namespace ic {
       for (unsigned i = 0; i<embed_jets.size(); ++i){
         pt = embed_jets[i]->pt();
         eta = embed_jets[i]->eta();
-        csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        if (use_deep_csv_){
+          csv_b = embed_jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb");
+          csv_bb = embed_jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
+          csv = csv_b + csv_bb;
+        }
+        else {
+          csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        }
         jet_flavour = abs(embed_jets[i]->hadron_flavour());
         std::vector<PFJet*> current_jet;
         current_jet.push_back(embed_jets[i]);
@@ -205,6 +216,7 @@ namespace ic {
         double tight_wp = 0.8;
         if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tight_wp = 0.8484;
         else if(strategy_ == strategy::cpsummer17) tight_wp = 0.8838;
+        else if(strategy_ == strategy::cpsummer17 && use_deep_csv_) tight_wp = 0.4941;
         if(jet_flavour == 5){
           if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);

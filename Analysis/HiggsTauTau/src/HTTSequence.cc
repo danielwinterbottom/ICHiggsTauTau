@@ -1201,7 +1201,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_era(era_type)
     .set_strategy(strategy_type)
     .set_do_legacy(false)
-    .set_era(era_type)
+    .set_use_deep_csv(true)
     .set_jet_label(jets_label));
 }
 
