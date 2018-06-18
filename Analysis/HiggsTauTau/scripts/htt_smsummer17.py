@@ -131,7 +131,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Apr27_MC_94X'
+FILELIST='filelists/Jun15_MC_94X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -307,15 +307,15 @@ if options.proc_bkg or options.proc_all:
      'DY4JetsToLL-LO',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO',
-     'DYJetsToLL_M-10-50-LO',
+     'DYJetsToLL_M-5-50-LO',
      'ZZTo4L',
-     'ZZTo4L-ext1',
+     'ZZTo4L-ext',
      'ZZTo2L2Q',
      'ZZTo2L2Nu',
      'WZTo3LNu',
      'WZTo2L2Q',
      'WZTo1L1Nu2Q',
-     'WWToLNuQQ', # check this one after the new production!
+     'WWToLNuQQ',
      'WWTo4Q',
      'WWTo2L2Nu',
      'WWTo1L1Nu2Q',
@@ -330,8 +330,19 @@ if options.proc_bkg or options.proc_all:
      'T-t',
      'EWKZ2Jets',
      'EWKWPlus2Jets',
-     'EWKWMinus2Jets'
+     'EWKWMinus2Jets',
+     'DYJetsToLL',
+     'DYJetsToLL-ext',
+     'DY2JetsToLL-LO-ext',
+     'WJetsToLNu-LO',
+     'W2JetsToLNu-LO',
+     'WWTo4Q-ext',
+     'WWToLNuQQ-ext'
      ]
+  
+
+
+
   
 
   for sa in central_samples:
@@ -367,7 +378,7 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.proc_sm or options.proc_all:
-  SIG_FILELIST='filelists/Apr27_MC_94X' 
+  SIG_FILELIST='filelists/Jun15_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2017' % (sa)
