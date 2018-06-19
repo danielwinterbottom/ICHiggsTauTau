@@ -736,6 +736,7 @@ namespace ic {
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
+      outtree_->Branch("eta_h",              &eta_h);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
@@ -774,6 +775,7 @@ namespace ic {
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
+      outtree_->Branch("dijetpt",           &dijetpt_);
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         outtree_->Branch("sjdphi",             &sjdphi_);
         outtree_->Branch("D0", &D0_);
@@ -2764,6 +2766,7 @@ namespace ic {
 
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
+    pt_vis_ = ditau->pt();
    
 
     // This is the HCP hack for the em channel
@@ -3825,6 +3828,7 @@ namespace ic {
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
+      dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
@@ -3901,6 +3905,7 @@ namespace ic {
       mjj_ = -9999;
       jdeta_ = -9999;
       jdphi_ = -9999;
+      dijetpt_ = -9999;
       jrawf_2_ = -9999;
       jptunc_2_ = -9999;
       jmva_2_ = -9999;

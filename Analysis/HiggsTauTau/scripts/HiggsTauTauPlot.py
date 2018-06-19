@@ -879,9 +879,8 @@ if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowboost','
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125', 'ggH_hww', 'qqH_hww','EmbedZTT'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125', 'ggH_hww', 'qqH_hww','EmbedZTT'], False)
 if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
-        'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj',
-        'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj']
-        and options.channel in ['em','et','mt','tt']: 
+            'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj',
+            'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
     if options.cat in ['dijet','dijet_lowboost','dijet_boosted',
@@ -1045,7 +1044,7 @@ else:
           if options.cat == '0jet':
             if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 1.15
             else: qcd_os_ss_ratio = 1.07
-          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
+          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06 #bug?
           elif options.cat == 'boosted':
             if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 1.18
             else: qcd_os_ss_ratio = 1.06
