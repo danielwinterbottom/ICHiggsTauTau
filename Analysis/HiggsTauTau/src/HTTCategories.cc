@@ -736,7 +736,7 @@ namespace ic {
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
-      outtree_->Branch("eta_h",              &eta_h);
+      outtree_->Branch("eta_h",             &eta_h_);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
