@@ -114,6 +114,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   metcl_mode=json["baseline"]["metcl_mode"].asUInt();
   metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
+  use_deep_csv=json["baseline"]["use_deep_csv"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
   if(js["mc"].asString()=="" && era_str != "data_2017"){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
@@ -549,6 +550,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
   std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
+  std::cout << boost::format(param_fmt) % "use_deep_csv" % use_deep_csv;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 //  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
@@ -813,9 +815,10 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  .set_bbtag_eff(new TH2F(bbtag_eff))
  .set_cbtag_eff(new TH2F(cbtag_eff))
  .set_othbtag_eff(new TH2F(othbtag_eff))
- .set_do_reshape(do_reshape)
+ .set_use_deep_csv(use_deep_csv)
  .set_btag_mode(btag_mode)
  .set_bfake_mode(bfake_mode));
+
 
 std::string mass_str = output_name;
 mass_str.erase(0, mass_str.find("_M-")+3);
@@ -1115,6 +1118,11 @@ BuildModule(jetIDFilter);
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+    } else if (strategy_type == strategy::cpsummer17 && use_deep_csv) {
+      // update to 2017
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_oth");
     } else if (strategy_type == strategy::cpsummer17) {
       // update to 2017
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
@@ -1149,6 +1157,7 @@ BuildModule(jetIDFilter);
          .set_cbtag_eff(new TH2F(cbtag_eff))
          .set_othbtag_eff(new TH2F(othbtag_eff))
          .set_do_reshape(do_reshape)
+         .set_use_deep_csv(use_deep_csv)
          .set_btag_mode(btag_mode)
          .set_bfake_mode(bfake_mode)
          .set_add_name(source));
@@ -1201,7 +1210,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_era(era_type)
     .set_strategy(strategy_type)
     .set_do_legacy(false)
-    .set_use_deep_csv(true)
+    .set_use_deep_csv(use_deep_csv)
     .set_jet_label(jets_label));
 }
 
@@ -1577,7 +1586,7 @@ if(mela_mode!=0){
 }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
@@ -1600,6 +1609,11 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpsummer17 && use_deep_csv) {
+    // update to 2017
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_oth");
   } else if(strategy_type == strategy::cpsummer17){
     // updated for 2017
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
@@ -1616,6 +1630,7 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
    .set_cbtag_eff(new TH2F(cbtag_eff))
    .set_othbtag_eff(new TH2F(othbtag_eff))
    .set_do_reshape(do_reshape)
+   .set_use_deep_csv(use_deep_csv)
    .set_btag_mode(btag_mode)
    .set_bfake_mode(bfake_mode));
 }

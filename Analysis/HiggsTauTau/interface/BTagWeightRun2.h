@@ -29,6 +29,7 @@ class BTagWeightRun2 : public ModuleBase {
    CLASS_MEMBER(BTagWeightRun2, TH2F*,cbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,othbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, bool, do_reshape)
+   CLASS_MEMBER(BTagWeightRun2, bool, use_deep_csv)
    CLASS_MEMBER(BTagWeightRun2, unsigned, btag_mode) 
    CLASS_MEMBER(BTagWeightRun2, unsigned, bfake_mode)
    CLASS_MEMBER(BTagWeightRun2, std::string, add_name)
