@@ -1,11 +1,11 @@
 {
   "DYJetsToLL": {
     "xs": 5765.4,
-    "evt": 142099053.0
+    "evt": 142099053
   },
   "DYJetsToLL-ext": {
     "xs": 5765.4,
-    "evt": 142099053.0
+    "evt": 142099053
   },
   "DY1JetsToLL-LO": {
     "xs": 5765.4,
