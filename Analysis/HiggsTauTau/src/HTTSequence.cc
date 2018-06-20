@@ -1590,7 +1590,6 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
- std::cout<<"running it"<<std::endl;
 
   if(strategy_type == strategy::fall15){
     if(channel != channel::tt){
