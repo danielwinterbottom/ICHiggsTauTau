@@ -238,11 +238,11 @@ namespace ic {
               fns_["e_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-                 w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+                 w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_sceta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
-              fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
-                 w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
+              fns_["e_id_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_id_pog_ratio")->functor(w_->argSet("e_pt,e_eta,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -559,29 +559,36 @@ namespace ic {
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
 
     }
-    if (do_zpt_weight_ && mc_ == mc::summer16_80X && strategy_ == strategy::mssmsummer16){
-      fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
-              w_->function("zpt_weight_nom")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_esup"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_esup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_esdown"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_esdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_ttup"] = std::shared_ptr<RooFunctor>( 
-              w_->function("zpt_weight_ttup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_ttdown"] = std::shared_ptr<RooFunctor>( 
-              w_->function("zpt_weight_ttdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt0up"] = std::shared_ptr<RooFunctor>( 
-              w_->function("zpt_weight_statpt0up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt0down"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_statpt0down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt40up"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_statpt40up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt40down"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_statpt40down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt80up"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_statpt80up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
-      fns_["zpt_weight_statpt80down"] = std::shared_ptr<RooFunctor>(
-              w_->function("zpt_weight_statpt80down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+    if (do_zpt_weight_){
+      if (mc_ == mc::summer16_80X && strategy_ == strategy::mssmsummer16){  
+        fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
+                w_->function("zpt_weight_nom")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_esup"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_esup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_esdown"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_esdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_ttup"] = std::shared_ptr<RooFunctor>( 
+                w_->function("zpt_weight_ttup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_ttdown"] = std::shared_ptr<RooFunctor>( 
+                w_->function("zpt_weight_ttdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt0up"] = std::shared_ptr<RooFunctor>( 
+                w_->function("zpt_weight_statpt0up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt0down"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_statpt0down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt40up"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_statpt40up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt40down"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_statpt40down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt80up"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_statpt80up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+        fns_["zpt_weight_statpt80down"] = std::shared_ptr<RooFunctor>(
+                w_->function("zpt_weight_statpt80down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      }
+      
+      if(mc_==mc::mc2017){
+        fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
+              w_->function("zpt_weight_nom")->functor(w_->argSet("z_gen_pt")));    
+      }
     }
 
     return 0;
@@ -1029,7 +1036,7 @@ namespace ic {
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
-      if(mc_ != mc::summer16_80X || strategy_== strategy::smsummer16 || strategy_ == strategy::cpsummer16 || mc_==mc::mc2017){
+      if((mc_ != mc::summer16_80X && mc_ != mc::mc2017)|| strategy_== strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
           double wtzpt_down=1.0;
           double wtzpt_up = wtzpt*wtzpt;
@@ -1065,6 +1072,14 @@ namespace ic {
         event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
         event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
         event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+      } else if (mc_==mc::mc2017){
+        auto args = std::vector<double>{zpt};  
+        double wtzpt = fns_["zpt_weight_nom"]->eval(args.data());
+        double wtzpt_down=1.0;
+        double wtzpt_up = wtzpt*wtzpt;
+        eventInfo->set_weight("wt_zpt",wtzpt);
+        event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+        event->Add("wt_zpt_down",wtzpt_down/wtzpt);
       }
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
@@ -2515,11 +2530,14 @@ namespace ic {
           e_iso_wt = fns_["e_iso_binned_ratio"]->eval(args_2.data());
           ele_idiso*=e_iso_wt;
         } else if(mc_==mc::mc2017){
-          auto args_1 = std::vector<double>{pt,e_signed_eta};
-          auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};  
-          ele_id = fns_["e_id_ratio"]->eval(args_1.data());
-          ele_iso = fns_["e_iso_binned_ratio"]->eval(args_2.data());
-          ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_2.data());
+          double e_sceta = elec->sc_eta();
+          double e_eta = elec->eta();
+          auto args_1 = std::vector<double>{pt,e_signed_eta,e_iso};  
+          auto args_2 = std::vector<double>{pt,e_sceta};
+          auto args_3 = std::vector<double>{pt,e_signed_eta,e_sceta,e_iso};
+          ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
+          ele_id = fns_["e_id_pog_ratio"]->eval(args_2.data());
+          ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
         }
         if(mc_==mc::mc2017){
           weight *= ele_idiso;
@@ -2826,8 +2844,9 @@ namespace ic {
            }
          } else if(mc_==mc::mc2017) {
            double m_iso = PF04IsolationVal(muon, 0.5, 0); 
-           double e_iso = PF03IsolationVal(elec, 0.5, 0);   
-           auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};  
+           double e_iso = PF03IsolationVal(elec, 0.5, 0);
+           double e_sceta = elec->sc_eta(); 
+           auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_sceta,e_iso};  
            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
            e_idiso = fns_["e_idiso_binned_ratio"]->eval(args_2_1.data());
            m_idiso = fns_["m_idiso_binned_ratio"]->eval(args_2_2.data());
@@ -3004,8 +3023,10 @@ namespace ic {
              e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ;
            }
         } else if (mc_==mc::mc2017){
-          auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_iso};
-          auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_iso};  
+          double e_1_sceta = elec_1->sc_eta();   
+          double e_2_sceta = elec_2->sc_eta();
+          auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_sceta,e_1_iso};
+          auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_sceta,e_2_iso};  
           e_1_idiso = fns_["e_idiso_binned_ratio"]->eval(args1_2.data()) ;
           e_2_idiso = fns_["e_idiso_binned_ratio"]->eval(args2_2.data()) ; 
         } 

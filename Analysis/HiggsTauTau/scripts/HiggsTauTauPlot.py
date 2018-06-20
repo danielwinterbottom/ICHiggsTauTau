@@ -659,7 +659,7 @@ if options.era in ['cpsummer17']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY4JetsToLL-LO'] # no low mass sample until we know the cross section!
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo4Q-ext,WWTo4Q','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo4Q-ext','WWTo4Q','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
     wjets_samples = ['WJetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = []
     ewkz_samples = ['EWKZ2Jets']
@@ -880,15 +880,14 @@ if options.syst_em_qcd_extrap != '' and options.channel == 'em':
     systematics['syst_em_qcd_extrap_up'] = ('' , '_'+options.syst_em_qcd_extrap+'Up', 'wt*wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_em_qcd_extrap_down'] = ('' , '_'+options.syst_em_qcd_extrap+'Down', 'wt*wt_em_qcd_extrapdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)     
 
-if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
+if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
     njets = ['njet0','njet1']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
       if process is 'qcd' or options.channel == 'tt': template_name = 'ff_'+process+'_'+options.channel+'_syst'
-      if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
-      else: weight_name = 'wt_ff_'+process+'_syst_'
+      weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       if options.channel == 'tt' and process in ['w','tt']: continue
@@ -897,23 +896,48 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           template_name = 'ff_'+process+'_'+dm+'_'+njet
           if process != 'tt': template_name+='_'+options.channel
           template_name+='_stat'
-          if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
-          else: weight_name = 'wt_ff_'+process+'_'+dm+'_'+njet+'_stat_'
+          weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
     if options.channel == "tt":
       processes = ['dy', 'w', 'tt']
       for process in processes:
         template_name = 'ff_'+process+'_frac_tt_syst'
-        if options.era == 'mssmsummer16': weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
-        else: weight_name = 'wt_ff_'+process+'_frac_syst_'
+        weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
         systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
         
-    if options.era in ['cpsummer16','cpsummer17','smsummer16']:
-      template_name = 'ff_sub_syst_%s_%s' % (options.channel, options.cat)
-      systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-      systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)    
+      
+if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era in ['cpsummer16','cpsummer17','smsummer16']:
+    processes = ['tt','w','qcd']
+    dms = ['dm0', 'dm1']
+    njets = ['njet0','njet1']
+    for process in processes:
+      template_name = 'ff_'+process+'_'+options.channel+'_syst'
+      if options.channel in ['mt','et'] and process != 'qcd': template_name = 'ff_'+process+'_syst'
+      weight_name = 'wt_ff_'+process+'_syst_'
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      if options.channel == 'tt' and process in ['w','tt']: continue
+      for dm in dms: 
+        for njet in njets:
+          if process == 'tt' and njet != 'njet0': continue  
+          template_name = 'ff_'+process+'_'+dm+'_'+njet+'_'+options.channel+'_stat'
+          if process == 'tt': 'ff_'+process+'_'+dm+'_'+options.channel+'_stat'
+          weight_name = 'wt_ff_'+process+'_'+dm+'_'+njet+'_stat_'
+          systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+          systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+    if options.channel == "tt":
+      processes = ['dy', 'w', 'tt']
+      for process in processes:
+        template_name = 'ff_'+process+'_frac_tt_syst'
+        weight_name = 'wt_ff_'+process+'_frac_syst_'
+        systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+        systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+        
+    template_name = 'ff_sub_syst_%s_%s' % (options.channel, options.cat)
+    systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+    systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)       
 
 # sort systematics by tree's input directory name        
 systematics = OrderedDict(sorted(systematics.items(), key=lambda key: key[1]))
@@ -1445,7 +1469,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et': 
             if options.era in ["smsummer16","cpsummer16"]:
-              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron &&pt_2>30)'
+              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron &&pt_2>30&&wt<5)'
             elif options.era in ["cpsummer17"]:
               anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>28 && trg_singleelectron)'  
             else: 

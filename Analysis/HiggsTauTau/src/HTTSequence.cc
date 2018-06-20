@@ -1348,7 +1348,7 @@ if(do_met_filters){
     }));
 }
 
-if (strategy_type == strategy::mssmsummer16 /*|| strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16*/){ // uncomment later!
+if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
   BuildModule(GenericModule("BadMuonFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -2252,7 +2252,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
            httStitching.SetWInputYields(26869703.0,0,4616394.0,19075747.0,11303425.0);
           }
-          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
             httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 1147725.0, 4301545.0);
