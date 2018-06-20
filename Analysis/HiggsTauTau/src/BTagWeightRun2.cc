@@ -10,6 +10,7 @@ namespace ic {
     cbtag_eff_ = nullptr;
     othbtag_eff_ = nullptr;
     do_reshape_ = false;
+    use_deep_csv_ = false;
     btag_mode_ = 0;
     bfake_mode_ = 0;
     add_name_="";
@@ -21,8 +22,9 @@ namespace ic {
   int BTagWeightRun2::PreAnalysis() {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-    else if (strategy_ == strategy::cpsummer17) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    else if (strategy_ == strategy::cpsummer17 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V2_B_F.csv";
+    else if (strategy_ == strategy::cpsummer17) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     calib = new const BTagCalibration("csvv2",csv_file_path);
     if(era_ == era::data_2016 || era_ == era::data_2017){
       reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
@@ -210,7 +212,9 @@ namespace ic {
         promoteProb_btag = fabs(sf - 1.0)/((1./eff) - 1.0);
       }
       if (verbose) {
-        std::cout << "Jet " << i << " " << jets[i]->vector() << "  csv: " << jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;
+        std::cout << "Jet " << i << " " << jets[i]->vector() << "  csv: " << 
+            jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << 
+            "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;
         std::cout << "-- random seed: " << ((int)((jets[i]->eta()+5)*100000)) << std::endl;
         std::cout << "-- efficiency: " << eff << std::endl;
         std::cout << "-- scale factor: " << sf << std::endl;
@@ -218,8 +222,17 @@ namespace ic {
       bool passtag;
       if(channel_ != channel::tt || era_==era::data_2016 || era_ == era::data_2017){
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) tight_wp = 0.8484;
-        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > tight_wp;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tight_wp = 0.8484;
+        else if(strategy_ == strategy::cpsummer17 && use_deep_csv_) tight_wp = 0.4941;
+        else if(strategy_ == strategy::cpsummer17) tight_wp = 0.8838;
+        if (!use_deep_csv_) {
+          passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > tight_wp;
+        }
+        else {
+          passtag  = (jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") + 
+                  jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb")) > tight_wp;
+        }
+
       } else {
         passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.46;
       }
