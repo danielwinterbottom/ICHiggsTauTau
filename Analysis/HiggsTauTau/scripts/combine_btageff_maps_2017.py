@@ -18,7 +18,7 @@ bc_eff_ttsemilep = "TTToSemiLeptonic"
 bc_eff_ttlep = "TTTo2L2Nu"
 bc_eff = "TT"
 
-other_eff_dy = "DYJetsToLL-LO"
+other_eff_dy = "DYJetsToLL"
 other_eff_dyext = "DYJetsToLL-LO-ext1"
 
 bc_effs = [bc_eff_tthad, bc_eff_ttsemilep, bc_eff_ttlep]
@@ -31,7 +31,7 @@ dywt = 1
 
 channels = ['mt','tt','et']
 counter = 0
-path = "/vols/cms/akd116/Offline/output/SM/2018/Jun18_btag_deepcsv"
+path = "/vols/cms/akd116/Offline/output/SM/2018/Jun18_btag_deepcsv_eff"
 
 for ch in channels:
     # Hadded the separate files, now just take the full one
