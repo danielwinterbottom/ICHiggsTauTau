@@ -70,7 +70,9 @@ namespace ic {
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V2_B_F.csv";
     if(era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    std::cout << "SF: " << csv_file_path << std::endl;
     calib  = new const BTagCalibration("csvv2",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
