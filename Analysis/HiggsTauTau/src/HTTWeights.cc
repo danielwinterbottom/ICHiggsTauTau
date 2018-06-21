@@ -2531,7 +2531,7 @@ namespace ic {
           ele_idiso*=e_iso_wt;
         } else if(mc_==mc::mc2017){
           double e_sceta = elec->sc_eta();
-          double e_eta = elec->eta();
+          // double e_eta = elec->eta();
           auto args_1 = std::vector<double>{pt,e_signed_eta,e_iso};  
           auto args_2 = std::vector<double>{pt,e_sceta};
           auto args_3 = std::vector<double>{pt,e_signed_eta,e_sceta,e_iso};
@@ -3023,8 +3023,8 @@ namespace ic {
              e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ;
            }
         } else if (mc_==mc::mc2017){
-          double e_1_sceta = elec_1->sc_eta();   
-          double e_2_sceta = elec_2->sc_eta();
+          double e_1_sceta = ele_1->sc_eta();   
+          double e_2_sceta = ele_2->sc_eta();
           auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_sceta,e_1_iso};
           auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_sceta,e_2_iso};  
           e_1_idiso = fns_["e_idiso_binned_ratio"]->eval(args1_2.data()) ;

@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jun15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["et","mt","tt","zee","zmm"],
@@ -31,7 +31,7 @@
     "tau_id_study":true,
     "add_Hhh_variables" : false,
     "get_effective" : false,
-    "do_btag_eff":false,
+    "do_btag_eff": false,
     "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
@@ -88,6 +88,7 @@
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
+      "use_deep_csv"      : false,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
@@ -132,7 +133,7 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true, 
+        "do_ff_weights" : false, 
         "do_ff_systematics": false,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170628_tight"
@@ -166,7 +167,7 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
+        "do_ff_weights" : false,
         "do_ff_systematics": false,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170628_tight"
