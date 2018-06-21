@@ -1,7 +1,7 @@
 import ROOT
 
 channels = ["mt", "et", "tt"]
-path = "/vols/cms/akd116/Offline/output/SM/2018/Jun19_btag_sf"
+path = "/vols/cms/akd116/Offline/output/SM/2018/Jun19_btag_deepcsv_sf"
 
 mt_baseline = "(mt_1<50 && iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>30)"
 et_baseline = "(mt_1<50 && iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>28 && trg_singleelectron &&pt_2>30)"

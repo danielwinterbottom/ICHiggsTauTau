@@ -1094,16 +1094,34 @@ namespace ic {
         
         if(mc_ == mc::mc2017){
           // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
-          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-          std::vector<ic::L1TObject*> passed_l1_taus;
-          for(unsigned ta=0; ta<l1taus.size(); ++ta){
-            if(l1taus[ta]->isolation() !=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+          std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+          std::pair<bool, std::vector<unsigned>> leg1 = IsFilterMatchedWithMultipleIndexs(dileptons[i]->At(0), alt_objs_2, "hltL1sDoubleTauBigOR", 0.5);
+          std::pair<bool, std::vector<unsigned>> leg2 = IsFilterMatchedWithMultipleIndexs(dileptons[i]->At(1), alt_objs_2, "hltL1sDoubleTauBigOR", 0.5);
+
+          std::vector<TriggerObject *> passed_objs;
+          bool passed_leg1_tau = false;
+          bool passed_leg2_tau = false;
+          for (unsigned i=0; i < leg1.second.size(); ++i) {
+            if (alt_objs_2[leg1.second[i]]->vector().Pt() >= 32.) passed_leg1_tau = true;
           }
-          std::vector<Candidate *> match_taus;
-          match_taus.push_back(dileptons[i]->At(0));
-          match_taus.push_back(dileptons[i]->At(1));
-          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
-          passed_doubletau = passed_doubletau && match_l1_parts;
+          for (unsigned i=0; i < leg2.second.size(); ++i) {
+            if (alt_objs_2[leg2.second[i]]->vector().Pt() >= 32.) passed_leg2_tau = true;
+          }
+          passed_doubletau = passed_doubletau && passed_leg1_tau && passed_leg2_tau;
+              
+          // std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          //std::vector<ic::L1TObject*> passed_l1_taus;
+          //for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          //    std::cout<<"l1 tau iso: " <<l1taus[ta]->isolation()<<std::endl;
+          //  if(l1taus[ta]->isolation() !=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+          //}
+          //std::vector<Candidate *> match_taus;
+          //match_taus.push_back(dileptons[i]->At(0));
+          //match_taus.push_back(dileptons[i]->At(1));
+          //bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
+          //std::cout<<"match l1 parts size: "<<(MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size()<<std::endl;
+          //passed_doubletau = passed_doubletau && match_l1_parts;
+          //std::cout << "Running the L1 Tau matching" << std::endl;
         }
       }
     }
