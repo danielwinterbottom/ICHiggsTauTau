@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Jun21_tt/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data_incwts/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
