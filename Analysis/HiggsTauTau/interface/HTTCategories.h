@@ -142,6 +142,7 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var pfpt_tt_;
+  branch_var pt_vis_;
   branch_var mt_1_;
   branch_var mt_lep_;
   branch_var mt_tot_;
@@ -374,6 +375,7 @@ class HTTCategories : public ModuleBase {
   branch_var jeta_2_;    // Defined if n_jets >= 2
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
+  float dijetpt_;
   float jptraw_1_; 
   float jrawf_1_;
   float jptraw_2_; 
