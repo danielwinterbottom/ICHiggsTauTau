@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr27_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jun15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt","zee","zmm"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data_incwts/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -369,6 +369,22 @@
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "RelativeBal"
+      }
+    },
+    "scale_j_relsamp_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRSAMP_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample"
+      }
+    },
+    "scale_j_relsamp_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRSAMP_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample"
       }
     },
     "scale_j_full_lo": {

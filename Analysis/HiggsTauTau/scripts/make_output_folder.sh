@@ -87,3 +87,6 @@ mkdir -p -v $1/JESHF_UP
 mkdir -p -v $1/JESHF_DOWN
 mkdir -p -v $1/JESRBAL_DOWN
 mkdir -p -v $1/JESRBAL_UP
+mkdir -p -v $1/JESRSAMP_DOWN
+mkdir -p -v $1/JESRSAMP_UP
+

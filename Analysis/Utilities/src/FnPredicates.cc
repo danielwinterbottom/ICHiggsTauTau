@@ -219,6 +219,35 @@ namespace ic {
     }
     return result;
   } 
+  
+  bool PFJetID2017(PFJet const* jet) {
+    double eta = fabs(jet->eta());
+    bool result = false;
+    
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+    
+    if (eta <= 2.4) {
+      result = neutralFrac   < 0.90
+      && jet->neutral_em_energy_frac()    < 0.90
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+      && jet->charged_had_energy_frac()   > 0.0
+      && jet->charged_multiplicity()      > 0;
+    } else if (eta <= 2.7){
+      result = neutralFrac < 0.90
+      && jet->neutral_em_energy_frac()   < 0.90
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+    } else if(eta<=3.0){
+      result = jet->neutral_em_energy_frac()    < 0.99
+      &&jet->neutral_em_energy_frac()    > 0.02
+      && jet->neutral_multiplicity() > 2;
+    }
+    else{
+      result = jet->neutral_em_energy_frac()    < 0.90
+      && neutralFrac>0.02
+      && jet->neutral_multiplicity()>10;
+    }
+    return result;
+  } 
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),

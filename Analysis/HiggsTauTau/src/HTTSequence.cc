@@ -1060,8 +1060,10 @@ if(strategy_type == strategy::paper2013) {
   jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
 } else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::cpsummer17){
   jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
-} else {
+} else if (era_type == era::data_2016) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+} else if (era_type == era::data_2017) {
+  jetIDFilter.set_predicate(bind(PFJetID2017, _1));
 }
 BuildModule(jetIDFilter);
 
@@ -1083,8 +1085,7 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    // update to 2017 file
-    jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1172,6 +1173,7 @@ BuildModule(jetIDFilter);
    if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
+
    
    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
     .set_input_label(jets_label)
@@ -1597,9 +1599,9 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
   } else if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
-    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
-    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
-    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
   } else if(strategy_type == strategy::cpsummer17){
     // updated for 2017
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
@@ -2444,8 +2446,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle32L1DoubleEG")
+          .set_probe_trg_filters("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
       );
