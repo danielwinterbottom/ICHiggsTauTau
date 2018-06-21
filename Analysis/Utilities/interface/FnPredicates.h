@@ -241,11 +241,26 @@ namespace ic {
     return 0;
  
   }
+  
+  template<class T> 
+  double GetEffectiveArea2017(T const* cand){
+    double cand_eta = cand->eta();
+    using std::abs;
+    //From  https://github.com/lsoffi/cmssw/blob/CMSSW_9_2_X_TnP/RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt
+    if(abs(cand_eta)<1.) return 0.1566;
+    else if(abs(cand_eta)<1.479) return 0.1626;
+    else if(abs(cand_eta)<2.) return 0.1073;
+    else if(abs(cand_eta)<2.2) return 0.0854;
+    else if(abs(cand_eta)<2.3) return 0.1051;
+    else if(abs(cand_eta)<2.4) return 0.1204;
+    else if(abs(cand_eta)<5.) return 0.1524;
+    return 0;
+  }
 
   template<class T>
-  double PF03EAIsolationVal(T const* cand, EventInfo const* evt, bool jet_rho=true){
+  double PF03EAIsolationVal(T const* cand, EventInfo const* evt, bool jet_rho=false){
   double charged_iso = cand->dr03_pfiso_charged();
-    double eff_area = GetEffectiveArea(cand);
+    double eff_area = GetEffectiveArea2017(cand);
     double rho=0;
     if(jet_rho){
       evt->jet_rho();
@@ -260,12 +275,10 @@ namespace ic {
 
 
   template<class T>
-  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=true) {
+  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=false) {
     double iso =  PF03EAIsolationVal(cand, evt, jet_rho);
     return (iso < cut);
   }
-
-
 
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);

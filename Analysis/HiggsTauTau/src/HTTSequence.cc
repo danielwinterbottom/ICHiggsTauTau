@@ -2459,10 +2459,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
-          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle32L1DoubleEG")
-          .set_probe_trg_filters("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
       );
@@ -3938,11 +3936,12 @@ void HTTSequence::BuildDiElecVeto() {
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   } else if(strategy_type == strategy::cpsummer17){
-        BuildModule(GenericModule("VetoElecIDFilter")
+        BuildModule(GenericModule("VetoElecIDIsoFilter")
         .set_function([=](ic::TreeEvent *event){
-           EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+           EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
            std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
            ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->lepton_rho()));
+           //ic::erase_if(vec,!boost::bind(PF03EAIsolation, _1, eventInfo, 0.3));
            return 0;
         }));    
 
@@ -3950,8 +3949,7 @@ void HTTSequence::BuildDiElecVeto() {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
-                fabs(e->dz_vertex())    < veto_dielec_dz    &&
-                PF03IsolationVal(e, 0.5,0) < 0.3;
+                fabs(e->dz_vertex())    < veto_dielec_dz;
       });
  
   }
@@ -4106,13 +4104,18 @@ void HTTSequence::BuildExtraElecVeto(){
 
   if(strategy_type == strategy::cpsummer17){
       extraElecFilter.set_no_filter(true);
+      //extraElecFilter.set_function([=](ic::TreeEvent *event){
+      //     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      //     std::vector<Electron*> & vec = event->GetPtrVec<Electron>("extra_elecs");
+      //     ic::erase_if(vec,!boost::bind(PF03EAIsolation,_1, eventInfo,0.3));
+      //     return 0;
+      //  })); 
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-                ElectronHTTIdFall17(e, true)           &&
-                PF03IsolationVal(e, 0.5,0) < 0.3;
+                ElectronHTTIdFall17(e, true);
       });
   }
 

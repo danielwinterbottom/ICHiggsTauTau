@@ -299,8 +299,13 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
-      iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-      iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo);
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo);  
+      } else {
+        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      }
       id_tag_1_ = tag_id_(elec1);
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);

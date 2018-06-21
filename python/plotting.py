@@ -2251,7 +2251,7 @@ def HTTPlot(nodename,
             stack.Draw("histsame")
             if not sig_scheme[2]: sighist.Draw("histsame")
         else:
-                stack.Draw("histsame")
+            stack.Draw("histsame")
             
     # separate out signal into powheg ggH and qqH,
     # JHU ggH, and VH
