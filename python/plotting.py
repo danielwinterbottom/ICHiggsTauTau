@@ -2250,6 +2250,8 @@ def HTTPlot(nodename,
                 if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
             stack.Draw("histsame")
             if not sig_scheme[2]: sighist.Draw("histsame")
+        else:
+            stack.Draw("histsame")
             
     # separate out signal into powheg ggH and qqH,
     # JHU ggH, and VH
