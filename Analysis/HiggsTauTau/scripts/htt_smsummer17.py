@@ -303,6 +303,7 @@ if options.proc_bkg or options.proc_all:
   central_samples = [
      'DY1JetsToLL-LO',
      'DY2JetsToLL-LO',
+     'DY2JetsToLL-LO-ext',
      'DY3JetsToLL-LO',
      'DY4JetsToLL-LO',
      'DYJetsToLL-LO-ext1',
@@ -333,7 +334,6 @@ if options.proc_bkg or options.proc_all:
      'EWKWMinus2Jets',
      'DYJetsToLL',
      'DYJetsToLL-ext',
-     'DY2JetsToLL-LO-ext',
      'WJetsToLNu-LO',
      'W2JetsToLNu-LO',
      'WWTo4Q-ext',

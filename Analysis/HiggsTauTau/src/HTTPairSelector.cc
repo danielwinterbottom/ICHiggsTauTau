@@ -450,8 +450,8 @@ namespace ic {
     double e_iso1;
     double e_iso2;
     if(strategy==strategy::cpsummer17){ 
-      e_iso1 = PF03EAIsolationVal(e1, eventInfo);
-      e_iso2 = PF03EAIsolationVal(e2, eventInfo);    
+      e_iso1 = PF03EAIsolationVal(e1, eventInfo->lepton_rho());
+      e_iso2 = PF03EAIsolationVal(e2, eventInfo->lepton_rho());    
     }
     else {    
       e_iso1 = PF03IsolationVal(e1, 0.5, 0);
@@ -523,8 +523,8 @@ namespace ic {
     double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
     double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
     if(strategy == strategy::cpsummer17){
-      e_iso1 = PF03EAIsolationVal(e1, eventInfo);
-      e_iso2 = PF03EAIsolationVal(e2, eventInfo);
+      e_iso1 = PF03EAIsolationVal(e1, eventInfo->lepton_rho());
+      e_iso2 = PF03EAIsolationVal(e2, eventInfo->lepton_rho());
     } else {
       e_iso1 = PF03IsolationVal(e1, 0.5, 0);
       e_iso2 = PF03IsolationVal(e2, 0.5, 0);    

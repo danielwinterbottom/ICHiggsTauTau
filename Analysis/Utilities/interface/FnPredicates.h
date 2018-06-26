@@ -100,6 +100,7 @@ namespace ic {
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIsoIdFall17(Electron const* elec, bool loose_wp);
 
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
@@ -258,15 +259,9 @@ namespace ic {
   }
 
   template<class T>
-  double PF03EAIsolationVal(T const* cand, EventInfo const* evt, bool jet_rho=false){
+  double PF03EAIsolationVal(T const* cand, double const rho){
   double charged_iso = cand->dr03_pfiso_charged();
     double eff_area = GetEffectiveArea2017(cand);
-    double rho=0;
-    if(jet_rho){
-      evt->jet_rho();
-    } else {
-      evt->lepton_rho();
-    }
     double iso =  charged_iso 
                   + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - rho*eff_area, 0.0);
     iso = iso / cand->pt();
@@ -275,11 +270,12 @@ namespace ic {
 
 
   template<class T>
-  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=false) {
-    double iso =  PF03EAIsolationVal(cand, evt, jet_rho);
+  bool PF03EAIsolation(T const* cand, double const rho, double const& cut) {
+    double iso =  PF03EAIsolationVal(cand, rho);
     return (iso < cut);
   }
 
+  bool PF03EAElecIsolation(Electron const* elec, double const rho, double const& cut);
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);
 

@@ -243,6 +243,8 @@ namespace ic {
                  w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_id_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_id_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
+              fns_["e_idiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_idiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -2536,7 +2538,8 @@ namespace ic {
           auto args_3 = std::vector<double>{pt,e_signed_eta,e_sceta,e_iso};
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
           ele_id = fns_["e_id_pog_ratio"]->eval(args_2.data());
-          ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
+          //ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
+          ele_idiso = fns_["e_idiso_pog_ratio"]->eval(args_2.data());
         }
         if(mc_==mc::mc2017){
           weight *= ele_idiso;
