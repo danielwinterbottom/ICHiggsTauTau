@@ -525,6 +525,87 @@ if SCHEME == 'cpsummer16_neww':
   }
   ANA = 'sm'
   
+if SCHEME == 'cpsummer16_ff':
+  
+  VAR_0JET_LT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+
+  VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
+  
+  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
+  #VAR_DIJET = 'm_sv,jdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
+  #VAR_DIJET = 'm_sv,(jeta_1>jeta_2)[0,80,100,115,130,150],(2,0,2)'
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(6,0,1)'
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(1,0,1)'
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,1],(6,0,1)'
+
+  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
+
+  scheme_et = [
+    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+  ]
+  scheme_mt = [
+    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+
+  ]
+  scheme_tt = [
+    ("17",   "0jet",    "0jet",  VAR_0JET_TT, ' --do_ff_systs '),
+    ("17",   "boosted", "boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
+    ("17",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --do_ff_systs ')
+  ]
+  scheme_em = [
+    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "inclusive",    "ttbar",  'm_sv[0,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+  
+if SCHEME == 'sync2016':
+  
+  VAR = 'm_vis(20,0,200)' 
+
+  scheme_et = [
+    ("12",   "inclusive",    "inclusive",  VAR, ' --set_alias="sel:mt_1<50" ')
+  ]
+  scheme_mt = [
+    ("12",   "inclusive",    "inclusive",  VAR, ' --set_alias="sel:mt_1<50" ')
+
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  VAR, '  ')
+  ]
+  scheme_em = [
+    ("19",   "inclusive",    "inclusive",  VAR, ' --set_alias="sel:pzeta>-35" '), 
+
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'  
+  
 if SCHEME == 'ff_fracs':
   for ch in extra_channel:
     extra_channel[ch]+=' --syst_eff_b=CMS_eff_b_13TeV --syst_fake_b=CMS_fake_b_13TeV '
@@ -844,5 +925,5 @@ for ch in channels:
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('mv %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root tmp/' % vars())
+        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 
