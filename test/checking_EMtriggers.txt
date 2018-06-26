@@ -33,7 +33,7 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 | 2     | 13   | 4468   | 903398671.207     | 864441964.983    |
 +----------------------------------------------------+-------+------+--------+-------------------+------------------+
 #Sum delivered : 39207000907.306
-#Sum recorded : 37064608220.650
+#Sum recorded : 37064608220.650 -> 37.1 1/fb
 
 HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
 brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt --hltpath HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*
@@ -51,7 +51,7 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9  | 9     | 21   | 5908   | 1418674990.143    | 1286319491.868   |
 +--------------------------------------------------------+-------+------+--------+-------------------+------------------+
 #Sum delivered : 44255623330.162
-#Sum recorded : 41857257394.641
+#Sum recorded : 41857257394.641 -> 41.9 1/fb
 
 HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v
 brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt --hltpath HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*
@@ -66,7 +66,7 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 | 2     | 13   | 4468   | 86691262.555      | 83185757.460     |
 +---------------------------------------------------+-------+------+--------+-------------------+------------------+                   
 #Sum delivered : 3598249468.317
-#Sum recorded : 3405751588.372
+#Sum recorded : 3405751588.372 -> 3.4 1/fb
 
 HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v
 brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt --hltpath HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*
@@ -83,7 +83,7 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9  | 27    | 56   | 23304  | 3604338656.863    | 3465593598.567   |
 +-------------------------------------------------------+-------+------+--------+-------------------+------------------+
 #Sum delivered : 44255623330.162
-#Sum recorded : 41857257394.641
+#Sum recorded : 41857257394.641 -> 41.9 1/fb
 
 HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v
 brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt --hltpath HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*
@@ -98,7 +98,7 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 | 2     | 13   | 4468   | 97305559.965      | 93447710.049     |
 +----------------------------------------------------+-------+------+--------+-------------------+------------------+ 
 #Sum delivered : 4128867732.259
-#Sum recorded : 3907787021.648
+#Sum recorded : 3907787021.648 -> 3.9 1/fb
 
 HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v
 brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt --hltpath HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*
@@ -117,4 +117,4 @@ brilcalc lumi -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions1
 | HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9  | 9     | 21   | 5908   | 1418674990.143    | 1286319491.868   |
 +--------------------------------------------------------+-------+------+--------+-------------------+------------------+        
 #Sum delivered : 44255623330.162
-#Sum recorded : 41857257394.641
+#Sum recorded : 41857257394.641 -> 41.9 1/fb
