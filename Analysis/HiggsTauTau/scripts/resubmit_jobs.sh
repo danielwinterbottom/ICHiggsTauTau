@@ -1,7 +1,8 @@
 COUNT=0
 TOTAL=0
 for i in $(ls jobs/*.sh); do 
-  if echo $i | grep "parajob"; then continue; fi
+  if [[ $i = *"parajob_"* ]]; then continue; fi
+  if [[ $i = *"hadd_"* ]]; then continue; fi 
   (( TOTAL++ ))
   job=$i
   i=${job//.sh/".log"}
