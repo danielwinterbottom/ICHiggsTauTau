@@ -2904,7 +2904,7 @@ namespace ic {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
@@ -2949,7 +2949,7 @@ namespace ic {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
@@ -3069,6 +3069,7 @@ namespace ic {
         antimu_2_ = lagainstMuonLoose3_2;
       } 
       if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho());  
         iso_2_ = tau->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
         tau_id_olddm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
@@ -3108,7 +3109,7 @@ namespace ic {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
@@ -3155,7 +3156,7 @@ namespace ic {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
@@ -3230,7 +3231,7 @@ namespace ic {
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
@@ -3336,7 +3337,7 @@ namespace ic {
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
           iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho());
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
           iso_1_trk03_=0;
@@ -3346,15 +3347,20 @@ namespace ic {
           iso_1_puw04_ = 0;
           iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
           iso_2_db04_ = PF04IsolationVal(muon, 0.5, 0);
-          iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
           iso_2_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+        mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
+      }
+      if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho()); 
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
@@ -3692,9 +3698,13 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if(strategy_ == strategy::cpsummer17){
+          iso_1_ = PF03EAIsolationVal(elec1, eventInfo->lepton_rho()); 
+          iso_2_ = PF03EAIsolationVal(elec2, eventInfo->lepton_rho()); 
+        }
         if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
           mva_1_ = ElectronHTTIdSpring15(elec1, false);
           mva_2_ = ElectronHTTIdSpring15(elec2, false);

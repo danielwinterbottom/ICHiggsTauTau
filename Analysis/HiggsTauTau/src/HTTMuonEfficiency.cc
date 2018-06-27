@@ -125,7 +125,7 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
   allcharged03iso_ = muons.at(i)->dr03_pfiso_charged_all();
   allcharged04iso_ = muons.at(i)->dr04_pfiso_charged_all();
   iso_trk03_ = MuonTkIsoVal(muons.at(i));
-  iso_ea03_ = PF03EAIsolationVal(muons.at(i),eventInfo);
+  iso_ea03_ = PF03EAIsolationVal(muons.at(i),eventInfo->lepton_rho());
   iso_db03_ = PF03IsolationVal(muons.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(muons.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(muons.at(i),0.5,1);

@@ -214,7 +214,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16  || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_ == strategy::cpsummer17) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        if(strategy_ == strategy::cpsummer17){
+          iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho()); 
+          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        }
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
@@ -299,6 +302,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if(strategy_==strategy::cpsummer17) iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho()); 
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_2_<0.5 && iso_1_<0.5) pass_presel = true;
@@ -370,6 +374,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if(strategy_==strategy::cpsummer17){
+          iso_1_ = PF03EAIsolationVal(elec1, eventInfo->lepton_rho()); 
+          iso_2_ = PF03EAIsolationVal(elec2, eventInfo->lepton_rho()); 
+        }
         if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
     }
     

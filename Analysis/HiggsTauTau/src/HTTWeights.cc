@@ -206,15 +206,19 @@ namespace ic {
 
         if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
         }
             
         if(do_trg_weights_ || do_idiso_weights_) {
@@ -243,6 +247,8 @@ namespace ic {
                  w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_id_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_id_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
+              fns_["e_idiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_idiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -453,15 +459,19 @@ namespace ic {
 
         if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets")));
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt"))); 
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
         }
 
         
@@ -946,13 +956,16 @@ namespace ic {
            ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
            double n_jets = (double)jets.size();
            double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
-           auto args = std::vector<double>{dR,n_jets};
+           auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
            qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
            qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
            qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
-
+           double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args.data())/qcd_weight;;
+           double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args.data())/qcd_weight;;
            double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
            double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
+           event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
+           event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
            event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
            event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
          } else {
@@ -2552,7 +2565,8 @@ namespace ic {
           auto args_3 = std::vector<double>{pt,e_signed_eta,e_sceta,e_iso};
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
           ele_id = fns_["e_id_pog_ratio"]->eval(args_2.data());
-          ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
+          //ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
+          ele_idiso = fns_["e_idiso_pog_ratio"]->eval(args_2.data());
         }
         if(mc_==mc::mc2017){
           weight *= ele_idiso;

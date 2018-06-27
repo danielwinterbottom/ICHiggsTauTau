@@ -94,8 +94,8 @@ namespace ic {
       nosign_dilepton.push_back(dilepton[i]);
     }
 
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     if (fs_) {
-      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
       double wt = eventInfo->total_weight();
       hists_[0]->Fill("n_pairs", os_dilepton.size(), ss_dilepton.size(), wt);
     }
@@ -108,16 +108,16 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_) {
         if(channel_ ==  channel::et) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
@@ -164,13 +164,13 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_ ) {
         if(channel_ ==  channel::et) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
@@ -443,12 +443,20 @@ namespace ic {
     return ScalarPtSum(c1->AsVector()) > ScalarPtSum(c2->AsVector());
   }
 
-  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo) {
     // First we sort the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
-    double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
-    double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
+    double e_iso1;
+    double e_iso2;
+    if(strategy==strategy::cpsummer17){ 
+      e_iso1 = PF03EAIsolationVal(e1, eventInfo->lepton_rho());
+      e_iso2 = PF03EAIsolationVal(e2, eventInfo->lepton_rho());    
+    }
+    else {    
+      e_iso1 = PF03IsolationVal(e1, 0.5, 0);
+      e_iso2 = PF03IsolationVal(e2, 0.5, 0);
+    }
     // If the iso is different we just use this
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     // If not try the pT
@@ -497,7 +505,7 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo) {
     // First we sort the muons
     Muon const* m1 = static_cast<Muon const*>(c1->At(1));
     Muon const* m2 = static_cast<Muon const*>(c2->At(1));
@@ -514,6 +522,13 @@ namespace ic {
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
     double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
     double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
+    if(strategy == strategy::cpsummer17){
+      e_iso1 = PF03EAIsolationVal(e1, eventInfo->lepton_rho());
+      e_iso2 = PF03EAIsolationVal(e2, eventInfo->lepton_rho());
+    } else {
+      e_iso1 = PF03IsolationVal(e1, 0.5, 0);
+      e_iso2 = PF03IsolationVal(e2, 0.5, 0);    
+    }
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     return e1->pt() > e2->pt();
   }

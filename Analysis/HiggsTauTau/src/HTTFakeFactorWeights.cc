@@ -281,6 +281,9 @@ namespace ic {
             double ff_syst = fake_factors_[map_key]->value(inputs,syst);
             std::string syst_name = "wt_"+syst+"_1";
             event->Add(syst_name, ff_syst);
+            if(std::isinf(ff_syst) || std::isnan(ff_syst)){
+              ff_syst = 0.0;
+            }
           } 
         }
       } else if(channel_ == channel::tt){

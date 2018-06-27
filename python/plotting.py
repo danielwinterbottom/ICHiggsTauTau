@@ -148,6 +148,10 @@ def SetAxisTitles2D(plot, channel):
   titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
+  if channel == 'tt':
+    titles['tau_decay_mode_1'] = ['lead tau decay mode','Events', 'Events','']
+    titles['tau_decay_mode_2'] = ['sub-lead tau decay mode','Events', 'Events','']
+  
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   titles['D0'] = ['D_{0}','Events', 'dN/dD_{0}','']
   titles['DCP'] = ['D_{CP}','Events', 'dN/dD_{CP}','']
@@ -157,7 +161,7 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
-  
+
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
     else: x_titles =  [xvar, 'dN/d'+xvar]

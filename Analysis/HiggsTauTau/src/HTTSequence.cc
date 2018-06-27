@@ -1084,11 +1084,11 @@ BuildModule(jetIDFilter);
   }
   if (era_type == era::data_2016) {
     jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017F_V6_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -2459,10 +2459,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
-          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle32L1DoubleEG")
-          .set_probe_trg_filters("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
       );
@@ -3784,7 +3782,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -3793,6 +3791,18 @@ if(strategy_type == strategy::paper2013){
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 fabs(t->charge())           == 1          &&
                 t->GetTauID("decayModeFinding") > 0.5;
+
+      }));
+   } else if (strategy_type == strategy::cpsummer17){
+  BuildModule(SimpleFilter<Tau>("TauFilter")
+      .set_input_label(js["taus"].asString()).set_min(min_taus)
+      .set_predicate([=](Tau const* t) {
+        return  t->pt()                     >  tau_pt     &&
+                fabs(t->eta())              <  tau_eta    &&
+                fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1          &&
+                t->GetTauID("decayModeFinding") > 0.5     &&
+                t->GetTauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017") > 0.5;
 
       }));
    }
@@ -3938,11 +3948,12 @@ void HTTSequence::BuildDiElecVeto() {
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   } else if(strategy_type == strategy::cpsummer17){
-        BuildModule(GenericModule("VetoElecIDFilter")
+        BuildModule(GenericModule("VetoElecIDIsoFilter")
         .set_function([=](ic::TreeEvent *event){
-           EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+           EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
            std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
            ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->lepton_rho()));
+           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->lepton_rho(), 0.3));
            return 0;
         }));    
 
@@ -3950,8 +3961,7 @@ void HTTSequence::BuildDiElecVeto() {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
-                fabs(e->dz_vertex())    < veto_dielec_dz    &&
-                PF03IsolationVal(e, 0.5,0) < 0.3;
+                fabs(e->dz_vertex())    < veto_dielec_dz;
       });
  
   }
@@ -4105,14 +4115,21 @@ void HTTSequence::BuildExtraElecVeto(){
   }
 
   if(strategy_type == strategy::cpsummer17){
+      BuildModule(GenericModule("ExtraElecIsoFilter")
+        .set_function([=](ic::TreeEvent *event){
+           EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+           std::vector<Electron*> & vec = event->GetPtrVec<Electron>("extra_elecs");
+           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->lepton_rho(), 0.3));
+           return 0;
+        }));   
+        
       extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-                ElectronHTTIdFall17(e, true)           &&
-                PF03IsolationVal(e, 0.5,0) < 0.3;
+                ElectronHTTIdFall17(e, true);
       });
   }
 
