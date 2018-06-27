@@ -1740,10 +1740,14 @@ namespace ic {
         double e_trg_mc = 1.0;
         double m_trg_17 = 1.0;
         double m_trg_17_mc = 1.0;
+        double m_trg_23 = 1.0;
+        double m_trg_23_mc = 1.0;
         double m_trg_8 = 1.0;
         double m_trg_8_mc = 1.0;
         double e_trg_17 = 1.0;
         double e_trg_17_mc = 1.0;
+        double e_trg_23 = 1.0;
+        double e_trg_23_mc = 1.0;
         double e_trg_12 = 1.0;
         double e_trg_12_mc = 1.0;
         if (mc_ == mc::summer12_53X) {
@@ -1938,15 +1942,15 @@ namespace ic {
             e_trg_17_mc = fns_["e_trg23_binned_ic_embed"]->eval(args_1_2.data());
             e_trg_12_mc  = fns_["e_trg12_binned_ic_embed"]->eval(args_1_2.data());
           }
-       } else if (mc_==mc::mc2017){
-         m_trg_17 = 1.0;
+       } else if (mc_==mc::mc2017){ //change 17 for 23 here
+         m_trg_23 = 1.0;
          m_trg_8  = 1.0;
-         e_trg_17 = 1.0;
+         e_trg_23 = 1.0;
          e_trg_12 = 1.0;
 
-         m_trg_17_mc = 1.0;
+         m_trg_23_mc = 1.0;
          m_trg_8_mc  = 1.0;
-         e_trg_17_mc = 1.0;
+         e_trg_23_mc = 1.0;
          e_trg_12_mc = 1.0;
        }
        if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X && mc_ != mc::mc2017){
@@ -1958,7 +1962,7 @@ namespace ic {
         weight *= (e_trg * m_trg);
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", m_trg);
-       } else {
+       } else if(mc_ ==mc::spring15_74X && mc_ == mc::fall15_76X && mc_==mc::spring16_80X && mc_ == mc::summer16_80X) {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
@@ -1969,6 +1973,18 @@ namespace ic {
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
         if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
+       } else if (mc_ == mc::mc2017) {
+        if (trg_applied_in_mc_){
+          e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc);
+        } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
+        //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_23 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_23 << "    " << m_trg_23_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_23_mc << std::endl; 
+        if(e_trg>2.) e_trg=2.;
+        weight *= (e_trg);
+        //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
+        event->Add("trigweight_1", e_trg);
+        event->Add("trigweight_2", double(1.0));
+        if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
+
        }
       } else if (channel_ == channel::tt){
         Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
