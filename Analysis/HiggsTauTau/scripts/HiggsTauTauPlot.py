@@ -380,6 +380,9 @@ elif options.channel == 'em':
     elif options.era in ['smsummer16','cpsummer16']:
       cats['loose_baseline'] = '(iso_1<0.15 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
+    if options.era in ['cpsummer17']:
+        cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
+        cats['loose_baseline'] = '(iso_1<0.15 && iso_2<0.5 && !leptonveto && trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
