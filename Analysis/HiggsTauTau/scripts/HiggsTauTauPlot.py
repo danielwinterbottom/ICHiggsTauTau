@@ -1435,8 +1435,9 @@ def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plo
   w_node_name = 'W'  
   if options.channel == 'em':
       w_total_node = SummedNode('W'+add_name)
-      w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
-      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
+      if not options.era == 'cpsummer17':
+          w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
+          ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
       w_node_name+='J'
   ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_factor, get_os))
   if options.channel == 'em':
@@ -1476,8 +1477,9 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
       zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zll_node)
   if options.channel == "em":
-      wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
-      subtract_node.AddNode(wg_node)
+      if not options.era == 'cpsummer17':
+          wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
+          subtract_node.AddNode(wg_node)
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True,w_shift=None):

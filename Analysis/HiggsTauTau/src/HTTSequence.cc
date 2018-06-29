@@ -2389,10 +2389,20 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
-          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
+          // to measure em muon trg SF for 8 GeV leg
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(8.)
+          //.set_extra_l1_probe_pt(5.)
+          // to measure em muon trg SF for 23 GeV leg
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
         );
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
@@ -2459,10 +2469,19 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
+          // to measure em electron 12 GeV leg
+          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          //.set_extra_l1_probe_pt(10.)
+          // to measure em electron 23 GeV leg
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          .set_extra_l1_probe_pt(23.)
+          .set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {
