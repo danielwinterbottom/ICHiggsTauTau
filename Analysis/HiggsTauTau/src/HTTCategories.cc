@@ -856,6 +856,7 @@ namespace ic {
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_muonelectron_1",    &trg_muonelectron_1_);
       outtree_->Branch("trg_muonelectron_2",    &trg_muonelectron_2_);
+      outtree_->Branch("trg_muonelectron_3",    &trg_muonelectron_3_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
@@ -1760,6 +1761,7 @@ namespace ic {
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_muonelectron_1"))   trg_muonelectron_1_   = event->Get<bool>("trg_muonelectron_1");
     if (event->Exists("trg_muonelectron_2"))   trg_muonelectron_2_   = event->Get<bool>("trg_muonelectron_2");
+    if (event->Exists("trg_muonelectron_3"))   trg_muonelectron_3_   = event->Get<bool>("trg_muonelectron_3");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");

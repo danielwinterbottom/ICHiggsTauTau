@@ -1977,13 +1977,12 @@ namespace ic {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc);
         } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
-        //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_23 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_23 << "    " << m_trg_23_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_23_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
-        if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
+        eventInfo->set_weight("filter_eff",double(0.979));
 
        }
       } else if (channel_ == channel::tt){
