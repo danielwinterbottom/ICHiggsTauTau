@@ -227,7 +227,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_eta = 2.1;
    tau_pt  = 20;
    tau_eta = 2.3;
-   } else if (era_type == era::data_2016 || era_type == era::data_2017){
+   } else if (era_type == era::data_2016){
    if(js["store_hltpaths"].asBool()){
      min_taus = 1;
      pair_dr = 0.5;
@@ -247,7 +247,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        elec_pt = 26;
        tau_pt = 30;
       }
-      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
        elec_pt = 26;
        tau_pt = 20;
       }
@@ -256,6 +256,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
    }
 
+   } else if (era_type == era::data_2017){
+     min_taus = 1;
+     pair_dr = 0.5;
+     elec_pt = 25;
+     elec_eta = 2.1;
+     tau_pt  = 20;
+     tau_eta = 2.3;
    } else if (era_type == era::data_2011){
      elec_pt = 20;
      elec_eta = 2.1;
@@ -308,7 +315,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     tau_eta = 2.3;
     min_taus = 1;
     pair_dr = 0.5;
-  } else if(era_type == era::data_2016 || era_type == era::data_2017){
+  } else if(era_type == era::data_2016){
     if(js["store_hltpaths"].asBool()){
       muon_pt = 16.0;
       muon_eta = 2.4;
@@ -328,7 +335,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
         tau_pt = 30;
         muon_pt = 23;
       }
-      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
+      if (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
        tau_pt = 20;
        muon_pt = 20;
       }
@@ -337,6 +344,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
     }
 
+   } else if(era_type == era::data_2017){
+      muon_pt = 20.0;
+      muon_eta = 2.1;
+      tau_pt = 20;
+      tau_eta = 2.3;
+      min_taus = 1;
+      pair_dr = 0.5;
    } else if(era_type == era::data_2011){
     muon_pt = 17.0;
     muon_eta = 2.1;
@@ -1512,7 +1526,7 @@ if(channel != channel::wmnu) {
     .set_channel(channel)
     .set_strategy(strategy_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ((js["baseline"]["split_by_source"].asBool() && !js["baseline"]["split_by_region"].asBool()) || do_recoil)) ? 0 : new_svfit_mode)
+    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ((js["baseline"]["split_by_source"].asBool() && !js["baseline"]["split_by_region"].asBool()) || do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(40000)
@@ -3782,7 +3796,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -3793,17 +3807,12 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
-   } else if (strategy_type == strategy::cpsummer17){
-  BuildModule(SimpleFilter<Tau>("TauFilter")
-      .set_input_label(js["taus"].asString()).set_min(min_taus)
+   } 
+  if (strategy_type == strategy::cpsummer17){
+    BuildModule(SimpleFilter<Tau>("TauIsoFilter")
+      .set_input_label(js["taus"].asString()).set_min(0)
       .set_predicate([=](Tau const* t) {
-        return  t->pt()                     >  tau_pt     &&
-                fabs(t->eta())              <  tau_eta    &&
-                fabs(t->lead_dz_vertex())   <  tau_dz     &&
-                fabs(t->charge())           == 1          &&
-                t->GetTauID("decayModeFinding") > 0.5     &&
-                t->GetTauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017") > 0.5;
-
+        return t->GetTauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017") > 0.5;
       }));
    }
   //if (strategy_type == strategy::smsummer16 && channel_type == channel::tt){
