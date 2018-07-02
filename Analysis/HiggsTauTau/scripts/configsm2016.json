@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em", "et", "mt", "tt"],
+    "channels":     ["em","et","mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -20,7 +20,7 @@
     "do_gen_analysis" : false,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
-    "strategy"      : "smsummer16",
+    "strategy"      : "cpsummer16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
@@ -58,16 +58,16 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/May29/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr24_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Jun15_SVFit/",
     "svfit_override" : "",
-    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar29_MELA/",
+    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
     "njets_mode" : 0,
     //"event_check_file":"checkfile.dat",
@@ -76,7 +76,7 @@
     "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
-    "do_met_filters" : 0,
+    "do_met_filters" : 1,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
@@ -134,9 +134,9 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true, 
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "sm2016_fakefactors",
+        "ff_file" : "SM2016_ML/180504_tight/et/fakeFactors_20180412_tight.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
           }
     },
@@ -151,9 +151,9 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true,
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "sm2016_fakefactors",
+        "ff_file" : "SM2016_ML/180504_tight/tt/fakeFactors_tt_inclusive.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
       }
     },
@@ -170,9 +170,9 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true,
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "sm2016_fakefactors",
+        "ff_file" : "SM2016_ML/180504_tight/mt/fakeFactors_20180406_tight.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_2016.root"
       }
     },
