@@ -10,7 +10,6 @@ import ConfigParser
 import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
-from UserCode.ICHiggsTauTau.FitFunctions  import doubleSidedCrystalball
 
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
@@ -127,8 +126,8 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       if options.em_iso: 
-        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]' # low pt leg
-        #trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200,1000]' # high pt leg
+        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
+        #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
 
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
@@ -137,8 +136,8 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
-          #trg_pt_bins = '[10,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]'    # low pt leg
-          trg_pt_bins = '[10,20,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,200]' # high pt leg
+          trg_pt_bins = '[10,12,14,16,18,20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
+          #trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
           
     trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
     trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
@@ -746,7 +745,7 @@ if options.channel == 'tpzee':
   if options.aiso2:
     iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
     iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso:
+  if options.em_iso or options.era == 'summer17':
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:

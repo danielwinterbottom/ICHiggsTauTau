@@ -8,7 +8,7 @@ ROOT.gROOT.SetBatch(True)
 
 plotting.ModTDRStyle()
 
-file_data = ROOT.TFile.Open(os.path.join("./", "MyDataPileupHistogram_69200.root"), "READ")
+file_data = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_2017_69p2mb_Cert_294927-306462.root"), "READ")
 hist_data = file_data.Get("pileup")
 hist_data.SetLineColor(ROOT.kRed+2)
 
@@ -21,7 +21,7 @@ file_data_high = ROOT.TFile.Open(os.path.join("./", "MyDataPileupHistogram_69200
 hist_data_high = file_data_high.Get("pileup")
 hist_data_high.SetLineColor(ROOT.kRed-7)
 
-file_mc = ROOT.TFile.Open(os.path.join("/vols/cms/akd116/Offline/output/SM/2018/Jun4_gen_pileup/", "pileupDistribution/pileup_mc_internal.root"), "READ")
+file_mc = ROOT.TFile.Open(os.path.join("./input/pileup/", "MC_Winter17_PU25ns_V1.root"), "READ")
 hist_mc = file_mc.Get("pileup")
 hist_mc.SetLineColor(ROOT.kBlue+2)
 
@@ -116,7 +116,7 @@ txt2 = ROOT.TLatex()
 txt2.SetTextFont(42)
 txt2.SetTextSize(0.03)
 txt2.SetTextAlign(11)
-txt2.DrawLatexNDC(0.88-c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"45.0 fb^{-1} (13 TeV)")
+txt2.DrawLatexNDC(0.88-c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"41.9 fb^{-1} (13 TeV)")
 
 c1.SaveAs("pileup_2017.pdf");
 

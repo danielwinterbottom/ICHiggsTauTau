@@ -51,6 +51,7 @@ namespace ic {
 		std::string extra_leg2_filter;
     std::string extra_filter ="";
     std::string alt_extra_filter ="";
+    std::string alt_extra_filter_2 ="";
 		std::string alt_leg1_filter;
 		std::string alt_trk_leg1_filter;
                 std::string alt_er_leg1_filter;
@@ -140,11 +141,12 @@ namespace ic {
           //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
           if (run >= 250985 && run <= 271035 && (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
           if (run >= 271036 && run <= 278819 && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
-          if (run >= 278820 /*&& run <= xxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos)) path_found = true; 
+          if (run >= 278820 && run <= 284044 && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos)) path_found = true; 
+          if (run >= 294927 /*&& run <= xxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos)) path_found = true; 
         }
         if (channel_ == channel::tt){
           if (run >= 250985 && run <= 284044 && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
-          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
+          if (run >= 294927 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
@@ -444,7 +446,7 @@ namespace ic {
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
         }
-        if (run >= 278820 /*&& run <= xxx*/){
+        if (run >= 278820 && run <= 284044){
          trig_obj_label = "triggerObjectsEle12Mu23DZ";
          leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
@@ -454,6 +456,21 @@ namespace ic {
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
          alt_extra_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter";
         }
+        if (run >= 294927 /* && run <= xxx*/) {
+          trig_obj_label = "triggerObjectsMu23Ele12DZ";
+          leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          extra_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter";
+          alt_trig_obj_label = "triggerObjectsMu23Ele12";
+          alt_leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          alt_leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          alt_extra_filter = "";
+          alt_trig_obj_label_2 = "triggerObjectsMu8Ele23DZ";
+          alt_leg1_filter_2 = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          alt_leg2_filter_2 = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+          alt_extra_filter_2 = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter";
+        }
+          
 
 
       }
@@ -761,6 +778,13 @@ namespace ic {
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+        } else if (mc_ == mc::mc2017){
+            trig_obj_label = "triggerObjectsMu23Ele12";
+            leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+            leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+            alt_trig_obj_label = "triggerObjectsMu8Ele23DZ";
+            alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+            alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
         }
       } else if (channel_ == channel::tt){
          if (mc_ == mc::phys14_72X){
@@ -961,7 +985,7 @@ namespace ic {
     }
     event->Add("trg_etaucross", passed_etaucross);
 
-    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X) {
+    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X && mc_ != mc::mc2017) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
@@ -981,6 +1005,7 @@ namespace ic {
    bool passed_muonelectron = false;
    bool passed_muonelectron_1 = false;
    bool passed_muonelectron_2 = false; 
+   bool passed_muonelectron_3 = false; 
    if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X || mc_ == mc::fall15_76X ||mc_ == mc::spring16_80X || mc_ == mc::summer16_80X)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
@@ -1016,9 +1041,53 @@ namespace ic {
         }
       }
     }
+   if (channel_ == channel::em && mc_ == mc::mc2017){
+      std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      std::vector<TriggerObject *> const& alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+      // Mu23_Ele12_DZ matching
+      for(unsigned i = 0; i < dileptons.size(); ++i){
+        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
+        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+        bool extra_leg1_match=true;
+        bool extra_leg2_match=true;
+        if(extra_filter.find("hlt")!=extra_filter.npos){
+          extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_filter, 0.5).first;
+          extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_filter, 0.5).first;
+        }
+        bool highpt_leg = dileptons[i]->At(1)->pt() > 24.0;
+        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
+          passed_muonelectron = true;  
+          dileptons_pass.push_back(dileptons[i]);
+          passed_muonelectron_1 = true;
+        } 
+      // Mu23_Ele12 matching
+        leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
+        leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
+        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
+          passed_muonelectron = true;  
+          dileptons_pass.push_back(dileptons[i]);
+          passed_muonelectron_2 = true;
+        } 
+      // Mu8_Ele23_DZ matching
+        leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_2, alt_leg1_filter_2, 0.5).first;
+        leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_2, alt_leg2_filter_2, 0.5).first;
+        extra_leg1_match = true;
+        extra_leg2_match = true;
+        if(alt_extra_filter.find("hlt")!=extra_filter.npos){
+          extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_2, alt_extra_filter_2, 0.5).first;
+          extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_2, alt_extra_filter_2, 0.5).first;
+        }
+        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg){
+           passed_muonelectron = true; 
+           passed_muonelectron_3 = true;
+           dileptons_pass.push_back(dileptons[i]);
+        }
+      }
+    }
     event->Add("trg_muonelectron", passed_muonelectron);
     event->Add("trg_muonelectron_1", passed_muonelectron_1);
     event->Add("trg_muonelectron_2", passed_muonelectron_2);
+    event->Add("trg_muonelectron_3", passed_muonelectron_3);
 
    if (channel_ == channel::tt && mc_ == mc::phys14_72X){
      for(unsigned i = 0; i < dileptons.size(); ++i){
@@ -1065,6 +1134,7 @@ namespace ic {
     }
     
    bool passed_doubletau = false;
+   bool match_l1_parts = false;
    if (channel_ == channel::tt && (mc_ == mc::summer16_80X || mc_ == mc::mc2017)){
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -1094,7 +1164,8 @@ namespace ic {
         
         if(mc_ == mc::mc2017){
           // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
-          std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+          
+          /* std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
           std::pair<bool, std::vector<unsigned>> leg1 = IsFilterMatchedWithMultipleIndexs(dileptons[i]->At(0), alt_objs_2, "hltL1sDoubleTauBigOR", 0.5);
           std::pair<bool, std::vector<unsigned>> leg2 = IsFilterMatchedWithMultipleIndexs(dileptons[i]->At(1), alt_objs_2, "hltL1sDoubleTauBigOR", 0.5);
 
@@ -1107,21 +1178,18 @@ namespace ic {
           for (unsigned i=0; i < leg2.second.size(); ++i) {
             if (alt_objs_2[leg2.second[i]]->vector().Pt() >= 32.) passed_leg2_tau = true;
           }
-          passed_doubletau = passed_doubletau && passed_leg1_tau && passed_leg2_tau;
+          passed_doubletau = passed_doubletau && passed_leg1_tau && passed_leg2_tau; */
               
-          // std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-          //std::vector<ic::L1TObject*> passed_l1_taus;
-          //for(unsigned ta=0; ta<l1taus.size(); ++ta){
-          //    std::cout<<"l1 tau iso: " <<l1taus[ta]->isolation()<<std::endl;
-          //  if(l1taus[ta]->isolation() !=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
-          //}
-          //std::vector<Candidate *> match_taus;
-          //match_taus.push_back(dileptons[i]->At(0));
-          //match_taus.push_back(dileptons[i]->At(1));
-          //bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
-          //std::cout<<"match l1 parts size: "<<(MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size()<<std::endl;
-          //passed_doubletau = passed_doubletau && match_l1_parts;
-          //std::cout << "Running the L1 Tau matching" << std::endl;
+          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          std::vector<ic::L1TObject*> passed_l1_taus;
+          for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+          }
+          std::vector<Candidate *> match_taus;
+          match_taus.push_back(dileptons[i]->At(0));
+          match_taus.push_back(dileptons[i]->At(1));
+          match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
+          passed_doubletau = passed_doubletau && match_l1_parts;
         }
       }
     }
