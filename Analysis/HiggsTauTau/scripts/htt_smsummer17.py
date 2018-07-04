@@ -147,12 +147,12 @@ if options.proc_sm or options.proc_all:
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
+      # 'WplusHToTauTau_M-'+mass,
+      # 'WminusHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
-      'GluGluHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
-      'ttHToTauTau_M-'+mass
+      # 'GluGluHToTauTau_M-'+mass,
+      # 'ZHToTauTau_M-'+mass,
+      # 'ttHToTauTau_M-'+mass
     ]
   if options.proc_sm:  
    signal_mc += [

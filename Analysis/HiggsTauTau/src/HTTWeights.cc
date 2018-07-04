@@ -1453,7 +1453,7 @@ namespace ic {
           tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
           tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
 
-          double xtrg_et_sf = (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc);
+          double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
           double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/
               (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
