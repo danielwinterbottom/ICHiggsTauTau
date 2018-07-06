@@ -101,6 +101,8 @@ class HTTCategories : public ModuleBase {
   double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
+  double xtrg_et_sf_;
+  double single_e_sf_;
   double wt_trig_up_1_;
   double wt_trig_up_2_;
   double wt_trig_down_1_;

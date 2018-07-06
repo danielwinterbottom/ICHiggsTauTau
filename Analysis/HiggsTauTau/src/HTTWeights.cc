@@ -261,6 +261,12 @@ namespace ic {
                  w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+              // et cross trigger
+              fns_["e_trg_EleTau_Ele24Leg_desy_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_EleTau_Ele24Leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
+              fns_["e_trg_EleTau_Ele24Leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_EleTau_Ele24Leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+
           } else {
             if (strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16) {
         
@@ -1222,6 +1228,8 @@ namespace ic {
         double e_signed_eta = elec->sc_eta();
         if(era_ == era::data_2015 || era_==era::data_2016 || era_ == era::data_2017) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
+        double t_signed_eta = tau->eta();
+        double t_phi = tau->phi();
         double t_eta = fabs(tau->eta());
         double ele_trg = 1.0;
         double tau_trg = 1.0;
@@ -1434,8 +1442,31 @@ namespace ic {
           auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};  
           ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
           ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
-          tau_trg=1.0;
-          tau_trg_mc=1.0;
+
+          double single_e_sf = ele_trg / ele_trg_mc;
+
+          auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
+          auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
+          double ele_xtrg = fns_["e_trg_EleTau_Ele24Leg_desy_data"]->eval(args_2.data());
+          double ele_xtrg_mc = fns_["e_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
+
+          tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
+          tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
+
+          double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
+
+          double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/
+              (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
+
+          // have xtrg OR as default but save others to check 
+          event->Add("single_e_sf", single_e_sf);
+          event->Add("xtrg_et_sf", xtrg_et_sf);
+
+          ele_trg = xtrg_OR_sf;
+          ele_trg_mc = 1.0;
+
+          tau_trg = 1.0;
+          tau_trg_mc = 1.0;
         }
 
         if (trg_applied_in_mc_) {
