@@ -82,6 +82,7 @@ def SetAxisTitles(plot, channel):
   titles['jeta_2'] = ['#eta_{j_{2}}','Events / '+bin_width, 'dN/d#eta_{j_{2}}']
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
+  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
 
 
     
@@ -161,6 +162,7 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
+  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
@@ -2280,11 +2282,11 @@ def HTTPlot(nodename,
                         sighists[split_scheme].Add(h)
 
                 if split_scheme in ['sm_ggH','sm_ggH_JHU']:
-                    sighists[split_scheme].SetLineColor(R.kGreen+2)
+                    sighists[split_scheme].SetLineColor(R.kRed)
                 if split_scheme == 'sm_qqH':
                     sighists[split_scheme].SetLineColor(R.kBlue)
                 if split_scheme == 'sm_VH':
-                    sighists[split_scheme].SetLineColor(R.kRed)
+                    sighists[split_scheme].SetLineColor(R.kGreen+2)
 
                 sighists[split_scheme].SetLineWidth(3)
                 sighists[split_scheme].Scale(signal_scale)
@@ -3149,12 +3151,15 @@ def HTTPlotUnrolled(nodename,
         }
     
     if embedding:
-      for chan in ['em','et','mt','tt']:
+      for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue  
         schemes = background_schemes[chan]
         for bkg in schemes:
-          if bkg['leg_text'] is 'Z#rightarrow#tau#tau':
+          if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
-    
+          if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+            bkg['plot_list'] = ["EmbedZL","ZJ","ZTT"]
+
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
@@ -3453,8 +3458,16 @@ def HTTPlotUnrolled(nodename,
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
-        if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
-        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        if var not in ['MVA Score']:
+            if ymax == -1: 
+                y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
+            else: 
+                y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        else: 
+            if ymax == -1: 
+                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
+            else: 
+                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit)
         if "tau decay mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
