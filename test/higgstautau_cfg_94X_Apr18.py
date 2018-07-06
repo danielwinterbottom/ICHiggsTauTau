@@ -9,8 +9,8 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
-'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
-#'root://xrootd.unl.edu//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/40000/0021369B-9BD8-E711-BFE9-FA163EAA42CB.root'
+# 'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
+'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_dataRun2_v6', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
@@ -65,7 +65,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(2000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -815,7 +815,7 @@ process.icIsoMu20Tau27ObjectProducer = producers.icTriggerObjectProducer.clone(
 process.icDoubleEl24ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsDoubleEl24"),
-    hltPath = cms.string("LT_DoubleEle24_eta2p1_WPTight_Gsf_v"),
+    hltPath = cms.string("HLT_DoubleEle24_eta2p1_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
@@ -1147,7 +1147,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
-  includeLeptonRho    = cms.bool(False),
+  includeLeptonRho    = cms.bool(True),
   inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
   includeVertexCount  = cms.bool(True),
   inputVertices       = vtxLabel,
