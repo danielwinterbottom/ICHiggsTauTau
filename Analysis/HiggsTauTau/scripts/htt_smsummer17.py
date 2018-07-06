@@ -147,11 +147,11 @@ if options.proc_sm or options.proc_all:
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
-      # 'WplusHToTauTau_M-'+mass,
-      # 'WminusHToTauTau_M-'+mass,
+      'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
-      # 'GluGluHToTauTau_M-'+mass,
-      # 'ZHToTauTau_M-'+mass,
+      'GluGluHToTauTau_M-'+mass,
+      'ZHToTauTau_M-'+mass,
       # 'ttHToTauTau_M-'+mass
     ]
   if options.proc_sm:  
@@ -336,7 +336,7 @@ if options.proc_bkg or options.proc_all:
      'DYJetsToLL-ext',
      'WJetsToLNu-LO',
      'W2JetsToLNu-LO',
-     'WWTo4Q-ext',
+     # 'WWTo4Q-ext',
      'WWToLNuQQ-ext'
      ]
   
@@ -383,7 +383,7 @@ if options.proc_sm or options.proc_all:
   for sa in signal_mc:
     JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
