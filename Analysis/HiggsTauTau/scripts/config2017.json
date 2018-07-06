@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jun15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zmm","zee","mt"],
+    "channels":     ["em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/July4",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/July5",
     // "output_folder" : "output",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
@@ -81,7 +81,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
     "mc_pu_file"    : "input/pileup/MC_Winter17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
@@ -98,8 +98,8 @@
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
       "tau_1prong0pi0_es_shift": 1.008,
-      "tau_1prong1pi0_es_shift": 0.990,
-      "tau_3prong0pi0_es_shift": 0.992,
+      "tau_1prong1pi0_es_shift": 0.992,
+      "tau_3prong0pi0_es_shift": 0.990,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
