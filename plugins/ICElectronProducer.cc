@@ -180,7 +180,7 @@ void ICElectronProducer::produce(edm::Event& event,
     if (src.gsfTrack().isNonnull()) {
 #if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
       dest.set_gsf_tk_nhits(
-          src.gsfTrack()->hitPattern().numberOfAllHits(
+          src.gsfTrack()->hitPattern().numberOfLostHits( //rather than numberOfAllHits which counts 
               reco::HitPattern::MISSING_INNER_HITS));
 #elif CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
       dest.set_gsf_tk_nhits(
