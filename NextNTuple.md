@@ -4,6 +4,7 @@
 - [ ] Process embedded samples
 
 - [ ] Check if any additional MC samples have been added for latest MC production
+- [x] Fix typo in crab Fall17 MC cfg (related to WWTo4Q-ext)
 
 - [x] Fix typo in et monitoring trigger
 - [ ] Rerun with et monitoring trigger

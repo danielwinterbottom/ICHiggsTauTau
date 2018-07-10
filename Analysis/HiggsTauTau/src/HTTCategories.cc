@@ -81,6 +81,10 @@ namespace ic {
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
+      if (channel_ == channel::et){
+        outtree_->Branch("xtrg_et_sf", &xtrg_et_sf_);
+        outtree_->Branch("single_e_sf", &single_e_sf_);
+      }
       outtree_->Branch("wt_trg_corr", &wt_trg_corr_);
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
@@ -2543,6 +2547,8 @@ namespace ic {
   if (event->Exists("trigweight_down_1")) wt_trig_down_1_ = event->Get<double>("trigweight_down_1"); else wt_trig_down_1_ = 1.0;
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   wt_trg_corr_ = event->Exists("wt_trg_corr") && is_embedded_ ? event->Get<double>("wt_trg_corr") : 1.0; 
+  if (event->Exists("xtrg_et_sf")) xtrg_et_sf_ = event->Get<double>("xtrg_et_sf"); else xtrg_et_sf_ = 1.0;
+  if (event->Exists("single_e_sf")) single_e_sf_ = event->Get<double>("single_e_sf"); else single_e_sf_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
   if(channel_==channel::em){

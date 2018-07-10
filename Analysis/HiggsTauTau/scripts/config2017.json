@@ -58,7 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/2017_data/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/July5",
+    // "output_folder" : "output",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -80,7 +81,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
     "mc_pu_file"    : "input/pileup/MC_Winter17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
