@@ -247,6 +247,8 @@ namespace ic {
                  w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_id_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_id_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
+              fns_["e_looseid_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_looseid_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["e_idiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
@@ -1742,6 +1744,7 @@ namespace ic {
                 }
             }
          } else if (mc_ == mc::mc2017) {
+             // add here for mu tau cross trg like in e tau 
            auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
            tau_trg=1;
            tau_trg_mc=1;
@@ -2594,12 +2597,12 @@ namespace ic {
           auto args_2 = std::vector<double>{pt,e_sceta};
           auto args_3 = std::vector<double>{pt,e_signed_eta,e_sceta,e_iso};
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
-          ele_id = fns_["e_id_pog_ratio"]->eval(args_2.data());
+          ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
           //ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
           ele_idiso = fns_["e_idiso_pog_ratio"]->eval(args_2.data());
         }
         if(mc_==mc::mc2017){
-          weight *= ele_idiso;
+          weight *= (ele_id * ele_iso); //ele_idiso //(ele_id * ele_iso)
           event->Add("idweight_1", ele_id);
           event->Add("idweight_2", double(1.0));
           event->Add("isoweight_1", ele_iso);

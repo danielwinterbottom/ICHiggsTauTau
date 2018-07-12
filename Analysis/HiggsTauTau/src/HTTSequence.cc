@@ -817,9 +817,9 @@ jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 TH2F bbtag_eff;
 TH2F cbtag_eff;
 TH2F othbtag_eff;
-bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
-cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
-othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
+bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
 
 BuildModule(BTagWeightRun2("BTagWeightRun2")
  .set_channel(channel::mt)
@@ -839,7 +839,7 @@ mass_str.erase(0, mass_str.find("_M-")+3);
 mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
 
 BuildModule(jetIDFilter);
-  TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
+  TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
   
   unsigned mela_mode = js["mela_mode"].asUInt();
   if(mela_mode!=0){
@@ -1135,9 +1135,9 @@ BuildModule(jetIDFilter);
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
     } else if (strategy_type == strategy::cpsummer17 && use_deep_csv) {
       // update to 2017
-      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_b");
-      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_c");
-      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_oth");
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
     } else if (strategy_type == strategy::cpsummer17) {
       // update to 2017
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
@@ -1626,9 +1626,9 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
   } else if (strategy_type == strategy::cpsummer17 && use_deep_csv) {
-    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_b");
-    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_c");
-    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017.root","/","btag_eff_oth");
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
   } else if(strategy_type == strategy::cpsummer17){
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
@@ -2483,14 +2483,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+          /* .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") */
+          /* .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") */
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
           // to measure em electron 12 GeV leg
-          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          //.set_extra_l1_probe_pt(10.)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
           //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
@@ -2644,7 +2644,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
     } else if(strategy_type == strategy::cpsummer17){
-      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //set to false for TightID //ElectronHTTIdFall17 //ElectronHTTIsoIdFall17
     }
 
 
@@ -3980,8 +3980,8 @@ void HTTSequence::BuildDiElecVeto() {
         .set_function([=](ic::TreeEvent *event){
            EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
            std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
-           ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->lepton_rho()));
-           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->lepton_rho(), 0.3));
+           ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->jet_rho())); //lepton_rho
+           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3));
            return 0;
         }));    
 
@@ -4147,7 +4147,7 @@ void HTTSequence::BuildExtraElecVeto(){
         .set_function([=](ic::TreeEvent *event){
            EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
            std::vector<Electron*> & vec = event->GetPtrVec<Electron>("extra_elecs");
-           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->lepton_rho(), 0.3));
+           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
            return 0;
         }));   
         

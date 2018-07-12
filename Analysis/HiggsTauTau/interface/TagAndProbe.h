@@ -300,8 +300,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
       if(strategy_ == strategy::cpsummer17) {
-        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->lepton_rho());
-        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->lepton_rho());  
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
       } else {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);

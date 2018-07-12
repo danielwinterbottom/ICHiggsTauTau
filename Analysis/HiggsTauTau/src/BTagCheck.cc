@@ -70,7 +70,7 @@ namespace ic {
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V2_B_F.csv";
+    if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V3_B_F.csv";
     if(era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     std::cout << "SF: " << csv_file_path << std::endl;
     calib  = new const BTagCalibration("csvv2",csv_file_path);
@@ -112,7 +112,7 @@ namespace ic {
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else if (strategy_ == strategy::cpsummer17) { 
-          iso_1 = PF03EAIsolationVal(elec, eventInfo->lepton_rho());  
+          iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
           if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
@@ -150,7 +150,7 @@ namespace ic {
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
-        if(era_ == era::data_2017) iso_1 = PF03EAIsolationVal(elec, eventInfo->lepton_rho());
+        if(era_ == era::data_2017) iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);
         } else iso_2 = PF04IsolationVal(muon, 0.5, 0);
