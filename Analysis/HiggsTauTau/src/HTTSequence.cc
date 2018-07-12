@@ -808,38 +808,12 @@ if(js["test_nlo_reweight"].asBool()) {
 }
 
 if(!is_data && js["do_gen_analysis"].asBool()){
-   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
-SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-.set_input_label(jets_label);
-jetIDFilter.set_predicate(bind(PFJetID2016, _1));
-
-TH2F bbtag_eff;
-TH2F cbtag_eff;
-TH2F othbtag_eff;
-bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
-cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
-othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
-
-BuildModule(BTagWeightRun2("BTagWeightRun2")
- .set_channel(channel::mt)
- .set_era(era_type)
- .set_strategy(strategy_type)
- .set_jet_label(jets_label)
- .set_bbtag_eff(new TH2F(bbtag_eff))
- .set_cbtag_eff(new TH2F(cbtag_eff))
- .set_othbtag_eff(new TH2F(othbtag_eff))
- .set_use_deep_csv(use_deep_csv)
- .set_btag_mode(btag_mode)
- .set_bfake_mode(bfake_mode));
-
+TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
 
 std::string mass_str = output_name;
 mass_str.erase(0, mass_str.find("_M-")+3);
 mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
-
-BuildModule(jetIDFilter);
-  TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
   
   unsigned mela_mode = js["mela_mode"].asUInt();
   if(mela_mode!=0){
@@ -1363,6 +1337,7 @@ if(do_met_filters){
        return !pass_filters;
     }));
 }
+
 
 if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
   BuildModule(GenericModule("BadMuonFilters")

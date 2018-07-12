@@ -62,7 +62,7 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
     }
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
-    for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+    for (auto & x : gen_taus) gen_taus_ptr.push_back(new GenJet(x));
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
     
     event->Add("genHadTaus", gen_taus_ptr);
@@ -107,6 +107,7 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
       gen_match_1 = mcorigin::tauHad;
     }
     
+
     if(gen_match_1 == gen_match_){
       output_vec.push_back(input_vec[i]);
     }

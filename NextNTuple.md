@@ -11,3 +11,6 @@
 
 - [ ] Add electron scale&smear correction to p4
 
+- [ ] Update global tags
+- [ ] Update CMSSW version
+

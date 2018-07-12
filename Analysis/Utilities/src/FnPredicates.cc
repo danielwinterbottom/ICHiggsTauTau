@@ -1053,13 +1053,13 @@ namespace ic {
     double pt = fabs(elec->pt());
     double idmva = elec->GetIdIso("generalPurposeMVASpring16");
     if (!loose_wp) {
-      if (eta <= 0.8 && pt > 10                   && idmva > 0.941 ) pass_mva = true;
-      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.899 ) pass_mva = true;
-      if (eta > 1.479 && pt > 10                  && idmva > 0.758 ) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.940962684155 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.899208843708 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.758484721184 ) pass_mva = true;
     } else {
-      if (eta <= 0.8 && pt > 10                   && idmva > 0.837 ) pass_mva = true;
-      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.715 ) pass_mva = true;
-      if (eta > 1.479 && pt > 10                  && idmva > 0.357 ) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.836695742607 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.715337944031 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.356799721718 ) pass_mva = true;
     }
     return pass_mva;
   }

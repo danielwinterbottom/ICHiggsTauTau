@@ -216,8 +216,6 @@ namespace ic {
       outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
-      outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
-      outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("partons_lhe"     , &partons_lhe_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -667,38 +665,6 @@ namespace ic {
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
-    
-    std::string jets_label_ = "ak4PFJetsCHS";
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    
-    for(unsigned i=0; i<jets.size(); ++i){
-      ic::PFJet *jet = jets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
-      //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) jets.erase (jets.begin()+i);
-    }
-    
-    std::vector<PFJet*> offline_bjets = jets;
-    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-    ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    
-    std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp =  0.8484;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    }else { 
-      ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-    }
-    
-    
-    n_jets_offline_ = jets.size();
-    n_bjets_offline_ = offline_bjets.size();
-
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;
     jeta_1_      = -9999;
@@ -745,14 +711,16 @@ namespace ic {
 
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
-
-    puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
-      for (unsigned i = 0; i < puInfo.size(); ++i) {
-        if (puInfo[i]->bunch_crossing() == 0)
-          true_int = puInfo[i]->true_num_interactions();
-      }
     
-    n_pu_ = true_int;
+    if(event->ExistsInTree("pileupInfo")){
+      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
+        for (unsigned i = 0; i < puInfo.size(); ++i) {
+          if (puInfo[i]->bunch_crossing() == 0)
+            true_int = puInfo[i]->true_num_interactions();
+        }
+    
+      n_pu_ = true_int;
+    }
     
     auto args = std::vector<double>{pT};
     if(fns_["h_t_ratio"]){
