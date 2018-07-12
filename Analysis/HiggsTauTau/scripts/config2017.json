@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jun15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em"],
+    "channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/July5",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/July11_looseIDrhoIso",
     // "output_folder" : "output",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
@@ -89,7 +89,7 @@
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
-      "use_deep_csv"      : false,
+      "use_deep_csv"      : true,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
