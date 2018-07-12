@@ -340,7 +340,7 @@ if options.analysis == 'sm':
           cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
         if options.era in ['cpsummer17']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron || trg_etaucross) && pt_2>20)'  
+          cats['baseline'] = '(iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron || trg_etaucross) && pt_2>20)'  
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && pt_1>28 && pt_2>20)'  
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_etaucross && pt_1>30&&pt_2>30 && eta_2<2.1 && eta_2>-2.1)'  
         
@@ -772,7 +772,7 @@ if options.era in ['cpsummer17']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY4JetsToLL-LO'] # no low mass sample until we know the cross section!
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo4Q-ext','WWTo4Q','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo4Q','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q']#,'WWTo4Q-ext'] # should check if there are additional diboson samples to add after next ntuple production
     wjets_samples = ['WJetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = []
     ewkz_samples = ['EWKZ2Jets']
@@ -792,7 +792,7 @@ sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'Wplus
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
 if options.era in ['cpsummer16']: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
 # removing TTH for now because it isn't processed
-# if options.era in ['cpsummer17']: sm_samples = { 'ggH_htt' : 'GluGluHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*'}#, 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
+if options.era in ['cpsummer17']: sm_samples = { 'ggH_htt' : 'GluGluHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*'}#, 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -2847,7 +2847,8 @@ if not options.no_plot:
 #norm signal yields on datacards to 1pb AFTER plotting    
 outfile =  ROOT.TFile(output_name, 'UPDATE')
 for add_name in add_names: 
-    if options.era not in ["smsummer16",'cpsummer16']: NormSignals(outfile,add_name)
+    if options.analysis == 'mssm':
+        NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16']:

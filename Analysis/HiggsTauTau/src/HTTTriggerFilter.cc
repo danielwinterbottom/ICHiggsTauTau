@@ -782,6 +782,7 @@ namespace ic {
             alt_trig_obj_label = "triggerObjectsMu8Ele23DZ";
             alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
             alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+            alt_leg2_filter_2 = "hltMuon8Ele23RelTrkIsoFiltered0p4MuonLeg";
         }
       } else if (channel_ == channel::tt){
          if (mc_ == mc::phys14_72X){
