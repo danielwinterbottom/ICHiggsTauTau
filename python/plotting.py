@@ -83,6 +83,7 @@ def SetAxisTitles(plot, channel):
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
 
 
     
@@ -163,6 +164,7 @@ def SetAxisTitles2D(plot, channel):
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
