@@ -1051,7 +1051,7 @@ namespace ic {
           extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_filter, 0.5).first;
         }
         bool highpt_leg = dileptons[i]->At(1)->pt() > 24.0;
-        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
+        if (leg1_match && leg2_match && extra_leg1_match && extra_leg2_match && highpt_leg) {
           passed_muonelectron = true;  
           dileptons_pass.push_back(dileptons[i]);
           passed_muonelectron_1 = true;
@@ -1062,14 +1062,15 @@ namespace ic {
         bool leg2_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter_2, 0.5).first; // for older trigger cfg
         extra_leg1_match = true;
         extra_leg2_match = true;
+        highpt_leg = dileptons[i]->At(0)->pt() > 24.0;
         if(alt_extra_filter.find("hlt")!=extra_filter.npos){
           extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_extra_filter, 0.5).first;
           extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_extra_filter, 0.5).first;
         }
-        if (leg1_match && (leg2_match || leg2_match_2) &&extra_leg1_match && extra_leg2_match && highpt_leg){
-           passed_muonelectron = true; 
-           passed_muonelectron_2 = true;
-           dileptons_pass.push_back(dileptons[i]);
+        if (leg1_match && (leg2_match || leg2_match_2) && extra_leg1_match && extra_leg2_match && highpt_leg){
+          passed_muonelectron = true; 
+          passed_muonelectron_2 = true;
+          dileptons_pass.push_back(dileptons[i]);
         }
       }
     }

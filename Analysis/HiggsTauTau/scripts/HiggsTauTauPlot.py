@@ -472,11 +472,11 @@ if options.channel == 'tt':
     mva_highMjj_qqh =     '(IC_highMjj_July05_1_max_index==3)'
     mva_highMjj_ztt =     '(IC_highMjj_July05_1_max_index==4)'
 
-    mva_lowMjj_ggh =     '(IC_lowMjj_Jun4_max_index==0)'
-    mva_lowMjj_misc =    '(IC_lowMjj_Jun4_max_index==1)'
-    mva_lowMjj_qcd =     '(IC_lowMjj_Jun4_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_Jun4_max_index==3)'
-    mva_lowMjj_ztt =     '(IC_lowMjj_Jun4_max_index==4)'
+    mva_lowMjj_ggh =     '(IC_lowMjj_July05_1_max_index==0)'
+    mva_lowMjj_misc =    '(IC_lowMjj_July05_1_max_index==1)'
+    mva_lowMjj_qcd =     '(IC_lowMjj_July05_1_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_July05_1_max_index==3)'
+    mva_lowMjj_ztt =     '(IC_lowMjj_July05_1_max_index==4)'
 
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)

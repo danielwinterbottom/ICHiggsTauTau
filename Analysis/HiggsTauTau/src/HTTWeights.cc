@@ -268,6 +268,32 @@ namespace ic {
                  w_->function("e_trg_EleTau_Ele24Leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_trg_EleTau_Ele24Leg_desy_mc"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_EleTau_Ele24Leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+              // em cross trigger
+              fns_["e_trg_binned_12_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_12_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));    
+              fns_["e_trg_binned_12_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_12_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_trg_binned_12_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_12_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_23_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));    
+              fns_["e_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_23_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_trg_binned_23_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg_binned_23_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["m_trg_binned_8_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_8_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));    
+              fns_["m_trg_binned_8_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_8_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_trg_binned_8_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_8_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_23_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));    
+              fns_["m_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_23_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_trg_binned_23_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg_binned_23_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+
 
           } else {
             if (strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16) {
@@ -1745,11 +1771,41 @@ namespace ic {
             }
          } else if (mc_ == mc::mc2017) {
              // add here for mu tau cross trg like in e tau 
-           auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
-           tau_trg=1;
-           tau_trg_mc=1;
-           mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-           mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+             /* auto args_1 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
+             mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
+             mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+
+             double single_m_sf = mu_trg / mu_trg_mc;
+
+             auto args_2 = std::vector<double>{m_pt,m_signed_eta};  
+             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
+             double mu_xtrg = fns_["m_trg_EleTau_Ele24Leg_desy_data"]->eval(args_2.data());
+             double mu_xtrg_mc = fns_["m_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
+
+             tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
+             tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
+
+             double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
+
+             double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/
+                 (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
+
+             // have xtrg OR as default but save others to check 
+             event->Add("single_e_sf", single_e_sf);
+             event->Add("xtrg_et_sf", xtrg_et_sf);
+
+             ele_trg = xtrg_OR_sf;
+             ele_trg_mc = 1.0;
+
+             tau_trg = 1.0;
+             tau_trg_mc = 1.0; */
+
+            
+             auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
+             tau_trg=1;
+             tau_trg_mc=1;
+             mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
+             mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data()); 
         }
 
         if (trg_applied_in_mc_) {
@@ -1976,16 +2032,21 @@ namespace ic {
             e_trg_17_mc = fns_["e_trg23_binned_ic_embed"]->eval(args_1_2.data());
             e_trg_12_mc  = fns_["e_trg12_binned_ic_embed"]->eval(args_1_2.data());
           }
-       } else if (mc_==mc::mc2017){ //change 17 for 23 here
-         m_trg_23 = 1.0;
-         m_trg_8  = 1.0;
-         e_trg_23 = 1.0;
-         e_trg_12 = 1.0;
+       } else if (mc_==mc::mc2017){ 
+           // double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
 
-         m_trg_23_mc = 1.0;
-         m_trg_8_mc  = 1.0;
-         e_trg_23_mc = 1.0;
-         e_trg_12_mc = 1.0;
+           auto args_1_2 = std::vector<double>{e_pt,e_eta,e_iso};
+           auto args_2_2 = std::vector<double>{m_pt,m_eta,m_iso};
+
+           m_trg_23 = fns_["m_trg_binned_23_data"]->eval(args_2_2.data());
+           m_trg_8  = fns_["m_trg_binned_8_data"]->eval(args_2_2.data());
+           e_trg_23 = fns_["e_trg_binned_23_data"]->eval(args_1_2.data());
+           e_trg_12 = fns_["e_trg_binned_12_data"]->eval(args_1_2.data());
+
+           m_trg_23_mc = fns_["m_trg_binned_23_mc"]->eval(args_2_2.data());
+           m_trg_8_mc  = fns_["m_trg_binned_8_mc"]->eval(args_2_2.data());
+           e_trg_23_mc = fns_["e_trg_binned_23_mc"]->eval(args_1_2.data());
+           e_trg_12_mc = fns_["e_trg_binned_12_mc"]->eval(args_1_2.data());
        }
        if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X && mc_ != mc::mc2017){
 
@@ -2906,7 +2967,7 @@ namespace ic {
            }
          } else if(mc_==mc::mc2017) {
            double m_iso = PF04IsolationVal(muon, 0.5, 0); 
-           double e_iso = PF03IsolationVal(elec, 0.5, 0);
+           double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
            double e_sceta = elec->sc_eta(); 
            auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_sceta,e_iso};  
            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
