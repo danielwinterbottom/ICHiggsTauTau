@@ -34,6 +34,7 @@ infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
 isEmbed      = opts.isEmbed
+if isEmbed: isData = 0
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
@@ -47,6 +48,7 @@ if not release in ["94XMINIAOD"]:
   sys.exit(1)
 print 'release     : '+release
 print 'isData      : '+str(isData)
+print 'isEmbed      : '+str(isEmbed)
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
 
@@ -671,6 +673,7 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeDaughters = cms.bool(True),
   includeStatusFlags = cms.bool(True)
 )
+if isEmbed: process.icGenParticleProducer.input   = cms.InputTag("prunedGenParticles","","MERGE")
 
 
 process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
@@ -700,6 +703,8 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
   requestGenParticles = cms.bool(False),
   isSlimmed  = cms.bool(True)
 )
+if isEmbed: process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","MERGE")
+
   
 process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   branch = cms.string("genJets"),
@@ -707,7 +712,9 @@ process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   inputGenParticles=cms.InputTag("genParticles"),
   requestGenParticles = cms.bool(False),
   isSlimmed = cms.bool(True)
-) 
+)
+
+if isEmbed: process.icGenJetProducerFromSlimmed.input = cms.InputTag("selectedGenJets") 
 
 process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
@@ -719,9 +726,9 @@ if not isData:
     process.ak4GenJetsNoNuBSM+
     process.selectedGenJets+
     process.icGenJetProducer+
-    process.icGenJetProducerFromSlimmed+
-    process.icPileupInfoProducer
+    process.icGenJetProducerFromSlimmed
   )
+  if not isEmbed: process.icGenSequence += (process.icPileupInfoProducer)
   if doHT:
     process.icGenSequence += (
       process.icGenParticleProducerFromLHEParticles
@@ -1110,21 +1117,29 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icMu17Mu8DZmass8ObjectProducer
     )
 
+for name in process.icTriggerObjectSequence.moduleNames():
+    mod = getattr(process, name)
+    if isEmbed: mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembedding")
+
+
 ## Need to unpack filterLabels on slimmedPatTrigger then make selectedPatTrigger
 process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker",
    patTriggerObjectsStandAlone = cms.InputTag("slimmedPatTrigger"),
    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
    unpackFilterLabels = cms.bool(True)
 )
+
+if isEmbed: process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
+
 process.selectedPatTrigger = cms.EDFilter(
  'PATTriggerObjectStandAloneSelector',
   cut = cms.string('!filterLabels.empty()'),
   src = cms.InputTag('patTriggerUnpacker')
 )
 process.icTriggerSequence += cms.Sequence(
-    process.patTriggerUnpacker +
-    process.selectedPatTrigger
-    )   
+  process.patTriggerUnpacker +
+  process.selectedPatTrigger
+)
 
 
 ################################################################
