@@ -9,14 +9,16 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
-# 'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
-'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+'root://xrootd.unl.edu//store/user/jbechtel/MuTau_data_2016_CMSSW826_freiburg/TauEmbedding_MuTau_data_2016_CMSSW826_Run2016B/99/merged_998.root'              
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_dataRun2_v6', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
+opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Process as embedded?")
 opts.register('release', '94XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
@@ -31,6 +33,7 @@ opts.parseArguments()
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
+isEmbed      = opts.isEmbed
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
@@ -520,7 +523,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
 #Reapply JECs:
-if not isData:
+if not (isData or isEmbed):
   updateJetCollection(
     process,
     jetSource = cms.InputTag("slimmedJets"),
@@ -567,7 +570,7 @@ pfJECS = cms.PSet(
   L2Relative = cms.string("ak4PFL2RelativeCHS"),
   L3Absolute = cms.string("ak4PFL3AbsoluteCHS")
 )
-if isData: pfJECS = cms.PSet(
+if isData or isEmbed: pfJECS = cms.PSet(
   L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
   L2Relative = cms.string("ak4PFL2RelativeCHS"),
   L3Absolute = cms.string("ak4PFL3AbsoluteCHS"),
@@ -641,7 +644,7 @@ process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
-                           isData=bool(isData),
+                           isData=(bool(isData) or bool(isEmbed)),
                            )
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
