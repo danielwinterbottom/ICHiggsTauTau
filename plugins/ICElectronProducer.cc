@@ -80,6 +80,16 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
        consumes<edm::ValueMap<float>>(input_vmaps_[i].second);
   }
 
+  edm::ParameterSet pset_floats2 =
+      config.getParameter<edm::ParameterSet>("includeFloats2");
+  std::vector<std::string> vec2 =
+      pset_floats2.getParameterNamesForType<edm::InputTag>();
+  for (unsigned i = 0; i < vec.size(); ++i) {
+    input_maps_.push_back(std::make_pair(
+        vec2[i], pset_floats2.getParameter<edm::InputTag>(vec2[i])));
+       consumes<edm::View<float>>(input_maps_[i].second);
+  }
+
   //PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_r9_, "includeR9");
   PrintOptional(1, do_hcal_sum_, "includeHcalSum");
@@ -117,6 +127,11 @@ void ICElectronProducer::produce(edm::Event& event,
       input_vmaps_.size());
   for (unsigned i = 0; i < float_handles.size(); ++i) {
     event.getByLabel(input_vmaps_[i].second, float_handles[i]);
+  }
+  std::vector<edm::Handle<edm::View<float>>> float_handles2(
+      input_maps_.size());
+  for (unsigned i = 0; i < float_handles2.size(); ++i) {
+    event.getByLabel(input_maps_[i].second, float_handles2[i]);
   }
 
   edm::Handle<edm::ValueMap<double> > charged_all_03;
@@ -180,7 +195,7 @@ void ICElectronProducer::produce(edm::Event& event,
     if (src.gsfTrack().isNonnull()) {
 #if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
       dest.set_gsf_tk_nhits(
-          src.gsfTrack()->hitPattern().numberOfAllHits(
+          src.gsfTrack()->hitPattern().numberOfLostHits( //rather than numberOfAllHits which counts 
               reco::HitPattern::MISSING_INNER_HITS));
 #elif CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
       dest.set_gsf_tk_nhits(
@@ -220,6 +235,7 @@ void ICElectronProducer::produce(edm::Event& event,
                     (*(float_handles[v]))[ref]);
     }
 
+
     if (do_cluster_iso_) {
       dest.set_ecal_pf_cluster_iso((*ecal_pf_cluster_iso)[ref]);
       dest.set_hcal_pf_cluster_iso((*hcal_pf_cluster_iso)[ref]);
@@ -255,6 +271,9 @@ void ICElectronProducer::produce(edm::Event& event,
     if (src.superCluster()->seed().isNonnull()) {
       dest.set_sc_seed_eta(src.superCluster()->seed()->eta());
     }
+    dest.set_ecalTrkEnergyErrPostCorr((*(float_handles[0]))[ref]);
+    dest.set_ecalTrkEnergyPostCorr((*(float_handles[1]))[ref]);
+    dest.set_ecalTrkEnergyPreCorr((*(float_handles[2]))[ref]);
 
   }
 }

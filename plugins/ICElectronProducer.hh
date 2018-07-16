@@ -33,6 +33,7 @@ class ICElectronProducer : public edm::EDProducer {
   boost::hash<reco::GsfElectron const*> gsf_electron_hasher_;
 
   std::vector<std::pair<std::string, edm::InputTag> > input_vmaps_;
+  std::vector<std::pair<std::string, edm::InputTag> > input_maps_;
   edm::InputTag input_r9_;
   bool do_r9_;
   edm::InputTag input_hcal_sum_;

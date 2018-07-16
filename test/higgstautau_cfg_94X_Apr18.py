@@ -13,7 +13,7 @@ opts.register('file',
 #'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '94X_dataRun2_v6', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
+opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -351,6 +351,10 @@ process.electronPFIsolationValuesSequence +=cms.Sequence(
   process.elHcalPFClusterIso
 )
 
+import RecoEgamma.EgammaTools.calibratedEgammas_cff
+calibratedPatElectrons94Xv1 = RecoEgamma.EgammaTools.calibratedEgammas_cff.calibratedPatElectrons.clone(
+    produceCalibratedObjs = False
+    )
 
 process.icElectronProducer = producers.icElectronProducer.clone(
   branch                    = cms.string("electrons"),
@@ -365,6 +369,11 @@ process.icElectronProducer = producers.icElectronProducer.clone(
      generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
      mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
      mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values")
+  ),
+  includeFloats2 = cms.PSet(
+      ecalTrkEnergyPreCorr     = cms.InputTag("selectedElectrons","ecalTrkEnergyPreCorr"),
+      ecalTrkEnergyPostCorr    = cms.InputTag("selectedElectrons","ecalTrkEnergyPostCorr"),
+      ecalTrkEnergyErrPostCorr = cms.InputTag("selectedElectrons","ecalTrkEnergyErrPostCorr")
   ),
   includeClusterIso        = cms.bool(True),
   includePFIso03           = cms.bool(True),
