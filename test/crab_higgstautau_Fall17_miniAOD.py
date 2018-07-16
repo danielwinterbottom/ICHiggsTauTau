@@ -8,12 +8,12 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-CfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v14']
+CfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v15']
 config.section_('Data')
-config.Data.unitsPerJob = 100000
-config.Data.splitting = 'EventAwareLumiBased'
+# config.Data.unitsPerJob = 100000
+# config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/dwinterb/Jun15_MC_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Jun15_MC_94X/'
 config.Data.allowNonValidInputDataset = True
 config.section_('User')
 config.section_('Site')
@@ -91,6 +91,7 @@ if __name__ == '__main__':
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
+        config.Data.inputDataset = task[1]
  
         if "DY4JetsToLL-LO" in task[0]:
           # talk to DBS to get list of files in this dataset

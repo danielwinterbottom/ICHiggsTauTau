@@ -475,7 +475,7 @@ class Electron : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 5);
+  ClassDef(Electron, 6);
  #endif
 };
 
