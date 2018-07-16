@@ -168,6 +168,11 @@ class Electron : public Candidate {
   /// The corrected supercluster energy
   inline float ecal_energy() const { return ecal_energy_; }
 
+  /// The scale & smear correction things
+  inline float ecalTrkEnergyPreCorr() const { return ecalTrkEnergyPreCorr_; }
+  inline float ecalTrkEnergyPostCorr() const { return ecalTrkEnergyPostCorr_; }
+  inline float ecalTrkEnergyErrPostCorr() const { return ecalTrkEnergyErrPostCorr_; }
+
   /// True if electron is matched to a conversion vertex
   inline bool has_matched_conversion() const { return has_matched_conversion_; }
 
@@ -344,6 +349,16 @@ class Electron : public Candidate {
   inline void set_ecal_energy(float const& ecal_energy) {
     ecal_energy_ = ecal_energy;
   }
+  /// @copybrief scale & smear things
+  inline void set_ecalTrkEnergyPreCorr(float const& ecalTrkEnergyPreCorr) {
+    ecalTrkEnergyPreCorr_ = ecalTrkEnergyPreCorr;
+  }
+  inline void set_ecalTrkEnergyPostCorr(float const& ecalTrkEnergyPostCorr) {
+    ecalTrkEnergyPostCorr_ = ecalTrkEnergyPostCorr;
+  }
+  inline void set_ecalTrkEnergyErrPostCorr(float const& ecalTrkEnergyErrPostCorr) {
+    ecalTrkEnergyErrPostCorr_ = ecalTrkEnergyErrPostCorr;
+  }
 
   /// @copybrief has_matched_conversion()
   inline void set_has_matched_conversion(bool const& has_matched_conversion) {
@@ -442,6 +457,10 @@ class Electron : public Candidate {
   float hcal_sum_;
 
   float ecal_energy_;
+  float ecalTrkEnergyPreCorr_;
+  float ecalTrkEnergyPostCorr_;
+  float ecalTrkEnergyErrPostCorr_;
+
   bool has_matched_conversion_;
 
   Point ref_point_;
