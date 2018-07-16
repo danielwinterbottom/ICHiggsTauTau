@@ -9,14 +9,16 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
-# 'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
-'root://xrootd.unl.edu//store/data/Run2017E/SingleElectron/MINIAOD/31Mar2018-v1/90000/24DC3796-C338-E811-BA7E-00266CFFBEB4.root'
+'root://xrootd.unl.edu//store/user/jbechtel/MuTau_data_2016_CMSSW826_freiburg/TauEmbedding_MuTau_data_2016_CMSSW826_Run2016B/99/merged_998.root'              
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
+opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Process as embedded?")
 opts.register('release', '94XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
@@ -31,6 +33,8 @@ opts.parseArguments()
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
+isEmbed      = opts.isEmbed
+if isEmbed: isData = 0
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
@@ -44,6 +48,7 @@ if not release in ["94XMINIAOD"]:
   sys.exit(1)
 print 'release     : '+release
 print 'isData      : '+str(isData)
+print 'isEmbed      : '+str(isEmbed)
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
 
@@ -529,7 +534,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
 #Reapply JECs:
-if not isData:
+if not (isData or isEmbed):
   updateJetCollection(
     process,
     jetSource = cms.InputTag("slimmedJets"),
@@ -576,7 +581,7 @@ pfJECS = cms.PSet(
   L2Relative = cms.string("ak4PFL2RelativeCHS"),
   L3Absolute = cms.string("ak4PFL3AbsoluteCHS")
 )
-if isData: pfJECS = cms.PSet(
+if isData or isEmbed: pfJECS = cms.PSet(
   L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
   L2Relative = cms.string("ak4PFL2RelativeCHS"),
   L3Absolute = cms.string("ak4PFL3AbsoluteCHS"),
@@ -650,7 +655,7 @@ process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
-                           isData=bool(isData),
+                           isData=(bool(isData) or bool(isEmbed)),
                            )
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
@@ -677,6 +682,7 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeDaughters = cms.bool(True),
   includeStatusFlags = cms.bool(True)
 )
+if isEmbed: process.icGenParticleProducer.input   = cms.InputTag("prunedGenParticles","","MERGE")
 
 
 process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
@@ -706,6 +712,8 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
   requestGenParticles = cms.bool(False),
   isSlimmed  = cms.bool(True)
 )
+if isEmbed: process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","MERGE")
+
   
 process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   branch = cms.string("genJets"),
@@ -713,7 +721,9 @@ process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   inputGenParticles=cms.InputTag("genParticles"),
   requestGenParticles = cms.bool(False),
   isSlimmed = cms.bool(True)
-) 
+)
+
+if isEmbed: process.icGenJetProducerFromSlimmed.input = cms.InputTag("selectedGenJets") 
 
 process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
@@ -725,9 +735,9 @@ if not isData:
     process.ak4GenJetsNoNuBSM+
     process.selectedGenJets+
     process.icGenJetProducer+
-    process.icGenJetProducerFromSlimmed+
-    process.icPileupInfoProducer
+    process.icGenJetProducerFromSlimmed
   )
+  if not isEmbed: process.icGenSequence += (process.icPileupInfoProducer)
   if doHT:
     process.icGenSequence += (
       process.icGenParticleProducerFromLHEParticles
@@ -1116,21 +1126,29 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icMu17Mu8DZmass8ObjectProducer
     )
 
+for name in process.icTriggerObjectSequence.moduleNames():
+    mod = getattr(process, name)
+    if isEmbed: mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembedding")
+
+
 ## Need to unpack filterLabels on slimmedPatTrigger then make selectedPatTrigger
 process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker",
    patTriggerObjectsStandAlone = cms.InputTag("slimmedPatTrigger"),
    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
    unpackFilterLabels = cms.bool(True)
 )
+
+if isEmbed: process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
+
 process.selectedPatTrigger = cms.EDFilter(
  'PATTriggerObjectStandAloneSelector',
   cut = cms.string('!filterLabels.empty()'),
   src = cms.InputTag('patTriggerUnpacker')
 )
 process.icTriggerSequence += cms.Sequence(
-    process.patTriggerUnpacker +
-    process.selectedPatTrigger
-    )   
+  process.patTriggerUnpacker +
+  process.selectedPatTrigger
+)
 
 
 ################################################################
