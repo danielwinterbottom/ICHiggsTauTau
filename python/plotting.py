@@ -2623,7 +2623,7 @@ def CompareHists(hists=[],
       uncert_hist.SetMarkerSize(0)
       uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
       uncert_hist.Draw("e2same")
-    hs.Draw("nostack l same")
+    hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
     

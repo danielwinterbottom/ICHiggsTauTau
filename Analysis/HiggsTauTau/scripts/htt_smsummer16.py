@@ -375,12 +375,12 @@ if options.proc_embed or options.proc_all:
         
   EMBEDFILELISTZMM="./filelists/Trigger_MC_80X"
 
-  EMBEDFILELIST="./filelists/Nov20_MC_80X"
+  EMBEDFILELIST="./filelists/Apr02_MC_80X"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Nov20_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr02_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     if 'EmbeddingMuMu' in sa:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Trigger_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
@@ -446,27 +446,27 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-   # 'DYJetsToLL-LO-ext1',
-   # 'DYJetsToLL-LO-ext2',
-   # 'DYJetsToLL_M-10-50-LO',
-   # 'DY1JetsToLL-LO',
-   # 'DY2JetsToLL-LO',
-   # 'DY3JetsToLL-LO',
-   # 'DY4JetsToLL-LO',
-   # 'WJetsToLNu-LO',
-   # 'WJetsToLNu-LO-ext',
-   # 'W1JetsToLNu-LO',
-   # 'W2JetsToLNu-LO',
-   # 'W2JetsToLNu-LO-ext',
-   # 'W3JetsToLNu-LO',
-   # 'W3JetsToLNu-LO-ext',
-   # 'W4JetsToLNu-LO',
-   # 'W4JetsToLNu-LO-ext1',
-   # 'W4JetsToLNu-LO-ext2',
-   # 'WGToLNuG',
-   # 'WGToLNuG-ext',
-   # 'WGstarToLNuEE',
-   # 'WGstarToLNuMuMu'
+    'DYJetsToLL-LO-ext1',
+    'DYJetsToLL-LO-ext2',
+    'DYJetsToLL_M-10-50-LO',
+    'DY1JetsToLL-LO',
+    'DY2JetsToLL-LO',
+    'DY3JetsToLL-LO',
+    'DY4JetsToLL-LO',
+    'WJetsToLNu-LO',
+    'WJetsToLNu-LO-ext',
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W2JetsToLNu-LO-ext',
+    'W3JetsToLNu-LO',
+    'W3JetsToLNu-LO-ext',
+    'W4JetsToLNu-LO',
+    'W4JetsToLNu-LO-ext1',
+    'W4JetsToLNu-LO-ext2',
+    'WGToLNuG',
+    'WGToLNuG-ext',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
