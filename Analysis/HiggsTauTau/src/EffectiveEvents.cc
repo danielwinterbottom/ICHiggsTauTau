@@ -155,6 +155,16 @@ int EffectiveEvents::Execute(TreeEvent *event){
    if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007")*mcsign_; else scale7_=mcsign_;
    if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008")*mcsign_; else scale8_=mcsign_;
    if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009")*mcsign_; else scale9_=mcsign_;    
+   // lines below for Wjets scale uncertainties - be careful these don't over write the scale uncertainties for other backgrounds!
+   if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1")*mcsign_; else scale1_=mcsign_;
+   if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2")*mcsign_; else scale2_=mcsign_;
+   if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3")*mcsign_; else scale3_=mcsign_;
+   if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4")*mcsign_; else scale4_=mcsign_;
+   if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5")*mcsign_; else scale5_=mcsign_;
+   if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6")*mcsign_; else scale6_=mcsign_;
+   if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7")*mcsign_; else scale7_=mcsign_;
+   if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8")*mcsign_; else scale8_=mcsign_;
+   if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9")*mcsign_; else scale9_=mcsign_;
  }
  if(do_pdf_wts_){ 
    //pdf variation weights

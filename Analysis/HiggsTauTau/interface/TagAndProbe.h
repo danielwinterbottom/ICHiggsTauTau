@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <string>
 
@@ -23,10 +24,17 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, fwlite::TFileService*, fs)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_filters)
+  CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_objects)
+  CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, probe_id)
   CLASS_MEMBER(TagAndProbe, std::function<bool(T)>, tag_id)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_tag_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_l1_iso_probe_pt)
+  CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
+  CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   
   TTree *outtree_;
   
@@ -53,6 +61,18 @@ class TagAndProbe : public ModuleBase {
   bool id_probe_2_;
   bool id_tag_1_;
   bool id_tag_2_;
+  bool iso_vloose_;
+  bool iso_loose_; 
+  bool iso_medium_;
+  bool iso_tight_;
+  bool pass_antilep_;
+  bool lepton_veto_;
+  int dm_;
+  double mt_1_;
+  unsigned n_bjets_;
+  double pzeta_;
+  unsigned gen_match_1_;
+  unsigned gen_match_2_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -79,6 +99,13 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   strategy_(strategy::mssmsummer16) {
   ditau_label_ = "ditau";
   fs_ = NULL;
+  extra_l1_tag_pt_ = 34.0;
+  extra_l1_probe_pt_ = 0.;
+  extra_hlt_probe_pt_ = 0.;
+  tag_add_trg_objects_="";
+  tag_add_trg_filters_="";
+  loose_iso_trgprobe_=false;
+  extra_l1_iso_probe_pt_=0.;
 }
 
 template <class T>
@@ -113,12 +140,27 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
+    outtree_->Branch("gen_match_1", &gen_match_1_);
+    outtree_->Branch("gen_match_2", &gen_match_2_);
+    if(channel_ == channel::tpmt){
+      outtree_->Branch("iso_vloose" , &iso_vloose_);
+      outtree_->Branch("iso_loose"  , &iso_loose_ );
+      outtree_->Branch("iso_medium" , &iso_medium_);
+      outtree_->Branch("iso_tight"  , &iso_tight_ );     
+      outtree_->Branch("pass_antilep"  , &pass_antilep_ );  
+      outtree_->Branch("lepton_veto"  , &lepton_veto_ );
+      outtree_->Branch("dm"  , &dm_ );
+      outtree_->Branch("mt_1"  , &mt_1_ );
+      outtree_->Branch("n_bjets"  , &n_bjets_ );
+      outtree_->Branch("pzeta"  , &pzeta_ );
+    }
   }    
   return 0;
 }
 
 template <class T>
 int TagAndProbe<T>::Execute(TreeEvent *event){
+
     
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   event_ = (unsigned long long) eventInfo->event();
@@ -141,13 +183,18 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
   os_ = PairOppSign(ditau);
   
+  if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+  if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+  
   trg_tag_1_ = false;
   trg_tag_2_ = false;
   trg_probe_1_ = false;
   trg_probe_2_ = false;
   
   std::vector<std::string> tag_objs = SplitString(tag_trg_objects_);
-  std::vector<std::string> tag_filts = SplitString(tag_trg_filters_);    
+  std::vector<std::string> tag_filts = SplitString(tag_trg_filters_);  
+  std::vector<std::string> tag_add_objs = SplitString(tag_add_trg_objects_);
+  std::vector<std::string> tag_add_filts = SplitString(tag_add_trg_filters_);  
   std::vector<std::string> probe_objs = SplitString(probe_trg_objects_);
   std::vector<std::string> probe_filts = SplitString(probe_trg_filters_);
   
@@ -159,39 +206,232 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     objs_tag = event->GetPtrVec<TriggerObject>(tag_objs[i]);
     trg_tag_1_ = IsFilterMatched(ditau->At(0), objs_tag, tag_filts[i], 0.5) || trg_tag_1_;
     trg_tag_2_ = IsFilterMatched(ditau->At(1), objs_tag, tag_filts[i], 0.5) || trg_tag_2_;
+    
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(tag_filts[i]);
+    //for (unsigned j = 0; j < objs_tag.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_tag[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_tag_1_ = true;
+    //}
+    ///////
+  }
+  if(tag_add_trg_objects_!=""){
+    bool add_trg_tag_1 = false; 
+    bool add_trg_tag_2 = false;
+    std::vector<TriggerObject *> add_objs_tag;
+    for(unsigned i=0; i<tag_add_objs.size(); ++i){
+      add_objs_tag = event->GetPtrVec<TriggerObject>(tag_add_objs[i]);
+      add_trg_tag_1 = IsFilterMatched(ditau->At(0), add_objs_tag, tag_add_filts[i], 0.5) || add_trg_tag_1;
+      add_trg_tag_2 = IsFilterMatched(ditau->At(1), add_objs_tag, tag_add_filts[i], 0.5) || add_trg_tag_2;
+    }
+    trg_tag_1_ = trg_tag_1_ && add_trg_tag_1;
+    trg_tag_2_ = trg_tag_2_ && add_trg_tag_2;
   }
   
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
-    trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
-    trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    bool pass_extra_filter_1 = true;
+    bool pass_extra_filter_2 = true;
+    if(probe_objs[i] == "triggerObjectsEle32L1DoubleEG"){
+      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle35");
+      pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+      pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+    }
+    trg_probe_1_ = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1) || trg_probe_1_;
+    trg_probe_2_ = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2) || trg_probe_2_;
+    
+    //// added this bit for DZ filter! 
+    //std::size_t hash = CityHash64(probe_filts[i]);
+    //for (unsigned j = 0; j < objs_probe.size(); ++j) {
+    //  std::vector<std::size_t> const& labels = objs_probe[j]->filters();
+    //  if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+    //  trg_probe_1_ = true;
+    //}
+    ////
+    
+    if(extra_hlt_probe_pt_>0){
+      if(trg_probe_1_) { 
+        unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
+        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
+      }
+      if(trg_probe_2_){
+        unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
+        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
+      }
+      
+    }
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
       iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+      if(loose_iso_trgprobe_){
+        trg_probe_1_ = trg_probe_1_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;   
+        trg_probe_2_ = trg_probe_2_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;
+      }
       id_tag_1_ = tag_id_(muon1);
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
+    
+    }
+    if(extra_l1_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1muons = event->GetPtrVec<ic::L1TObject>("L1Muons");
+      bool found_match_probe_1 = false;
+      bool found_match_probe_2 = false;
+      for(unsigned mu=0; mu<l1muons.size(); ++mu){
+        if(l1muons[mu]->vector().Pt()>extra_l1_probe_pt_){
+          // must pass L1 pT cut and be matched by DR to the tagging muon
+          if(DR(l1muons[mu],lep1)<0.5) found_match_probe_1 = true;
+          if(DR(l1muons[mu],lep2)<0.5) found_match_probe_2 = true;
+        }
+      }
+      trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
+      trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
-      iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-      iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
+      } else {
+        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      }
       id_tag_1_ = tag_id_(elec1);
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
-    } 
+      
+      Electron const* elec1_1 = dynamic_cast<Electron const*>(lep1);
+      Electron const* elec2_1 = dynamic_cast<Electron const*>(lep2);
+      eta_1_ = elec1_1->sc_eta();
+      eta_2_ = elec2_1->sc_eta();
+      
+    }
+    if(extra_l1_probe_pt_>0 || extra_l1_iso_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
+      bool found_match_probe_1 = false;
+      bool found_match_probe_2 = false;
+      for(unsigned eg=0; eg<l1electrons.size(); ++eg){
+        if((l1electrons[eg]->vector().Pt()>extra_l1_probe_pt_||extra_l1_probe_pt_==0) || (extra_l1_iso_probe_pt_==0 || (l1electrons[eg]->vector().Pt()>extra_l1_iso_probe_pt_ && l1electrons[eg]->isolation()!=0))){
+        if(DR(l1electrons[eg],lep1)<0.5) found_match_probe_1 = true;
+        if(DR(l1electrons[eg],lep2)<0.5) found_match_probe_2 = true;
+        }
+      }
+      trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
+      trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
+    }
+
+    if(extra_l1_tag_pt_>0){
+      std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
+      bool found_match_tag_1 = false;
+      bool found_match_tag_2 = false;
+      for(unsigned eg=0; eg<l1electrons.size(); ++eg){
+        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()!=0){
+          // must pass L1 eta, pT and iso cuts and be matched by DR to the tagging electron
+          if(DR(l1electrons[eg],lep1)<0.5) found_match_tag_1 = true;
+          if(DR(l1electrons[eg],lep2)<0.5) found_match_tag_2 = true;
+        }
+      }
+      trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
+      trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
+    }
   }
+  
+  if(channel_ == channel::tpmt){
+    // add extra lepton veto!  
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+      T muon = dynamic_cast<T>(lep1);
+      Tau const* tau = dynamic_cast<Tau const*>(lep2);
+      iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+      id_tag_1_ = tag_id_(muon);
+      id_tag_2_ = 0;
+      id_probe_1_ = 0;
+      id_probe_2_ = tau->GetTauID("decayModeFinding");
+      pass_antilep_ = tau->GetTauID("againstMuonTight3") && tau->GetTauID("againstElectronVLooseMVA6");
+      iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+      iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+      iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+      iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      dm_ = tau->decay_mode();
+      
+      lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
+    }
+    if(extra_l1_probe_pt_>0){
+      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+      bool found_match_probe = false;
+      for(unsigned ta=0; ta<l1taus.size(); ++ta){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_){
+          // must pass L1 pT cut and be matched by DR to the tau
+          if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
+        }
+      }
+      trg_probe_2_ = trg_probe_2_ && found_match_probe;
+    }
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    mt_1_ = MT(lep1, mets);
+    
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    
+    std::string jets_label = "ak4PFJetsCHS";
+    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp = 0.8484;
+    std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label);
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    
+    n_bjets_ = bjets.size();
+  }
+  if(channel_ == channel::tpem){
+    // add extra lepton veto!  
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+      Electron const* elec = dynamic_cast<Electron const*>(lep1);
+      //Muon const* muon = dynamic_cast<Muon const*>(lep2);
+      T muon = dynamic_cast<T>(lep2);
+      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+      id_tag_1_ = 0;
+      id_tag_2_ = tag_id_(muon);
+      id_probe_1_ = ElectronHTTIdSpring16(elec, false);
+      id_probe_2_ = 0;
+    }
+
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    mt_1_ = MT(lep1, mets);
+    
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    
+    std::string jets_label = "ak4PFJetsCHS";
+    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp = 0.8484;
+    std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label);
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    
+    n_bjets_ = bjets.size();
+  }
+  
   
   if(fs_) outtree_->Fill();
   

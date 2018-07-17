@@ -10,6 +10,7 @@ import sys
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 import numpy as np
 import math
+from array import array
 
 ROOT.TH1.AddDirectory(0)
 
@@ -60,6 +61,8 @@ class Shape(object):
             return self._hist.Integral(0, self._hist.GetNbinsX() + 1)
         elif self._hist.GetDimension() == 2:
             return self._hist.Integral(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1)
+        elif self._hist.GetDimension() == 3:
+            return self._hist.Integral(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, 0, self._hist.GetNbinsZ() + 1)
 
     def _IntErr(self):
         err = ROOT.Double()
@@ -67,6 +70,8 @@ class Shape(object):
             val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, err)
         elif self._hist.GetDimension() == 2:
             val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, err)
+        elif self._hist.GetDimension() == 3:
+            val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, 0, self._hist.GetNbinsZ() + 1, err)
         return ufloat(val, err)
 
     @property

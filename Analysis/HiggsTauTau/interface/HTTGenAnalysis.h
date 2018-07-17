@@ -14,6 +14,7 @@
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
 #include <string>
+#include "Utilities/interface/FnRootTools.h"
 
 namespace ic {
   
@@ -73,6 +74,8 @@ class HTTGenAnalysis : public ModuleBase {
   double jdeta_;
   double m_vis_;
   double pt_tt_;
+  double wtzpt_;
+  double mass_;
   double wt_;
   double HiggsPt_;
   std::string decayType;
@@ -92,11 +95,15 @@ class HTTGenAnalysis : public ModuleBase {
   double n_jets_offline_;
   double n_bjets_offline_;
   
+  unsigned partons_lhe_;
   unsigned partons_;
+  double parton_pt_;
   float D0_;
   float DCP_;
   float D0star_;
   double sjdphi_;
+
+  float n_pu_;
   
   double pT_A_;
   
@@ -225,7 +232,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
-
+  
+  TH2D z_pt_weights_sm_;
   
  public:
   HTTGenAnalysis(std::string const& name);

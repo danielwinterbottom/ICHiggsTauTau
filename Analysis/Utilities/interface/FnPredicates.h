@@ -88,6 +88,7 @@ namespace ic {
   bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho);
   bool VetoElectronID(Electron const* elec);
   bool VetoElectronIDSpring16(Electron const* elec);
+  bool VetoElectronIDFall17(Electron const* elec, double const& rho);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);
@@ -98,6 +99,8 @@ namespace ic {
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIsoIdFall17(Electron const* elec, bool loose_wp);
 
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
@@ -131,6 +134,8 @@ namespace ic {
   bool PFJetID2015(PFJet const* jet);
   // Standard particle-flow jet id for 2016
   bool PFJetID2016(PFJet const* jet);
+  // Standard particle-flow jet id for 2017
+  bool PFJetID2017(PFJet const* jet);
 
 
   // Particle-flow jet id without the HF energy in the neutral energy cut
@@ -152,7 +157,7 @@ namespace ic {
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
-
+  std::set<std::size_t> ListTriggerFilters(std::vector<TriggerObject *> const& objs);
   template<class T>
   double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged) {
 	  double charged_iso = allcharged ? cand->dr04_pfiso_charged_all() : cand->dr04_pfiso_charged();
@@ -237,17 +242,26 @@ namespace ic {
     return 0;
  
   }
+  
+  template<class T> 
+  double GetEffectiveArea2017(T const* cand){
+    double cand_eta = cand->eta();
+    using std::abs;
+    //From  https://github.com/lsoffi/cmssw/blob/CMSSW_9_2_X_TnP/RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt
+    if(abs(cand_eta)<1.) return 0.1566;
+    else if(abs(cand_eta)<1.479) return 0.1626;
+    else if(abs(cand_eta)<2.) return 0.1073;
+    else if(abs(cand_eta)<2.2) return 0.0854;
+    else if(abs(cand_eta)<2.3) return 0.1051;
+    else if(abs(cand_eta)<2.4) return 0.1204;
+    else if(abs(cand_eta)<5.) return 0.1524;
+    return 0;
+  }
 
   template<class T>
-  double PF03EAIsolationVal(T const* cand, EventInfo const* evt, bool jet_rho=true){
+  double PF03EAIsolationVal(T const* cand, double const rho){
   double charged_iso = cand->dr03_pfiso_charged();
-    double eff_area = GetEffectiveArea(cand);
-    double rho=0;
-    if(jet_rho){
-      evt->jet_rho();
-    } else {
-      evt->lepton_rho();
-    }
+    double eff_area = GetEffectiveArea2017(cand);
     double iso =  charged_iso 
                   + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - rho*eff_area, 0.0);
     iso = iso / cand->pt();
@@ -256,13 +270,12 @@ namespace ic {
 
 
   template<class T>
-  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=true) {
-    double iso =  PF03EAIsolationVal(cand, evt, jet_rho);
+  bool PF03EAIsolation(T const* cand, double const rho, double const& cut) {
+    double iso =  PF03EAIsolationVal(cand, rho);
     return (iso < cut);
   }
 
-
-
+  bool PF03EAElecIsolation(Electron const* elec, double const rho, double const& cut);
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);
 

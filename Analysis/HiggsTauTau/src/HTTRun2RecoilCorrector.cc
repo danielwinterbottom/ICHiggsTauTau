@@ -23,6 +23,8 @@ namespace ic {
     is_wjets = false;
     met_scale_mode_ = 0;
     met_res_mode_ = 0;
+    njets_mode_ = 0;  
+    do_recoil_=true;
   }
 
   HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
@@ -46,13 +48,12 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
-      std::cout << "process file = " << process_file << std::endl;
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -60,19 +61,20 @@ namespace ic {
 
    if(met_scale_mode_ > 0 || met_res_mode_ > 0) disable_met_sys =false;
    
-    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos)){
+    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos) || (sample_.find("EWKW")!=sample_.npos)){
       disable_recoil_corrs = false;
       is_wjets = true;
     }
 
-    if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) ) {
+    if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || (sample_.find("EWKZ")!=sample_.npos) ) {
       disable_recoil_corrs = false;
     }
 
-    if (sample_.find("HToTauTau")!=sample_.npos){
+    if (sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos){ 
      disable_recoil_corrs = false;
     }
     
+    disable_recoil_corrs = disable_recoil_corrs && !do_recoil_;
     if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
       std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
@@ -91,11 +93,11 @@ namespace ic {
 
   int HTTRun2RecoilCorrector::Execute(TreeEvent *event) {
 
-    if (disable_recoil_corrs && disable_met_sys) return 0;
 
     // Get the stuff we need from the event
     Met * met = event->GetPtr<Met>(met_label_);
-    std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
+    std::vector<GenParticle *> parts;
+    if(event->ExistsInTree("genParticles")) parts = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_gen_parts;
     std::vector<GenParticle *> sel_vis_parts;
     double genpX=0;
@@ -139,10 +141,13 @@ namespace ic {
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
   if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
+  if (disable_recoil_corrs && disable_met_sys) return 0;
+  
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
   if(is_wjets) njets+=1;
+
   double Metx = met->vector().px();
   double Mety = met->vector().py();
   double Mete = met->energy();
@@ -170,11 +175,12 @@ namespace ic {
     
   //Apply systematic shifts to MET if requested  
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
+    if((njets_mode_==1 && njets!=0) || (njets_mode_==2 && njets!=1) || (njets_mode_==3 && njets<2)) return 0;
     float met_Shift_x, met_Shift_y;
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
     MEtSys::ProcessType processType;
-    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
+    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("EWKZ")!=sample_.npos  || sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos ){
         processType = MEtSys::ProcessType::BOSON;
     } else if (sample_.find("TT")!=sample_.npos){
        processType = MEtSys::ProcessType::TOP;

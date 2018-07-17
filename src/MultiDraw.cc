@@ -2,6 +2,7 @@
 #include <iostream>
 #include "TH1D.h"
 #include "TH2F.h"
+#include "TH3F.h"
 #include "TStopwatch.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
@@ -16,6 +17,7 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
   std::vector<TTreeFormula *> v_weights(ListLen, nullptr);
   std::vector<TH1D *> v_hists(ListLen, nullptr);
   std::vector<TH2F *> v_hists2d(ListLen, nullptr);
+  std::vector<TH3F *> v_hists3d(ListLen, nullptr);
 
   std::vector<double> r_vars(ListLen, 0.);
   std::vector<double> r_weights(ListLen, 0.);
@@ -53,6 +55,7 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
 
     v_hists[idx] = dynamic_cast<TH1D *>(Hists->At(idx));
     v_hists2d[idx] = dynamic_cast<TH2F *>(Hists->At(idx));
+    v_hists3d[idx] = dynamic_cast<TH3F *>(Hists->At(idx));
   }
 
   double Value = 0.;
@@ -108,6 +111,11 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
       if (v_hists2d[j] && j >= 1 && Weight) {
         v_hists2d[j]->Fill(Value, r_vars[i_vars[j-1]], Weight);
       }
+
+      if (v_hists3d[j] && j >= 2 && Weight) {
+        v_hists3d[j]->Fill(Value, r_vars[i_vars[j-1]], r_vars[i_vars[j-2]], Weight);
+      }
+
     }
   }
 }

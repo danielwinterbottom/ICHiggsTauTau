@@ -190,6 +190,8 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
+      outtree_->Branch("mass"       , &mass_       );
+      outtree_->Branch("wtzpt"       , &wtzpt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
@@ -214,13 +216,14 @@ namespace ic {
       outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
-      outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
-      outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
       outtree_->Branch("partons"     , &partons_);
+      outtree_->Branch("partons_lhe"     , &partons_lhe_);
+      outtree_->Branch("parton_pt"     , &parton_pt_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
       outtree_->Branch("sjdphi"     , &sjdphi_);
+      outtree_->Branch("n_pu",      &n_pu_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -241,6 +244,8 @@ namespace ic {
     count_mm_ = 0;
     count_mt_ = 0;
     count_tt_ = 0;
+
+    GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
     
     return 0;
   }
@@ -251,7 +256,8 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
     
-    if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
+    wt_ = eventInfo->total_weight();
+
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
       if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
@@ -263,6 +269,16 @@ namespace ic {
       if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
       if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
       if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
+      
+      if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
+      if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
+      if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
+      if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
+      if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
+      if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
+      if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
+      if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
+      if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
       //pdf variation weights
       //if(eventInfo->weight_defined("2001")) wt_pdf_1_ = eventInfo->weight("2001"); else wt_pdf_1_=1.0;
       //if(eventInfo->weight_defined("2002")) wt_pdf_2_ = eventInfo->weight("2002"); else wt_pdf_2_=1.0;
@@ -388,15 +404,16 @@ namespace ic {
 
     double pT=0;
     HiggsPt_=-9999;
+    partons_lhe_=0;
     partons_=0;
     bool lhe_exists = event->ExistsInTree("lheParticles");
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
-      
+      parton_pt_=10.;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
-           if ((id >= 1 && id <=6) || id == 21) partons_++;
+           if ((id >= 1 && id <=6) || id == 21){ if(lhe_parts[i]->pt()>=10.) {partons_lhe_++;} parton_pt_ = lhe_parts[i]->pt();}
       }
     }
     
@@ -414,7 +431,7 @@ namespace ic {
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
-      if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212) partons_++;
+      if (status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 && part.pt() >= 10.) partons_++;
       
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
@@ -560,6 +577,8 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
+      mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+      wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       mt_1_ = MT(&lep1, &met);
       mt_2_ = MT(&lep2, &met);
@@ -577,6 +596,7 @@ namespace ic {
       phi_2_ = -9999;
       met_   = -9999;
       pt_tt_ = -9999;
+      mass_= -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;
@@ -645,38 +665,6 @@ namespace ic {
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
-    
-    std::string jets_label_ = "ak4PFJetsCHS";
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    
-    for(unsigned i=0; i<jets.size(); ++i){
-      ic::PFJet *jet = jets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
-      //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) jets.erase (jets.begin()+i);
-    }
-    
-    std::vector<PFJet*> offline_bjets = jets;
-    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-    ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    
-    std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp =  0.8484;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    }else { 
-      ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-    }
-    
-    
-    n_jets_offline_ = jets.size();
-    n_bjets_offline_ = offline_bjets.size();
-
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;
     jeta_1_      = -9999;
@@ -720,6 +708,19 @@ namespace ic {
       }
     } else sjdphi_ = -9999;
 
+
+    std::vector<PileupInfo *> puInfo;
+    float true_int = -1;
+    
+    if(event->ExistsInTree("pileupInfo")){
+      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
+        for (unsigned i = 0; i < puInfo.size(); ++i) {
+          if (puInfo[i]->bunch_crossing() == 0)
+            true_int = puInfo[i]->true_num_interactions();
+        }
+    
+      n_pu_ = true_int;
+    }
     
     auto args = std::vector<double>{pT};
     if(fns_["h_t_ratio"]){

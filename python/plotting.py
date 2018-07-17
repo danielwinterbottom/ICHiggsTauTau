@@ -56,6 +56,8 @@ def SetAxisTitles(plot, channel):
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
+  titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
+  titles['iso_2'] = ['iso_{'+lep2_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep2_label+'}']
   titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
@@ -80,6 +82,8 @@ def SetAxisTitles(plot, channel):
   titles['jeta_2'] = ['#eta_{j_{2}}','Events / '+bin_width, 'dN/d#eta_{j_{2}}']
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
+  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
 
 
     
@@ -146,6 +150,10 @@ def SetAxisTitles2D(plot, channel):
   titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
+  if channel == 'tt':
+    titles['tau_decay_mode_1'] = ['lead tau decay mode','Events', 'Events','']
+    titles['tau_decay_mode_2'] = ['sub-lead tau decay mode','Events', 'Events','']
+  
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   titles['D0'] = ['D_{0}','Events', 'dN/dD_{0}','']
   titles['DCP'] = ['D_{CP}','Events', 'dN/dD_{CP}','']
@@ -155,7 +163,9 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
-  
+  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
     else: x_titles =  [xvar, 'dN/d'+xvar]
@@ -1012,12 +1022,34 @@ def GraphDifference(graph1,graph2,relative):
 def GraphDivide(num, den):
     res = num.Clone()
     for i in xrange(num.GetN()):
-        res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
+        if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
+        else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     if type(res) is R.TGraphAsymmErrors:
         for i in xrange(num.GetN()):
-            res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
-            res.GetEYlow()[i] = res.GetEYlow()[i]/den.Eval(res.GetX()[i])
+            if den.Eval(res.GetX()[i]) == 0: 
+              res.GetEYhigh()[i] = 0
+              res.GetEYlow()[i] = 0
+            else: 
+              res.GetEYhigh()[i] = res.GetEYhigh()[i]/den.Eval(res.GetX()[i])
 
+    return res
+
+def GraphDivideErrors(num, den):
+    res = num.Clone()
+    for i in xrange(num.GetN()):
+        if type(res) is R.TGraphAsymmErrors:
+          if den.Eval(res.GetX()[i]) == 0: 
+              res.GetEYhigh()[i] = 0
+              res.GetEYlow()[i] = 0  
+          else:
+              if res.GetY()[i] == 0 or den.GetY()[i] == 0:   
+                res.GetEYhigh()[i] = 0
+                res.GetEYlow()[i] = 0
+              else:
+                res.GetEYhigh()[i] = math.sqrt((res.GetEYhigh()[i]/res.GetY()[i])**2 + (den.GetEYhigh()[i]/den.GetY()[i])**2)
+                res.GetEYlow()[i] = math.sqrt((res.GetEYlow()[i]/res.GetY()[i])**2 + (den.GetEYlow()[i]/den.GetY()[i])**2)
+        if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
+        else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
     return res
 
 
@@ -2021,15 +2053,22 @@ def HTTPlot(nodename,
             plot_name="htt_plot",
             custom_uncerts_up_name="total_bkg_custom_uncerts_up",
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
-            scheme="mt"
+            scheme="mt",
+            embedding=False,
+            vbf_background=False,
+            split_sm_scheme=False,
+            ggh_scheme="powheg"
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False )
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_htt"], False )
+    sig_schemes['sm_ggH_JHU'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_htt"], False )
+    sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
-    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
@@ -2045,8 +2084,12 @@ def HTTPlot(nodename,
       'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
       #'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
       'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
-      'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))]}
- 
+      'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
+      'w':[backgroundComp("W",["W"],R.TColor.GetColor(222,90,106))],
+    'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
+    'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
+    'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))]}
+
     else:
       background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
       'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -2071,12 +2114,24 @@ def HTTPlot(nodename,
         'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
-        
+
+    if vbf_background:
+      for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
+    if embedding:
+      for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue  
+        schemes = background_schemes[chan]
+        for bkg in schemes:
+          if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
+            bkg['plot_list'] = ["EmbedZTT"]
+          if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+            bkg['plot_list'] = ["EmbedZL","ZJ","ZTT"]
+ 
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
     if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
-    
+ 
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
@@ -2093,7 +2148,8 @@ def HTTPlot(nodename,
     if norm_bins:
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
-        
+    
+    
     #Create stacked plot for the backgrounds
     bkg_histos = []
     for i,t in enumerate(background_schemes[scheme]):
@@ -2102,7 +2158,6 @@ def HTTPlot(nodename,
         for j,k in enumerate(plots):
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
-                
                 h.SetName(k)
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
@@ -2185,25 +2240,72 @@ def HTTPlot(nodename,
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
     
-    sighist = R.TH1F()
-    if signal_mass != "":
-        sig_scheme = sig_schemes[signal_scheme]
-        for i in sig_scheme[1]: 
-            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-            if sighist.GetEntries() == 0: sighist = h
-            else: sighist.Add(h)
-        sighist.SetLineColor(R.kBlue)
-        sighist.SetLineWidth(3)
-        sighist.Scale(signal_scale)
-        if norm_bins: sighist.Scale(1.0,"width")
-        if sig_scheme[2]: 
-            stack.Add(sighist.Clone())
-            if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-        stack.Draw("histsame")
-        if not sig_scheme[2]: sighist.Draw("histsame")
+    # for single signal scheme
+    if not split_sm_scheme:
+        sighist = R.TH1F()
+        if signal_mass != "":
+            sig_scheme = sig_schemes[signal_scheme]
+            for i in sig_scheme[1]: 
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist.GetEntries() == 0: sighist = h
+                else: sighist.Add(h)
+            sighist.SetLineColor(R.kBlue)
+            sighist.SetLineWidth(3)
+            sighist.Scale(signal_scale)
+            if norm_bins: sighist.Scale(1.0,"width")
+            if sig_scheme[2]: 
+                stack.Add(sighist.Clone())
+                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            stack.Draw("histsame")
+            if not sig_scheme[2]: sighist.Draw("histsame")
+        else:
+            stack.Draw("histsame")
+            
+    # separate out signal into powheg ggH and qqH,
+    # JHU ggH, and VH
         
     else:
-        stack.Draw("histsame")
+        sighists = dict()
+
+        if ggh_scheme == 'powheg':
+            signal_split_schemes = ['sm_ggH','sm_qqH','sm_VH']
+        if ggh_scheme == 'JHU':
+            signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
+
+        for index,split_scheme in enumerate(signal_split_schemes):
+            sighists[split_scheme] = R.TH1F()
+            if signal_mass != "":
+                sig_scheme = sig_schemes[split_scheme]
+                for i in sig_scheme[1]:
+                    h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                    if sighists[split_scheme].GetEntries() == 0:
+                        sighists[split_scheme] = h
+                    else:
+                        sighists[split_scheme].Add(h)
+
+                if split_scheme in ['sm_ggH','sm_ggH_JHU']:
+                    sighists[split_scheme].SetLineColor(R.kRed)
+                if split_scheme == 'sm_qqH':
+                    sighists[split_scheme].SetLineColor(R.kBlue)
+                if split_scheme == 'sm_VH':
+                    sighists[split_scheme].SetLineColor(R.kGreen+2)
+
+                sighists[split_scheme].SetLineWidth(3)
+                sighists[split_scheme].Scale(signal_scale)
+                if norm_bins:
+                    sighists[split_scheme].Scale(1.0,"width")
+                if sig_scheme[2]:
+                    stack.Add(sighists[split_scheme].Clone())
+                    if not custom_y_range:
+                        axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+                if index == 0:
+                    stack.Draw("histsame")
+                if not sig_scheme[2]:
+                    sighists[split_scheme].Draw("histsame")
+
+            else:
+                stack.Draw("histsame")
+
         
     ## Add another signal mass point
     #sighist2 = R.TH1F()
@@ -2257,7 +2359,7 @@ def HTTPlot(nodename,
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
-    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
+    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
     else: legend.AddEntry(blind_datahist,"Data","PE")
     #Drawn on legend in reverse order looks better
@@ -2268,10 +2370,18 @@ def HTTPlot(nodename,
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
-        legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+        if not split_sm_scheme:
+            legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+        else:
+            for split_scheme in signal_split_schemes:
+                legend.AddEntry(sighists[split_scheme],sig_schemes[split_scheme][0],"l")
+
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")  
     #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(700 GeV)#rightarrow#tau#tau","l")  
+    if scheme == 'qcd_shape' or scheme == 'w_shape': 
+      ks_score =  error_hist.KolmogorovTest(total_datahist)
+      legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
     legend.Draw("same")
     if channel == "em": channel_label = "e_{}#mu_{}"
     if channel == "et": channel_label = "e_{}#tau_{h}"
@@ -2375,7 +2485,31 @@ def HTTPlot(nodename,
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
+        
+        ## lines below will show seperate lines indicating systematic up and down bands
+        #if do_custom_uncerts:
+        #  bkg_uncert_up.SetLineColor(R.kBlue)
+        #  bkg_uncert_down.SetLineColor(R.kRed)
+        #  bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
+        #  bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
+        #  bkg_uncert_up.Draw('histsame')
+        #  bkg_uncert_down.Draw('histsame')
+
         pads[1].RedrawAxis("G")
+
+        #Draw uncertainty band
+        # these lines will highlight bins with bb uncertainty > 90%
+        large_uncert_hist = ratio_bkghist.Clone()
+        no_large_uncerts = True
+        for i in range(1,large_uncert_hist.GetNbinsX()+1):
+          if large_uncert_hist.GetBinError(i) <= 0.9: large_uncert_hist.SetBinError(i,0)
+          else: no_large_uncerts = False
+        large_uncert_hist.SetFillColor(CreateTransparentColor(2,0.4))
+        large_uncert_hist.SetLineColor(CreateTransparentColor(2,0.4))
+        large_uncert_hist.SetMarkerSize(0)
+        large_uncert_hist.SetMarkerColor(CreateTransparentColor(2,0.4))
+        #if not no_large_uncerts: large_uncert_hist.Draw("e2same")
+
         
     pads[0].cd()
     pads[0].GetFrame().Draw()
@@ -2491,7 +2625,7 @@ def CompareHists(hists=[],
       uncert_hist.SetMarkerSize(0)
       uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
       uncert_hist.Draw("e2same")
-    hs.Draw("nostack hist same")
+    hs.Draw("nostack l same")
     axish[0].Draw("axissame")
     
     
@@ -2779,7 +2913,9 @@ def TagAndProbePlot(graphs=[],
              y_title="",
              extra_pad=0,
              plot_name="plot",
-             label=""):
+             label="",
+             fits=None,
+             ratio_fits=None):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2803,8 +2939,7 @@ def TagAndProbePlot(graphs=[],
         
     c1 = R.TCanvas()
     c1.cd()
-    mg.Draw('p')
-    
+        
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
@@ -2825,6 +2960,7 @@ def TagAndProbePlot(graphs=[],
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("SF")
+        #axish[1].GetYaxis().SetTitle("Embed/MC")
         axish[1].GetYaxis().CenterTitle()
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
@@ -2862,6 +2998,16 @@ def TagAndProbePlot(graphs=[],
     axish[0].Draw()
     
     mg.Draw('p')
+    
+    mg.Draw('p')
+    if fits is not None:
+      fit_count=0  
+      for i in fits:
+        i.SetLineWidth(2)
+        i.SetLineColor(colourlist[fit_count])
+        i.Draw('same')
+        fit_count+=1
+    
     axish[0].Draw("axissame")
        
     #Setup legend
@@ -2897,12 +3043,34 @@ def TagAndProbePlot(graphs=[],
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         div_hist = graphs[0].GetHistogram().Clone()
-        sf_graph=GraphDivide(graphs[0],graphs[1])
-
-        sf_graph.SetLineWidth(3)
-        sf_graph.SetLineColor(R.kBlack)
-        sf_graph.SetMarkerSize(0)
-        sf_graph.Draw("p")
+ 
+        num = graphs[0].Clone()
+        ratio_graphs=[]
+        for i in range(1,len(graphs)):
+          sf_graph=GraphDivideErrors(num,graphs[i].Clone())
+          sf_graph.SetLineWidth(3)
+          sf_graph.SetLineColor(colourlist[i])
+          sf_graph.SetMarkerSize(0)
+          #f = R.TF1('f','pol1') 
+          #f.SetParameter(0,1.)
+          #sf_graph.Fit('f')
+          #sf_graph.GetFunction('f').SetLineColor(R.kBlack)
+          #sf_graph.GetFunction('f').SetLineWidth(2)
+          #R.gStyle.SetStatY(0.38)
+          #R.gStyle.SetStatY(0.355)
+          #R.gStyle.SetStatX(0.96)
+          ratio_graphs.append(sf_graph.Clone())
+        for x in ratio_graphs:  
+          x.Draw("p")
+          
+        if ratio_fits is not None:
+          fit_count=0  
+          for i in ratio_fits:
+            i.SetLineWidth(2)
+            #i.SetLineColor(colourlist[fit_count+1])
+            i.SetLineColor(R.kBlack)
+            i.Draw('same')
+            fit_count+=1
 
         pads[1].RedrawAxis("G")
     pads[0].cd()
@@ -2947,7 +3115,8 @@ def HTTPlotUnrolled(nodename,
             scheme="mt",
             cat="",
             x_lines=None,
-            y_labels_vec=None
+            y_labels_vec=None,
+            embedding=False
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2960,7 +3129,6 @@ def HTTPlotUnrolled(nodename,
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
-    
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
@@ -2983,7 +3151,17 @@ def HTTPlotUnrolled(nodename,
         'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
-        
+    
+    if embedding:
+      for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue  
+        schemes = background_schemes[chan]
+        for bkg in schemes:
+          if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
+            bkg['plot_list'] = ["EmbedZTT"]
+          if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+            bkg['plot_list'] = ["EmbedZL","ZJ","ZTT"]
+
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
@@ -2995,6 +3173,7 @@ def HTTPlotUnrolled(nodename,
         plots = t['plot_list']
         h = R.TH1F()
         for j,k in enumerate(plots):
+            if not infile.Get(nodename+'/'+k): continue
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 
@@ -3194,7 +3373,7 @@ def HTTPlotUnrolled(nodename,
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
-    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
+    if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
     else: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
@@ -3206,6 +3385,9 @@ def HTTPlotUnrolled(nodename,
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
         for sig in sighists: legend.AddEntry(sig,sig_schemes[sig.GetName()][0],"l")
+    if scheme == 'qcd_shape' or scheme == 'w_shape':
+      ks_score =  error_hist.KolmogorovTest(total_datahist)
+      legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
     legend.Draw("same")
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
@@ -3278,8 +3460,16 @@ def HTTPlotUnrolled(nodename,
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
-        if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
-        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        if var not in ['MVA Score']:
+            if ymax == -1: 
+                y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
+            else: 
+                y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        else: 
+            if ymax == -1: 
+                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
+            else: 
+                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit)
         if "tau decay mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
