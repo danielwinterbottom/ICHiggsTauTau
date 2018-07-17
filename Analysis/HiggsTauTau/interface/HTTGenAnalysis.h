@@ -98,6 +98,8 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned partons_lhe_;
   unsigned partons_;
   double parton_pt_;
+  double parton_pt_2_;
+  double parton_pt_3_;
   float D0_;
   float DCP_;
   float D0star_;
@@ -232,6 +234,7 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
+  double wt_stitch_;
   
   TH2D z_pt_weights_sm_;
   
