@@ -83,6 +83,7 @@ def SetAxisTitles(plot, channel):
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
 
 
     
@@ -163,6 +164,7 @@ def SetAxisTitles2D(plot, channel):
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
@@ -2066,7 +2068,7 @@ def HTTPlot(nodename,
     sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_htt"], False )
     sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
-    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )

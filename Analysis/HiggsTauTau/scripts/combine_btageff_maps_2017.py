@@ -31,7 +31,7 @@ dywt = 1
 
 channels = ['mt','tt','et']
 counter = 0
-path = "/vols/cms/akd116/Offline/output/SM/2018/Jun18_btag_deepcsv_eff"
+path = "/vols/cms/akd116/Offline/output/SM/2018/July9_newSFdeepCSV_bTagCheck"
 
 for ch in channels:
     # Hadded the separate files, now just take the full one
@@ -83,7 +83,7 @@ comb_btag_b.Divide(comb_tot_b)
 comb_btag_c.Divide(comb_tot_c)
 comb_btag_oth.Divide(comb_tot_oth)
 
-outfile = ROOT.TFile("tagging_efficiencies_deepCSV_Winter2017.root","RECREATE")
+outfile = ROOT.TFile("tagging_efficiencies_deepCSV_Winter2017_v2.root","RECREATE")
 outfile.WriteObject(comb_btag_b,"btag_eff_b")
 outfile.WriteObject(comb_btag_c,"btag_eff_c")
 outfile.WriteObject(comb_btag_oth,"btag_eff_oth")

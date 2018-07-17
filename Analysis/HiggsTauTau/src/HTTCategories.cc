@@ -81,10 +81,8 @@ namespace ic {
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
-      if (channel_ == channel::et){
-        outtree_->Branch("xtrg_et_sf", &xtrg_et_sf_);
-        outtree_->Branch("single_e_sf", &single_e_sf_);
-      }
+      outtree_->Branch("xtrg_et_sf", &xtrg_et_sf_);
+      outtree_->Branch("single_e_sf", &single_e_sf_);
       outtree_->Branch("wt_trg_corr", &wt_trg_corr_);
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
@@ -3084,7 +3082,7 @@ namespace ic {
         antimu_2_ = lagainstMuonLoose3_2;
       } 
       if(strategy_ == strategy::cpsummer17) {
-        iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho());  
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //should be lepton_rho but its the same
         iso_2_ = tau->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
         tau_id_olddm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vloose_2_  = tau->HasTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
@@ -3246,7 +3244,11 @@ namespace ic {
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
-          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
+          if (strategy_ == strategy::cpsummer17){
+            iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->jet_rho()); //lepton_rho
+          } else {
+              iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo->lepton_rho());
+          }
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
@@ -3375,7 +3377,7 @@ namespace ic {
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
       if(strategy_ == strategy::cpsummer17) {
-        iso_1_ = PF03EAIsolationVal(elec, eventInfo->lepton_rho()); 
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
@@ -3717,8 +3719,8 @@ namespace ic {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         if(strategy_ == strategy::cpsummer17){
-          iso_1_ = PF03EAIsolationVal(elec1, eventInfo->lepton_rho()); 
-          iso_2_ = PF03EAIsolationVal(elec2, eventInfo->lepton_rho()); 
+          iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //should be lepton_rho
+          iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
         }
         if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
           mva_1_ = ElectronHTTIdSpring15(elec1, false);
