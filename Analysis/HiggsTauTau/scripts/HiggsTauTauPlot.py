@@ -772,7 +772,7 @@ if options.era in ['cpsummer17']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY4JetsToLL-LO'] # no low mass sample until we know the cross section!
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo4Q','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
     wjets_samples = ['WJetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = []
     ewkz_samples = ['EWKZ2Jets']
