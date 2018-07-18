@@ -9,7 +9,12 @@
 - [x] Fix typo in et monitoring trigger
 - [ ] Rerun with et monitoring trigger
 
-- [ ] Add electron scale&smear correction to p4
+- [x] Add electron scale&smear correction to p4
+UPDATE:
+- [ ] First run the smear and scale corrections again and then add!
+
+- [ ] Add re-correction to the Type-1 MET with following patch 
+`git cms-merge-topic cms-met:METRecipe94xEEnoisePatch`
 
 - [ ] Update global tags
 - [ ] Update CMSSW version
