@@ -251,6 +251,8 @@ namespace ic {
                  w_->function("e_looseid_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["e_idiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
+              fns_["e_looseidiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_looseidiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -2659,7 +2661,7 @@ namespace ic {
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
           ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
           //ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
-          ele_idiso = fns_["e_idiso_pog_ratio"]->eval(args_2.data());
+          ele_idiso = fns_["e_looseidiso_pog_ratio"]->eval(args_2.data()); // e_idiso_pog_ratio for tight / e_looseidiso_pog_ratio for loose
         }
         if(mc_==mc::mc2017){
           weight *= (ele_id * ele_iso); //ele_idiso //(ele_id * ele_iso)
