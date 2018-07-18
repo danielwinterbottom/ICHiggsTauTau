@@ -2051,7 +2051,6 @@ namespace ic {
            e_trg_12_mc = fns_["e_trg_binned_12_mc"]->eval(args_1_2.data());
        }
        if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X && mc_ != mc::mc2017){
-
         if (trg_applied_in_mc_) {
           m_trg = m_trg / m_trg_mc;
           e_trg = e_trg / e_trg_mc;
@@ -2059,7 +2058,7 @@ namespace ic {
         weight *= (e_trg * m_trg);
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", m_trg);
-       } else if(mc_ ==mc::spring15_74X && mc_ == mc::fall15_76X && mc_==mc::spring16_80X && mc_ == mc::summer16_80X) {
+       } else if(mc_ ==mc::spring15_74X || mc_ == mc::fall15_76X || mc_==mc::spring16_80X || mc_ == mc::summer16_80X) {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
