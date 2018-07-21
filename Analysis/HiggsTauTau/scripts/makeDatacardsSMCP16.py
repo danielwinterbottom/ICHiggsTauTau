@@ -867,34 +867,34 @@ if SCHEME == 'mlcpsummer16_ff':
     # define signal regions for each training
 
     # LOWMJJ
-    VAR_MT_LOWMJJ_FAKE =    'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_MT_LOWMJJ_GGH =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_MT_LOWMJJ_QQH =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_MT_LOWMJJ_MISC =    'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    VAR_MT_LOWMJJ_TT =      'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_MT_LOWMJJ_ZLL =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_MT_LOWMJJ_ZTT =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_MT_LOWMJJ_FAKE =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_MT_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_MT_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_MT_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_MT_LOWMJJ_TT =      'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_MT_LOWMJJ_ZLL =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_MT_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
-    VAR_ET_LOWMJJ_FAKE =    'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_ET_LOWMJJ_GGH =     'IC_lowMjj_Jun4_max_score[0.0,0.4,0.5,0.6,0.7,1.0]'
-    VAR_ET_LOWMJJ_QQH =     'IC_lowMjj_Jun4_max_score[0.0,0.2,0.3,0.4,0.5,0.6,0.7,1.0]'
-    VAR_ET_LOWMJJ_MISC =    'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,1.0]'
-    VAR_ET_LOWMJJ_TT =      'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_ET_LOWMJJ_ZLL =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    VAR_ET_LOWMJJ_ZTT =     'IC_lowMjj_Jun4_max_score[0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_ET_LOWMJJ_FAKE =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_ET_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_ET_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_ET_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_ET_LOWMJJ_TT =      'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_ET_LOWMJJ_ZLL =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_ET_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
-    VAR_TT_LOWMJJ_GGH =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,1.0]'
-    VAR_TT_LOWMJJ_QQH =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    VAR_TT_LOWMJJ_MISC =    'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_TT_LOWMJJ_QCD =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_TT_LOWMJJ_ZTT =     'IC_lowMjj_Jun4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_TT_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
+    VAR_TT_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
+    VAR_TT_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_TT_LOWMJJ_QCD =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_TT_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
 
-    VAR_EM_LOWMJJ_GGH =     'IC_lowMjj_Jun15_max_score[0.0,0.3,0.4,0.5,1.0]'
-    VAR_EM_LOWMJJ_QQH =     'IC_lowMjj_Jun15_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    VAR_EM_LOWMJJ_MISC =    'IC_lowMjj_Jun15_max_score[0.0,0.4,0.5,0.6,0.7,1.0]'
-    VAR_EM_LOWMJJ_TT =      'IC_lowMjj_Jun15_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_EM_LOWMJJ_QCD =     'IC_lowMjj_Jun15_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    VAR_EM_LOWMJJ_ZTT =     'IC_lowMjj_Jun15_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
+    VAR_EM_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,1.0]'
+    VAR_EM_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
+    VAR_EM_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.4,0.5,0.6,0.7,1.0]'
+    VAR_EM_LOWMJJ_TT =      'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    VAR_EM_LOWMJJ_QCD =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
+    VAR_EM_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
 
     # HIGHMJJ
 
@@ -914,9 +914,9 @@ if SCHEME == 'mlcpsummer16_ff':
 
     VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.5],(12,-3.2,3.2)'
     VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6],(12,-3.2,3.2)'
-    VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July05_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
+    VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
 
     VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.5],(12,-3.2,3.2)'
     VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.5,0.6,0.7],(12,-3.2,3.2)'
@@ -1073,9 +1073,9 @@ for ch in channels:
                         + ' -v extra_name=jes3,jes_sources=19:27 ./scripts/batch_datacards_jes.sh'
                         )
 
-            if not options.batch:
-                os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-                os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+    if not options.batch:
+        os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
