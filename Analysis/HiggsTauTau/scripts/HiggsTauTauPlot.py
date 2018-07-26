@@ -466,17 +466,17 @@ if options.era == 'cpsummer16':
 # SM ML categories
 
 if options.channel == 'tt':
-    mva_highMjj_ggh =     '(IC_highMjj_July05_1_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July05_1_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July05_1_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July05_1_max_index==3)'
-    mva_highMjj_ztt =     '(IC_highMjj_July05_1_max_index==4)'
+    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==0)'
+    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==1)'
+    mva_highMjj_qcd =     '(IC_highMjj_July25_2_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
+    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==4)'
 
-    mva_lowMjj_ggh =     '(IC_lowMjj_July05_1_max_index==0)'
-    mva_lowMjj_misc =    '(IC_lowMjj_July05_1_max_index==1)'
-    mva_lowMjj_qcd =     '(IC_lowMjj_July05_1_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_July05_1_max_index==3)'
-    mva_lowMjj_ztt =     '(IC_lowMjj_July05_1_max_index==4)'
+    mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
+    mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
+    mva_lowMjj_qcd =     '(IC_lowMjj_July05_3_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
+    mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==4)'
 
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
@@ -491,20 +491,20 @@ if options.channel == 'tt':
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel in ['et','mt']:
-    mva_highMjj_fake =    '(IC_highMjj_July05_1_max_index==0)'
-    mva_highMjj_ggh =     '(IC_highMjj_July05_1_max_index==1)'
-    mva_highMjj_misc =    '(IC_highMjj_July05_1_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July05_1_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July05_1_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July05_1_max_index==5)'
+    mva_highMjj_fake =    '(IC_highMjj_July25_2_max_index==0)'
+    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==1)'
+    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
+    mva_highMjj_tt =      '(IC_highMjj_July25_2_max_index==4)'
+    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==5)'
 
-    mva_lowMjj_fake =    '(IC_lowMjj_Jun4_max_index==0)'
-    mva_lowMjj_ggh =     '(IC_lowMjj_Jun4_max_index==1)'
-    mva_lowMjj_misc =    '(IC_lowMjj_Jun4_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_Jun4_max_index==3)'
-    mva_lowMjj_tt =      '(IC_lowMjj_Jun4_max_index==4)'
-    mva_lowMjj_zll =     '(IC_lowMjj_Jun4_max_index==5)'
-    mva_lowMjj_ztt =     '(IC_lowMjj_Jun4_max_index==6)'
+    mva_lowMjj_fake =    '(IC_lowMjj_July05_3_max_index==0)'
+    mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==1)'
+    mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
+    mva_lowMjj_tt =      '(IC_lowMjj_July05_3_max_index==4)'
+    mva_lowMjj_zll =     '(IC_lowMjj_July05_3_max_index==5)'
+    mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==6)'
 
     cats['fake_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_fake)
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
@@ -522,19 +522,19 @@ if options.channel in ['et','mt']:
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel == 'em':
-    mva_highMjj_ggh =     '(IC_highMjj_July05_1_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July05_1_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July05_1_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July05_1_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July05_1_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July05_1_max_index==5)'
+    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==0)'
+    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==1)'
+    mva_highMjj_qcd =     '(IC_highMjj_July25_2_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
+    mva_highMjj_tt =      '(IC_highMjj_July25_2_max_index==4)'
+    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==5)'
 
-    mva_lowMjj_ggh =     '(IC_lowMjj_Jun15_max_index==0)'
-    mva_lowMjj_misc =    '(IC_lowMjj_Jun15_max_index==1)'
-    mva_lowMjj_qcd =     '(IC_lowMjj_Jun15_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_Jun15_max_index==3)'
-    mva_lowMjj_tt =      '(IC_lowMjj_Jun15_max_index==4)'
-    mva_lowMjj_ztt =     '(IC_lowMjj_Jun15_max_index==5)'
+    mva_lowMjj_ggh =     '(IC_lowMjj_July05_4_max_index==0)'
+    mva_lowMjj_misc =    '(IC_lowMjj_July05_4_max_index==1)'
+    mva_lowMjj_qcd =     '(IC_lowMjj_July05_4_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_July05_4_max_index==3)'
+    mva_lowMjj_tt =      '(IC_lowMjj_July05_4_max_index==4)'
+    mva_lowMjj_ztt =     '(IC_lowMjj_July05_4_max_index==5)'
 
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
@@ -772,7 +772,7 @@ if options.era in ['cpsummer17']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-5-50-LO'] # no low mass sample until we know the cross section!
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] # should check if there are additional diboson samples to add after next ntuple production
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] #,'WWTo1L1Nu2Q' should check if there are additional diboson samples to add after next ntuple production
     wjets_samples = ['WJetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = []
     ewkz_samples = ['EWKZ2Jets']
@@ -902,12 +902,17 @@ if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowboost','
 if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
             'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj',
             'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj'] and options.channel in ['em','et','mt','tt']: 
-    weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
-    weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
+    if "Mjj" not in options.cat:
+        weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
+        weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
+    elif "low" in options.cat:
+        weight_up = 'wt*wt_scale_%s_boosted' % (options.channel)
+        weight_down = 'wt*(2-wt_scale_%s_boosted)' % (options.channel)
     if options.cat in ['dijet','dijet_lowboost','dijet_boosted',
             'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj']:
       weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
       weight_down = 'wt*(2-wt_scale_%s_vbf)' % (options.channel)
+
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
 if options.syst_tau_id_dm0 != '':
@@ -2733,7 +2738,8 @@ if not options.no_plot:
         options.cat,
         x_lines,
         [y_labels,y_var_titles],
-        options.embedding
+        options.embedding,
+        vbf_background
         )
     elif scheme != 'signal':
       plotting.HTTPlot(nodename, 
