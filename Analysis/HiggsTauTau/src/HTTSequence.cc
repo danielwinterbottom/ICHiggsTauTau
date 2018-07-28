@@ -2198,7 +2198,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v1.root");
-     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
+     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
@@ -2371,6 +2371,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     
     if(strategy_type==strategy::cpsummer17){
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+        std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
         BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2380,18 +2381,35 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
-          .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          //.set_probe_id(muon_probe_id)
+          .set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
+          .set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
+          //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
           //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
           //.set_extra_hlt_probe_pt(8.)
           //.set_extra_l1_probe_pt(5.)
           // to measure em muon trg SF for 23 GeV leg
-          .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(23.)
-          .set_extra_l1_probe_pt(20.)
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(23.)
+          //.set_extra_l1_probe_pt(20.)
+          
+          //For Embedding selection efficiencies:
+          // for mu8 leg of MuMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(17.) //8
+          .set_do_dzmass(true)
+          // for mu17 leg of MuMu cross-trigger
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(17.)
+          // DZFilter = hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2
+          // Mass filter = hltDiMuon178Mass8Filtered
+
+
         );
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };

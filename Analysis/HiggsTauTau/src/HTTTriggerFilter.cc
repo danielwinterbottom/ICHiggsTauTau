@@ -921,6 +921,7 @@ namespace ic {
          } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& mc_==mc::mc2017 ) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
+            if(is_embedded) leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first); //only mu27 at embedded at the moment
          }
          
          bool highpt_leg2 = false;
