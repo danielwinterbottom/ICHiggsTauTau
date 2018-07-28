@@ -204,7 +204,7 @@ namespace ic {
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
 
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
+        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
           fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
@@ -253,6 +253,8 @@ namespace ic {
                  w_->function("e_looseid_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["e_idiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
+              fns_["e_looseidiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_looseidiso_pog_ratio")->functor(w_->argSet("e_pt,e_sceta")));
               fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -1021,7 +1023,28 @@ namespace ic {
              qcd_weight_down = qcd_weight;
              qcd_weight_up = qcd_weight;
          }
-       }   
+           // 2017 em qcd weights
+       } else if (era_ == era::data_2017) {
+           if(strategy_ == strategy::cpsummer17) {
+             std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+             ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+             double n_jets = (double)jets.size();
+             double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
+             auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
+             qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
+             qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
+             qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
+             double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args.data())/qcd_weight;;
+             double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args.data())/qcd_weight;;
+             double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
+             double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
+             event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
+             event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
+             event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
+             event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
+           }
+       }
+
        event->Add("wt_em_qcd",qcd_weight);
        event->Add("wt_em_qcd_down",qcd_weight_down);
        event->Add("wt_em_qcd_up",qcd_weight_up);
@@ -2046,7 +2069,7 @@ namespace ic {
             e_trg_12_mc  = fns_["e_trg12_binned_ic_embed"]->eval(args_1_2.data());
           }
        } else if (mc_==mc::mc2017){ 
-           // double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+           double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
 
            auto args_1_2 = std::vector<double>{e_pt,e_eta,e_iso};
            auto args_2_2 = std::vector<double>{m_pt,m_eta,m_iso};
@@ -2089,7 +2112,7 @@ namespace ic {
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
-        eventInfo->set_weight("filter_eff",double(0.979));
+        //eventInfo->set_weight("filter_eff",double(0.979));
 
        }
       } else if (channel_ == channel::tt){
@@ -2455,6 +2478,7 @@ namespace ic {
              }
           }
         } else if (mc_ == mc::mc2017){
+          double e_iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           auto args_1 = std::vector<double>{e1_pt,e1_signed_eta,e_iso_1};
           ele1_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
           ele1_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
@@ -2677,7 +2701,7 @@ namespace ic {
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
           ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
           //ele_idiso = fns_["e_idiso_binned_ratio"]->eval(args_3.data());
-          ele_idiso = fns_["e_idiso_pog_ratio"]->eval(args_2.data());
+          ele_idiso = fns_["e_looseidiso_pog_ratio"]->eval(args_2.data()); // e_idiso_pog_ratio for tight / e_looseidiso_pog_ratio for loose
         }
         if(mc_==mc::mc2017){
           weight *= (ele_id * ele_iso); //ele_idiso //(ele_id * ele_iso)
@@ -2993,13 +3017,18 @@ namespace ic {
            double m_iso = PF04IsolationVal(muon, 0.5, 0); 
            double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
            double e_sceta = elec->sc_eta(); 
+           auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};  
+           auto args_2 = std::vector<double>{e_pt,e_sceta};
            auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_sceta,e_iso};  
            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
-           e_idiso = fns_["e_idiso_binned_ratio"]->eval(args_2_1.data());
+           double ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
+           double ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
+           // e_idiso = fns_["e_idiso_binned_ratio"]->eval(args_2_1.data());
            m_idiso = fns_["m_idiso_binned_ratio"]->eval(args_2_2.data());
+           e_idiso *= (ele_id * ele_iso);
          }
 
-        weight *= (e_idiso * m_idiso);
+        weight *= (e_idiso * m_idiso); 
         if (mc_==mc::mc2017) {
           event->Add("idisoweight_1", e_idiso);
           event->Add("idisoweight_2", m_idiso);  

@@ -1434,6 +1434,9 @@ namespace ic {
       synctree_->Branch("phi_sv", &phi_h_, "phi_h/F");
 
       // Lepton 1 properties
+      if (strategy_ == strategy::cpsummer17 && (channel_ == channel::et || channel_ == channel::em)) { 
+        synctree_->Branch("eCorr_1",           &E_1_);
+      }
       // pt (including effect of any energy scale corrections)
       synctree_->Branch("pt_1", &pt_1_.var_float, "pt_1/F");
       // phi
@@ -2514,7 +2517,7 @@ namespace ic {
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
-    
+
     wt_zpt_stat_m400pt0_up     = 1.0;
     wt_zpt_stat_m400pt40_up    = 1.0;
     wt_zpt_stat_m400pt80_up    = 1.0;
@@ -2844,8 +2847,7 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
-    
-    
+
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
