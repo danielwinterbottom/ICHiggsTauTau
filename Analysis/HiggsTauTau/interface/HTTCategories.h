@@ -96,6 +96,7 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;
   double wt_em_qcd_bothaiso_;
+  double wt_embed_mc_yield_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;

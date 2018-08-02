@@ -56,7 +56,8 @@ namespace ic {
       std::cout << "Vertex "<< i <<" "<<vertices[i]->vz()<<std::endl;
     }
     std::cout << "Jet Rho: " << eventInfo->jet_rho() << std::endl;
-    
+   
+    eventInfo->print_weights(); 
 
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << std::endl;

@@ -2401,7 +2401,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
           .set_extra_hlt_probe_pt(17.) //8
-          .set_do_dzmass(true)
+          //.set_do_dzmass(true)
           // for mu17 leg of MuMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
           //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")

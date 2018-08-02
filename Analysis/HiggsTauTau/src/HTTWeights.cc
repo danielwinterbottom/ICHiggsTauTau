@@ -565,16 +565,33 @@ namespace ic {
         wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         fembed.Close();
         
-        fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+        if(!(mc_==mc::mc2017)) { 
+            fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_id_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
-        fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-              wembed_->function("m_iso_binned_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+              
+            fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("m_iso_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+            fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+            fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+              wembed_->function("m_trg_binned_mc")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+
+         } else {
+           fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg_binned_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_trg_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_idiso_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_iso_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_id_embed_ratio")->functor(w_->argSet("m_pt,m_eta"))); 
+        }
         fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_looseiso_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
-        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_trg_binned_mc")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
         
         fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("e_id_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
@@ -586,13 +603,18 @@ namespace ic {
              wembed_->function("e_trg_binned_data")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
              wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
-        
-        fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
-        fns_["m_sel_vvliso_ratio"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_sel_vvliso_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
-        fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
-             wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
+       
+        if(!(mc_==mc::mc2017)) { 
+          fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
+               wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
+          fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+               wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
+        } else {
+          fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_sel_idEmb_ratio")->functor(w_->argSet("gt_eta,gt_pt")));
+          fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
+        }
 
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
@@ -698,7 +720,9 @@ namespace ic {
       } else if(channel_==channel::zmm){
         wt_stitching = ((run >= 272007) && (run < 275657))*(1.0/0.902)+((run >= 275657) && (run < 276315))*(1.0/0.910)+((run >= 276315) && (run < 276831))*(1.0/0.954)+((run >= 276831) && (run < 277772))*(1.0/0.946)+((run >= 277772) && (run < 278820))*(1.0/0.942)+((run >= 278820) && (run < 280919))*(1.0/0.855)+((run >= 280919) && (run < 284045))*(1.0/0.876);  
       }
-      if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
+      if(eventInfo->weight_defined("wt_embedding")) {
+        if (eventInfo->weight("wt_embedding") > 1) wt_stitching = 0.0; // have to exclude unphysical events i/e where the generator weight is > 1
+      }
       if(era_==era::data_2016) eventInfo->set_weight("wt_stitching", wt_stitching);
       double gen_match_undecayed_1_pt = event->Get<double>("gen_match_undecayed_1_pt");
       double gen_match_undecayed_2_pt = event->Get<double>("gen_match_undecayed_2_pt");
@@ -707,8 +731,9 @@ namespace ic {
       auto args_1 = std::vector<double>{gen_match_undecayed_1_eta,gen_match_undecayed_1_pt};
       auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
       auto args_4 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta,gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
+      //std::cout << gen_match_undecayed_1_pt << "    " << gen_match_undecayed_1_eta << "    " << gen_match_undecayed_2_pt << "    " << gen_match_undecayed_2_eta << std::endl;
+      //std::cout << fns_["m_sel_idEmb_ratio"]->eval(args_1.data()) << "    " << fns_["m_sel_idEmb_ratio"]->eval(args_2.data()) << "    " << fns_["m_sel_trg_ratio"]->eval(args_4.data()) << std::endl;
       double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
-     
       // global scale factors not used anymore
       //if(channel_==channel::mt)      wt_embedding_yield = 1.192;
       //if(channel_==channel::et) wt_embedding_yield = 1.25;
@@ -719,6 +744,7 @@ namespace ic {
       //if(channel_==channel::et) wt_embedding_yield = 1.2244;
       //if(channel_==channel::em) wt_embedding_yield = 1.2101;
       //if(channel_==channel::tt) wt_embedding_yield = 1.2005;
+      event->Add("wt_embed_mc_yield",1.13/wt_embedding_yield); 
       eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     }
 
@@ -891,6 +917,12 @@ namespace ic {
             event->Add("wt_tau_id_loose",loose_tau_sf_2/(tau_sf_2));
             event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
         } else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        else if (mc_==mc::mc2017 && is_embedded_) {
+          if(gen_match_2!=5) tau_sf_2=1.0;
+          else if (decay_mode_2==0) tau_sf_2=0.975;
+          else if (decay_mode_2==1) tau_sf_2=0.975*1.051;
+          else if (decay_mode_2==10) tau_sf_2=pow(0.975,3);
+        }
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16) && gen_match_2 == 5){
           event->Add("wt_tau_id_dm_up",1.03);
@@ -914,6 +946,12 @@ namespace ic {
           else tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
         else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.89 : 1.0; 
+        else if (mc_==mc::mc2017 && is_embedded_) {
+          if(gen_match_1!=5) tau_sf_1=1.0;
+          else if (decay_mode_1==0) tau_sf_1=0.975;
+          else if (decay_mode_1==1) tau_sf_1=0.975*1.051;
+          else if (decay_mode_1==10) tau_sf_1=pow(0.975,3);
+        }
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
           if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.95 : 1.0;
@@ -1833,11 +1871,12 @@ namespace ic {
 
             
              auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
+             auto args_2 = std::vector<double>{pt,m_signed_eta};
              tau_trg=1;
              tau_trg_mc=1;
              if(is_embedded_){
                mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-               mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+               mu_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data());
              } else {
                mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
                mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data()); 
@@ -2592,9 +2631,12 @@ namespace ic {
            }
         } else if (mc_ == mc::mc2017){
           auto args_1 = std::vector<double>{pt1,m1_signed_eta,m_iso_1};  
+          auto args_2 = std::vector<double>{pt1,m1_signed_eta};
+
           if (is_embedded_) {
             mu1_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-            mu1_trg_mc=fns_["m_trg_binned_mc"]->eval(args_1.data());
+            mu1_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data()); 
+            //std::cout << " trg = " << mu1_trg/mu1_trg_mc << std::endl;
           } else {
             mu1_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
             mu1_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
@@ -2788,9 +2830,9 @@ namespace ic {
           auto args_1 = std::vector<double>{pt,m_signed_eta};
           auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};  
           if(is_embedded_){
-            mu_id = fns_["m_id_ratio"]->eval(args_1.data());
-            mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2.data());
-            mu_idiso = mu_id*mu_iso;
+            mu_id = fns_["m_id_embed_ratio"]->eval(args_1.data());
+            mu_iso = fns_["m_iso_binned_embed_ratio"]->eval(args_2.data());
+            mu_idiso = fns_["m_idiso_binned_embed_ratio"]->eval(args_2.data());
           } else{
             mu_id = fns_["m_id_ratio"]->eval(args_1.data());
             mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2.data());
@@ -3143,8 +3185,9 @@ namespace ic {
           auto args1_1 = std::vector<double>{m_1_pt,m_1_signed_eta};  
           auto args2_1 = std::vector<double>{m_2_pt,m_2_signed_eta}; 
           if(is_embedded_){
-            m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data())*fns_["m_iso_binned_ratio"]->eval(args1_2.data());
-            m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data())*fns_["m_iso_binned_ratio"]->eval(args2_2.data());
+            m_1_idiso = fns_["m_idiso_binned_embed_ratio"]->eval(args1_2.data());
+            m_2_idiso = fns_["m_idiso_binned_embed_ratio"]->eval(args2_2.data());
+            //std::cout << "idiso = " << m_1_idiso << "    " << m_2_idiso << std::endl;
           } else {
             m_1_idiso = fns_["m_idiso_binned_ratio"]->eval(args1_2.data());
             m_2_idiso = fns_["m_idiso_binned_ratio"]->eval(args2_2.data());

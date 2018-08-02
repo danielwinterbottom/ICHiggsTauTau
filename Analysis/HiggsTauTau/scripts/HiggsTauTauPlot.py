@@ -646,6 +646,7 @@ if options.channel == 'mt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 4) && 
 if options.channel == 'et': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 5))'
 if options.channel == 'tt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 5) && (gen_match_2 == 5))'
 if options.channel == 'em': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 4))'
+if options.channel == 'zmm': top_sels_embed['ttt_sel'] = '((gen_match_1 == 2) && (gen_match_2 == 2))'
 
 if options.channel in ['et','mt','mj']:
   vv_sels['vvt_sel'] = '(gen_match_2<6)'
@@ -712,6 +713,11 @@ if options.embedding:
     if options.channel == 'et': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 5))'
     if options.channel == 'tt': extra_top_sel = '!((gen_match_1 == 5) && (gen_match_2 == 5))'
     if options.channel == 'em': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 4))'
+    if options.channel == 'zmm': 
+      extra_top_sel = '!((gen_match_1 == 2) && (gen_match_2 == 2))'
+      for sel in vv_sels: vv_sels[sel]+='&&'+extra_top_sel
+      z_sels['ztt_sel']+='&&'+extra_top_sel
+      z_sels['zj_sel']+='&&'+extra_top_sel
     for sel in top_sels: top_sels[sel]+='&&'+extra_top_sel
     
 # Add data sample names
@@ -787,6 +793,13 @@ if options.era in ['cpsummer17']:
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF']
+
+    if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
+    if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF']
+    if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF']
+    if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF']
+    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
+    if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
