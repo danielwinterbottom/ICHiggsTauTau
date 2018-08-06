@@ -463,7 +463,7 @@ if options.era == 'cpsummer16':
     cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
 
-#cats['0jet'] = '(n_jets==0 && n_bjets==0)' # change back for tt channel!
+#cats['0jet'] = '(n_jets==0 && n_bjets==0)'
 cats['1jet'] = '(n_jets==1 && n_bjets==0)'
 cats['2jet'] = '(n_jets>=2 && n_bjets==0)'
 
@@ -1651,7 +1651,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         full_selection = BuildCutString(wt, sel, ff_cat_data, OSSS, '')
         # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
         f1 = ana.SummedFactory('data', data, plot_unmodified, full_selection)
-        f2 = GetSubtractNode(ana,'',plot,plot_unmodified,wt+sub_wt,sel+'&&(gen_match_2<6)',ff_cat,ff_cat_data,8,1.0,True,True)
+        f2 = GetSubtractNode(ana,'',plot,plot_unmodified,wt+sub_wt,sel+'&&(gen_match_2<6)',ff_cat,ff_cat_data,8,1.0,get_os,True)
         ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1, f2))
         
     if options.channel == 'tt':
@@ -1696,8 +1696,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
         f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
         f2_total_node = SummedNode('total_bkg')
-        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,True,True))
-        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
         ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
       
         
