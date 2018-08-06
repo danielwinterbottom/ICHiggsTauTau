@@ -482,8 +482,6 @@ class HTTCategories : public ModuleBase {
   
   double wt_ff_1_;
   double wt_ff_2_;
-  double wt_ff_realtau_1_;
-  double wt_ff_realtau_2_;
   double wt_ff_qcd_syst_up_1_            ;
   double wt_ff_qcd_syst_down_1_          ;
   double wt_ff_qcd_dm0_njet0_stat_up_1_  ;

@@ -543,10 +543,8 @@ namespace ic {
             }
           } 
         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
-          outtree_->Branch("wt_ff_realtau_1"  , &wt_ff_realtau_1_);
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
           if(channel_ == channel::tt){
-            outtree_->Branch("wt_ff_realtau_2"  , &wt_ff_realtau_2_);
             outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
           }
             if(do_ff_systematics_){
@@ -2250,10 +2248,6 @@ namespace ic {
           }
         }
       } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
-        if(!is_data_ && event->Exists("wt_ff_realtau_1") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"))==5)) wt_ff_realtau_1_ = event->Get<double>("wt_ff_realtau_1");
-        else wt_ff_realtau_1_ = 1.0;
-        if(!is_data_ && event->Exists("wt_ff_realtau_2") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5)) wt_ff_realtau_2_ = event->Get<double>("wt_ff_realtau_2");
-        else wt_ff_realtau_2_ = 1.0;
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
         
