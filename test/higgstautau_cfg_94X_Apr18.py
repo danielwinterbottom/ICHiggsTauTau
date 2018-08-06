@@ -9,11 +9,11 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
-'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'              
-#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+# 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'              
+'root://xrootd-cms.infn.it//store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v14
+opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -246,6 +246,17 @@ electronLabel = cms.InputTag("slimmedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 
+# electron smear and scale
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       # applyEnergyCorrections=True,
+                       # applyVIDOnCorrectedEgamma=True,
+                       runVID=False, #saves CPU time by not needlessly re-running VID
+                       era='2017-Nov17ReReco') 
+process.icElectronSequence += cms.Sequence(
+    process.egammaPostRecoSeq
+    )
+
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
     input       = electronLabel,
     beamspot    = cms.InputTag("offlineBeamSpot"),
@@ -365,19 +376,22 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   inputVertices             = vtxLabel,
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+  inputPostCorr             = cms.string("ecalTrkEnergyPostCorr"),
+  inputPreCorr              = cms.string("ecalTrkEnergyPreCorr"),
+  inputErrPostCorr          = cms.string("ecalTrkEnergyErrPostCorr"),
+  inputErrPreCorr           = cms.string("ecalTrkEnergyErrPreCorr"),
+  inputScaleUp              = cms.string("energyScaleUp"),
+  inputScaleDown            = cms.string("energyScaleDown"),
+  inputSigmaUp              = cms.string("energyScaleUp"),
+  inputSigmaDown            = cms.string("energyScaleDown"),
   includeFloats = cms.PSet(
      generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
      mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-     mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values")
-  ),
-  includeFloats2 = cms.PSet(
-      ecalTrkEnergyPreCorr     = cms.InputTag("selectedElectrons","ecalTrkEnergyPreCorr"),
-      ecalTrkEnergyPostCorr    = cms.InputTag("selectedElectrons","ecalTrkEnergyPostCorr"),
-      ecalTrkEnergyErrPostCorr = cms.InputTag("selectedElectrons","ecalTrkEnergyErrPostCorr")
+     mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
   ),
   includeClusterIso        = cms.bool(True),
   includePFIso03           = cms.bool(True),
-  includePFIso04           = cms.bool(True)
+  includePFIso04           = cms.bool(True),
 )
 
 
