@@ -567,10 +567,9 @@ namespace ic {
         
         if(!(mc_==mc::mc2017)) { 
             fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
-              wembed_->function("m_id_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
-              
+              wembed_->function("m_id_ratio")->functor(wembed_->argSet("m_pt,m_eta"))); 
             fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-              wembed_->function("m_iso_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
+              wembed_->function("m_iso_binned_ratio")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
             fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
             fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
