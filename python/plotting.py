@@ -2612,7 +2612,7 @@ def CompareHists(hists=[],
 
     if not custom_y_range:
         if(log_y): 
-            axish[0].SetMinimum(0.0009)
+            axish[0].SetMinimum(hs.GetMinimum("nostack"))
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
