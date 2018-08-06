@@ -2125,6 +2125,7 @@ def HTTPlot(nodename,
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
+            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           #if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
           #  bkg['plot_list'] = ["EmbedZL","ZJ"]
  
@@ -3162,6 +3163,7 @@ def HTTPlotUnrolled(nodename,
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
+            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
 
