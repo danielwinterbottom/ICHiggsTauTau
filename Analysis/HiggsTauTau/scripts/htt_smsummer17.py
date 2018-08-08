@@ -132,7 +132,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Jun15_MC_94X'
+FILELIST='filelists/July24_MC_94X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -155,17 +155,17 @@ if options.proc_sm or options.proc_all:
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
+      # 'WplusHToTauTau_M-'+mass,
+      # 'WminusHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
       'GluGluHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
+      # 'ZHToTauTau_M-'+mass,
       # 'ttHToTauTau_M-'+mass
     ]
   if options.proc_sm:  
    signal_mc += [
-       'GluGluHToWWTo2L2Nu_M-125',
-       'VBFHToWWTo2L2Nu_M-125'
+       # 'GluGluHToWWTo2L2Nu_M-125',
+       # 'VBFHToWWTo2L2Nu_M-125'
        ]
    # add cp samples
    if options.cp_signal:
@@ -222,12 +222,12 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Jun15_Data_94X"
+  DATAFILELIST="./filelists/July24_Data_94X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun15_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/July24_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -242,7 +242,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun15_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/July24_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
@@ -336,8 +336,10 @@ if options.proc_bkg or options.proc_all:
      'DYJetsToLL',
      'DYJetsToLL-ext',
      'WJetsToLNu-LO',
+     'WJetsToLNu-LO-ext',
+     'W1JetsToLNu-LO',
      'W2JetsToLNu-LO',
-     # 'WWTo4Q-ext',
+     'WWTo4Q-ext',
      'WWToLNuQQ-ext'
      ]
   
@@ -388,7 +390,7 @@ if options.mg_signal:
       SIG_FILELIST='filelists/Jun15_MC_94X'
     JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')

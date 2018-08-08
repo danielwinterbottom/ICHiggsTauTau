@@ -24,7 +24,7 @@
 
 - [x] Jet ID: Check if the PF jet ID has been updated is so update also in our code
 
-- [ ] B-tagger: Check if we are still using the latest recomended btagger, if not then update this. Also make sure we are using the latest SFs and uncertainties for this tagger
+- [x] B-tagger: Check if we are still using the latest recomended btagger, if not then update this. Also make sure we are using the latest SFs and uncertainties for this tagger
 
 - [x] B-tag efficincies: Appliedated of b-tag Sfs require measurment of the btag efficiencies in MC - update this for the latest btagger and 2017 MC
 

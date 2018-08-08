@@ -470,11 +470,11 @@ cats['2jet'] = '(n_jets>=2 && n_bjets==0)'
 # SM ML categories
 
 if options.channel == 'tt':
-    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July25_2_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
-    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==4)'
+    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==0)'
+    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==1)'
+    mva_highMjj_qcd =     '(IC_highMjj_July26_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
+    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==4)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
@@ -495,12 +495,12 @@ if options.channel == 'tt':
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel in ['et','mt']:
-    mva_highMjj_fake =    '(IC_highMjj_July25_2_max_index==0)'
-    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==1)'
-    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July25_2_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==5)'
+    mva_highMjj_fake =    '(IC_highMjj_July26_max_index==0)'
+    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==1)'
+    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
+    mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
+    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     mva_lowMjj_fake =    '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==1)'
@@ -526,12 +526,12 @@ if options.channel in ['et','mt']:
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel == 'em':
-    mva_highMjj_ggh =     '(IC_highMjj_July25_2_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July25_2_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July25_2_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July25_2_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July25_2_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July25_2_max_index==5)'
+    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==0)'
+    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==1)'
+    mva_highMjj_qcd =     '(IC_highMjj_July26_max_index==2)'
+    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
+    mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
+    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_4_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_4_max_index==1)'
