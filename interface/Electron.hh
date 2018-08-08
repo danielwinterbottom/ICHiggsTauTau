@@ -168,6 +168,10 @@ class Electron : public Candidate {
   /// The corrected supercluster energy
   inline float ecal_energy() const { return ecal_energy_; }
 
+  /// The scale & smear correction things
+  inline float ecalTrkEnergyPreCorr() const { return ecalTrkEnergyPreCorr_; }
+  inline float ecalTrkEnergyPostCorr() const { return ecalTrkEnergyPostCorr_; }
+
   /// True if electron is matched to a conversion vertex
   inline bool has_matched_conversion() const { return has_matched_conversion_; }
 
@@ -345,6 +349,15 @@ class Electron : public Candidate {
     ecal_energy_ = ecal_energy;
   }
 
+  /// @copybrief preCorr()
+  inline void set_ecalTrkEnergyPreCorr(float const& ecalTrkEnergyPreCorr) {
+    ecalTrkEnergyPreCorr_ = ecalTrkEnergyPreCorr;
+  }
+  /// @copybrief postCorr()
+  inline void set_ecalTrkEnergyPostCorr(float const& ecalTrkEnergyPostCorr) {
+    ecalTrkEnergyPostCorr_ = ecalTrkEnergyPostCorr;
+  }
+
   /// @copybrief has_matched_conversion()
   inline void set_has_matched_conversion(bool const& has_matched_conversion) {
     has_matched_conversion_ = has_matched_conversion;
@@ -442,6 +455,10 @@ class Electron : public Candidate {
   float hcal_sum_;
 
   float ecal_energy_;
+  
+  float ecalTrkEnergyPreCorr_;
+  float ecalTrkEnergyPostCorr_;
+
   bool has_matched_conversion_;
 
   Point ref_point_;
@@ -456,7 +473,7 @@ class Electron : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 5);
+  ClassDef(Electron, 6);
  #endif
 };
 

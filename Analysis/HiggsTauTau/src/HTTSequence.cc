@@ -58,6 +58,7 @@
 #include "HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "HiggsTauTau/interface/TagAndProbe.h"
 #include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
+#include "HiggsTauTau/interface/HTTSmearScale.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -2238,12 +2239,12 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-           httStitching.SetWInputYields(26869703.0,0,4616394.0,19075747.0,11303425.0);
+           httStitching.SetWInputYields(709442.0+44587448.0,1037943.0,6570442.0,19669693.0,11303425.0);
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 1147725.0, 4301545.0);
+            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 1147725.0, 4313584);
           }
        
        BuildModule(httStitching);   
@@ -2383,15 +2384,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(8.)
-          //.set_extra_l1_probe_pt(5.)
-          // to measure em muon trg SF for 23 GeV leg
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(23.)
-          .set_extra_l1_probe_pt(20.)
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          // to measure em muon trg SF for 23 GeV leg
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(23.)
+          //.set_extra_l1_probe_pt(20.)
         );
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
@@ -2602,7 +2603,6 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     .set_fs(fs.get()));
 }
 
-
   std::function<bool(Electron const*)> ElecID;
   if(strategy_type==strategy::paper2013){
     if(special_mode == 20 || special_mode == 22){
@@ -2622,7 +2622,19 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //set to false for TightID //ElectronHTTIdFall17 //ElectronHTTIsoIdFall17
     }
 
+  // set the ElecID filter here separately to be compatible with 2017 E smear and scale correction
+  // similar for EM and ZEE Pair Sequence
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
 
+  if (strategy_type == strategy::cpsummer17) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+    );
+  }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
@@ -2630,8 +2642,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
+                fabs(e->dz_vertex())    < elec_dz ;
 
       }));
 
@@ -2891,10 +2902,21 @@ void HTTSequence::BuildEMPairs() {
    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
-      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
 
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  if (strategy_type == strategy::cpsummer17) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+    );
+  }
 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -2903,9 +2925,7 @@ void HTTSequence::BuildEMPairs() {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
-
+                fabs(e->dz_vertex())    < elec_dz ;
       }));
 
 
@@ -3090,9 +3110,28 @@ void HTTSequence::BuildZEEPairs() {
    } else if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
-      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
+      ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(2)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_lead_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e) ;
+      }));
+
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      "sel_electrons", "sel_lead_electrons"));
+
+  if (strategy_type == strategy::cpsummer17) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+    );
+  }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
@@ -3100,13 +3139,9 @@ void HTTSequence::BuildZEEPairs() {
         return  e->pt()                 > 20.        &&
                 fabs(e->eta())          < 2.4        &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
+                fabs(e->dz_vertex())    < elec_dz ;
 
       }));
-  
-  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
-      "sel_electrons", "sel_lead_electrons"));
   
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_lead_electrons").set_min(1)
@@ -3114,8 +3149,7 @@ void HTTSequence::BuildZEEPairs() {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
+                fabs(e->dz_vertex())    < elec_dz ;
 
       }));
 
@@ -3146,7 +3180,7 @@ void HTTSequence::BuildTPZEEPairs() {
    } else if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
-       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
+       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
 
