@@ -156,7 +156,7 @@ namespace ic {
           //2012 Triggers
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
         }
-        if (is_embedded_ && era_!= era::data_2016) {
+        if (is_embedded_ && !(era_== era::data_2016 || era_== era::data_2017)) {
           path_found = false;
           if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) {
             path_found = true;
@@ -854,7 +854,7 @@ namespace ic {
         }
       }
     }
-    if (!is_data_ && is_embedded_ && era_ != era::data_2016) {
+    if (!is_data_ && is_embedded_ && !(era_ == era::data_2016 || era_==era::data_2017)) {
       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8");
       if (objs.size() > 0) {
         return 0;
@@ -863,7 +863,7 @@ namespace ic {
       }
     }
 
-    if (is_embedded_ && era_ != era::data_2016) return 0; // Don't do object matching for run1  embedded events 
+    if (is_embedded_ && !(era_ == era::data_2016 || era_==era::data_2017)) return 0; // Don't do object matching for run1  embedded events 
 
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);

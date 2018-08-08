@@ -67,6 +67,7 @@ namespace ic {
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
+      outtree_->Branch("wt_topmass"       , &wt_topmass_       );
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -216,7 +217,6 @@ namespace ic {
       outtree_->Branch("geneta_2"    , &geneta_2_       );
       outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
-      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("partons_lhe"     , &partons_lhe_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -248,7 +248,8 @@ namespace ic {
     count_mt_ = 0;
     count_tt_ = 0;
 
-    GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
+    GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
+    topmass_wts_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight");
     
     return 0;
   }
@@ -454,6 +455,7 @@ namespace ic {
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
+           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_));
       }
 
       
@@ -481,8 +483,11 @@ namespace ic {
         met.set_vector(met.vector() + part.vector());
         continue;
       }
-      
-      
+      if(channel_str_=="zmm") {
+        if(!(genID == 13 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
+        higgs_products.push_back(*(gen_particles[i]));
+        decay_types.push_back("m");
+      }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
@@ -576,6 +581,12 @@ namespace ic {
         lep2 = muons[1];
         passed_ = true;
       }
+    } else if(channel_str_ == "zmm"){
+      if(muons.size() == 2){
+        lep1 = muons[0];
+        lep2 = muons[1];
+        passed_ = true;
+      }
     } else if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
@@ -614,8 +625,10 @@ namespace ic {
       mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
-      mt_1_ = MT(&lep1, &met);
-      mt_2_ = MT(&lep2, &met);
+      if(!(channel_str_ == "zmm")){
+        mt_1_ = MT(&lep1, &met);
+        mt_2_ = MT(&lep2, &met);
+      }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
       ditau->AddCandidate("lep1",&lep1);

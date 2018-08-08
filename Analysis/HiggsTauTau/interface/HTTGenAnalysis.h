@@ -71,6 +71,13 @@ class HTTGenAnalysis : public ModuleBase {
   double jphi_1_;
   double jphi_2_;
   double mjj_;
+  double pmjj_;
+  double mjj2_;
+  double minmjj_;
+  double maxmjj_;
+  double jdR_;
+  double pjdR_;
+  double jdR2_;
   double jdeta_;
   double m_vis_;
   double pt_tt_;
@@ -104,11 +111,21 @@ class HTTGenAnalysis : public ModuleBase {
   float DCP_;
   float D0star_;
   double sjdphi_;
+  double sjdphi2_;
+  double sjdphi3_;
+
+  double spjdphi_;
+  double ysep_;
+  unsigned n_pjets_;
+
 
   float n_pu_;
   
   double pT_A_;
-  
+ 
+  TH1F topmass_wts_;
+  double wt_topmass_;
+ 
   double scale1_;
   double scale2_;
   double scale3_;

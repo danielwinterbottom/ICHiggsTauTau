@@ -543,10 +543,8 @@ namespace ic {
             }
           } 
         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
-          outtree_->Branch("wt_ff_realtau_1"  , &wt_ff_realtau_1_);
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
           if(channel_ == channel::tt){
-            outtree_->Branch("wt_ff_realtau_2"  , &wt_ff_realtau_2_);
             outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
           }
             if(do_ff_systematics_){
@@ -1038,6 +1036,7 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
         outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
+        outtree_->Branch("wt_embed_mc_yield", &wt_embed_mc_yield_);
         if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
           outtree_->Branch("wt_zpt_stat_m400pt0_up"    , &wt_zpt_stat_m400pt0_up     );
           outtree_->Branch("wt_zpt_stat_m400pt40_up"   , &wt_zpt_stat_m400pt40_up    );
@@ -2249,10 +2248,6 @@ namespace ic {
           }
         }
       } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
-        if(!is_data_ && event->Exists("wt_ff_realtau_1") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"))==5)) wt_ff_realtau_1_ = event->Get<double>("wt_ff_realtau_1");
-        else wt_ff_realtau_1_ = 1.0;
-        if(!is_data_ && event->Exists("wt_ff_realtau_2") && MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5 && (channel_ != channel::tt || MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"))==5)) wt_ff_realtau_2_ = event->Get<double>("wt_ff_realtau_2");
-        else wt_ff_realtau_2_ = 1.0;
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
         
@@ -2497,6 +2492,7 @@ namespace ic {
     wt_em_qcd_shapeup_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
+    wt_embed_mc_yield_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
@@ -2517,6 +2513,7 @@ namespace ic {
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+    wt_embed_mc_yield_ = event->Exists("wt_embed_mc_yield") ? event->Get<double>("wt_embed_mc_yield") : 1.0;
 
     wt_zpt_stat_m400pt0_up     = 1.0;
     wt_zpt_stat_m400pt40_up    = 1.0;

@@ -360,16 +360,16 @@ if options.proc_embed or options.proc_all:
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras:
-      if 'em' in chn:
-        embed_samples+=['EmbeddingElMu'+era]
-      if 'et' in chn:
-        embed_samples+=['EmbeddingElTau'+era]
+      #if 'em' in chn:
+      #  embed_samples+=['EmbeddingElMu'+era]
+      #if 'et' in chn:
+      #  embed_samples+=['EmbeddingElTau'+era]
       if 'mt' in chn:
         embed_samples+=['EmbeddingMuTau'+era]
-      if 'tt' in chn:
-        embed_samples+=['EmbeddingTauTau'+era]
-      if 'zmm' in chn:
-        embed_samples+=['EmbeddingMuMu'+era]
+      #if 'tt' in chn:
+      #  embed_samples+=['EmbeddingTauTau'+era]
+      #if 'zmm' in chn:
+      #  embed_samples+=['EmbeddingMuMu'+era]
 
 
         

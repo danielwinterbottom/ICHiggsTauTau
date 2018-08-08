@@ -604,7 +604,87 @@ if SCHEME == 'sync2016':
     'tt' : 'tt_default',
     'zmm' : 'zmm_default'
   }
-  ANA = 'sm'  
+  ANA = 'sm' 
+
+if SCHEME == 'ff_fracs_pt': 
+  VAR_MT_0JET='pt_2[20,30,40,50,60,80,100,150,250]'
+  VAR_MT_1JET='pt_2[20,30,40,50,60,80,100,150,250]'
+  VAR_MT_2JET='pt_2[20,30,40,50,60,80,100,150,250]'
+  VAR_MT_BTAG='pt_2[20,30,40,50,60,80,100,150,250]'
+ 
+  VAR_ET_0JET='pt_2[20,30,40,50,60,100,250]'
+  VAR_ET_1JET='pt_2[20,30,40,50,60,80,100,250]' 
+  VAR_ET_2JET='pt_2[20,30,40,50,60,80,100,150,250]'
+  VAR_ET_BTAG='pt_2[20,30,40,50,60,80,100,250]'
+
+  VAR_TT_0JET_1='pt_1[40,50,60,80,100,250]'
+  VAR_TT_1JET_1='pt_1[40,50,60,80,100,250]'
+  VAR_TT_2JET_1='pt_1[40,50,60,80,100,250]'
+  VAR_TT_BTAG_1='pt_2[40,50,60,80,250]'
+
+  VAR_TT_0JET_2='pt_2[40,50,60,80,100,250]'
+  VAR_TT_1JET_2='pt_2[40,50,60,80,100,250]'
+  VAR_TT_2JET_2='pt_2[40,50,60,80,100,250]'
+  VAR_TT_BTAG_2='pt_2[40,50,60,80,250]' 
+
+  scheme_mt = [
+    ("0",   "0jet", "0jet",  VAR_MT_0JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "1jet", "1jet",  VAR_MT_1JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "2jet", "2jet",  VAR_MT_2JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "btag", "btag",  VAR_MT_BTAG, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "0jet", "0jet_highmt",  VAR_MT_0JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "1jet", "1jet_highmt",  VAR_MT_1JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "2jet", "2jet_highmt",  VAR_MT_2JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "btag", "btag_highmt",  VAR_MT_BTAG, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "0jet", "0jet_ss",  VAR_MT_0JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "1jet", "1jet_ss",  VAR_MT_1JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "2jet", "2jet_ss",  VAR_MT_2JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "btag", "btag_ss",  VAR_MT_BTAG, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss ')
+  ]
+  scheme_et = [
+    ("0",   "0jet", "0jet",  VAR_ET_0JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "1jet", "1jet",  VAR_ET_1JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "2jet", "2jet",  VAR_ET_2JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "btag", "btag",  VAR_ET_BTAG, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "0jet", "0jet_highmt",  VAR_ET_0JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "1jet", "1jet_highmt",  VAR_ET_1JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "2jet", "2jet_highmt",  VAR_ET_2JET, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "btag", "btag_highmt",  VAR_ET_BTAG, ' --set_alias="sel:mt_1>70" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "0jet", "0jet_ss",  VAR_ET_0JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "1jet", "1jet_ss",  VAR_ET_1JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "2jet", "2jet_ss",  VAR_ET_2JET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss '),
+    ("0",   "btag", "btag_ss",  VAR_ET_BTAG, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" --do_ss ')
+  ]
+  scheme_tt = [
+    ("0",   "0jet", "0jet_1",  VAR_TT_0JET_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "1jet", "1jet_1",  VAR_TT_1JET_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "2jet", "2jet_1",  VAR_TT_2JET_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "btag", "btag_1",  VAR_TT_BTAG_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "0jet", "0jet_ss_1",  VAR_TT_0JET_1, ' --set_alias="baseline:({baseline_aisotau1})" --do_ss '),
+    ("0",   "1jet", "1jet_ss_1",  VAR_TT_1JET_1, ' --set_alias="baseline:({baseline_aisotau1})" --do_ss '),
+    ("0",   "2jet", "2jet_ss_1",  VAR_TT_2JET_1, ' --set_alias="baseline:({baseline_aisotau1})" --do_ss '),
+    ("0",   "btag", "btag_ss_1",  VAR_TT_BTAG_1, ' --set_alias="baseline:({baseline_aisotau1})" --do_ss '),
+
+    ("0",   "0jet", "0jet_2",  VAR_TT_0JET_2, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "1jet", "1jet_2",  VAR_TT_1JET_2, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "2jet", "2jet_2",  VAR_TT_2JET_2, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "btag", "btag_2",  VAR_TT_BTAG_2, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "0jet", "0jet_ss_2",  VAR_TT_0JET_2, ' --set_alias="baseline:({baseline_aisotau2})" --do_ss '),
+    ("0",   "1jet", "1jet_ss_2",  VAR_TT_1JET_2, ' --set_alias="baseline:({baseline_aisotau2})" --do_ss '),
+    ("0",   "2jet", "2jet_ss_2",  VAR_TT_2JET_2, ' --set_alias="baseline:({baseline_aisotau2})" --do_ss '),
+    ("0",   "btag", "btag_ss_2",  VAR_TT_BTAG_2, ' --set_alias="baseline:({baseline_aisotau2})" --do_ss ')
+  ]
+
+  scheme_em = []
+  scheme_zmm = []
+
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'tt' : 'tt_default'
+  }
+  ANA = 'sm'
+
   
 if SCHEME == 'ff_fracs':
   for ch in extra_channel:
