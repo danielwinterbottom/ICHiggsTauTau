@@ -770,8 +770,12 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  iso_cut_1='iso_1<0.1'
-  iso_cut_2='iso_2<0.1'
+  if options.era == 'summer17':
+    iso_cut_1='iso_1<0.15'
+    iso_cut_2='iso_2<0.15'
+  else: 
+    iso_cut_1='iso_1<0.1'
+    iso_cut_2='iso_2<0.1'
   if options.aiso1:
     iso_cut_1='iso_1>=0.1&&iso_1<0.25'  
     iso_cut_2='iso_2>=0.1&&iso_2<0.25'

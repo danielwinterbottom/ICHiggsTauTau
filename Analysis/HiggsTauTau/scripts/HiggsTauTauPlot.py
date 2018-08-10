@@ -392,7 +392,7 @@ elif options.channel == 'zmm':
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
-    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
+    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>20&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron)'
     
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -783,7 +783,7 @@ if options.era in ['cpsummer17']:
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','WZTo2L2Q','WZTo1L1Nu2Q'] #,'WWTo1L1Nu2Q' should check if there are additional diboson samples to add after next ntuple production
-    wjets_samples = ['WJetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = []
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []

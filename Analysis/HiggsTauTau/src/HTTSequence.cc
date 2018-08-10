@@ -1169,6 +1169,7 @@ BuildModule(jetIDFilter);
    std::vector<std::string> sources = {};
    
    if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   //if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"Total"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
 
@@ -1524,7 +1525,7 @@ if(channel != channel::wmnu) {
 
 BuildModule(svFitTest);
 
-if(js["do_preselection"].asBool() && !js["baseline"]["do_faketaus"].asBool()){
+if(js["do_preselection"].asBool() && !js["baseline"]["do_faketaus"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
       //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have
@@ -2469,7 +2470,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     }
   } else if(channel == channel::tpzee){
     if(strategy_type == strategy::cpsummer17){
-      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17(e, true); };
+      std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17(e, false); };
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2477,14 +2479,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          /* .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") */
-          /* .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") */
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
           .set_probe_id(elec_probe_id)
-          .set_tag_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
-          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          .set_extra_l1_probe_pt(10.)
+          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          //.set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
           //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
@@ -3121,6 +3123,8 @@ void HTTSequence::BuildZEEPairs() {
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      js["electrons"].asString(), "sel_lead_electrons"));
 
   std::function<bool(Electron const*)> ElecID;
    if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 ||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
@@ -3131,19 +3135,16 @@ void HTTSequence::BuildZEEPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
-  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+  BuildModule(SimpleFilter<Electron>("ElectronIDFilter")
       .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
         return ElecID(e);
       }));
-  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+  BuildModule(SimpleFilter<Electron>("LeadElectronIDFilter")
       .set_input_label("sel_lead_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
         return ElecID(e) ;
       }));
-
-  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
-      "sel_electrons", "sel_lead_electrons"));
 
   if (strategy_type == strategy::cpsummer17) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
@@ -3161,7 +3162,7 @@ void HTTSequence::BuildZEEPairs() {
 
       }));
   
-  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+  BuildModule(SimpleFilter<Electron>("LeadElectronFilter")
       .set_input_label("sel_lead_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&

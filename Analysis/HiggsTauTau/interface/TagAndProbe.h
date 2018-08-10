@@ -351,10 +351,28 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
       
-      Electron const* elec1_1 = dynamic_cast<Electron const*>(lep1);
-      Electron const* elec2_1 = dynamic_cast<Electron const*>(lep2);
+      Electron *elec1_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton1"));
+      Electron *elec2_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton2"));
       eta_1_ = elec1_1->sc_eta();
       eta_2_ = elec2_1->sc_eta();
+
+      if(strategy_ == strategy::cpsummer17){
+        // we have to do this here so that the ID is compted before the smear and scale shift
+        float  preCorr_1 = elec1_1->ecalTrkEnergyPreCorr();
+        float postCorr_1 = elec1_1->ecalTrkEnergyPostCorr();
+        float shift_1 = postCorr_1/preCorr_1;
+        elec1_1->set_pt(elec1_1->pt() * shift_1);
+        elec1_1->set_energy(elec1_1->energy() * shift_1);
+        float  preCorr_2 = elec2_1->ecalTrkEnergyPreCorr();
+        float postCorr_2 = elec2_1->ecalTrkEnergyPostCorr();
+        float shift_2 = postCorr_2/preCorr_2;
+        elec2_1->set_pt(elec2_1->pt() * shift_2);
+        elec2_1->set_energy(elec2_1->energy() * shift_2);
+
+        pt_1_ = elec1_1->pt();
+        pt_2_ = elec2_1->pt();
+        m_vis_ = (elec1_1->vector()+elec2_1->vector()).M();
+      }
       
     }
     if(extra_l1_probe_pt_>0 || extra_l1_iso_probe_pt_>0){
