@@ -21,7 +21,6 @@ def list_paths(path):
     directories = []
     for item in os.listdir(path):
       if os.path.isdir(os.path.join(path, item)):
-        print item
         directories.append(item)
     return directories
 

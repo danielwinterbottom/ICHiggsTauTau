@@ -13,6 +13,7 @@ args = parser.parse_args()
 dirname = args.file
 file_names = {}
 for file_name in os.listdir(dirname):
+    if '.root' not in file_name: continue
     if '_et_2016.root' in file_name: key = file_name.replace('_et_2016.root','')
     if '_mt_2016.root' in file_name: key = file_name.replace('_mt_2016.root','')
     if '_tt_2016.root' in file_name: key = file_name.replace('_tt_2016.root','')

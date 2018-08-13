@@ -271,13 +271,15 @@ if options.proc_embed or options.proc_all:
         embed_samples+=['EmbeddingTauTau'+era]
       if 'zmm' in chn:
         embed_samples+=['EmbeddingMuMu'+era]
+      if 'zee' in chn:
+        embed_samples+=['EmbeddingElEl'+era]
 
-  EMBEDFILELIST="./filelists/Jun15_MC_94X"
+  EMBEDFILELIST="./filelists/July24_MC_94X"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Jun15_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/July24_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 10
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
@@ -380,14 +382,14 @@ if options.proc_bkg or options.proc_all:
         PARAJOBSUBMIT = getParaJobSubmit(job_num)
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
-if options.mg_signal:
+if options.mg_signal or options.proc_sm:
   SIG_FILELIST='filelists/Jun15_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     if 'MG' in sa:
       SIG_FILELIST='filelists/Jul18_MC_94X'
     else: 
-      SIG_FILELIST='filelists/Jun15_MC_94X'
+      SIG_FILELIST='filelists/July24_MC_94X'
     JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
