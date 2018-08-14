@@ -212,6 +212,20 @@ class EventInfo {
     std::cout << "-------------------------" << std::endl;
   }
 
+  // Print the full set of weights 
+  inline void print_all_weights() const {
+    std::cout << "-------------------------" << std::endl;
+    std::cout << "Weight name    |  Value  " << std::endl;
+    std::cout << "-------------------------" << std::endl;
+    SDMap::const_iterator it;
+    for (it = weights_.begin(); it != weights_.end(); ++it) {
+      std::string name(it->first);
+      if(name.length()<13)name.append(13-name.length(), ' ');
+      printf("%.13s  |  %.3f  \n",name.c_str(),it->second);
+    }
+    std::cout << "-------------------------" << std::endl;
+  }
+
   /// Return `true` if the weight with `label` is enabled, `false` otherwise
   inline bool weight_is_enabled(std::string label) {
     if (weight_defined(label)) {
@@ -295,7 +309,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 7);
+  ClassDef(EventInfo, 8);
  #endif
 };
 }
