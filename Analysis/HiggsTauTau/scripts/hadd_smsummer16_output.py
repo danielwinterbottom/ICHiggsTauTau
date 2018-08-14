@@ -228,23 +228,15 @@ sample_list = [
    'WHiggs0M_M-125',
    'WHiggs0Mf05ph0_M-125',
    'WHiggs0PM_M-125',
-   'GluGluToHToTauTauPlusTwoJets_M125_MG5',
-   'GluGluToHToTauTau_M125_MG5',
-   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_MG5',
-   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_MG5',
    'GluGluHToTauTau_M125_NNLOPS',
-   'GluGluToMaxmixHToTauTau_M125_MG5',
-   'GluGluToPseudoscalarHToTauTau_M125_MG5',
-   'GluGluToMaxmixH_M125_MG5', 
-   'GluGluToPseudoscalarH_M125_MG5',
-   'GluGluToHToTauTau_M125_MG5_2016',
-   'GluGluToMaxmixHToTauTau_M125_MG5_2016',
-   'GluGluToPseudoscalarHToTauTau_M125_MG5_2016',
    'GluGluToHToTauTau_M125_MG5_PSDown',
    'GluGluToHToTauTau_M125_MG5_PSUp',
-   'GluGluToHToTauTauPlusTwoJets_M125_MG5_2016',
-   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_MG5_2016',
-   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_MG5_2016' 
+   'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+   'GluGluToHToTauTau_M125_amcatnloFXFX',
+   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
