@@ -273,7 +273,29 @@ namespace ic {
       if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
       if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
       if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
-      
+
+      // For MG5 samples:
+      //  <weight MUF="1.0" MUR="2.0" PDF="292200" id="1002"> MUR=2.0  </weight>
+      //  <weight MUF="1.0" MUR="0.5" PDF="292200" id="1003"> MUR=0.5  </weight>
+      //  <weight MUF="2.0" MUR="1.0" PDF="292200" id="1004"> MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="2.0" PDF="292200" id="1005"> MUR=2.0 MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="0.5" PDF="292200" id="1006"> MUR=0.5 MUF=2.0  </weight>
+      //  <weight MUF="0.5" MUR="1.0" PDF="292200" id="1007"> MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="2.0" PDF="292200" id="1008"> MUR=2.0 MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="0.5" PDF="292200" id="1009"> MUR=0.5 MUF=0.5  </weight>
+      //
+
+      // for NNLOPS:
+      //  <weight id="1001"> muR=1 muF=1 </weight>
+      //  <weight id="1002"> muR=1 muF=2 </weight>
+      //  <weight id="1003"> muR=1 muF=0.5 </weight>
+      //  <weight id="1004"> muR=2 muF=1 </weight>
+      //  <weight id="1005"> muR=2 muF=2 </weight>
+      //  <weight id="1006"> muR=2 muF=0.5 </weight>
+      //  <weight id="1007"> muR=0.5 muF=1 </weight>
+      //  <weight id="1008"> muR=0.5 muF=2 </weight>
+      //  <weight id="1009"> muR=0.5 muF=0.5 </weight>
+
       //std::cout << eventInfo->weight_defined("1001")    << std::endl;
  
       //<weight id="1001"> dyn=  -1 muR=0.10000E+01 muF=0.10000E+01 </weight>
@@ -433,8 +455,9 @@ namespace ic {
            unsigned id = abs(lhe_parts[i]->pdgid());
            if ((id >= 1 && id <=6) || id == 21){ 
              partons_++;
+             std::cout << lhe_parts[i]->vector().Pt() << std::endl;
              parton_pt_vec.push_back(lhe_parts[i]->pt());
-             if(lhe_parts[i]->pt()>=14) partons_lhe_++; 
+             if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
     }
@@ -444,8 +467,8 @@ namespace ic {
     if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
     if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
  
-    double n_inc_ =1030705.;
-    double n2_=5155491.;
+    double n_inc_ = 1720061.0;
+    double n2_=4808923.0;
     double f2_   = 0.154160;
     // ps ninc    = 1210565; n2 = 5051805
     // mm ninc    = 1081603; n2 = 5171966 
@@ -455,7 +478,7 @@ namespace ic {
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
-           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_));
+           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
 
       

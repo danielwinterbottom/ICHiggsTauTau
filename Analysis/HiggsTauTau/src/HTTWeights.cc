@@ -3387,7 +3387,7 @@ namespace ic {
       }
     }
 
-    if (do_etau_fakerate_ && (era_==era::data_2015||era_==era::data_2016)) {
+    if (do_etau_fakerate_ && (era_==era::data_2015||era_==era::data_2016 || era_==era::data_2017)) {
       unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double etau_fakerate_1=1.0;
@@ -3445,13 +3445,15 @@ namespace ic {
         }  
       } else if(mc_ == mc::mc2017){
         if(channel_ == channel::et){
-          if(gm2_==1||gm2_==3){
+          if (tau->GetTauID("againstElectronTightMVA6")<0.5) etau_fakerate_2 = 1.0;
+          else if(gm2_==1||gm2_==3){
             if(fabs(tau->eta()) < 1.460){
              etau_fakerate_2 = 1.80;
             } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.53;
           }
       } else {
-          if(gm2_==1||gm2_==3){
+          if (tau->GetTauID("againstElectronVLooseMVA6")<0.5) etau_fakerate_2 = 1.0;
+          else if(gm2_==1||gm2_==3){
             if(fabs(tau->eta()) < 1.460){
               etau_fakerate_2 = 1.09;
             } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.19;
@@ -3460,7 +3462,8 @@ namespace ic {
         if(channel_ == channel::tt){
           unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
           Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-          if(gm1_==1||gm1_==3){
+          if (tau1->GetTauID("againstElectronVLooseMVA6")<0.5) etau_fakerate_1 = 1.0;
+          else if(gm1_==1||gm1_==3){
             if(strategy_==strategy::smsummer16 || strategy_==strategy::cpsummer16){
               if(fabs(tau1->eta()) < 1.460){
                 etau_fakerate_1 = 1.09;
@@ -3494,11 +3497,6 @@ namespace ic {
       }
      eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
     }
-    if (do_etau_fakerate_ && era_==era::data_2017) {
-      double etau_fakerate_1 = 1.0;
-      double etau_fakerate_2 = 1.0;
-      eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
-    }
 
     if (do_mtau_fakerate_ && era_!=era::data_2016 && era_ != era::data_2017) {
       std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -3514,7 +3512,7 @@ namespace ic {
       }
     }
    
-    if (do_mtau_fakerate_ && era_==era::data_2016) {
+    if (do_mtau_fakerate_ && (era_==era::data_2016 || era_==era::data_2017)) {
       unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double mtau_fakerate_1=1.0;
@@ -3615,7 +3613,8 @@ namespace ic {
         }  
       } else if(mc_ == mc::mc2017){
         if(channel_ == channel::mt){
-          if((gm2_==2||gm2_==4)){
+          if(tau->GetTauID("againstMuonTight3")<0.5) mtau_fakerate_2 = 1.0;
+          else if((gm2_==2||gm2_==4)){
             if(fabs(tau->eta()) < 0.4){
               mtau_fakerate_2 = 1.17;
             } else if(fabs(tau->eta()) < 0.8){
@@ -3630,7 +3629,8 @@ namespace ic {
 
           }
         } else {
-          if(gm2_==2||gm2_==4){
+          if(tau->GetTauID("againstMuonLoose3")<0.5) mtau_fakerate_2 = 1.0;
+          else if(gm2_==2||gm2_==4){
             if(fabs(tau->eta()) < 0.4){
               mtau_fakerate_2=1.06;
             } else if(fabs(tau->eta()) < 0.8){
@@ -3647,7 +3647,8 @@ namespace ic {
         if(channel_ == channel::tt){
         unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
         Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-          if(gm1_==2||gm1_==4){
+          if(tau1->GetTauID("againstMuonLoose3")<0.5) mtau_fakerate_1 = 1.0;
+          else if(gm1_==2||gm1_==4){
             if(fabs(tau1->eta()) < 0.4){
               mtau_fakerate_1=1.06;
             } else if(fabs(tau1->eta()) < 0.8){
@@ -3711,12 +3712,6 @@ namespace ic {
       }
      eventInfo->set_weight("mtau_fakerate",mtau_fakerate_1*mtau_fakerate_2);
     }
-    if (do_mtau_fakerate_ && era_==era::data_2017) {
-      double mtau_fakerate_1 = 1.0;
-      double mtau_fakerate_2 = 1.0;  
-      eventInfo->set_weight("mtau_fakerate",mtau_fakerate_1*mtau_fakerate_2);
-    }
-
 
     if (do_tau_mode_scale_) {
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
