@@ -2114,6 +2114,28 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
    TH2D z_pt_weights_sm; GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm);
 
+   bool do_ggH_stitch = false;
+   double n_inc, n_2, frac;
+    if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX")){
+      n_inc = 3089015.;
+      n_2 = 14254055.;
+      frac = 0.279662;
+      do_ggH_stitch = true;
+    }
+    if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX")) {
+      n_inc = 2982585.;
+      n_2 = 14192951.;
+      frac = 0.274486;
+      do_ggH_stitch = true;
+    }
+    if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX")) {
+      n_inc = 3100706.;
+      n_2 = 14302986.;
+      frac = 0.282423;
+      do_ggH_stitch = true;
+    }
+
+
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
@@ -2126,7 +2148,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_jets_label(jets_label)
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
-    .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
+    .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+    .set_do_quarkmass_higgspt(do_ggH_stitch);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
@@ -2163,9 +2186,12 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 
     BuildModule(httWeights);
     if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+
       HTTStitching httStitching = HTTStitching("HTTStitching")  
           .set_era(era_type)
-          .set_fs(fs.get());
+          .set_fs(fs.get())
+          .set_do_ggH_soup(do_ggH_stitch);
+          httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
            if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
              output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
           httStitching.set_do_w_soup(true);

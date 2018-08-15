@@ -22,6 +22,7 @@ namespace ic {
     do_dy_soup_high_mass_     = false;
     do_dy_soup_htbinned_      = false;
     do_w_soup_htbinned_      = false;
+    do_ggH_soup_ = false;
     fs_ = NULL;
   }
   HTTStitching::~HTTStitching() {
@@ -180,6 +181,10 @@ namespace ic {
       std::cout << boost::format("f 200<ht<400=%-9.5f  n 200<ht<400=%-9i  w 200<ht<400=%-9.5f \n") % zf2_ % zn2_ % zw2_;
       std::cout << boost::format("f 400<ht<600=%-9.5f  n 400<ht<600=%-9i  w 400<ht<600=%-9.5f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f ht>600=%-9.5f  n ht>600=%-9i  w ht>600=%-9.5f \n") % zf4_ % zn4_ % zw4_;
+    }
+
+    if(do_ggH_soup_){
+      ggHw2_ = (ggH_n_inc_*ggH_frac_) / ( (ggH_n_inc_*ggH_frac_) + ggH_n_2_ );;
     }
 
     return 0;
@@ -377,6 +382,13 @@ namespace ic {
      if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
      if (gen_ht >= 600) eventInfo->set_weight("dysoup", zw4_);
    }
+  
+   if(do_ggH_soup_) {
+     int npNLO = eventInfo->npNLO();
+     if(npNLO<0) npNLO = 2; // this is tempoary as I didn't both re-running the H+2j ntuples to ass npNLO so this will always = the default value (=-1) 
+      if(npNLO>=2) eventInfo->set_weight("ggHsoup", ggHw2_);
+      else eventInfo->set_weight("ggHsoup", 1.0);
+   }
 
     return 0;
   }
@@ -455,5 +467,12 @@ namespace ic {
     wxs3_ = wxs3;
     wxs4_ = wxs4;
   }
+
+  void HTTStitching::SetggHInputYieldsAndFrac(double ggH_n_inc, double ggH_n2, double ggH_frac) {
+    ggH_n_inc_ = ggH_n_inc;
+    ggH_n_2_ = ggH_n2;
+    ggH_frac_ = ggH_frac;
+  }
+
 
 }

@@ -21,6 +21,7 @@ class HTTStitching : public ModuleBase {
   CLASS_MEMBER(HTTStitching, bool, do_dy_soup)
   CLASS_MEMBER(HTTStitching, bool, do_dy_soup_high_mass)
   CLASS_MEMBER(HTTStitching, bool, do_dy_soup_htbinned)
+  CLASS_MEMBER(HTTStitching, bool, do_ggH_soup)
   CLASS_MEMBER(HTTStitching, fwlite::TFileService*, fs)
 
   TTree *t_gen_info_;
@@ -36,7 +37,7 @@ class HTTStitching : public ModuleBase {
   double zxs0_,zxs1_,zxs2_,zxs3_,zxs4_,z_lo_nlo_corr_,zxsinc_,zxshm_;
   double wxs0_,wxs1_,wxs2_,wxs3_,wxs4_,w_lo_nlo_corr_;
   double wt_lumi_;
-
+  double ggH_n_inc_, ggH_n_2_, ggH_frac_, ggHw2_;
 
  public:
   HTTStitching(std::string const& name);
@@ -54,6 +55,7 @@ class HTTStitching : public ModuleBase {
   void SetDYInputCrossSections(double zxs0, double zxs1, double zxs2, double zxs3, double zxs4);
   void SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm);
   void SetWInputCrossSections(double wxs0, double wxs1, double wxs2, double wxs3, double wxs4);
+  void SetggHInputYieldsAndFrac(double ggH_n_inc, double ggH_n2, double ggH_frac);
 };
 
 }

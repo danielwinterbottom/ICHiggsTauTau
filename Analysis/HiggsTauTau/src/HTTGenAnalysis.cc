@@ -68,6 +68,7 @@ namespace ic {
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
+      outtree_->Branch("npNLO", &npNLO_);
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -455,7 +456,6 @@ namespace ic {
            unsigned id = abs(lhe_parts[i]->pdgid());
            if ((id >= 1 && id <=6) || id == 21){ 
              partons_++;
-             std::cout << lhe_parts[i]->vector().Pt() << std::endl;
              parton_pt_vec.push_back(lhe_parts[i]->pt());
              if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
@@ -466,13 +466,13 @@ namespace ic {
     if (parton_pt_vec.size()>0) parton_pt_ = parton_pt_vec[0];
     if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
     if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
- 
-    double n_inc_ = 1720061.0;
-    double n2_=4808923.0;
-    double f2_   = 0.154160;
-    // ps ninc    = 1210565; n2 = 5051805
-    // mm ninc    = 1081603; n2 = 5171966 
-    if(partons_lhe_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+
+    npNLO_ = eventInfo->npNLO();
+    if(npNLO_<0) npNLO_ = 2; 
+    double n_inc_ = 3089015.;
+    double n2_    = 14254055;
+    double f2_   = 0.279662;
+    if(npNLO_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
     else wt_stitch_=1.;
     
     for(unsigned i=0; i<gen_particles.size(); ++i){

@@ -252,6 +252,7 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggA_b_;
   double wt_ggA_i_;
   double wt_stitch_;
+  int npNLO_;
   
   TH2D z_pt_weights_sm_;
   

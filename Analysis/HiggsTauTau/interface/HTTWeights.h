@@ -99,6 +99,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, embedding_scalefactor_file)
   CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
   CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
+  CLASS_MEMBER(HTTWeights, bool, do_quarkmass_higgspt)
   CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
   CLASS_MEMBER(HTTWeights, bool, do_z_weights)
   CLASS_MEMBER(HTTWeights, bool, is_embedded)
