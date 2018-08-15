@@ -12,6 +12,7 @@ EventInfo::EventInfo()
       lepton_rho_(0.),
       gen_ht_(0.),
       n_outgoing_partons_(0),
+      npNLO_(-1),
       gen_mll_(0.),
       good_vertices_(0) {}
 

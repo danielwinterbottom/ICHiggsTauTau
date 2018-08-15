@@ -161,9 +161,8 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
     )
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-    lheProducer         = cms.InputTag("externalLHEProducer"),
-    includeLHEWeights   = cms.bool(False)
-    )
+    includeLHEWeights   = cms.bool(True),
+    lheProducer         = cms.InputTag("externalLHEProducer"))
 
 process.icEventProducer = producers.icEventProducer.clone()
 

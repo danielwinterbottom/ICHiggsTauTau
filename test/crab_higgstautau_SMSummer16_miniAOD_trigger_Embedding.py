@@ -46,13 +46,13 @@ if __name__ == '__main__':
     #commented out samples aren't available yet
     
 
-    tasks.append(('EmbeddingMuTauB', '/EmbeddingRun2016B/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2016C/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauD', '/EmbeddingRun2016D/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauE', '/EmbeddingRun2016E/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauF', '/EmbeddingRun2016F/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauG', '/EmbeddingRun2016G/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauH', '/EmbeddingRun2016H/MuTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauB', '/EmbeddingRun2016B/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2016C/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauD', '/EmbeddingRun2016D/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauE', '/EmbeddingRun2016E/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauF', '/EmbeddingRun2016F/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauG', '/EmbeddingRun2016G/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauH', '/EmbeddingRun2016H/MuTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))
 
 
     tasks.append(('EmbeddingMuMuB', '/EmbeddingRun2016B/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
