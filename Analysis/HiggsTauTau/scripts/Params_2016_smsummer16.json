@@ -121,15 +121,15 @@
   },
   "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 4788426.0
+    "evt": 1728744.0
   },
   "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 4808923.0
+    "evt": 1720061.0
   },
   "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 4723705.0
+    "evt": 1667437.0
   },
   "GluGluHToTauTau_M125_NNLOPS": {
     "xs": 3.045966,
