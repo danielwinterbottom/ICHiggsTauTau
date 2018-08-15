@@ -83,7 +83,9 @@ def SetAxisTitles(plot, channel):
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
-  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_July05_3_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_July05_4_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_highMjj_July26_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
 
 
     
@@ -164,7 +166,9 @@ def SetAxisTitles2D(plot, channel):
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_lowMjj_July05_2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_July05_3_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_July05_4_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_highMjj_July26_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
@@ -2068,7 +2072,8 @@ def HTTPlot(nodename,
     sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_htt"], False )
     sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
-    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"],False)
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
+    sig_schemes['smsummer17'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
@@ -2083,7 +2088,7 @@ def HTTPlot(nodename,
       'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104))],
       'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
       #'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
-      'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
+      'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","EWKZ"],R.TColor.GetColor(100,192,232))],
       'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","EWKZ"],R.TColor.GetColor(100,192,232))],
       'w':[backgroundComp("W",["W"],R.TColor.GetColor(222,90,106))],
     'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
@@ -2118,14 +2123,16 @@ def HTTPlot(nodename,
     if vbf_background:
       for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
     if embedding:
+      background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm']:
         if not chan in background_schemes: continue  
         schemes = background_schemes[chan]
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
-          if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
-            bkg['plot_list'] = ["EmbedZL","ZJ","ZTT"]
+            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
+          #if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+          #  bkg['plot_list'] = ["EmbedZL","ZJ"]
  
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
@@ -2549,6 +2556,7 @@ def CompareHists(hists=[],
     hs = R.THStack("hs","")
     hist_count=0
     legend_hists=[]
+    if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
     for hist in hists:
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         if norm_bins: hist.Scale(1.0,"width")
@@ -2610,7 +2618,7 @@ def CompareHists(hists=[],
 
     if not custom_y_range:
         if(log_y): 
-            axish[0].SetMinimum(0.0009)
+            axish[0].SetMinimum(hs.GetMinimum("nostack"))
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
@@ -2624,8 +2632,9 @@ def CompareHists(hists=[],
       uncert_hist.SetLineColor(CreateTransparentColor(12,0.4))
       uncert_hist.SetMarkerSize(0)
       uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
+      uncert_hist.SetFillStyle(1111)
       uncert_hist.Draw("e2same")
-    hs.Draw("nostack l same")
+    hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
     
@@ -3116,7 +3125,8 @@ def HTTPlotUnrolled(nodename,
             cat="",
             x_lines=None,
             y_labels_vec=None,
-            embedding=False
+            embedding=False,
+            vbf_background=False
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -3132,9 +3142,9 @@ def HTTPlotUnrolled(nodename,
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
-    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
+    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
-    'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
+    'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232))],
     'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
     #'dy':[backgroundComp("DY",["ZTT","ZL","ZJ"],R.TColor.GetColor(100,192,232))],
     'dy':[backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -3152,6 +3162,8 @@ def HTTPlotUnrolled(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
     
+    if vbf_background:
+      for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
         if not chan in background_schemes: continue  
@@ -3159,8 +3171,9 @@ def HTTPlotUnrolled(nodename,
         for bkg in schemes:
           if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
+            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
-            bkg['plot_list'] = ["EmbedZL","ZJ","ZTT"]
+            bkg['plot_list'] = ["EmbedZL","ZJ"]
 
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()

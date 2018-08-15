@@ -57,6 +57,8 @@ parser.add_argument("--aiso2", dest="aiso2", action='store_true',
     help="Compute scale-factors or anti-isolated region 2.")
 parser.add_argument("--embed_sel", dest="embed_sel", action='store_true',
     help="Do scale-factors for embedding trgger selection")
+parser.add_argument("--embed_dz", dest="embed_dz", action='store_true',
+    help="Measure DZ filter efficiency for di-muon trigger")
 parser.add_argument("--draw_hists", dest="draw_hists", type=int,
     help="If set to 0 then will not re-make the 3D histograms instead will use the histograms on the existing root file")
 
@@ -73,6 +75,8 @@ print 'em_iso            =', options.em_iso
 print 'aiso1             =', options.aiso1
 print 'aiso2             =', options.aiso2
 print 'draw_hists        =', options.draw_hists
+print 'embed_sel         =', options.embed_sel
+print 'embed_dz          =', options.embed_dz
 print '###############################################'
 print ''
 
@@ -125,6 +129,14 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
+      if options.embed_sel:
+        trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
+        idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
+        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' #mu8
+        trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
+      if  options.embed_dz:
+        trg_eta_bins='[0,2.4]'
+        trg_pt_bins='[28,1000]'
       if options.em_iso: 
         trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
         #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
@@ -144,37 +156,41 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     idiso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
     idiso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
 
-    GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
-    GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
-    GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
-    GenerateZLL(ana, '_trg_tag2_pass', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)    
+    if not options.embed_sel:
+      GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
+      GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
+      GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
+      GenerateZLL(ana, '_trg_tag2_pass', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)    
     GenerateData(ana, '_trg_tag1_fail', data_samples, trg_plot_probe_2, wt, trg_tag_1, '!%s' % trg_probe_2)
     GenerateData(ana, '_trg_tag2_fail', data_samples, trg_plot_probe_1, wt, trg_tag_2, '!%s' % trg_probe_1)
     GenerateData(ana, '_trg_tag1_pass', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
     GenerateData(ana, '_trg_tag2_pass', data_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
     
-    GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
-    GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
-    GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
-    GenerateZLL(ana, '_id_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)    
+    if not options.embed_sel:
+      GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
+      GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
+      GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
+      GenerateZLL(ana, '_id_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)    
     GenerateData(ana, '_id_tag1_fail', data_samples, idiso_plot_probe_2, wt, id_tag_1, '!%s' % id_probe_2)
     GenerateData(ana, '_id_tag2_fail', data_samples, idiso_plot_probe_1, wt, id_tag_2, '!%s' % id_probe_1)
     GenerateData(ana, '_id_tag1_pass', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
     GenerateData(ana, '_id_tag2_pass', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
     
-    GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-    GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-    GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-    GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
+    if not options.embed_sel:
+      GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
     GenerateData(ana, '_iso_tag1_fail', data_samples, idiso_plot_probe_2, wt, iso_tag_1, '!%s' % iso_probe_2)
     GenerateData(ana, '_iso_tag2_fail', data_samples, idiso_plot_probe_1, wt, iso_tag_2, '!%s' % iso_probe_1)
     GenerateData(ana, '_iso_tag1_pass', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
     GenerateData(ana, '_iso_tag2_pass', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
     
-    GenerateZLL(ana, '_idiso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
-    GenerateZLL(ana, '_idiso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
-    GenerateZLL(ana, '_idiso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
-    GenerateZLL(ana, '_idiso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)   
+    if not options.embed_sel:
+      GenerateZLL(ana, '_idiso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
+      GenerateZLL(ana, '_idiso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
+      GenerateZLL(ana, '_idiso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
+      GenerateZLL(ana, '_idiso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)   
     GenerateData(ana, '_idiso_tag1_fail', data_samples, idiso_plot_probe_2, wt, idiso_tag_1, '!%s' % idiso_probe_2)
     GenerateData(ana, '_idiso_tag2_fail', data_samples, idiso_plot_probe_1, wt, idiso_tag_2, '!%s' % idiso_probe_1)
     GenerateData(ana, '_idiso_tag1_pass', data_samples, idiso_plot_probe_2, wt, idiso_tag_1, idiso_probe_2)
@@ -182,39 +198,40 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     
     if options.embedded:
        
-      GenerateEmbedded(ana, '_trg_tag1_fail', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_fail', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
-      GenerateEmbedded(ana, '_trg_tag1_pass', embed_samples, trg_plot_probe_2, wt+'*(wt<2)', trg_tag_1+'&&'+gen_cuts, trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_pass', embed_samples, trg_plot_probe_1, wt+'*(wt<2)', trg_tag_2+'&&'+gen_cuts, trg_probe_1)
+      GenerateEmbedded(ana, '_trg_tag1_fail', embed_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
+      GenerateEmbedded(ana, '_trg_tag2_fail', embed_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
+      GenerateEmbedded(ana, '_trg_tag1_pass', embed_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
+      GenerateEmbedded(ana, '_trg_tag2_pass', embed_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)
          
-      GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
-      GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
-      GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', id_tag_1+'&&'+gen_cuts, id_probe_2)
-      GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', id_tag_2+'&&'+gen_cuts, id_probe_1)
+      GenerateEmbedded(ana, '_id_tag1_fail', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
+      GenerateEmbedded(ana, '_id_tag2_fail', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
+      GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
+      GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)
        
-      GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-      GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', iso_tag_2+'&&'+gen_cuts, iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)
       
-      GenerateEmbedded(ana, '_idiso_tag1_fail', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
-      GenerateEmbedded(ana, '_idiso_tag2_fail', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
-      GenerateEmbedded(ana, '_idiso_tag1_pass', embed_samples, idiso_plot_probe_2, wt+'*(wt<2)', idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
-      GenerateEmbedded(ana, '_idiso_tag2_pass', embed_samples, idiso_plot_probe_1, wt+'*(wt<2)', idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)
+      GenerateEmbedded(ana, '_idiso_tag1_fail', embed_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
+      GenerateEmbedded(ana, '_idiso_tag2_fail', embed_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
+      GenerateEmbedded(ana, '_idiso_tag1_pass', embed_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, idiso_probe_2)
+      GenerateEmbedded(ana, '_idiso_tag2_pass', embed_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, idiso_probe_1)
     
     ana.Run()
     ana.nodes.Output(outfile)
     
     outfile.cd()
     
-    zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
-    zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
-    zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
-    zll_trg_pass.Add(outfile.Get(nodename+'/ZLL_trg_tag2_pass'))
-    zll_trg_fail.SetName('ZLL_trg_fail')
-    zll_trg_pass.SetName('ZLL_trg_pass')
-    zll_trg_fail.Write('ZLL_trg_fail')
-    zll_trg_pass.Write('ZLL_trg_pass')
+    if not options.embed_sel:
+      zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
+      zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
+      zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
+      zll_trg_pass.Add(outfile.Get(nodename+'/ZLL_trg_tag2_pass'))
+      zll_trg_fail.SetName('ZLL_trg_fail')
+      zll_trg_pass.SetName('ZLL_trg_pass')
+      zll_trg_fail.Write('ZLL_trg_fail')
+      zll_trg_pass.Write('ZLL_trg_pass')
     
     data_trg_fail = outfile.Get(nodename+'/data_trg_tag1_fail').Clone()
     data_trg_fail.Add(outfile.Get(nodename+'/data_trg_tag2_fail'))
@@ -225,14 +242,15 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_trg_fail.Write('data_trg_fail')
     data_trg_pass.Write('data_trg_pass')
     
-    zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
-    zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
-    zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
-    zll_id_pass.Add(outfile.Get(nodename+'/ZLL_id_tag2_pass'))
-    zll_id_fail.SetName('ZLL_id_fail')
-    zll_id_pass.SetName('ZLL_id_pass')
-    zll_id_fail.Write('ZLL_id_fail')
-    zll_id_pass.Write('ZLL_id_pass')
+    if not options.embed_sel:
+      zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
+      zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
+      zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
+      zll_id_pass.Add(outfile.Get(nodename+'/ZLL_id_tag2_pass'))
+      zll_id_fail.SetName('ZLL_id_fail')
+      zll_id_pass.SetName('ZLL_id_pass')
+      zll_id_fail.Write('ZLL_id_fail')
+      zll_id_pass.Write('ZLL_id_pass')
     
     data_id_fail = outfile.Get(nodename+'/data_id_tag1_fail').Clone()
     data_id_fail.Add(outfile.Get(nodename+'/data_id_tag2_fail'))
@@ -243,14 +261,15 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_id_fail.Write('data_id_fail')
     data_id_pass.Write('data_id_pass')
     
-    zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
-    zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
-    zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
-    zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
-    zll_iso_fail.SetName('ZLL_iso_fail')
-    zll_iso_pass.SetName('ZLL_iso_pass')
-    zll_iso_fail.Write('ZLL_iso_fail')
-    zll_iso_pass.Write('ZLL_iso_pass')
+    if not options.embed_sel:
+      zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
+      zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
+      zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
+      zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
+      zll_iso_fail.SetName('ZLL_iso_fail')
+      zll_iso_pass.SetName('ZLL_iso_pass')
+      zll_iso_fail.Write('ZLL_iso_fail')
+      zll_iso_pass.Write('ZLL_iso_pass')
     
     data_iso_fail = outfile.Get(nodename+'/data_iso_tag1_fail').Clone()
     data_iso_fail.Add(outfile.Get(nodename+'/data_iso_tag2_fail'))
@@ -261,14 +280,15 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_iso_fail.Write('data_iso_fail')
     data_iso_pass.Write('data_iso_pass')
     
-    zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
-    zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
-    zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
-    zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
-    zll_iso_fail.SetName('ZLL_iso_fail')
-    zll_iso_pass.SetName('ZLL_iso_pass')
-    zll_iso_fail.Write('ZLL_iso_fail')
-    zll_iso_pass.Write('ZLL_iso_pass')
+    if not options.embed_sel:
+      zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
+      zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
+      zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
+      zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
+      zll_iso_fail.SetName('ZLL_iso_fail')
+      zll_iso_pass.SetName('ZLL_iso_pass')
+      zll_iso_fail.Write('ZLL_iso_fail')
+      zll_iso_pass.Write('ZLL_iso_pass')
     
     data_idiso_fail = outfile.Get(nodename+'/data_idiso_tag1_fail').Clone()
     data_idiso_fail.Add(outfile.Get(nodename+'/data_idiso_tag2_fail'))
@@ -279,14 +299,15 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_idiso_fail.Write('data_idiso_fail')
     data_idiso_pass.Write('data_idiso_pass')
     
-    zll_idiso_fail = outfile.Get(nodename+'/ZLL_idiso_tag1_fail').Clone()
-    zll_idiso_fail.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_fail'))
-    zll_idiso_pass = outfile.Get(nodename+'/ZLL_idiso_tag1_pass').Clone()
-    zll_idiso_pass.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_pass'))
-    zll_idiso_fail.SetName('ZLL_idiso_fail')
-    zll_idiso_pass.SetName('ZLL_idiso_pass')
-    zll_idiso_fail.Write('ZLL_idiso_fail')
-    zll_idiso_pass.Write('ZLL_idiso_pass')
+    if not options.embed_sel:
+      zll_idiso_fail = outfile.Get(nodename+'/ZLL_idiso_tag1_fail').Clone()
+      zll_idiso_fail.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_fail'))
+      zll_idiso_pass = outfile.Get(nodename+'/ZLL_idiso_tag1_pass').Clone()
+      zll_idiso_pass.Add(outfile.Get(nodename+'/ZLL_idiso_tag2_pass'))
+      zll_idiso_fail.SetName('ZLL_idiso_fail')
+      zll_idiso_pass.SetName('ZLL_idiso_pass')
+      zll_idiso_fail.Write('ZLL_idiso_fail')
+      zll_idiso_pass.Write('ZLL_idiso_pass')
     
     if options.embedded:
       
@@ -539,7 +560,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
       if options.era == 'summer17' and ('_iso' in name or '_trg' in name): 
-          if not options.aiso1 and not options.aiso2 and xmin >= 30: ForceEventCount = True
+          if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
@@ -695,15 +716,27 @@ if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
 embed_samples = []
-if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
-if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
-if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
-if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
-
+if options.era == 'summer17':
+  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
+  if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF']
+else:
+  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
+  if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
+#Formula:  abs(eta_2),pt_2,m_vis[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4],[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000],(40,70,110) (wt)*((m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)*(1&&id_probe_1))*(os)*(1)*(!(trg_probe_2))
 ROOT.TH1.SetDefaultSumw2(True)
 
 trg_probe_1 = '(trg_probe_1)'
 trg_probe_2 = '(trg_probe_2)'
+if options.embed_sel:
+  trg_probe_1 = '(trg_probe_1)'
+  trg_probe_2 = '(trg_probe_2)'
+if options.embed_dz:
+  trg_probe_1 = '(pass_dz)'
+  trg_probe_2 = '(pass_dz)'
 id_probe_1 = '(id_probe_1)'
 id_probe_2 = '(id_probe_2)'
 if options.channel == 'tpzmm':
@@ -737,8 +770,12 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  iso_cut_1='iso_1<0.1'
-  iso_cut_2='iso_2<0.1'
+  if options.era == 'summer17':
+    iso_cut_1='iso_1<0.15'
+    iso_cut_2='iso_2<0.15'
+  else: 
+    iso_cut_1='iso_1<0.1'
+    iso_cut_2='iso_2<0.1'
   if options.aiso1:
     iso_cut_1='iso_1>=0.1&&iso_1<0.25'  
     iso_cut_2='iso_2>=0.1&&iso_2<0.25'
@@ -774,8 +811,11 @@ idiso_tag_1 = baseline_tag1
 idiso_tag_2 = baseline_tag2 
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
-trg_tag_1 = baseline_tag1+'*(%s&&id_probe_1)' % iso_cut_2
-trg_tag_2 = baseline_tag2+'*(%s&&id_probe_2)' % iso_cut_1
+trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
+trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
+if options.embed_dz:
+  trg_tag_1= 'm_vis>50&&m_vis<150&&pt_1>28&&pt_2>28&&abs(eta_1)<2.4&&abs(eta_2)<2.4&&id_tag_1&&id_tag_2&&trg_tag_1&&os&&pass_dimu'
+  trg_tag_2='0'
 
 
 # Create output file
@@ -797,8 +837,9 @@ if options.draw_hists == 1:
       ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
   
   # Add all MC background files
-  for sample_name in ztt_samples:
-      ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
+  if not options.embed_sel:
+    for sample_name in ztt_samples:
+        ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
   
   if options.embedded:
     # Add all embedded files
@@ -812,9 +853,11 @@ else:
 wsfilename = output_name.replace('.root','_ws.root')
 wsfile = ROOT.TFile(wsfilename, 'RECREATE')
 
-wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
-
-if options.embedded: wsnames += ['EmbedZLL_id', 'EmbedZLL_iso', 'EmbedZLL_trg', 'EmbedZLL_idiso']
+if not options.embed_sel:
+  wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
+else: 
+  wsnames = ['data_id', 'data_trg', 'data_iso']
+if options.embedded: wsnames += ['embed_id', 'embed_iso', 'embed_trg', 'embed_idiso']
 for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
 
 sffile_name = options.outputfolder+'/muon_SFs.root'
@@ -839,11 +882,15 @@ for i in ['id','iso','trg']:
   for j in range(1,hist2d.GetNbinsY()+1):
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
     ymax = hist2d.GetYaxis().GetBinUpEdge(j)
-    leg_labels=['data','MC']
+    if not options.embed_sel:
+      leg_labels=['data','MC']
+    else: leg_labels=['data']
     
-    graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
+    if not options.embed_sel:
+      graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
+    else: graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
     if options.embedded: 
-      graphs.append(sffile.Get(('gr_EmbedZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
+      graphs.append(sffile.Get(('gr_embed_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
       leg_labels.append('Embedded')
     x_title = 'P_{T}^{#mu} (GeV)'
     ratio_range="0.85,1.15"

@@ -96,6 +96,7 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;
   double wt_em_qcd_bothaiso_;
+  double wt_embed_mc_yield_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;
@@ -169,6 +170,7 @@ class HTTCategories : public ModuleBase {
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
+  double eCorr_1_;
   branch_var d0_1_;
   branch_var d0_2_;
   branch_var dz_1_;
@@ -480,8 +482,6 @@ class HTTCategories : public ModuleBase {
   
   double wt_ff_1_;
   double wt_ff_2_;
-  double wt_ff_realtau_1_;
-  double wt_ff_realtau_2_;
   double wt_ff_qcd_syst_up_1_            ;
   double wt_ff_qcd_syst_down_1_          ;
   double wt_ff_qcd_dm0_njet0_stat_up_1_  ;

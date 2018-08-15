@@ -38,6 +38,8 @@ Electron::Electron()
       r9_(0.),
       hcal_sum_(0.),
       ecal_energy_(0.),
+      ecalTrkEnergyPreCorr_(0.),
+      ecalTrkEnergyPostCorr_(0.),
       has_matched_conversion_(false),
       dxy_vertex_(0.),
       dz_vertex_(0.),

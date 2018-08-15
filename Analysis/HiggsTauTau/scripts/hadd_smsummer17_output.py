@@ -17,6 +17,12 @@ parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_pe
 parser.add_option("--batch", dest= "batch", default=False, action='store_true',
                   help="Submit as batch jobs")
 
+def list_paths(path):
+    directories = []
+    for item in os.listdir(path):
+      if os.path.isdir(os.path.join(path, item)):
+        directories.append(item)
+    return directories
 
 (options,args) = parser.parse_args()
 
@@ -38,7 +44,7 @@ sample_list = [
    'VBFHToTauTau_M-125',
    'GluGluHToTauTau_M-125',
    'ZHToTauTau_M-125',
-   'ttHToTauTau_M-125',
+   #'ttHToTauTau_M-125',
    'DY1JetsToLL-LO',
    'DY2JetsToLL-LO',
    'DY3JetsToLL-LO',
@@ -73,6 +79,8 @@ sample_list = [
    'DYJetsToLL-ext',
    'DY2JetsToLL-LO-ext',
    'WJetsToLNu-LO',
+   'WJetsToLNu-LO-ext',
+   'W1JetsToLNu-LO',
    'W2JetsToLNu-LO',
    'WWTo4Q-ext',
    'WWToLNuQQ-ext',
@@ -96,14 +104,47 @@ sample_list = [
    'SingleMuonF',
    'SingleElectronF',
    'MuonEGF',
-   'TauF'
+   'TauF',
+   'EmbeddingMuTauB',
+   'EmbeddingMuTauC',
+   'EmbeddingMuTauD',
+   'EmbeddingMuTauE',
+   'EmbeddingMuTauF',
+   'EmbeddingElMuB',
+   'EmbeddingElMuC',
+   'EmbeddingElMuD',
+   'EmbeddingElMuE',
+   'EmbeddingElMuF',
+   'EmbeddingElTauB',
+   'EmbeddingElTauC',
+   'EmbeddingElTauD',
+   'EmbeddingElTauE',
+   'EmbeddingElTauF',
+   'EmbeddingTauTauB',
+   'EmbeddingTauTauC',
+   'EmbeddingTauTauD',
+   'EmbeddingTauTauE',
+   'EmbeddingTauTauF',
+   'EmbeddingElElB',
+   'EmbeddingElElC',
+   'EmbeddingElElD',
+   'EmbeddingElElE',
+   'EmbeddingElElF',
+   'EmbeddingMuMuB',
+   'EmbeddingMuMuC',
+   'EmbeddingMuMuD',
+   'EmbeddingMuMuE',
+   'EmbeddingMuMuF'
 	]
+
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
-subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP']
+subdirs=list_paths(outputf)
+#print subdirs
+#subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP']
 
 nfiles={}
 

@@ -66,6 +66,8 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt_stitch"       , &wt_stitch_       );
+      outtree_->Branch("wt_topmass"       , &wt_topmass_       );
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -215,10 +217,11 @@ namespace ic {
       outtree_->Branch("geneta_2"    , &geneta_2_       );
       outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
-      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("partons_lhe"     , &partons_lhe_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
+      outtree_->Branch("parton_pt_2"     , &parton_pt_2_);
+      outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
@@ -245,7 +248,8 @@ namespace ic {
     count_mt_ = 0;
     count_tt_ = 0;
 
-    GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
+    GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
+    topmass_wts_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight");
     
     return 0;
   }
@@ -269,16 +273,51 @@ namespace ic {
       if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
       if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
       if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
-      
-      if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
-      if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
-      if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
-      if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
-      if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
-      if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
-      if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
-      if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
-      if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
+
+      // For MG5 samples:
+      //  <weight MUF="1.0" MUR="2.0" PDF="292200" id="1002"> MUR=2.0  </weight>
+      //  <weight MUF="1.0" MUR="0.5" PDF="292200" id="1003"> MUR=0.5  </weight>
+      //  <weight MUF="2.0" MUR="1.0" PDF="292200" id="1004"> MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="2.0" PDF="292200" id="1005"> MUR=2.0 MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="0.5" PDF="292200" id="1006"> MUR=0.5 MUF=2.0  </weight>
+      //  <weight MUF="0.5" MUR="1.0" PDF="292200" id="1007"> MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="2.0" PDF="292200" id="1008"> MUR=2.0 MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="0.5" PDF="292200" id="1009"> MUR=0.5 MUF=0.5  </weight>
+      //
+
+      // for NNLOPS:
+      //  <weight id="1001"> muR=1 muF=1 </weight>
+      //  <weight id="1002"> muR=1 muF=2 </weight>
+      //  <weight id="1003"> muR=1 muF=0.5 </weight>
+      //  <weight id="1004"> muR=2 muF=1 </weight>
+      //  <weight id="1005"> muR=2 muF=2 </weight>
+      //  <weight id="1006"> muR=2 muF=0.5 </weight>
+      //  <weight id="1007"> muR=0.5 muF=1 </weight>
+      //  <weight id="1008"> muR=0.5 muF=2 </weight>
+      //  <weight id="1009"> muR=0.5 muF=0.5 </weight>
+
+      //std::cout << eventInfo->weight_defined("1001")    << std::endl;
+ 
+      //<weight id="1001"> dyn=  -1 muR=0.10000E+01 muF=0.10000E+01 </weight>
+      //<weight id="1002"> dyn=  -1 muR=0.20000E+01 muF=0.10000E+01 </weight>
+      //<weight id="1003"> dyn=  -1 muR=0.50000E+00 muF=0.10000E+01 </weight>
+      //<weight id="1004"> dyn=  -1 muR=0.10000E+01 muF=0.20000E+01 </weight>
+      //<weight id="1005"> dyn=  -1 muR=0.20000E+01 muF=0.20000E+01 </weight>
+      //<weight id="1006"> dyn=  -1 muR=0.50000E+00 muF=0.20000E+01 </weight>
+      //<weight id="1007"> dyn=  -1 muR=0.10000E+01 muF=0.50000E+00 </weight>
+      //<weight id="1008"> dyn=  -1 muR=0.20000E+01 muF=0.50000E+00 </weight>
+      //<weight id="1009"> dyn=  -1 muR=0.50000E+00 muF=0.50000E+00 </weight>
+
+ 
+      //if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
+      //if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
+      //if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
+      //if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
+      //if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
+      //if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
+      //if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
+      //if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
+      //if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
       //pdf variation weights
       //if(eventInfo->weight_defined("2001")) wt_pdf_1_ = eventInfo->weight("2001"); else wt_pdf_1_=1.0;
       //if(eventInfo->weight_defined("2002")) wt_pdf_2_ = eventInfo->weight("2002"); else wt_pdf_2_=1.0;
@@ -406,20 +445,40 @@ namespace ic {
     HiggsPt_=-9999;
     partons_lhe_=0;
     partons_=0;
+    std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
-      parton_pt_=10.;
+      parton_pt_=-9999;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
-           if ((id >= 1 && id <=6) || id == 21){ if(lhe_parts[i]->pt()>=10.) {partons_lhe_++;} parton_pt_ = lhe_parts[i]->pt();}
+           if ((id >= 1 && id <=6) || id == 21){ 
+             partons_++;
+             std::cout << lhe_parts[i]->vector().Pt() << std::endl;
+             parton_pt_vec.push_back(lhe_parts[i]->pt());
+             if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
+        }
       }
     }
+    std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
+    std::reverse(parton_pt_vec.begin(),parton_pt_vec.end());
+    if (parton_pt_vec.size()>0) parton_pt_ = parton_pt_vec[0];
+    if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
+    if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
+ 
+    double n_inc_ = 1720061.0;
+    double n2_=4808923.0;
+    double f2_   = 0.154160;
+    // ps ninc    = 1210565; n2 = 5051805
+    // mm ninc    = 1081603; n2 = 5171966 
+    if(partons_lhe_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+    else wt_stitch_=1.;
     
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
+           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
 
       
@@ -431,7 +490,7 @@ namespace ic {
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
-      if (status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 && part.pt() >= 10.) partons_++;
+      if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 && part.pt() >= 10.) partons_++;
       
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
@@ -447,8 +506,11 @@ namespace ic {
         met.set_vector(met.vector() + part.vector());
         continue;
       }
-      
-      
+      if(channel_str_=="zmm") {
+        if(!(genID == 13 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
+        higgs_products.push_back(*(gen_particles[i]));
+        decay_types.push_back("m");
+      }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
@@ -542,6 +604,12 @@ namespace ic {
         lep2 = muons[1];
         passed_ = true;
       }
+    } else if(channel_str_ == "zmm"){
+      if(muons.size() == 2){
+        lep1 = muons[0];
+        lep2 = muons[1];
+        passed_ = true;
+      }
     } else if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
@@ -580,8 +648,10 @@ namespace ic {
       mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
-      mt_1_ = MT(&lep1, &met);
-      mt_2_ = MT(&lep2, &met);
+      if(!(channel_str_ == "zmm")){
+        mt_1_ = MT(&lep1, &met);
+        mt_2_ = MT(&lep2, &met);
+      }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
       ditau->AddCandidate("lep1",&lep1);

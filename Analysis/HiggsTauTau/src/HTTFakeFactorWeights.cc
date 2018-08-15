@@ -65,41 +65,74 @@ namespace ic {
       f.Close();
       
       fns_["w_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("w_et_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["qcd_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("qcd_et_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["ttbar_et_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_et_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
-      fns_["realtau_et_sf"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_et_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("ttbar_et_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_et_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_et_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_et_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_et_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_et_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_et_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_et_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_et_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_et_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_et_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_et_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_et_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["w_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("w_mt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["qcd_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("qcd_mt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["ttbar_mt_fracs"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_mt_fracs")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
-      fns_["realtau_mt_sf"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_mt_sf")->functor(w_->argSet("mvis,pt_tt,njets,mjj,nbjets")));
+            w_->function("ttbar_mt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_mt_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_mt_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_mt_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_mt_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_mt_ss_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_mt_ss_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_mt_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_mt_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_mt_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_mt_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_mt_highmt_fracs"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_mt_highmt_fracs")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["w_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_fracs_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("w_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["qcd_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_fracs_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("qcd_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["ttbar_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_fracs_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("ttbar_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["dy_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_fracs_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
-      fns_["realtau_tt_sf_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_tt_sf_1")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("dy_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["w_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_fracs_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("w_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["qcd_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_fracs_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("qcd_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["ttbar_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_fracs_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("ttbar_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
       fns_["dy_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_fracs_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
-      fns_["realtau_tt_sf_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("realtau_tt_sf_2")->functor(w_->argSet("mvis,pt_tt,njets,mjj")));
+            w_->function("dy_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+
       
     }
     if(strategy_==strategy::cpsummer17){
@@ -225,44 +258,73 @@ namespace ic {
         }
       }
     } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) {
-      double pt_tt = ditau->pt();
-      double mjj=0.;
-      if(jets.size()>=2) mjj=(jets[0]->vector()+jets[1]->vector()).M();
+      bool os = PairOppSign(ditau);
+      double mt_1 = MT(lep1, met);
       inputs.resize(9);
       tt_inputs_1.resize(9);
       tt_inputs_2.resize(9);
       if(channel_ == channel::et || channel_ == channel::mt){
-        auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj,n_bjets_};  
-        double qcd_frac=0.5, w_frac=0.5, tt_frac=0., realtau_sf=1.0;
+        auto args = std::vector<double>{pt_2_,n_jets_,n_bjets_};  
+        double qcd_frac=0.5, w_frac=0.5, tt_frac=0.0;
         if(channel_ == channel::et){
-          qcd_frac = fns_["qcd_et_fracs"]->eval(args.data());  
-          w_frac = fns_["w_et_fracs"]->eval(args.data());
-          tt_frac = fns_["ttbar_et_fracs"]->eval(args.data());
-          realtau_sf = fns_["realtau_et_sf"]->eval(args.data()); 
+          if(os){
+            if(mt_1<=50){
+              qcd_frac = fns_["qcd_et_fracs"]->eval(args.data());  
+              w_frac = fns_["w_et_fracs"]->eval(args.data());
+              tt_frac = fns_["ttbar_et_fracs"]->eval(args.data());
+            } else {
+              qcd_frac = fns_["qcd_et_highmt_fracs"]->eval(args.data());
+              w_frac = fns_["w_et_highmt_fracs"]->eval(args.data());
+              tt_frac = fns_["ttbar_et_highmt_fracs"]->eval(args.data());
+            }
+          } else {
+            qcd_frac = fns_["qcd_et_ss_fracs"]->eval(args.data());
+            w_frac = fns_["w_et_ss_fracs"]->eval(args.data());
+            tt_frac = fns_["ttbar_et_ss_fracs"]->eval(args.data());
+          }
         }
         if(channel_ == channel::mt){
-          auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj,n_bjets_};    
-          qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
-          w_frac = fns_["w_mt_fracs"]->eval(args.data());
-          tt_frac = fns_["ttbar_mt_fracs"]->eval(args.data());
-          realtau_sf = fns_["realtau_mt_sf"]->eval(args.data());
+          auto args = std::vector<double>{pt_2_,n_jets_,n_bjets_};    
+          if(os){
+            if(mt_1<=50){
+              qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
+              w_frac = fns_["w_mt_fracs"]->eval(args.data());
+              tt_frac = fns_["ttbar_mt_fracs"]->eval(args.data());
+            } else {
+              qcd_frac = fns_["qcd_mt_highmt_fracs"]->eval(args.data());
+              w_frac = fns_["w_mt_highmt_fracs"]->eval(args.data());
+              tt_frac = fns_["ttbar_mt_highmt_fracs"]->eval(args.data());
+            }
+          } else {
+            qcd_frac = fns_["qcd_mt_ss_fracs"]->eval(args.data());
+            w_frac = fns_["w_mt_ss_fracs"]->eval(args.data());
+            tt_frac = fns_["ttbar_mt_ss_fracs"]->eval(args.data()); 
+          }
         }
         inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_; inputs[6] = qcd_frac; inputs[7] = w_frac; inputs[8] = tt_frac;
-        event->Add("wt_ff_realtau_1", realtau_sf);
       } else if (channel_ == channel::tt){
-        auto args = std::vector<double>{m_vis_,pt_tt,n_jets_,mjj};    
-        double qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args.data());  
-        double w_frac_1 = fns_["w_tt_fracs_1"]->eval(args.data());
-        double tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args.data());
-        double dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args.data());
-        double realtau_sf_1 = fns_["realtau_tt_sf_1"]->eval(args.data()); 
-        double qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args.data());  
-        double w_frac_2 = fns_["w_tt_fracs_2"]->eval(args.data());
-        double tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args.data());
-        double dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args.data());
-        double realtau_sf_2 = fns_["realtau_tt_sf_2"]->eval(args.data());
-        event->Add("wt_ff_realtau_1", realtau_sf_1);
-        event->Add("wt_ff_realtau_2", realtau_sf_2);
+        auto args_1 = std::vector<double>{pt_1_,n_jets_,n_bjets_}; 
+        auto args_2 = std::vector<double>{pt_2_,n_jets_,n_bjets_};   
+        double qcd_frac_1=1.0, w_frac_1=0.0, tt_frac_1=0.0, dy_frac_1=0.0, qcd_frac_2=1.0, w_frac_2=0.0, tt_frac_2=0.0, dy_frac_2=0.0;
+        if(os){ 
+          qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
+          w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
+          tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
+          dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args_1.data());
+          qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args_2.data());  
+          w_frac_2 = fns_["w_tt_fracs_2"]->eval(args_2.data());
+          tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args_2.data());
+          dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args_2.data());
+        } else {
+          qcd_frac_1 = fns_["qcd_tt_ss_fracs_1"]->eval(args_1.data());
+          w_frac_1 = fns_["w_tt_ss_fracs_1"]->eval(args_1.data());
+          tt_frac_1 = fns_["ttbar_tt_ss_fracs_1"]->eval(args_1.data());
+          dy_frac_1 = fns_["dy_tt_ss_fracs_1"]->eval(args_1.data());
+          qcd_frac_2 = fns_["qcd_tt_ss_fracs_2"]->eval(args_2.data());
+          w_frac_2 = fns_["w_tt_ss_fracs_2"]->eval(args_2.data());
+          tt_frac_2 = fns_["ttbar_tt_ss_fracs_2"]->eval(args_2.data());
+          dy_frac_2 = fns_["dy_tt_ss_fracs_2"]->eval(args_2.data());
+        }
 
         tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1; tt_inputs_1[7] = tt_frac_1; tt_inputs_1[8] = dy_frac_1;
         tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2; tt_inputs_2[7] = tt_frac_2; tt_inputs_2[8] = dy_frac_2;
