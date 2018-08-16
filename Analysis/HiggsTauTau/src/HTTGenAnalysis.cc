@@ -68,6 +68,7 @@ namespace ic {
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
+      outtree_->Branch("npNLO", &npNLO_);
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -273,7 +274,29 @@ namespace ic {
       if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
       if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
       if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
-      
+
+      // For MG5 samples:
+      //  <weight MUF="1.0" MUR="2.0" PDF="292200" id="1002"> MUR=2.0  </weight>
+      //  <weight MUF="1.0" MUR="0.5" PDF="292200" id="1003"> MUR=0.5  </weight>
+      //  <weight MUF="2.0" MUR="1.0" PDF="292200" id="1004"> MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="2.0" PDF="292200" id="1005"> MUR=2.0 MUF=2.0  </weight>
+      //  <weight MUF="2.0" MUR="0.5" PDF="292200" id="1006"> MUR=0.5 MUF=2.0  </weight>
+      //  <weight MUF="0.5" MUR="1.0" PDF="292200" id="1007"> MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="2.0" PDF="292200" id="1008"> MUR=2.0 MUF=0.5  </weight>
+      //  <weight MUF="0.5" MUR="0.5" PDF="292200" id="1009"> MUR=0.5 MUF=0.5  </weight>
+      //
+
+      // for NNLOPS:
+      //  <weight id="1001"> muR=1 muF=1 </weight>
+      //  <weight id="1002"> muR=1 muF=2 </weight>
+      //  <weight id="1003"> muR=1 muF=0.5 </weight>
+      //  <weight id="1004"> muR=2 muF=1 </weight>
+      //  <weight id="1005"> muR=2 muF=2 </weight>
+      //  <weight id="1006"> muR=2 muF=0.5 </weight>
+      //  <weight id="1007"> muR=0.5 muF=1 </weight>
+      //  <weight id="1008"> muR=0.5 muF=2 </weight>
+      //  <weight id="1009"> muR=0.5 muF=0.5 </weight>
+
       //std::cout << eventInfo->weight_defined("1001")    << std::endl;
  
       //<weight id="1001"> dyn=  -1 muR=0.10000E+01 muF=0.10000E+01 </weight>
@@ -434,7 +457,7 @@ namespace ic {
            if ((id >= 1 && id <=6) || id == 21){ 
              partons_++;
              parton_pt_vec.push_back(lhe_parts[i]->pt());
-             if(lhe_parts[i]->pt()>=14) partons_lhe_++; 
+             if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
     }
@@ -443,19 +466,19 @@ namespace ic {
     if (parton_pt_vec.size()>0) parton_pt_ = parton_pt_vec[0];
     if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
     if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
- 
-    double n_inc_ =1030705.;
-    double n2_=5155491.;
-    double f2_   = 0.154160;
-    // ps ninc    = 1210565; n2 = 5051805
-    // mm ninc    = 1081603; n2 = 5171966 
-    if(partons_lhe_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+
+    npNLO_ = eventInfo->npNLO();
+    if(npNLO_<0) npNLO_ = 2; 
+    double n_inc_ = 3089015.;
+    double n2_    = 14254055;
+    double f2_   = 0.279662;
+    if(npNLO_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
     else wt_stitch_=1.;
     
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
-           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_));
+           wt_topmass_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
 
       

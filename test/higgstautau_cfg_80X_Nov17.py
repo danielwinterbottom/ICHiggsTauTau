@@ -8,8 +8,8 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
-#opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/130000/10B3D2AA-286C-E711-B57F-141877410B85.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/130000/10B3D2AA-286C-E711-B57F-141877410B85.root', parser.VarParsing.multiplicity.singleton,               
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
@@ -30,6 +30,8 @@ opts.register('isReHLT', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as reHLT sample?")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
+opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
 
@@ -42,6 +44,7 @@ isData      = opts.isData
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
+includenpNLO = opts.includenpNLO
 if not isData:
   doHT     = opts.doHT
   isReHLT  = opts.isReHLT
@@ -1681,6 +1684,29 @@ process.icTriggerObjectSequence = cms.Sequence()
 #   input  = cms.InputTag("patTriggerEvent")
 #  )
 
+################################################################
+# L1 Objects
+################################################################
+
+v_doBXloop = False
+
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Tau>',
+  branch = cms.string("L1Taus"),
+  input = cms.InputTag("caloStage2Digis","Tau"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+  branch = cms.string("L1Muons"),
+  input = cms.InputTag("gmtStage2Digis","Muon"),
+  doBXloop = cms.bool(v_doBXloop)
+)
 
 
 
@@ -2196,8 +2222,100 @@ process.icDoubleMediumCombinedIsoTau40ObjectProducer = producers.icTriggerObject
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
-  
+
+process.icIsoMu19erMediumCombinedIsoTau32ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsIsoMu19erMediumCombinedIsoTau32"),
+      hltPath = cms.string("HLT_IsoMu19_eta2p1_MediumCombinedIsoPFTau32_Trk1_eta2p1_Reg_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icIsoMu19erMediumIsoTau32ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsIsoMu19erMediumIsoTau32"),
+      hltPath = cms.string("HLT_IsoMu19_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icEle23Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23Ele12"),
+      hltPath = cms.string("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icEle23Ele12DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23Ele12DZ"),
+      hltPath = cms.string("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+
+process.icMu17Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17Mu8"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(True)
+      )
+
+process.icMu17TkMu8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17TkMu8"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icMu17Mu8DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17Mu8DZ"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(True)
+      )
+
+process.icMu17TkMu8DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17TkMu8DZ"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icMu8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu8"),
+      hltPath = cms.string("HLT_Mu8_TrkIsoVVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+ 
+process.icMu17ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+ 
 process.icTriggerObjectSequence += cms.Sequence(
+      process.icMu8ObjectProducer+
+      process.icMu17ObjectProducer+
+      process.icIsoMu19erMediumCombinedIsoTau32ObjectProducer+
+      process.icIsoMu19erMediumIsoTau32ObjectProducer+
+      process.icEle23Ele12ObjectProducer+
+      process.icEle23Ele12DZObjectProducer+
+      process.icMu17Mu8ObjectProducer+
+      process.icMu17TkMu8ObjectProducer+
+      process.icMu17Mu8DZObjectProducer+
+      process.icMu17TkMu8DZObjectProducer+
       process.icEle12Mu23ObjectProducer +
       process.icEle23Mu8ObjectProducer +
       process.icEle12Mu17ObjectProducer +
@@ -2292,6 +2410,7 @@ else: lheTag = 'externalLHEProducer'
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
+  includenpNLO        = cms.bool(includenpNLO),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -2364,6 +2483,9 @@ process.p = cms.Path(
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
+  process.icL1EGammaProducer+
+  process.icL1TauProducer+
+  process.icL1MuonProducer+
   #process.patDefaultSequence+
   process.icEventProducer
 )

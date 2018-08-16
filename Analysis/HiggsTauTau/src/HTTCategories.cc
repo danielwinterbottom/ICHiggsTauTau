@@ -86,6 +86,7 @@ namespace ic {
       outtree_->Branch("wt_trg_corr", &wt_trg_corr_);
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
@@ -883,6 +884,8 @@ namespace ic {
         outtree_->Branch("wt_em_qcd_shapedown",    &wt_em_qcd_shapedown_);
         outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
         outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
+        outtree_->Branch("wt_em_qcd_bjetsdown",    &wt_em_qcd_bjetsdown_);
+        outtree_->Branch("wt_em_qcd_bjetsup",    &wt_em_qcd_bjetsup_);
       }
       if(add_Hhh_variables_) { 
         outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
@@ -1822,6 +1825,8 @@ namespace ic {
       wt_ggA_b_ = event->Exists("wt_ggA_b") ? event->Get<double>("wt_ggA_b") : 1.0;
       wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
     }
+    wt_quarkmass_ = 1.0;
+    if(event->Exists("wt_quarkmass")) wt_quarkmass_ = event->Get<double>("wt_quarkmass");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -2490,6 +2495,8 @@ namespace ic {
     wt_em_qcd_up_ = 1.0;
     wt_em_qcd_shapedown_ = 1.0;
     wt_em_qcd_shapeup_ = 1.0;
+    wt_em_qcd_bjetsdown_ = 1.0;
+    wt_em_qcd_bjetsup_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
     wt_embed_mc_yield_ = 1.0;
@@ -2511,6 +2518,8 @@ namespace ic {
     if (event->Exists("wt_em_qcd_shapedown"))    wt_em_qcd_shapedown_ = event->Get<double>("wt_em_qcd_shapedown");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
+    if (event->Exists("wt_em_qcd_bjetsdown"))    wt_em_qcd_bjetsdown_ = event->Get<double>("wt_em_qcd_bjetsdown");
+    if (event->Exists("wt_em_qcd_bjetsup"))    wt_em_qcd_bjetsup_ = event->Get<double>("wt_em_qcd_bjetsup");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
     wt_embed_mc_yield_ = event->Exists("wt_embed_mc_yield") ? event->Get<double>("wt_embed_mc_yield") : 1.0;

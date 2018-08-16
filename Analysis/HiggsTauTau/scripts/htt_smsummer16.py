@@ -194,9 +194,11 @@ if options.mg_signal:
   'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
   'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
   'GluGluToHToTauTau_M125_amcatnloFXFX',
-  #'GluGluToHToTauTauPlusTwoJets_M125_MG5_2016',
-  #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_MG5_2016',
-  #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_MG5_2016',
+  'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluHToTauTau_M125_NNLOPS'
   ]
 
 
@@ -628,10 +630,8 @@ if options.proc_mssm_nlo_qsh:
       os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.mg_signal:
-  SIG_FILELIST='filelists/Aug08_MC_80X'
+  SIG_FILELIST='filelists/Aug14_MC_80X'
   for sa in signal_mc:
-    if ('MG5' in sa  and '2016' in sa) or 'amcatnloFXFX' in sa: SIG_FILELIST='filelists/Aug08_MC_80X'
-    else: SIG_FILELIST='filelists/Jul11_MC_80X'
     JOB='%s_2016' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

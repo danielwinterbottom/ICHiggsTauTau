@@ -107,9 +107,33 @@
     "xs": 0.393961,
     "evt": 1478400
   },
-  "GluGluToHToTauTau_amcNLO_M-125": {
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 3200746.0
+    "evt": 1728744.0
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1720061.0
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1667437.0
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1728744.0
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1720061.0
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1667437.0
+  },
+  "GluGluHToTauTau_M125_NNLOPS": {
+    "xs": 3.045966,
+    "evt": 214096.0
   },
   "T-t": {
     "xs": 136.02,
