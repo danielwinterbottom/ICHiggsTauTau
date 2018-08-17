@@ -463,7 +463,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-tW',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
-    'DYJetsToLL_M-11-50-LO',
+    'DYJetsToLL_M-10-50-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',

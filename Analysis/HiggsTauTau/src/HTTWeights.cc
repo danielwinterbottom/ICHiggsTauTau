@@ -3058,7 +3058,7 @@ namespace ic {
             double m_iso = PF04IsolationVal(muon, 0.5, 0); 
             double e_iso = PF03IsolationVal(elec, 0.5, 0);             
             std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
-            if(gm2_!=6 || !do_jlepton_fake_){
+            if(gm2_<5 || !do_jlepton_fake_){
               auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
               auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
               if(!is_embedded_){
@@ -3088,7 +3088,7 @@ namespace ic {
               m_idiso_up = (0.0050*jpt_m+0.992)/m_idiso;
               m_idiso_down = 0.812/m_idiso;
            }
-           if(gm1_!=6 || !do_jlepton_fake_){
+           if(gm1_<5 || !do_jlepton_fake_){
             auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
             if(!is_embedded_){ 
