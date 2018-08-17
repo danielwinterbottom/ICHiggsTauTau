@@ -302,6 +302,7 @@ int AnalysisBase::RunAnalysis() {
     std::for_each(seq.modules.begin(), seq.modules.end(),
                   boost::bind(&ModuleBase::PostAnalysis, _1));
   }
+  std::cout << "Finished Processing." << std::endl;
   return 0;
 }
 
