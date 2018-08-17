@@ -340,7 +340,8 @@ if options.analysis == 'sm':
           cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
         if options.era in ['cpsummer17']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron || trg_etaucross) && pt_2>20)'  
+          #cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron || trg_etaucross) && pt_2>20 && pt_1>28)'
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron) && pt_2>20 && pt_1>28)' 
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && pt_1>28 && pt_2>20)'  
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_etaucross && pt_1>30&&pt_2>30 && eta_2<2.1 && eta_2>-2.1)'  
         
@@ -691,6 +692,10 @@ if options.era in ['cpsummer16','tauid2016']:
   if options.channel =='em':
     z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
     z_sels['ztt_sel'] = '(gen_match_2==4 && gen_match_1==3)'
+    top_sels['ttt_sel'] = '(gen_match_2==4 && gen_match_1==3)'
+    top_sels['ttj_sel'] = '!(gen_match_2==4 && gen_match_1==3)'
+    vv_sels['vvt_sel'] = '(gen_match_2==4 && gen_match_1==3)'
+    vv_sels['vvj_sel'] = '!(gen_match_2==4 && gen_match_1==3)'
   if options.channel =='mt':
     z_sels['ztt_sel'] = '(gen_match_2==5 && gen_match_1==4)'
   if options.channel =='et':
@@ -723,6 +728,7 @@ if options.embedding:
     #  z_sels['ztt_sel']+='&&'+extra_top_sel
     #  z_sels['zj_sel']+='&&'+extra_top_sel
     for sel in top_sels: top_sels[sel]+='&&'+extra_top_sel
+    #for sel in vv_sels: vv_sels[sel]+='&&'+extra_top_sel
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -808,7 +814,7 @@ if options.era in ['cpsummer17']:
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
 
-if options.era in ['cpsummer16']: sm_samples = { 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*', 'ggHsm_htt' : 'GluGluToHToTauTau_M*_amcatnloFXFX' , 'ggHmix_htt' : 'GluGluToMaxmixHToTauTau_M*_amcatnloFXFX', 'ggHps_htt' : 'GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX'}
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*', 'ggHsm_htt' : 'GluGluToHToTauTau_M*_amcatnloFXFX' , 'ggHmix_htt' : 'GluGluToMaxmixHToTauTau_M*_amcatnloFXFX', 'ggHps_htt' : 'GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX', 'ggH2jsm_htt' : 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX' , 'ggH2jmix_htt' : 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX', 'ggH2jps_htt' : 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX'}
 if options.era in ['cpsummer17']: sm_samples = { 'ggH_htt' : 'GluGluHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*'}#, 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1217,7 +1223,7 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
         ana.nodes[nodename].AddNode(zll_node)
     else:
         if doZL:
-            if options.era in ['cpsummer17'] and options.channel=='et':  zl_node = GetZLNode(ana, add_name, samples, plot, wt+'*(1.25*(tau_decay_mode_2==0)+1.28*(tau_decay_mode_2==1))', sel, cat, z_sels, get_os)
+            if options.era in ['cpsummer17'] and options.channel=='et':  zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
             else: zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
             ana.nodes[nodename].AddNode(zl_node)
         if doZJ:
@@ -1228,7 +1234,10 @@ def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
     ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
     ana.nodes[nodename].AddNode(ztt_node)
 def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
-    embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+    if options.channel == 'em' and options.era == 'cpsummer16':
+      embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt+'*1.061', sel, cat, z_sels, get_os)
+    else:
+      embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)    
 def GenerateZLEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     embed_node = GetZLEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)

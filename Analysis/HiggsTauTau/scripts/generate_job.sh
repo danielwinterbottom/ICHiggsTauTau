@@ -17,6 +17,7 @@ echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
 echo "source $PWD/scripts/setup_libs.sh" >> $OUTPUT
 echo "ulimit -c 0" >> $OUTPUT
+hostname >> $OUTPUT
 if [ "$INPUT" == "" ]; then :
 elif [[ "$INPUT" == ./* ]];
 then
