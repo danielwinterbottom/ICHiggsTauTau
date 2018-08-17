@@ -2077,6 +2077,8 @@ def HTTPlot(nodename,
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt","ggH2jsm_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
