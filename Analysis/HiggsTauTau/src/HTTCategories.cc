@@ -1282,6 +1282,10 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
+        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) && do_sm_scale_wts_){
+          outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
+          outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
+        }
         if(do_z_weights_){
           outtree_->Branch("wt_z_mjj",      &wt_z_mjj_);   
           outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
@@ -3982,6 +3986,10 @@ namespace ic {
       wt_scale_tt_0jet_ = 0.814 + 0.0027094 * pt_1_.var_double;
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
+    }
+    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) && do_sm_scale_wts_ && !systematic_shift_){
+      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005") : 1.0; 
+      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0;
     }
     if(do_z_weights_ && !systematic_shift_){
       wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  

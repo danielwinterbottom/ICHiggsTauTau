@@ -1127,7 +1127,9 @@ class HTTCategories : public ModuleBase {
   double wt_scale_tt_0jet_;  
   double wt_scale_tt_boosted_;
   double wt_scale_tt_vbf_;
-  
+  double wt_qcdscale_up_;
+  double wt_qcdscale_down_; 
+
   double n_jets_1_;
   double n_jets_2_;
   double n_jets_3_;
