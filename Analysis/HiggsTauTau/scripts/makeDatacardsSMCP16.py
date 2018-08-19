@@ -150,7 +150,7 @@ if options.total_jes:
   common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
 
 
-em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" '
+em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" --syst_em_qcd_btag="CMS_em_QCD_BTag_13TeV" '
 et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV"  '
 mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
@@ -160,7 +160,7 @@ zmm_shape_systematics=' --folder=/vols/cms/dw515/Offline/output/SM/Apr09/ '
 if options.embedding:
   mt_shape_systematics+=' --syst_mu_scale="CMS_scale_m_13TeV" ' 
   et_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" '
-  em_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_m_13TeV" '
+  em_shape_systematics+=' --syst_mu_scale="CMS_scale_m_13TeV" '
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
 extra_channel = {
@@ -535,7 +535,7 @@ if SCHEME == 'cpsummer16_ff':
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
   
-  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)' 
+  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(8,-3.2,3.2)' 
   #VAR_DIJET = 'm_sv,jdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
   #VAR_DIJET = 'm_sv,(jeta_1>jeta_2)[0,80,100,115,130,150],(2,0,2)'
   #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(6,0,1)'
