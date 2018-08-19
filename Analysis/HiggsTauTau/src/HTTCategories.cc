@@ -3988,8 +3988,8 @@ namespace ic {
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
     if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) && do_sm_scale_wts_ && !systematic_shift_){
-      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005") : 1.0; 
-      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0;
+      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.325 : 1.0; 
+      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.723 : 1.0;
     }
     if(do_z_weights_ && !systematic_shift_){
       wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  
