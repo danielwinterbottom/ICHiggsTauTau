@@ -627,6 +627,8 @@ namespace ic {
     if(do_quarkmass_higgspt_){
       fns_["ggH_quarkmass_corr"] = std::shared_ptr<RooFunctor>(
                 w_->function("ggH_quarkmass_corr")->functor(w_->argSet("HpT")));
+      fns_["ggH_fullquarkmass_corr"] = std::shared_ptr<RooFunctor>(
+                w_->function("ggH_fullquarkmass_corr")->functor(w_->argSet("HpT")));
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
@@ -1292,6 +1294,8 @@ namespace ic {
       double wt_quarkmass = fns_["ggH_quarkmass_corr"]->eval(args.data());
       eventInfo->set_weight("wt_quarkmass",wt_quarkmass);
       event->Add("wt_quarkmass" ,1./wt_quarkmass);
+      double wt_fullquarkmass = fns_["ggH_fullquarkmass_corr"]->eval(args.data());
+      event->Add("wt_fullquarkmass" , wt_fullquarkmass/wt_quarkmass);
     }
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  
