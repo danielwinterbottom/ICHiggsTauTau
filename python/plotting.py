@@ -3518,17 +3518,21 @@ def SoverBPlot(nodename='',
     ModTDRStyle(r=0.04, l=0.14)
     
     bkg_hist = infile.Get(nodename+'/total_bkg').Clone()
-    signal_hist = infile.Get(nodename+'/ggH_htt125').Clone()
+    signal_hist = infile.Get(nodename+'/ggHsm_htt125').Clone()
+    signal_hist_2j = infile.Get(nodename+'/ggH2jsm_htt125').Clone()
+    signal_hist.Add(signal_hist_2j)
     vbf_hist = infile.Get(nodename+'/qqH_htt125').Clone()
     
-    def SumHist(h,sroot=False):
+    def SumHist(h,sroot=False,bbb=False):
         for i in range(1,h.GetNbinsX()+2):
-          if sroot: h.SetBinContent(i,math.sqrt(h.Integral(i,-1)))  
-          else: h.SetBinContent(i,h.Integral(i,-1))
+          if bbb: last_bin = i
+          else: last_bin=-1
+          if sroot: h.SetBinContent(i,math.sqrt(h.Integral(i,last_bin)))  
+          else: h.SetBinContent(i,h.Integral(i,last_bin))
     
-    SumHist(signal_hist)
-    SumHist(bkg_hist,True)
-    SumHist(vbf_hist)
+    SumHist(signal_hist,False,False)
+    SumHist(bkg_hist,True,False)
+    SumHist(vbf_hist,False,False)
     
     r_1 = signal_hist.Clone()
     r_2 = signal_hist.Clone()

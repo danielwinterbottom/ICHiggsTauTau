@@ -87,6 +87,7 @@ namespace ic {
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
+      outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
@@ -1830,7 +1831,9 @@ namespace ic {
       wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
     }
     wt_quarkmass_ = 1.0;
+    wt_fullquarkmass_ =1.0;
     if(event->Exists("wt_quarkmass")) wt_quarkmass_ = event->Get<double>("wt_quarkmass");
+    if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -3988,8 +3991,8 @@ namespace ic {
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
     if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) && do_sm_scale_wts_ && !systematic_shift_){
-      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005") : 1.0; 
-      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0;
+      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.325 : 1.0; 
+      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.723 : 1.0;
     }
     if(do_z_weights_ && !systematic_shift_){
       wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  
