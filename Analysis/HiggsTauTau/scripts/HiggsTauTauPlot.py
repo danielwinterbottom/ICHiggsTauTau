@@ -471,11 +471,18 @@ cats['2jet'] = '(n_jets>=2 && n_bjets==0)'
 # SM ML categories
 
 if options.channel == 'tt':
-    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July26_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
-    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==4)'
+    # mva_highMjj_ggh =     '(IC_highMjj_July25_1_max_index==0)'
+    # mva_highMjj_misc =    '(IC_highMjj_July25_1_max_index==1)'
+    # mva_highMjj_qcd =     '(IC_highMjj_July25_1_max_index==2)'
+    # mva_highMjj_qqh =     '(IC_highMjj_July25_1_max_index==3)'
+    # mva_highMjj_ztt =     '(IC_highMjj_July25_1_max_index==4)'
+
+    # with embedding and ff use:
+    mva_highMjj_ggh =      '(IC_highMjj_Aug22_4_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Aug22_4_max_index==1)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug22_4_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug22_4_max_index==3)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug22_4_max_index==4)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
@@ -485,9 +492,11 @@ if options.channel == 'tt':
 
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
-    cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
+    # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
-    cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
+    # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
+    cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_zttEmbed)
+    cats['jetFakes_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_jetFakes)
 
     cats['ggh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ggh)
     cats['misc_lowMjj'] = '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_misc)
@@ -496,12 +505,20 @@ if options.channel == 'tt':
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel in ['et','mt']:
-    mva_highMjj_fake =    '(IC_highMjj_July26_max_index==0)'
-    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==1)'
-    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
+    # mva_highMjj_fake =    '(IC_highMjj_July26_max_index==0)'
+    # mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==1)'
+    # mva_highMjj_misc =    '(IC_highMjj_July26_max_index==2)'
+    # mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
+    # mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
+    # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
+
+    # with embedding and ff use:
+    mva_highMjj_ggh =      '(IC_highMjj_Aug23_1_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Aug23_1_max_index==1)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug23_1_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug23_1_max_index==3)'
+    mva_highMjj_tt =       '(IC_highMjj_Aug23_1_max_index==4)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug23_1_max_index==5)'
 
     mva_lowMjj_fake =    '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==1)'
@@ -511,12 +528,14 @@ if options.channel in ['et','mt']:
     mva_lowMjj_zll =     '(IC_lowMjj_July05_3_max_index==5)'
     mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==6)'
 
-    cats['fake_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_fake)
+    # cats['fake_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_fake)
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
     cats['tt_highMjj'] =   '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_tt)
-    cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
+    # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
+    cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_zttEmbed)
+    cats['jetFakes_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_jetFakes)
 
     cats['fake_lowMjj'] = '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_fake)
     cats['ggh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ggh)
@@ -527,12 +546,20 @@ if options.channel in ['et','mt']:
     cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
 
 if options.channel == 'em':
-    mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==0)'
-    mva_highMjj_misc =    '(IC_highMjj_July26_max_index==1)'
-    mva_highMjj_qcd =     '(IC_highMjj_July26_max_index==2)'
-    mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
-    mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
-    mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
+    # mva_highMjj_ggh =     '(IC_highMjj_July26_max_index==0)'
+    # mva_highMjj_misc =    '(IC_highMjj_July26_max_index==1)'
+    # mva_highMjj_qcd =     '(IC_highMjj_July26_max_index==2)'
+    # mva_highMjj_qqh =     '(IC_highMjj_July26_max_index==3)'
+    # mva_highMjj_tt =      '(IC_highMjj_July26_max_index==4)'
+    # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
+
+    # with embedding use:
+    mva_highMjj_ggh =      '(IC_highMjj_Aug23_1_max_index==0)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug23_1_max_index==1)'
+    mva_highMjj_qcd =      '(IC_highMjj_Aug23_1_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug23_1_max_index==3)'
+    mva_highMjj_tt =       '(IC_highMjj_Aug23_1_max_index==4)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug23_1_max_index==5)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_4_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_4_max_index==1)'
@@ -545,8 +572,9 @@ if options.channel == 'em':
     cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
-    cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
+    # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
     cats['tt_highMjj'] =   '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_tt)
+    cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_zttEmbed)
 
     cats['ggh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ggh)
     cats['misc_lowMjj'] = '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_misc)
@@ -561,11 +589,11 @@ if options.channel == 'em':
 if options.era in ['smsummer16','cpsummer16']: # Remove the False when finished!!!!!
     if options.channel in ['et','mt'] and options.cat in ['boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
             'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj',
-            'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj']:
+            'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj','jetFakes_highMjj','zttEmbed_highMjj']:
         cats['qcd_shape'] = '('+cats['baseline_loose']+')*('+cats[options.cat]+')'
     if options.cat in ['boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
             'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj',
-            'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj']:
+            'ggh_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj','jetFakes_highMjj','zttEmbed_highMjj']:
         cats['w_shape'] = cats['qcd_shape']
 
 
