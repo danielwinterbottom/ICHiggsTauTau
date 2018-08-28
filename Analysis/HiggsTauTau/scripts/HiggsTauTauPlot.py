@@ -457,13 +457,13 @@ if options.era == 'cpsummer16':
   cats['ttbar'] = 'n_jets>0'  
   if options.channel in ['em','mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+      cats['dijet']='n_jets>=2 && mjj>350 && n_bjets==0 '
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
   else:    
     cats['0jet'] = '(n_jets==0)'
-    cats['dijet']='n_jets>=2 && mjj>300'
+    cats['dijet']='n_jets>=2 && mjj>350'
     cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
     cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
     cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['dijet'])
@@ -684,6 +684,7 @@ if options.channel == 'et': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && 
 if options.channel == 'tt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 5) && (gen_match_2 == 5))'
 if options.channel == 'em': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 4))'
 if options.channel == 'zmm': top_sels_embed['ttt_sel'] = '((gen_match_1 == 2) && (gen_match_2 == 2))'
+top_sels_embed['vvt_sel'] = top_sels_embed['ttt_sel']
 
 if options.channel in ['et','mt','mj']:
   vv_sels['vvt_sel'] = '(gen_match_2<6)'
@@ -719,7 +720,7 @@ if options.era in ["smsummer16"]:
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
 
-if options.era in ['cpsummer16','tauid2016']:
+if options.era in ['cpsummer16','tauid2016','cpsummer17']:
   # define these selections to make them more compatible with the fake-factor method and embedded samples
   if options.channel =='em':
     z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
@@ -747,9 +748,9 @@ if options.era in ['cpsummer16','tauid2016']:
     vv_sels['vvj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
     top_sels['ttt_sel'] = '(!(gen_match_1==6 || gen_match_2==6))'
     top_sels['ttj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
-    
+   
+extra_top_sel = '1' 
 if options.embedding:
-    extra_top_sel = '1'
     if options.channel == 'mt': extra_top_sel = '!((gen_match_1 == 4) && (gen_match_2 == 5))'
     if options.channel == 'et': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 5))'
     if options.channel == 'tt': extra_top_sel = '!((gen_match_1 == 5) && (gen_match_2 == 5))'
@@ -760,7 +761,7 @@ if options.embedding:
     #  z_sels['ztt_sel']+='&&'+extra_top_sel
     #  z_sels['zj_sel']+='&&'+extra_top_sel
     for sel in top_sels: top_sels[sel]+='&&'+extra_top_sel
-    #for sel in vv_sels: vv_sels[sel]+='&&'+extra_top_sel
+    for sel in vv_sels: vv_sels[sel]+='&&'+extra_top_sel
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -846,7 +847,7 @@ if options.era in ['cpsummer17']:
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
 
-if options.era in ['cpsummer16']: sm_samples = { 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*', 'ggHsm_htt' : 'GluGluToHToTauTau_M*_amcatnloFXFX' , 'ggHmm_htt' : 'GluGluToMaxmixHToTauTau_M*_amcatnloFXFX', 'ggHps_htt' : 'GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX', 'ggH2jsm_htt' : 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX' , 'ggH2jmm_htt' : 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX', 'ggH2jps_htt' : 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX'}
+if options.era in ['cpsummer16']: sm_samples = { 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_jhu_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*', 'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX']}
 if options.era in ['cpsummer17']: sm_samples = { 'ggH_htt' : 'GluGluHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*'}#, 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'ggHsm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_sm', 'ggHmm_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_maxmix', 'ggHps_htt' : 'GluGluH2JetsToTauTau_M*_CPmixing_pseudoscalar', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*'}#, 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*'}
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1275,7 +1276,7 @@ def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
     ana.nodes[nodename].AddNode(ztt_node)
 def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if options.channel == 'em' and options.era == 'cpsummer16':
-      embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt+'*1.061', sel, cat, z_sels, get_os)
+      embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt+'*1.0667', sel, cat, z_sels, get_os)
     else:
       embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)    
@@ -1286,7 +1287,8 @@ def GenerateZLEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat
 def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS, '1')
+    if options.embedding: full_selection = BuildCutString(wt, sel, cat, OSSS, extra_top_sel)
+    else: full_selection = BuildCutString(wt, sel, cat, OSSS, '1')
     return ana.SummedFactory('EWKZ'+add_name, samples, plot, full_selection)
 
 def GenerateEWKZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
@@ -1765,8 +1767,12 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
                 add_str = mass
             for key in sm_samples:
                 if True not in [proc in key for proc in processes]: continue
-                sample_name = sm_samples[key].replace('*',mass)
-                ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
+                sample_names=[]
+                if isinstance(sm_samples[key], (list,)):
+                  for i in sm_samples[key]: 
+                    sample_names.append(i.replace('*',mass))
+                else: sample_names = [sm_samples[key].replace('*',mass)]
+                ana.nodes[nodename].AddNode(ana.SummedFactory(key+add_str+add_name, sample_names, plot, full_selection))
             
 def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
     if get_os:
@@ -1953,6 +1959,8 @@ def NormEmbedToMC(ana,outfile='output.root'):
 def TTBarEmbeddingSyst(ana,outfile,template_name):    
     nominal_hist = outfile.Get(nodename+'/EmbedZTT')    
     shift_hist = outfile.Get(nodename+'/TTT_embed_syst')
+    shift_hist_2 = outfile.Get(nodename+'/VVT_embed_syst')
+    shift_hist.Add(shift_hist_2)
     shift_hist.Scale(0.1)
     up_hist = nominal_hist.Clone()
     down_hist = nominal_hist.Clone()
@@ -2381,6 +2389,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           
     if options.syst_embedding_tt and options.embedding and systematic == 'default':
         GenerateTop(ana, '_embed_syst', top_samples, plot, wt, sel, cat, top_sels_embed, not options.do_ss, True, False)        
+        GenerateVV(ana, '_embed_syst', vv_samples, plot, wt, sel, cat, top_sels_embed, not options.do_ss, True, False)
 
 def Get1DBinNumFrom2D(h2d,xbin,ybin):
     Nxbins = h2d.GetNbinsX()
@@ -2449,8 +2458,9 @@ def NormSignals(outfile,add_name):
                 else:
                     samp_name = samp+"_SM"
                 if masses is not None:    
-                    for mass in masses:
-                        xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
+                    for mass in masses:        
+                        if isinstance(sm_samples[samp], (list,)): xs = ana.info[sm_samples[samp][0].replace('*',mass)]['xs']
+                        else: xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
                         sf = 1.0/xs
                         if not outfile.GetDirectory(nodename).GetListOfKeys().Contains(samp_name+mass+add_name): continue
                         sm_hist = outfile.Get(nodename+'/'+samp_name+mass+add_name)
@@ -2619,10 +2629,13 @@ while len(systematics) > 0:
               masses = bbh_nlo_masses
           if masses is not None:    
               for mass in masses:
-                  sample_name = signal_samples[samp].replace('*',mass)
+                  sample_names=[]
+                  if isinstance(signal_samples[samp], (list,)): 
+                     for i in signal_samples[samp]: sample_names.append(i.replace('*',mass)) 
+                  else: sample_names = [signal_samples[samp].replace('*',mass)]
                   tree_name = 'ntuple'
                   if options.gen_signal: tree_name = 'gen_ntuple'
-                  ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
+                  for sample_name in sample_names: ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
       if options.add_sm_background and options.analysis == 'mssm':
           for samp in sm_samples:
               sample_name = sm_samples[samp].replace('*',options.add_sm_background)
