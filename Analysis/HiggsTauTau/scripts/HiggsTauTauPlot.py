@@ -482,11 +482,11 @@ if options.channel == 'tt':
     # mva_highMjj_ztt =     '(IC_highMjj_July25_1_max_index==4)'
 
     # with embedding and ff use:
-    mva_highMjj_ggh =      '(IC_highMjj_Aug28_1_max_index==0)'
-    mva_highMjj_jetFakes = '(IC_highMjj_Aug28_1_max_index==1)'
-    mva_highMjj_misc =     '(IC_highMjj_Aug28_1_max_index==2)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug28_1_max_index==3)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_1_max_index==4)'
+    mva_highMjj_ggh =      '(IC_highMjj_Aug28_4_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Aug28_4_max_index==1)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug28_4_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug28_4_max_index==3)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_4_max_index==4)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
@@ -558,12 +558,12 @@ if options.channel == 'em':
     # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     # with embedding use:
-    mva_highMjj_ggh =      '(IC_highMjj_Aug23_1_max_index==0)'
-    mva_highMjj_misc =     '(IC_highMjj_Aug23_1_max_index==1)'
-    mva_highMjj_qcd =      '(IC_highMjj_Aug23_1_max_index==2)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug23_1_max_index==3)'
-    mva_highMjj_tt =       '(IC_highMjj_Aug23_1_max_index==4)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug23_1_max_index==5)'
+    mva_highMjj_ggh =      '(IC_highMjj_Aug28_2_max_index==0)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug28_2_max_index==1)'
+    mva_highMjj_qcd =      '(IC_highMjj_Aug28_2_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug28_2_max_index==3)'
+    mva_highMjj_tt =       '(IC_highMjj_Aug28_2_max_index==4)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_2_max_index==5)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_4_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_4_max_index==1)'
