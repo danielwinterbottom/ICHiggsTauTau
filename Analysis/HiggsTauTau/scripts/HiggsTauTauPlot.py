@@ -1284,15 +1284,19 @@ def GenerateZLEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat
     embed_node = GetZLEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)  
     
-def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doJFakes=True):
+    extra_sel = '1'
+    if not doJFakes:
+      if options.channel in ['et','mt']: extra_sel = 'gen_match_2<6'
+      if options.channel == 'tt': extra_sel = '!(gen_match_1==6 || gen_match_2==6)'
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    if options.embedding: full_selection = BuildCutString(wt, sel, cat, OSSS, extra_top_sel)
-    else: full_selection = BuildCutString(wt, sel, cat, OSSS, '1')
+    if options.embedding: full_selection = BuildCutString(wt, sel, cat, OSSS, extra_top_sel+'&&'+extra_sel) 
+    else: full_selection = BuildCutString(wt, sel, cat, OSSS, extra_sel)
     return ana.SummedFactory('EWKZ'+add_name, samples, plot, full_selection)
 
 def GenerateEWKZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
-    ewkz_node = GetEWKZNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
+    ewkz_node = GetEWKZNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os, options.method != 17)  
     ana.nodes[nodename].AddNode(ewkz_node) 
 
 def GetggHWWNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
