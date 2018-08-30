@@ -69,6 +69,8 @@ namespace ic {
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
       outtree_->Branch("wt_topmass_2"     , &wt_topmass_2_  );
+      outtree_->Branch("wt_ps_down", &wt_ps_down_);
+      outtree_->Branch("wt_ps_up", &wt_ps_up_);
       outtree_->Branch("npNLO", &npNLO_);
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -254,6 +256,13 @@ namespace ic {
     topmass_wts_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight");
 
     topmass_wts_toponly_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight_toponly");
+   
+    ps_0jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_up");
+    ps_0jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_down");
+    ps_1jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_up");
+    ps_1jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_down");
+    ps_2jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_up");
+    ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down");
     
     return 0;
   }
@@ -781,6 +790,22 @@ namespace ic {
         sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[1].vector(), filtered_jets[0].vector());
       }
     } else sjdphi_ = -9999;
+
+    wt_ps_down_ = 1.0;
+    wt_ps_up_ = 1.0;
+    if(n_jets_==0){
+      wt_ps_up_ =  ps_0jet_up_  .GetBinContent(ps_0jet_up_  .FindBin(HiggsPt_));  
+      wt_ps_down_ =  ps_0jet_down_.GetBinContent(ps_0jet_down_.FindBin(HiggsPt_));   
+    }
+    if(n_jets_==1){ 
+      wt_ps_up_ =  ps_1jet_up_ .GetBinContent(ps_1jet_up_  .FindBin(HiggsPt_));  
+      wt_ps_down_ =  ps_1jet_down_.GetBinContent(ps_1jet_down_.FindBin(HiggsPt_));   
+    }
+    if(n_jets_>1){
+      wt_ps_up_ =  ps_2jet_up_  .GetBinContent(ps_2jet_up_  .FindBin(HiggsPt_));  
+      wt_ps_down_ =  ps_2jet_down_.GetBinContent(ps_2jet_down_.FindBin(HiggsPt_));     
+    }
+
 
 
     std::vector<PileupInfo *> puInfo;

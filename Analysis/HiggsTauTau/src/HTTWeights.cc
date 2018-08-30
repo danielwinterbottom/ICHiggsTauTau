@@ -567,6 +567,7 @@ namespace ic {
 
           fns_["doubletau_corr"] = std::shared_ptr<RooFunctor>(
                 w_->function("doubletau_corr")->functor(w_->argSet("dR")));
+
         }  
         
         TFile fembed(embedding_scalefactor_file_.c_str());
@@ -595,7 +596,20 @@ namespace ic {
            fns_["m_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_iso_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
            fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("m_id_embed_ratio")->functor(w_->argSet("m_pt,m_eta"))); 
+              w_->function("m_id_embed_ratio")->functor(w_->argSet("m_pt,m_eta")));
+           fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_mt_mc"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_et_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+ 
         }
         fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_looseiso_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
@@ -971,6 +985,12 @@ namespace ic {
           else tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
         } 
         else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        else if (mc_==mc::mc2017 && is_embedded_) {
+          if(gen_match_2!=5) tau_sf_2=1.0;
+          else if (decay_mode_2==0) tau_sf_2=0.975;
+          else if (decay_mode_2==1) tau_sf_2=0.975*1.051;
+          else if (decay_mode_2==10) tau_sf_2=pow(0.975,3);
+        }
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
         
         double loose_tau_sf_1 = (gen_match_1 == 5 && !is_embedded_) ? 0.99 : 1.0;

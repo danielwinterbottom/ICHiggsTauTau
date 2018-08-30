@@ -534,49 +534,55 @@ if SCHEME == 'cpsummer16_ff':
   
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' 
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' 
-  
-  #VAR_DIJET = 'm_sv,sjdphi[0,100,110,130,140,150],(8,-3.2,3.2)' 
-  #VAR_DIJET = 'm_sv,sjdphi[100,150],(8,-3.2,3.2)'
 
-  VAR_DIJET_TT = 'm_sv,jdphi[0,80,100,110,120,130,140,150],(12,-3.2,3.2)'
-  VAR_DIJET_MT = 'm_sv,jdphi[0,80,105,115,125,135,145,160],(12,-3.2,3.2)'
-  VAR_DIJET_ET = 'm_sv,jdphi[0,80,105,115,125,135,145,160],(12,-3.2,3.2)'
+  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
 
-  #VAR_DIJET = 'm_sv,jdphi[0,80,100,115,130,145,150],(12,-3.2,3.2)'
+ # VAR_DIJET_TT_1 = 'm_sv,sjdphi[0,80,100,110,125,135,150],(12,-3.2,3.2)'
+ # VAR_DIJET_TT_2 = 'm_sv,sjdphi[0,80,100,110,135],(12,-3.2,3.2)'
 
+ # VAR_DIJET_MT_1 = 'm_sv,sjdphi[0,80,115,145,160],(12,-3.2,3.2)'
+ # VAR_DIJET_MT_2 = 'm_sv,sjdphi[0,80,100,115,130,145],(12,-3.2,3.2)'
 
-  VAR_DIJET = 'm_sv,jdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
-  #VAR_DIJET = 'm_sv,(jeta_1>jeta_2)[0,80,100,115,130,150],(2,0,2)'
-  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(6,0,1)'
-  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,0,1],(1,0,1)'
-  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,1],(6,0,1)'
+ # VAR_DIJET_ET_1 = 'm_sv,sjdphi[0,80,100,115,140,160],(12,-3.2,3.2)'
+ # VAR_DIJET_ET_2 = 'm_sv,sjdphi[0,80,100,115,130,145],(12,-3.2,3.2)'
 
-  #VAR_DIJET = 'm_sv,DCP,D0[0,80,100,115,130,150],[-1,-0.4,0.4,1],[0,0.25,0.5,0.75,1]'
+ # VAR_DIJET_EM_1 = 'm_sv,sjdphi[0,90,110,150,180],(12,-3.2,3.2)'
+ # VAR_DIJET_EM_2 = 'm_sv,sjdphi[0,100,115,130,150,180],(12,-3.2,3.2)'
+
+  VAR_DIJET_TT_1 = VAR_DIJET
+  VAR_DIJET_TT_2 = VAR_DIJET
+  VAR_DIJET_MT_1 = VAR_DIJET
+  VAR_DIJET_MT_2 = VAR_DIJET
+  VAR_DIJET_ET_1 = VAR_DIJET
+  VAR_DIJET_ET_2 = VAR_DIJET
+  VAR_DIJET_EM_1 = VAR_DIJET
+  VAR_DIJET_EM_2 = VAR_DIJET
+
 
   scheme_et = [
     ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
     ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_ET_2, '--set_alias="sel:mt_1<50" --do_ff_systs ')
   ]
   scheme_mt = [
     ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
     ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --do_ff_systs ')
 
   ]
   scheme_tt = [
     ("17",   "0jet",    "0jet",  VAR_0JET_TT, ' --do_ff_systs '),
     ("17",   "boosted", "boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
-    ("17",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --do_ff_systs '),
-    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --do_ff_systs ')
+    ("17",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET_TT_1, ' --do_ff_systs '),
+    ("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_TT_2, ' --do_ff_systs ')
   ]
   scheme_em = [
     ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
     ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET_EM_1, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" '),
     ("19",   "inclusive",    "ttbar",  'm_sv[0,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"')
   ]
   bkg_schemes = {
