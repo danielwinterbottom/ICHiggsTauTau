@@ -597,6 +597,18 @@ namespace ic {
               w_->function("m_iso_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
            fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_id_embed_ratio")->functor(w_->argSet("m_pt,m_eta")));
+           fns_["e_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg_binned_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_trg_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_idiso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_iso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_id_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_id_embed_ratio")->functor(w_->argSet("e_pt,e_eta")));
            fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
@@ -609,7 +621,8 @@ namespace ic {
               w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
- 
+           fns_["doubletau_corr"] = std::shared_ptr<RooFunctor>(
+                w_->function("doubletau_corr")->functor(w_->argSet("dR"))); 
         }
         fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_looseiso_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
@@ -1627,17 +1640,21 @@ namespace ic {
           e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
           auto args_1 = std::vector<double>{e_pt,e_eta,e_iso};  
           ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
-          ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+          if(!is_embedded_) ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+          else ele_trg_mc = fns_["e_trg_binned_embed"]->eval(args_1.data());
 
           double single_e_sf = ele_trg / ele_trg_mc;
 
           auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
           auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
           double ele_xtrg = fns_["e_trg_EleTau_Ele24Leg_desy_data"]->eval(args_2.data());
-          double ele_xtrg_mc = fns_["e_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
+          double ele_xtrg_mc = 1.0;
+          if(!is_embedded_) ele_xtrg_mc = fns_["e_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
+          else ele_xtrg_mc = 1.0;
 
           tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
-          tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
+          if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
+          else tau_trg_mc = 1.0;
 
           double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
@@ -2457,6 +2474,10 @@ namespace ic {
            tau2_trg = fns_["t_trg_tight_tt_data"]->eval(args_2.data());
            tau2_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_2.data());
            if(is_embedded_){
+             double dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(tau1->vector(),tau2->vector()));
+             auto arg_dR = std::vector<double>{dR};
+             double wt_trg_corr = fns_["doubletau_corr"]->eval(arg_dR.data());
+             event->Add("wt_trg_corr", wt_trg_corr); 
              tau1_trg_mc= 1.0;    
              tau2_trg_mc= 1.0;
            }
@@ -2476,8 +2497,10 @@ namespace ic {
           tau2_trg_down = tau2_trg_down / tau2_trg;
         }
         weight *= (tau1_trg*tau2_trg);
-        event->Add("trigweight_1", tau1_trg);
-        event->Add("trigweight_2", tau2_trg);
+        //event->Add("trigweight_1", tau1_trg);
+        //event->Add("trigweight_2", tau2_trg);
+        event->Add("trigweight_1", tau1_trg_mc);
+        event->Add("trigweight_2", tau2_trg_mc); // change back after!
         event->Add("trigweight_up_1", tau1_trg_up);
         event->Add("trigweight_up_2", tau2_trg_up);
         event->Add("trigweight_down_1", tau1_trg_down);
@@ -2609,7 +2632,8 @@ namespace ic {
           double e_iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           auto args_1 = std::vector<double>{e1_pt,e1_eta,e_iso_1};
           ele1_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
-          ele1_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+          if(!is_embedded_) ele1_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+          else ele1_trg_mc = fns_["e_trg_binned_embed"]->eval(args_1.data());
           ele2_trg = 1.0;
           ele2_trg_mc = 1.0;
         } else if(mc_ != mc::summer16_80X){
@@ -2831,6 +2855,10 @@ namespace ic {
           auto args_2 = std::vector<double>{pt,e_sceta};
           ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
           ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
+          if(is_embedded_){
+            ele_iso = fns_["e_iso_binned_embed_ratio"]->eval(args_1.data());
+            ele_id = fns_["e_id_embed_ratio"]->eval(args_2.data());
+          }
           ele_idiso = ele_iso*ele_id;
         }
         if(mc_==mc::mc2017){
@@ -3152,7 +3180,12 @@ namespace ic {
            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
            double ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
            double ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data()); //set back to e_id_pog_ratio for tight / e_looseid_pog_ratio for loose
+           if(is_embedded_){
+             ele_iso = fns_["e_iso_binned_embed_ratio"]->eval(args_1.data());
+             ele_id = fns_["e_id_embed_ratio"]->eval(args_2.data());
+           } 
            m_idiso = fns_["m_idiso_binned_ratio"]->eval(args_2_2.data());
+           if(is_embedded_) m_idiso = fns_["m_idiso_binned_embed_ratio"]->eval(args_2_2.data());
            e_idiso *= (ele_id * ele_iso);
          }
 
