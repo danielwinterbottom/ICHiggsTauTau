@@ -71,6 +71,8 @@ namespace ic {
       outtree_->Branch("wt_topmass_2"     , &wt_topmass_2_  );
       outtree_->Branch("wt_ps_down", &wt_ps_down_);
       outtree_->Branch("wt_ps_up", &wt_ps_up_);
+      outtree_->Branch("wt_ue_down", &wt_ue_down_);
+      outtree_->Branch("wt_ue_up", &wt_ue_up_);
       outtree_->Branch("npNLO", &npNLO_);
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -265,7 +267,8 @@ namespace ic {
     ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down");
     ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up");
     ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down");   
- 
+    ue_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_up");
+    ue_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_down"); 
     return 0;
   }
 
@@ -811,7 +814,8 @@ namespace ic {
       wt_ps_up_ =  ps_3jet_up_  .GetBinContent(ps_3jet_up_  .FindBin(HiggsPt_));
       wt_ps_down_ =  ps_3jet_down_.GetBinContent(ps_3jet_down_.FindBin(HiggsPt_));
     }
-
+    wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_));
+    wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_));
 
 
     std::vector<PileupInfo *> puInfo;
