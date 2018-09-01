@@ -125,6 +125,7 @@ class HTTWeights : public ModuleBase {
   TF1 *tau_fake_weights_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
+  TH2D trig_extra_;
 
  public:
   HTTWeights(std::string const& name);

@@ -1332,7 +1332,6 @@ class HTTCategories : public ModuleBase {
   int tau_dm_2_;
   unsigned tau_vloose_1_;
   unsigned tau_vloose_2_;
-  double wt_trg_corr_;
   double wt_dysoup_;
 
   bool tau_id_olddm_vloose_1_ ; 

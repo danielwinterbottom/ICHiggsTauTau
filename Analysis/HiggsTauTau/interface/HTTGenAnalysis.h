@@ -132,6 +132,8 @@ class HTTGenAnalysis : public ModuleBase {
   TH1D ps_1jet_down_;
   TH1D ps_2jet_up_;
   TH1D ps_2jet_down_;
+  TH1D ps_3jet_up_;
+  TH1D ps_3jet_down_;
 
   double wt_topmass_;
   double wt_topmass_2_;

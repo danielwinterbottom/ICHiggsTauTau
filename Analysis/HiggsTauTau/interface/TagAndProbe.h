@@ -422,13 +422,13 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
       dm_ = tau->decay_mode();
       
-      lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
+      //lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
       bool found_match_probe = false;
       for(unsigned ta=0; ta<l1taus.size(); ++ta){
-        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0){
           // must pass L1 pT cut and be matched by DR to the tau
           if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
         }
