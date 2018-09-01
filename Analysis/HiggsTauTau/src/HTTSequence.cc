@@ -2266,7 +2266,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
               output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
            httStitching.set_do_w_soup(true);
            // W numbers need updating
-           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+           httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
            httStitching.SetWInputYields(709442.0+44587448.0,1037943.0,6570442.0,19669693.0,11303425.0);
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
