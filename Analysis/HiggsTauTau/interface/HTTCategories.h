@@ -45,6 +45,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_pdf_wts)
   CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
+  CLASS_MEMBER(HTTCategories, bool, do_sm_ps_wts)
   CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
   CLASS_MEMBER(HTTCategories, bool, do_z_weights)
   CLASS_MEMBER(HTTCategories, bool, do_faketaus)
@@ -101,6 +102,10 @@ class HTTCategories : public ModuleBase {
   double wt_embed_mc_yield_;
   double wt_quarkmass_;
   double wt_fullquarkmass_;
+  double wt_ps_up_;
+  double wt_ps_down_;
+  double wt_ue_up_;
+  double wt_ue_down_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;

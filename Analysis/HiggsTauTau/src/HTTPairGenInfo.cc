@@ -15,6 +15,7 @@ namespace ic {
     fs_ = NULL;
     write_plots_ = false;
     hists_.resize(1);
+    ngenjets_=false;
   }
 
   HTTPairGenInfo::~HTTPairGenInfo() {
@@ -192,6 +193,25 @@ namespace ic {
    event->Add("leading_lepton_match_DR",leading_lepton_match_DR);
    event->Add("subleading_lepton_match_DR",subleading_lepton_match_DR);*/
 
+    if(ngenjets_){
+      //Get gen-jets collection, filter Higgs decay products and add Njets variable to event
+      std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      for(unsigned i=0; i<gen_jets.size(); ++i){
+        ic::GenJet *genjet = gen_jets[i];
+        bool MatchedToPrompt = false;
+        for(unsigned j=0; j<sel_particles.size(); ++j){
+         if(DRLessThan(std::make_pair(genjet, sel_particles[j]),0.5)) MatchedToPrompt = true;
+        } 
+        for(unsigned j=0; j<gen_taus_ptr.size(); ++j){
+         if(DRLessThan(std::make_pair(genjet, gen_taus_ptr[j]),0.5)) MatchedToPrompt = true;
+        }
+        //remove jets that are matched to Higgs decay products
+        if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
+      }
+      unsigned ngenjets = gen_jets.size();
+      event->Add("ngenjets", ngenjets);
+    }
 
     return 0;
   }

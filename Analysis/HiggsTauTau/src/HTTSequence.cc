@@ -1425,11 +1425,15 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
 
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&channel != channel::wmnu){
+
+  bool do_ngenjets = (output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17);
+
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
     .set_ditau_label("ditau")
-    .set_channel(channel));
+    .set_channel(channel)
+    .set_ngenjets(do_ngenjets));
 }
 
 if(channel != channel::wmnu) {
@@ -2150,7 +2154,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-    .set_do_quarkmass_higgspt(do_ggH_stitch);
+    .set_do_quarkmass_higgspt(do_ggH_stitch)
+    .set_do_ps_weights(do_ggH_stitch);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
@@ -2377,6 +2382,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts)
+    .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_jes_vars(do_jes_vars)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));

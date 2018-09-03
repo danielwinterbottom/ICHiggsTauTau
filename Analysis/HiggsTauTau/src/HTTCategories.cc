@@ -42,6 +42,7 @@ namespace ic {
       do_pdf_wts_ = false;
       do_mssm_higgspt_ = false;
       do_sm_scale_wts_ = false;
+      do_sm_ps_wts_ = false;
       do_jes_vars_ = false;
       do_z_weights_ = false;
       do_faketaus_ = false;
@@ -88,6 +89,12 @@ namespace ic {
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
+      if(do_sm_ps_wts_ && !systematic_shift_){
+        outtree_->Branch("wt_ps_up", & wt_ps_up_);
+        outtree_->Branch("wt_ps_down", & wt_ps_down_);
+        outtree_->Branch("wt_ue_up", & wt_ue_up_);
+        outtree_->Branch("wt_ue_down", & wt_ue_down_);
+      }
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
@@ -1835,6 +1842,14 @@ namespace ic {
     wt_fullquarkmass_ =1.0;
     if(event->Exists("wt_quarkmass")) wt_quarkmass_ = event->Get<double>("wt_quarkmass");
     if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
+
+    if(do_sm_ps_wts_ && !systematic_shift_){
+        wt_ps_up_    = event->Exists("wt_ps_up") ? event->Get<double>("wt_ps_up") : 1.0;
+        wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
+        wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
+        wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
+    }
+
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
