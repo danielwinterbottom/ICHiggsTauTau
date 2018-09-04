@@ -273,6 +273,8 @@ parser.add_argument("--split_sm_scheme", dest="split_sm_scheme", action='store_t
     help="If set, splits the SM signal scheme into ggH, qqH and VH")
 parser.add_argument("--ggh_scheme", dest="ggh_scheme", type=str,
     help="Decide which ggH scheme to plot with in split SM scheme mode (powheg or JHU)")
+parser.add_argument("--looser_baseline_mva", dest="looser_baseline_mva", action="store_true",
+    help="If set, use looser baseline that is used for MVA FF method ")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -482,20 +484,27 @@ if options.channel == 'tt':
     # mva_highMjj_ztt =     '(IC_highMjj_July25_1_max_index==4)'
 
     # with embedding and ff use:
-    mva_highMjj_ggh =      '(IC_highMjj_Aug28_4_max_index==0)'
-    mva_highMjj_jetFakes = '(IC_highMjj_Aug28_4_max_index==1)'
-    mva_highMjj_misc =     '(IC_highMjj_Aug28_4_max_index==2)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug28_4_max_index==3)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_4_max_index==4)'
+    #mva_highMjj_misc =     '(IC_highMjj_Aug30_1_max_index==2)'
+    mva_highMjj_ggh =      '(IC_highMjj_Aug30_2_2_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Aug30_2_2_max_index==1)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug30_2_2_max_index==2)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug30_2_2_max_index==3)'
 
-    mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
-    mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
-    mva_lowMjj_qcd =     '(IC_lowMjj_July05_3_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
-    mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==4)'
+    # mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
+    # mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
+    # mva_lowMjj_qcd =     '(IC_lowMjj_July05_3_max_index==2)'
+    # mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
+    # mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==4)'
+
+    # with embedding and FF use:
+    mva_lowMjj_ggh =     '(IC_lowMjj_Aug30_2_max_index==0)'
+    mva_lowMjj_jetFakes = '(IC_lowMjj_Aug30_2_max_index==1)'
+    mva_lowMjj_misc =    '(IC_lowMjj_Aug30_2_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_Aug30_2_max_index==3)'
+    mva_lowMjj_zttEmbed =     '(IC_lowMjj_Aug30_2_max_index==4)'
 
     cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
-    cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
+    # cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
     # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
@@ -504,9 +513,11 @@ if options.channel == 'tt':
 
     cats['ggh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ggh)
     cats['misc_lowMjj'] = '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_misc)
-    cats['qcd_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qcd)
+    # cats['qcd_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qcd)
     cats['qqh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qqh)
-    cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
+    # cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
+    cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
+    cats['jetFakes_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_jetFakes)
 
 if options.channel in ['et','mt']:
     # mva_highMjj_fake =    '(IC_highMjj_July26_max_index==0)'
@@ -517,12 +528,12 @@ if options.channel in ['et','mt']:
     # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     # with embedding and ff use:
-    mva_highMjj_ggh =      '(IC_highMjj_Aug28_2_max_index==0)'
-    mva_highMjj_jetFakes = '(IC_highMjj_Aug28_2_max_index==1)'
-    mva_highMjj_misc =     '(IC_highMjj_Aug28_2_max_index==2)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug28_2_max_index==3)'
-    mva_highMjj_tt =       '(IC_highMjj_Aug28_2_max_index==4)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_2_max_index==5)'
+    mva_highMjj_ggh =      '(IC_highMjj_Aug30_2_2_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Aug30_2_2_max_index==1)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug30_2_2_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug30_2_2_max_index==3)'
+    mva_highMjj_tt =       '(IC_highMjj_Aug30_2_2_max_index==4)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug30_2_2_max_index==5)'
 
     mva_lowMjj_fake =    '(IC_lowMjj_July05_3_max_index==0)'
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==1)'
@@ -558,12 +569,12 @@ if options.channel == 'em':
     # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     # with embedding use:
-    mva_highMjj_ggh =      '(IC_highMjj_Aug28_2_max_index==0)'
-    mva_highMjj_misc =     '(IC_highMjj_Aug28_2_max_index==1)'
-    mva_highMjj_qcd =      '(IC_highMjj_Aug28_2_max_index==2)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug28_2_max_index==3)'
-    mva_highMjj_tt =       '(IC_highMjj_Aug28_2_max_index==4)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug28_2_max_index==5)'
+    mva_highMjj_ggh =      '(IC_highMjj_Aug30_2_2_max_index==0)'
+    mva_highMjj_misc =     '(IC_highMjj_Aug30_2_2_max_index==1)'
+    mva_highMjj_qcd =      '(IC_highMjj_Aug30_2_2_max_index==2)'
+    mva_highMjj_qqh =      '(IC_highMjj_Aug30_2_2_max_index==3)'
+    mva_highMjj_tt =       '(IC_highMjj_Aug30_2_2_max_index==4)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Aug30_2_2_max_index==5)'
 
     mva_lowMjj_ggh =     '(IC_lowMjj_July05_4_max_index==0)'
     mva_lowMjj_misc =    '(IC_lowMjj_July05_4_max_index==1)'
@@ -2318,7 +2329,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
-        if 'ZTT' not in samples_to_skip:
+        if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
