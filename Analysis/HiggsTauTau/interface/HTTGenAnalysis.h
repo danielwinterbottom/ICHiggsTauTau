@@ -107,6 +107,8 @@ class HTTGenAnalysis : public ModuleBase {
   double parton_pt_;
   double parton_pt_2_;
   double parton_pt_3_;
+  double parton_mjj_;
+  double parton_HpT_;
   float D0_;
   float DCP_;
   float D0star_;
