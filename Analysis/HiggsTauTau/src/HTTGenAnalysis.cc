@@ -481,8 +481,11 @@ namespace ic {
     std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
     std::reverse(parton_pt_vec.begin(),parton_pt_vec.end());
     if (parton_pt_vec.size()>0) parton_pt_ = parton_pt_vec[0];
+    else parton_pt_ = -9999;
     if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
+    else parton_pt_2_ = -9999;
     if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
+    else parton_pt_3_ = -9999;
 
     npNLO_ = eventInfo->npNLO();
     if(npNLO_<0) npNLO_ = 2; 
