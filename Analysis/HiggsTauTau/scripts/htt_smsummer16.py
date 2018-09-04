@@ -485,14 +485,14 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      'EWKWMinus2Jets_WToLNu-ext1',
-      'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu',
-      'EWKWPlus2Jets_WToLNu-ext1',
-      'EWKWPlus2Jets_WToLNu-ext2',
-      'EWKWPlus2Jets_WToLNu',
-      'EWKZ2Jets_ZToLL-ext',
-      'EWKZ2Jets_ZToLL'
+      #'EWKWMinus2Jets_WToLNu-ext1',
+      #'EWKWMinus2Jets_WToLNu-ext2',
+      #'EWKWMinus2Jets_WToLNu',
+      #'EWKWPlus2Jets_WToLNu-ext1',
+      #'EWKWPlus2Jets_WToLNu-ext2',
+      #'EWKWPlus2Jets_WToLNu',
+      #'EWKZ2Jets_ZToLL-ext',
+      #'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
@@ -543,7 +543,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
           CONFIG='scripts/taues_config.json'
           JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
           nperjob = 10
-        FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+        #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+        FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -572,7 +573,8 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+      #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 50
@@ -637,7 +639,9 @@ if options.mg_signal:
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+      #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
+
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1

@@ -206,6 +206,7 @@ class EventInfo {
     std::cout << "Weight name    |  Value  " << std::endl;
     std::cout << "-------------------------" << std::endl;
     SDMap::const_iterator it;
+    double weight=1.;
     for (it = weights_.begin(); it != weights_.end(); ++it) {
       SBMap::const_iterator st_it = weight_status_.find(it->first);
       if (st_it != weight_status_.end()) {
@@ -214,7 +215,9 @@ class EventInfo {
       std::string name(it->first);
       if(name.length()<13)name.append(13-name.length(), ' ');
       printf("%.13s  |  %.3f  \n",name.c_str(),it->second);
+      weight = it->second * weight;
     }
+    std::cout << "total weight = " << weight << std::endl;
     std::cout << "-------------------------" << std::endl;
   }
 

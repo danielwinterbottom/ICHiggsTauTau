@@ -17,6 +17,7 @@ class HTTPairGenInfo : public ModuleBase {
   CLASS_MEMBER(HTTPairGenInfo, std::string, ditau_label)
   CLASS_MEMBER(HTTPairGenInfo, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTPairGenInfo, bool, write_plots)
+  CLASS_MEMBER(HTTPairGenInfo, bool, ngenjets)
   CLASS_MEMBER(HTTPairGenInfo, ic::channel, channel)
   std::vector<Dynamic2DHistoSet *> hists_;
 

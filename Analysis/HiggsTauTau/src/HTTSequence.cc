@@ -1425,11 +1425,15 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
 
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&channel != channel::wmnu){
+
+  bool do_ngenjets = (output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17);
+
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
     .set_ditau_label("ditau")
-    .set_channel(channel));
+    .set_channel(channel)
+    .set_ngenjets(do_ngenjets));
 }
 
 if(channel != channel::wmnu) {
@@ -2150,7 +2154,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-    .set_do_quarkmass_higgspt(do_ggH_stitch);
+    .set_do_quarkmass_higgspt(do_ggH_stitch)
+    .set_do_ps_weights(do_ggH_stitch);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
@@ -2266,12 +2271,13 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
               output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
            httStitching.set_do_w_soup(true);
            // W numbers need updating
-           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+           httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
            httStitching.SetWInputYields(709442.0+44587448.0,1037943.0,6570442.0,19669693.0,11303425.0);
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
-            httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+            // DY XS's are relative to the inclusive XS
+            httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
             httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 1147725.0, 4313584);
           }
        
@@ -2376,6 +2382,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts)
+    .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_jes_vars(do_jes_vars)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));
@@ -2558,7 +2565,11 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::string trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
     if(!is_data || is_embedded){
       trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-      trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg,hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
+      //trg_filters = "hltPFTau32Reg,hltPFTau32Reg";
+      //trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg,hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";     
+      trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";
+      trg_filters = "hltPFTau20,hltPFTau20";
+
     } else if (is_data &&  output_name.find("SingleMuonH") != output_name.npos){
       trg_objs = "triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
       trg_filters = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
@@ -2577,10 +2588,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
         .set_ditau_label("ditau")
         .set_tag_trg_objects("triggerObjectsIsoMu24")
         .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+        //.set_extra_hlt_probe_pt(35.)
+        //.set_extra_l1_probe_pt(28.)
         .set_probe_trg_objects(trg_objs)
         .set_probe_trg_filters(trg_filters)
-        .set_extra_hlt_probe_pt(35.)
-        //.set_extra_l1_probe_pt(28.)
         .set_probe_id(muon_probe_id)
         .set_tag_id(muon_probe_id)
     );

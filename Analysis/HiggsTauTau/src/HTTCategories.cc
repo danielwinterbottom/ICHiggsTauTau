@@ -42,6 +42,7 @@ namespace ic {
       do_pdf_wts_ = false;
       do_mssm_higgspt_ = false;
       do_sm_scale_wts_ = false;
+      do_sm_ps_wts_ = false;
       do_jes_vars_ = false;
       do_z_weights_ = false;
       do_faketaus_ = false;
@@ -76,6 +77,7 @@ namespace ic {
       outtree_->Branch("rho",               &rho_, "rho/F");
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
+      outtree_->Branch("wt_dysoup",         &wt_dysoup_);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
@@ -83,11 +85,16 @@ namespace ic {
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       outtree_->Branch("xtrg_et_sf", &xtrg_et_sf_);
       outtree_->Branch("single_e_sf", &single_e_sf_);
-      outtree_->Branch("wt_trg_corr", &wt_trg_corr_);
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
+      if(do_sm_ps_wts_ && !systematic_shift_){
+        outtree_->Branch("wt_ps_up", & wt_ps_up_);
+        outtree_->Branch("wt_ps_down", & wt_ps_down_);
+        outtree_->Branch("wt_ue_up", & wt_ue_up_);
+        outtree_->Branch("wt_ue_down", & wt_ue_down_);
+      }
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
@@ -1792,6 +1799,7 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();
     wt_tau_id_tight_ = 1.0;
@@ -1834,6 +1842,14 @@ namespace ic {
     wt_fullquarkmass_ =1.0;
     if(event->Exists("wt_quarkmass")) wt_quarkmass_ = event->Get<double>("wt_quarkmass");
     if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
+
+    if(do_sm_ps_wts_ && !systematic_shift_){
+        wt_ps_up_    = event->Exists("wt_ps_up") ? event->Get<double>("wt_ps_up") : 1.0;
+        wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
+        wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
+        wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
+    }
+
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -2561,7 +2577,6 @@ namespace ic {
   if (event->Exists("trigweight_up_2")) wt_trig_up_2_ = event->Get<double>("trigweight_up_2"); else wt_trig_up_2_ = 1.0;
   if (event->Exists("trigweight_down_1")) wt_trig_down_1_ = event->Get<double>("trigweight_down_1"); else wt_trig_down_1_ = 1.0;
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
-  wt_trg_corr_ = event->Exists("wt_trg_corr") && is_embedded_ ? event->Get<double>("wt_trg_corr") : 1.0; 
   if (event->Exists("xtrg_et_sf")) xtrg_et_sf_ = event->Get<double>("xtrg_et_sf"); else xtrg_et_sf_ = 1.0;
   if (event->Exists("single_e_sf")) single_e_sf_ = event->Get<double>("single_e_sf"); else single_e_sf_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
@@ -3725,7 +3740,6 @@ namespace ic {
         tau_id_olddm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
-
     }
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
