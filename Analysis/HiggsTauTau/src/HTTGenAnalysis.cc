@@ -32,6 +32,13 @@ struct PtComparator{
     return (a.vector().Pt() > b.vector().Pt());
   }
 };
+
+struct PtComparatorGenPart{
+  bool operator() (ic::GenParticle *a, ic::GenParticle *b) {
+    return (a->vector().Pt() > b->vector().Pt());
+  }
+};
+
   
 namespace ic {
 
@@ -228,10 +235,15 @@ namespace ic {
       outtree_->Branch("parton_pt"     , &parton_pt_);
       outtree_->Branch("parton_pt_2"     , &parton_pt_2_);
       outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
+      outtree_->Branch("parton_mjj",    &parton_mjj_);
+      outtree_->Branch("parton_HpT", &parton_HpT_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
       outtree_->Branch("sjdphi"     , &sjdphi_);
+      outtree_->Branch("spjdphi"     , &spjdphi_);
+      outtree_->Branch("ysep"     , &ysep_);
+      outtree_->Branch("n_pjets"     , &n_pjets_);
       outtree_->Branch("n_pu",      &n_pu_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -463,19 +475,34 @@ namespace ic {
     HiggsPt_=-9999;
     partons_lhe_=0;
     partons_=0;
+    parton_mjj_=-9999;
+    parton_HpT_=-9999;
+    double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
+      std::vector<GenParticle*> outparts;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
+           if(id==25) parton_HpT_ = lhe_parts[i]->pt();
            if ((id >= 1 && id <=6) || id == 21){ 
+             outparts.push_back(lhe_parts[i]);
              partons_++;
              parton_pt_vec.push_back(lhe_parts[i]->pt());
              if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
+      }
+      std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
+      if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
+      else parton_mjj_ = -9999;
+      if(outparts.size()>2){
+        double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M(); 
+        double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();  
+        if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
+   
       }
     }
     std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
@@ -498,6 +525,7 @@ namespace ic {
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
+           higgs_eta = gen_particles[i]->eta();
            wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.007;
            wt_topmass_2_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
@@ -789,7 +817,8 @@ namespace ic {
     if(n_jets_ > 2){
       jpt_3_  = filtered_jets[2].vector().Pt();      
     }
-    
+
+    n_pjets_=0;    
     if(filtered_jets.size()>=2){
       if(filtered_jets[0].eta() > filtered_jets[1].eta()){
         sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[0].vector(), filtered_jets[1].vector());
@@ -797,7 +826,28 @@ namespace ic {
       else{
         sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[1].vector(), filtered_jets[0].vector());
       }
-    } else sjdphi_ = -9999;
+      // sort jets higher and lower than higgs eta_1
+      std::vector<GenJet> jets_high;
+      std::vector<GenJet> jets_low;
+      for (unsigned i=0; i<filtered_jets.size(); ++i){
+        if (filtered_jets[i].eta() > higgs_eta) jets_high.push_back(filtered_jets[i]);
+        else jets_low.push_back(filtered_jets[i]);
+      }
+      if(jets_low.size()>0) n_pjets_++;
+      if(jets_high.size()>0) n_pjets_++;
+      Candidate pseudo_jet_a;
+      Candidate pseudo_jet_b;
+      for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j.vector());
+      for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j.vector());
+      spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
+      for (unsigned i=0; i<filtered_jets.size(); ++i){
+        double dEta = std::fabs(higgs_eta - filtered_jets[i].eta());
+        if(i==0 || dEta<ysep_) ysep_ = dEta;
+      }
+    } else {
+      sjdphi_ = -9999;
+      spjdphi_ = -9999;
+    }
 
     wt_ps_down_ = 1.0;
     wt_ps_up_ = 1.0;
