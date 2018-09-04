@@ -500,39 +500,39 @@ if options.channel == 'tt':
 
     # with embedding and ff use:
     #mva_highMjj_misc =     '(IC_highMjj_Aug30_1_max_index==2)'
-    mva_highMjj_ggh =      '(IC_highMjj_Aug30_2_2_max_index==0)'
-    mva_highMjj_jetFakes = '(IC_highMjj_Aug30_2_2_max_index==1)'
-    mva_highMjj_qqh =      '(IC_highMjj_Aug30_2_2_max_index==2)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Aug30_2_2_max_index==3)'
+    mva_highMjj_ggh =      '(IC_highMjj_Sep04_4_max_index==0)'
+    mva_highMjj_jetFakes = '(IC_highMjj_Sep04_4_max_index==1)'
+    # mva_highMjj_qqh =      '(IC_highMjj_Sep04_3_max_index==2)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Sep04_4_max_index==2)'
 
-    # mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
-    # mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
-    # mva_lowMjj_qcd =     '(IC_lowMjj_July05_3_max_index==2)'
-    # mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
-    # mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==4)'
+    mva_lowMjj_ggh =     '(IC_lowMjj_July05_3_max_index==0)'
+    mva_lowMjj_misc =    '(IC_lowMjj_July05_3_max_index==1)'
+    mva_lowMjj_qcd =     '(IC_lowMjj_July05_3_max_index==2)'
+    mva_lowMjj_qqh =     '(IC_lowMjj_July05_3_max_index==3)'
+    mva_lowMjj_ztt =     '(IC_lowMjj_July05_3_max_index==4)'
 
     # with embedding and FF use:
-    mva_lowMjj_ggh =     '(IC_lowMjj_Aug30_2_max_index==0)'
-    mva_lowMjj_jetFakes = '(IC_lowMjj_Aug30_2_max_index==1)'
-    mva_lowMjj_misc =    '(IC_lowMjj_Aug30_2_max_index==2)'
-    mva_lowMjj_qqh =     '(IC_lowMjj_Aug30_2_max_index==3)'
-    mva_lowMjj_zttEmbed =     '(IC_lowMjj_Aug30_2_max_index==4)'
+    # mva_lowMjj_ggh =     '(IC_lowMjj_Aug30_2_max_index==0)'
+    # mva_lowMjj_jetFakes = '(IC_lowMjj_Aug30_2_max_index==1)'
+    # mva_lowMjj_misc =    '(IC_lowMjj_Aug30_2_max_index==2)'
+    # mva_lowMjj_qqh =     '(IC_lowMjj_Aug30_2_max_index==3)'
+    # mva_lowMjj_zttEmbed =     '(IC_lowMjj_Aug30_2_max_index==4)'
 
-    cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
+    cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>350)'.format(mva_highMjj_ggh)
     # cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
-    cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
+    # cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>350)'.format(mva_highMjj_qqh)
     # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
-    cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_zttEmbed)
-    cats['jetFakes_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_jetFakes)
+    cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>350)'.format(mva_highMjj_zttEmbed)
+    cats['jetFakes_highMjj'] =  '({} && n_jets>=2 && mjj>350)'.format(mva_highMjj_jetFakes)
 
     cats['ggh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ggh)
     cats['misc_lowMjj'] = '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_misc)
-    # cats['qcd_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qcd)
+    cats['qcd_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qcd)
     cats['qqh_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_qqh)
-    # cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
-    cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
-    cats['jetFakes_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_jetFakes)
+    cats['ztt_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_ztt)
+    # cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
+    # cats['jetFakes_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_jetFakes)
 
 if options.channel in ['et','mt']:
     # mva_highMjj_fake =    '(IC_highMjj_July26_max_index==0)'
