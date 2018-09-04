@@ -40,14 +40,13 @@ namespace ic {
     
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) category_names_ = {"inclusive"};
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) category_names_ = {"inclusive"};
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
-      if(strategy_==strategy::cpsummer17) continue;  
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_;
       }
       ff_file_name = baseDir + ff_file_name;
@@ -136,14 +135,44 @@ namespace ic {
       
     }
     if(strategy_==strategy::cpsummer17){
-      TFile *f = new TFile("input/fake_factors/zmm_taufakes_2017.root");
-      ff_hist_dm0_ = (TH1D*)f->Get("ff_dm0")->Clone();
-      ff_hist_dm1_ = (TH1D*)f->Get("ff_dm1")->Clone();
-      ff_hist_dm10_ = (TH1D*)f->Get("ff_dm10")->Clone();
-      ff_hist_dm0_->SetDirectory(0);
-      ff_hist_dm1_->SetDirectory(0);
-      ff_hist_dm10_->SetDirectory(0);
-      f->Close();    
+
+      TFile f(fracs_file_.c_str());
+      w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f.Close();
+
+      fns_["w_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["w_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("w_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["qcd_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("qcd_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["ttbar_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("ttbar_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+      fns_["dy_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
+            w_->function("dy_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
+
     }
 
     return 0;
@@ -257,12 +286,17 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) {
+    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
       bool os = PairOppSign(ditau);
       double mt_1 = MT(lep1, met);
       inputs.resize(9);
-      tt_inputs_1.resize(9);
-      tt_inputs_2.resize(9);
+      if(strategy_ == strategy::cpsummer17){
+        tt_inputs_1.resize(8);
+        tt_inputs_2.resize(8); 
+      } else {
+        tt_inputs_1.resize(9);
+        tt_inputs_2.resize(9);
+      }
       if(channel_ == channel::et || channel_ == channel::mt){
         auto args = std::vector<double>{pt_2_,n_jets_,n_bjets_};  
         double qcd_frac=0.5, w_frac=0.5, tt_frac=0.0;
@@ -306,6 +340,7 @@ namespace ic {
         auto args_1 = std::vector<double>{pt_1_,n_jets_,n_bjets_}; 
         auto args_2 = std::vector<double>{pt_2_,n_jets_,n_bjets_};   
         double qcd_frac_1=1.0, w_frac_1=0.0, tt_frac_1=0.0, dy_frac_1=0.0, qcd_frac_2=1.0, w_frac_2=0.0, tt_frac_2=0.0, dy_frac_2=0.0;
+
         if(os){ 
           qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
           w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
@@ -325,9 +360,14 @@ namespace ic {
           tt_frac_2 = fns_["ttbar_tt_ss_fracs_2"]->eval(args_2.data());
           dy_frac_2 = fns_["dy_tt_ss_fracs_2"]->eval(args_2.data());
         }
-
-        tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1; tt_inputs_1[7] = tt_frac_1; tt_inputs_1[8] = dy_frac_1;
-        tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2; tt_inputs_2[7] = tt_frac_2; tt_inputs_2[8] = dy_frac_2;
+        
+        if(strategy_ == strategy::cpsummer17) {
+          tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1+dy_frac_1; tt_inputs_1[7] = tt_frac_1; 
+          tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2+dy_frac_2; tt_inputs_2[7] = tt_frac_2; 
+        } else {
+          tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1; tt_inputs_1[7] = tt_frac_1; tt_inputs_1[8] = dy_frac_1;
+          tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2; tt_inputs_2[7] = tt_frac_2; tt_inputs_2[8] = dy_frac_2;
+        }
       }
       
       std::string map_key = "inclusive";
@@ -366,14 +406,7 @@ namespace ic {
           } 
         }
       }
-    } else if(strategy_ == strategy::cpsummer17) {
-      double ff_nom;
-      if(tau_decaymode_2_==0)  ff_nom = ff_hist_dm0_->GetBinContent(ff_hist_dm0_->FindBin(pt_2_));
-      if(tau_decaymode_2_==1)  ff_nom = ff_hist_dm1_->GetBinContent(ff_hist_dm1_->FindBin(pt_2_));
-      if(tau_decaymode_2_==10) ff_nom = ff_hist_dm10_->GetBinContent(ff_hist_dm10_->FindBin(pt_2_));
-      event->Add("wt_ff_1", ff_nom);
-      
-    }
+    } 
     
     
 

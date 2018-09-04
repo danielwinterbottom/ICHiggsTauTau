@@ -127,8 +127,24 @@ class HTTGenAnalysis : public ModuleBase {
  
   TH1F topmass_wts_;
   TH1F topmass_wts_toponly_;
+
+  TH1D ps_0jet_up_;
+  TH1D ps_0jet_down_;
+  TH1D ps_1jet_up_;
+  TH1D ps_1jet_down_;
+  TH1D ps_2jet_up_;
+  TH1D ps_2jet_down_;
+  TH1D ps_3jet_up_;
+  TH1D ps_3jet_down_;
+  TH1D ue_down_;
+  TH1D ue_up_;
+
   double wt_topmass_;
   double wt_topmass_2_;
+  double wt_ps_down_;
+  double wt_ps_up_;
+  double wt_ue_down_;
+  double wt_ue_up_;
   double scale1_;
   double scale2_;
   double scale3_;

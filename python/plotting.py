@@ -483,6 +483,7 @@ def Set(obj, **kwargs):
 
 def OnePad():
     pad = R.TPad('pad', 'pad', 0., 0., 1., 1.)
+    pad.SetTicks(1)
     pad.Draw()
     pad.cd()
     result = [pad]
@@ -2078,7 +2079,7 @@ def HTTPlot(nodename,
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt","ggH2jsm_htt"], False )
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2558,7 +2559,12 @@ def CompareHists(hists=[],
     hs = R.THStack("hs","")
     hist_count=0
     legend_hists=[]
-    if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
+    if isinstance(uncert_hist, (list,)):
+     for i in uncert_hist: 
+       if norm_bins: i.Scale(1.0,"width")
+    else:
+      if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
+
     for hist in hists:
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         if norm_bins: hist.Scale(1.0,"width")
@@ -2621,21 +2627,35 @@ def CompareHists(hists=[],
     if not custom_y_range:
         if(log_y): 
             axish[0].SetMinimum(hs.GetMinimum("nostack"))
-            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(hs.GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
-    
+
     hs.Draw("nostack hist same")
     
+    uncert_hs = R.THStack()
     if uncert_hist is not None:
-      uncert_hist.SetFillColor(CreateTransparentColor(12,0.4))
-      uncert_hist.SetLineColor(CreateTransparentColor(12,0.4))
-      uncert_hist.SetMarkerSize(0)
-      uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
-      uncert_hist.SetFillStyle(1111)
-      uncert_hist.Draw("e2same")
+      if isinstance(uncert_hist, (list,)):
+         col_list = [12,6,4,2,3,4]
+         count = 0
+         for i in uncert_hist:
+           i.SetFillColor(CreateTransparentColor(col_list[count],0.4))
+           i.SetLineColor(CreateTransparentColor(col_list[count],0.4))
+           i.SetMarkerSize(0)
+           i.SetMarkerColor(CreateTransparentColor(col_list[count],0.4))
+           i.SetFillStyle(1111)
+           count+=1
+         uncert_hs.Draw("nostack e2same")  
+      else: 
+        uncert_hist.SetFillColor(CreateTransparentColor(12,0.4))
+        uncert_hist.SetLineColor(CreateTransparentColor(12,0.4))
+        uncert_hist.SetMarkerSize(0)
+        uncert_hist.SetMarkerColor(CreateTransparentColor(12,0.4))
+        uncert_hist.SetFillStyle(1111)
+        uncert_hs.Add(uncert_hist)
+        uncert_hs.Draw("e2same")
     hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
@@ -2649,7 +2669,13 @@ def CompareHists(hists=[],
 
     for legi,hist in enumerate(legend_hists):
         legend.AddEntry(hist,legend_titles[legi],"l")
-    if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
+    if isinstance(uncert_hist, (list,)):
+     count=0
+     for i in uncert_hist:
+       legend.AddEntry(i,uncert_title[count],'f') 
+       count+=1
+    else:
+      if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
     legend.Draw("same")
     
     #CMS label and title
@@ -2691,9 +2717,20 @@ def CompareHists(hists=[],
             ratio_hs.Add(h.Clone())
             hist_count+=1
         if uncert_hist is not None:
-          h = uncert_hist.Clone()
-          h.Divide(div_hist)
-          h.Draw("e2same")   
+           if isinstance(uncert_hist, (list,)):
+             ratio_err_hs = R.THStack("ratio_err_hs","")
+             count=0
+             for i in uncert_hist:
+               h = i.Clone()
+               h.Divide(div_hist)
+               ratio_err_hs.Add(h)
+               h.Draw("e2same")
+               count+=1
+             #ratio_err_hs.Draw("nostack e2same")
+           else:
+             h = uncert_hist.Clone()
+             h.Divide(div_hist)
+             h.Draw("e2same") 
         ratio_hs.Draw("nostack l same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()
@@ -3139,7 +3176,7 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt","ggH2jsm_htt"], False, R.kRed)
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
