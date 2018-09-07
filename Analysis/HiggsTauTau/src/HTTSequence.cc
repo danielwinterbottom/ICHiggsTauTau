@@ -2556,45 +2556,67 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
       );  
     }
-  } else if(channel == channel::tpmt){  
-    std::function<bool(Muon const*)> muon_probe_id;
-    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
-    else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-    
-    std::string trg_filters = "hltPFTau32TrackPt1Reg,hltPFTau32TrackPt1Reg"; 
-    std::string trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-    if(!is_data || is_embedded){
-      trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-      //trg_filters = "hltPFTau32Reg,hltPFTau32Reg";
-      //trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg,hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";     
-      trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";
-      trg_filters = "hltPFTau20,hltPFTau20";
+  } else if(channel == channel::tpmt){ 
 
-    } else if (is_data &&  output_name.find("SingleMuonH") != output_name.npos){
-      trg_objs = "triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
-      trg_filters = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
-    } else if (is_data && output_name.find("SingleMuonH") == output_name.npos){
-      trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32";  
-      trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg";    
+    if(strategy_type==strategy::cpsummer17){
+        std::function<bool(Muon const*)> muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+        std::vector<double> extra_cuts = {0.,40.,40.};
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
+          //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
+          .set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
+          .set_extra_l1_probe_pt(32.)
+          //.set_extra_hlt_probe_pt_vec(extra_cuts)
+        );
+    } else {
+ 
+      std::function<bool(Muon const*)> muon_probe_id;
+      if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+      else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+      
+      std::string trg_filters = "hltPFTau32TrackPt1Reg,hltPFTau32TrackPt1Reg"; 
+      std::string trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+      if(!is_data || is_embedded){
+        trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32,triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+        //trg_filters = "hltPFTau32Reg,hltPFTau32Reg";
+        //trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg,hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";     
+        trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";
+        trg_filters = "hltPFTau20,hltPFTau20";
+
+      } else if (is_data &&  output_name.find("SingleMuonH") != output_name.npos){
+        trg_objs = "triggerObjectsIsoMu19erMediumCombinedIsoTau32";  
+        trg_filters = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";    
+      } else if (is_data && output_name.find("SingleMuonH") == output_name.npos){
+        trg_objs = "triggerObjectsIsoMu19erMediumIsoTau32";  
+        trg_filters = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg";    
+      }
+      //trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";    
+      //trg_filters = "hltPFTau20TrackLooseIsoAgainstMuon,hltPFTau20TrackLooseIsoAgainstMuon";
+      //trg_filters = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20,hltOverlapFilterIsoMu19LooseIsoPFTau20"; // use these in HTTFilters?
+                             
+      BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+          //.set_extra_hlt_probe_pt(35.)
+          //.set_extra_l1_probe_pt(28.)
+          .set_probe_trg_objects(trg_objs)
+          .set_probe_trg_filters(trg_filters)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+      );
     }
-    //trg_objs = "triggerObjectsIsoMu19LooseTau20SingleL1,triggerObjectsIsoMu19LooseTau20";    
-    //trg_filters = "hltPFTau20TrackLooseIsoAgainstMuon,hltPFTau20TrackLooseIsoAgainstMuon";
-    //trg_filters = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20,hltOverlapFilterIsoMu19LooseIsoPFTau20"; // use these in HTTFilters?
-                           
-    BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
-        .set_fs(fs.get())
-        .set_channel(channel)
-        .set_strategy(strategy_type)
-        .set_ditau_label("ditau")
-        .set_tag_trg_objects("triggerObjectsIsoMu24")
-        .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
-        //.set_extra_hlt_probe_pt(35.)
-        //.set_extra_l1_probe_pt(28.)
-        .set_probe_trg_objects(trg_objs)
-        .set_probe_trg_filters(trg_filters)
-        .set_probe_id(muon_probe_id)
-        .set_tag_id(muon_probe_id)
-    );
   } if(channel == channel::tpem){  
     std::function<bool(Muon const*)> muon_probe_id;
     if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
