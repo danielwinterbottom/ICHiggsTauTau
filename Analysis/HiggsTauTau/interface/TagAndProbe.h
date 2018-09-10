@@ -34,6 +34,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_iso_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
+  CLASS_MEMBER(TagAndProbe, std::vector<double>, extra_hlt_probe_pt_vec)
   CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   CLASS_MEMBER(TagAndProbe, bool, do_dzmass)
   
@@ -108,6 +109,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   extra_l1_tag_pt_ = 34.0;
   extra_l1_probe_pt_ = 0.;
   extra_hlt_probe_pt_ = 0.;
+  extra_hlt_probe_pt_vec_ = {};
   tag_add_trg_objects_="";
   tag_add_trg_filters_="";
   loose_iso_trgprobe_=false;
@@ -270,11 +272,19 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
       online_pt_1_ = objs_probe[leg1_match_index_1]->pt();
       if(extra_hlt_probe_pt_>0) trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_vec_.size()>i){
+        double pt_cut = extra_hlt_probe_pt_vec_[i];
+        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > pt_cut;
+      } 
     }
     if(trg_probe_2_){
       unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
       online_pt_2_ = objs_probe[leg1_match_index_2]->pt();
       if(extra_hlt_probe_pt_>0) trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_vec_.size()>i){
+        double pt_cut = extra_hlt_probe_pt_vec_[i];
+        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > pt_cut;
+      }
     }
       
   }
@@ -416,10 +426,17 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_1_ = 0;
       id_probe_2_ = tau->GetTauID("decayModeFinding");
       pass_antilep_ = tau->GetTauID("againstMuonTight3") && tau->GetTauID("againstElectronVLooseMVA6");
-      iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
-      iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
-      iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
-      iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      if( strategy_ == strategy::cpsummer17) {
+        iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_tight_ = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
+      } else {
+        iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+        iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+        iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      }
       dm_ = tau->decay_mode();
       
       //lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");

@@ -265,6 +265,8 @@ namespace ic {
                  w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+              fns_["t_trg_tight_tt_mcclose"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_trg_tight_tt_mcclose")->functor(w_->argSet("t_pt,t_eta")));
               fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_mt_mc"] = std::shared_ptr<RooFunctor>(
@@ -617,7 +619,9 @@ namespace ic {
            fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+		      w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_tt_embed"] = std::shared_ptr<RooFunctor>(
+                      w_->function("t_trg_tight_tt_embed")->functor(w_->argSet("t_pt,t_eta")));
            fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_mt_mc"] = std::shared_ptr<RooFunctor>(
@@ -798,6 +802,7 @@ namespace ic {
       //if(channel_==channel::em) wt_embedding_yield = 1.2101;
       //if(channel_==channel::tt) wt_embedding_yield = 1.2005;
       event->Add("wt_embed_mc_yield",1.13/wt_embedding_yield); 
+      if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield = 1.0;
       eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     }
 
@@ -2494,6 +2499,22 @@ namespace ic {
            tau1_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_1.data());
            tau2_trg = fns_["t_trg_tight_tt_data"]->eval(args_2.data());
            tau2_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_2.data());
+
+           //auto args_1 = std::vector<double>{pt_1,eta_1};
+           //auto args_2 = std::vector<double>{pt_2,eta_2};
+           //tau1_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_1.data()); 
+           //tau2_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_2.data());
+           //tau1_trg=1.0;
+           //tau2_trg=1.0;
+           //tau1_trg_mc=1.0;
+           //tau2_trg_mc=1.0;
+
+           if(is_embedded_){
+             auto args_1 = std::vector<double>{pt_1,eta_1};
+             auto args_2 = std::vector<double>{pt_2,eta_2};
+             tau1_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_1.data());
+             tau2_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_2.data());
+           }
         }
         if(trg_applied_in_mc_){
           tau1_trg = tau1_trg / tau1_trg_mc;

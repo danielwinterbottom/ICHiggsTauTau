@@ -332,6 +332,8 @@ if options.analysis == 'sm':
         if options.era in ['smsummer16','cpsummer16']: 
           cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
+        if options.era in ['cpsummer17','tauid2017']:
+          cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17']: 
           cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'  
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_1>25&& pt_2>20 && trg_singlemuon)'
@@ -407,6 +409,8 @@ elif options.channel == 'zee':
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
+cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
+cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
 if options.era in ['smsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
@@ -756,7 +760,7 @@ if options.era in ["smsummer16"]:
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
 
-if options.era in ['cpsummer16','tauid2016','cpsummer17']:
+if options.era in ['cpsummer16','tauid2016','cpsummer17','tauid2017']:
   # define these selections to make them more compatible with the fake-factor method and embedded samples
   if options.channel =='em':
     z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
@@ -853,7 +857,7 @@ if options.era in ["smsummer16",'cpsummer16','tauid2016']:
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
     
     
-if options.era in ['cpsummer17']:
+if options.era in ['cpsummer17','tauid2017']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-5-50-LO'] # no low mass sample until we know the cross section!
     #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
@@ -939,7 +943,7 @@ if options.syst_zwt != '':
     systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
 if options.syst_w_fake_rate != '':
     to_skip = ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT']
-    if options.era in ["smsummer16",'cpsummer16','tauid2016']: to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT']
+    if options.era in ["smsummer16",'cpsummer16','tauid2016','tauid2017']: to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT']
     systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', to_skip, False)
     systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', to_skip, False)
 if options.syst_jfake_m != '':
@@ -1320,6 +1324,10 @@ def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
 def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if options.channel == 'em' and options.era == 'cpsummer16':
       embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt+'*1.0667', sel, cat, z_sels, get_os)
+    elif options.era == 'cpsummer17' and options.channel in ['mt','et','tt']:
+      extra_wt='*0.97'
+      if options.channel == 'tt': extra_wt = '*0.97*0.97'
+      embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt+extra_wt, sel, cat, z_sels, get_os)
     else:
       embed_node = GetEmbeddedNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
     ana.nodes[nodename].AddNode(embed_node)    
@@ -1592,7 +1600,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   else:
     ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ztt_node)
-  if options.era in ['smsummer16','cpsummer16','tauid2016']: 
+  if options.era in ['smsummer16','cpsummer16','tauid2016','tauid2017']: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
@@ -2372,7 +2380,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
-        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17']: 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
     
     else:
@@ -2386,6 +2394,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             elif options.channel == 'et' or options.channel == 'mt': method = 12
         if 'EmbedZTT' not in samples_to_skip and options.embedding and options.channel != 'zmm':    
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+            if options.cat in ['pass','fail']:
+              cat_pass = '('+cats['pass']+')*('+cats['baseline']+')'  
+              cat_fail = '('+cats['fail']+')*('+cats['baseline']+')'
+              GenerateEmbedded(ana, '_pass', embed_samples, plot, wt, sel, cat_pass, z_sels, not options.do_ss)
+              GenerateEmbedded(ana, '_fail', embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
@@ -2399,7 +2412,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
-        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17']: 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
             GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
