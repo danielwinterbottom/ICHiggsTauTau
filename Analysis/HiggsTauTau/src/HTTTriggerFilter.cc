@@ -998,10 +998,10 @@ namespace ic {
 
         passed_etaucross = leg1_match && leg2_match;
         if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
-        if(is_embedded_){
+        //if(is_embedded_){
           // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
-          passed_etaucross = true;
-        }
+        //  passed_etaucross = true;
+        //}
       }
     }
     event->Add("trg_etaucross", passed_etaucross);
