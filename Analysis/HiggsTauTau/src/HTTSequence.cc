@@ -2513,8 +2513,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          .set_probe_trg_objects("triggerObjectsDoubleEl24") 
+          .set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
@@ -3262,6 +3264,11 @@ void HTTSequence::BuildTPZEEPairs() {
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
+  if (strategy_type == strategy::cpsummer17) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+    );
+  }
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)
