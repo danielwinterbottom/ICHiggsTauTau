@@ -58,7 +58,7 @@ namespace ic {
       delete ff_file;
     }
     
-    if(fracs_file_!="" && strategy_!=strategy::cpsummer17) {
+    if(fracs_file_!="") {
       TFile f(fracs_file_.c_str());
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
@@ -133,46 +133,6 @@ namespace ic {
             w_->function("dy_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
 
       
-    }
-    if(strategy_==strategy::cpsummer17){
-
-      TFile f(fracs_file_.c_str());
-      w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
-      f.Close();
-
-      fns_["w_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["qcd_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["ttbar_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["dy_tt_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["w_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["qcd_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["ttbar_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["dy_tt_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["w_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["qcd_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["ttbar_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["dy_tt_ss_fracs_1"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_ss_fracs_1")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["w_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("w_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["qcd_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("qcd_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["ttbar_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("ttbar_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-      fns_["dy_tt_ss_fracs_2"] = std::shared_ptr<RooFunctor>(
-            w_->function("dy_tt_ss_fracs_2")->functor(w_->argSet("pt,njets,nbjets")));
-
     }
 
     return 0;
@@ -374,8 +334,7 @@ namespace ic {
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
         double ff_nom = fake_factors_[map_key]->value(inputs);
-        event->Add("wt_ff_1", ff_nom);
-        
+        event->Add("wt_ff_1",  ff_nom);
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down" ,"ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
           for(unsigned j=0; j<systematics.size(); ++j){

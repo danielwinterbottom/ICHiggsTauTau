@@ -706,8 +706,8 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
 # Add data sample names
 if options.channel == 'tpzmm': 
     if options.era == 'summer17': 
-      #data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-      data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+      data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+      #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
