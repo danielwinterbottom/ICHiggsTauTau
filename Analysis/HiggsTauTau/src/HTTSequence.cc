@@ -2415,11 +2415,24 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id) 
+
+          // use this for runB
+          //.set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          //.set_do_extra(true)
+ 
+          // use double muon for runsC-F
+          .set_probe_trg_objects("triggerObjectsDoubleMu20")
+          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+
+
           //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
           //.set_probe_id(muon_probe_id)
-          .set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
-          .set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
+          //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
+          //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -2434,9 +2447,9 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(17.) //8
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(17.) //8
           //.set_do_dzmass(true)
           // for mu17 leg of MuMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
@@ -2515,8 +2528,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
           //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
           //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          // these lines to measure elec24 from double electron trigger (doesnt work for runB)
           .set_probe_trg_objects("triggerObjectsDoubleEl24") 
           .set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
+          .set_extra_l1_tag_pt(24.)
+          // these lines to measure elec24 from e+tau cross trigger - use for runB
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30")
+          //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau")
+          .set_do_extra(true)
+
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg

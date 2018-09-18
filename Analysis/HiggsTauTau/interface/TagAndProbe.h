@@ -37,7 +37,8 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, std::vector<double>, extra_hlt_probe_pt_vec)
   CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   CLASS_MEMBER(TagAndProbe, bool, do_dzmass)
-  
+  CLASS_MEMBER(TagAndProbe, bool, do_extra)
+ 
   TTree *outtree_;
   
   unsigned long long event_;
@@ -80,6 +81,8 @@ class TagAndProbe : public ModuleBase {
   bool pass_dz_;
   bool pass_mass8_;
   bool pass_dimu_;
+  bool passed_extra_1_;
+  bool passed_extra_2_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -114,6 +117,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   tag_add_trg_filters_="";
   loose_iso_trgprobe_=false;
   extra_l1_iso_probe_pt_=0.;
+  do_extra_=false;
 }
 
 template <class T>
@@ -148,6 +152,8 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("os"    , &os_    );
     outtree_->Branch("trg_probe_1" , &trg_probe_1_    );
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
+    outtree_->Branch("passed_extra_1" , &passed_extra_1_    );
+    outtree_->Branch("passed_extra_2" , &passed_extra_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
@@ -303,7 +309,24 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
-    
+   
+      if(do_extra_){
+        //put any extra condition your require the events to pass here
+        std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+        bool passed_extra_1 = false;
+        bool passed_extra_2 = false;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          if(l1taus[ta]->vector().Pt()>24 && fabs(l1taus[ta]->eta())<2.1)  {
+            double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
+            double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
+            if(dR_1>0.5) passed_extra_1 = true;
+            if(dR_2>0.5) passed_extra_2 = true;
+          }
+         }
+         trg_tag_1_ = trg_tag_1_ && passed_extra_2;
+         trg_tag_2_ = trg_tag_2_ && passed_extra_1;
+      }
+ 
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1muons = event->GetPtrVec<ic::L1TObject>("L1Muons");
@@ -365,6 +388,25 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       Electron *elec2_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton2"));
       eta_1_ = elec1_1->sc_eta();
       eta_2_ = elec2_1->sc_eta();
+
+      if(do_extra_){
+        //put any extra condition your require the events to pass here
+        std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+        bool passed_extra_1 = false;
+        bool passed_extra_2 = false;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          if(l1taus[ta]->vector().Pt()>26 && fabs(l1taus[ta]->eta())<2.1 && l1taus[ta]->isolation()>0)  {
+            double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
+            double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
+            double deta_1 = std::fabs(l1taus[ta]->eta()-lep1->eta());
+            double deta_2 = std::fabs(l1taus[ta]->eta()-lep2->eta());
+            if(deta_1>0.2&&dR_1>0.5) passed_extra_1 = true;
+            if(deta_2>0.2&&dR_2>0.5) passed_extra_2 = true;
+          }
+         }
+         trg_tag_1_ = trg_tag_1_ && passed_extra_2;
+         trg_tag_2_ = trg_tag_2_ && passed_extra_1;
+      }
 
       if(strategy_ == strategy::cpsummer17){
         // we have to do this here so that the ID is compted before the smear and scale shift
