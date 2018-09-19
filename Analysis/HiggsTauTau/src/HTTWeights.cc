@@ -237,6 +237,10 @@ namespace ic {
                  w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
               fns_["m_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_trg_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+              fns_["m_trg20_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg20_data")->functor(w_->argSet("m_pt,m_eta")));
+              fns_["m_trg20_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("m_trg20_mc")->functor(w_->argSet("m_pt,m_eta")));
               fns_["m_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_idiso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
               fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -249,6 +253,10 @@ namespace ic {
                  w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+              fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+              fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -596,6 +604,10 @@ namespace ic {
               w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
            fns_["m_trg_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_trg_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+           fns_["m_trg20_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg20_data")->functor(w_->argSet("m_pt,m_eta")));
+           fns_["m_trg20_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trg20_embed")->functor(w_->argSet("m_pt,m_eta")));
            fns_["m_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_idiso_binned_embed_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
            fns_["m_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
@@ -608,6 +620,10 @@ namespace ic {
               w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_trg_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+           fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+           fns_["e_trg24_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trg24_embed")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_idiso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1002,25 +1018,43 @@ namespace ic {
         if(mc_ == mc::summer16_80X){
           if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.95 : 1.0;  
           else tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.97 : 1.0;
+          if(is_embedded_ && gen_match_1 == 5){
+            tau_sf_1=1.02;
+            if (decay_mode_1==0)       tau_sf_1*=0.975;
+            else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
+            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
+          } else tau_sf_1 = 1.0;
         } 
         else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.89 : 1.0; 
         else if (mc_==mc::mc2017 && is_embedded_) {
           if(gen_match_1!=5) tau_sf_1=1.0;
-          else if (decay_mode_1==0) tau_sf_1=0.975;
-          else if (decay_mode_1==1) tau_sf_1=0.975*1.051;
-          else if (decay_mode_1==10) tau_sf_1=pow(0.975,3);
+          else {
+            tau_sf_1=0.97;
+            if (decay_mode_1==0)       tau_sf_1*=0.975;
+            else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
+            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
+          }
         }
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
           if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.95 : 1.0;
           else tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
+          if(is_embedded_ && gen_match_2 == 5){
+            tau_sf_2=1.02;
+            if (decay_mode_2==0)       tau_sf_2*=0.975;
+            else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+          } else tau_sf_2 = 1.0;
         } 
         else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
         else if (mc_==mc::mc2017 && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;
-          else if (decay_mode_2==0) tau_sf_2=0.975;
-          else if (decay_mode_2==1) tau_sf_2=0.975*1.051;
-          else if (decay_mode_2==10) tau_sf_2=pow(0.975,3);
+          else {
+            tau_sf_2=0.97;
+            if (decay_mode_2==0)       tau_sf_2*=0.975;
+            else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+          }
         }
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
         
@@ -1680,10 +1714,11 @@ namespace ic {
 
           auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
           auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
-          double ele_xtrg = fns_["e_trg_EleTau_Ele24Leg_desy_data"]->eval(args_2.data());
+          double ele_xtrg = fns_["e_trg24_data"]->eval(args_2.data());
           double ele_xtrg_mc = 1.0;
-          if(!is_embedded_) ele_xtrg_mc = fns_["e_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
-          else ele_xtrg_mc = 1.0;
+     
+          if(!is_embedded_) ele_xtrg_mc = fns_["e_trg24_mc"]->eval(args_2.data());
+          else ele_xtrg_mc = fns_["e_trg24_embed"]->eval(args_2.data());
 
           tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
           if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
@@ -1691,16 +1726,16 @@ namespace ic {
 
           double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
-          //double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/
-              (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
+          double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
 
           // have xtrg OR as default but save others to check 
-          event->Add("single_e_sf", single_e_sf);
-          event->Add("xtrg_et_sf", xtrg_et_sf);
+          event->Add("single_e_sf", single_e_sf/xtrg_OR_sf);
+          event->Add("xtrg_et_sf", xtrg_et_sf/xtrg_OR_sf);
 
-          //ele_trg = xtrg_OR_sf;
-          ele_trg = single_e_sf;
+          ele_trg = xtrg_OR_sf;
           ele_trg_mc = 1.0;
+  
+          ele_trg*=0.991; // correct for HLT Zvtx
 
           tau_trg = 1.0;
           tau_trg_mc = 1.0;
@@ -1723,6 +1758,8 @@ namespace ic {
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
+        double t_signed_eta = tau->eta();
+        double t_phi = tau->phi();
         double mu_trg = 1.0;
         double tau_trg = 1.0;
         double mu_trg_mc = 1.0;
@@ -1979,47 +2016,36 @@ namespace ic {
             }
          } else if (mc_ == mc::mc2017) {
              // add here for mu tau cross trg like in e tau 
-             /* auto args_1 = std::vector<double>{m_pt,m_signed_eta,m_iso};  
+             auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
              mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-             mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+             if(!is_embedded_) mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
+             else mu_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data());
 
              double single_m_sf = mu_trg / mu_trg_mc;
 
-             auto args_2 = std::vector<double>{m_pt,m_signed_eta};  
+             auto args_2 = std::vector<double>{pt,m_signed_eta};  
              auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
-             double mu_xtrg = fns_["m_trg_EleTau_Ele24Leg_desy_data"]->eval(args_2.data());
-             double mu_xtrg_mc = fns_["m_trg_EleTau_Ele24Leg_desy_mc"]->eval(args_2.data());
+             double mu_xtrg = fns_["m_trg20_data"]->eval(args_2.data());
+             double mu_xtrg_mc = fns_["m_trg20_mc"]->eval(args_2.data());
+             if(is_embedded_) mu_xtrg_mc = fns_["m_trg20_embed"]->eval(args_2.data());
 
-             tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
-             tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
+             tau_trg = fns_["t_trg_tight_mt_data"]->eval(args_3.data());
+             tau_trg_mc = fns_["t_trg_tight_mt_mc"]->eval(args_3.data());
 
-             double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
+             double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
-             double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/
-                 (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
+             double xtrg_OR_sf = (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc);
 
              // have xtrg OR as default but save others to check 
-             event->Add("single_e_sf", single_e_sf);
-             event->Add("xtrg_et_sf", xtrg_et_sf);
+             event->Add("single_m_sf", single_m_sf/xtrg_OR_sf);
+             event->Add("xtrg_mt_sf", xtrg_mt_sf/xtrg_OR_sf);
 
-             ele_trg = xtrg_OR_sf;
-             ele_trg_mc = 1.0;
+             mu_trg = xtrg_OR_sf;
+             mu_trg_mc = 1.0;
 
              tau_trg = 1.0;
-             tau_trg_mc = 1.0; */
+             tau_trg_mc = 1.0; 
 
-            
-             auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
-             auto args_2 = std::vector<double>{pt,m_signed_eta};
-             tau_trg=1;
-             tau_trg_mc=1;
-             if(is_embedded_){
-               mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-               mu_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data());
-             } else {
-               mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
-               mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data()); 
-             }
         }
 
         if (trg_applied_in_mc_) {
@@ -2890,7 +2916,7 @@ namespace ic {
             ele_id = fns_["e_id_embed_ratio"]->eval(args_2.data());
           } else {
             ele_iso = fns_["e_iso_binned_ratio"]->eval(args_1.data());
-            ele_id = fns_["e_looseid_pog_ratio"]->eval(args_2.data());
+            ele_id = fns_["e_id_ratio"]->eval(args_2.data());
           }
           ele_idiso = ele_iso*ele_id;
         }
@@ -3605,6 +3631,7 @@ namespace ic {
             if(fabs(tau->eta()) < 1.460){
              etau_fakerate_2 = 1.80;
             } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.53;
+            if(tau->decay_mode()<2) etau_fakerate_2*=0.81; 
           }
       } else {
           if (tau->GetTauID("againstElectronVLooseMVA6")<0.5) etau_fakerate_2 = 1.0;
@@ -3781,7 +3808,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=1.61;
             }
-
+            if(tau->decay_mode()==1) mtau_fakerate_2*=0.85;
           }
         } else {
           if(tau->GetTauID("againstMuonLoose3")<0.5) mtau_fakerate_2 = 1.0;

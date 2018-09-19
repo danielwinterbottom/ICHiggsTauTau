@@ -445,8 +445,11 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
       bool found_match_tag_1 = false;
       bool found_match_tag_2 = false;
+      int isocut=1;
+      if(strategy_ == strategy::cpsummer17) isocut=3;
+   
       for(unsigned eg=0; eg<l1electrons.size(); ++eg){
-        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()!=0){
+        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()>=isocut){
           // must pass L1 eta, pT and iso cuts and be matched by DR to the tagging electron
           if(DR(l1electrons[eg],lep1)<0.5) found_match_tag_1 = true;
           if(DR(l1electrons[eg],lep2)<0.5) found_match_tag_2 = true;

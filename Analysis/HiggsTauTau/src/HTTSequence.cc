@@ -2526,16 +2526,18 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
-          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          
           // these lines to measure elec24 from double electron trigger (doesnt work for runB)
-          .set_probe_trg_objects("triggerObjectsDoubleEl24") 
-          .set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
-          .set_extra_l1_tag_pt(24.)
+          //.set_probe_trg_objects("triggerObjectsDoubleEl24") 
+          //.set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
+          
           // these lines to measure elec24 from e+tau cross trigger - use for runB
           //.set_probe_trg_objects("triggerObjectsEle24Tau30")
           //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau")
-          .set_do_extra(true)
+          //.set_do_extra(true)
 
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
