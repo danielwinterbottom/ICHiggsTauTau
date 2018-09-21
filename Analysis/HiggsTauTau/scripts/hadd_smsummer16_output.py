@@ -241,7 +241,10 @@ sample_list = [
    'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
    'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
    'GluGluToHToTauTau_M125_amcatnloFXFX_UEDown',
-   'GluGluToHToTauTau_M125_amcatnloFXFX_UEUp'
+   'GluGluToHToTauTau_M125_amcatnloFXFX_UEUp',
+   'GluGluToHToTauTauPlusOneJet_M125_MG5_2016',
+   'GluGluToMaxmixHToTauTauPlusOneJet_M125_MG5_2016',
+   'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_MG5_2016'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']

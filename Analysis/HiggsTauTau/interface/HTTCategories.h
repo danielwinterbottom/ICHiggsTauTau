@@ -101,7 +101,17 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_bjetsup_;
   double wt_embed_mc_yield_;
   double wt_quarkmass_;
+  double wt_quarkmass_up_;
+  double wt_quarkmass_down_;
   double wt_fullquarkmass_;
+  // temp gen stuff
+  int npNLO_;
+  unsigned partons_;
+  double parton_pt_;
+  double parton_pt_2_;
+  double parton_pt_3_;
+  double parton_mjj_;
+  //end of temp gen stuff
   double wt_ps_up_;
   double wt_ps_down_;
   double wt_ue_up_;
@@ -224,6 +234,7 @@ class HTTCategories : public ModuleBase {
   bool antiele_2_;
   bool antimu_2_;
   bool antimu_loose_2_;
+  bool antiele_tight_2_;
   double z_1_;
   double z_2_;
   float m_1_;

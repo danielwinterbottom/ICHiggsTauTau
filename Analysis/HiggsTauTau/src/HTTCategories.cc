@@ -88,7 +88,17 @@ namespace ic {
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
+      outtree_->Branch("wt_quarkmass_up", &wt_quarkmass_up_);
+      outtree_->Branch("wt_quarkmass_down", &wt_quarkmass_down_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
+      // adding tempoary gen stuff
+      outtree_->Branch("partons"     , &partons_);
+      outtree_->Branch("parton_pt"     , &parton_pt_);
+      outtree_->Branch("parton_pt_2"     , &parton_pt_2_);
+      outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
+      outtree_->Branch("parton_mjj",    &parton_mjj_);
+      outtree_->Branch("npNLO", &npNLO_);
+      //end of temp gen stuff
       if(do_sm_ps_wts_ && !systematic_shift_){
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
@@ -770,6 +780,7 @@ namespace ic {
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("antimu_loose_2",    &antimu_loose_2_);
+      outtree_->Branch("antiele_tight_2",    &antiele_tight_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("dilepton_veto",     &dilepton_veto_);
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
@@ -874,6 +885,7 @@ namespace ic {
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -1800,6 +1812,50 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
+    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0;
+
+    // adding some gen stuff tempoarily can be deleted later
+    std::vector<double> parton_pt_vec;
+    npNLO_ = eventInfo->npNLO();
+    parton_mjj_=-9999;
+    parton_pt_=-9999;
+    parton_pt_2_=-9999;
+    parton_pt_3_=-9999;
+    partons_=0;
+    bool lhe_exists = event->ExistsInTree("lheParticles");
+    if(lhe_exists){
+      std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+      parton_pt_=-9999;
+      std::vector<GenParticle*> outparts;
+      for(unsigned i = 0; i< lhe_parts.size(); ++i){
+           if(lhe_parts[i]->status() != 1) continue;
+           unsigned id = abs(lhe_parts[i]->pdgid());
+           if ((id >= 1 && id <=6) || id == 21){
+             outparts.push_back(lhe_parts[i]);
+             partons_++;
+             parton_pt_vec.push_back(lhe_parts[i]->pt());
+        }
+      }
+      //std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
+      if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
+      else parton_mjj_ = -9999;
+      if(outparts.size()>2){
+        double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M();
+        double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();
+        if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
+
+      }
+    }
+    std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
+    std::reverse(parton_pt_vec.begin(),parton_pt_vec.end());
+    if (parton_pt_vec.size()>0) parton_pt_ = parton_pt_vec[0];
+    else parton_pt_ = -9999;
+    if (parton_pt_vec.size()>1) parton_pt_2_ = parton_pt_vec[1];
+    else parton_pt_2_ = -9999;
+    if (parton_pt_vec.size()>2) parton_pt_3_ = parton_pt_vec[2];
+    else parton_pt_3_ = -9999;
+    // end of added gen stuff
+
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();
     wt_tau_id_tight_ = 1.0;
@@ -1839,8 +1895,12 @@ namespace ic {
       wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
     }
     wt_quarkmass_ = 1.0;
+    wt_quarkmass_up_ = 1.0;
+    wt_quarkmass_down_ = 1.0;
     wt_fullquarkmass_ =1.0;
     if(event->Exists("wt_quarkmass")) wt_quarkmass_ = event->Get<double>("wt_quarkmass");
+    if(event->Exists("wt_quarkmass_up")) wt_quarkmass_up_ = event->Get<double>("wt_quarkmass_up");
+    if(event->Exists("wt_quarkmass_down")) wt_quarkmass_down_ = event->Get<double>("wt_quarkmass_down");
     if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
 
     if(do_sm_ps_wts_ && !systematic_shift_){
@@ -3347,6 +3407,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWoldDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronVLooseMVA_2;
+        antiele_tight_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
         antimu_loose_2_ = lagainstMuonLoose3_2;
       }
