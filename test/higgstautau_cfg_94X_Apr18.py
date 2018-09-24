@@ -655,10 +655,13 @@ process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,
-                           isData=(bool(isData) or bool(isEmbed)),
-                           )
-
+runMetCorAndUncFromMiniAOD (
+        process,
+        isData=(bool(isData) or bool(isEmbed)),
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+)
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
                          getUncorrectedMet=cms.bool(False),
