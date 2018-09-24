@@ -145,9 +145,9 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.mg_signal:
   signal_mc += [
-  'GluGluToPseudoscalarHToTauTau_M125_MG5',
-  'GluGluToHToTauTau_M125_MG5',
-  'GluGluToMaxmixHToTauTau_M125_MG5'
+  'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+  #'GluGluToHToTauTau_M125_MG5',
+  'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX'
   ]
 
 if options.proc_sm or options.proc_all:
@@ -386,20 +386,24 @@ if options.mg_signal or options.proc_sm:
   SIG_FILELIST='filelists/July24_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
-    if 'MG' in sa:
+    user='adow'
+    if 'MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa:
       SIG_FILELIST='filelists/Jul18_MC_94X'
+      user = 'dwinterb'
     else: 
       SIG_FILELIST='filelists/July24_MC_94X'
+      user='adow'
     JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 50
+        nperjob = 5
+        if 'MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())

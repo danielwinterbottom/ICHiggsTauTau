@@ -631,7 +631,11 @@ namespace ic {
           alt_trig_obj_label_2 = "triggerObjectsEle32L1DoubleEG";
           alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
-          high_leg_pt = 28.;
+          high_leg_pt = 25.;
+          if(is_embedded_){
+            leg2_filter="hltTauJet5";
+            extra_leg2_filter="";
+          }
 
           }
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
@@ -719,7 +723,11 @@ namespace ic {
           trig_obj_label = "triggerObjectsIsoMu20Tau27";
           leg1_filter = "hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
-          extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+          extra_leg2_filter= "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+          if(is_embedded_){
+            leg2_filter="hltTauJet5";
+            extra_leg2_filter="";
+          }
         }
 
       } else if (channel_ == channel::em) {
@@ -960,6 +968,13 @@ namespace ic {
         }
       }
     }
+    if(is_embedded_&& mc_ == mc::mc2017 && channel_==channel::et){
+      // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
+      Electron const* elec = dynamic_cast<Electron const*>(dileptons[0]->At(0));
+      double eta = fabs(elec->sc_eta());
+      double pt = elec->pt();
+      if(pt<40 && eta>1.479) passed_singleelectron = true;
+    }
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
 
@@ -972,7 +987,8 @@ namespace ic {
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first;
         if(extra_leg2_filter!="") leg1_match = leg1_match&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first;
-        if(extra_leg2_filter!="") leg2_match = leg2_match&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
+        if(extra_leg2_filter!="") leg2_match = leg2_match&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first; 
+
 
         passed_mutaucross = leg1_match && leg2_match;
         if(alt_cross_trig_obj_label != ""){ 
@@ -984,6 +1000,17 @@ namespace ic {
 
           passed_mutaucross_alt = alt_leg1_match && alt_leg2_match; 
         }
+        if(is_embedded_ && mc_ == mc::mc2017){
+          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          std::vector<ic::L1TObject*> passed_l1_taus;
+          for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(fabs(l1taus[ta]->eta())<2.17 && l1taus[ta]->vector().Pt() >= 24.) passed_l1_taus.push_back(l1taus[ta]); 
+          }
+          std::vector<Candidate *> match_taus;
+          match_taus.push_back(dileptons[i]->At(1));
+          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
+          passed_mutaucross = passed_mutaucross&&match_l1_parts;
+        }
         if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
       }
     }
@@ -993,15 +1020,30 @@ namespace ic {
     if (channel_ == channel::et){
       std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(trig_obj_label);  
       for(unsigned i = 0; i < dileptons.size(); ++i){  
-        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, extra_leg2_filter,0.5).first;
-        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, extra_leg2_filter,0.5).first;  
+        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, leg1_filter, 0.5).first;
+        if(extra_leg2_filter!="") leg1_match = leg1_match&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, extra_leg2_filter,0.5).first; 
+        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, leg2_filter, 0.5).first;
+        if(extra_leg2_filter!="") leg2_match = leg2_match&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, extra_leg2_filter,0.5).first;
 
         passed_etaucross = leg1_match && leg2_match;
-        if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
-        //if(is_embedded_){
-          // These triggers don't work properly for the embedded samples so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights 
-        //  passed_etaucross = true;
-        //}
+        if(is_embedded_&& mc_ == mc::mc2017){
+          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          std::vector<ic::L1TObject*> passed_l1_taus;
+          for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(fabs(l1taus[ta]->eta())<2.17 &&l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus.push_back(l1taus[ta]); 
+          }
+          std::vector<Candidate *> match_taus;
+          match_taus.push_back(dileptons[i]->At(1));
+          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
+          passed_etaucross = passed_mutaucross&&match_l1_parts;
+
+          // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
+          Electron const* elec = dynamic_cast<Electron const*>(dileptons[i]->At(0)); 
+          double eta = fabs(elec->sc_eta());
+          double pt = elec->pt();
+          if(pt<40 && eta>1.479) passed_etaucross = true;
+        }
+      if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
       }
     }
     event->Add("trg_etaucross", passed_etaucross);

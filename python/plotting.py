@@ -2528,6 +2528,159 @@ def HTTPlot(nodename,
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
 
+def CompareSysts(hists=[],
+             plot_name="plot",
+             label=""):
+    legend_titles = ['nominal','up','down']
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    ModTDRStyle(r=0.04, l=0.14)
+
+    colourlist=[R.kBlue,R.kRed,R.kGreen+3]
+    hs = R.THStack("hs","")
+    hist_count=0
+
+    for hist in hists:
+        h = hist
+        h.SetFillColor(0)
+        h.SetLineWidth(3)
+        h.SetLineColor(colourlist[hist_count])
+        h.SetMarkerSize(0)
+        hs.Add(h)
+        hist_count+=1
+        
+    c1 = R.TCanvas()
+    c1.cd()
+
+    if hists[0].Integral() > 0:
+      uncert_up = hists[1].Integral()/hists[0].Integral()   
+      uncert_down = hists[2].Integral()/hists[0].Integral()
+    else:
+      uncert_up = 0
+      uncert_down = 0
+  
+ 
+    pads=TwoPadSplit(0.49,0.01,0.01)
+    
+    axish = createAxisHists(2,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+    #axish[1].GetXaxis().SetTitle("")
+    axish[1].GetXaxis().SetLabelSize(0.03)
+    axish[1].GetYaxis().SetNdivisions(4)
+    axish[1].GetYaxis().SetTitle("Ratio")
+    axish[1].GetYaxis().SetTitleOffset(1.6)
+    axish[1].GetYaxis().SetTitleSize(0.04)
+    axish[1].GetYaxis().SetLabelSize(0.03)
+    
+    axish[0].GetXaxis().SetTitleSize(0)
+    axish[0].GetXaxis().SetLabelSize(0)
+    axish[0].GetYaxis().SetTitle("")
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+
+    axish[0].SetMinimum(0)
+    axish[0].SetMaximum(1.1*hs.GetMaximum("nostack"))
+    axish[0].Draw()
+
+    hs.Draw("nostack hist same")
+    
+    axish[0].Draw("axissame")
+    
+    #Setup legend
+    legend = PositionedLegend(0.30,0.2,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.022)
+    legend.SetFillColor(0)
+    
+
+    for legi,hist in enumerate(hists):
+        legend.AddEntry(hist,legend_titles[legi],"l")
+    legend.Draw("same")
+    
+    #CMS label and title
+    FixTopRange(pads[0], axish[0].GetMaximum(), 0.2)
+    
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,label)
+
+    latex3 = R.TLatex()
+    latex3.SetNDC()
+    latex3.SetTextAngle(0)
+    latex3.SetTextColor(R.kBlack)
+    latex3.SetTextSize(0.028)
+    lnN_uncert = 'lnN uncert = ^{+ %.3f}_{- %.3f}' % (uncert_up,uncert_down)
+    latex3.DrawLatex(0.17,0.855,lnN_uncert)
+
+    ks_hist_nom = hists[0].Clone()
+    for i in range (1,ks_hist_nom.GetNbinsX()+1): ks_hist_nom.SetBinError(i,0)
+    ks_up = hists[1].KolmogorovTest(ks_hist_nom)   
+    ks_down = hists[2].KolmogorovTest(ks_hist_nom)
+
+    latex4 = R.TLatex()
+    latex4.SetNDC()
+    latex4.SetTextAngle(0)
+    latex4.SetTextColor(R.kBlack)
+    latex4.SetTextSize(0.028)
+    
+    latex4.DrawLatex(0.65,0.7,'KS up = %.3f' % ks_up)
+    latex4.DrawLatex(0.65,0.65,'KS down = %.3f' % ks_down)
+ 
+    ratio_hs = R.THStack("ratio_hs","")
+    hist_count=0
+    pads[1].cd()
+    pads[1].SetGrid(0,1)
+    axish[1].Draw("axis")
+
+    for hist in hists:
+        h = hist.Clone()
+        h.SetFillColor(0)
+        h.SetLineWidth(3)
+        h.SetLineColor(colourlist[hist_count])
+        h.SetMarkerSize(0)
+        h.SetMarkerColor(h.GetLineColor())
+        for i in range(1,h.GetNbinsX()+1):
+          nom_cont=hists[0].GetBinContent(i)
+          old_cont = hist.GetBinContent(i)
+          old_error = hist.GetBinError(i)
+          if nom_cont == 0: 
+            new_cont = 0
+            new_error = 0
+          else:
+            new_cont = old_cont/nom_cont
+            new_error = old_error/nom_cont
+          h.SetBinContent(i,new_cont)
+          h.SetBinError(i,new_error)
+        ratio_hs.Add(h)
+        hist_count+=1
+    ratio_hs.Draw("nostack l same")  
+
+    ratio_min=0.
+    for i in range(1,hists[0].GetNbinsX()+1):
+      bin_contents = []
+      if hists[0].GetBinContent(i) >0:
+        if hists[1].GetBinContent(i) > 0: bin_contents.append(hists[1].GetBinContent(i)/hists[0].GetBinContent(i))
+        if hists[2].GetBinContent(i) > 0: bin_contents.append(hists[2].GetBinContent(i)/hists[0].GetBinContent(i))
+      bin_min=0
+      if len(bin_contents) > 0: bin_min = min(bin_contents)  
+      
+      if (bin_min<ratio_min and bin_min>0) or ratio_min==0: ratio_min = bin_min
+
+    axish[1].SetMinimum(max(1.1*(ratio_min-1.) + 1.,0.5))
+    axish[1].SetMaximum(min(1.1*(ratio_hs.GetMaximum("nostack")-1.) + 1.,1.5))
+
+    pads[1].RedrawAxis("G")
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+    c1.Close()
+
+
 def CompareHists(hists=[],
              legend_titles=[],
              title="",

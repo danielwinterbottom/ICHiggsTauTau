@@ -128,7 +128,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
+      trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       if options.embed_sel:
         trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
@@ -136,7 +136,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
-        trg_pt_bins='[28,1000]'
+        if options.era == 'smsummer17':
+          trg_pt_bins='[28,1000]'
+        else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
         trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
         #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
@@ -146,7 +148,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       idiso_pt_bins = '[13,20,25,30,40,50,100,200]'
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
+      trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
           trg_pt_bins = '[10,12,14,16,18,20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
           #trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
@@ -705,7 +707,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     
 # Add data sample names
 if options.channel == 'tpzmm': 
-    if options.era == 'summer17': data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    if options.era == 'summer17': 
+      data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+      #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+ 
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     if options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
@@ -874,7 +879,11 @@ for name in wsnames:
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
-  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
+  print '!!!!!'
+  print name
+  if not options.embed_dz or 'trg' in name:
+    print 'testing'
+    FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'

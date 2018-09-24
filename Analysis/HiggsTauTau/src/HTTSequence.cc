@@ -1358,7 +1358,7 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
-  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer17){
+  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpsummer16){
     BuildModule(GenericModule("TPTriggerInformation")
       .set_function([=](ic::TreeEvent *event){
          std::string trig_obj_label_tag;
@@ -2415,11 +2415,24 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id) 
+
+          // use this for runB
+          //.set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          //.set_do_extra(true)
+ 
+          // use double muon for runsC-F
+          .set_probe_trg_objects("triggerObjectsDoubleMu20")
+          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+
+
           //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
           //.set_probe_id(muon_probe_id)
-          .set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
-          .set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
+          //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
+          //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -2434,9 +2447,9 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(17.) //8
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(17.) //8
           //.set_do_dzmass(true)
           // for mu17 leg of MuMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
@@ -2450,7 +2463,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
       else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-      //std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+      std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
       BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2476,6 +2489,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_extra_hlt_probe_pt(17.)
           
           .set_probe_id(muon_probe_id)
+          //.set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
           // for single muon trigger:
           //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
@@ -2486,6 +2500,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for mu8 leg of EMu cross-trigger
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_do_dzmass(true)
           .set_extra_hlt_probe_pt(8.)
           .set_extra_l1_probe_pt(5.)
           //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
@@ -2513,10 +2528,19 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
-          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
-          .set_probe_trg_objects("triggerObjectsDoubleEl24") 
-          .set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          
+          // these lines to measure elec24 from double electron trigger (doesnt work for runB)
+          //.set_probe_trg_objects("triggerObjectsDoubleEl24") 
+          //.set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
+          
+          // these lines to measure elec24 from e+tau cross trigger - use for runB
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30")
+          //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau")
+          //.set_do_extra(true)
+
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
@@ -2572,11 +2596,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_id(muon_probe_id)
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
-          .set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
+          //.set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
           //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
-          .set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
-          .set_extra_l1_probe_pt(32.)
+          // for double tau trigger
+          //.set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
+          //.set_extra_l1_probe_pt(32.)
           //.set_extra_hlt_probe_pt_vec(extra_cuts)
+
+          // for mu+tau trigger (embedding)
+          .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          .set_probe_trg_filters("hltTauJet5")
+          .set_extra_l1_probe_pt(24.) 
         );
     } else {
  
