@@ -383,7 +383,7 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.mg_signal or options.proc_sm:
-  SIG_FILELIST='filelists/Jun15_MC_94X' 
+  SIG_FILELIST='filelists/July24_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     if 'MG' in sa:
