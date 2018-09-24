@@ -3,7 +3,7 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jul18_MC_94X'
+config.General.workArea='Sep24_MC_94X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
 config.JobType.pluginName = 'Analysis'
@@ -13,7 +13,7 @@ config.section_('Data')
 # config.Data.unitsPerJob = 100000
 # config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Jul18_MC_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Sep24_MC_94X/'
 config.Data.allowNonValidInputDataset = True
 config.section_('User')
 config.section_('Site')
@@ -47,8 +47,6 @@ if __name__ == '__main__':
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
-        config.Data.inputDataset = task[1]
- 
         config.Data.inputDataset = task[1]
         config.Data.unitsPerJob = 100000
         config.Data.splitting = 'EventAwareLumiBased'
