@@ -130,7 +130,7 @@ if __name__ == '__main__':
           config.Data.splitting = 'EventAwareLumiBased'
           config.Data.userInputFiles = None
             
-        if "GluGluHToTauTau_M-125" in task[0] or "VBFHToTauTau_M-125" in task[0] or ("W" in task[0] and "JetsToLNu-LO" in task[0]):
+        if "HToTauTau" in task[0]:
             config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True']
         else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
             
