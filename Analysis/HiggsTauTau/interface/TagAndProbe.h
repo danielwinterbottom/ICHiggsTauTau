@@ -349,21 +349,32 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       pass_dimu_ =false;
 
       std::vector<TriggerObject *> objs_dz = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZ");
-      std::vector<TriggerObject *> objs_dzmass = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZmass8");
+      if(strategy_ == strategy::cpsummer17){ 
+        std::vector<TriggerObject *> objs_dzmass = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZmass8");
+        bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first;
+        if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dzmass[IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
+        bool leg_2_pass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first; 
 
-      bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first;
-      if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dzmass[IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
-      bool leg_2_pass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first; 
+        bool leg_1_pass_dz = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        bool leg_2_pass_dz = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
 
-      bool leg_1_pass_dz = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
-      bool leg_2_pass_dz = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        bool leg_1_pass_mass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
+        bool leg_2_pass_mass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
 
-      bool leg_1_pass_mass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
-      bool leg_2_pass_mass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
+        pass_dimu_ = leg_1_pass && leg_2_pass;
+        pass_dz_ = pass_dimu_ && leg_1_pass_dz && leg_2_pass_dz;
+        pass_mass8_ = pass_dz_&& leg_1_pass_mass && leg_2_pass_mass;
+      } else{
+        std::vector<TriggerObject *> objs_dz_alt = event->GetPtrVec<TriggerObject>("triggerObjectsMu17TkMu8DZ");
+        bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).first;
+        if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dz_alt[IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
+        bool leg_2_pass = IsFilterMatchedWithIndex(ditau->At(1), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).first;
 
-      pass_dimu_ = leg_1_pass && leg_2_pass;
-      pass_dz_ = pass_dimu_ && leg_1_pass_dz && leg_2_pass_dz;
-      pass_mass8_ = pass_dz_&& leg_1_pass_mass && leg_2_pass_mass;
+        bool leg_1_pass_dz = IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        bool leg_2_pass_dz = IsFilterMatchedWithIndex(ditau->At(1), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        pass_dimu_ = leg_1_pass && leg_2_pass;
+        pass_dz_ = pass_dimu_ && leg_1_pass_dz && leg_2_pass_dz;
+      }
 
     }
     

@@ -1358,7 +1358,7 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
-  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer17){
+  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpsummer16){
     BuildModule(GenericModule("TPTriggerInformation")
       .set_function([=](ic::TreeEvent *event){
          std::string trig_obj_label_tag;
@@ -2463,7 +2463,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
       else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
-      //std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+      std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
       BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2489,6 +2489,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_extra_hlt_probe_pt(17.)
           
           .set_probe_id(muon_probe_id)
+          //.set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
           // for single muon trigger:
           //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
@@ -2499,6 +2500,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for mu8 leg of EMu cross-trigger
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_do_dzmass(true)
           .set_extra_hlt_probe_pt(8.)
           .set_extra_l1_probe_pt(5.)
           //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")

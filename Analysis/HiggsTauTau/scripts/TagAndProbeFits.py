@@ -136,7 +136,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
-        trg_pt_bins='[28,1000]'
+        if options.era == 'smsummer17':
+          trg_pt_bins='[28,1000]'
+        else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
         trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
         #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
@@ -877,7 +879,11 @@ for name in wsnames:
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
-  FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
+  print '!!!!!'
+  print name
+  if not options.embed_dz or 'trg' in name:
+    print 'testing'
+    FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'

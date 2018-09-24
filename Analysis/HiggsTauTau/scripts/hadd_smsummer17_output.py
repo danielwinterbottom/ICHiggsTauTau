@@ -39,6 +39,9 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+   'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
    'GluGluToPseudoscalarHToTauTau_M125',
    'GluGluToMaxmixHToTauTau_M125',
    'WplusHToTauTau_M-125',

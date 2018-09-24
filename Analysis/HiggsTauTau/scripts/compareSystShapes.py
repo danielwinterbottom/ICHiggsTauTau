@@ -10,6 +10,12 @@ args = parser.parse_args()
 
 infile = ROOT.TFile(args.datacard)
 
+chan='mt'
+if 'htt_tt.' in args.datacard: chan='tt'
+if 'htt_et.' in args.datacard: chan='et'
+if 'htt_em.' in args.datacard: chan='em'
+
+to_print=[]
 
 for key in infile.GetListOfKeys():
   if isinstance(infile.Get(key.GetName()),ROOT.TDirectory):
@@ -30,8 +36,24 @@ for key in infile.GetListOfKeys():
             plotting.CompareSysts([histo_nom,histo_up,histo_down],
                plot_name,
                dirname+"_"+name.replace('Up','')) 
+
+            proc=name.replace('_'+args.systematic+'Up','')
+            noPrint=False
+            if '0jet' in dirname: binnum=1
+            elif 'boosted' in dirname and 'dijet' not in dirname: binnum=2
+            elif 'dijet_loosemjj_lowboost' in dirname: binnum=3
+            elif 'dijet_loosemjj_boosted' in dirname: binnum=4
+            elif 'dijet_tightmjj_lowboost' in dirname: binnum=5
+            elif 'dijet_tightmjj_boosted' in dirname: binnum=6
+            else: noPrint = True
+            if '_jhu_' in proc or '_ph_' in proc or '_total_bkg_' in proc or '_ZTT_' in proc or 'plus' in proc or 'minus' in proc: noPrint=True
+            if histo_nom.Integral() > 0 and not noPrint:
+              up = histo_up.Integral()/histo_nom.Integral()
+              down = histo_down.Integral()/histo_nom.Integral()
+              to_print.append('({\"%s\"}, {%i}, {\"%s\"}, %.3f, %.3f)' % (chan, binnum, proc, down, up))
          
     directory.Close() 
 
 infile.Close()
 
+for i in to_print: print i
