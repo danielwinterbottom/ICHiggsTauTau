@@ -582,6 +582,7 @@ namespace ic {
             fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
+
             TFile fembed(embedding_scalefactor_file_.c_str());
             wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
             fembed.Close();
@@ -608,8 +609,6 @@ namespace ic {
                  wembed_->function("e_trg_binned_mc")->functor(wembed_->argSet("e_pt,e_eta,e_iso")));
             fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
                  wembed_->function("m_sel_idEmb_ratio")->functor(wembed_->argSet("gt_eta,gt_pt")));
-            fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
-                 wembed_->function("m_sel_trg_ratio")->functor(wembed_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
          } else {
            fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
