@@ -315,7 +315,7 @@ print '###############################################'
 print ''
 
 vbf_background = False
-vbf_background = options.vbf_background
+#vbf_background = options.vbf_background
 
 compare_w_shapes = False
 compare_qcd_shapes = False
@@ -347,7 +347,7 @@ if options.analysis == 'sm':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
           cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
-          cats['baseline_aisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && trg_singleelectron)'
+          cats['baseline_aisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
           cats['baseline_loosemu'] = '(iso_1<0.1 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singleelectron)'
@@ -356,7 +356,7 @@ if options.analysis == 'sm':
         if options.era in ['cpsummer17']: 
           #cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron) && pt_2>20 && pt_1>28)' 
           cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_etaucross)||(trg_singleelectron&&pt_1>28)))' 
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && trg_singleelectron)'
+          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -778,7 +778,22 @@ if options.era in ['cpsummer16','tauid2016','cpsummer17','tauid2017']:
     vv_sels['vvj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
     top_sels['ttt_sel'] = '(!(gen_match_1==6 || gen_match_2==6))'
     top_sels['ttj_sel'] = '(gen_match_1==6 || gen_match_2==6)'
-   
+    if options.method==0 and True in ['baseline_aisotau1' in x for x in options.set_alias]:
+      top_sels['ttj_sel'] = '(gen_match_1==6)'
+      top_sels['ttt_sel'] = '(gen_match_1!=6)'
+      vv_sels['vvj_sel'] = '(gen_match_1==6)'
+      vv_sels['vvt_sel'] = '(gen_match_1!=6)'
+      z_sels['zj_sel'] = '(gen_match_1==6)' 
+      z_sels['zl_sel'] = '(!(gen_match_1==6) && !(gen_match_1==5&&gen_match_2==5))'
+    if options.method==0 and True in ['baseline_aisotau2' in x for x in options.set_alias]:
+      top_sels['ttj_sel'] = '(gen_match_2==6)'
+      top_sels['ttt_sel'] = '(gen_match_2!=6)'
+      vv_sels['vvj_sel'] = '(gen_match_2==6)'
+      vv_sels['vvt_sel'] = '(gen_match_2!=6)'
+      z_sels['zj_sel'] = '(gen_match_2==6)' 
+      z_sels['zl_sel'] = '(!(gen_match_2==6) && !(gen_match_1==5&&gen_match_2==5))'
+       
+
 extra_top_sel = '1' 
 if options.embedding:
     if options.channel == 'mt': extra_top_sel = '!((gen_match_1 == 4) && (gen_match_2 == 5))'
@@ -874,6 +889,8 @@ if options.era in ['cpsummer17','tauid2017']:
     if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF']
     if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
     if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
+
+if options.method==0: ztt_samples+=ewkz_samples
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
@@ -1586,7 +1603,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   else:
     ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ztt_node)
-  if options.era in ['smsummer16','cpsummer16','tauid2016','tauid2017','cpsummer17']: 
+  if options.era in ['smsummer16','cpsummer16','tauid2016','tauid2017','cpsummer17'] and options.method!=0: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
@@ -2399,14 +2416,21 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
+            sel_mod=sel
+            if options.method==0 and True in ['baseline_aisotau1' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_1==6)'
+            if options.method==0 and  True in ['baseline_aisotau2' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_2==6)'
+            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
-        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017']: 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017'] and options.method!=0: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
             GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
-   
+        if options.method==0 and options.channel=='tt':
+            sel_mod = sel
+            if True in ['baseline_aisotau1' in x for x in options.set_alias]: sel_mod =sel+'&&(gen_match_1!=6)'
+            if True in ['baseline_aisotau2' in x for x in options.set_alias]: sel_mod =sel+'&&(gen_match_2!=6)' 
+            GenerateW(ana, add_name+'_realextra', wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         # used to plot em QCD uncerts
         #GenerateQCD(ana, '_shapeup', data_samples, plot, plot_unmodified, wt+'*wt_em_qcd_shapeup', sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         #GenerateQCD(ana, '_shapedown', data_samples, plot, plot_unmodified, wt+'*wt_em_qcd_shapedown', sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
