@@ -2725,6 +2725,7 @@ def CompareHists(hists=[],
         h.SetFillColor(0)
         h.SetLineWidth(3)
         h.SetLineColor(colourlist[hist_count])
+        h.SetMarkerColor(colourlist[hist_count])
         h.SetMarkerSize(0)
         hs.Add(h)
         hist_count+=1
@@ -2786,7 +2787,7 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
 
-    hs.Draw("nostack hist same")
+    hs.Draw("nostack le same")
     
     uncert_hs = R.THStack()
     if uncert_hist is not None:
@@ -2814,9 +2815,9 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.30,0.2,3,0.03)
+    legend = PositionedLegend(0.15,0.2,3,0.01)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.022)
+    legend.SetTextSize(0.03)
     legend.SetFillColor(0)
     
 
@@ -2833,7 +2834,8 @@ def CompareHists(hists=[],
     
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()
@@ -2858,11 +2860,13 @@ def CompareHists(hists=[],
         first_hist=True
         for hist in hists:
             h = hist.Clone()
+
             h.SetFillColor(0)
             h.SetLineWidth(3)
             h.SetLineColor(colourlist[hist_count])
+            h.SetMarkerColor(colourlist[hist_count])
             h.SetMarkerSize(0)
-            h.SetMarkerColor(h.GetLineColor())
+
             h.Divide(div_hist)
             #if first_hist:
             #    for i in range(1,h.GetNbinsX()+1): h.SetBinError(i,0.00001)
@@ -2884,7 +2888,7 @@ def CompareHists(hists=[],
              h = uncert_hist.Clone()
              h.Divide(div_hist)
              h.Draw("e2same") 
-        ratio_hs.Draw("nostack l same")  
+        ratio_hs.Draw("nostack le same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()
