@@ -527,22 +527,22 @@ if SCHEME == 'cpsummer16_neww':
 
 if SCHEME == 'cpsummer16_ff':
   
-  VAR_0JET_LT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_EM = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
 
-  VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
 
-  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,70,80,90,100,110,120,130,150,200,250]' 
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
 
-  VAR_DIJET = 'm_sv,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
 
-  VAR_TT_LO_HI='m_sv,sjdphi[0,80,100,110,145],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_sv,sjdphi[0,80,100,115,130,160],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,110,145],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,130,160],(12,-3.2,3.2)'
 
-  VAR_ET_LO_HI='m_sv,sjdphi[0,80,100,115,150],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
 
-  VAR_EM_TI_LO='m_sv,sjdphi[0,100,115,130,160],(12,-3.2,3.2)'
+  VAR_EM_TI_LO='m_sv,sjdphi[50,100,115,130,160],(12,-3.2,3.2)'
 
  # VAR_DIJET_TT_1 = 'm_sv,sjdphi[0,80,100,110,125,135,150],(12,-3.2,3.2)'
  # VAR_DIJET_TT_2 = 'm_sv,sjdphi[0,80,100,110,135],(12,-3.2,3.2)'
@@ -604,7 +604,7 @@ if SCHEME == 'cpsummer16_ff':
     ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
     #("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET_EM_1, ' --set_alias="sel:pzeta>-10" '),
     #("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "inclusive",    "ttbar",  'm_sv[0,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
+    ("19",   "inclusive",    "ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
 
     ("19",   "dijet_loosemjj_lowboost",     "dijet_loosemjj_lowboost",  VAR_DIJET_EM_1, ' --set_alias="sel:pzeta>-10" '),
     ("19",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" '),
@@ -1376,20 +1376,19 @@ if SCHEME == 'mlcpsummer16_ff':
 
 if SCHEME == 'cpsummer16_ff_fracs':
   
-  VAR_0JET_LT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
 
-  VAR_0JET_TT = 'm_sv[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
 
-  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[0,70,80,90,100,110,120,130,150,200,250]' 
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
 
-  VAR_DIJET = 'm_sv,fabs(sjdphi)[0,80,100,115,130,150],(6,0,3.2)'
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
 
-  VAR_TT_LO_HI='m_sv,fabs(sjdphi)[0,80,100,110,145],(6,0,3.2)'
-  VAR_TT_TI_HI='m_sv,fabs(sjdphi)[0,80,100,115,130,160],(6,0,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,110,145],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,130,160],(12,-3.2,3.2)'
 
-  VAR_ET_LO_HI='m_sv,fabs(sjdphi)[0,80,100,115,150],(6,0,3.2)'
-
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
 
   VAR_DIJET_TT_1 = VAR_DIJET
   VAR_DIJET_TT_2 = VAR_DIJET
@@ -1397,8 +1396,6 @@ if SCHEME == 'cpsummer16_ff_fracs':
   VAR_DIJET_MT_2 = VAR_DIJET
   VAR_DIJET_ET_1 = VAR_DIJET
   VAR_DIJET_ET_2 = VAR_DIJET
-  VAR_DIJET_EM_1 = VAR_DIJET
-  VAR_DIJET_EM_2 = VAR_DIJET
 
   scheme_et = [
     ("0",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
