@@ -140,7 +140,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
           trg_pt_bins='[28,1000]'
         else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
-        trg_pt_bins = '[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
+        trg_pt_bins = '[10,12,14,16,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
         #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
 
     if options.channel == 'tpzee':
@@ -759,8 +759,8 @@ if options.channel == 'tpzmm':
     iso_cut_1='iso_1<0.2'    
     iso_cut_2='iso_2<0.2'
     if options.aiso1:
-      iso_cut_1='iso_1>=0.2&&iso_1<0.3'  
-      iso_cut_2='iso_2>=0.2&&iso_2<0.3'
+      iso_cut_1='iso_1<0.5'  
+      iso_cut_2='iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
@@ -768,6 +768,9 @@ if options.channel == 'tpzmm':
   if options.era == 'summer17':
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'  
+    if options.aiso1:
+      baseline_tag1+='*(iso_2>0.2)'
+      baseline_tag2+='*(iso_1>0.2)'
   else:    
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
@@ -793,15 +796,18 @@ if options.channel == 'tpzee':
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
-      iso_cut_1='iso_1>=0.15&&iso_1<0.3'  
-      iso_cut_2='iso_2>=0.15&&iso_2<0.3'
+      iso_cut_1='iso_1<0.5'  
+      iso_cut_2='iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
   if options.era == 'summer17':
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'  
+    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+    if options.aiso1:
+      baseline_tag1+='*(iso_2>0.15)'  
+      baseline_tag2+='*(iso_1>0.15)'
   else:    
     baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>80&&m_vis<100&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
@@ -879,10 +885,7 @@ for name in wsnames:
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
-  print '!!!!!'
-  print name
   if not options.embed_dz or 'trg' in name:
-    print 'testing'
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'

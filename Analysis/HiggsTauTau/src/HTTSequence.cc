@@ -632,6 +632,28 @@ void HTTSequence::BuildSequence(){
 	 // }
    } 
 
+   bool do_ggH_stitch = false;
+   double n_inc, n_2, frac;
+    if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
+      n_inc = 3089015.;
+      n_2 = 14254055.;
+      frac = 0.279662;
+      do_ggH_stitch = true;
+    }
+    if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) {
+      n_inc = 2982585.;
+      n_2 = 14192951.;
+      frac = 0.274486;
+      //818677./2982585. = 0.274486
+      do_ggH_stitch = true;
+    }
+    if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos ) {
+      n_inc = 3100706.;
+      n_2 = 14302986.;
+      frac = 0.282423;
+      do_ggH_stitch = true;
+    }
+
 
 // Defining good-lumi jsons
   std::string data_json = "";
@@ -837,6 +859,15 @@ mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
       .set_fullpath(mela_folder);
     BuildModule(melaTestGen);
   }
+
+
+  HTTStitching httStitching = HTTStitching("HTTStitching")
+      .set_era(era_type)
+      .set_fs(fs.get())
+      .set_do_ggH_soup(do_ggH_stitch);
+      httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+
+  BuildModule(httStitching);
   
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
@@ -2120,27 +2151,6 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
    TH2D z_pt_weights_sm; GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm);
 
-   bool do_ggH_stitch = false;
-   double n_inc, n_2, frac;
-    if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
-      n_inc = 3089015.;
-      n_2 = 14254055.;
-      frac = 0.279662;
-      do_ggH_stitch = true;
-    }
-    if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) {
-      n_inc = 2982585.;
-      n_2 = 14192951.;
-      frac = 0.274486;
-      do_ggH_stitch = true;
-    }
-    if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos ) {
-      n_inc = 3100706.;
-      n_2 = 14302986.;
-      frac = 0.282423;
-      do_ggH_stitch = true;
-    }
-
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
@@ -2424,8 +2434,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_do_extra(true)
  
           // use double muon for runsC-F
-          .set_probe_trg_objects("triggerObjectsDoubleMu20")
-          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          //.set_probe_trg_objects("triggerObjectsDoubleMu20")
+          //.set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
 
 
           //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
@@ -2440,16 +2450,16 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_extra_hlt_probe_pt(8.)
           //.set_extra_l1_probe_pt(5.)
           // to measure em muon trg SF for 23 GeV leg
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(23.)
-          //.set_extra_l1_probe_pt(20.)
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
           //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(17.) //8
+          //.set_extra_hlt_probe_pt(8.) //8
           //.set_do_dzmass(true)
           // for mu17 leg of MuMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
@@ -2529,9 +2539,12 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_objects("triggerObjectsEle35")
           .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
           .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32,triggerObjectsEle35")
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
           
+ 
           // these lines to measure elec24 from double electron trigger (doesnt work for runB)
           //.set_probe_trg_objects("triggerObjectsDoubleEl24") 
           //.set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
@@ -2548,10 +2561,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
           //.set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
-          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          //.set_extra_l1_probe_pt(23.)
-          //.set_extra_l1_iso_probe_pt(20.)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          .set_extra_l1_probe_pt(23.)
+          .set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {

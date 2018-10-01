@@ -577,6 +577,8 @@ namespace ic {
                 outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_down_1", &wt_ff_qcd_dm1_njet0_stat_down_1_ );
                 outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_up_1"  , &wt_ff_qcd_dm1_njet1_stat_up_1_   );
                 outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_down_1", &wt_ff_qcd_dm1_njet1_stat_down_1_ );
+                outtree_->Branch("wt_ff_realtau_up_1"              , &wt_ff_realtau_up_1_               );
+                outtree_->Branch("wt_ff_realtau_down_1"              , &wt_ff_realtau_down_1_               );
                 outtree_->Branch("wt_ff_w_syst_up_1"              , &wt_ff_w_syst_up_1_               );
                 outtree_->Branch("wt_ff_w_syst_down_1"            , &wt_ff_w_syst_down_1_             );
                 outtree_->Branch("wt_ff_tt_syst_up_1"             , &wt_ff_tt_syst_up_1_              );
@@ -612,6 +614,8 @@ namespace ic {
                   outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_down_2", &wt_ff_qcd_dm1_njet0_stat_down_2_ );
                   outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_up_2"  , &wt_ff_qcd_dm1_njet1_stat_up_2_   );
                   outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_down_2", &wt_ff_qcd_dm1_njet1_stat_down_2_ );
+                  outtree_->Branch("wt_ff_realtau_up_2"              , &wt_ff_realtau_up_2_               );
+                  outtree_->Branch("wt_ff_realtau_down_2"              , &wt_ff_realtau_down_2_               );
                   outtree_->Branch("wt_ff_w_syst_up_2"              , &wt_ff_w_syst_up_2_               );
                   outtree_->Branch("wt_ff_w_syst_down_2"            , &wt_ff_w_syst_down_2_             );
                   outtree_->Branch("wt_ff_tt_syst_up_2"             , &wt_ff_tt_syst_up_2_              );
@@ -2351,6 +2355,9 @@ namespace ic {
           if(event->Exists("wt_ff_qcd_dm1_njet0_stat_down_1")) wt_ff_qcd_dm1_njet0_stat_down_1_   = event->Get<double>("wt_ff_qcd_dm1_njet0_stat_down_1");
           if(event->Exists("wt_ff_qcd_dm1_njet1_stat_up_1"  )) wt_ff_qcd_dm1_njet1_stat_up_1_     = event->Get<double>("wt_ff_qcd_dm1_njet1_stat_up_1"  );
           if(event->Exists("wt_ff_qcd_dm1_njet1_stat_down_1")) wt_ff_qcd_dm1_njet1_stat_down_1_   = event->Get<double>("wt_ff_qcd_dm1_njet1_stat_down_1");
+          if(event->Exists("wt_ff_realtau_up_1"              )) wt_ff_realtau_up_1_                  = event->Get<double>("wt_ff_realtau_up_1"             );
+          if(event->Exists("wt_ff_realtau_down_1"              )) wt_ff_realtau_down_1_                  = event->Get<double>("wt_ff_realtau_down_1"             );
+
           if(event->Exists("wt_ff_w_syst_up_1"              )) wt_ff_w_syst_up_1_                 = event->Get<double>("wt_ff_w_syst_up_1"              );
           if(event->Exists("wt_ff_w_syst_down_1"            )) wt_ff_w_syst_down_1_               = event->Get<double>("wt_ff_w_syst_down_1"            );
           if(event->Exists("wt_ff_tt_syst_up_1"             )) wt_ff_tt_syst_up_1_                = event->Get<double>("wt_ff_tt_syst_up_1"             );
@@ -2385,6 +2392,8 @@ namespace ic {
             if(event->Exists("wt_ff_qcd_dm1_njet0_stat_down_2")) wt_ff_qcd_dm1_njet0_stat_down_2_    = event->Get<double>("wt_ff_qcd_dm1_njet0_stat_down_2");
             if(event->Exists("wt_ff_qcd_dm1_njet1_stat_up_2"  )) wt_ff_qcd_dm1_njet1_stat_up_2_      = event->Get<double>("wt_ff_qcd_dm1_njet1_stat_up_2"  );
             if(event->Exists("wt_ff_qcd_dm1_njet1_stat_down_2")) wt_ff_qcd_dm1_njet1_stat_down_2_    = event->Get<double>("wt_ff_qcd_dm1_njet1_stat_down_2");
+            if(event->Exists("wt_ff_realtau_up_2"              )) wt_ff_realtau_up_2_                  = event->Get<double>("wt_ff_realtau_up_2"             );
+            if(event->Exists("wt_ff_realtau_down_2"              )) wt_ff_realtau_down_2_                  = event->Get<double>("wt_ff_realtau_down_2"             );
             if(event->Exists("wt_ff_w_syst_up_2"              )) wt_ff_w_syst_up_2_                  = event->Get<double>("wt_ff_w_syst_up_2"              );
             if(event->Exists("wt_ff_w_syst_down_2"            )) wt_ff_w_syst_down_2_                = event->Get<double>("wt_ff_w_syst_down_2"            );
             if(event->Exists("wt_ff_tt_syst_up_2"             )) wt_ff_tt_syst_up_2_                 = event->Get<double>("wt_ff_tt_syst_up_2"             );

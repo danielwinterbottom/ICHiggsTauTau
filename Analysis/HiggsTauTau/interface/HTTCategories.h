@@ -514,6 +514,8 @@ class HTTCategories : public ModuleBase {
   double wt_ff_qcd_dm1_njet1_stat_down_1_;
   double wt_ff_w_syst_up_1_              ;
   double wt_ff_w_syst_down_1_            ;
+  double wt_ff_realtau_up_1_;
+  double wt_ff_realtau_down_1_;
   double wt_ff_w_dm0_njet0_stat_up_1_    ;
   double wt_ff_w_dm0_njet0_stat_down_1_  ;
   double wt_ff_w_dm0_njet1_stat_up_1_    ;
@@ -542,6 +544,8 @@ class HTTCategories : public ModuleBase {
   double wt_ff_qcd_dm1_njet0_stat_down_2_    ;
   double wt_ff_qcd_dm1_njet1_stat_up_2_      ;
   double wt_ff_qcd_dm1_njet1_stat_down_2_    ;
+  double wt_ff_realtau_up_2_;
+  double wt_ff_realtau_down_2_; 
   double wt_ff_w_syst_up_2_                  ;
   double wt_ff_w_syst_down_2_                ;
   double wt_ff_tt_syst_up_2_                 ;
