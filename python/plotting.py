@@ -2124,7 +2124,7 @@ def HTTPlot(nodename,
         }
 
     if vbf_background:
-      for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
+      for key in background_schemes: background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm']:
@@ -2259,7 +2259,7 @@ def HTTPlot(nodename,
                 h = infile.Get(nodename+'/'+i+signal_mass).Clone()
                 if sighist.GetEntries() == 0: sighist = h
                 else: sighist.Add(h)
-            sighist.SetLineColor(R.kBlue)
+            sighist.SetLineColor(R.kRed)
             sighist.SetLineWidth(3)
             sighist.Scale(signal_scale)
             if norm_bins: sighist.Scale(1.0,"width")

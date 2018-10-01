@@ -544,6 +544,9 @@ if options.channel == 'tt':
     cats['ggh_loose_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt<150)'.format(mva_highMjj_ggh)
     cats['ggh_tight_boost_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt>150)'.format(mva_highMjj_ggh)
     cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt<150)'.format(mva_highMjj_ggh)
+    cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
+    # cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Sep24_score<0.6)'.format(mva_highMjj_ggh)
+    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Sep24_score>0.6)'.format(mva_highMjj_ggh)
     # cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     # cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
@@ -623,9 +626,9 @@ if options.channel == 'em':
     # mva_highMjj_ztt =     '(IC_highMjj_July26_max_index==5)'
 
     # with embedding use:
-    mva_highMjj_ggh =      '(IC_highMjj_Sep20_6_1_max_index==0)'
-    mva_highMjj_tt =       '(IC_highMjj_Sep20_6_1_max_index==1)'
-    mva_highMjj_zttEmbed = '(IC_highMjj_Sep20_6_1_max_index==2)'
+    mva_highMjj_ggh =      '(IC_highMjj_Sep21_1_max_index==0)'
+    mva_highMjj_tt =       '(IC_highMjj_Sep21_1_max_index==1)'
+    mva_highMjj_zttEmbed = '(IC_highMjj_Sep21_1_max_index==2)'
     # mva_highMjj_qcd =      '(IC_highMjj_Sep20_6_max_index==1)'
     # mva_highMjj_qqh =      '(IC_highMjj_Sep14_1_max_index==2)'
 
@@ -639,8 +642,8 @@ if options.channel == 'em':
     # cats['ggh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     cats['ggh_loose_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt<125)'.format(mva_highMjj_ggh)
     cats['ggh_loose_boost_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt>125)'.format(mva_highMjj_ggh)
-    cats['ggh_tight_boost_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt>150)'.format(mva_highMjj_ggh)
-    cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt<150)'.format(mva_highMjj_ggh)
+    cats['ggh_tight_boost_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt>125)'.format(mva_highMjj_ggh)
+    cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt<125)'.format(mva_highMjj_ggh)
     # cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     # cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
@@ -1044,8 +1047,8 @@ if options.syst_qcd_scale != '' and options.era != 'smsummer16':
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', 'wt*wt_qcdscale_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', 'wt*wt_qcdscale_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
 if options.syst_quarkmass != '':
-    systematics['syst_quarkmass_up'] = ('' , '_'+options.syst_quarkmass+'Up', 'wt*wt_quarkmass_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
-    systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt*wt_quarkmass_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_quarkmass_up'] = ('' , '_'+options.syst_quarkmass+'Up', 'wt*wt_quarkmass', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt/wt_quarkmass', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
 if options.syst_ps != '':
     systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
     systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
