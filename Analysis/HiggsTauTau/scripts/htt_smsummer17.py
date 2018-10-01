@@ -151,39 +151,27 @@ if options.mg_signal:
   ]
 
 if options.proc_sm or options.proc_all:
-  masses = ['125']
-  if options.short_signal: masses = ['125']
-  for mass in masses :
     signal_mc += [
-      # 'WplusHToTauTau_M-'+mass,
-      # 'WminusHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'GluGluHToTauTau_M-'+mass,
-      # 'ZHToTauTau_M-'+mass,
-      # 'ttHToTauTau_M-'+mass
+      'GluGluHToTauTau_M-125-ext',
+      'GluGluHToTauTau_M-125',
+      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToHToTauTau_M125_amcatnloFXFX',
+      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+      'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+      'VBFHToTauTau_M-125',
+      'WminusHToTauTau_M-125',
+      'WplusHToTauTau_M-125',
+      'ZHToTauTau_M-125'#,
+#      'ttHToTauTau_M-125'
     ]
   if options.proc_sm:  
    signal_mc += [
        # 'GluGluHToWWTo2L2Nu_M-125',
        # 'VBFHToWWTo2L2Nu_M-125'
        ]
-   # add cp samples
-   if options.cp_signal:
-     signal_mc += [
-       'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
-       'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
-       'GluGluH2JetsToTauTau_M125_CPmixing_sm',
-       'VBFHiggs0M_M-125',
-       'VBFHiggs0Mf05ph0_M-125',
-       'VBFHiggs0PM_M-125',
-       'ZHiggs0M_M-125',
-       'ZHiggs0Mf05ph0_M-125',
-       'ZHiggs0PM_M-125',
-       'WHiggs0M_M-125',
-       'WHiggs0Mf05ph0_M-125',
-       'WHiggs0PM_M-125'
-       #'GluGluToHToTauTau_amcNLO_M-125',
-       #'VBFHToTauTau_amcNLO_M-125'
+
    ]  
     
 
@@ -304,48 +292,52 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
+     'DYJetsToLL_M-10-50-LO-ext1',
+     'DYJetsToLL_M-10-50-LO',
      'DY1JetsToLL-LO',
      'DY2JetsToLL-LO',
      'DY2JetsToLL-LO-ext',
      'DY3JetsToLL-LO',
+     'DY3JetsToLL-LO-ext',
      'DY4JetsToLL-LO',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO',
-     'DYJetsToLL_M-5-50-LO',
-     'ZZTo4L',
-     'ZZTo4L-ext',
-     'ZZTo2L2Q',
-     'ZZTo2L2Nu',
-     'WZTo3LNu',
-     'WZTo2L2Q',
-     'WZTo1L1Nu2Q',
-     'WWToLNuQQ',
-     'WWTo4Q',
-     'WWTo2L2Nu',
-     'WWTo1L1Nu2Q',
-     'W4JetsToLNu-LO',
-     'W3JetsToLNu-LO',
-     'Tbar-tW',
-     'Tbar-t',
+     'DYJetsToLL',
+     'DYJetsToLL-ext',
      'TTToSemiLeptonic',
      'TTToHadronic',
      'TTTo2L2Nu',
      'T-tW',
      'T-t',
+     'Tbar-tW',
+     'Tbar-t',
      'EWKZ2Jets',
      'EWKWPlus2Jets',
      'EWKWMinus2Jets',
-     'DYJetsToLL',
-     'DYJetsToLL-ext',
      'WJetsToLNu-LO',
      'WJetsToLNu-LO-ext',
      'W1JetsToLNu-LO',
      'W2JetsToLNu-LO',
+     'W3JetsToLNu-LO',
+     'W4JetsToLNu-LO',
      'WWTo4Q-ext',
-     'WWToLNuQQ-ext'
+     'WWToLNuQQ-ext',
+     'WGToLNuG',
+     'WWTo1L1Nu2Q',
+     'WWTo2L2Nu',
+     'WWToLNuQQ-ext',
+     'WWToLNuQQ',
+     'WZTo1L1Nu2Q',
+     'WZTo1L3Nu',
+     'WZTo2L2Q',
+     'WZTo3LNu',
+     'ZZTo2L2Nu',
+     'ZZTo2L2Q',
+     'ZZTo2Q2Nu',
+     'ZZTo4L-ext',
+     'ZZTo4L'
      ]
   
-
 
 
   
