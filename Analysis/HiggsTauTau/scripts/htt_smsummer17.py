@@ -146,27 +146,24 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-      'GluGluHToTauTau_M-125-ext',
-      'GluGluHToTauTau_M-125',
-      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToHToTauTau_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-      'VBFHToTauTau_M-125',
-      'WminusHToTauTau_M-125',
-      'WplusHToTauTau_M-125',
-      'ZHToTauTau_M-125'#,
-#      'ttHToTauTau_M-125'
-    ]
-  if options.proc_sm:  
-   signal_mc += [
-       # 'GluGluHToWWTo2L2Nu_M-125',
-       # 'VBFHToWWTo2L2Nu_M-125'
-       ]
+        'GluGluHToTauTau_M-125-ext',
+        'GluGluHToTauTau_M-125',
+        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToHToTauTau_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+        'VBFHToTauTau_M-125',
+        'WminusHToTauTau_M-125',
+        'WplusHToTauTau_M-125',
+        'ZHToTauTau_M-125',
+        # 'ttHToTauTau_M-125'
+        # 'GluGluHToWWTo2L2Nu_M-125',
+        # 'VBFHToWWTo2L2Nu_M-125'
+        ]
 
-   ]  
+  
     
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -314,7 +311,7 @@ if options.proc_bkg or options.proc_all:
      'W2JetsToLNu-LO',
      'W3JetsToLNu-LO',
      'W4JetsToLNu-LO',
-     'WWTo4Q-ext',
+     # 'WWTo4Q-ext',
      'WWToLNuQQ-ext',
      'WGToLNuG',
      'WWTo1L1Nu2Q',
