@@ -143,12 +143,6 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
-if options.mg_signal:
-  signal_mc += [
-  'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-  #'GluGluToHToTauTau_M125_MG5',
-  'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX'
-  ]
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
@@ -375,16 +369,9 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.mg_signal or options.proc_sm:
-  SIG_FILELIST='filelists/Sep24_MC_94X' 
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     user='adow'
-    if 'MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa:
-      SIG_FILELIST='filelists/Jul18_MC_94X'
-      user = 'dwinterb'
-    else: 
-      SIG_FILELIST='filelists/Sep24_MC_94X'
-      user='adow'
     JOB='%s_2017' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
