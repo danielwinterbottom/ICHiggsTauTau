@@ -61,7 +61,35 @@
   },
   "GluGluHToTauTau_M-125": {
     "xs": 3.045966,
-    "evt": 951316.0
+    "evt": 2862720.0
+  },
+  "GluGluHToTauTau_M-125-ext": {
+    "xs": 3.045966,
+    "evt": 9118921.0
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 3761951.0
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 6802377.0
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 4542515.0
+  },
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1803052.0
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 3610955.0
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1879685.0
   },
   "T-t": {
     "xs": 136.02,
@@ -93,7 +121,7 @@
   },
   "VBFHToTauTau_M-125": {
     "xs": 0.2371,
-    "evt": 7818050.0
+    "evt": 2971508.0
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
@@ -165,15 +193,15 @@
   },
   "WminusHToTauTau_M-125": {
     "xs": 0.03340,
-    "evt": 6820606.0
+    "evt": 3657584.0
   },
   "WplusHToTauTau_M-125": {
     "xs": 0.05266,
-    "evt": 6820606.0
+    "evt": 3777578.0
   },
   "ZHToTauTau_M-125": {
     "xs": 0.05542,
-    "evt": 6820606.0
+    "evt": 4652054.0
   },
   "ZZTo2L2Nu": {
     "xs": 0.5644,
