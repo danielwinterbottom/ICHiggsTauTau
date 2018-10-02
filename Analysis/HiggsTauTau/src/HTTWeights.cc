@@ -287,6 +287,18 @@ namespace ic {
                  w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
               fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
                  w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+              fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
               // et cross trigger
               fns_["e_trg_EleTau_Ele24Leg_desy_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_EleTau_Ele24Leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
@@ -661,8 +673,18 @@ namespace ic {
               w_->function("t_trg_tight_mt_embed")->functor(w_->argSet("t_pt,t_eta")));
            fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-           fns_["t_trg_tight_mt_mc"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_mt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
            fns_["t_trg_tight_et_data"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
@@ -1752,6 +1774,12 @@ namespace ic {
           if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
           else tau_trg_mc = fns_["t_trg_tight_et_embed"]->eval(args_3_nophi.data());
 
+          auto args_pt_1 = std::vector<double>{t_pt};
+          double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
+          double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
+          event->Add("trigweight_up", tau_trg_up);
+          event->Add("trigweight_down", tau_trg_down);
+
           double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
           double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
@@ -2073,6 +2101,13 @@ namespace ic {
              double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
              double xtrg_OR_sf = (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc);
+
+             auto args_pt_1 = std::vector<double>{t_pt};
+             double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
+             double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
+             event->Add("trigweight_up", tau_trg_up);
+             event->Add("trigweight_down", tau_trg_down);
+
 
              // have xtrg OR as default but save others to check 
              event->Add("single_m_sf", single_m_sf/xtrg_OR_sf);
@@ -2570,6 +2605,12 @@ namespace ic {
            tau2_trg = fns_["t_trg_tight_tt_data"]->eval(args_2.data());
            tau2_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_2.data());
 
+           auto args_pt_1 = std::vector<double>{pt_1};
+           auto args_pt_2 = std::vector<double>{pt_2};
+           double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_up"]->eval(args_pt_2.data());
+           double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_down"]->eval(args_pt_2.data());
+           event->Add("trigweight_up", tau_trg_up);
+           event->Add("trigweight_down", tau_trg_down);
            //auto args_1 = std::vector<double>{pt_1,eta_1};
            //auto args_2 = std::vector<double>{pt_2,eta_2};
            //tau1_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_1.data()); 

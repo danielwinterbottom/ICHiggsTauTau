@@ -127,6 +127,8 @@ class HTTCategories : public ModuleBase {
   double wt_trig_up_2_;
   double wt_trig_down_1_;
   double wt_trig_down_2_;
+  double wt_trig_up_;
+  double wt_trig_down_;
   float idisoweight_1_;
   float idisoweight_2_;
   double idisoweight_up_1_;
