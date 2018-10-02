@@ -1266,6 +1266,8 @@ namespace ic {
         outtree_->Branch("wt_trig_up_2",    &wt_trig_up_2_);
         outtree_->Branch("wt_trig_down_1",    &wt_trig_down_1_);
         outtree_->Branch("wt_trig_down_2",    &wt_trig_down_2_);
+        outtree_->Branch("wt_trig_up",    &wt_trig_up_);
+        outtree_->Branch("wt_trig_down",    &wt_trig_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
@@ -2646,6 +2648,8 @@ namespace ic {
   if (event->Exists("trigweight_up_2")) wt_trig_up_2_ = event->Get<double>("trigweight_up_2"); else wt_trig_up_2_ = 1.0;
   if (event->Exists("trigweight_down_1")) wt_trig_down_1_ = event->Get<double>("trigweight_down_1"); else wt_trig_down_1_ = 1.0;
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
+  if (event->Exists("trigweight_up")) wt_trig_up_ = event->Get<double>("trigweight_up"); else wt_trig_up_ = 1.0;
+  if (event->Exists("trigweight_down")) wt_trig_down_ = event->Get<double>("trigweight_down"); else wt_trig_down_ = 1.0; 
   if (event->Exists("xtrg_et_sf")) xtrg_et_sf_ = event->Get<double>("xtrg_et_sf"); else xtrg_et_sf_ = 1.0;
   if (event->Exists("single_e_sf")) single_e_sf_ = event->Get<double>("single_e_sf"); else single_e_sf_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
