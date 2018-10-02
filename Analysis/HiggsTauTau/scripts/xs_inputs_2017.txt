@@ -14,6 +14,13 @@ EWKWMinus2Jets 20.25
 EWKWPlus2Jets 25.62
 EWKZ2Jets 3.987
 GluGluHToTauTau_M-125 3.045966
+GluGluHToTauTau_M-125-ext 3.045966
+GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX  3.045966
+GluGluToHToTauTau_M125_amcatnloFXFX  3.045966
+GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX  3.045966
+GluGluToMaxmixHToTauTau_M125_amcatnloFXFX  3.045966
+GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX  3.045966
+GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX  3.045966
 T-t 136.02
 T-tW 35.6
 TTTo2L2Nu 88.29 
