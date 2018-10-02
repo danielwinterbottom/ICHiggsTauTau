@@ -1672,9 +1672,8 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
       zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zll_node)
   if options.channel == "em":
-      if not options.era == 'cpsummer17':
-          wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
-          subtract_node.AddNode(wg_node)
+    wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
+    subtract_node.AddNode(wg_node)
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True,w_shift=None):
