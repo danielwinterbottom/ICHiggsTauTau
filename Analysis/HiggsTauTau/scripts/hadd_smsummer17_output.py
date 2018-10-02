@@ -73,7 +73,7 @@ sample_list = [
     'EmbeddingMuMuC',
     'EmbeddingMuMuD',
     'EmbeddingMuMuE',
-    'EmbeddingMuMuF'
+    'EmbeddingMuMuF',
     'EmbeddingMuTauB',
     'EmbeddingMuTauC',
     'EmbeddingMuTauD',
