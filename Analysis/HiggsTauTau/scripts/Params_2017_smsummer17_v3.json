@@ -15,6 +15,10 @@
     "xs": 5765.4,
     "evt": 97656433.0
   },
+  "DY3JetsToLL-LO-ext": {
+    "xs": 5765.4,
+    "evt": 97656433.0
+  },
   "DY4JetsToLL-LO": {
     "xs": 5765.4,
     "evt": 97656433.0
@@ -221,6 +225,10 @@
   },
   "ZZTo4L-ext": {
     "xs": 1.212,
+    "evt": 107687961.0
+  },
+  "ttHToTauTau_M-125": {
+    "xs": 0.03181,
     "evt": 107687961.0
   },
   "SingleElectron": {
