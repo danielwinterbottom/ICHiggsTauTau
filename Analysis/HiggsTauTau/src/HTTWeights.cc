@@ -411,6 +411,8 @@ namespace ic {
                     w_->function("t_fake_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
                 fns_["t_genuine_TightIso_mt_data"] = std::shared_ptr<RooFunctor>(
                     w_->function("t_genuine_TightIso_mt_data")->functor(w_->argSet("t_pt,t_eta")));
+                fns_["t_trg_tight_tt_mcclose"] = std::shared_ptr<RooFunctor>(
+                    w_->function("t_trg_tight_tt_mcclose")->functor(w_->argSet("t_pt,t_dm")));
               }
             }
             if (strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16) {
@@ -689,6 +691,8 @@ namespace ic {
               w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
            fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_nonclosure"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_nonclosure")->functor(w_->argSet("t_pt_1,t_pt_2")));
            fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
                w_->function("m_sel_idEmb_ratio")->functor(w_->argSet("gt_eta,gt_pt")));
            fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
@@ -2611,10 +2615,11 @@ namespace ic {
            double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_down"]->eval(args_pt_2.data());
            event->Add("trigweight_up", tau_trg_up);
            event->Add("trigweight_down", tau_trg_down);
-           //auto args_1 = std::vector<double>{pt_1,eta_1};
-           //auto args_2 = std::vector<double>{pt_2,eta_2};
-           //tau1_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_1.data()); 
-           //tau2_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_2.data());
+           // these buts for bias study
+           //auto args_1_nophi = std::vector<double>{pt_1,eta_1};
+           //auto args_2_nophi = std::vector<double>{pt_2,eta_2};
+           //tau1_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_1_nophi.data()); 
+           //tau2_trg = fns_["t_trg_tight_tt_mcclose"]->eval(args_2_nophi.data());
            //tau1_trg=1.0;
            //tau2_trg=1.0;
            //tau1_trg_mc=1.0;
@@ -2625,6 +2630,9 @@ namespace ic {
              auto args_2 = std::vector<double>{pt_2,eta_2};
              tau1_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_1.data());
              tau2_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_2.data());
+             auto args_ditau = std::vector<double>{pt_1,pt_2};
+             double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
+             eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
            }
         }
         if(trg_applied_in_mc_){

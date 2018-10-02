@@ -844,7 +844,6 @@ namespace ic {
           alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           if(is_embedded_) {
-             //leg1_filter="hltPFTauTrackReg";
              leg1_filter="hltDoubleL2IsoTau26eta2p2";
              leg2_filter=leg1_filter;
              alt_leg1_filter=leg1_filter;
