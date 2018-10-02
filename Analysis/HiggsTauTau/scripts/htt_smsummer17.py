@@ -311,8 +311,6 @@ if options.proc_bkg or options.proc_all:
      'W2JetsToLNu-LO',
      'W3JetsToLNu-LO',
      'W4JetsToLNu-LO',
-     # 'WWTo4Q-ext',
-     'WWToLNuQQ-ext',
      'WGToLNuG',
      'WWTo1L1Nu2Q',
      'WWTo2L2Nu',
