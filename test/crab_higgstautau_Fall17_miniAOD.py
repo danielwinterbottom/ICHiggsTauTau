@@ -95,7 +95,6 @@ if __name__ == '__main__':
     tasks.append(('WplusHToTauTau_M-125', '/WplusHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM')) 
     tasks.append(('ttHToTauTau_M-125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
 
-
     tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
 
     tasks.append(('GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
@@ -126,8 +125,8 @@ if __name__ == '__main__':
           config.Data.inputDataset = None
         else:
           config.Data.inputDataset = task[1]
-          # config.Data.unitsPerJob = 100000
-          # config.Data.splitting = 'EventAwareLumiBased'
+          config.Data.unitsPerJob = 100000
+          config.Data.splitting = 'EventAwareLumiBased'
           config.Data.userInputFiles = None
             
         if "HToTauTau" in task[0]:
