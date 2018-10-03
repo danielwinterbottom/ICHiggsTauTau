@@ -234,14 +234,14 @@
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
          "tau_1prong0pi0_es_shift" : 1.007,
-         "embedtau_1prong0pi0_es_shift": 1.009,
+         "embedtau_1prong0pi0_es_shift": 1.009
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
          "tau_1prong0pi0_es_shift" : 0.983,
-         "embedtau_1prong0pi0_es_shift": 0.985,
+         "embedtau_1prong0pi0_es_shift": 0.985
       }
     },
     "scale_t_1pi_hi": {
