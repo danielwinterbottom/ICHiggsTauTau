@@ -28,15 +28,26 @@ namespace ic {
         float preCorr = 1.0;
         float postCorr = 1.0;
 
-        preCorr = electrons[i]->ecalTrkEnergyPreCorr();
+        /* preCorr = electrons[i]->ecalTrkEnergyPreCorr(); */
+        preCorr = electrons[i]->energy();
         postCorr = electrons[i]->ecalTrkEnergyPostCorr();
+        std::cout << "preCorr: " << preCorr << std::endl;
+        std::cout << "postCorr: " << postCorr << std::endl;
 
         float shift = postCorr/preCorr;
+        std::cout << "shift " << shift << std::endl;
 
-        // Apply the shift to the p4
-        ROOT::Math::PtEtaPhiEVector shiftVector = electrons[i]->vector()*shift;
-
-        electrons[i]->set_vector(shiftVector);
+        // shifting pT and E shifts the full four-vector
+        // as required by EGammaPOG
+        std::cout << "pT before: " << electrons[i]->vector().Pt() << std::endl;
+        std::cout << "pZ before: " << electrons[i]->vector().Pz() << std::endl;
+        std::cout << "E before: " << electrons[i]->vector().E() << std::endl;
+        /* electrons[i]->set_pt(electrons[i]->pt() * shift); */
+        electrons[i]->set_pt(electrons[i]->pt() * shift);
+        electrons[i]->set_energy(electrons[i]->energy() * shift);
+        std::cout << "pT after: " << electrons[i]->vector().Pt() << std::endl;
+        std::cout << "pZ after: " << electrons[i]->vector().Pz() << std::endl;
+        std::cout << "E after: " << electrons[i]->vector().E() << std::endl;
         elec_ss[electrons[i]->id()] = shift;
       }
       event->Add("elec_ss", elec_ss);
