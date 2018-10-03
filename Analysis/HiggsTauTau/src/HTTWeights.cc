@@ -3526,6 +3526,17 @@ namespace ic {
           auto args2_2 = std::vector<double>{e_2_pt,e_2_sceta,e_2_iso};
           e_1_idiso = fns_["e_looseid_pog_ratio"]->eval(args1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args1_2.data());
           e_2_idiso = fns_["e_looseid_pog_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ; 
+          if(is_embedded_){
+            e_1_idiso = fns_["e_id_embed_ratio"]->eval(args1_1.data()) 
+                * fns_["e_iso_binned_embed_ratio"]->eval(args1_2.data());
+            e_2_idiso = fns_["e_id_embed_ratio"]->eval(args2_1.data()) 
+                * fns_["e_iso_binned_embed_ratio"]->eval(args2_2.data());
+          } else {
+            e_1_idiso = fns_["e_id_ratio"]->eval(args1_1.data()) 
+                * fns_["e_iso_binned_ratio"]->eval(args1_2.data());
+            e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) 
+                * fns_["e_iso_binned_ratio"]->eval(args2_2.data());
+          }
         } 
 
         weight *= (e_1_idiso * e_2_idiso);

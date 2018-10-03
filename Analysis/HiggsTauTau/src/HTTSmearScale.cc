@@ -33,8 +33,10 @@ namespace ic {
 
         float shift = postCorr/preCorr;
 
-        electrons[i]->set_pt(electrons[i]->pt() * shift);
-        electrons[i]->set_energy(electrons[i]->energy() * shift);
+        // Apply the shift to the p4
+        ROOT::Math::PtEtaPhiEVector shiftVector = electrons[i]->vector()*shift;
+
+        electrons[i]->set_vector(shiftVector);
         elec_ss[electrons[i]->id()] = shift;
       }
       event->Add("elec_ss", elec_ss);
