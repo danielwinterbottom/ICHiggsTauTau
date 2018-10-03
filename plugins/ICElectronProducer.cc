@@ -92,16 +92,6 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
        consumes<edm::ValueMap<float>>(input_vmaps_[i].second);
   }
 
-  /*edm::ParameterSet pset_floats2 =
-      config.getParameter<edm::ParameterSet>("includeFloats2");
-  std::vector<std::string> vec2 =
-      pset_floats2.getParameterNamesForType<edm::InputTag>();
-  for (unsigned i = 0; i < vec2.size(); ++i) {
-    input_maps_.push_back(std::make_pair(
-        vec2[i], pset_floats2.getParameter<edm::InputTag>(vec2[i])));
-       consumes<float>(input_maps_[i].second);
-  }*/
-
   //PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_r9_, "includeR9");
   PrintOptional(1, do_hcal_sum_, "includeHcalSum");
@@ -118,9 +108,6 @@ void ICElectronProducer::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
      edm::Handle<edm::View<pat::Electron> > elecs_handle;
   event.getByLabel(input_, elecs_handle);
-
-   /*edm::Handle<edm::View<pat::Electron> > pat_elecs_handle; 
-   event.getByLabel(input_, pat_elecs_handle); */
 
   edm::Handle<edm::ValueMap<float> > r9_handle;
   if (do_r9_) event.getByLabel(input_r9_, r9_handle);
@@ -143,11 +130,6 @@ void ICElectronProducer::produce(edm::Event& event,
   for (unsigned i = 0; i < float_handles.size(); ++i) {
     event.getByLabel(input_vmaps_[i].second, float_handles[i]);
   }
-  /*std::vector<float> float_handles2(
-      input_maps_.size());
-  for (unsigned i = 0; i < float_handles2.size(); ++i) {
-    event.getByLabel(input_maps_[i].second, float_handles2[i]);
-  }*/
 
   edm::Handle<edm::ValueMap<double> > charged_all_03;
   edm::Handle<edm::ValueMap<double> > charged_03;
