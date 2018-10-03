@@ -354,35 +354,35 @@ class Electron : public Candidate {
   inline void set_ecal_energy(float const& ecal_energy) {
     ecal_energy_ = ecal_energy;
   }
-  /// @copybrief preCorr()
+  /// @copybrief ecalTrkEnergyPreCorr()
   inline void set_ecalTrkEnergyPreCorr(float const& ecalTrkEnergyPreCorr) {
     ecalTrkEnergyPreCorr_ = ecalTrkEnergyPreCorr;
   }
-  /// @copybrief postCorr()
+  /// @copybrief ecalTrkEnergyPostCorr()
   inline void set_ecalTrkEnergyPostCorr(float const& ecalTrkEnergyPostCorr) {
     ecalTrkEnergyPostCorr_ = ecalTrkEnergyPostCorr;
   }
-  /// @copybrief errPreCorr()
+  /// @copybrief ecalTrkEnergyErrPreCorr()
   inline void set_ecalTrkEnergyErrPreCorr(float const& ecalTrkEnergyErrPreCorr) {
     ecalTrkEnergyErrPreCorr_ = ecalTrkEnergyErrPreCorr;
   }
-  /// @copybrief errPostCorr()
+  /// @copybrief ecalTrkEnergyErrPostCorr()
   inline void set_ecalTrkEnergyErrPostCorr(float const& ecalTrkEnergyErrPostCorr) {
     ecalTrkEnergyErrPostCorr_ = ecalTrkEnergyErrPostCorr;
   }
-  /// @copybrief scaleUp()
+  /// @copybrief ecalTrkEnergyScaleUp()
   inline void set_ecalTrkEnergyScaleUp(float const& ecalTrkEnergyScaleUp) {
     ecalTrkEnergyScaleUp_ = ecalTrkEnergyScaleUp;
   }
-  /// @copybrief scaleDown()
+  /// @copybrief ecalTrkEnergyScaleDown()
   inline void set_ecalTrkEnergyScaleDown(float const& ecalTrkEnergyScaleDown) {
     ecalTrkEnergyScaleDown_ = ecalTrkEnergyScaleDown;
   }
-  /// @copybrief sigmaUp()
+  /// @copybrief ecalTrkEnergySigmaUp()
   inline void set_ecalTrkEnergySigmaUp(float const& ecalTrkEnergySigmaUp) {
     ecalTrkEnergySigmaUp_ = ecalTrkEnergySigmaUp;
   }
-  /// @copybrief sigmaDown()
+  /// @copybrief ecalTrkEnergySigmaDown()
   inline void set_ecalTrkEnergySigmaDown(float const& ecalTrkEnergySigmaDown) {
     ecalTrkEnergySigmaDown_ = ecalTrkEnergySigmaDown;
   }
