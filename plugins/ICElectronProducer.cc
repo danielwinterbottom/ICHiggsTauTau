@@ -10,6 +10,7 @@
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -60,13 +61,24 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
       pf_iso_04_(config.getParameterSet("pfIso04"),consumesCollector()),
       do_cluster_iso_(config.getParameter<bool>("includeClusterIso")),
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
-      do_pf_iso_04_(config.getParameter<bool>("includePFIso04")) {
-        consumes<edm::View<reco::GsfElectron>>(input_);
+      do_pf_iso_04_(config.getParameter<bool>("includePFIso04")),
+      // 2017 smear and scale 
+      input_preCorr_(config.getParameter<std::string>("inputPreCorr")),
+      input_postCorr_(config.getParameter<std::string>("inputPostCorr")),
+      input_errPreCorr_(config.getParameter<std::string>("inputErrPreCorr")),
+      input_errPostCorr_(config.getParameter<std::string>("inputErrPostCorr")),
+      input_scaleUp_(config.getParameter<std::string>("inputScaleUp")),
+      input_scaleDown_(config.getParameter<std::string>("inputScaleDown")),
+      input_sigmaUp_(config.getParameter<std::string>("inputSigmaUp")),
+      input_sigmaDown_(config.getParameter<std::string>("inputSigmaDown")) 
+    {
+        consumes<edm::View<pat::Electron>>(input_);
         consumes<edm::ValueMap<float>>(input_r9_);
         consumes<edm::ValueMap<float>>(input_hcal_sum_);
         consumes<edm::View<reco::Vertex>>(input_vertices_);
         consumes<reco::BeamSpot>(input_beamspot_);
         consumes<edm::ValueMap<bool>>(input_conversion_matches_);
+      
 
      electrons_ = new std::vector<ic::Electron>();
 
@@ -78,16 +90,6 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
     input_vmaps_.push_back(std::make_pair(
         vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
        consumes<edm::ValueMap<float>>(input_vmaps_[i].second);
-  }
-
-  edm::ParameterSet pset_floats2 =
-      config.getParameter<edm::ParameterSet>("includeFloats2");
-  std::vector<std::string> vec2 =
-      pset_floats2.getParameterNamesForType<edm::InputTag>();
-  for (unsigned i = 0; i < vec.size(); ++i) {
-    input_maps_.push_back(std::make_pair(
-        vec2[i], pset_floats2.getParameter<edm::InputTag>(vec2[i])));
-       consumes<edm::View<float>>(input_maps_[i].second);
   }
 
   //PrintHeaderWithProduces(config, input_, branch_);
@@ -104,7 +106,7 @@ ICElectronProducer::~ICElectronProducer() { delete electrons_; }
 
 void ICElectronProducer::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-     edm::Handle<edm::View<reco::GsfElectron> > elecs_handle;
+     edm::Handle<edm::View<pat::Electron> > elecs_handle;
   event.getByLabel(input_, elecs_handle);
 
   edm::Handle<edm::ValueMap<float> > r9_handle;
@@ -127,11 +129,6 @@ void ICElectronProducer::produce(edm::Event& event,
       input_vmaps_.size());
   for (unsigned i = 0; i < float_handles.size(); ++i) {
     event.getByLabel(input_vmaps_[i].second, float_handles[i]);
-  }
-  std::vector<edm::Handle<edm::View<float>>> float_handles2(
-      input_maps_.size());
-  for (unsigned i = 0; i < float_handles2.size(); ++i) {
-    event.getByLabel(input_maps_[i].second, float_handles2[i]);
   }
 
   edm::Handle<edm::ValueMap<double> > charged_all_03;
@@ -172,9 +169,11 @@ void ICElectronProducer::produce(edm::Event& event,
   electrons_->resize(elecs_handle->size(), ic::Electron());
 
   for (unsigned i = 0; i < elecs_handle->size(); ++i) {
-    reco::GsfElectron const& src = elecs_handle->at(i);
-    edm::RefToBase<reco::GsfElectron> ref = elecs_handle->refAt(i);
+    pat::Electron const& src = elecs_handle->at(i);
+    edm::RefToBase<pat::Electron> ref = elecs_handle->refAt(i);
     ic::Electron & dest = electrons_->at(i);
+
+
     dest.set_id(gsf_electron_hasher_(&src));
     dest.set_pt(src.pt());
     dest.set_eta(src.eta());
@@ -195,7 +194,7 @@ void ICElectronProducer::produce(edm::Event& event,
     if (src.gsfTrack().isNonnull()) {
 #if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
       dest.set_gsf_tk_nhits(
-          src.gsfTrack()->hitPattern().numberOfLostHits( //rather than numberOfAllHits which counts 
+          src.gsfTrack()->hitPattern().numberOfLostHits( //rather than numberOfAllHits
               reco::HitPattern::MISSING_INNER_HITS));
 #elif CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
       dest.set_gsf_tk_nhits(
@@ -271,9 +270,18 @@ void ICElectronProducer::produce(edm::Event& event,
     if (src.superCluster()->seed().isNonnull()) {
       dest.set_sc_seed_eta(src.superCluster()->seed()->eta());
     }
-    dest.set_ecalTrkEnergyErrPostCorr((*(float_handles[0]))[ref]);
-    dest.set_ecalTrkEnergyPostCorr((*(float_handles[1]))[ref]);
-    dest.set_ecalTrkEnergyPreCorr((*(float_handles[2]))[ref]);
+    
+    // 2017 smear and scale
+#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
+    dest.set_ecalTrkEnergyPostCorr(src.userFloat(input_postCorr_));
+    dest.set_ecalTrkEnergyPreCorr(src.userFloat(input_preCorr_));
+    dest.set_ecalTrkEnergyErrPostCorr(src.userFloat(input_errPostCorr_));
+    dest.set_ecalTrkEnergyErrPreCorr(src.userFloat(input_errPreCorr_));
+    dest.set_ecalTrkEnergySigmaUp(src.userFloat(input_sigmaUp_));
+    dest.set_ecalTrkEnergySigmaDown(src.userFloat(input_sigmaDown_));
+    dest.set_ecalTrkEnergyScaleUp(src.userFloat(input_scaleUp_));
+    dest.set_ecalTrkEnergyScaleDown(src.userFloat(input_scaleDown_));
+#endif
 
   }
 }
