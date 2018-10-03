@@ -2630,9 +2630,9 @@ namespace ic {
              auto args_2 = std::vector<double>{pt_2,eta_2};
              tau1_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_1.data());
              tau2_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_2.data());
-             auto args_ditau = std::vector<double>{pt_1,pt_2};
-             double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
-             eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
+             //auto args_ditau = std::vector<double>{pt_1,pt_2};
+             //double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
+             //eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
            }
         }
         if(trg_applied_in_mc_){
@@ -3532,8 +3532,7 @@ namespace ic {
           auto args2_1 = std::vector<double>{e_2_pt,e_2_sceta};  
           auto args1_2 = std::vector<double>{e_1_pt,e_1_sceta,e_1_iso};
           auto args2_2 = std::vector<double>{e_2_pt,e_2_sceta,e_2_iso};
-          e_1_idiso = fns_["e_looseid_pog_ratio"]->eval(args1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args1_2.data());
-          e_2_idiso = fns_["e_looseid_pog_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ; 
+
           if(is_embedded_){
             e_1_idiso = fns_["e_id_embed_ratio"]->eval(args1_1.data()) 
                 * fns_["e_iso_binned_embed_ratio"]->eval(args1_2.data());
