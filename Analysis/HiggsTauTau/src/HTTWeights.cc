@@ -2630,9 +2630,9 @@ namespace ic {
              auto args_2 = std::vector<double>{pt_2,eta_2};
              tau1_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_1.data());
              tau2_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_2.data());
-             auto args_ditau = std::vector<double>{pt_1,pt_2};
-             double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
-             eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
+             //auto args_ditau = std::vector<double>{pt_1,pt_2};
+             //double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
+             //eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
            }
         }
         if(trg_applied_in_mc_){
