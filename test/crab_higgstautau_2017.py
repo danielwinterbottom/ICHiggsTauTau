@@ -11,8 +11,8 @@ config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=1','doHT=0', 'globalTag=94X_dataRun2_v10']
 config.section_('Data')
 #config.Data.unitsPerJob = 100000
-# config.Data.unitsPerJob = 50000 # switch back after!
-# config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 50000 # switch back after!
+config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/adow/July24_Data_94X/'
