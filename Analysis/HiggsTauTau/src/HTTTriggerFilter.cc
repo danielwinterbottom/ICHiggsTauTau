@@ -1141,7 +1141,7 @@ namespace ic {
         }
       }
     }
-    event->Add("trg_muonelectron", passed_dz&&passed_muonelectron);
+    event->Add("trg_muonelectron",   passed_muonelectron);
     event->Add("trg_muonelectron_1", passed_muonelectron_1);
     event->Add("trg_muonelectron_2", passed_muonelectron_2);
 
