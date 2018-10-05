@@ -269,7 +269,7 @@ namespace ic {
     GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
     topmass_wts_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight");
 
-    topmass_wts_toponly_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight_toponly");
+    topmass_wts_toponly_ = GetFromTFile<TH1F>("input/ggh_weights/quarkmass_uncerts_hnnlo.root","/","nom");
    
     ps_0jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_up");
     ps_0jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_down");
@@ -526,7 +526,7 @@ namespace ic {
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
            higgs_eta = gen_particles[i]->eta();
-           wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.007;
+           wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.006;
            wt_topmass_2_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
 

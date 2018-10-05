@@ -492,8 +492,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
-   tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
-   tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+   if(!is_embedded){
+     tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
+     tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+   } else {
+     tau_shift_1prong0pi0 = json["baseline"]["embedtau_1prong0pi0_es_shift"].asDouble();
+     tau_shift_1prong1pi0 = json["baseline"]["embedtau_1prong1pi0_es_shift"].asDouble();
+   }
    tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
  }
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
