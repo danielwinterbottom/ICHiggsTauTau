@@ -754,7 +754,9 @@ if options.channel == 'mt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 4) && 
 if options.channel == 'et': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 5))'
 if options.channel == 'tt': top_sels_embed['ttt_sel'] = '((gen_match_1 == 5) && (gen_match_2 == 5))'
 if options.channel == 'em': top_sels_embed['ttt_sel'] = '((gen_match_1 == 3) && (gen_match_2 == 4))'
-if options.channel in ['zmm','zee']: top_sels_embed['ttt_sel'] = '((gen_match_1 == 2) && (gen_match_2 == 2))'
+if options.channel in ['zmm']: top_sels_embed['ttt_sel'] = '((gen_match_1 == 2) && (gen_match_2 == 2))'
+if options.channel in ['zee']: top_sels_embed['ttt_sel'] = '((gen_match_1 == 1) && (gen_match_2 == 1))'
+
 top_sels_embed['vvt_sel'] = top_sels_embed['ttt_sel']
 
 if options.channel in ['et','mt','mj']:
@@ -907,7 +909,7 @@ if options.era in ['cpsummer17','tauid2017']:
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','WWTo1L1Nu2Q','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
     wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets']
@@ -952,7 +954,6 @@ if options.era in ['cpsummer17']:
             # 'qqHsm_htt': 'VBFHiggs0PM_M-*', 
             # 'qqHmm_htt': 'VBFHiggs0Mf05ph0_M-*', 
             # 'qqHps_htt': 'VBFHiggs0M_M-*',
-            # 'ggHMG_htt':'GluGluToHToTauTau_amcNLO_M-*',
             }
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1375,8 +1376,7 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
         ana.nodes[nodename].AddNode(zll_node)
     else:
         if doZL:
-            if options.era in ['cpsummer17'] and options.channel=='et':  zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
-            else: zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+            zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
             ana.nodes[nodename].AddNode(zl_node)
         if doZJ:
             zj_node = GetZJNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
@@ -2462,8 +2462,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               cat_fail = '('+cats['fail']+')*('+cats['baseline']+')'
               GenerateEmbedded(ana, '_pass', embed_samples, plot, wt, sel, cat_pass, z_sels, not options.do_ss)
               GenerateEmbedded(ana, '_fail', embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
-        if 'ZTT' not in samples_to_skip:
+        if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
+        if 'ZTT' not in samples_to_skip and options.embedding:
+            GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel =='zmm' and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
