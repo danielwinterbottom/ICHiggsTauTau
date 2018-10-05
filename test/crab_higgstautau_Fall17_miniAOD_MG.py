@@ -10,8 +10,8 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v16', 'doHT=1', 'LHEWeights=True']
 config.section_('Data')
-# config.Data.unitsPerJob = 100000
-# config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 100000
+config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/adow/Oct03_MC_94X/'
 config.Data.allowNonValidInputDataset = True
