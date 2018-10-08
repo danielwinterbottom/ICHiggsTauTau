@@ -2628,6 +2628,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for double tau trigger
           //.set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
           .set_extra_l1_probe_pt(32.)
+          //.set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35")
+          //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg")
           .set_extra_hlt_probe_pt_vec(extra_cuts)
 
           // for mu+tau trigger (embedding)

@@ -263,6 +263,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   trg_probe_2_1_ = false;
   trg_probe_2_2_ = false;
   trg_probe_2_3_ = false;
+  trg_probe_1_ = false;
+  trg_probe_2_ = false;
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
@@ -275,7 +277,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
     bool trg_probe_temp_1 = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1);
     bool trg_probe_temp_2 = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2);
-  
+ 
+    //if(trg_probe_temp_2 && gen_match_2_==5) std::cout << pt_2_ << "    " << gen_match_2_ << "    " << probe_filts[i] << std::endl;
+   
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
     //for (unsigned j = 0; j < objs_probe.size(); ++j) {
@@ -301,11 +305,11 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
         trg_probe_temp_2 = trg_probe_temp_2 && objs_probe[leg1_match_index_2]->pt() > pt_cut;
+        //if(gen_match_2_==5) std::cout << trg_probe_temp_2 << "    " <<  objs_probe[leg1_match_index_2]->pt() << "    " <<  pt_cut <<std::endl;
       }
     }
     trg_probe_1_ = trg_probe_temp_1  || trg_probe_1_;
     trg_probe_2_ = trg_probe_temp_2  || trg_probe_2_;    
- 
 
     if(i==0 && trg_probe_temp_2) trg_probe_2_1_ = true;
     if(i==1 && trg_probe_temp_2) trg_probe_2_2_ = true;
