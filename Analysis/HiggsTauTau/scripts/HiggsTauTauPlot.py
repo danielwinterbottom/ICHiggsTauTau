@@ -3105,7 +3105,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16']:
+if options.era in ["smsummer16",'cpsummer16','cpsummer17']:
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []
