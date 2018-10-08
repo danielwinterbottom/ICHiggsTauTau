@@ -129,13 +129,13 @@ if __name__ == '__main__':
           config.Data.userInputFiles = None
             
         if "HToTauTau" in task[0]:
-            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True']
+            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1']
+            if 'amcatnloFXFX' in task[0]: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','includenpNLO=True','doHT=1']
         else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
             
         if ("DY" in task[0] and "JetsToLL-LO" in task[0]) or ("W" in task[0] and "JetsToLNu-LO" in task[0]):
             config.JobType.pyCfgParams = CfgParams + ['doHT=1']
-        else: config.JobType.pyCfgParams = CfgParams + ['doHT=0']
- 
+
         p = Process(target=submit, args=(config,))
         p.start()
         p.join()

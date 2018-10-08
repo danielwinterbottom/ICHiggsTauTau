@@ -227,7 +227,24 @@ sample_list = [
    'ZHiggs0PM_M-125',
    'WHiggs0M_M-125',
    'WHiggs0Mf05ph0_M-125',
-   'WHiggs0PM_M-125'
+   'WHiggs0PM_M-125',
+   'GluGluToHToTauTau_M125_amcatnloFXFX_PSDown-v2',
+   'GluGluToHToTauTau_M125_amcatnloFXFX_PSUp-v2',
+   'GluGluToHToTauTau_M125_MG5_2016',
+   'GluGluHToTauTau_M125_NNLOPS',
+   'GluGluToHToTauTau_M125_MG5_PSDown',
+   'GluGluToHToTauTau_M125_MG5_PSUp',
+   'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+   'GluGluToHToTauTau_M125_amcatnloFXFX',
+   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+   'GluGluToHToTauTau_M125_amcatnloFXFX_UEDown',
+   'GluGluToHToTauTau_M125_amcatnloFXFX_UEUp',
+   'GluGluToHToTauTauPlusOneJet_M125_MG5_2016',
+   'GluGluToMaxmixHToTauTauPlusOneJet_M125_MG5_2016',
+   'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_MG5_2016'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
@@ -235,6 +252,7 @@ with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
 subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP']
+
 
 nfiles={}
 

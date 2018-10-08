@@ -30,6 +30,7 @@ class HTTRun2RecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTRun2RecoilCorrector, int, met_scale_mode)
   CLASS_MEMBER(HTTRun2RecoilCorrector, int, met_res_mode)
   CLASS_MEMBER(HTTRun2RecoilCorrector, unsigned, njets_mode)
+  CLASS_MEMBER(HTTRun2RecoilCorrector, bool, do_recoil)
 
 
 

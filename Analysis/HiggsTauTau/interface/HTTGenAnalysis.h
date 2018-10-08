@@ -71,6 +71,13 @@ class HTTGenAnalysis : public ModuleBase {
   double jphi_1_;
   double jphi_2_;
   double mjj_;
+  double pmjj_;
+  double mjj2_;
+  double minmjj_;
+  double maxmjj_;
+  double jdR_;
+  double pjdR_;
+  double jdR2_;
   double jdeta_;
   double m_vis_;
   double pt_tt_;
@@ -95,15 +102,49 @@ class HTTGenAnalysis : public ModuleBase {
   double n_jets_offline_;
   double n_bjets_offline_;
   
+  unsigned partons_lhe_;
   unsigned partons_;
   double parton_pt_;
+  double parton_pt_2_;
+  double parton_pt_3_;
+  double parton_mjj_;
+  double parton_HpT_;
   float D0_;
   float DCP_;
   float D0star_;
   double sjdphi_;
+  double sjdphi2_;
+  double sjdphi3_;
+
+  double spjdphi_;
+  double ysep_;
+  unsigned n_pjets_;
+
+
+  float n_pu_;
   
   double pT_A_;
-  
+ 
+  TH1F topmass_wts_;
+  TH1F topmass_wts_toponly_;
+
+  TH1D ps_0jet_up_;
+  TH1D ps_0jet_down_;
+  TH1D ps_1jet_up_;
+  TH1D ps_1jet_down_;
+  TH1D ps_2jet_up_;
+  TH1D ps_2jet_down_;
+  TH1D ps_3jet_up_;
+  TH1D ps_3jet_down_;
+  TH1D ue_down_;
+  TH1D ue_up_;
+
+  double wt_topmass_;
+  double wt_topmass_2_;
+  double wt_ps_down_;
+  double wt_ps_up_;
+  double wt_ue_down_;
+  double wt_ue_up_;
   double scale1_;
   double scale2_;
   double scale3_;
@@ -229,6 +270,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
+  double wt_stitch_;
+  int npNLO_;
   
   TH2D z_pt_weights_sm_;
   

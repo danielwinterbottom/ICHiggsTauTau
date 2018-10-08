@@ -56,7 +56,8 @@ namespace ic {
       std::cout << "Vertex "<< i <<" "<<vertices[i]->vz()<<std::endl;
     }
     std::cout << "Jet Rho: " << eventInfo->jet_rho() << std::endl;
-    
+   
+    eventInfo->print_weights(); 
 
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << std::endl;
@@ -93,7 +94,8 @@ namespace ic {
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
       std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
       std::cout << "-isPF: "<< muons[i]->is_pf() <<std::endl;
-      std::cout << "-Medium Muon ID: "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
+      std::cout << "-Medium Muon ID: "<< MuonMedium(muons[i]) <<std::endl;
+      std::cout << "-Medium Muon ID (HIP safe): "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
       std::cout<< "-it valid fraciton: " <<muons[i]->it_valid_fraction()<<std::endl;
@@ -112,11 +114,12 @@ namespace ic {
       std::cout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
       std::cout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
 
-      double iso =  muons[i]->dr04_pfiso_charged() 
-      + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
+      //double iso =  muons[i]->dr04_pfiso_charged() 
+      //+ std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
+      double iso = PF04IsolationVal(muons[i], 0.5,0);
       std::cout << "-dr04_pfiso_dbeta_sum: " << iso << std::endl;
       iso = iso / muons[i]->pt();
-      std::cout << "-dr04_pfiso_dbeta_rel: " << iso << std::endl;
+      std::cout << "iso: " << iso << std::endl;
     }
 
 
@@ -130,10 +133,13 @@ namespace ic {
       std::cout << "phi "<< elecs[i]->phi()<<std::endl;
       std::cout << "dxyVertex "<<elecs[i]->dxy_vertex()<<std::endl;
       std::cout<< "dzVertex "<<elecs[i]->dz_vertex() <<std::endl;
+      std::cout << "Tight ID " << ElectronHTTIdSpring16(elecs[i], false) << std::endl;
+      std::cout << "Loose ID " << ElectronHTTIdSpring16(elecs[i], true) << std::endl;
       elecs[i]->Print();
-      double iso =  (elecs[i]->dr04_pfiso_charged() 
-      + std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();
-      std::cout << "-rel_iso_03_dbeta: " << iso << std::endl;
+      //double iso =  (elecs[i]->dr04_pfiso_charged() 
+      //+ std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();
+      double iso = PF03IsolationVal(elecs[i], 0.5,0);
+      std::cout << "-iso: " << iso << std::endl;
       std::cout << "-id_mvaNonTrigSpring15: " << elecs[i]->GetIdIso("mvaNonTrigSpring15") << std::endl;
       std::cout << "-id_mvaTrigV0: " << elecs[i]->GetIdIso("mvaTrigV0") << std::endl;
 //      std::cout << "-dr04_tk_sum_pt: " << elecs[i]->dr04_tk_sum_pt() << std::endl;

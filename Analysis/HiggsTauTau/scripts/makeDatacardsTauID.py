@@ -126,7 +126,7 @@ extra_channel = {
   }
 
   
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met_clustered="CMS_scale_met_clustered_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_scale_j_full="CMS_scale_j_13TeV" '
 
 
 mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
@@ -136,7 +136,7 @@ et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --sy
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 
 if options.embedding:
-  mt_shape_systematics+=' --syst_mu_scale="CMS_scale_m_13TeV" ' 
+  #mt_shape_systematics+=' --syst_mu_scale="CMS_scale_m_13TeV" ' 
   et_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" ' 
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
@@ -162,40 +162,11 @@ if SCHEME == 'tauid2016':
   scheme_mt = [
     ("12",   "pass",    "pass",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" '),
     ("12",   "fail",    "fail",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" '),
-    ("12",   "pass",    "pass_wjets_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1>70" '),
-    ("12",   "pass",    "pass_wjets_ss_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1>70" --do_ss '),
-    ("12",   "pass",    "pass_qcd_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1<40" --do_ss '),
-    ("12",   "fail",    "fail_wjets_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1>70" '),
-    ("12",   "fail",    "fail_wjets_ss_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1>70" --do_ss '),
-    ("12",   "fail",    "fail_qcd_cr",  'm_vis[40,200]', ' --set_alias="sel:mt_1<40" --do_ss ')
     
-    #("12",   "pass",    "pass_pt20to30",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>20 && pt_2<30)" '),
-    #("12",   "fail",    "fail_pt20to30",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>20 && pt_2<30)" '),
-   # 
-    #("12",   "pass",    "pass_pt30to40",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>30 && pt_2<40)" '),
-    #("12",   "fail",    "fail_pt30to40",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>30 && pt_2<40)" '),
-   #
-   # ("12",   "pass",    "pass_pt40to50",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>40 && pt_2<50)" '),
-   # ("12",   "fail",    "fail_pt40to50",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>40 && pt_2<50)" '),
-   # 
-   # ("12",   "pass",    "pass_pt50toinf",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>50)" '),
-   # ("12",   "fail",    "fail_pt50toinf",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="baseline:({baseline} && pt_2>50)" '),
-    #("12",   "pass",    "pass_medium",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_medium_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_medium_2<0.5 && pzeta>-25)" '),
-    #("12",   "fail",    "fail_medium",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_medium_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_medium_2<0.5 && pzeta>-25)" '),
-    #("12",   "pass",    "pass_loose",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_loose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_loose_2<0.5 && pzeta>-25)" '),
-    #("12",   "fail",    "fail_loose",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_loose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_loose_2<0.5 && pzeta>-25)" '),
-    #("12",   "pass",    "pass_vloose",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_vloose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_vloose_2<0.5 && pzeta>-25)" '),
-    #("12",   "fail",    "fail_vloose",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_vloose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_vloose_2<0.5 && pzeta>-25)" ')
   ]
   scheme_et = [
     ("12",   "pass",    "pass",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" '),
     ("12",   "fail",    "fail",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" '),
-    ("12",   "pass",    "pass_medium",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_medium_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_medium_2<0.5 && pzeta>-25)" '),    
-    ("12",   "fail",    "fail_medium",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_medium_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_medium_2<0.5 && pzeta>-25)" '),
-    ("12",   "pass",    "pass_loose",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_loose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_loose_2<0.5 && pzeta>-25)" '),
-    ("12",   "fail",    "fail_loose",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_loose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_loose_2<0.5 && pzeta>-25)" '),
-    ("12",   "pass",    "pass_vloose",  'm_vis[40,50,60,70,80,90,110,130,150]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_vloose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_vloose_2<0.5 && pzeta>-25)" '),    
-    ("12",   "fail",    "fail_vloose",  'm_vis[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]', '--set_alias="sel:mt_1<40" --set_alias="pass:(mva_olddm_vloose_2>0.5 && pzeta>-25)" --set_alias="fail:(mva_olddm_vloose_2<0.5 && pzeta>-25)" ')
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  'm_vis[40,50,60,70,80,90,110,130,150]', ' '),

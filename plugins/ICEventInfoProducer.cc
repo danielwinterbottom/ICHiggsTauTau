@@ -40,6 +40,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
+      do_npNLO_(config.getParameter<bool>("includenpNLO")),
       do_embedding_weights_(config.getParameter<bool>("includeEmbeddingWeights")),
       do_ht_(config.getParameter<bool>("includeHT")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
@@ -185,6 +186,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
 
   edm::Handle<LHEEventProduct> lhe_handle;
   edm::Handle<GenEventInfoProduct> gen_info_handle;
+  if(do_npNLO_){
+    event.getByLabel(lhe_collection_, lhe_handle);
+    int npNLO = lhe_handle->npNLO();
+    info_->set_npNLO(npNLO);
+  }
   if(do_embedding_weights_){
     event.getByLabel("generator",gen_info_handle);
     info_->set_weight("wt_embedding", gen_info_handle->weight());

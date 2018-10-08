@@ -34,13 +34,18 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, double, extra_l1_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_l1_iso_probe_pt)
   CLASS_MEMBER(TagAndProbe, double, extra_hlt_probe_pt)
+  CLASS_MEMBER(TagAndProbe, std::vector<double>, extra_hlt_probe_pt_vec)
   CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
-  
+  CLASS_MEMBER(TagAndProbe, bool, do_dzmass)
+  CLASS_MEMBER(TagAndProbe, bool, do_extra)
+ 
   TTree *outtree_;
   
   unsigned long long event_;
   double pt_1_;
   double pt_2_;
+  double online_pt_1_;
+  double online_pt_2_;
   double eta_1_;
   double eta_2_;
   double phi_1_;
@@ -73,6 +78,11 @@ class TagAndProbe : public ModuleBase {
   double pzeta_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
+  bool pass_dz_;
+  bool pass_mass8_;
+  bool pass_dimu_;
+  bool passed_extra_1_;
+  bool passed_extra_2_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -102,10 +112,12 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   extra_l1_tag_pt_ = 34.0;
   extra_l1_probe_pt_ = 0.;
   extra_hlt_probe_pt_ = 0.;
+  extra_hlt_probe_pt_vec_ = {};
   tag_add_trg_objects_="";
   tag_add_trg_filters_="";
   loose_iso_trgprobe_=false;
   extra_l1_iso_probe_pt_=0.;
+  do_extra_=false;
 }
 
 template <class T>
@@ -121,6 +133,8 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("wt"    , &wt_    );
     outtree_->Branch("pt_1"  , &pt_1_  );
     outtree_->Branch("pt_2"  , &pt_2_  );
+    outtree_->Branch("online_pt_1"  , &online_pt_1_  );
+    outtree_->Branch("online_pt_2"  , &online_pt_2_  );
     outtree_->Branch("iso_1"  , &iso_1_ );
     outtree_->Branch("iso_2"  , &iso_2_ );
     outtree_->Branch("id_probe_1"  , &id_probe_1_  );
@@ -138,6 +152,8 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("os"    , &os_    );
     outtree_->Branch("trg_probe_1" , &trg_probe_1_    );
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
+    outtree_->Branch("passed_extra_1" , &passed_extra_1_    );
+    outtree_->Branch("passed_extra_2" , &passed_extra_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
@@ -153,6 +169,11 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("mt_1"  , &mt_1_ );
       outtree_->Branch("n_bjets"  , &n_bjets_ );
       outtree_->Branch("pzeta"  , &pzeta_ );
+    }
+    if(do_dzmass_){
+      outtree_->Branch("pass_dz" , &pass_dz_    );
+      outtree_->Branch("pass_mass8", &pass_mass8_);
+      outtree_->Branch("pass_dimu", &pass_dimu_);
     }
   }    
   return 0;
@@ -228,12 +249,21 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     trg_tag_1_ = trg_tag_1_ && add_trg_tag_1;
     trg_tag_2_ = trg_tag_2_ && add_trg_tag_2;
   }
-  
+ 
+  online_pt_1_=-9999;
+  online_pt_2_=-9999; 
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
-    trg_probe_1_ = IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5) || trg_probe_1_;
-    trg_probe_2_ = IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5) || trg_probe_2_;
+    bool pass_extra_filter_1 = true;
+    bool pass_extra_filter_2 = true;
+    if(probe_objs[i] == "triggerObjectsEle32L1DoubleEG"){
+      std::vector<TriggerObject *> extra_objs_probe = event->GetPtrVec<TriggerObject>("triggerObjectsEle35");
+      pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+      pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
+    }
+    trg_probe_1_ = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1) || trg_probe_1_;
+    trg_probe_2_ = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2) || trg_probe_2_;
     
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
@@ -243,22 +273,30 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     //  trg_probe_1_ = true;
     //}
     ////
-    
-    if(extra_hlt_probe_pt_>0){
-      if(trg_probe_1_) { 
-        unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
-        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
-      }
-      if(trg_probe_2_){
-        unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
-        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
-      }
-      
+     
+    if(trg_probe_1_) { 
+      unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
+      online_pt_1_ = objs_probe[leg1_match_index_1]->pt();
+      if(extra_hlt_probe_pt_>0) trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_vec_.size()>i){
+        double pt_cut = extra_hlt_probe_pt_vec_[i];
+        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > pt_cut;
+      } 
     }
+    if(trg_probe_2_){
+      unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
+      online_pt_2_ = objs_probe[leg1_match_index_2]->pt();
+      if(extra_hlt_probe_pt_>0) trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_vec_.size()>i){
+        double pt_cut = extra_hlt_probe_pt_vec_[i];
+        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > pt_cut;
+      }
+    }
+      
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -271,7 +309,24 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
-    
+   
+      if(do_extra_){
+        //put any extra condition your require the events to pass here
+        std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+        bool passed_extra_1 = false;
+        bool passed_extra_2 = false;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          if(l1taus[ta]->vector().Pt()>24 && fabs(l1taus[ta]->eta())<2.1)  {
+            double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
+            double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
+            if(dR_1>0.5) passed_extra_1 = true;
+            if(dR_2>0.5) passed_extra_2 = true;
+          }
+         }
+         trg_tag_1_ = trg_tag_1_ && passed_extra_2;
+         trg_tag_2_ = trg_tag_2_ && passed_extra_1;
+      }
+ 
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1muons = event->GetPtrVec<ic::L1TObject>("L1Muons");
@@ -287,17 +342,100 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
       trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
+
+    if(do_dzmass_){
+      pass_dz_ = false;
+      pass_mass8_ = false;
+      pass_dimu_ =false;
+
+      std::vector<TriggerObject *> objs_dz = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZ");
+      if(strategy_ == strategy::cpsummer17){ 
+        std::vector<TriggerObject *> objs_dzmass = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZmass8");
+        bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first;
+        if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dzmass[IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
+        bool leg_2_pass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first; 
+
+        bool leg_1_pass_dz = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        bool leg_2_pass_dz = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+
+        bool leg_1_pass_mass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
+        bool leg_2_pass_mass = IsFilterMatchedWithIndex(ditau->At(1), objs_dzmass, "hltDiMuon178Mass8Filtered", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuon178Mass8Filtered", 0.5).first;
+
+        pass_dimu_ = leg_1_pass && leg_2_pass;
+        pass_dz_ = pass_dimu_ && leg_1_pass_dz && leg_2_pass_dz;
+        pass_mass8_ = pass_dz_&& leg_1_pass_mass && leg_2_pass_mass;
+      } else{
+        std::vector<TriggerObject *> objs_dz_alt = event->GetPtrVec<TriggerObject>("triggerObjectsMu17TkMu8DZ");
+        bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).first;
+        if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dz_alt[IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
+        bool leg_2_pass = IsFilterMatchedWithIndex(ditau->At(1), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4", 0.5).first;
+
+        bool leg_1_pass_dz = IsFilterMatchedWithIndex(ditau->At(0), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        bool leg_2_pass_dz = IsFilterMatchedWithIndex(ditau->At(1), objs_dz_alt, "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first || IsFilterMatchedWithIndex(ditau->At(1), objs_dz, "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2", 0.5).first;
+        pass_dimu_ = leg_1_pass && leg_2_pass;
+        pass_dz_ = pass_dimu_ && leg_1_pass_dz && leg_2_pass_dz;
+      }
+
+    }
+    
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
-      iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-      iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      if(strategy_ == strategy::cpsummer17) {
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
+      } else {
+        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      }
       id_tag_1_ = tag_id_(elec1);
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
+      
+      Electron *elec1_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton1"));
+      Electron *elec2_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton2"));
+      eta_1_ = elec1_1->sc_eta();
+      eta_2_ = elec2_1->sc_eta();
+
+      if(do_extra_){
+        //put any extra condition your require the events to pass here
+        std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+        bool passed_extra_1 = false;
+        bool passed_extra_2 = false;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          if(l1taus[ta]->vector().Pt()>26 && fabs(l1taus[ta]->eta())<2.1 && l1taus[ta]->isolation()>0)  {
+            double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
+            double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
+            double deta_1 = std::fabs(l1taus[ta]->eta()-lep1->eta());
+            double deta_2 = std::fabs(l1taus[ta]->eta()-lep2->eta());
+            if(deta_1>0.2&&dR_1>0.5) passed_extra_1 = true;
+            if(deta_2>0.2&&dR_2>0.5) passed_extra_2 = true;
+          }
+         }
+         trg_tag_1_ = trg_tag_1_ && passed_extra_2;
+         trg_tag_2_ = trg_tag_2_ && passed_extra_1;
+      }
+
+      if(strategy_ == strategy::cpsummer17){
+        // we have to do this here so that the ID is compted before the smear and scale shift
+        float  preCorr_1 = elec1_1->ecalTrkEnergyPreCorr();
+        float postCorr_1 = elec1_1->ecalTrkEnergyPostCorr();
+        float shift_1 = postCorr_1/preCorr_1;
+        elec1_1->set_pt(elec1_1->pt() * shift_1);
+        elec1_1->set_energy(elec1_1->energy() * shift_1);
+        float  preCorr_2 = elec2_1->ecalTrkEnergyPreCorr();
+        float postCorr_2 = elec2_1->ecalTrkEnergyPostCorr();
+        float shift_2 = postCorr_2/preCorr_2;
+        elec2_1->set_pt(elec2_1->pt() * shift_2);
+        elec2_1->set_energy(elec2_1->energy() * shift_2);
+
+        pt_1_ = elec1_1->pt();
+        pt_2_ = elec2_1->pt();
+        m_vis_ = (elec1_1->vector()+elec2_1->vector()).M();
+      }
       
     }
     if(extra_l1_probe_pt_>0 || extra_l1_iso_probe_pt_>0){
@@ -318,8 +456,11 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
       bool found_match_tag_1 = false;
       bool found_match_tag_2 = false;
+      int isocut=1;
+      if(strategy_ == strategy::cpsummer17) isocut=3;
+   
       for(unsigned eg=0; eg<l1electrons.size(); ++eg){
-        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()!=0){
+        if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()>=isocut){
           // must pass L1 eta, pT and iso cuts and be matched by DR to the tagging electron
           if(DR(l1electrons[eg],lep1)<0.5) found_match_tag_1 = true;
           if(DR(l1electrons[eg],lep2)<0.5) found_match_tag_2 = true;
@@ -332,7 +473,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(channel_ == channel::tpmt){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       T muon = dynamic_cast<T>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -341,19 +482,27 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_1_ = 0;
       id_probe_2_ = tau->GetTauID("decayModeFinding");
       pass_antilep_ = tau->GetTauID("againstMuonTight3") && tau->GetTauID("againstElectronVLooseMVA6");
-      iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
-      iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
-      iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
-      iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      if( strategy_ == strategy::cpsummer17) {
+        iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017");
+        iso_tight_ = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
+      } else {
+        iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+        iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+        iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+        iso_tight_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
+      }
       dm_ = tau->decay_mode();
       
-      lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
+      //lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
       bool found_match_probe = false;
       for(unsigned ta=0; ta<l1taus.size(); ++ta){
-        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0 && fabs(l1taus[ta]->eta())<2.17){
+        //if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && fabs(l1taus[ta]->eta())<2.17){
           // must pass L1 pT cut and be matched by DR to the tau
           if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
         }
@@ -382,7 +531,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   if(channel_ == channel::tpem){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);

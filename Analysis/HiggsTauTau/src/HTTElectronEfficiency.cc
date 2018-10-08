@@ -146,7 +146,7 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   et_ = TMath::Sqrt(pt_*pt_+(elecs.at(i)->M())*(elecs.at(i)->M()));
   allcharged03iso_ = elecs.at(i)->dr03_pfiso_charged_all();
   allcharged04iso_ = elecs.at(i)->dr04_pfiso_charged_all();
-  iso_ea03_ = PF03EAIsolationVal(elecs.at(i),eventInfo);
+  iso_ea03_ = PF03EAIsolationVal(elecs.at(i),eventInfo->lepton_rho());
   iso_db03_ = PF03IsolationVal(elecs.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(elecs.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(elecs.at(i),0.5,1);

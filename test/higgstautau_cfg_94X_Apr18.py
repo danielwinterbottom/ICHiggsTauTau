@@ -28,7 +28,8 @@ opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.si
     parser.VarParsing.varType.string, "Input tag for LHE weights")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
-
+opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 
 opts.parseArguments()
 infile      = opts.file
@@ -42,7 +43,7 @@ doLHEWeights = opts.LHEWeights
 if not isData:
   doHT     = opts.doHT
 else: doHT = 0
-
+includenpNLO = opts.includenpNLO
 
 if not release in ["94XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -1190,6 +1191,7 @@ else: lheTag = 'externalLHEProducer'
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
+  includenpNLO        = cms.bool(includenpNLO),
   includeEmbeddingWeights = cms.bool(bool(isEmbed)), 
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),

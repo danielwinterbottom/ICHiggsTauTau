@@ -2230,10 +2230,35 @@ process.icEle23Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
       )
 
+process.icEle23Ele12DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23Ele12DZ"),
+      hltPath = cms.string("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+
 process.icMu17Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsMu17Mu8"),
       hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icMu17Mu8DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17Mu8DZ"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(True)
+      )
+
+process.icMu17TkMu8DZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsMu17TkMu8DZ"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"),
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
@@ -2243,7 +2268,10 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoMu19erMediumCombinedIsoTau32ObjectProducer+
       process.icIsoMu19erMediumIsoTau32ObjectProducer+
       process.icEle23Ele12ObjectProducer+
+      process.icEle23Ele12DZObjectProducer+
       process.icMu17Mu8ObjectProducer+
+      process.icMu17Mu8DZObjectProducer+
+      process.icMu17TkMu8DZObjectProducer+
       process.icEle12Mu23ObjectProducer +
       process.icEle23Mu8ObjectProducer +
       process.icEle12Mu17ObjectProducer +
@@ -2355,12 +2383,12 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 )
 
-if isData:
-  process.icEventInfoProducer.filters=cms.PSet(
-    badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
-    badMuonFilter = cms.InputTag("BadPFMuonFilter")
-  )
-  process.icEventInfoProducer.filtersfromtrig = cms.vstring("!Flag_badMuons","!Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
+#if isData:
+#  process.icEventInfoProducer.filters=cms.PSet(
+#    badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
+#    badMuonFilter = cms.InputTag("BadPFMuonFilter")
+#  )
+#  process.icEventInfoProducer.filtersfromtrig = cms.vstring("!Flag_badMuons","!Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 
 #if doHT:
 #  process.icEventInfoProducer.includeHT = cms.bool(True)
@@ -2374,10 +2402,6 @@ process.icEventInfoSequence = cms.Sequence(
   process.icEventInfoProducer
 )
 
-if isData:
-  process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
-  process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
-  
 
 
 ################################################################

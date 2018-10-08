@@ -99,6 +99,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, embedding_scalefactor_file)
   CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
   CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
+  CLASS_MEMBER(HTTWeights, bool, do_quarkmass_higgspt)
+  CLASS_MEMBER(HTTWeights, bool, do_ps_weights)
   CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
   CLASS_MEMBER(HTTWeights, bool, do_z_weights)
   CLASS_MEMBER(HTTWeights, bool, is_embedded)
@@ -124,6 +126,7 @@ class HTTWeights : public ModuleBase {
   TF1 *tau_fake_weights_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
+  TH2D trig_extra_;
 
  public:
   HTTWeights(std::string const& name);

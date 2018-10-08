@@ -3,9 +3,9 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jun16_Data_80X'
+config.General.workArea='Apr02_Data_80X'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cfg_80X_Mar17.py'
+config.JobType.psetName = 'higgstautau_cfg_80X_Nov17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
@@ -17,7 +17,7 @@ config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/Jun16_Data_80X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Apr02_Data_80X/'
 config.section_('User')
 config.section_('Site')
 #config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
@@ -46,23 +46,23 @@ if __name__ == '__main__':
 
     tasks=list()
     
-    tasks.append(('TauB', '/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('TauC', '/Tau/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauD', '/Tau/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauE', '/Tau/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauF', '/Tau/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauG', '/Tau/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauHv2', '/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('TauHv3', '/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
-    
-    tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronHv2', '/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('SingleElectronHv3', '/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+   # tasks.append(('TauB', '/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
+   # tasks.append(('TauC', '/Tau/Run2016C-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('TauD', '/Tau/Run2016D-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('TauE', '/Tau/Run2016E-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('TauF', '/Tau/Run2016F-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('TauG', '/Tau/Run2016G-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('TauHv2', '/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+   # tasks.append(('TauHv3', '/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+   # 
+   # tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
+   # tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('SingleElectronHv2', '/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+   # tasks.append(('SingleElectronHv3', '/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
     
     tasks.append(('SingleMuonB', '/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
     tasks.append(('SingleMuonC', '/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD'       ))
@@ -73,14 +73,14 @@ if __name__ == '__main__':
     tasks.append(('SingleMuonHv2', '/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
     tasks.append(('SingleMuonHv3', '/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
     
-    tasks.append(('MuonEGB', '/MuonEG/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('MuonEGC', '/MuonEG/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGD', '/MuonEG/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGE', '/MuonEG/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGF', '/MuonEG/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGG', '/MuonEG/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGHv2', '/MuonEG/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('MuonEGHv3', '/MuonEG/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+   # tasks.append(('MuonEGB', '/MuonEG/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
+   # tasks.append(('MuonEGC', '/MuonEG/Run2016C-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('MuonEGD', '/MuonEG/Run2016D-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('MuonEGE', '/MuonEG/Run2016E-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('MuonEGF', '/MuonEG/Run2016F-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('MuonEGG', '/MuonEG/Run2016G-03Feb2017-v1/MINIAOD'       ))
+   # tasks.append(('MuonEGHv2', '/MuonEG/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+   # tasks.append(('MuonEGHv3', '/MuonEG/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
     
     #tasks.append(('SingleElectronHv2','/SingleElectron/Run2016H-PromptReco-v2/MINIAOD'))
     #tasks.append(('SingleElectronHv3','/SingleElectron/Run2016H-PromptReco-v3/MINIAOD'))

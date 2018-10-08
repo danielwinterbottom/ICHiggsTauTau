@@ -45,6 +45,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_pdf_wts)
   CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
+  CLASS_MEMBER(HTTCategories, bool, do_sm_ps_wts)
   CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
   CLASS_MEMBER(HTTCategories, bool, do_z_weights)
   CLASS_MEMBER(HTTCategories, bool, do_faketaus)
@@ -93,15 +94,41 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_up_;
   double wt_em_qcd_shapedown_;
   double wt_em_qcd_shapeup_;
+  double wt_em_qcd_extrapdown_;
+  double wt_em_qcd_extrapup_;
+  double wt_em_qcd_bothaiso_;
+  double wt_em_qcd_bjetsdown_;
+  double wt_em_qcd_bjetsup_;
+  double wt_embed_mc_yield_;
+  double wt_quarkmass_;
+  double wt_quarkmass_up_;
+  double wt_quarkmass_down_;
+  double wt_fullquarkmass_;
+  // temp gen stuff
+  int npNLO_;
+  unsigned partons_;
+  double parton_pt_;
+  double parton_pt_2_;
+  double parton_pt_3_;
+  double parton_mjj_;
+  //end of temp gen stuff
+  double wt_ps_up_;
+  double wt_ps_down_;
+  double wt_ue_up_;
+  double wt_ue_down_;
   double wt_nlo_pt_;
   double wt_tau_id_sf_;
   double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
+  double xtrg_et_sf_;
+  double single_e_sf_;
   double wt_trig_up_1_;
   double wt_trig_up_2_;
   double wt_trig_down_1_;
   double wt_trig_down_2_;
+  double wt_trig_up_;
+  double wt_trig_down_;
   float idisoweight_1_;
   float idisoweight_2_;
   double idisoweight_up_1_;
@@ -139,13 +166,13 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var pfpt_tt_;
+  branch_var pt_vis_;
   branch_var mt_1_;
   branch_var mt_lep_;
   branch_var mt_tot_;
   branch_var pfmt_tot_;
   branch_var pfmt_1_;
   branch_var puppimt_1_;
-  float id_e_mva_nt_loose_1_ = 0;
   branch_var mt_2_;
   branch_var pfmt_2_;
   double mt_ll_;
@@ -164,6 +191,7 @@ class HTTCategories : public ModuleBase {
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
+  double eCorr_1_;
   branch_var d0_1_;
   branch_var d0_2_;
   branch_var dz_1_;
@@ -180,6 +208,7 @@ class HTTCategories : public ModuleBase {
   int q_2_;
   int jet_flav_1_;
   int jet_flav_2_;
+  int jet_flav_3_;
   bool tag_trigger_match_1_;
   bool tag_trigger_match_2_;
   bool probe_trigger_match_1_;
@@ -207,6 +236,7 @@ class HTTCategories : public ModuleBase {
   bool antiele_2_;
   bool antimu_2_;
   bool antimu_loose_2_;
+  bool antiele_tight_2_;
   double z_1_;
   double z_2_;
   float m_1_;
@@ -371,6 +401,7 @@ class HTTCategories : public ModuleBase {
   branch_var jeta_2_;    // Defined if n_jets >= 2
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
+  float dijetpt_;
   float jptraw_1_; 
   float jrawf_1_;
   float jptraw_2_; 
@@ -470,7 +501,70 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
-
+  
+  double wt_ff_1_;
+  double wt_ff_2_;
+  double wt_ff_qcd_syst_up_1_            ;
+  double wt_ff_qcd_syst_down_1_          ;
+  double wt_ff_qcd_dm0_njet0_stat_up_1_  ;
+  double wt_ff_qcd_dm0_njet0_stat_down_1_;
+  double wt_ff_qcd_dm0_njet1_stat_up_1_  ;
+  double wt_ff_qcd_dm0_njet1_stat_down_1_;
+  double wt_ff_qcd_dm1_njet0_stat_up_1_  ;
+  double wt_ff_qcd_dm1_njet0_stat_down_1_;
+  double wt_ff_qcd_dm1_njet1_stat_up_1_  ;
+  double wt_ff_qcd_dm1_njet1_stat_down_1_;
+  double wt_ff_w_syst_up_1_              ;
+  double wt_ff_w_syst_down_1_            ;
+  double wt_ff_realtau_up_1_;
+  double wt_ff_realtau_down_1_;
+  double wt_ff_w_dm0_njet0_stat_up_1_    ;
+  double wt_ff_w_dm0_njet0_stat_down_1_  ;
+  double wt_ff_w_dm0_njet1_stat_up_1_    ;
+  double wt_ff_w_dm0_njet1_stat_down_1_  ;
+  double wt_ff_w_dm1_njet0_stat_up_1_    ;
+  double wt_ff_w_dm1_njet0_stat_down_1_  ;
+  double wt_ff_w_dm1_njet1_stat_up_1_    ;
+  double wt_ff_w_dm1_njet1_stat_down_1_  ;
+  double wt_ff_tt_syst_up_1_             ;
+  double wt_ff_tt_syst_down_1_           ;
+  double wt_ff_tt_dm0_njet0_stat_up_1_   ;
+  double wt_ff_tt_dm0_njet0_stat_down_1_ ;
+  double wt_ff_tt_dm0_njet1_stat_up_1_   ;
+  double wt_ff_tt_dm0_njet1_stat_down_1_ ;
+  double wt_ff_tt_dm1_njet0_stat_up_1_   ;
+  double wt_ff_tt_dm1_njet0_stat_down_1_ ;
+  double wt_ff_tt_dm1_njet1_stat_up_1_   ;
+  double wt_ff_tt_dm1_njet1_stat_down_1_ ;  
+  double wt_ff_qcd_syst_up_2_                ; 
+  double wt_ff_qcd_syst_down_2_              ;
+  double wt_ff_qcd_dm0_njet0_stat_up_2_      ;
+  double wt_ff_qcd_dm0_njet0_stat_down_2_    ;
+  double wt_ff_qcd_dm0_njet1_stat_up_2_      ;
+  double wt_ff_qcd_dm0_njet1_stat_down_2_    ;
+  double wt_ff_qcd_dm1_njet0_stat_up_2_      ;
+  double wt_ff_qcd_dm1_njet0_stat_down_2_    ;
+  double wt_ff_qcd_dm1_njet1_stat_up_2_      ;
+  double wt_ff_qcd_dm1_njet1_stat_down_2_    ;
+  double wt_ff_realtau_up_2_;
+  double wt_ff_realtau_down_2_; 
+  double wt_ff_w_syst_up_2_                  ;
+  double wt_ff_w_syst_down_2_                ;
+  double wt_ff_tt_syst_up_2_                 ;
+  double wt_ff_tt_syst_down_2_               ;
+  double wt_ff_w_frac_syst_up_1_   ;
+  double wt_ff_w_frac_syst_down_1_ ;
+  double wt_ff_tt_frac_syst_up_1_  ;
+  double wt_ff_tt_frac_syst_down_1_;
+  double wt_ff_dy_frac_syst_up_1_  ;
+  double wt_ff_dy_frac_syst_down_1_;
+  double wt_ff_w_frac_syst_up_2_   ;
+  double wt_ff_w_frac_syst_down_2_ ;
+  double wt_ff_tt_frac_syst_up_2_  ;
+  double wt_ff_tt_frac_syst_down_2_;
+  double wt_ff_dy_frac_syst_up_2_  ;
+  double wt_ff_dy_frac_syst_down_2_;
+  
   
   double ff_weight_inclusive_;
   double ff_weight_inclusive_2_;
@@ -886,12 +980,15 @@ class HTTCategories : public ModuleBase {
   bool trg_muonelectron_;
   bool trg_muonelectron_1_;
   bool trg_muonelectron_2_;
+  bool trg_muonelectron_3_;
   bool trg_doubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
   bool trg_mutaucross_;
+  bool trg_etaucross_;
   
-  double wt_tau_id_binned_;
+  bool flagMETFilter_;
+  
   double wt_tau_id_loose_;
   double wt_tau_id_medium_;
   double wt_tau_id_tight_;
@@ -1053,7 +1150,9 @@ class HTTCategories : public ModuleBase {
   double wt_scale_tt_0jet_;  
   double wt_scale_tt_boosted_;
   double wt_scale_tt_vbf_;
-  
+  double wt_qcdscale_up_;
+  double wt_qcdscale_down_; 
+
   double n_jets_1_;
   double n_jets_2_;
   double n_jets_3_;
@@ -1251,8 +1350,36 @@ class HTTCategories : public ModuleBase {
   double tau_pt_2_;
   unsigned tau_id_1_;
   unsigned tau_id_2_;
-  double wt_trg_corr_;
-  
+  int tau_dm_1_;
+  int tau_dm_2_;
+  unsigned tau_vloose_1_;
+  unsigned tau_vloose_2_;
+  double wt_dysoup_;
+
+  bool tau_id_olddm_vloose_1_ ; 
+  bool tau_id_newdm_vloose_1_ ;
+  bool tau_id_olddm_loose_1_  ;
+  bool tau_id_newdm_loose_1_  ;
+  bool tau_id_olddm_medium_1_ ;
+  bool tau_id_newdm_medium_1_ ;
+  bool tau_id_olddm_tight_1_  ;
+  bool tau_id_newdm_tight_1_  ;
+  bool tau_id_olddm_vtight_1_ ;
+  bool tau_id_newdm_vtight_1_ ;
+  bool tau_id_olddm_vvtight_1_;
+  bool tau_id_newdm_vvtight_1_;
+  bool tau_id_olddm_vloose_2_ ;
+  bool tau_id_newdm_vloose_2_ ;
+  bool tau_id_olddm_loose_2_  ;
+  bool tau_id_newdm_loose_2_  ;
+  bool tau_id_olddm_medium_2_ ;
+  bool tau_id_newdm_medium_2_ ;
+  bool tau_id_olddm_tight_2_  ;
+  bool tau_id_newdm_tight_2_  ;
+  bool tau_id_olddm_vtight_2_ ;
+  bool tau_id_newdm_vtight_2_ ;
+  bool tau_id_olddm_vvtight_2_;
+  bool tau_id_newdm_vvtight_2_;
 
  public:
   HTTCategories(std::string const& name);
