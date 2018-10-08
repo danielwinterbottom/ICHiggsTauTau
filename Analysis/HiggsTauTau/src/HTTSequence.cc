@@ -2295,14 +2295,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(33043732.0 + 44587448.0,54106926.0,6570442.0,19669693.0,11303425.0);
+           httStitching.SetWInputYields(32995474.0,54106926.0,6570442.0,19669693.0,11303425.0);
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48574276.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0);
+            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0);
           }
        
        BuildModule(httStitching);   
@@ -2769,11 +2769,11 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  /* if (strategy_type == strategy::cpsummer17) {
+  if (strategy_type == strategy::cpsummer17) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
-  } */
+  }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
@@ -3051,11 +3051,11 @@ void HTTSequence::BuildEMPairs() {
         return ElecID(e);
       }));
 
-  /* if (strategy_type == strategy::cpsummer17) {
+  if (strategy_type == strategy::cpsummer17) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
-  } */
+  }
 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -3265,11 +3265,11 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  /* if (strategy_type == strategy::cpsummer17) {
+  if (strategy_type == strategy::cpsummer17) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
-  } */
+  }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
@@ -3321,11 +3321,11 @@ void HTTSequence::BuildTPZEEPairs() {
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
-  /* if (strategy_type == strategy::cpsummer17) {
+  if (strategy_type == strategy::cpsummer17) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
-  } */
+  }
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)
