@@ -132,7 +132,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Sep24_MC_94X'
+FILELIST='filelists/Oct03_MC_94X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -201,12 +201,12 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Sep24_Data_94X"
+  DATAFILELIST="./filelists/Oct03_Data_94X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Sep24_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct03_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -221,7 +221,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Sep24_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct03_Data_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
@@ -253,12 +253,12 @@ if options.proc_embed or options.proc_all:
       if 'zee' in chn:
         embed_samples+=['EmbeddingElEl'+era]
 
-  EMBEDFILELIST="./filelists/Sep24_MC_94X"
+  EMBEDFILELIST="./filelists/Oct03_MC_94X"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Sep24_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct03_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 10
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
@@ -306,13 +306,13 @@ if options.proc_bkg or options.proc_all:
      'EWKWPlus2Jets',
      'EWKWMinus2Jets',
      'WJetsToLNu-LO',
-     'WJetsToLNu-LO-ext',
+     # 'WJetsToLNu-LO-ext',
      'W1JetsToLNu-LO',
      'W2JetsToLNu-LO',
      'W3JetsToLNu-LO',
      'W4JetsToLNu-LO',
-     'WGToLNuG',
-     'WWTo1L1Nu2Q',
+     # 'WGToLNuG',
+     # 'WWTo1L1Nu2Q',
      'WWTo2L2Nu',
      'WWToLNuQQ-ext',
      'WWToLNuQQ',
@@ -322,7 +322,7 @@ if options.proc_bkg or options.proc_all:
      'WZTo3LNu',
      'ZZTo2L2Nu',
      'ZZTo2L2Q',
-     'ZZTo2Q2Nu',
+     # 'ZZTo2Q2Nu',
      'ZZTo4L-ext',
      'ZZTo4L'
      ]
