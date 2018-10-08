@@ -3323,11 +3323,6 @@ void HTTSequence::BuildTPZEEPairs() {
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
-  if (strategy_type == strategy::cpsummer17) {
-    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-    );
-  }
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)
