@@ -2587,7 +2587,7 @@ def CompareSysts(hists=[],
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.30,0.2,3,0.03)
+    legend = PositionedLegend(0.3,0.2,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
@@ -2788,7 +2788,7 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
 
-    hs.Draw("nostack le same")
+    hs.Draw("nostack e same")
     
     uncert_hs = R.THStack()
     if uncert_hist is not None:
@@ -2816,7 +2816,7 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.15,0.2,3,0.01)
+    legend = PositionedLegend(0.25,0.2,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
@@ -2834,8 +2834,8 @@ def CompareHists(hists=[],
     legend.Draw("same")
     
     #CMS label and title
-    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
+    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
@@ -2889,7 +2889,7 @@ def CompareHists(hists=[],
              h = uncert_hist.Clone()
              h.Divide(div_hist)
              h.Draw("e2same") 
-        ratio_hs.Draw("nostack le same")  
+        ratio_hs.Draw("nostack e same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()

@@ -83,6 +83,10 @@ class TagAndProbe : public ModuleBase {
   bool pass_dimu_;
   bool passed_extra_1_;
   bool passed_extra_2_;
+ 
+  bool trg_probe_2_1_;
+  bool trg_probe_2_2_;
+  bool trg_probe_2_3_;
   
   std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -152,6 +156,9 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("os"    , &os_    );
     outtree_->Branch("trg_probe_1" , &trg_probe_1_    );
     outtree_->Branch("trg_probe_2" , &trg_probe_2_    );
+    outtree_->Branch("trg_probe_2_1" , &trg_probe_2_1_    );
+    outtree_->Branch("trg_probe_2_2" , &trg_probe_2_2_    );
+    outtree_->Branch("trg_probe_2_3" , &trg_probe_2_3_    );
     outtree_->Branch("passed_extra_1" , &passed_extra_1_    );
     outtree_->Branch("passed_extra_2" , &passed_extra_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
@@ -221,7 +228,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(tag_objs.size() != tag_filts.size()){std::cout << "Number of tag trigger objects does not match the number of tag filters, throwing excpetion!" << std::endl; throw;}
   if(probe_objs.size() != probe_filts.size()){std::cout << "Number of probe trigger objects does not match the number of probe filters, throwing excpetion!" << std::endl; throw;}
-  
+ 
+ 
   std::vector<TriggerObject *> objs_tag;
   for(unsigned i=0; i<tag_objs.size(); ++i){
     objs_tag = event->GetPtrVec<TriggerObject>(tag_objs[i]);
@@ -252,6 +260,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
  
   online_pt_1_=-9999;
   online_pt_2_=-9999; 
+  trg_probe_2_1_ = false;
+  trg_probe_2_2_ = false;
+  trg_probe_2_3_ = false;
   std::vector<TriggerObject *> objs_probe;
   for(unsigned i=0; i<probe_objs.size(); ++i){
     objs_probe = event->GetPtrVec<TriggerObject>(probe_objs[i]);
@@ -262,9 +273,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       pass_extra_filter_1 = IsFilterMatched(ditau->At(0), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
       pass_extra_filter_2 = IsFilterMatched(ditau->At(1), extra_objs_probe, "hltEGL1SingleEGOrFilter", 0.5);
     }
-    trg_probe_1_ = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1) || trg_probe_1_;
-    trg_probe_2_ = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2) || trg_probe_2_;
-    
+    bool trg_probe_temp_1 = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1);
+    bool trg_probe_temp_2 = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2);
+  
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
     //for (unsigned j = 0; j < objs_probe.size(); ++j) {
@@ -274,25 +285,32 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     //}
     ////
      
-    if(trg_probe_1_) { 
+    if(trg_probe_temp_1) { 
       unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
       online_pt_1_ = objs_probe[leg1_match_index_1]->pt();
-      if(extra_hlt_probe_pt_>0) trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_>0) trg_probe_temp_1 = trg_probe_temp_1 && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
-        trg_probe_1_ = trg_probe_1_ && objs_probe[leg1_match_index_1]->pt() > pt_cut;
+        trg_probe_temp_1 = trg_probe_temp_1 && objs_probe[leg1_match_index_1]->pt() > pt_cut;
       } 
     }
-    if(trg_probe_2_){
+    if(trg_probe_temp_2){
       unsigned leg1_match_index_2 = IsFilterMatchedWithIndex(ditau->At(1), objs_probe, probe_filts[i], 0.5).second;
       online_pt_2_ = objs_probe[leg1_match_index_2]->pt();
-      if(extra_hlt_probe_pt_>0) trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
+      if(extra_hlt_probe_pt_>0) trg_probe_temp_2 = trg_probe_temp_2 && objs_probe[leg1_match_index_2]->pt() > extra_hlt_probe_pt_;
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
-        trg_probe_2_ = trg_probe_2_ && objs_probe[leg1_match_index_2]->pt() > pt_cut;
+        trg_probe_temp_2 = trg_probe_temp_2 && objs_probe[leg1_match_index_2]->pt() > pt_cut;
       }
     }
-      
+    trg_probe_1_ = trg_probe_temp_1  || trg_probe_1_;
+    trg_probe_2_ = trg_probe_temp_2  || trg_probe_2_;    
+ 
+
+    if(i==0 && trg_probe_temp_2) trg_probe_2_1_ = true;
+    if(i==1 && trg_probe_temp_2) trg_probe_2_2_ = true;
+    if(i==2 && trg_probe_temp_2) trg_probe_2_3_ = true; 
+
   }
   
   if(channel_ == channel::tpzmm){
@@ -495,7 +513,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       }
       dm_ = tau->decay_mode();
       
-      //lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
+      lepton_veto_ = event->Get<bool>("dimuon_veto") || event->Get<bool>("extra_elec_veto") || event->Get<bool>("extra_muon_veto");
     }
     if(extra_l1_probe_pt_>0){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -508,6 +526,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         }
       }
       trg_probe_2_ = trg_probe_2_ && found_match_probe;
+      trg_probe_2_1_ = trg_probe_2_1_ && found_match_probe;
+      trg_probe_2_2_ = trg_probe_2_2_ && found_match_probe;
+      trg_probe_2_3_ = trg_probe_2_3_ && found_match_probe;
+  
     }
     Met const* mets = NULL;
     mets = event->GetPtr<Met>("pfMET");
