@@ -146,21 +146,21 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-        # 'GluGluHToTauTau_M-125-ext',
-        # 'GluGluHToTauTau_M-125',
-        # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        # 'GluGluToHToTauTau_M125_amcatnloFXFX',
-        # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-        # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-        # 'VBFHToTauTau_M-125',
-        'WminusHToTauTau_M-125',
-        # 'WplusHToTauTau_M-125',
-        # 'ZHToTauTau_M-125',
-        # 'ttHToTauTau_M-125'
-        # # 'GluGluHToWWTo2L2Nu_M-125',
-        # # 'VBFHToWWTo2L2Nu_M-125'
+        #'GluGluHToTauTau_M-125-ext',
+        #'GluGluHToTauTau_M-125',
+        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToHToTauTau_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+        #'VBFHToTauTau_M-125',
+        #'WminusHToTauTau_M-125',
+        #'WplusHToTauTau_M-125',
+        #'ZHToTauTau_M-125',
+        ## 'ttHToTauTau_M-125'
+        ## 'GluGluHToWWTo2L2Nu_M-125',
+        ## 'VBFHToWWTo2L2Nu_M-125'
         ]
 
   
@@ -261,7 +261,7 @@ if options.proc_embed or options.proc_all:
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct03_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 10
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
 
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')  
       if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
@@ -335,7 +335,7 @@ if options.proc_bkg or options.proc_all:
       JOB='%s_2017' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
       job_num=0
-      for FLATJSONPATCH in flatjsons: 
+      for FLATJSONPATCH in flatjsons:
         nperjob = 20
         if 'scale' in FLATJSONPATCH:
           nperjob = 15
@@ -345,7 +345,6 @@ if options.proc_bkg or options.proc_all:
             nperjob = 15
         if 'QCD' in sa:
             nperjob = 15
-        FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -373,10 +372,9 @@ if options.mg_signal or options.proc_sm:
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 5
+        nperjob = 1
         if 'MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

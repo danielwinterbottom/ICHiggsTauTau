@@ -1123,7 +1123,7 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017F_V6_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V23_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -2613,7 +2613,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
 
     if(strategy_type==strategy::cpsummer17){
         std::function<bool(Muon const*)> muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
-        std::vector<double> extra_cuts = {0.,40.,40.};
+        std::vector<double> extra_cuts = {35.,40.,40.};
         BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2623,17 +2623,19 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_id(muon_probe_id)
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
-          //.set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
-          //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
+          .set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
+          .set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
           // for double tau trigger
           //.set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
-          //.set_extra_l1_probe_pt(32.)
-          //.set_extra_hlt_probe_pt_vec(extra_cuts)
+          .set_extra_l1_probe_pt(32.)
+          //.set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35")
+          //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg")
+          .set_extra_hlt_probe_pt_vec(extra_cuts)
 
           // for mu+tau trigger (embedding)
-          .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
-          .set_probe_trg_filters("hltTauJet5")
-          .set_extra_l1_probe_pt(24.) 
+          //.set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          //.set_probe_trg_filters("hltTauJet5")
+          //.set_extra_l1_probe_pt(24.) 
         );
     } else {
  
@@ -3321,11 +3323,6 @@ void HTTSequence::BuildTPZEEPairs() {
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
    }
 
-  if (strategy_type == strategy::cpsummer17) {
-    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-    );
-  }
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)

@@ -1796,8 +1796,8 @@ namespace ic {
           }
 
           // have xtrg OR as default but save others to check 
-          event->Add("single_e_sf", single_e_sf/xtrg_OR_sf);
-          event->Add("xtrg_et_sf", xtrg_et_sf/xtrg_OR_sf);
+          event->Add("single_l_sf", single_e_sf/xtrg_OR_sf);
+          event->Add("xtrg_sf", xtrg_et_sf/xtrg_OR_sf);
 
           ele_trg = xtrg_OR_sf;
           ele_trg_mc = 1.0;
@@ -2114,8 +2114,8 @@ namespace ic {
 
 
              // have xtrg OR as default but save others to check 
-             event->Add("single_m_sf", single_m_sf/xtrg_OR_sf);
-             event->Add("xtrg_mt_sf", xtrg_mt_sf/xtrg_OR_sf);
+             event->Add("single_l_sf", single_m_sf/xtrg_OR_sf);
+             event->Add("xtrg_sf", xtrg_mt_sf/xtrg_OR_sf);
 
              mu_trg = xtrg_OR_sf;
              mu_trg_mc = 1.0;
