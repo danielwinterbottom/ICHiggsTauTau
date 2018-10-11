@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct03_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","et","tt","em"],
+    "channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,21 +58,21 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" :"/vols/cms/dw515/Offline/output/SM/Oct08_2017/",
+    "output_folder" :"/vols/cms/dw515/Offline/output/SM/Oct09_2017/",
     //"output_folder" :"/vols/cms/dw515/Offline/output/SM/TauTrigger2017/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct08_2017_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct09_2017_SVFit/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -138,7 +138,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "/20180828_NanoAOD_v1_stitched/et/inclusive/fakeFactors_20180814_tight.root",
+        "ff_file" : "SM2017/tight/vloose/et/fakeFactors_tight.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/ff_fracs_pt_2017.root"
           }
     },
@@ -155,7 +155,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "/20180814_NanoAOD_v1_test/tt/inclusive/fakeFactors_tt_inclusive.root",
+        "ff_file" : "SM2017/tight/vloose/tt/fakeFactors.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/ff_fracs_pt_2017.root"
       }
     },
@@ -186,7 +186,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "/20180828_NanoAOD_v1_stitched/mt/inclusive/fakeFactors_20180814_tight.root",
+        "ff_file" : "SM2017/tight/vloose/mt/fakeFactors.root",
         "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/ff_fracs_pt_2017.root"
       }
     },
