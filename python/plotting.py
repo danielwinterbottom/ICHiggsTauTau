@@ -82,10 +82,8 @@ def SetAxisTitles(plot, channel):
   titles['jeta_2'] = ['#eta_{j_{2}}','Events / '+bin_width, 'dN/d#eta_{j_{2}}']
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
-  titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['IC_highMjj_Oct01_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['IC_highMjj_Oct01_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['IC_highMjj_Oct04_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
 
 
     
@@ -166,8 +164,7 @@ def SetAxisTitles2D(plot, channel):
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_highMjj_Oct01_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_highMjj_Oct01_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']

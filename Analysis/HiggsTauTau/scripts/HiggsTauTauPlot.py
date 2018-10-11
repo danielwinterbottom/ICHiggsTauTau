@@ -923,8 +923,9 @@ if options.era in ['cpsummer17','tauid2017']:
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
+    # wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
-    wgam_samples = []#['WGToLNuG']
+    wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []
     qqhww_samples = []
