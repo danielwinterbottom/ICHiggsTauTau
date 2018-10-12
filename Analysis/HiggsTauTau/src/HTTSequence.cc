@@ -1105,6 +1105,17 @@ if(strategy_type == strategy::paper2013) {
 }
 BuildModule(jetIDFilter);
 
+// 2017 jet mitigation for noisy EE
+if (era_type == era::data_2017) {
+  BuildModule(SimpleFilter<PFJet>("JetFilter")
+    .set_input_label(jets_label)
+    .set_predicate([=](PFJet const* jet) {
+      return  jet->pt()  > 50    ||
+        fabs(jet->eta()) > 3.139 ||
+        fabs(jet->eta()) < 2.65 ;
+    })
+  );
+}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -2295,7 +2306,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(32995474.0,54106926.0,6570442.0,19669693.0,11303425.0);
+           httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0);
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
