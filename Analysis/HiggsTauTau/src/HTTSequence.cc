@@ -638,7 +638,7 @@ void HTTSequence::BuildSequence(){
    } 
 
    bool do_ggH_stitch = false;
-   double n_inc, n_2, frac;
+   double n_inc=0., n_2=0., frac=0.;
     if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
       if(era_type == era::data_2016) {
         n_inc = 3089015.;
@@ -2312,7 +2312,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
            .set_era(era_type)
-           .set_fs(fs.get());
+           .set_fs(fs.get())
+           .set_do_ggH_soup(do_ggH_stitch);
+            httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
             if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
               output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
            httStitching.set_do_w_soup(true);
