@@ -1117,7 +1117,6 @@ if(strategy_type == strategy::paper2013) {
 }
 BuildModule(jetIDFilter);
 
-// 2017 jet mitigation for noisy EE
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
     .set_input_label(jets_label)
@@ -2312,7 +2311,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
            .set_era(era_type)
-           .set_fs(fs.get());
+           .set_fs(fs.get())
+           .set_do_ggH_soup(do_ggH_stitch);
+           httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
             if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
               output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
            httStitching.set_do_w_soup(true);
