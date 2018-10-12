@@ -1117,17 +1117,16 @@ if(strategy_type == strategy::paper2013) {
 }
 BuildModule(jetIDFilter);
 
-// 2017 jet mitigation for noisy EE
-//if (era_type == era::data_2017) {
-//  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
-//    .set_input_label(jets_label)
-//    .set_predicate([=](PFJet const* jet) {
-//      return  jet->pt()  > 50    ||
-//        fabs(jet->eta()) > 3.139 ||
-//        fabs(jet->eta()) < 2.65 ;
-//    })
-//  );
-//}
+if (era_type == era::data_2017) {
+  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
+    .set_input_label(jets_label)
+    .set_predicate([=](PFJet const* jet) {
+      return  jet->pt()  > 50    ||
+        fabs(jet->eta()) > 3.139 ||
+        fabs(jet->eta()) < 2.65 ;
+    })
+  );
+}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
