@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct03_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct10_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","et","tt","em"],
+    "channels":     ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -17,7 +17,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {  
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "era"           : "data_2017",
     "mc"            : "mc2017",
     "strategy"      : "cpsummer17",
@@ -30,7 +30,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : false,
+    "get_effective" : true,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "filter_trg" : false,
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Oct08",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Oct12_effective",
     // "output_folder" : "./output",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
@@ -73,7 +73,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -136,7 +136,7 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true, 
+        "do_ff_weights" : false, 
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "/20180828_NanoAOD_v1_stitched/et/inclusive/fakeFactors_20180814_tight.root",
@@ -153,7 +153,7 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
+        "do_ff_weights" : false,
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "/20180814_NanoAOD_v1_test/tt/inclusive/fakeFactors_tt_inclusive.root",
@@ -184,7 +184,7 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
+        "do_ff_weights" : false,
         "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "/20180828_NanoAOD_v1_stitched/mt/inclusive/fakeFactors_20180814_tight.root",
@@ -366,7 +366,7 @@
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
         "jes_mode" : 1,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 3
       }
     },
@@ -374,7 +374,7 @@
       "baseline": {
         "addit_output_folder" : "JES_UP",
         "jes_mode" : 2,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 4
       }
     },
