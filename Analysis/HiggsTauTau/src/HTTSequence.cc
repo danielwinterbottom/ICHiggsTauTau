@@ -1117,7 +1117,6 @@ if(strategy_type == strategy::paper2013) {
 }
 BuildModule(jetIDFilter);
 
-// 2017 jet mitigation for noisy EE
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
     .set_input_label(jets_label)
