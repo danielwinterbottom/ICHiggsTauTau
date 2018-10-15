@@ -49,8 +49,8 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
   CLASS_MEMBER(HTTCategories, bool, do_z_weights)
   CLASS_MEMBER(HTTCategories, bool, do_faketaus)
+  CLASS_MEMBER(HTTCategories, bool, official_ggH)
 
- 
   TTree *outtree_;
   TTree *synctree_;
   TFile *lOFile;
@@ -121,8 +121,10 @@ class HTTCategories : public ModuleBase {
   double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
-  double xtrg_et_sf_;
-  double single_e_sf_;
+  double xtrg_sf_;
+  double single_l_sf_;
+  double xtrg_notrig_;
+  double OR_notrig_;
   double wt_trig_up_1_;
   double wt_trig_up_2_;
   double wt_trig_down_1_;
