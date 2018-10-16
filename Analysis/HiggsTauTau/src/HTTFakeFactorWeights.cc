@@ -46,9 +46,13 @@ namespace ic {
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_;
       }
+      if(strategy_ == strategy::cpsummer17){
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2017/"+ff_file_;
+      }
+
       ff_file_name = baseDir + ff_file_name;
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");

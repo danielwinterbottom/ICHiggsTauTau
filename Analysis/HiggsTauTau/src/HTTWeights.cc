@@ -256,9 +256,9 @@ namespace ic {
               fns_["e_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
-                w_->function("e_trg24_fromDoubleE_data")->functor(w_->argSet("e_pt,e_eta")));
+                w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
              fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
-        	 w_->function("e_trg24_fromDoubleE_mc")->functor(w_->argSet("e_pt,e_eta")));
+        	 w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -654,7 +654,7 @@ namespace ic {
            fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_trg24_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_trg24_fromDoubleE_embed")->functor(w_->argSet("e_pt,e_eta")));
+              w_->function("e_trg24_embed")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_idiso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
