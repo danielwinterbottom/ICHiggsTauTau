@@ -103,6 +103,8 @@ class SVFitTest : public ModuleBase {
   unsigned file_counter_;
   unsigned event_counter_;
   std::string outputadd_;
+  std::string outputadd_noyearorchan_;
+  std::string chan_;
 
 
 
