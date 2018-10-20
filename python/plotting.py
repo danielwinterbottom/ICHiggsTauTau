@@ -2162,10 +2162,11 @@ def HTTPlot(nodename,
         plots = t['plot_list']
         h = R.TH1F()
         for j,k in enumerate(plots):
+            if not (isinstance(infile.Get(nodename+'/'+k),R.TH1D) or isinstance(infile.Get(nodename+'/'+k),R.TH1F)): continue
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
-            else:
+            else: 
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)

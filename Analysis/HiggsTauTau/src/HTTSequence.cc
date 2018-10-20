@@ -2276,7 +2276,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_jets_label(jets_label)
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
-     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v1.root");
      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
