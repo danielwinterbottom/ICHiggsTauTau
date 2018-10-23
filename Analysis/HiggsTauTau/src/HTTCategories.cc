@@ -1818,7 +1818,7 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0;
+    /* wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0; */
 
     // adding some gen stuff tempoarily can be deleted later
     std::vector<double> parton_pt_vec;
@@ -2978,6 +2978,11 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
+
+    // printing event for MET
+    if (event_ == 139707196 && run_ == 297425 && lumi_ == 87) {
+        std::cout << "MET (pt, phi, eta) " << mets->vector().pt() << mets->vector().phi() << mets->vector().eta() << std::endl;
+    }
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -3960,6 +3965,12 @@ namespace ic {
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
+
+      /* if (!(lowpt_jets[0]->pt()>50 || fabs(lowpt_jets[0]->eta())>3.139 || fabs(lowpt_jets[0]->eta())<2.65) || 
+              !(lowpt_jets[1]->pt()>50 || fabs(lowpt_jets[1]->eta())>3.139 || fabs(lowpt_jets[1]->eta())<2.65)) {
+        std::cout << "(lowpt_jets[0]->pt(), lowpt_jets[0]->eta()): " << lowpt_jets[0]->pt() << ","<< fabs(lowpt_jets[0]->eta()) << std::endl;
+        std::cout << "(lowpt_jets[1]->pt(), lowpt_jets[1]->eta()): " << lowpt_jets[1]->pt() << ","<< fabs(lowpt_jets[1]->eta()) << std::endl;
+      } */
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
