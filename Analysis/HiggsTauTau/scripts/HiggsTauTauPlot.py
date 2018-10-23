@@ -346,7 +346,7 @@ if options.analysis == 'sm':
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
-          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'# && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
@@ -914,8 +914,9 @@ if options.era in ["smsummer16",'cpsummer16','tauid2016']:
     
     
 if options.era in ['cpsummer17','tauid2017']:
+    # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
-    #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
+    # ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
     wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
@@ -1028,6 +1029,12 @@ if options.syst_jfake_e != '':
 if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', ['EmbedZTT'], False)
+# if options.syst_scale_j_corr != '':
+#     systematics['syst_scale_j_corr_up'] = ('JESCORR_UP' , '_'+options.syst_scale_j_corr+'Up', 'wt', ['EmbedZTT'], False)
+#     systematics['syst_scale_j_corr_down'] = ('JESCORR_DOWN' , '_'+options.syst_scale_j_corr+'Down', 'wt', ['EmbedZTT'], False)
+# if options.syst_scale_j_uncorr != '':
+#     systematics['syst_scale_j_uncorr_up'] = ('JESUNCORR_UP' , '_'+options.syst_scale_j_uncorr+'Up', 'wt', ['EmbedZTT'], False)
+#     systematics['syst_scale_j_uncorr_down'] = ('JESUNCORR_DOWN' , '_'+options.syst_scale_j_uncorr+'Down', 'wt', ['EmbedZTT'], False)
 if options.syst_scale_j_rbal != '':
     systematics['syst_scale_j_rbal_up'] = ('JESRBAL_UP' , '_'+options.syst_scale_j_rbal+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_rbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_rbal+'Down', 'wt', ['EmbedZTT'], False)

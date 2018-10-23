@@ -77,7 +77,8 @@ namespace ic {
      disable_recoil_corrs = false;
     }
     
-    disable_recoil_corrs = disable_recoil_corrs && !do_recoil_;
+    disable_recoil_corrs = disable_recoil_corrs || !do_recoil_;
+    std::cout<<"disable recoil ? "<< disable_recoil_corrs<<std::endl;
     if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
       std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
