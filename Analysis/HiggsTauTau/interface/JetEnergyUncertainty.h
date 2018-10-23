@@ -23,6 +23,8 @@ class JetEnergyUncertainty : public ModuleBase {
   CLASS_MEMBER(JetEnergyUncertainty, std::string, uncert_set)
   CLASS_MEMBER(JetEnergyUncertainty, bool, sum_uncerts)
   CLASS_MEMBER(JetEnergyUncertainty, std::vector<std::string>, uncert_sets)
+  CLASS_MEMBER(JetEnergyUncertainty, std::vector<double>, correlations)
+  CLASS_MEMBER(JetEnergyUncertainty, unsigned, jes_corr_mode)
   JetCorrectionUncertainty *uncert_;
   JetCorrectorParameters *params_;
   std::vector<JetCorrectionUncertainty*> uncerts_;
@@ -41,6 +43,7 @@ template <class T>
 JetEnergyUncertainty<T>::JetEnergyUncertainty(std::string const& name) : ModuleBase(name) {
   input_label_ = "pfJetsPFlow";
   sum_uncerts_ = false;
+  jes_corr_mode_ = 0;
 }
 
 template <class T>
@@ -63,6 +66,7 @@ int JetEnergyUncertainty<T>::PreAnalysis() {
   
   if(sum_uncerts_){
     for (unsigned j=0; j<uncert_sets_.size(); ++j){
+      std::cout << "uncert sets[j]: " << uncert_sets_[j] << std::endl;
       JetCorrectorParameters params = JetCorrectorParameters(uncert_file_, uncert_sets_[j]); 
       uncerts_.push_back(new JetCorrectionUncertainty(params));
     }
@@ -98,15 +102,27 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     for (unsigned i = 0; i < vec.size(); ++i) {
       before+=vec[i]->vector();  
       double shift=0;
+      double factor = 1.; //for correlations
+      std::cout << "factor: " << factor << std::endl;
       for (unsigned j=0; j<uncerts_.size(); ++j){
         uncerts_[j]->setJetPt(vec[i]->pt());
         uncerts_[j]->setJetEta(vec[i]->eta());
+        if (jes_corr_mode_ == 1) {
+          factor = correlations_[j];
+        } else if (jes_corr_mode_ == 2){
+            factor = 1. - correlations_[j];
+        }
+        std::cout << "factor: " << factor << std::endl;
+        std::cout << "correlations[j]: " << correlations_[j] << std::endl;
+        std::cout << "Correlation mode: " << jes_corr_mode_ << std::endl;
+
         if (jes_shift_mode_ == 1) {
-          shift = sqrt(shift*shift + pow(uncerts_[j]->getUncertainty(false),2)); //down
+          shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(false),2)); //down
         }
         if (jes_shift_mode_ == 2) {
-          shift = sqrt(shift*shift + pow(uncerts_[j]->getUncertainty(true),2)); //up
+          shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(true),2)); //up
         }
+        std::cout << "shift: " << shift << std::endl;
       }
       if (jes_shift_mode_ == 1) {
         vec[i]->set_vector(vec[i]->vector() * (1.0-shift));

@@ -108,9 +108,11 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
+  std::cout<<"do recoil: " << do_recoil<<std::endl;
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  jes_corr_mode=json["baseline"]["jes_corr_mode"].asUInt();
   metscale_mode=json["baseline"]["metscale_mode"].asUInt();
   metres_mode=json["baseline"]["metres_mode"].asUInt();
   metcl_mode=json["baseline"]["metcl_mode"].asUInt();
@@ -638,7 +640,7 @@ void HTTSequence::BuildSequence(){
    } 
 
    bool do_ggH_stitch = false;
-   double n_inc, n_2, frac;
+   double n_inc=0.0, n_2=0.0, frac=0.0;
     if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
       if(era_type == era::data_2016) {
         n_inc = 3089015.;
@@ -1145,7 +1147,7 @@ if (era_type == era::data_2017) {
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V23_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1240,7 +1242,6 @@ if (era_type == era::data_2017) {
    //if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"Total"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
-
    
    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
     .set_input_label(jets_label)
@@ -1250,6 +1251,35 @@ if (era_type == era::data_2017) {
     .set_uncert_sets(sources)
     .set_sum_uncerts(true)
     );
+ } else if(js["baseline"]["jes_corr_mode"].asBool()){
+   
+     std::vector<std::string> sources = {
+       "AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","FlavorQCD","Fragmentation",
+       "PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF",
+       "PileUpPtRef","RelativeFSR","RelativeJEREC1","RelativeJEREC2","RelativeJERHF",
+       "RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal",
+       "RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+       "SinglePionECAL","SinglePionHCAL","TimePtEta"
+     };
+     std::vector<double> correlations = {
+       1.,1.,0.,1.,1.,
+       0.5,0.5,0.5,0.5,0.5,
+       0.5,0.5,0.,0.,0.5,
+       0.5,0.,0.,0.5,0.5,
+       0.,0.,0.,0.,
+       1.,1.,0.
+     };
+   
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+       .set_input_label(jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(jes_input_set)
+       .set_uncert_sets(sources)
+       .set_sum_uncerts(true)
+       .set_correlations(correlations)
+       .set_jes_corr_mode(jes_corr_mode)
+     );
  } else{  
     
    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -2319,14 +2349,16 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0);
+           httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0); // correspond to Params v5
+           // httStitching.SetWInputYields(33043732.0+43992132.0,52221486.0,6570442.0,18678842.0,11203749.0); // correspond to Params test with MC GT v15
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0);
+            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0); // correspond to Params v5
+            // httStitching.SetDYInputYields(48332092.0+48783884.0,34733556.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 3875689.0); // correspond to Params test with MC GT v15
           }
        
        BuildModule(httStitching);   

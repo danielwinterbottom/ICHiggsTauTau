@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct10_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","mt","zmm"],
+    "channels":     ["em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -51,15 +51,15 @@
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     "do_mt_tagandprobe"    : false,
-    "do_recoil"            : false,
+    "do_recoil"            : true,
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Oct12_allJets",
-    // "output_folder" : "./output",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Oct18_MCGTv15_13TeVtopWt",
+    "output_folder" : "./output",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -70,7 +70,7 @@
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
-    //"event_check_file":"checkfile.dat",
+    // "event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
@@ -376,6 +376,34 @@
         "jes_mode" : 2,
         "split_by_source" : false
 //        "btag_mode" : 4
+      }
+    },
+    "scale_j_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_j_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
       }
     },
     "scale_j_relbal_lo": {
