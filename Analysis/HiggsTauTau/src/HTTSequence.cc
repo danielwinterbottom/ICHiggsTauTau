@@ -2350,7 +2350,6 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
            httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0); // correspond to Params v5
-           // httStitching.SetWInputYields(33043732.0+43992132.0,52221486.0,6570442.0,18678842.0,11203749.0); // correspond to Params test with MC GT v15
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -2358,7 +2357,6 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
             httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0); // correspond to Params v5
-            // httStitching.SetDYInputYields(48332092.0+48783884.0,34733556.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 3875689.0); // correspond to Params test with MC GT v15
           }
        
        BuildModule(httStitching);   
