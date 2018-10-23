@@ -103,7 +103,6 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       before+=vec[i]->vector();  
       double shift=0;
       double factor = 1.; //for correlations
-      std::cout << "factor: " << factor << std::endl;
       for (unsigned j=0; j<uncerts_.size(); ++j){
         uncerts_[j]->setJetPt(vec[i]->pt());
         uncerts_[j]->setJetEta(vec[i]->eta());
@@ -112,9 +111,6 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
         } else if (jes_corr_mode_ == 2){
             factor = 1. - correlations_[j];
         }
-        std::cout << "factor: " << factor << std::endl;
-        std::cout << "correlations[j]: " << correlations_[j] << std::endl;
-        std::cout << "Correlation mode: " << jes_corr_mode_ << std::endl;
 
         if (jes_shift_mode_ == 1) {
           shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(false),2)); //down
@@ -122,7 +118,6 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
         if (jes_shift_mode_ == 2) {
           shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(true),2)); //up
         }
-        std::cout << "shift: " << shift << std::endl;
       }
       if (jes_shift_mode_ == 1) {
         vec[i]->set_vector(vec[i]->vector() * (1.0-shift));
