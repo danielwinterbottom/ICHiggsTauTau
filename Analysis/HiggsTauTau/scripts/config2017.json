@@ -382,7 +382,7 @@
       "baseline": {
         "addit_output_folder" : "JES_CORR_DOWN",
         "jes_mode" : 1,
-        "jes_corr_mode" : 1
+        "jes_corr_mode" : 1 // 1 for correlated parts
       }
     },
     "scale_j_corr_hi": {
@@ -396,7 +396,7 @@
       "baseline": {
         "addit_output_folder" : "JES_UNCORR_DOWN",
         "jes_mode" : 1,
-        "jes_corr_mode" : 2
+        "jes_corr_mode" : 2 // 2 for uncorrelated parts
       }
     },
     "scale_j_uncorr_hi": {
