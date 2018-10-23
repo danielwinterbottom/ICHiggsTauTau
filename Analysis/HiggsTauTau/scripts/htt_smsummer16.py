@@ -197,7 +197,11 @@ if options.mg_signal:
   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-  'GluGluHToTauTau_M125_NNLOPS'
+  'GluGluHToTauTau_M125_NNLOPS',
+  'GluGluToHToTauTauPlusOneJet_M125_amcatnloFXFX',
+  'GluGluToMaxmixHToTauTauPlusOneJet_M125_amcatnloFXFX',
+  'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_amcatnloFXFX'
+
   ]
 
 
@@ -485,14 +489,14 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      #'EWKWMinus2Jets_WToLNu-ext1',
-      #'EWKWMinus2Jets_WToLNu-ext2',
-      #'EWKWMinus2Jets_WToLNu',
-      #'EWKWPlus2Jets_WToLNu-ext1',
-      #'EWKWPlus2Jets_WToLNu-ext2',
-      #'EWKWPlus2Jets_WToLNu',
-      #'EWKZ2Jets_ZToLL-ext',
-      #'EWKZ2Jets_ZToLL'
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 

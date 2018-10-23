@@ -158,9 +158,9 @@ if options.proc_sm or options.proc_all:
         'WminusHToTauTau_M-125',
         'WplusHToTauTau_M-125',
         'ZHToTauTau_M-125',
-        ## 'ttHToTauTau_M-125'
-        ## 'GluGluHToWWTo2L2Nu_M-125',
-        ## 'VBFHToWWTo2L2Nu_M-125'
+        # 'ttHToTauTau_M-125'
+        # 'GluGluHToWWTo2L2Nu_M-125',
+        # 'VBFHToWWTo2L2Nu_M-125'
         ]
 
   

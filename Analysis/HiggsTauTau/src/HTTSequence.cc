@@ -640,7 +640,9 @@ void HTTSequence::BuildSequence(){
    } 
 
    bool do_ggH_stitch = false;
-   double n_inc=0.0, n_2=0.0, frac=0.0;
+   bool official_ggH = false;
+   if (era_type == era::data_2017 && !(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos)) official_ggH = true;
+   double n_inc=0., n_2=0., frac=0.;
     if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
       if(era_type == era::data_2016) {
         n_inc = 3089015.;
@@ -2343,7 +2345,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            .set_era(era_type)
            .set_fs(fs.get())
            .set_do_ggH_soup(do_ggH_stitch);
-           httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+            httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
             if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
               output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
            httStitching.set_do_w_soup(true);
@@ -2463,7 +2465,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_jes_vars(do_jes_vars)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));
+    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
+    .set_official_ggH(official_ggH));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
