@@ -215,6 +215,12 @@ namespace ic {
     //}
 
     std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jet_label_);
+    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+    Met *pfmet = pfMet_vec.at(0);
+    double met_pt = pfmet->GetShiftedMet("NoShift").pt();
+    double met_phi = pfmet->GetShiftedMet("NoShift").phi();
+    std::cout << "MET pt, phi " << met_pt << met_phi << std::endl;
+
     std::vector<PFJet*> matched_jets;
     std::vector< std::pair<PFJet*, GenJet*> > matches;
     if (!eventInfo->is_data()) {
