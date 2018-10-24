@@ -83,8 +83,10 @@ namespace ic {
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
-      outtree_->Branch("xtrg_et_sf", &xtrg_et_sf_);
-      outtree_->Branch("single_e_sf", &single_e_sf_);
+      outtree_->Branch("xtrg_sf", &xtrg_sf_);
+      outtree_->Branch("single_l_sf", &single_l_sf_);
+      outtree_->Branch("OR_notrig", OR_notrig_);
+      outtree_->Branch("xtrg_notrig", xtrg_notrig_);
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
@@ -1818,7 +1820,7 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0;
+    /* wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0; */
 
     // adding some gen stuff tempoarily can be deleted later
     std::vector<double> parton_pt_vec;
@@ -2650,8 +2652,10 @@ namespace ic {
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   if (event->Exists("trigweight_up")) wt_trig_up_ = event->Get<double>("trigweight_up"); else wt_trig_up_ = 1.0;
   if (event->Exists("trigweight_down")) wt_trig_down_ = event->Get<double>("trigweight_down"); else wt_trig_down_ = 1.0; 
-  if (event->Exists("xtrg_et_sf")) xtrg_et_sf_ = event->Get<double>("xtrg_et_sf"); else xtrg_et_sf_ = 1.0;
-  if (event->Exists("single_e_sf")) single_e_sf_ = event->Get<double>("single_e_sf"); else single_e_sf_ = 1.0;
+  if (event->Exists("xtrg_sf")) xtrg_sf_ = event->Get<double>("xtrg_sf"); else xtrg_sf_ = 1.0;
+  if (event->Exists("single_l_sf")) single_l_sf_ = event->Get<double>("single_l_sf"); else single_l_sf_ = 1.0;
+  if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;
+  if (event->Exists("OR_notrig")) OR_notrig_ = event->Get<double>("OR_notrig"); else OR_notrig_ = 1.0; 
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
   if(channel_==channel::em){
@@ -2978,6 +2982,11 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
+
+    // printing event for MET
+    if (event_ == 139707196 && run_ == 297425 && lumi_ == 87) {
+        std::cout << "MET (pt, phi, eta) " << mets->vector().pt() << mets->vector().phi() << mets->vector().eta() << std::endl;
+    }
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -3960,6 +3969,12 @@ namespace ic {
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
+
+      /* if (!(lowpt_jets[0]->pt()>50 || fabs(lowpt_jets[0]->eta())>3.139 || fabs(lowpt_jets[0]->eta())<2.65) || 
+              !(lowpt_jets[1]->pt()>50 || fabs(lowpt_jets[1]->eta())>3.139 || fabs(lowpt_jets[1]->eta())<2.65)) {
+        std::cout << "(lowpt_jets[0]->pt(), lowpt_jets[0]->eta()): " << lowpt_jets[0]->pt() << ","<< fabs(lowpt_jets[0]->eta()) << std::endl;
+        std::cout << "(lowpt_jets[1]->pt(), lowpt_jets[1]->eta()): " << lowpt_jets[1]->pt() << ","<< fabs(lowpt_jets[1]->eta()) << std::endl;
+      } */
       
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
@@ -4079,8 +4094,14 @@ namespace ic {
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
     if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) && do_sm_scale_wts_ && !systematic_shift_){
-      wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.325 : 1.0; 
-      wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.723 : 1.0;
+      if (official_ggH_){
+        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
+        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
+      } else {
+        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.33 : 1.0; 
+        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.72 : 1.0;
+      }
+      //SM = 1.18179 0.844494, MM = 2.32794 1.71996 PS = 2.32857 1.72129  -> for 2017!
     }
     if(do_z_weights_ && !systematic_shift_){
       wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  

@@ -82,10 +82,8 @@ def SetAxisTitles(plot, channel):
   titles['jeta_2'] = ['#eta_{j_{2}}','Events / '+bin_width, 'dN/d#eta_{j_{2}}']
   titles['jpt_1'] = ['P_{T}^{j_{1}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{1}} (1/GeV)']
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
-  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
-  titles['IC_lowMjj_July05_3_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
-  titles['IC_lowMjj_July05_4_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
-  titles['IC_highMjj_July26_max_score'] = ['MVA Score','Events / '+bin_width, 'dN/d(MVA Score)']
+  titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
 
 
     
@@ -165,10 +163,8 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
-  titles['IC_highMjj_July05_1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_lowMjj_July05_3_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_lowMjj_July05_4_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['IC_highMjj_July26_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
@@ -2279,8 +2275,10 @@ def HTTPlot(nodename,
 
         if ggh_scheme == 'powheg':
             signal_split_schemes = ['sm_ggH','sm_qqH','sm_VH']
-        if ggh_scheme == 'JHU':
+        elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
+        if ggh_scheme == 'madgraph':
+            signal_split_schemes = ['sm_cp','sm_qqH']
 
         for index,split_scheme in enumerate(signal_split_schemes):
             sighists[split_scheme] = R.TH1F()
@@ -2293,12 +2291,10 @@ def HTTPlot(nodename,
                     else:
                         sighists[split_scheme].Add(h)
 
-                if split_scheme in ['sm_ggH','sm_ggH_JHU']:
+                if split_scheme in ['sm_cp']:
                     sighists[split_scheme].SetLineColor(R.kRed)
-                if split_scheme == 'sm_qqH':
+                elif split_scheme == 'sm_qqH':
                     sighists[split_scheme].SetLineColor(R.kBlue)
-                if split_scheme == 'sm_VH':
-                    sighists[split_scheme].SetLineColor(R.kGreen+2)
 
                 sighists[split_scheme].SetLineWidth(3)
                 sighists[split_scheme].Scale(signal_scale)
@@ -2587,7 +2583,7 @@ def CompareSysts(hists=[],
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.30,0.2,3,0.03)
+    legend = PositionedLegend(0.3,0.2,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
@@ -2788,7 +2784,7 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
 
-    hs.Draw("nostack le same")
+    hs.Draw("nostack e same")
     
     uncert_hs = R.THStack()
     if uncert_hist is not None:
@@ -2816,7 +2812,7 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.15,0.2,3,0.01)
+    legend = PositionedLegend(0.25,0.2,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
@@ -2834,8 +2830,8 @@ def CompareHists(hists=[],
     legend.Draw("same")
     
     #CMS label and title
-    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
+    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
@@ -2889,7 +2885,7 @@ def CompareHists(hists=[],
              h = uncert_hist.Clone()
              h.Divide(div_hist)
              h.Draw("e2same") 
-        ratio_hs.Draw("nostack le same")  
+        ratio_hs.Draw("nostack e same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()

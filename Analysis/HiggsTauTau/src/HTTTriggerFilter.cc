@@ -1034,13 +1034,12 @@ namespace ic {
           std::vector<Candidate *> match_taus;
           match_taus.push_back(dileptons[i]->At(1));
           bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
-          passed_etaucross = passed_mutaucross&&match_l1_parts;
-
+          passed_etaucross = passed_etaucross&&match_l1_parts;
           // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
           Electron const* elec = dynamic_cast<Electron const*>(dileptons[i]->At(0)); 
           double eta = fabs(elec->sc_eta());
           double pt = elec->pt();
-          if(pt<40 && eta>1.479) passed_etaucross = true;
+          if(pt<40 && eta>1.479) { passed_etaucross = true; }
         }
       if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
       }

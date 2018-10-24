@@ -256,9 +256,9 @@ namespace ic {
               fns_["e_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
-                 w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
-              fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
-                 w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
+                w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+             fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
+        	 w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -893,9 +893,12 @@ namespace ic {
             double pt = parts[i]->pt();
             pt = std::min(pt, 400.);
             if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || channel_==channel::em) top_wt *= std::exp(0.156-0.00137*pt);
-            if ((mc_ == mc::summer16_80X || mc_ == mc::mc2017)&& channel_!=channel::em){
-              //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
-              top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
+            //if (mc_ == mc::summer16_80X && channel_!=channel::em){
+            //  //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
+            //  top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
+            //}
+            if (mc_ == mc::summer16_80X || mc_ == mc::mc2017){
+              top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
             }
           }
         }
@@ -1763,7 +1766,7 @@ namespace ic {
           if(!is_embedded_) ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
           else ele_trg_mc = fns_["e_trg_binned_embed"]->eval(args_1.data());
 
-          double single_e_sf = ele_trg / ele_trg_mc;
+          double single_e_sf = ele_trg_mc > 0 ? ele_trg / ele_trg_mc : 0;
 
           auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
           auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
@@ -1789,15 +1792,25 @@ namespace ic {
           double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
 
           if(is_embedded_ && e_pt<40 && fabs(e_eta)>1.479){
-            // electron triggers in this eta/pT region don;t work properly for the embedding so set the SF to the data efficiency and have all events pass the trigger in HTTTriggerFilter
-            single_e_sf = ele_trg;
+            // electron triggers in this eta/pT region don't work properly for the embedding so set the SF to the data efficiency and have all events pass the trigger in HTTTriggerFilter
+            single_e_sf = ele_trg; 
             xtrg_et_sf = ele_xtrg*tau_trg;
             xtrg_OR_sf = ele_trg*(1-tau_trg) + ele_xtrg*tau_trg;
           }
 
+          if(e_pt<28.) xtrg_OR_sf = xtrg_et_sf;
+          if(t_pt<30.) xtrg_OR_sf = single_e_sf;
+
+          //std::cout << "----------" << std::endl;
+          //std::cout << e_pt << "    " << e_eta << "    " << e_signed_eta << "    " << t_pt << "    " << t_signed_eta <<  "    " << t_phi << std::endl;
+          //std::cout << xtrg_OR_sf << "    " << single_e_sf << "    " << xtrg_et_sf << std::endl;
+          //std::cout << ele_xtrg << "    " << ele_xtrg_mc << std::endl;
+
           // have xtrg OR as default but save others to check 
-          event->Add("single_e_sf", single_e_sf/xtrg_OR_sf);
-          event->Add("xtrg_et_sf", xtrg_et_sf/xtrg_OR_sf);
+          event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_e_sf/xtrg_OR_sf);
+          event->Add("xtrg_sf", xtrg_OR_sf==0 ? 0. : xtrg_et_sf/xtrg_OR_sf);
+          event->Add("xtrg_notrig", xtrg_OR_sf==0 ? 0 : ele_xtrg*tau_trg/xtrg_OR_sf);
+          event->Add("OR_notrig", xtrg_OR_sf ==0 ? 0 : (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg) / xtrg_OR_sf);
 
           ele_trg = xtrg_OR_sf;
           ele_trg_mc = 1.0;
@@ -2105,6 +2118,8 @@ namespace ic {
              double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
              double xtrg_OR_sf = (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc);
+             if(pt<25.) xtrg_OR_sf = xtrg_mt_sf;
+             if(t_pt<30.) xtrg_OR_sf = single_m_sf;
 
              auto args_pt_1 = std::vector<double>{t_pt};
              double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
@@ -2114,8 +2129,8 @@ namespace ic {
 
 
              // have xtrg OR as default but save others to check 
-             event->Add("single_m_sf", single_m_sf/xtrg_OR_sf);
-             event->Add("xtrg_mt_sf", xtrg_mt_sf/xtrg_OR_sf);
+             event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_m_sf/xtrg_OR_sf);
+             event->Add("xtrg_sf", xtrg_OR_sf==0 ? 0. : xtrg_mt_sf/xtrg_OR_sf);
 
              mu_trg = xtrg_OR_sf;
              mu_trg_mc = 1.0;
@@ -2386,6 +2401,11 @@ namespace ic {
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
         //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_17 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_17 << "    " << m_trg_17_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_17_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
+        double e_trg_after = e_trg;
+        if (e_pt <24.) e_trg_after = (m_trg_17*e_trg_12)/(m_trg_17_mc*e_trg_12_mc);
+        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_17)/(m_trg_8_mc*e_trg_17_mc);
+        e_trg = e_trg_after;
+
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
         event->Add("trigweight_1", e_trg);
@@ -2395,6 +2415,13 @@ namespace ic {
         if (trg_applied_in_mc_){
           e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc);
         } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
+
+        double e_trg_after = e_trg;
+        if (e_pt <24.) e_trg_after = (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc);
+        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc);
+        e_trg = e_trg_after;
+
+        e_trg*=0.991;
         if(e_trg>2.) e_trg=2.;
         weight *= (e_trg);
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
