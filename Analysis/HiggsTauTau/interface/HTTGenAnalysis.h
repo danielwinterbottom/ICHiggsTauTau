@@ -9,7 +9,11 @@
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/Electron.hh"
+#include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "TRandom3.h"
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
@@ -272,6 +276,11 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggA_i_;
   double wt_stitch_;
   int npNLO_;
+
+  bool cand_1_;
+  bool cand_2_;
+  bool match_1_;
+  bool match_2_;
   
   TH2D z_pt_weights_sm_;
   
