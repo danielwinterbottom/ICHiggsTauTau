@@ -46,6 +46,10 @@ mkdir -p -v $1/LFSTATS2_UP
 mkdir -p -v $1/LFSTATS2_DOWN
 mkdir -p -v $1/JES_UP
 mkdir -p -v $1/JES_DOWN
+mkdir -p -v $1/JES_CORR_UP
+mkdir -p -v $1/JES_CORR_DOWN
+mkdir -p -v $1/JES_UNCORR_UP
+mkdir -p -v $1/JES_UNCORR_DOWN
 mkdir -p -v $1/MET_SCALE_UP
 mkdir -p -v $1/MET_SCALE_DOWN
 mkdir -p -v $1/MET_RES_UP

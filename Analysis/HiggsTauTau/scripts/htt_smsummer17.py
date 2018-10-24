@@ -132,7 +132,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Oct10_MC_94X'
+FILELIST='filelists/Oct15_MC_94X'
 
 signal_mc = [ ]
 signal_vh = [ ] 

@@ -926,9 +926,12 @@ namespace ic {
             double pt = parts[i]->pt();
             pt = std::min(pt, 400.);
             if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || channel_==channel::em) top_wt *= std::exp(0.156-0.00137*pt);
-            if ((mc_ == mc::summer16_80X || mc_ == mc::mc2017)&& channel_!=channel::em){
-              //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
-              top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
+            //if (mc_ == mc::summer16_80X && channel_!=channel::em){
+            //  //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
+            //  top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
+            //}
+            if (mc_ == mc::summer16_80X || mc_ == mc::mc2017){
+              top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
             }
           }
         }
