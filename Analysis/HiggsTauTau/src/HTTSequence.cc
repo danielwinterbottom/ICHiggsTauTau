@@ -1260,7 +1260,7 @@ if (era_type == era::data_2017) {
        "PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF",
        "PileUpPtRef","RelativeFSR","RelativeJEREC1","RelativeJEREC2","RelativeJERHF",
        "RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal",
-       "RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+       "RelativeStatEC","RelativeStatFSR","RelativeStatHF",
        "SinglePionECAL","SinglePionHCAL","TimePtEta"
      };
      std::vector<double> correlations = {
@@ -1268,9 +1268,15 @@ if (era_type == era::data_2017) {
        0.5,0.5,0.5,0.5,0.5,
        0.5,0.5,0.,0.,0.5,
        0.5,0.,0.,0.5,0.5,
-       0.,0.,0.,0.,
+       0.,0.,0.,
        1.,1.,0.
      };
+
+     if(era_type == era::data_2017) {
+       // this source is only present for 2017 JEC
+       correlations.push_back(0.);
+       sources.push_back("RelativeSample");
+     }
    
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
        .set_input_label(jets_label)
