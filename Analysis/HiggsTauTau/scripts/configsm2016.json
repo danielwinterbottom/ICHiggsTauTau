@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em"],
+    "channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -66,7 +66,7 @@
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct01_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
@@ -74,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -356,7 +356,7 @@
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
         "jes_mode" : 1,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 3
       }
     },
@@ -364,7 +364,7 @@
       "baseline": {
         "addit_output_folder" : "JES_UP",
         "jes_mode" : 2,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 4
       }
     },
