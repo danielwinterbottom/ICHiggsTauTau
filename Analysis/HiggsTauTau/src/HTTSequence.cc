@@ -2826,6 +2826,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
     } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //set to false for TightID //ElectronHTTIdFall17 //ElectronHTTIsoIdFall17
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
     }
 
   // set the ElecID filter here separately to be compatible with 2017 E smear and scale correction
@@ -3109,6 +3110,7 @@ void HTTSequence::BuildEMPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
 
@@ -3319,6 +3321,7 @@ void HTTSequence::BuildZEEPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
   BuildModule(SimpleFilter<Electron>("ElectronIDFilter")
@@ -3386,6 +3389,7 @@ void HTTSequence::BuildTPZEEPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
 

@@ -101,6 +101,8 @@ namespace ic {
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp);
   bool ElectronHTTIsoIdFall17(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdFall17V2(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIsoIdFall17V2(Electron const* elec, bool loose_wp);
 
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
