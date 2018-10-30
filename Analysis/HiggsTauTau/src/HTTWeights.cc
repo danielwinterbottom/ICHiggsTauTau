@@ -2418,13 +2418,13 @@ namespace ic {
         event->Add("trigweight_2", m_trg);
        } else if(mc_ ==mc::spring15_74X || mc_ == mc::fall15_76X || mc_==mc::spring16_80X || mc_ == mc::summer16_80X) {
         if (trg_applied_in_mc_){
-          e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
+          e_trg = (m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc) > 0. ? (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc) : 0.;
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
         //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_17 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_17 << "    " << m_trg_17_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_17_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
         double e_trg_after = e_trg;
-        if (e_pt <24.) e_trg_after = (m_trg_17*e_trg_12)/(m_trg_17_mc*e_trg_12_mc);
-        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_17)/(m_trg_8_mc*e_trg_17_mc);
+        if (e_pt <24.) e_trg_after = m_trg_17_mc*e_trg_12_mc > 0. ? (m_trg_17*e_trg_12)/(m_trg_17_mc*e_trg_12_mc) :  0.;
+        if (m_pt <24.) e_trg_after = m_trg_8_mc*e_trg_17_mc > 0. ? (m_trg_8*e_trg_17)/(m_trg_8_mc*e_trg_17_mc) : 0.;
         e_trg = e_trg_after;
 
         weight *= (e_trg);
@@ -2434,12 +2434,12 @@ namespace ic {
         if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
        } else if (mc_ == mc::mc2017) {
         if (trg_applied_in_mc_){
-          e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc);
+          e_trg = (m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc) > 0. ? (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc) : 0.;
         } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
 
         double e_trg_after = e_trg;
-        if (e_pt <24.) e_trg_after = (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc);
-        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc);
+        if (e_pt <24.) e_trg_after = m_trg_23_mc*e_trg_12_mc > 0. ? (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc) : 0.;
+        if (m_pt <24.) e_trg_after = m_trg_8_mc*e_trg_23_mc > 0. ? (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc) : 0.;
         e_trg = e_trg_after;
 
         e_trg*=0.991;

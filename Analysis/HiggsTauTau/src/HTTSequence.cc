@@ -890,13 +890,13 @@ mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
   }
 
 
-  //HTTStitching httStitching = HTTStitching("HTTStitching")
-  //    .set_era(era_type)
-  //    .set_fs(fs.get())
-  //    .set_do_ggH_soup(do_ggH_stitch);
-  //    httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+  HTTStitching httStitching = HTTStitching("HTTStitching")
+      .set_era(era_type)
+      .set_fs(fs.get())
+      .set_do_ggH_soup(do_ggH_stitch);
+      httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
 
-  //BuildModule(httStitching);
+  BuildModule(httStitching);
   
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
