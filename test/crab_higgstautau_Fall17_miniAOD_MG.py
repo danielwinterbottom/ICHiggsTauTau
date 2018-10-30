@@ -3,17 +3,17 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Oct10_MC_94X'
+config.General.workArea='Oct15_MC_94X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v16', 'doHT=1', 'LHEWeights=True','includenpNLO=True']
+config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v15', 'doHT=1', 'LHEWeights=True','includenpNLO=True']
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Oct10_MC_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Oct15_MC_94X/'
 config.Data.allowNonValidInputDataset = True
 config.section_('User')
 config.section_('Site')
