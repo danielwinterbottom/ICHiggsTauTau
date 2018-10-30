@@ -340,6 +340,7 @@ if options.proc_bkg or options.proc_all:
             nperjob = 15
         if 'QCD' in sa:
             nperjob = 15
+        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=5
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:

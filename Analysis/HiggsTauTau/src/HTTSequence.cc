@@ -1260,7 +1260,7 @@ if (era_type == era::data_2017) {
        "PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF",
        "PileUpPtRef","RelativeFSR","RelativeJEREC1","RelativeJEREC2","RelativeJERHF",
        "RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal",
-       "RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+       "RelativeStatEC","RelativeStatFSR","RelativeStatHF",
        "SinglePionECAL","SinglePionHCAL","TimePtEta"
      };
      std::vector<double> correlations = {
@@ -1268,9 +1268,15 @@ if (era_type == era::data_2017) {
        0.5,0.5,0.5,0.5,0.5,
        0.5,0.5,0.,0.,0.5,
        0.5,0.,0.,0.5,0.5,
-       0.,0.,0.,0.,
+       0.,0.,0.,
        1.,1.,0.
      };
+
+     if(era_type == era::data_2017) {
+       // this source is only present for 2017 JEC
+       correlations.push_back(0.);
+       sources.push_back("RelativeSample");
+     }
    
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
        .set_input_label(jets_label)
@@ -2306,7 +2312,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_jets_label(jets_label)
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
-     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v1.root");
      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");

@@ -2123,16 +2123,16 @@ def HTTPlot(nodename,
         for key in background_schemes: 
             background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
-        background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
-        for chan in ['em','et','mt','tt','zmm']:
-            if not chan in background_schemes: continue  
-            schemes = background_schemes[chan]
-            for bkg in schemes:
-                if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
-                    bkg['plot_list'] = ["EmbedZTT"]
-                    bkg['leg_text'] = '#mu#rightarrow#tau embedding'
-                #if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
-                #  bkg['plot_list'] = ["EmbedZL","ZJ"]
+      background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
+      for chan in ['em','et','mt','tt','zmm','zee']:
+        if not chan in background_schemes: continue  
+        schemes = background_schemes[chan]
+        for bkg in schemes:
+          if chan != 'zmm' and chan !='zee' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
+            bkg['plot_list'] = ["EmbedZTT"]
+            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
+          if chan == 'zee' and bkg['leg_text'] is 'Z#rightarrow ee':
+            bkg['plot_list'] = ["EmbedZL","ZJ"]
  
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
@@ -2163,10 +2163,11 @@ def HTTPlot(nodename,
         plots = t['plot_list']
         h = R.TH1F()
         for j,k in enumerate(plots):
+            if not (isinstance(infile.Get(nodename+'/'+k),R.TH1D) or isinstance(infile.Get(nodename+'/'+k),R.TH1F)): continue
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
-            else:
+            else: 
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)

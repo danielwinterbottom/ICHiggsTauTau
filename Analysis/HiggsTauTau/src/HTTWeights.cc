@@ -206,7 +206,7 @@ namespace ic {
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
 
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
           fns_["em_qcd_osss_binned_mva"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned_mva")->functor(w_->argSet("dR,njets,e_pt,m_pt,nbjets")));
           fns_["em_qcd_osss_shapedown_binned_mva"] = std::shared_ptr<RooFunctor>(
@@ -228,6 +228,23 @@ namespace ic {
           fns_["em_qcd_osss_binned_bothaiso"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned_bothaiso")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
         }
+        if(mc_==mc::mc2017) {
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+        }
+
             
         if(do_trg_weights_ || do_idiso_weights_) {
           if(mc_==mc::mc2017){
@@ -256,9 +273,9 @@ namespace ic {
               fns_["e_trg_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
-                w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+                w_->function("e_trg24_fromDoubleE_data")->functor(w_->argSet("e_pt,e_eta")));
              fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
-        	 w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
+        	 w_->function("e_trg24_fromDoubleE_mc")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -529,7 +546,7 @@ namespace ic {
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
 
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || mc_==mc::mc2017) {
+        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) {
           fns_["em_qcd_osss_binned_mva"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned_mva")->functor(w_->argSet("dR,njets,e_pt,m_pt,nbjets")));
           fns_["em_qcd_osss_shapedown_binned_mva"] = std::shared_ptr<RooFunctor>(
@@ -550,6 +567,22 @@ namespace ic {
             w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
           fns_["em_qcd_osss_binned_bothaiso"] = std::shared_ptr<RooFunctor>(
             w_->function("em_qcd_osss_binned_bothaiso")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+        }
+        if(mc_==mc::mc2017) {
+          fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+          fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
         }
 
         
@@ -652,9 +685,9 @@ namespace ic {
            fns_["e_trg_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+              w_->function("e_trg24_fromDoubleE_data")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_trg24_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_trg24_embed")->functor(w_->argSet("e_pt,e_eta")));
+              w_->function("e_trg24_fromDoubleE_embed")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_idiso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1238,39 +1271,20 @@ namespace ic {
              std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
              ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
              double n_jets = (double)jets.size();
-
-             std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label_);
-             ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-             if (event->Exists("retag_result")) {
-               auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
-               ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-             } else {
-               ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8838);
-             }
-             double n_bjets = (double)bjets.size();
-
+             double iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
              double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
-             auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
-             auto args_bjets = std::vector<double>{dR,n_jets,elec->pt(),muon->pt(),n_bjets};
-             qcd_weight = fns_["em_qcd_osss_binned_mva"]->eval(args_bjets.data()); 
-             qcd_weight_down = fns_["em_qcd_osss_ratedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-             qcd_weight_up = fns_["em_qcd_osss_rateup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
+             auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt(),iso};
+             qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
+             qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
+             qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
+             double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
+             double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
              double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args.data())/qcd_weight;
              double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args.data())/qcd_weight;
-             if(n_bjets >=1){
-               qcd_extrap_up = qcd_weight;
-               qcd_extrap_down = qcd_weight;
-             }
-             double qcd_bjets_up = fns_["em_qcd_osss_binned_mva_nbjets_up"]->eval(args_bjets.data())/qcd_weight;
-             double qcd_bjets_down =  fns_["em_qcd_osss_binned_mva_nbjets_down"]->eval(args_bjets.data())/qcd_weight;
-             double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-             double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
              event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
              event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
              event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
              event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
-             event->Add("wt_em_qcd_bjetsdown",qcd_bjets_down);
-             event->Add("wt_em_qcd_bjetsup",qcd_bjets_up);
            }
        }
 
@@ -1495,12 +1509,16 @@ namespace ic {
     }
 
    if (do_tracking_eff_){
+       double embed_trk_e = 1.0;
+       if (strategy_ == strategy::cpsummer17) embed_trk_e = 0.99;
+       if (strategy_ == strategy::cpsummer16) embed_trk_e = 0.98;
        double tracking_wt_1 = 1.0;
        double tracking_wt_2 = 1.0;
      if(channel_ == channel::et){
        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
        auto args = std::vector<double>{elec->pt(),elec->sc_eta()};
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
+       if(is_embedded_) tracking_wt_1*=embed_trk_e;
        tracking_wt_2 = 1.0;
      }
      if(channel_ == channel::mt){
@@ -1516,6 +1534,7 @@ namespace ic {
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon->eta()};
        tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+       if(is_embedded_) tracking_wt_1*=embed_trk_e;
       }
       if(channel_ == channel::zmm){
        Muon const* muon_1 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
@@ -1532,6 +1551,8 @@ namespace ic {
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{elec_2->pt(),elec_2->sc_eta()};
        tracking_wt_2 *= fns_["e_trk_ratio"]->eval(args_2.data());
+       if(is_embedded_) tracking_wt_1*=embed_trk_e;
+       if(is_embedded_) tracking_wt_2*=embed_trk_e;
       }
       event->Add("trackingweight_1",tracking_wt_1);
       event->Add("trackingweight_2",tracking_wt_2);
@@ -2397,13 +2418,13 @@ namespace ic {
         event->Add("trigweight_2", m_trg);
        } else if(mc_ ==mc::spring15_74X || mc_ == mc::fall15_76X || mc_==mc::spring16_80X || mc_ == mc::summer16_80X) {
         if (trg_applied_in_mc_){
-          e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc);
+          e_trg = (m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc) > 0. ? (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17)/(m_trg_17_mc*e_trg_12_mc + m_trg_8_mc*e_trg_17_mc - m_trg_17_mc*e_trg_17_mc) : 0.;
         } else e_trg = (m_trg_17*e_trg_12 + m_trg_8*e_trg_17 - m_trg_17*e_trg_17);
         //if(e_pt>20&&e_iso<0.15) std::cout << e_trg << "    " << m_trg_17 << "    " << e_trg_12 << "    " << m_trg_8 << "    " << e_trg_17 << "    " << m_trg_17_mc << "    " << e_trg_12_mc << "    " <<  m_trg_8_mc << "    " << e_trg_17_mc << std::endl; 
         if(e_trg>2.) e_trg=2.;
         double e_trg_after = e_trg;
-        if (e_pt <24.) e_trg_after = (m_trg_17*e_trg_12)/(m_trg_17_mc*e_trg_12_mc);
-        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_17)/(m_trg_8_mc*e_trg_17_mc);
+        if (e_pt <24.) e_trg_after = m_trg_17_mc*e_trg_12_mc > 0. ? (m_trg_17*e_trg_12)/(m_trg_17_mc*e_trg_12_mc) :  0.;
+        if (m_pt <24.) e_trg_after = m_trg_8_mc*e_trg_17_mc > 0. ? (m_trg_8*e_trg_17)/(m_trg_8_mc*e_trg_17_mc) : 0.;
         e_trg = e_trg_after;
 
         weight *= (e_trg);
@@ -2413,12 +2434,12 @@ namespace ic {
         if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
        } else if (mc_ == mc::mc2017) {
         if (trg_applied_in_mc_){
-          e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc);
+          e_trg = (m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc) > 0. ? (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23)/(m_trg_23_mc*e_trg_12_mc + m_trg_8_mc*e_trg_23_mc - m_trg_23_mc*e_trg_23_mc) : 0.;
         } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
 
         double e_trg_after = e_trg;
-        if (e_pt <24.) e_trg_after = (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc);
-        if (m_pt <24.) e_trg_after = (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc);
+        if (e_pt <24.) e_trg_after = m_trg_23_mc*e_trg_12_mc > 0. ? (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc) : 0.;
+        if (m_pt <24.) e_trg_after = m_trg_8_mc*e_trg_23_mc > 0. ? (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc) : 0.;
         e_trg = e_trg_after;
 
         e_trg*=0.991;
