@@ -163,6 +163,11 @@ if options.embedding:
   et_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" '
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
+if SCHEME == 'control_plots':
+  et_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
+  em_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
+  mt_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
+
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
       "mt" : ' '+common_shape_systematics+ ' '+mt_shape_systematics,
@@ -203,7 +208,7 @@ if SCHEME == 'cpsummer16':
   VAR_BOOSTED_TT_QCDCR = 'm_sv[0,300]' 
 
   scheme_et = [
-    ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
+    ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" --add_wt=wt_quarkmass'),
     ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, '--set_alias="sel:mt_1>80" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
     ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" '),
     ("21",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
@@ -1759,12 +1764,12 @@ if SCHEME == 'cards_us':
   VAR_DIJET = 'm_vis,sjdphi[0,80,100,115,130,150],(12,-3.2,3.2)'
 
   scheme_mt = [
-    ("8",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"  '),
-    ("8",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" '),
-    ("8",   "dijet_loosemjj_lowboost",    "vbf_cat1", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
-    ("8",   "dijet_loosemjj_boosted",     "vbf_cat2",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
-    ("8",   "dijet_tightmjj_lowboost",    "vbf_cat3", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
-    ("8",   "dijet_tightmjj_boosted",     "vbf_cat4",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
+    ("8",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --add_wt=wt_quarkmass '),
+    ("8",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --add_wt=wt_quarkmass '),
+    ("8",   "dijet_loosemjj_lowboost",    "vbf_cat1", VAR_DIJET, ' --set_alias="sel:mt_1<50" --add_wt=wt_quarkmass '),
+    ("8",   "dijet_loosemjj_boosted",     "vbf_cat2",  VAR_DIJET, '--set_alias="sel:mt_1<50" --add_wt=wt_quarkmass '),
+    ("8",   "dijet_tightmjj_lowboost",    "vbf_cat3", VAR_DIJET, ' --set_alias="sel:mt_1<50" --add_wt=wt_quarkmass '),
+    ("8",   "dijet_tightmjj_boosted",     "vbf_cat4",  VAR_DIJET, '--set_alias="sel:mt_1<50" --add_wt=wt_quarkmass ')
   ]
   scheme_et=[]
   scheme_tt=[]
@@ -1779,6 +1784,53 @@ if SCHEME == 'cards_us':
   }
   ANA = 'sm'
 
+if SCHEME == 'control_plots':
+  scheme_mt=[]
+  scheme_et=[]
+  scheme_em=[]
+  scheme_mt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="sel:mt_1<50" --set_alias="inclusive:(n_jets>1 && n_bjets==0)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+  ]
+  scheme_et=scheme_mt
+  scheme_tt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --do_ff_systs '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --do_ff_systs '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --do_ff_systs '),
+  ]
+  scheme_em=[
+    ("19",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
+    ("19",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1 && n_bjets==0)"  '), 
+    ("19",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+  ]
+
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
 
 
 if SCHEME == 'cpsummer16_ff_us':
