@@ -456,6 +456,49 @@
           "jes_mode" : 2
         }
       },
+      // adding correlations splitting for regional sources
+      // jes full detector
+    "scale_j_full_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_full_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_FULL_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_j_cent_lo": {
         "baseline": {
           "addit_output_folder" : "JESCENT_DOWN",
@@ -474,6 +517,49 @@
           "jes_mode" : 2
         }
       },      
+      // adding correlations splitting for regional sources
+      // jes central detector
+    "scale_j_cent_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_cent_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_j_hf_lo": {
         "baseline": {
           "addit_output_folder" : "JESHF_DOWN",
@@ -492,6 +578,49 @@
           "jes_mode" : 2
         }
       },
+      // adding correlations splitting for regional sources
+      // jes HF detector
+    "scale_j_hf_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_hf_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_DOWN",

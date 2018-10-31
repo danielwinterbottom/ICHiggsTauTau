@@ -1239,21 +1239,39 @@ if (era_type == era::data_2017) {
    // region 1 = central detector (eta<3)  
    // region 2 = HF (eta>3)
    std::vector<std::string> sources = {};
+   std::vector<double> correlations = {};
    
-   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
    //if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"Total"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
-   
-   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-    .set_input_label(jets_label)
-    .set_jes_shift_mode(jes_mode)
-    .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set)
-    .set_uncert_sets(sources)
-    .set_sum_uncerts(true)
+
+   if (jes_corr_mode > 0) {
+     if (js["baseline"]["jec_region"].asUInt() == 0) correlations = {1.,1.,1.,1.,0.,1.,1.,0.,0.5,0.5,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 1) correlations = {0.5,0.5,0.5,0.,0.,0.,0.,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 2) correlations = {0.,0.5,0.5,0.5};
+
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+       .set_input_label(jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(jes_input_set)
+       .set_uncert_sets(sources)
+       .set_sum_uncerts(true)
+       .set_correlations(correlations)
+       .set_jes_corr_mode(jes_corr_mode)
+     );
+   } else {
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+       .set_input_label(jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(jes_input_set)
+       .set_uncert_sets(sources)
+       .set_sum_uncerts(true)
     );
- } else if(js["baseline"]["jes_corr_mode"].asBool()){
+   }
+ } else if (jes_corr_mode > 0){
    
      std::vector<std::string> sources = {
        "AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","FlavorQCD","Fragmentation",
