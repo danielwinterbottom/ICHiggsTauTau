@@ -58,7 +58,7 @@ defaults = {
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"",
-    }
+}
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
