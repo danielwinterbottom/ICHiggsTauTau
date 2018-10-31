@@ -2064,7 +2064,7 @@ def HTTPlot(nodename,
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_htt"], False )
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_ph_htt"], False )
     sig_schemes['sm_ggH_JHU'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
     sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_htt"], False )
     sig_schemes['sm_VH'] = ( str(int(signal_scale))+"#times SM VH#rightarrow#tau#tau", ["WminusH_htt", "WplusH_htt", "ZH_htt"],False)
@@ -2120,7 +2120,8 @@ def HTTPlot(nodename,
         }
 
     if vbf_background:
-      for key in background_schemes: background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
+        for key in background_schemes: 
+            background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm','zee']:
@@ -2275,7 +2276,7 @@ def HTTPlot(nodename,
         sighists = dict()
 
         if ggh_scheme == 'powheg':
-            signal_split_schemes = ['sm_ggH','sm_qqH','sm_VH']
+            signal_split_schemes = ['sm_ggH','sm_qqH']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2292,7 +2293,7 @@ def HTTPlot(nodename,
                     else:
                         sighists[split_scheme].Add(h)
 
-                if split_scheme in ['sm_cp']:
+                if split_scheme in ['sm_cp','sm_ggH']:
                     sighists[split_scheme].SetLineColor(R.kRed)
                 elif split_scheme == 'sm_qqH':
                     sighists[split_scheme].SetLineColor(R.kBlue)
@@ -3335,6 +3336,7 @@ def HTTPlotUnrolled(nodename,
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
+
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255))],
@@ -3359,7 +3361,8 @@ def HTTPlotUnrolled(nodename,
         }
     
     if vbf_background:
-      for key in background_schemes: background_schemes[key].append(backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)))
+        for key in background_schemes: 
+            background_schemes[key].insert(0,backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
         if not chan in background_schemes: continue  
