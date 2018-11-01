@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em"],
+    "channels":     ["et", "tt", "mt", "em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,14 +58,15 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Oct18_MCGTv15_13TeVtopWt",
-    "output_folder" : "./output",
+    "output_folder" :"/vols/cms/dw515/Offline/output/SM/Oct26_2017/",
+    //"output_folder" : "./output/",
+    //"output_folder" :"/vols/cms/dw515/Offline/output/SM/TauTrigger2017/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct12_2017_SVFit_copy2/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct24_2017_SVFit/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
@@ -490,7 +491,7 @@
     },
     "scale_j_full_uncorr_hi": {
       "baseline": {
-        "addit_output_folder" : "JES_FULL_UNCORR_UP",
+        "addit_output_folder" : "JESFULL_UNCORR_UP",
         "split_by_source" : false,
         "split_by_region" : true,
         "jec_region" : 0,
