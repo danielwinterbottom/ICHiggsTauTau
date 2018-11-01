@@ -370,7 +370,7 @@ if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'# && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'
         if options.era in ['cpsummer17','tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
@@ -386,7 +386,7 @@ if options.analysis == 'sm':
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
-          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'# && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
@@ -418,7 +418,7 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era in ['smsummer16','cpsummer16','tauid2016']: 
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>50)'
+        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'# && pt_1>50)'
         cats['baseline_aisotau1'] = '(pt_1>40 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2'] = '(pt_1>40 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
@@ -586,21 +586,28 @@ if options.channel == 'tt':
     mva_lowMjj_qqh =      '(IC_lowMjj_Oct05_max_index==2)'
     mva_lowMjj_zttEmbed = '(IC_lowMjj_Oct05_max_index==3)'
 
-    # cats['ggh_loose_boost_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt>150)'.format(mva_highMjj_ggh)
-    # cats['ggh_loose_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt<150)'.format(mva_highMjj_ggh)
-    # cats['ggh_tight_boost_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt>150)'.format(mva_highMjj_ggh)
-    # cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt<150)'.format(mva_highMjj_ggh)
+    # with simple mjj cuts like in Cutbased analysis
+    cats['ggh_lowboost_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt<150)'.format(mva_highMjj_ggh)
+    cats['ggh_boosted_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500 && pt_tt>150)'.format(mva_highMjj_ggh)
+    cats['qqh_lowboost_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt<150)'.format(mva_highMjj_ggh)
+    cats['qqh_boosted_highMjj'] =  '({} && n_jets>=2 && mjj>500 && pt_tt>150)'.format(mva_highMjj_ggh)
     
     # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     # cats['ggh_loose_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500)'.format(mva_highMjj_ggh)
     # cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500)'.format(mva_highMjj_ggh)
 
-    cats['highMjj'] = '(n_jets>=2 && mjj>300)'
-    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
-    cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
-    cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
-    cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
-    cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
+    # with binary ggH vs qqH mva
+    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.7)'.format(mva_highMjj_ggh)
+    # cats['ggh_lowboost_highMjj'] = '({} && n_jets>=2 && pt_tt<150 && mjj>300)'.format(mva_highMjj_ggh)
+    # cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && pt_tt>150 && mjj>300)'.format(mva_highMjj_ggh)
+    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
+    # cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
+
+    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.7)'.format(mva_highMjj_ggh)
+    # cats['mixH_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.5 && IC_binary_Oct11_score<0.7)'.format(mva_highMjj_ggh)
+    # cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
+
+    # cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
     # cats['misc_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_misc)
     # cats['qcd_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qcd)
     # cats['qqh_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_qqh)
@@ -658,15 +665,26 @@ if options.channel in ['et','mt']:
     # cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500)'.format(mva_highMjj_ggh)
     # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
     if options.channel == 'et':
-        cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
-        cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
-        cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
-        cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
+        # latest one
+        # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
+        # cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.5)'.format(mva_highMjj_ggh)
+        # cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
+        # cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
+
+        cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.7)'.format(mva_highMjj_ggh)
+        cats['mixH_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.5 && IC_binary_Oct11_score<0.7)'.format(mva_highMjj_ggh)
+        cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score<0.5)'.format(mva_highMjj_ggh)
     else:
-        cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 &&IC_binary_Oct11_score>0.45)'.format(mva_highMjj_ggh)
-        cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.45)'.format(mva_highMjj_ggh)
-        cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.45)'.format(mva_highMjj_ggh)
-        cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.45)'.format(mva_highMjj_ggh)
+        # latest ones
+        # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 &&IC_binary_Oct11_score>0.45)'.format(mva_highMjj_ggh)
+        # cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.45)'.format(mva_highMjj_ggh)
+        # cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.45)'.format(mva_highMjj_ggh)
+        # cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.45)'.format(mva_highMjj_ggh)
+
+        cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.7)'.format(mva_highMjj_ggh)
+        cats['mixH_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.45 && IC_binary_Oct11_score<0.7)'.format(mva_highMjj_ggh)
+        cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score<0.45)'.format(mva_highMjj_ggh)
+
     cats['tt_highMjj'] =   '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_tt)
     # cats['ztt_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ztt)
     if options.channel == 'et':
@@ -704,10 +722,15 @@ if options.channel == 'em':
     # cats['ggh_loose_highMjj'] =  '({} && n_jets>=2 && mjj>300 && mjj<500)'.format(mva_highMjj_ggh)
     # cats['ggh_tight_highMjj'] =  '({} && n_jets>=2 && mjj>500)'.format(mva_highMjj_ggh)
     # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_ggh)
-    cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.55)'.format(mva_highMjj_ggh)
-    cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.55)'.format(mva_highMjj_ggh)
-    cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.55)'.format(mva_highMjj_ggh)
-    cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.55)'.format(mva_highMjj_ggh)
+    # latest one
+    # cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score>0.55)'.format(mva_highMjj_ggh)
+    # cats['ggh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score>0.55)'.format(mva_highMjj_ggh)
+    # cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt<150 && IC_binary_Oct11_score<0.55)'.format(mva_highMjj_ggh)
+    # cats['qqh_boosted_highMjj'] = '({} && n_jets>=2 && mjj>300 && pt_tt>150 && IC_binary_Oct11_score<0.55)'.format(mva_highMjj_ggh)
+
+    cats['ggh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.55)'.format(mva_highMjj_ggh)
+    cats['mixH_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score>0.55 && IC_binary_Oct11_score<0.7)'.format(mva_highMjj_ggh)
+    cats['qqh_highMjj'] = '({} && n_jets>=2 && mjj>300 && IC_binary_Oct11_score<0.55)'.format(mva_highMjj_ggh)
     cats['tt_highMjj'] =   '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_tt)
     cats['zttEmbed_highMjj'] =  '({} && n_jets>=2 && mjj>300)'.format(mva_highMjj_zttEmbed)
 
@@ -1869,7 +1892,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
     if options.channel != "tt":
         if options.channel == 'mt':
             if options.era == 'smsummer16' or options.era == 'cpsummer16': 
-              anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
+              anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))'# && pt_2>30)'
             elif options.era == 'cpsummer17': 
               anti_isolated_sel = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
               #anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon )'
@@ -1877,7 +1900,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et': 
             if options.era in ["smsummer16","cpsummer16"]:
-              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto  && trg_singleelectron &&wt<5 && pt_2>30)'
+              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto  && trg_singleelectron &&wt<5)'# && pt_2>30)'
             elif options.era in ["cpsummer17"]:
               anti_isolated_sel = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
               #anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron) && pt_2>20 && pt_1>28)'  
