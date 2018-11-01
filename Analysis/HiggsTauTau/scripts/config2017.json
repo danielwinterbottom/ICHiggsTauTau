@@ -491,7 +491,7 @@
     },
     "scale_j_full_uncorr_hi": {
       "baseline": {
-        "addit_output_folder" : "JES_FULL_UNCORR_UP",
+        "addit_output_folder" : "JESFULL_UNCORR_UP",
         "split_by_source" : false,
         "split_by_region" : true,
         "jec_region" : 0,
