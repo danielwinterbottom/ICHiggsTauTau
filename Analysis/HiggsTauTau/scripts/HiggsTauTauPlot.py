@@ -1001,6 +1001,7 @@ sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'Wplus
 if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
 
 if options.era in ['cpsummer16']: sm_samples = { 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*', 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 'qqHps_htt' : 'VBFHiggs0M_M-*', 'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX']}
+
 if options.era in ['cpsummer17']: 
     sm_samples = { 
             'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
@@ -2850,7 +2851,11 @@ while len(systematics) > 0:
                   else: sample_names = [signal_samples[samp].replace('*',mass)]
                   tree_name = 'ntuple'
                   if options.gen_signal: tree_name = 'gen_ntuple'
-                  for sample_name in sample_names: ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
+                  for sample_name in sample_names: 
+                    if 'amcatnloFXFX' in sample_name and False:
+                      new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
+                      if add_folder_name != '': new_sig_folder += '/'+add_folder_name
+                    else: ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
       if options.add_sm_background and options.analysis == 'mssm':
           for samp in sm_samples:
               sample_name = sm_samples[samp].replace('*',options.add_sm_background)
