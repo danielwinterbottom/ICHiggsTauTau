@@ -8,7 +8,7 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Nov17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-pyCfgParams = ['release=80XMINIAOD','isData=0','globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1','LHEWeights=True']
+pyCfgParams = ['release=8031MINIAOD','isData=0','globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1','LHEWeights=True']
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
@@ -61,10 +61,7 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         config.Data.inputDBS = 'global'            
-        if 'NNLOPS' in task[0]:
-          config.JobType.pyCfgParams = pyCfgParams+['LHETag=source']
-        else:
-          config.JobType.pyCfgParams = pyCfgParams+['doHT=1','includenpNLO=True']
+        config.JobType.pyCfgParams = pyCfgParams+['doHT=1','includenpNLO=True']
 
         p = Process(target=submit, args=(config,))
         p.start()

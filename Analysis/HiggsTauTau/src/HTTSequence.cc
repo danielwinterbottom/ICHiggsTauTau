@@ -1239,28 +1239,46 @@ if (era_type == era::data_2017) {
    // region 1 = central detector (eta<3)  
    // region 2 = HF (eta>3)
    std::vector<std::string> sources = {};
+   std::vector<double> correlations = {};
    
-   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteFlavMap","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
+   if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"SinglePionECAL","SinglePionHCAL","AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","Fragmentation","FlavorQCD","TimePtEta","PileUpDataMC","RelativeFSR","RelativeStatFSR","PileUpPtRef"};
    //if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"Total"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
-   
-   BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-    .set_input_label(jets_label)
-    .set_jes_shift_mode(jes_mode)
-    .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set)
-    .set_uncert_sets(sources)
-    .set_sum_uncerts(true)
+
+   if (jes_corr_mode > 0) {
+     if (js["baseline"]["jec_region"].asUInt() == 0) correlations = {1.,1.,1.,1.,0.,1.,1.,0.,0.5,0.5,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 1) correlations = {0.5,0.5,0.5,0.,0.,0.,0.,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 2) correlations = {0.,0.5,0.5,0.5};
+
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+       .set_input_label(jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(jes_input_set)
+       .set_uncert_sets(sources)
+       .set_sum_uncerts(true)
+       .set_correlations(correlations)
+       .set_jes_corr_mode(jes_corr_mode)
+     );
+   } else {
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+       .set_input_label(jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(jes_input_set)
+       .set_uncert_sets(sources)
+       .set_sum_uncerts(true)
     );
- } else if(js["baseline"]["jes_corr_mode"].asBool()){
+   }
+ } else if (jes_corr_mode > 0){
    
      std::vector<std::string> sources = {
        "AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","FlavorQCD","Fragmentation",
        "PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF",
        "PileUpPtRef","RelativeFSR","RelativeJEREC1","RelativeJEREC2","RelativeJERHF",
        "RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal",
-       "RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+       "RelativeStatEC","RelativeStatFSR","RelativeStatHF",
        "SinglePionECAL","SinglePionHCAL","TimePtEta"
      };
      std::vector<double> correlations = {
@@ -1268,9 +1286,15 @@ if (era_type == era::data_2017) {
        0.5,0.5,0.5,0.5,0.5,
        0.5,0.5,0.,0.,0.5,
        0.5,0.,0.,0.5,0.5,
-       0.,0.,0.,0.,
+       0.,0.,0.,
        1.,1.,0.
      };
+
+     if(era_type == era::data_2017) {
+       // this source is only present for 2017 JEC
+       correlations.push_back(0.);
+       sources.push_back("RelativeSample");
+     }
    
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
        .set_input_label(jets_label)
@@ -2306,7 +2330,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_jets_label(jets_label)
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
-     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt());
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v1.root");
      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
@@ -2818,6 +2844,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
     } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //set to false for TightID //ElectronHTTIdFall17 //ElectronHTTIsoIdFall17
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
     }
 
   // set the ElecID filter here separately to be compatible with 2017 E smear and scale correction
@@ -3101,6 +3128,7 @@ void HTTSequence::BuildEMPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
 
@@ -3311,6 +3339,7 @@ void HTTSequence::BuildZEEPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
       ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
   BuildModule(SimpleFilter<Electron>("ElectronIDFilter")
@@ -3378,6 +3407,7 @@ void HTTSequence::BuildTPZEEPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    } else if(strategy_type == strategy::cpsummer17){
        ElecID = [](Electron const* e) { return ElectronHTTIdFall17(e, true); }; //false -> tight, true -> loose
+      // ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; //set to false for 80wp //ElectronHTTIdFall17V2 //ElectronHTTIsoIdFall17V2
    }
 
 

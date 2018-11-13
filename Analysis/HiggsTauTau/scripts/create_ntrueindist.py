@@ -13,19 +13,18 @@ def load_files(filelist):
          
     return file_names
 
-# files = load_files("scripts/files_2017.txt")
+# files = load_files("scripts/files_2017_v3.txt")
 files = load_files("scripts/sig_mc_2017.txt")
 
+channels = ["tt","mt","et","em"]
 for file_ in files:
     for path in glob.glob(sys.argv[1]):
         print path
         # hist = ROOT.TH1D("pileup_{}".format(file_), ";PileUp_nTrueInt", 200, 0., 200.)
         hist = ROOT.TH1D("pileup", ";PileUp_nTrueInt", 200, 0., 200.)
         chain = ROOT.TChain("gen_ntuple")
-        chain.AddFile("{}/{}_tt_2017.root".format(path,file_))
-        chain.AddFile("{}/{}_mt_2017.root".format(path,file_))
-        chain.AddFile("{}/{}_et_2017.root".format(path,file_))
-        chain.AddFile("{}/{}_em_2017.root".format(path,file_))
+        for channel in channels:
+            chain.AddFile("{}/{}_{}_2017.root".format(path,file_,channel))
         # chainW = ROOT.TChain("genweights")
         # chainW.Add(os.path.join(path, "", "*.root"))
         # chain.AddFriend("genweights")

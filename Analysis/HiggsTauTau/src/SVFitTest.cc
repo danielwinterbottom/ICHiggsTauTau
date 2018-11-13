@@ -115,7 +115,9 @@ namespace ic {
           outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
         } 
         outputadd_noyearorchan_ = outputadd_;
-        std::string::size_type yearpos = outputadd_.find("2017");
+        std::string::size_type yearpos = outputadd_.npos;
+        if (outputadd_.find("2016") != outputadd_.npos) yearpos = outputadd_.find("2016");
+        if (outputadd_.find("2017") != outputadd_.npos) yearpos = outputadd_.find("2017");
         if(yearpos != std::string::npos) outputadd_noyearorchan_.erase(outputadd_noyearorchan_.begin() + yearpos,outputadd_noyearorchan_.end());
       }
       boost::filesystem::path nofolder("");

@@ -1217,6 +1217,112 @@ namespace ic {
     bool pass_mva = idmva > wp;
     return pass_mva;
   }
+
+
+  // Fall v2 electron ID noIso
+  bool ElectronHTTIdFall17V2(Electron const* elec, bool loose_wp) {
+    // loose_wp will correspond to 90% wp
+    // there is a looser one (98% wp) but don't need it
+    // 
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+      if (elec->gsf_tk_nhits() > 1) return false;
+      double eta = fabs(elec->sc_eta());
+      double pt = fabs(elec->pt());
+      double idmva = elec->GetIdIso("mvaRun2Fall17V2");
+      double c=0;
+      double tau=0;
+      double A=0;
+      if (eta <= 0.8) {
+        if (pt > 10.){ //EB1_10
+          c = loose_wp ? 5.9175992258 : 7.1336238874;
+          tau = loose_wp ? 13.4807294538 : 16.5605268797;
+          A = loose_wp ? 9.31966232685 : 8.22531222391;
+        } else { //EB1_5
+          c = loose_wp ? 2.77072387339 : 3.26449620468;
+          tau = loose_wp ? 3.81500912145 : 3.32657149223;
+          A = loose_wp ? 8.16304860178 : 8.84669783568; 
+        }
+      } 
+      if (eta > 0.8 && eta <= 1.479) {
+        if (pt > 10.){ //EB2_10
+          c = loose_wp ? 5.01598837255 : 6.18638275782;
+          tau = loose_wp ? 13.1280451502 : 15.2694634284;
+          A = loose_wp ? 8.79418193765 : 7.49764565324;
+        } else { //EB2_5
+          c = loose_wp ? 1.85602317813 : 2.83557838497;
+          tau = loose_wp ? 2.18697654938 : 2.15150487651;
+          A = loose_wp ? 11.8568936824 : 11.0978016567;
+        }
+      }
+      if (eta > 1.479){
+        if (pt > 10.){ //EE_10
+          c = loose_wp ? 4.16921343208 : 5.43175865738;
+          tau = loose_wp ? 13.2017224621 : 15.4290075949;
+          A = loose_wp ? 9.00720913211 : 7.56899692285;
+        } else { //EE_5
+          c = loose_wp ? 1.73489307814 : 2.91994945177;
+          tau = loose_wp ? 2.0163211971 : 1.69875477522;
+          A = loose_wp ? 17.013880078 : 24.024807824;
+        }
+      } 
+      double wp = c - A*exp(-pt/tau);
+      std::cout << "idmva: " << idmva << "wp: " << wp << std::endl;
+      bool pass_mva = idmva > wp;
+      return pass_mva;
+    }
+
+  // Fall v2 electron IDIso
+  bool ElectronHTTIsoIdFall17V2(Electron const* elec, bool loose_wp) {
+    // loose_wp will correspond to 90% wp
+    // there is a looser one (98% wp) but don't need it
+    // 
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+      if (elec->gsf_tk_nhits() > 1) return false;
+      double eta = fabs(elec->sc_eta());
+      double pt = fabs(elec->pt());
+      double idmva = elec->GetIdIso("mvaRun2IsoFall17V2");
+      double c=0;
+      double tau=0;
+      double A=0;
+      if (eta <= 0.8) {
+        if (pt > 10.){ //EB1_10
+          c = loose_wp ? 6.12931925263 : 7.35752275071;
+          tau = loose_wp ? 13.281753835 : 15.87907864;
+          A = loose_wp ? 8.71138432196 : 7.61288809226;
+        } else { //EB1_5
+          c = loose_wp ? 2.84704783417 : 3.53495358797;
+          tau = loose_wp ? 3.32529515837 : 3.07272325141;
+          A = loose_wp ? 9.38050947827 : 9.94262764352; 
+        }
+      } 
+      if (eta > 0.8 && eta <= 1.479) {
+        if (pt > 10.){ //EB2_10
+          c = loose_wp ? 5.26289004857 : 6.41811074032;
+          tau = loose_wp ? 13.2154971491 : 14.730562874;
+          A = loose_wp ? 8.0997882835 : 6.96387331587;
+        } else { //EB2_5
+          c = loose_wp ? 2.03833922005 : 3.06015605623;
+          tau = loose_wp ? 1.93288758682 : 1.95572234114;
+          A = loose_wp ? 15.364588247 : 14.3091184421;
+        }
+      }
+      if (eta > 1.479){
+        if (pt > 10.){ //EE_10
+          c = loose_wp ? 4.37338792902 : 5.64936312428;
+          tau = loose_wp ? 14.0776094696 : 16.3664949747;
+          A = loose_wp ? 8.48513324496 : 7.19607610311;
+        } else { //EE_5
+          c = loose_wp ? 1.82704158461 : 3.02052519639;
+          tau = loose_wp ? 1.89796754399 : 1.59784164742;
+          A = loose_wp ? 19.1236071158 : 28.719380105;
+        }
+      } 
+      double wp = c - A*exp(-pt/tau);
+      bool pass_mva = idmva > wp;
+      return pass_mva;
+   }
   
  bool PF03EAElecIsolation(Electron const* elec, double const rho, double const& cut) {
     double charged_iso = elec->dr03_pfiso_charged();
