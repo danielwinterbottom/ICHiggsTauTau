@@ -10,8 +10,8 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file', 
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'        
-# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
-'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
@@ -269,7 +269,18 @@ process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi"
 process.electronMVAValueMapProducer.src = electronLabel
 process.electronMVAValueMapProducer.srcMiniAOD = electronLabel
 
+# trying to add things for ID Fall17v2
+process.electronMVAVariableHelper.src = electronLabel
+process.electronMVAVariableHelper.srcMiniAOD = electronLabel
+process.electronMVAVariableHelper.beamSpot = cms.InputTag("offlineBeamSpot")
+process.electronMVAVariableHelper.beamSpotMiniAOD = cms.InputTag("offlineBeamSpot")
+process.electronMVAVariableHelper.vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.electronMVAVariableHelper.vertexCollectionMiniAOD = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.electronMVAVariableHelper.conversions = cms.InputTag("reducedEgamma:reducedConversions")
+process.electronMVAVariableHelper.conversionsMiniAOD = cms.InputTag("reducedEgamma:reducedConversions")
+
 process.icElectronSequence+=cms.Sequence(
+   process.electronMVAVariableHelper+
    process.electronMVAValueMapProducer
    )
 
@@ -384,12 +395,14 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   inputErrPreCorr           = cms.string("ecalTrkEnergyErrPreCorr"),
   inputScaleUp              = cms.string("energyScaleUp"),
   inputScaleDown            = cms.string("energyScaleDown"),
-  inputSigmaUp              = cms.string("energyScaleUp"),
-  inputSigmaDown            = cms.string("energyScaleDown"),
+  inputSigmaUp              = cms.string("energySigmaUp"),
+  inputSigmaDown            = cms.string("energySigmaDown"),
   includeFloats = cms.PSet(
      generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
      mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
      mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+     mvaRun2Fall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2RawValues"), # need raw values for v2
+     mvaRun2IsoFall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2RawValues"),
   ),
   includeClusterIso        = cms.bool(True),
   includePFIso03           = cms.bool(True),
