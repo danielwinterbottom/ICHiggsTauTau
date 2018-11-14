@@ -1129,32 +1129,10 @@ if(strategy_type == strategy::paper2013) {
 } else if (era_type == era::data_2016) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 } else if (era_type == era::data_2017) {
-  // jetIDFilter.set_predicate(bind(PFJetID2017, _1) && bind(PileupJetID, _1, pu_id_training, false, false)); //bool doTight,bool doLoose,else medium
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
 }
 BuildModule(jetIDFilter);
 
-/*if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, false) ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}*/
-
-if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  jet->pt()  > 50    ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -1341,27 +1319,16 @@ if (era_type == era::data_2017) {
 
 }
 
-/*if (era_type == era::data_2017) {
+if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, false) ||
+      return  PileupJetID(jet, pu_id_training, false, true) ||
         fabs(jet->eta()) > 3.139 ||
         fabs(jet->eta()) < 2.65 ;
     })
   );
 }
-
-if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  jet->pt()  > 50    ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}*/
 
 
 if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&js["do_btag_eff"].asBool()){
