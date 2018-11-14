@@ -143,6 +143,10 @@ sample_list = [
     'ZZTo2Q2Nu',
     'ZZTo4L',
     'ZZTo4L-ext',
+    'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
+    'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
+    'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
+    'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown'
 	]
 
 

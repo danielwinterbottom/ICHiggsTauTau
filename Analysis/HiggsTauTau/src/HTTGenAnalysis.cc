@@ -554,8 +554,8 @@ namespace ic {
         pT_A_ = pT;
       }
 
-      std::vector<ic::Electron*> reco_electrons = event->GetPtrVec<ic::Electron>("electrons");
-      std::vector<ic::Muon*> reco_muons = event->GetPtrVec<ic::Muon>("muons");     
+      std::vector<ic::Electron*> reco_electrons = {};//event->GetPtrVec<ic::Electron>("electrons");
+      std::vector<ic::Muon*> reco_muons = {};//event->GetPtrVec<ic::Muon>("muons");     
 
       // add neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16){

@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt","em"],
+    "channels":     ["tt","mt","et","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct26_2016/",
     //"output_folder" : "./output/",
     //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
@@ -74,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,

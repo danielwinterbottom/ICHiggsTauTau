@@ -645,9 +645,13 @@ void HTTSequence::BuildSequence(){
    double n_inc=0., n_2=0., frac=0.;
     if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
       if(era_type == era::data_2016) {
-        n_inc = 3089015.;
-        n_2 = 14254055.;
-        frac = 0.279662;
+        n_inc = 2897630.;  
+        n_2 = 13901510.;
+        frac = 0.279594;
+        // private sample numbers
+        //n_inc = 3089015.;
+        //n_2 = 14254055.;
+        //frac = 0.279662;
       }
       if(era_type == era::data_2017) {
         n_inc = 11986570.;
@@ -658,9 +662,13 @@ void HTTSequence::BuildSequence(){
     }
     if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) {
       if(era_type == era::data_2016) {
-        n_inc = 2982585.;
-        n_2 = 14192951.;
-        frac = 0.274486;
+        n_inc = 3131198;
+        n_2 = 16622211.;
+        frac = 0.274892;
+        //private numbers 
+        //n_inc = 2982585.;
+        //n_2 = 14192951.;
+        //frac = 0.274486;
       }
       if(era_type == era::data_2017) {
         n_inc = 3329183.;
@@ -671,9 +679,13 @@ void HTTSequence::BuildSequence(){
     }
     if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos ) {
       if(era_type == era::data_2016) {
-        n_inc = 3100706.;
-        n_2 = 14302986.;
-        frac = 0.282423;
+        n_inc = 3097174.;
+        n_2 = 18540584.;
+        frac = 0.282932; 
+        //private numbers
+        //n_inc = 3100706.;
+        //n_2 = 14302986.;
+        //frac = 0.282423;
       }
       if(era_type == era::data_2017) {
         n_inc = 3201858.;
