@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","et","mt"],
+    "channels":     ["tt","mt","et","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,15 +58,15 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct01/",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/ggH_gen/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct26_2016/",
+    //"output_folder" : "./output/",
     //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Oct01_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",//_newsig/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
@@ -74,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -100,6 +100,8 @@
       "tau_1prong0pi0_es_shift": 0.995,
       "tau_1prong1pi0_es_shift": 1.011,
       "tau_3prong0pi0_es_shift": 1.006,
+      "embedtau_1prong0pi0_es_shift": 0.995,
+      "embedtau_1prong1pi0_es_shift": 1.011, 
       "embedtau_1prong0pi0_es_shift": 0.997,
       "embedtau_1prong1pi0_es_shift": 1.002,
       "elec_es_shift"     : 1.0,
@@ -354,7 +356,7 @@
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
         "jes_mode" : 1,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 3
       }
     },
@@ -362,8 +364,36 @@
       "baseline": {
         "addit_output_folder" : "JES_UP",
         "jes_mode" : 2,
-        "split_by_source" : true
+        "split_by_source" : false
 //        "btag_mode" : 4
+      }
+    },
+    "scale_j_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
       }
     },
     "scale_j_relbal_lo": {
@@ -400,6 +430,49 @@
           "jes_mode" : 2
         }
       },
+      // adding correlations splitting for regional sources
+      // jes full detector
+    "scale_j_full_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_full_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_j_cent_lo": {
         "baseline": {
           "addit_output_folder" : "JESCENT_DOWN",
@@ -418,6 +491,49 @@
           "jes_mode" : 2
         }
       },      
+      // adding correlations splitting for regional sources
+      // jes central detector
+    "scale_j_cent_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_cent_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_j_hf_lo": {
         "baseline": {
           "addit_output_folder" : "JESHF_DOWN",
@@ -436,6 +552,49 @@
           "jes_mode" : 2
         }
       },
+      // adding correlations splitting for regional sources
+      // jes HF detector
+    "scale_j_hf_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_hf_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
     "scale_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_DOWN",

@@ -304,7 +304,7 @@ namespace ic {
   }
 
 
-  bool PileupJetID(PFJet const* jet, unsigned training, bool doTight) {
+  bool PileupJetID(PFJet const* jet, unsigned training, bool doTight, bool doLoose) {
     double abs_eta = fabs(jet->eta());
     double pt = jet->pt();
     double pu_id_mva_value = jet->pu_id_mva_value();
@@ -377,29 +377,54 @@ namespace ic {
     } else if (training == 4) {
       //reference: page 16 of https://indico.cern.ch/event/559594/contributions/2257924/attachments/1317046/1973307/PUID_JMAR_2016_07_26_v1.pdf
       if (pt <= 30.) {
-	if (abs_eta < 2.5) {
-	  return (pu_id_mva_value > (doTight?0.69:0.18));
-	} else if (abs_eta < 2.75) {
-	  return (pu_id_mva_value > (doTight?-0.35:-0.55));
-	} else if (abs_eta < 3.0) {
-	  return (pu_id_mva_value > (doTight?-0.26:-0.42));
-	} else if (abs_eta < 5.0) {
-	  return (pu_id_mva_value > (doTight?-0.21:-0.36));
-	} else return true;
-      } else if (pt > 30.) {
-	if (abs_eta < 2.5) {
-	  return (pu_id_mva_value > (doTight?0.86:0.61));
-	} else if (abs_eta < 2.75) {
-	  return (pu_id_mva_value > (doTight?-0.10:-0.35));
-	} else if (abs_eta < 3.0) {
-	  return (pu_id_mva_value > (doTight?-0.05:-0.23));
-	} else if (abs_eta < 5.0) {
-	  return (pu_id_mva_value > (doTight?-0.01:-0.17));
-	} else return true;
-      } else return true;
-    } else {
-      return true;
+        if (abs_eta < 2.5) {
+          if (doTight) return (pu_id_mva_value > 0.69);
+          else if (doLoose) return (pu_id_mva_value > -0.97);
+          else return (pu_id_mva_value > 0.18);
+        } 
+        else if (abs_eta < 2.75) {
+          if (doTight) return (pu_id_mva_value > -0.35);
+          else if (doLoose) return (pu_id_mva_value > -0.68);
+          else return (pu_id_mva_value > -0.55);
+        }
+        else if (abs_eta < 3.0) {
+          if (doTight) return (pu_id_mva_value > -0.26);
+          else if (doLoose) return (pu_id_mva_value > -0.53);
+          else return (pu_id_mva_value > -0.42);
+        }
+        else if (abs_eta < 5.0) {
+          if (doTight) return (pu_id_mva_value > -0.21);
+          else if (doLoose) return (pu_id_mva_value > -0.47);
+          else return (pu_id_mva_value > -0.36);
+        }
+        else return true;
+      }
+      else if (pt > 30.) {
+        if (abs_eta < 2.5) {
+          if (doTight) return (pu_id_mva_value > 0.86);
+          else if (doLoose) return (pu_id_mva_value > -0.89);
+          else return (pu_id_mva_value > 0.61);
+        } 
+        else if (abs_eta < 2.75) {
+          if (doTight) return (pu_id_mva_value > -0.10);
+          else if (doLoose) return (pu_id_mva_value > -0.52);
+          else return (pu_id_mva_value > -0.35);
+        }
+        else if (abs_eta < 3.0) {
+          if (doTight) return (pu_id_mva_value > -0.05);
+          else if (doLoose) return (pu_id_mva_value > -0.38);
+          else return (pu_id_mva_value > -0.23);
+        }
+        else if (abs_eta < 5.0) {
+          if (doTight) return (pu_id_mva_value > -0.01);
+          else if (doLoose) return (pu_id_mva_value > -0.30);
+          else return (pu_id_mva_value > -0.17);
+        }
+        else return true;
+      }
+      else return true;
     }
+    else return true;
   }
 
   bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map) {
@@ -1217,6 +1242,112 @@ namespace ic {
     bool pass_mva = idmva > wp;
     return pass_mva;
   }
+
+
+  // Fall v2 electron ID noIso
+  bool ElectronHTTIdFall17V2(Electron const* elec, bool loose_wp) {
+    // loose_wp will correspond to 90% wp
+    // there is a looser one (98% wp) but don't need it
+    // 
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+      if (elec->gsf_tk_nhits() > 1) return false;
+      double eta = fabs(elec->sc_eta());
+      double pt = fabs(elec->pt());
+      double idmva = elec->GetIdIso("mvaRun2Fall17V2");
+      double c=0;
+      double tau=0;
+      double A=0;
+      if (eta <= 0.8) {
+        if (pt > 10.){ //EB1_10
+          c = loose_wp ? 5.9175992258 : 7.1336238874;
+          tau = loose_wp ? 13.4807294538 : 16.5605268797;
+          A = loose_wp ? 9.31966232685 : 8.22531222391;
+        } else { //EB1_5
+          c = loose_wp ? 2.77072387339 : 3.26449620468;
+          tau = loose_wp ? 3.81500912145 : 3.32657149223;
+          A = loose_wp ? 8.16304860178 : 8.84669783568; 
+        }
+      } 
+      if (eta > 0.8 && eta <= 1.479) {
+        if (pt > 10.){ //EB2_10
+          c = loose_wp ? 5.01598837255 : 6.18638275782;
+          tau = loose_wp ? 13.1280451502 : 15.2694634284;
+          A = loose_wp ? 8.79418193765 : 7.49764565324;
+        } else { //EB2_5
+          c = loose_wp ? 1.85602317813 : 2.83557838497;
+          tau = loose_wp ? 2.18697654938 : 2.15150487651;
+          A = loose_wp ? 11.8568936824 : 11.0978016567;
+        }
+      }
+      if (eta > 1.479){
+        if (pt > 10.){ //EE_10
+          c = loose_wp ? 4.16921343208 : 5.43175865738;
+          tau = loose_wp ? 13.2017224621 : 15.4290075949;
+          A = loose_wp ? 9.00720913211 : 7.56899692285;
+        } else { //EE_5
+          c = loose_wp ? 1.73489307814 : 2.91994945177;
+          tau = loose_wp ? 2.0163211971 : 1.69875477522;
+          A = loose_wp ? 17.013880078 : 24.024807824;
+        }
+      } 
+      double wp = c - A*exp(-pt/tau);
+      std::cout << "idmva: " << idmva << "wp: " << wp << std::endl;
+      bool pass_mva = idmva > wp;
+      return pass_mva;
+    }
+
+  // Fall v2 electron IDIso
+  bool ElectronHTTIsoIdFall17V2(Electron const* elec, bool loose_wp) {
+    // loose_wp will correspond to 90% wp
+    // there is a looser one (98% wp) but don't need it
+    // 
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+      if (elec->gsf_tk_nhits() > 1) return false;
+      double eta = fabs(elec->sc_eta());
+      double pt = fabs(elec->pt());
+      double idmva = elec->GetIdIso("mvaRun2IsoFall17V2");
+      double c=0;
+      double tau=0;
+      double A=0;
+      if (eta <= 0.8) {
+        if (pt > 10.){ //EB1_10
+          c = loose_wp ? 6.12931925263 : 7.35752275071;
+          tau = loose_wp ? 13.281753835 : 15.87907864;
+          A = loose_wp ? 8.71138432196 : 7.61288809226;
+        } else { //EB1_5
+          c = loose_wp ? 2.84704783417 : 3.53495358797;
+          tau = loose_wp ? 3.32529515837 : 3.07272325141;
+          A = loose_wp ? 9.38050947827 : 9.94262764352; 
+        }
+      } 
+      if (eta > 0.8 && eta <= 1.479) {
+        if (pt > 10.){ //EB2_10
+          c = loose_wp ? 5.26289004857 : 6.41811074032;
+          tau = loose_wp ? 13.2154971491 : 14.730562874;
+          A = loose_wp ? 8.0997882835 : 6.96387331587;
+        } else { //EB2_5
+          c = loose_wp ? 2.03833922005 : 3.06015605623;
+          tau = loose_wp ? 1.93288758682 : 1.95572234114;
+          A = loose_wp ? 15.364588247 : 14.3091184421;
+        }
+      }
+      if (eta > 1.479){
+        if (pt > 10.){ //EE_10
+          c = loose_wp ? 4.37338792902 : 5.64936312428;
+          tau = loose_wp ? 14.0776094696 : 16.3664949747;
+          A = loose_wp ? 8.48513324496 : 7.19607610311;
+        } else { //EE_5
+          c = loose_wp ? 1.82704158461 : 3.02052519639;
+          tau = loose_wp ? 1.89796754399 : 1.59784164742;
+          A = loose_wp ? 19.1236071158 : 28.719380105;
+        }
+      } 
+      double wp = c - A*exp(-pt/tau);
+      bool pass_mva = idmva > wp;
+      return pass_mva;
+   }
   
  bool PF03EAElecIsolation(Electron const* elec, double const rho, double const& cut) {
     double charged_iso = elec->dr03_pfiso_charged();
@@ -1832,6 +1963,154 @@ namespace ic {
     }
     return taus;
   }
+
+  // CP in tau decays functions
+  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi) {
+    ic::Candidate* pi0 = new ic::Candidate();
+    pi0->set_vector(tau->vector()-pi->vector());
+    pi0->set_charge(0);
+    return pi0;
+  }
+
+  std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    return tau_daughters;
+  }
+  
+    std::pair<bool, GenParticle*> GetTauPiDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi = new GenParticle();
+    pi->set_pdgid(0);
+    GenParticle* tau_rho_daughter = new GenParticle();
+    int countpi = 0;
+    if(tau_daughters.size()==1){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i]; countpi++;}
+      }
+    }
+    bool isPi = countpi == 1;
+    if (isPi) tau_rho_daughter = pi;
+
+    return std::make_pair(isPi, tau_rho_daughter);
+  }
+  
+    std::pair<bool, std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi0 = new GenParticle();
+    GenParticle* pi = new GenParticle();
+    pi->set_pdgid(0);
+    pi0->set_pdgid(0);
+    std::vector<GenParticle*> tau_rho_daughter;
+    int countpi = 0;
+    int countgamma = 0;
+    if(tau_daughters.size()==3){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 22){ pi0->set_vector(pi0->vector()+tau_daughters[i]->vector()); pi0->set_pdgid(111); countgamma++;}
+        if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i]; countpi++;}
+      }
+    }
+    bool isRho = countgamma == 2 && countpi == 1;
+    if (isRho) tau_rho_daughter = {pi,pi0};
+    return std::make_pair(isRho, tau_rho_daughter);
+  }
+  
+    std::pair<bool, std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi1 = new GenParticle();
+    GenParticle* pi2 = new GenParticle();
+    GenParticle* pi3 = new GenParticle();
+    pi1->set_pdgid(0);
+    pi2->set_pdgid(0);
+    pi3->set_pdgid(0);
+    std::vector<GenParticle*> tau_a1_daughters;
+    int countpiplus = 0;
+    int countpiminus = 0;
+    std::vector<GenParticle*> charged_pis;
+    if(tau_daughters.size()==3){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 211) charged_pis.push_back(tau_daughters[i]);
+        if(tau_daughters[i]->pdgid() == -211) countpiplus++;
+        if(tau_daughters[i]->pdgid() == 211)  countpiminus++;
+      }
+    }
+    bool isA1 = ( countpiplus==2 && countpiminus==1 ) || ( countpiplus==1 && countpiminus==2 );
+    if (isA1) tau_a1_daughters = charged_pis;
+    return std::make_pair(isA1, tau_a1_daughters);
+  }
+  
+  TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec){
+    TVector3 x(secondary_vtx.vx()-primary_vtx.vx(),secondary_vtx.vy()-primary_vtx.vy(),secondary_vtx.vz()-primary_vtx.vz());
+    TVector3 unit_vec = ConvertToTVector3(part_vec).Unit();
+    TVector3 u = -(x - x.Dot(unit_vec)*unit_vec);
+    return u;    
+  }
+  
+  TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec){
+      TLorentzVector out_vec;
+      out_vec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),input_vec.M());
+      return out_vec;
+  }
+  TVector3 ConvertToTVector3(ROOT::Math::PtEtaPhiEVector input_vec){
+      TVector3 out_vec;
+      out_vec.SetXYZ(input_vec.Px(),input_vec.Py(),input_vec.Pz());
+      return out_vec;
+  }
+  
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+      
+    TVector3 boost;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+    
+    TVector3 n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
+    TVector3 n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+    
+    double angle = acos(n1.Dot(n2));
+    double sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    
+    if(sign<0) angle = 2*M_PI - angle;
+    return angle;
+  }
+  // 
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 

@@ -197,7 +197,11 @@ if options.mg_signal:
   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-  'GluGluHToTauTau_M125_NNLOPS'
+  'GluGluHToTauTau_M125_NNLOPS',
+  'GluGluToHToTauTauPlusOneJet_M125_amcatnloFXFX',
+  'GluGluToMaxmixHToTauTauPlusOneJet_M125_amcatnloFXFX',
+  'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_amcatnloFXFX'
+
   ]
 
 
@@ -384,10 +388,12 @@ if options.proc_embed or options.proc_all:
         embed_samples+=['EmbeddingTauTau'+era]
       if 'zmm' in chn:
         embed_samples+=['EmbeddingMuMu'+era]
+      if 'zee' in chn:
+        embed_samples+=['EmbeddingElEl'+era]
 
 
         
-  EMBEDFILELISTZMM="./filelists/Trigger_MC_80X"
+  EMBEDFILELISTZMM="./filelists/Apr02_MC_80X"
 
   EMBEDFILELIST="./filelists/Apr02_MC_80X"
   
@@ -396,7 +402,7 @@ if options.proc_embed or options.proc_all:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr02_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     if 'EmbeddingMuMu' in sa:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Trigger_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr02_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 10
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
@@ -485,14 +491,14 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      #'EWKWMinus2Jets_WToLNu-ext1',
-      #'EWKWMinus2Jets_WToLNu-ext2',
-      #'EWKWMinus2Jets_WToLNu',
-      #'EWKWPlus2Jets_WToLNu-ext1',
-      #'EWKWPlus2Jets_WToLNu-ext2',
-      #'EWKWPlus2Jets_WToLNu',
-      #'EWKZ2Jets_ZToLL-ext',
-      #'EWKZ2Jets_ZToLL'
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 

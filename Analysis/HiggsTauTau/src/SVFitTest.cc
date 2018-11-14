@@ -43,6 +43,8 @@ namespace ic {
     split_ = 5000;
     outname_ = "svfit_test";
     outputadd_ = "";
+    outputadd_noyearorchan_="";
+    chan_="";
     fullpath_ = "SVFIT_2012/";
     do_vloose_preselection_ = false;
     verbose_ = false;
@@ -107,10 +109,16 @@ namespace ic {
         if (channel_ == channel::mt) chan = "_mt_";
         if (channel_ == channel::em) chan = "_em_";
         if (channel_ == channel::tt) chan = "_tt_";
+        chan_ = chan;
         std::string::size_type channelpos = outputadd_.find(chan);
         if(channelpos != std::string::npos){
           outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
         } 
+        outputadd_noyearorchan_ = outputadd_;
+        std::string::size_type yearpos = outputadd_.npos;
+        if (outputadd_.find("2016") != outputadd_.npos) yearpos = outputadd_.find("2016");
+        if (outputadd_.find("2017") != outputadd_.npos) yearpos = outputadd_.find("2017");
+        if(yearpos != std::string::npos) outputadd_noyearorchan_.erase(outputadd_noyearorchan_.begin() + yearpos,outputadd_noyearorchan_.end());
       }
       boost::filesystem::path nofolder("");
       total_path_ = operator/(fullpath_,nofolder);
@@ -120,7 +128,7 @@ namespace ic {
       boost::filesystem::directory_iterator it(total_path_);
       for (; it != boost::filesystem::directory_iterator(); ++it) {
         std::string path = it->path().string();
-        if ((!from_grid_ && path.find("output.root") != path.npos)||(path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos)) {
+        if ((!from_grid_ && path.find("output.root") != path.npos)||(path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos) || (path.find("output.root") != path.npos && path.find(outputadd_noyearorchan_.c_str()) != path.npos && path.find(chan_.c_str()) != path.npos)) {
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {

@@ -11,6 +11,7 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "Math/VectorUtil.h"
 #include "TVector3.h"
+#include "TLorentzVector.h"
 
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
@@ -101,6 +102,8 @@ namespace ic {
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdFall17(Electron const* elec, bool loose_wp);
   bool ElectronHTTIsoIdFall17(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdFall17V2(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIsoIdFall17V2(Electron const* elec, bool loose_wp);
 
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
@@ -143,7 +146,7 @@ namespace ic {
   bool PUJetID(PFJet const* jet, bool is_2012);
   // Pileup jet id cuts.  0 = 2011, 1 = 2012, 2 = 2012 (december training), 3 = 2015 training
   //loose working points
-  bool PileupJetID(PFJet const* jet, unsigned training, bool doTight=false);
+  bool PileupJetID(PFJet const* jet, unsigned training, bool doTight=false, bool doLoose=false);
 
   bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map);
 
@@ -153,6 +156,132 @@ namespace ic {
   double PZetaVis(CompositeCandidate const* cand);
 
   double MT(Candidate const* cand1, Candidate const* cand2);
+
+  // CP in in tau decays functions
+  TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec);
+  TVector3 ConvertToTVector3 (ROOT::Math::PtEtaPhiEVector input_vec);
+  TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec);
+  template<class T>
+  void BoostVec(T p, TVector3 boost){
+    TLorentzVector lvec = ConvertToLorentz(p->vector());    
+    lvec.Boost(boost);
+    ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
+    p->set_vector(out_vec);
+  }
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
+  
+  template<class T, class U>
+  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
+    // get boost vector to boost to COM frame 
+    TLorentzVector ltotal(0,0,0,0);
+    for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
+    for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
+    TVector3 boost = ltotal.BoostVector();
+    // boost to rest frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],-boost);    
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],-boost);
+    //get 3 vectors of normal to decay planes
+    TVector3 plane1 = ConvertToTVector3(p1[0]->vector()).Cross(ConvertToTVector3(p1[1]->vector()));
+    TVector3 plane2 = ConvertToTVector3(p2[0]->vector()).Cross(ConvertToTVector3(p2[1]->vector()));
+    double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
+    int sign = plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector()))/fabs(plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector())));
+    if (sign<0) angle = 2*M_PI - angle;
+    // boost back to origional frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);    
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
+    return angle;
+  }
+
+  template<class T>
+  std::vector<std::pair<double,int>> AcoplanarityAngles(std::vector<T> const& p1, std::vector<T> const& p2, bool COM) {
+    // if working in COM frame then boost 
+    TVector3 boost(0,0,0); 
+    if(COM){
+      TLorentzVector ltotal(0,0,0,0);;
+      for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
+      for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
+      boost = ltotal.BoostVector();
+    }
+    std::vector<std::vector<T>> rho_vec;   
+    std::vector<std::vector<T>> a1_vec;
+    if(p1.size()==2) rho_vec.push_back(p1);
+    else if(p1.size()==3) a1_vec.push_back(p1);
+    if(p2.size()==2) rho_vec.push_back(p2);
+    else if(p2.size()==3) a1_vec.push_back(p2);
+    std::vector<std::pair<double,int>> aco_angles;
+    // di-rho channel = 1 angle
+    if(rho_vec.size() == 2){
+      double angle = AcoplanarityAngle(rho_vec[0],rho_vec[1]);
+      int cp_sign = YRho(rho_vec[0],boost)*YRho(rho_vec[1],boost);
+      aco_angles.push_back(std::make_pair(angle,cp_sign));
+    }
+    // rho + a1 channel = 4 angles
+    if(rho_vec.size() == 1 && a1_vec.size() == 1){
+      std::vector<std::pair<std::vector<T>,T>> OS_pairs;
+      for (unsigned i=0; i<a1_vec[0].size(); ++i){
+        for (unsigned j=i+1; j<a1_vec[0].size(); ++j){
+          unsigned other_index = 0;
+          for(unsigned k=0; k<3;++k) if (k!=i&&k!=j) other_index = k;
+          std::vector<T> v = {a1_vec[0][i],a1_vec[0][j]};
+          if (a1_vec[0][i]->charge()*a1_vec[0][j]->charge() < 0) OS_pairs.push_back(std::make_pair(v,a1_vec[0][other_index]));    
+        }
+      }
+      if(OS_pairs.size() == 0) return aco_angles;
+      // make sure that first element is the pair that has closest mass to the rho0
+      //double rho0_mass = 775.26/1000;
+      //double mass_diff_1 = fabs((OS_pairs[0].first[0]->vector()+OS_pairs[0].first[1]->vector()).M() - rho0_mass);
+      //double mass_diff_2 = fabs((OS_pairs[1].first[0]->vector()+OS_pairs[1].first[1]->vector()).M() - rho0_mass);
+      //if(mass_diff_1>mass_diff_2){
+      //  std::pair<std::vector<T>,T> temp = OS_pairs[0];
+      //  OS_pairs[0] = OS_pairs[1];
+      //  OS_pairs[1] = temp; 
+      //}
+      T rho0 = T();
+      rho0 = OS_pairs[0].first[0];
+      rho0->set_vector(rho0->vector()+OS_pairs[0].first[1]->vector());
+      std::vector<T> v;
+      v = {rho0,OS_pairs[0].second};
+      aco_angles.push_back(std::make_pair(AcoplanarityAngle(rho_vec[0], v),YRho(rho_vec[0],boost)*YA1(v,boost)));
+      aco_angles.push_back(std::make_pair(AcoplanarityAngle(rho_vec[0], OS_pairs[0].first),YRho(rho_vec[0],boost)*YRho(OS_pairs[0].first,boost)));
+      rho0 = OS_pairs[1].first[0];
+      rho0->set_vector(rho0->vector()+OS_pairs[1].first[1]->vector());
+      v = {rho0,OS_pairs[1].second};
+      aco_angles.push_back(std::make_pair(AcoplanarityAngle(rho_vec[0], v),YRho(rho_vec[0],boost)*YA1(v,boost)));
+      aco_angles.push_back(std::make_pair(AcoplanarityAngle(rho_vec[0], OS_pairs[1].first),YRho(rho_vec[0],boost)*YRho(OS_pairs[1].first,boost)));
+    }
+    return aco_angles;
+  }
+  
+  template<class T>
+  double YRho(std::vector<T> const& p, TVector3 boost) {
+    if(p.size() != 2) return 0;  
+    // boost to desired frame
+    for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],-boost);    
+    double E_pi = p[0]->vector().E();
+    double E_pi0 = p[1]->vector().E();
+    double y = (E_pi-E_pi0)/(E_pi+E_pi0);
+    double y_sign = y/fabs(y);
+    // boost back to origional frame
+    for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],boost);
+    return y_sign;
+  }
+  template<class T>
+  double YA1(std::vector<T> const& p, TVector3 boost) {
+    if(p.size() != 2) return 0;
+    // boost to desired frame
+    for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],-boost); 
+    double E_rho = p[0]->vector().E();
+    double E_pi = p[1]->vector().E();
+    double Ma = (p[0]->vector()+p[1]->vector()).M(); 
+    double Mpi = 139.57061/1000; 
+    double Mrho = p[0]->vector().M();
+    double y = (E_rho-E_pi)/(E_rho+E_pi) - (Ma*Ma - Mpi*Mpi + Mrho*Mrho)/(2*Ma*Ma);
+    double y_sign = y/fabs(y);
+    // boost back to origional frame
+    for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],boost);
+    return y_sign;
+  }
+  //
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);

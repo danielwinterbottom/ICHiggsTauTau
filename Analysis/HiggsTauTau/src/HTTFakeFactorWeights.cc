@@ -37,7 +37,9 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
     std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"     % ditau_label_;
-    
+    std::cout << boost::format(param_fmt()) % "ff_file"     % ff_file_;
+    std::cout << boost::format(param_fmt()) % "fracs_file"     % fracs_file_;
+     
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) category_names_ = {"inclusive"};
@@ -46,9 +48,13 @@ namespace ic {
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_;
       }
+      if(strategy_ == strategy::cpsummer17){
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2017/"+ff_file_;
+      }
+
       ff_file_name = baseDir + ff_file_name;
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
@@ -304,8 +310,8 @@ namespace ic {
         tt_inputs_2.resize(9);
       }
       if(channel_ == channel::et || channel_ == channel::mt){
-        auto args = std::vector<double>{m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-        if(strategy_ == strategy::cpsummer17) auto args = std::vector<double>{pt_2_,n_jets_,n_bjets_};  
+        std::vector<double> args = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
+        if(strategy_ == strategy::cpsummer17) args = {pt_2_,n_jets_,n_bjets_};  
         double qcd_frac=0.5, w_frac=0.5, tt_frac=0.0;
         if(channel_ == channel::et){
           if(os || strategy_ != strategy::cpsummer17){
@@ -326,8 +332,8 @@ namespace ic {
           real_frac = 1-qcd_frac-w_frac-tt_frac;
         }
         if(channel_ == channel::mt){
-          auto args = std::vector<double>{m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-          if(strategy_ == strategy::cpsummer17) auto args = std::vector<double>{pt_2_,n_jets_,n_bjets_};    
+          std::vector<double> args = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
+          if(strategy_ == strategy::cpsummer17) args = {pt_2_,n_jets_,n_bjets_};    
           if(os || strategy_ != strategy::cpsummer17){
             if(mt_1<=50 || strategy_ != strategy::cpsummer17){
               qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
@@ -347,15 +353,15 @@ namespace ic {
         }
         inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_; inputs[6] = qcd_frac; inputs[7] = w_frac; inputs[8] = tt_frac;
       } else if (channel_ == channel::tt){
-        auto args_1 = std::vector<double>{m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-        auto args_2 = std::vector<double>{m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
+        std::vector<double> args_1 = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
+        std::vector<double> args_2 = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
         if(strategy_ == strategy::cpsummer17){
-          auto args_1 = std::vector<double>{pt_1_,n_jets_,n_bjets_}; 
-          auto args_2 = std::vector<double>{pt_2_,n_jets_,n_bjets_};   
+          args_1 = {pt_1_,n_jets_,n_bjets_}; 
+          args_2 = {pt_2_,n_jets_,n_bjets_};   
         }
         double qcd_frac_1=1.0, w_frac_1=0.0, tt_frac_1=0.0, dy_frac_1=0.0, qcd_frac_2=1.0, w_frac_2=0.0, tt_frac_2=0.0, dy_frac_2=0.0;
 
-        if(os || strategy_ != strategy::cpsummer17){ 
+        if(os || strategy_ != strategy::cpsummer17){
           qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
           w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
           tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
@@ -400,6 +406,7 @@ namespace ic {
           for(unsigned j=0; j<systematics.size(); ++j){
             std::string syst = systematics[j];
             double ff_syst = fake_factors_[map_key]->value(inputs,syst);
+            if(std::isinf(ff_syst) || std::isnan(ff_syst)) ff_syst = ff_nom; 
             std::string syst_name = "wt_"+syst+"_1";
             event->Add(syst_name, ff_syst);
 
@@ -421,11 +428,18 @@ namespace ic {
         
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down", "ff_dy_frac_syst_up", "ff_dy_frac_syst_down"};
-          
+         
+          if(strategy_ == strategy::cpsummer17) {
+            systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down"};
+          }
+ 
           for(unsigned j=0; j<systematics.size(); ++j){
             std::string syst = systematics[j];
             double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1,syst)*0.5;
             double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2,syst)*0.5;
+
+            if(std::isinf(ff_syst_1) || std::isnan(ff_syst_1)) ff_syst_1 = ff_nom_1;
+            if(std::isinf(ff_syst_2) || std::isnan(ff_syst_2)) ff_syst_2 = ff_nom_2;
 
             std::string syst_name = "wt_"+syst;
             event->Add(syst_name+"_1", ff_syst_1);

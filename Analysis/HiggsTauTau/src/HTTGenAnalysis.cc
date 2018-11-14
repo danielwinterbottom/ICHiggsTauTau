@@ -81,6 +81,10 @@ namespace ic {
       outtree_->Branch("wt_ue_down", &wt_ue_down_);
       outtree_->Branch("wt_ue_up", &wt_ue_up_);
       outtree_->Branch("npNLO", &npNLO_);
+      outtree_->Branch("cand_1"       , &cand_1_       );
+      outtree_->Branch("cand_2"       , &cand_2_       );
+      outtree_->Branch("match_1"       , &match_1_       );
+      outtree_->Branch("match_2"       , &match_2_       );
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -540,7 +544,7 @@ namespace ic {
       bool status_hard_process = part.statusFlags().at(7);
       
       if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 ) partons_++;
-      
+ 
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
@@ -549,7 +553,10 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
-      
+
+      std::vector<ic::Electron*> reco_electrons = {};//event->GetPtrVec<ic::Electron>("electrons");
+      std::vector<ic::Muon*> reco_muons = {};//event->GetPtrVec<ic::Muon>("muons");     
+
       // add neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16){
         met.set_vector(met.vector() + part.vector());
@@ -559,6 +566,31 @@ namespace ic {
         if(!(genID == 13 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
         higgs_products.push_back(*(gen_particles[i]));
         decay_types.push_back("m");
+        std::vector<ic::GenParticle *> match_muons = {gen_particles[i]};
+        if(fabs(gen_particles[i]->eta())<2.4 && gen_particles[i]->pt()>20.) {
+          if(decay_types.size()==1){
+            cand_1_ = true;
+            match_1_ = (MatchByDR(match_muons,reco_muons,0.5,true,true).size()>0);
+          } else if (decay_types.size()==2) {
+            cand_2_ = true;
+            match_2_ = (MatchByDR(match_muons,reco_muons,0.5,true,true).size()>0);
+          }
+        }
+      }
+      if(channel_str_=="zee") {
+        if(!(genID == 11 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
+        higgs_products.push_back(*(gen_particles[i]));
+        decay_types.push_back("e");
+        std::vector<ic::GenParticle *> match_elecs = {gen_particles[i]};
+        if(fabs(gen_particles[i]->eta())<2.5 && gen_particles[i]->pt()>20.) {
+          if(decay_types.size()==1){
+            cand_1_ = true;
+            match_1_ = (MatchByDR(match_elecs,reco_electrons,0.5,true,true).size()>0);
+          } else if (decay_types.size()==2) {
+            cand_2_ = true;
+            match_2_ = (MatchByDR(match_elecs,reco_electrons,0.5,true,true).size()>0); 
+          }
+        }
       }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
       gen_taus.push_back(part);
@@ -620,7 +652,7 @@ namespace ic {
         if(pt > min_tau_pt[i] && eta < max_tau_eta_) taus.push_back(higgs_products[i]);
       }
     }
-    
+
     //size of decay_types vector should always be 2 but added this if statement just to be sure
     decayType = "";
     std::sort(decay_types.begin(),decay_types.end(),swap_labels());
@@ -634,7 +666,7 @@ namespace ic {
     if(decayType == "mm") count_mm_++;
     if(decayType == "mt") count_mt_++;
     if(decayType == "tt") count_tt_++;
-    
+
     pt_1_ = -9999.;
     pt_2_ = -9999.;
     ic::Candidate lep1;

@@ -7,9 +7,7 @@ for i in $(ls jobs/*.sh); do
   job=$i
   i=${job//.sh/".log"}
        
-  if grep -q "Post-analysis" $i; then 
-    continue; 
-  elif grep -q "Processing Complete:" $i; then
+  if grep -q "Finished Processing" $i; then
     continue;
   else 
     if ! grep -q /vols/grid/cms/setup.sh $job; then
