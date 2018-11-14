@@ -69,7 +69,7 @@
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
     // "event_check_file":"checkfile.dat",
-    "pu_id_training": 2,
+    "pu_id_training": 4,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,

@@ -979,7 +979,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label(jets_label)
-    .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
+    .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false, false));
 
   CopyCollection<PFJet>
     filteredJetCopyCollection("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered");
