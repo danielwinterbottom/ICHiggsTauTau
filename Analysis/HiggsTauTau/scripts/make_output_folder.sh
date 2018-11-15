@@ -105,4 +105,16 @@ mkdir -p -v $1/JESRBAL_DOWN
 mkdir -p -v $1/JESRBAL_UP
 mkdir -p -v $1/JESRSAMP_DOWN
 mkdir -p -v $1/JESRSAMP_UP
+mkdir -p -v $1/JESFULL_CORR_UP
+mkdir -p -v $1/JESFULL_CORR_DOWN
+mkdir -p -v $1/JESFULL_UNCORR_UP
+mkdir -p -v $1/JESFULL_UNCORR_DOWN
+mkdir -p -v $1/JESCENT_CORR_UP
+mkdir -p -v $1/JESCENT_CORR_DOWN
+mkdir -p -v $1/JESCENT_UNCORR_UP
+mkdir -p -v $1/JESCENT_UNCORR_DOWN
+mkdir -p -v $1/JESHF_CORR_UP
+mkdir -p -v $1/JESHF_CORR_DOWN
+mkdir -p -v $1/JESHF_UNCORR_UP
+mkdir -p -v $1/JESHF_UNCORR_DOWN
 

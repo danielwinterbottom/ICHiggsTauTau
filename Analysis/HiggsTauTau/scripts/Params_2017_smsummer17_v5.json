@@ -1,42 +1,42 @@
 {
   "DY1JetsToLL-LO": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DY2JetsToLL-LO": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DY2JetsToLL-LO-ext": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DY3JetsToLL-LO": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DY3JetsToLL-LO-ext": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DY4JetsToLL-LO": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DYJetsToLL": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 142009946.0
   },
   "DYJetsToLL-LO": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DYJetsToLL-LO-ext1": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 97714787.0
   },
   "DYJetsToLL-ext": {
-    "xs": 5765.4,
+    "xs": 6225.4,
     "evt": 142009946.0
   },
   "DYJetsToLL_M-10-50-LO": {

@@ -891,6 +891,8 @@ namespace ic {
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+      /* outtree_->Branch("jmva_1",             &jmva_1_); */
+      /* outtree_->Branch("jmva_2",             &jmva_2_); */
 
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
