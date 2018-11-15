@@ -163,12 +163,12 @@ if scale < 1: scale = 1
 total = float(len(flatjsonlistdysig))
 flatjsons = []
 # this makes sure the JES's are submitted as seperate jobs (solves memory issues)
-for i in flatjsonlistdysig:
-  if 'scale_j' in i and 'hf' not in i and 'cent' not in i and 'full' not in i and 'relbal' not in i:
-    flatjsons.append('job:sequences:all:'+i)
-    flatjsonlistdysig.remove(i)
-    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
-    if scale < 1: scale = 1
+#for i in flatjsonlistdysig:
+#  if 'scale_j' in i and 'hf' not in i and 'cent' not in i and 'full' not in i and 'relbal' not in i:
+#    flatjsons.append('job:sequences:all:'+i)
+#    flatjsonlistdysig.remove(i)
+#    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
+#    if scale < 1: scale = 1
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
@@ -177,7 +177,7 @@ for i in range(0,scale):
    if temp == '': continue
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
-  
+ 
 FILELIST='filelists/Apr02_MC_80X'
 
 signal_mc = [ ]
@@ -197,10 +197,6 @@ if options.mg_signal:
   'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-  'GluGluHToTauTau_M125_NNLOPS',
-  'GluGluToHToTauTauPlusOneJet_M125_amcatnloFXFX',
-  'GluGluToMaxmixHToTauTauPlusOneJet_M125_amcatnloFXFX',
-  'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_amcatnloFXFX'
 
   ]
 
@@ -637,8 +633,9 @@ if options.proc_mssm_nlo_qsh:
       os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.mg_signal:
-  SIG_FILELIST='filelists/Aug14_MC_80X'
   for sa in signal_mc:
+    if 'amcatnloFXFX' in sa: SIG_FILELIST='filelists/Oct24_MC_80X'
+    else: SIG_FILELIST='filelists/Aug14_MC_80X'
     JOB='%s_2016' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

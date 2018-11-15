@@ -66,7 +66,7 @@
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",//_newsig/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_newsig/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,

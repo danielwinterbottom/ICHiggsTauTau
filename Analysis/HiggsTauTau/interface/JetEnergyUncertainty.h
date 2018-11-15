@@ -44,7 +44,7 @@ template <class T>
 JetEnergyUncertainty<T>::JetEnergyUncertainty(std::string const& name) : ModuleBase(name) {
   input_label_ = "pfJetsPFlow";
   sum_uncerts_ = false;
-  EENoiseFix = false;
+  EENoiseFix_ = false;
   jes_corr_mode_ = 0;
 }
 
@@ -84,7 +84,7 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
     for (unsigned i = 0; i < vec.size(); ++i) {
-      bool skipJet = (EENoiseFix && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
+      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
       if(!skipJet) before+=vec[i]->vector();
       uncert_->setJetPt(vec[i]->pt());
       uncert_->setJetEta(vec[i]->eta());
@@ -104,7 +104,7 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
     for (unsigned i = 0; i < vec.size(); ++i) {
-      bool skipJet = (EENoiseFix && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
+      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
       if(!skipJet) before+=vec[i]->vector();  
       double shift=0;
       double factor = 1.; //for correlations
