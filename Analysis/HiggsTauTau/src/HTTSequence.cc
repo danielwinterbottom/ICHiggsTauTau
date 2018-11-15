@@ -1218,7 +1218,9 @@ if (era_type == era::data_2017) {
        .set_input_label(shift_jets_label)
        .set_jes_shift_mode(jes_mode)
        .set_uncert_file(jes_input_file)
-       .set_uncert_set(source));
+       .set_uncert_set(source)
+       .set_EENoiseFix(era_type == era::data_2017) 
+     );
 
      // Do b-tag weights for shifted jets
      if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
@@ -1272,6 +1274,7 @@ if (era_type == era::data_2017) {
        .set_sum_uncerts(true)
        .set_correlations(correlations)
        .set_jes_corr_mode(jes_corr_mode)
+       .set_EENoiseFix(era_type == era::data_2017)
      );
    } else {
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -1281,6 +1284,7 @@ if (era_type == era::data_2017) {
        .set_uncert_set(jes_input_set)
        .set_uncert_sets(sources)
        .set_sum_uncerts(true)
+       .set_EENoiseFix(era_type == era::data_2017)
     );
    }
  } else if (jes_corr_mode > 0){
@@ -1317,6 +1321,7 @@ if (era_type == era::data_2017) {
        .set_sum_uncerts(true)
        .set_correlations(correlations)
        .set_jes_corr_mode(jes_corr_mode)
+       .set_EENoiseFix(era_type == era::data_2017)
      );
  } else{  
     
@@ -1324,7 +1329,9 @@ if (era_type == era::data_2017) {
     .set_input_label(jets_label)
     .set_jes_shift_mode(jes_mode)
     .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set));
+    .set_uncert_set(jes_input_set)
+    .set_EENoiseFix(era_type == era::data_2017)
+   );
  }
 
 }
