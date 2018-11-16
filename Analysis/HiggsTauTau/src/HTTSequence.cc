@@ -1326,7 +1326,7 @@ BuildModule(jetIDFilter);
 
 }
 
-/* if (era_type == era::data_2017) {
+ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
@@ -1335,7 +1335,7 @@ BuildModule(jetIDFilter);
         fabs(jet->eta()) < 2.65 ;
     })
   );
-} */
+} 
 
 
 if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&js["do_btag_eff"].asBool()){
