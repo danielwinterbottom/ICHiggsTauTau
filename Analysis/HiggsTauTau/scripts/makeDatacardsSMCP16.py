@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding
+#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding --total_jes
 
 import sys
 from optparse import OptionParser
@@ -2048,7 +2048,6 @@ for ch in channels:
                         + ' -v extra="{}"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
-            exit()
 
             if jes_systematics and not options.no_shape_systs and not options.batch:
               # have to do this to avoid using too much memory...
