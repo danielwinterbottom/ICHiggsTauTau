@@ -1493,7 +1493,8 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
        for(unsigned i=0;i<bad_muon_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
        }
-       return !pass_filters;
+       if(do_ggH_stitch && strategy_type == strategy::cpsummer16) return pass_filters; //annoyingly the official ggH samples are 'backwards'
+       else return !pass_filters;
     }));
 };
  
