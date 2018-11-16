@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt"],
+    "channels":     ["zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,8 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Nov15_2017/",
-    "output_folder" : "output/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Nov15_all/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
