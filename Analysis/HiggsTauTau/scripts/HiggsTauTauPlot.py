@@ -34,7 +34,9 @@ defaults = {
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
     "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"",
     "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_scale_j_rbal":"",
-    "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"",
+    "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", 
+    "syst_scale_j_full_corr":"", "syst_scale_j_cent_corr":"", "syst_scale_j_hf_corr":"",
+    "syst_scale_j_full_uncorr":"", "syst_scale_j_cent_uncorr":"", "syst_scale_j_hf_uncorr":"",
     "syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"",
     "norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False,
     "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001,
@@ -157,6 +159,18 @@ parser.add_argument("--syst_scale_j_cent", dest="syst_scale_j_cent", type=str,
     help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = central region (eta<3)")
 parser.add_argument("--syst_scale_j_hf", dest="syst_scale_j_hf", type=str,
     help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta>3)")
+parser.add_argument("--syst_scale_j_full_corr", dest="syst_scale_j_full_corr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta<5). 2016/2017 correlated part.")
+parser.add_argument("--syst_scale_j_cent_corr", dest="syst_scale_j_cent_corr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = central region (eta<3). 2016/2017 correlated part.")
+parser.add_argument("--syst_scale_j_hf_corr", dest="syst_scale_j_hf_corr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta>3). 2016/2017 correlated part.")
+parser.add_argument("--syst_scale_j_full_uncorr", dest="syst_scale_j_full_uncorr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta<5). 2016/2017 correlated part.")
+parser.add_argument("--syst_scale_j_cent_uncorr", dest="syst_scale_j_cent_uncorr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = central region (eta<3). 2016/2017 correlated part.")
+parser.add_argument("--syst_scale_j_hf_uncorr", dest="syst_scale_j_hf_uncorr", type=str,
+    help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta>3). 2016/2017 correlated part.")
 parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", type=str,
     help="If this string is set then the jet scale systematic is performed split by source with the set string appended to the resulting histogram name. The string should contrain the substring  \'SOUCE\' which will be replaced by the JES source name")
 parser.add_argument("--jes_sources", dest="jes_sources", type=str,
@@ -1147,6 +1161,24 @@ if options.syst_scale_j_cent != '':
 if options.syst_scale_j_hf != '':
     systematics['syst_scale_j_hf_up'] = ('JESHF_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_down'] = ('JESHF_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)    
+if options.syst_scale_j_full_corr != '':
+    systematics['syst_scale_j_full_up'] = ('JESFULL_CORR_UP' , '_'+options.syst_scale_j_full_corr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_full_down'] = ('JESFULL_CORR_DOWN' , '_'+options.syst_scale_j_full_corr+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_cent_corr != '':
+    systematics['syst_scale_j_cent_up'] = ('JESCENT_CORR_UP' , '_'+options.syst_scale_j_cent_corr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_cent_down'] = ('JESCENT_CORR_DOWN' , '_'+options.syst_scale_j_cent_corr+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_hf_corr != '':
+    systematics['syst_scale_j_hf_up'] = ('JESHF_CORR_UP' , '_'+options.syst_scale_j_hf_corr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_down'] = ('JESHF_CORR_DOWN' , '_'+options.syst_scale_j_hf_corr+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_full_uncorr != '':
+    systematics['syst_scale_j_full_up'] = ('JESFULL_UNCORR_UP' , '_'+options.syst_scale_j_full_uncorr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_full_down'] = ('JESFULL_UNCORR_DOWN' , '_'+options.syst_scale_j_full_uncorr+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_cent_uncorr != '':
+    systematics['syst_scale_j_cent_up'] = ('JESCENT_UNCORR_UP' , '_'+options.syst_scale_j_cent_uncorr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_cent_down'] = ('JESCENT_UNCORR_DOWN' , '_'+options.syst_scale_j_cent_uncorr+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_hf_uncorr != '':
+    systematics['syst_scale_j_hf_up'] = ('JESHF_UNCORR_UP' , '_'+options.syst_scale_j_hf_uncorr+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_down'] = ('JESHF_UNCORR_DOWN' , '_'+options.syst_scale_j_hf_uncorr+'Down', 'wt', ['EmbedZTT'], False)
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
@@ -2891,10 +2923,10 @@ while len(systematics) > 0:
                   tree_name = 'ntuple'
                   if options.gen_signal: tree_name = 'gen_ntuple'
                   for sample_name in sample_names: 
-                    if 'amcatnloFXFX' in sample_name and False:
-                      new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
-                      if add_folder_name != '': new_sig_folder += '/'+add_folder_name
-                    else: ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
+                    #if 'amcatnloFXFX' in sample_name and False:
+                    #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
+                    #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
+                    ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
       if options.add_sm_background and options.analysis == 'mssm':
           for samp in sm_samples:
               sample_name = sm_samples[samp].replace('*',options.add_sm_background)
