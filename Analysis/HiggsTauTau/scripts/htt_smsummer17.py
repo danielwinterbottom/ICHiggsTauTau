@@ -159,7 +159,12 @@ if options.proc_sm or options.proc_all:
         'WplusHToTauTau_M-125',
         'ZHToTauTau_M-125',
         ]
-
+   # signal_mc += [
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown'
+   # ] 
   
     
 
@@ -362,8 +367,15 @@ if options.mg_signal or options.proc_sm:
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     user='adow'
+    if 'PSDown' in sa or 'PSUp' in sa or 'UEUp' in sa or 'UEDown' in sa:
+      user='dwinterb'
+      SIG_FILELIST='filelists/Nov01_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1].replace('94X','80X') 
+    else:
+      user='adow'
+      SIG_FILELIST = FILELIST
+      SIG_DIR = SIG_FILELIST.split('/')[1]
     JOB='%s_2017' % (sa)
-    SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
