@@ -2045,6 +2045,7 @@ for ch in channels:
                         + ' -v extra="{}"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
+            exit()
 
             if jes_systematics and not options.no_shape_systs and not options.batch:
               # have to do this to avoid using too much memory...
