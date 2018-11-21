@@ -158,6 +158,15 @@ if options.proc_sm or options.proc_all:
         'WminusHToTauTau_M-125',
         'WplusHToTauTau_M-125',
         'ZHToTauTau_M-125',
+        'VBFHiggs0MToTauTau',
+        'VBFHiggs0Mf05ph0ToTauTau',
+        'VBFHiggs0PMToTauTau',
+        'WHiggs0MToTauTau',
+        'WHiggs0Mf05ph0ToTauTau',
+        'WHiggs0PMToTauTau',
+        'ZHiggs0MToTauTau',
+        'ZHiggs0Mf05ph0ToTauTau',
+        'ZHiggs0PMToTauTau'
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -240,6 +249,7 @@ if options.proc_embed or options.proc_all:
         
   embed_samples = []
   data_eras = ['B','C','D','E','F']
+  #data_eras = ['B','C']
   for chn in channels:
     for era in data_eras:
       if 'em' in chn:
@@ -297,13 +307,6 @@ if options.proc_bkg or options.proc_all:
      'DYJetsToLL-LO',
      'DYJetsToLL',
      'DYJetsToLL-ext',
-     'TTToSemiLeptonic',
-     'TTToHadronic',
-     'TTTo2L2Nu',
-     'T-tW',
-     'T-t',
-     'Tbar-tW',
-     'Tbar-t',
      'EWKZ2Jets',
      'EWKWPlus2Jets',
      'EWKWMinus2Jets',
@@ -324,7 +327,14 @@ if options.proc_bkg or options.proc_all:
      'ZZTo2L2Nu',
      'ZZTo2L2Q',
      'ZZTo4L-ext',
-     'ZZTo4L'
+     'ZZTo4L',
+     'TTToSemiLeptonic',
+     'TTToHadronic',
+     'TTTo2L2Nu',
+     'T-tW',
+     'T-t',
+     'Tbar-tW',
+     'Tbar-t', 
      ]
   
 
@@ -334,6 +344,7 @@ if options.proc_bkg or options.proc_all:
   for sa in central_samples:
       JOB='%s_2017' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+
       job_num=0
       for FLATJSONPATCH in flatjsons:
         nperjob = 20
@@ -367,7 +378,11 @@ if options.mg_signal or options.proc_sm:
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     user='adow'
-    if 'PSDown' in sa or 'PSUp' in sa or 'UEUp' in sa or 'UEDown' in sa:
+    if 'WHiggs' in sa or 'ZHiggs' in sa or 'VBFHiggs' in sa: 
+      user='adow'
+      SIG_FILELIST='filelists/Nov02_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1] 
+    elif 'PSDown' in sa or 'PSUp' in sa or 'UEUp' in sa or 'UEDown' in sa:
       user='dwinterb'
       SIG_FILELIST='filelists/Nov01_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1].replace('94X','80X') 
@@ -377,6 +392,7 @@ if options.mg_signal or options.proc_sm:
       SIG_DIR = SIG_FILELIST.split('/')[1]
     JOB='%s_2017' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
