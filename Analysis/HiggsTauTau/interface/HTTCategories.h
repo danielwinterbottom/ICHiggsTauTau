@@ -187,6 +187,17 @@ class HTTCategories : public ModuleBase {
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
   double dphi_;
+
+  double dphi_jtt_;
+  bool pujid_;
+  unsigned jchm_1_;
+  unsigned jnm_1_;
+  double jarea_1_;
+  double jchemf_1_;
+  double jnemf_1_;
+  double jchhf_1_;
+  double jnhf_1_;
+
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
