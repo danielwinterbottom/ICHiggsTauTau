@@ -1066,14 +1066,20 @@ if options.era in ['cpsummer17']:
             'WminusH_htt': 'WminusHToTauTau_M-*', 
             'ZH_htt': 'ZHToTauTau_M-*', 
             'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-                'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
             'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-                'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
             'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-                'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            # 'qqHsm_htt': 'VBFHiggs0PM_M-*', 
-            # 'qqHmm_htt': 'VBFHiggs0Mf05ph0_M-*', 
-            # 'qqHps_htt': 'VBFHiggs0M_M-*',
+            'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'ZHps_htt' : 'ZHiggs0MToTauTau',  
+            'ZHsm_htt' : 'ZHiggs0PMToTauTau',
+            'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
+            'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
+            'qqHps_htt' :'VBFHiggs0MToTauTau',
+            'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
+            'WHps_htt' :'WHiggs0MToTauTau',
+            'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
+            'WHsm_htt' : 'WHiggs0PMToTauTau',
             }
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1401,7 +1407,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
 
 if options.syst_qcd_bkg: 
     systematics['qcd_sub_up'] = ('','_'+options.syst_qcd_bkg+'Up', 'wt', ['EWKZ','ZTT','ZJ','ZL','ZLL','VV','VVT','VVJ','TT','TTT','TTJ','W','signal','EmbedZTT','jetFakes'], False)
-    systematics['qcd_sub_down'] = ('',''+options.syst_qcd_bkg+'Down', 'wt', ['EWKZ','ZTT','ZJ','ZL','ZLL','VV','VVT','VVJ','TT','TTT','TTJ','W','signal','EmbedZTT','jetFakes'], False)
+    systematics['qcd_sub_down'] = ('','_'+options.syst_qcd_bkg+'Down', 'wt', ['EWKZ','ZTT','ZJ','ZL','ZLL','VV','VVT','VVJ','TT','TTT','TTJ','W','signal','EmbedZTT','jetFakes'], False)
 
 # sort systematics by tree's input directory name        
 systematics = OrderedDict(sorted(systematics.items(), key=lambda key: key[1]))
@@ -1949,17 +1955,13 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
     # Select data from anti-isolated region
     if options.channel != "tt":
         if options.channel == 'mt':
-            if options.era == 'smsummer16' or options.era == 'cpsummer16': 
-              anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
-            elif options.era == 'cpsummer17': 
+            if options.era in ['smsummer16','cpsummer16','cpsummer17']:
               anti_isolated_sel = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
               #anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon )'
             else: 
               anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et': 
-            if options.era in ["smsummer16","cpsummer16"]:
-              anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto  && trg_singleelectron &&wt<5 && pt_2>30)'
-            elif options.era in ["cpsummer17"]:
+            if options.era in ["smsummer16","cpsummer16","cpsummer17"]:
               anti_isolated_sel = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
               #anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singleelectron) && pt_2>20 && pt_1>28)'  
             else: 

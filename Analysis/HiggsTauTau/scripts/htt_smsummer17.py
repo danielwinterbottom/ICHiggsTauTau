@@ -158,15 +158,15 @@ if options.proc_sm or options.proc_all:
         'WminusHToTauTau_M-125',
         'WplusHToTauTau_M-125',
         'ZHToTauTau_M-125',
-        'VBFHiggs0MToTauTau',
         'VBFHiggs0Mf05ph0ToTauTau',
+        'VBFHiggs0MToTauTau',
         'VBFHiggs0PMToTauTau',
-        'WHiggs0MToTauTau',
         'WHiggs0Mf05ph0ToTauTau',
+        'WHiggs0MToTauTau',
         'WHiggs0PMToTauTau',
-        'ZHiggs0MToTauTau',
         'ZHiggs0Mf05ph0ToTauTau',
-        'ZHiggs0PMToTauTau'
+        'ZHiggs0MToTauTau',
+        'ZHiggs0PMToTauTau',
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -378,7 +378,7 @@ if options.mg_signal or options.proc_sm:
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     user='adow'
-    if 'WHiggs' in sa or 'ZHiggs' in sa or 'VBFHiggs' in sa: 
+    if 'WHiggs' in sa or 'ZHiggs' in sa or 'VBFHiggs' in sa or 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX' in sa or 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX' in sa: 
       user='adow'
       SIG_FILELIST='filelists/Nov02_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1] 
@@ -386,6 +386,10 @@ if options.mg_signal or options.proc_sm:
       user='dwinterb'
       SIG_FILELIST='filelists/Nov01_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1].replace('94X','80X') 
+    elif 'Higgs0' in sa or 'MaxmixHToTauTauPlusTwoJets' in sa or 'PseudoscalarHToTauTauPlusTwoJets' in sa:
+      user='adow'
+      SIG_FILELIST = 'filelists/Nov02_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1]
     else:
       user='adow'
       SIG_FILELIST = FILELIST
