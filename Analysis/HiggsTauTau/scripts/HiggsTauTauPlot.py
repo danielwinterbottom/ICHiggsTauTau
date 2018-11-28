@@ -1504,7 +1504,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    if options.channel == 'em' and options.era == 'cpsummer16': wt_+='*1.05*1.03'
+    if options.channel == 'em' and options.era == 'cpsummer16': wt_+='*1.05'
     elif options.channel != 'em' and options.era == 'cpsummer16': wt_+='*1.05'
     elif options.era == 'cpsummer17': wt_+='*0.98'
     full_selection = BuildCutString(wt_+'*(wt<2)', sel, cat, OSSS, z_sels['ztt_sel'])

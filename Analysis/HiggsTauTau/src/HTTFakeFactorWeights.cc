@@ -49,7 +49,7 @@ namespace ic {
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
       if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
-        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_;
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
       if(strategy_ == strategy::cpsummer17){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
@@ -69,7 +69,7 @@ namespace ic {
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
        
-      if(strategy_ == strategy::cpsummer17){      
+      if(false){      
         fns_["w_et_fracs"] = std::shared_ptr<RooFunctor>(
               w_->function("w_et_fracs")->functor(w_->argSet("pt,njets,nbjets")));
         fns_["qcd_et_fracs"] = std::shared_ptr<RooFunctor>(
@@ -237,7 +237,6 @@ namespace ic {
     }
     
     double n_jets_ = jets.size();
-    double n_bjets_ = bjets.size();
     double mjj_ = 0;
     if(n_jets_>1) mjj_ = (jets[0]->vector()+jets[1]->vector()).M();    
 
@@ -297,12 +296,10 @@ namespace ic {
         }
       }
     } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
-      bool os = PairOppSign(ditau);
-      double mt_1 = MT(lep1, met);
       double real_frac=0;
       double real_frac_2=0;
       inputs.resize(9);
-      if(strategy_ == strategy::cpsummer17){
+      if(true||strategy_ == strategy::cpsummer17){
         tt_inputs_1.resize(8);
         tt_inputs_2.resize(8); 
       } else {
@@ -311,79 +308,73 @@ namespace ic {
       }
       if(channel_ == channel::et || channel_ == channel::mt){
         std::vector<double> args = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-        if(strategy_ == strategy::cpsummer17) args = {pt_2_,n_jets_,n_bjets_};  
         double qcd_frac=0.5, w_frac=0.5, tt_frac=0.0;
         if(channel_ == channel::et){
-          if(os || strategy_ != strategy::cpsummer17){
-            if(mt_1<=50 || strategy_ != strategy::cpsummer17){
-              qcd_frac = fns_["qcd_et_fracs"]->eval(args.data());  
-              w_frac = fns_["w_et_fracs"]->eval(args.data());
-              tt_frac = fns_["ttbar_et_fracs"]->eval(args.data());
-            } else {
-              qcd_frac = fns_["qcd_et_highmt_fracs"]->eval(args.data());
-              w_frac = fns_["w_et_highmt_fracs"]->eval(args.data());
-              tt_frac = fns_["ttbar_et_highmt_fracs"]->eval(args.data());
-            }
-          } else {
-            qcd_frac = fns_["qcd_et_ss_fracs"]->eval(args.data());
-            w_frac = fns_["w_et_ss_fracs"]->eval(args.data());
-            tt_frac = fns_["ttbar_et_ss_fracs"]->eval(args.data());
-          }
+          qcd_frac = fns_["qcd_et_fracs"]->eval(args.data());  
+          w_frac = fns_["w_et_fracs"]->eval(args.data());
+          tt_frac = fns_["ttbar_et_fracs"]->eval(args.data());
           real_frac = 1-qcd_frac-w_frac-tt_frac;
         }
         if(channel_ == channel::mt){
           std::vector<double> args = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-          if(strategy_ == strategy::cpsummer17) args = {pt_2_,n_jets_,n_bjets_};    
-          if(os || strategy_ != strategy::cpsummer17){
-            if(mt_1<=50 || strategy_ != strategy::cpsummer17){
-              qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
-              w_frac = fns_["w_mt_fracs"]->eval(args.data());
-              tt_frac = fns_["ttbar_mt_fracs"]->eval(args.data());
-            } else {
-              qcd_frac = fns_["qcd_mt_highmt_fracs"]->eval(args.data());
-              w_frac = fns_["w_mt_highmt_fracs"]->eval(args.data());
-              tt_frac = fns_["ttbar_mt_highmt_fracs"]->eval(args.data());
-            }
-          } else {
-            qcd_frac = fns_["qcd_mt_ss_fracs"]->eval(args.data());
-            w_frac = fns_["w_mt_ss_fracs"]->eval(args.data());
-            tt_frac = fns_["ttbar_mt_ss_fracs"]->eval(args.data()); 
-          }
+          qcd_frac = fns_["qcd_mt_fracs"]->eval(args.data());  
+          w_frac = fns_["w_mt_fracs"]->eval(args.data());
+          tt_frac = fns_["ttbar_mt_fracs"]->eval(args.data());
           real_frac = 1-qcd_frac-w_frac-tt_frac;
         }
+        // for some bins the fractions can be 0 (if all background is accounted for by real taus) in this case take W fraction as 1
+        if(qcd_frac+w_frac+tt_frac<=0) {
+          qcd_frac = 0.0;
+          w_frac = 1.0;
+          tt_frac = 0.0;
+        }
+
+        // make sure fractions always sum to 1
+        double tot_frac = qcd_frac+w_frac+tt_frac;
+        qcd_frac /= tot_frac;
+        w_frac /= tot_frac;
+        tt_frac /= tot_frac;
+
         inputs[0] = pt_2_; inputs[1] = tau_decaymode_2_; inputs[2] = n_jets_; inputs[3] = m_vis_; inputs[4] = mt_1_; inputs[5] = iso_1_; inputs[6] = qcd_frac; inputs[7] = w_frac; inputs[8] = tt_frac;
       } else if (channel_ == channel::tt){
         std::vector<double> args_1 = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
         std::vector<double> args_2 = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
-        if(strategy_ == strategy::cpsummer17){
-          args_1 = {pt_1_,n_jets_,n_bjets_}; 
-          args_2 = {pt_2_,n_jets_,n_bjets_};   
-        }
         double qcd_frac_1=1.0, w_frac_1=0.0, tt_frac_1=0.0, dy_frac_1=0.0, qcd_frac_2=1.0, w_frac_2=0.0, tt_frac_2=0.0, dy_frac_2=0.0;
 
-        if(os || strategy_ != strategy::cpsummer17){
-          qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
-          w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
-          tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
-          dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args_1.data());
-          qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args_2.data());  
-          w_frac_2 = fns_["w_tt_fracs_2"]->eval(args_2.data());
-          tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args_2.data());
-          dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args_2.data());
-        } else {
-          qcd_frac_1 = fns_["qcd_tt_ss_fracs_1"]->eval(args_1.data());
-          w_frac_1 = fns_["w_tt_ss_fracs_1"]->eval(args_1.data());
-          tt_frac_1 = fns_["ttbar_tt_ss_fracs_1"]->eval(args_1.data());
-          dy_frac_1 = fns_["dy_tt_ss_fracs_1"]->eval(args_1.data());
-          qcd_frac_2 = fns_["qcd_tt_ss_fracs_2"]->eval(args_2.data());
-          w_frac_2 = fns_["w_tt_ss_fracs_2"]->eval(args_2.data());
-          tt_frac_2 = fns_["ttbar_tt_ss_fracs_2"]->eval(args_2.data());
-          dy_frac_2 = fns_["dy_tt_ss_fracs_2"]->eval(args_2.data());
-        }
+        qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
+        w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
+        tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
+        dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args_1.data());
+        qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args_2.data());  
+        w_frac_2 = fns_["w_tt_fracs_2"]->eval(args_2.data());
+        tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args_2.data());
+        dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args_2.data());
         real_frac = 1-qcd_frac_1-w_frac_1-tt_frac_1-dy_frac_1;
-        real_frac_2 = 1-qcd_frac_2-w_frac_2-tt_frac_2-dy_frac_2; 
-        
-        if(strategy_ == strategy::cpsummer17) {
+        real_frac_2 = 1-qcd_frac_2-w_frac_2-tt_frac_2-dy_frac_2;
+
+        // for some bins the fractions can be 0 (if all background is accounted for by real taus) in this case take QCD fraction as 1
+        if(qcd_frac_1+w_frac_1+tt_frac_1<=0) {
+          qcd_frac_1 = 1.0;
+          w_frac_1 = 0.0;
+          tt_frac_1 = 0.0;
+        }
+        if(qcd_frac_2+w_frac_2+tt_frac_2<=0) {
+          qcd_frac_2 = 1.0;
+          w_frac_2 = 0.0;
+          tt_frac_2 = 0.0;
+        }
+
+        // make sure fractions always sum to 1
+        double tot_frac_1 = qcd_frac_1+w_frac_1+tt_frac_1;
+        double tot_frac_2 = qcd_frac_2+w_frac_2+tt_frac_2;
+        qcd_frac_1 /= tot_frac_1;
+        w_frac_1 /= tot_frac_1;
+        tt_frac_1 /= tot_frac_1;
+        qcd_frac_2 /= tot_frac_2;
+        w_frac_2 /= tot_frac_2;
+        tt_frac_2 /= tot_frac_2;
+
+        if(true || strategy_ == strategy::cpsummer17) {
           tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1+dy_frac_1; tt_inputs_1[7] = tt_frac_1; 
           tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2+dy_frac_2; tt_inputs_2[7] = tt_frac_2; 
         } else {
@@ -391,7 +382,6 @@ namespace ic {
           tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2; tt_inputs_2[7] = tt_frac_2; tt_inputs_2[8] = dy_frac_2;
         }
       }
-      
       std::string map_key = "inclusive";
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
@@ -401,6 +391,7 @@ namespace ic {
         double ff_real_down = ff_nom*(1.-real_frac*0.9)/(1.-real_frac);
         event->Add("wt_ff_realtau_up_1",  ff_real_up);
         event->Add("wt_ff_realtau_down_1",  ff_real_down);
+
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down" ,"ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
           for(unsigned j=0; j<systematics.size(); ++j){
@@ -427,7 +418,7 @@ namespace ic {
         event->Add("wt_ff_realtau_down_2",  ff_real_down_2);
         
         if(do_systematics_){
-          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down", "ff_dy_frac_syst_up", "ff_dy_frac_syst_down"};
+          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down"};
          
           if(strategy_ == strategy::cpsummer17) {
             systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down"};

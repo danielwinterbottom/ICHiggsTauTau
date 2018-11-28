@@ -1,6 +1,6 @@
 import  ROOT
 import argparse
-import CombineHarvester.CombineTools.plotting as plot
+import UserCode.ICHiggsTauTau.plotting as plot
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--channel',default='mt',help='Channel')
@@ -42,7 +42,7 @@ for cat in cats:
   if args.channel != 'tt': w.Add(dy)
   w.Add(vv)
 
-  for i in range(1,qcd.GetNbinsX()+2):
+  for i in range(1,qcd.GetSize()+1):
     cont =  qcd.GetBinContent(i)
     if cont < 0:
       qcd.SetBinContent(i,0)
@@ -51,7 +51,7 @@ for cat in cats:
       total.SetBinContent(i,tot_new)
       fakes.SetBinContent(i,fakes.GetBinContent(i)-cont)
 
-  for i in range(1,w.GetNbinsX()+2):
+  for i in range(1,w.GetSize()+1):
     cont =  w.GetBinContent(i)
     if cont < 0:
       w.SetBinContent(i,0)
@@ -60,7 +60,7 @@ for cat in cats:
       total.SetBinContent(i,tot_new)
       fakes.SetBinContent(i,fakes.GetBinContent(i)-cont)
 
-  for i in range(1,tt.GetNbinsX()+2):
+  for i in range(1,tt.GetSize()+1):
     cont =  tt.GetBinContent(i)
     if cont < 0:
       tt.SetBinContent(i,0)
@@ -69,7 +69,7 @@ for cat in cats:
       total.SetBinContent(i,tot_new)
       fakes.SetBinContent(i,fakes.GetBinContent(i)-cont)
 
-  for i in range(1,real.GetNbinsX()+2):
+  for i in range(1,real.GetSize()+1):
     cont =  real.GetBinContent(i)
     if cont < 0:
       real.SetBinContent(i,0)
@@ -78,7 +78,7 @@ for cat in cats:
       total.SetBinContent(i,tot_new)
 
   if args.channel == 'tt':
-    for i in range(1,dy.GetNbinsX()+2):
+    for i in range(1,dy.GetSize()+1):
       cont =  dy.GetBinContent(i)
       if cont < 0:
         dy.SetBinContent(i,0)
@@ -86,6 +86,7 @@ for cat in cats:
         tot_new = tot - cont
         total.SetBinContent(i,tot_new)
         fakes.SetBinContent(i,fakes.GetBinContent(i)-cont)
+
 
   w.SetName('bin_%s_W_fracs' % cat)
   qcd.SetName('bin_%s_QCD_fracs' % cat)
@@ -101,11 +102,26 @@ for cat in cats:
   qcd_rtotal.SetName('bin_%s_QCD_tot_fracs' % cat)
   tt_rtotal.SetName('bin_%s_TT_tot_fracs' % cat)
   dy_rtotal.SetName('bin_%s_DY_tot_fracs' % cat)
+
+
   
   w.Divide(fakes)
   qcd.Divide(fakes)
   tt.Divide(fakes)
   dy.Divide(fakes)
+
+#for i in range(1,qcd.GetSize()):
+#  fw = w.GetBinContent(i)
+#  fqcd = qcd.GetBinContent(i)
+#  ftt = tt.GetBinContent(i)
+#  fdy = dy.GetBinContent(i)
+#  if args.channel != 'tt': fdy =0.
+#  tot = fw+fqcd+ftt+fdy
+
+#  if fw<=0. and fqcd<=0. and ftt<=0. and fdy<=0.:
+#    #print "Weird fraction!", tot, fw,fqcd,ftt,fdy
+#    if args.channel == "tt": qcd.SetBinContent(i,1.0) 
+#    else: w.SetBinContent(i,1.0)
 
   w_rtotal.Divide(total)
   qcd_rtotal.Divide(total)
