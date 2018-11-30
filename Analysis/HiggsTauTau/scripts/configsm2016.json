@@ -4,7 +4,11 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
+<<<<<<< HEAD
     "channels":     ["tt","mt"],
+=======
+    "channels":     ["et","mt","em","tt"],
+>>>>>>> origin/master
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,9 +62,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct26_2016/",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Nov29_2016/",
-    //"output_folder" : "./output/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Oct26_2016/",
     //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -142,8 +144,8 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2016_ML/180504_tight/et/fakeFactors_20180412_tight.root",
-        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_new_2016.root"
+        "ff_file" : "SM2016_ML/tight/et/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
           }
     },
  "tt": {
@@ -156,11 +158,11 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
-        "do_ff_systematics": false,
+        "do_ff_weights" : true,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2016_ML/180504_tight/tt/fakeFactors_tt_inclusive.root",
-        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_new_2016.root"
+        "ff_file" : "SM2016_ML/tight/tt/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
       }
     },
 
@@ -175,11 +177,11 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
-        "do_ff_systematics": false,
+        "do_ff_weights" : true,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2016_ML/180504_tight/mt/fakeFactors_20180406_tight.root",
-        "ff_fracs_file" : "input/fake_factors/Jet2TauFakesFiles/sm2016_fakefactors/ff_fracs_new_2016.root"
+        "ff_file" : "SM2016_ML/tight/mt/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
       }
     },
     "em": {

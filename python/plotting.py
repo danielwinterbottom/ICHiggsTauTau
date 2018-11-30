@@ -3368,8 +3368,8 @@ def HTTPlotUnrolled(nodename,
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
-    sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
-    # sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
+    #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
+    #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -3670,15 +3670,15 @@ def HTTPlotUnrolled(nodename,
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
 
-        # sighist_ratios = []
-        # ks_scores = []
-        # for sighist in sighists:
-        #     sighist_ratio = MakeRatioHist(sighist.Clone(),sighists[0].Clone(),True,False)
-        #     sighist_ratio.SetMarkerSize(0)
-        #     # if sighist != sighists[0]:
-        #     #     ks_score =  sighist.KolmogorovTest(sighists[0],"DNOU")
-        #     #     legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
-        #     sighist_ratios.append(sighist_ratio)
+        sighist_ratios = []
+        ks_scores = []
+        for sighist in sighists:
+            sighist_ratio = MakeRatioHist(sighist.Clone(),sighists[0].Clone(),True,False)
+            sighist_ratio.SetMarkerSize(0)
+            # if sighist != sighists[0]:
+            #     ks_score =  sighist.KolmogorovTest(sighists[0],"DNOU")
+            #     legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
+            sighist_ratios.append(sighist_ratio)
 
         pads[1].cd()
         pads[1].SetGrid(0,1)
@@ -3686,11 +3686,14 @@ def HTTPlotUnrolled(nodename,
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
 
-        # sighist_ratios[0].Draw("e0same")
-        # sighist_ratios[1].SetLineColor(R.kOrange-5)
-        # sighist_ratios[1].DrawCopy("e0same")
-        # sighist_ratios[2].SetLineColor(R.kGreen+3)
-        # sighist_ratios[2].DrawCopy("e0same")
+        #sighist_ratios[0].Draw("e0same")
+        #if len(sighist_ratios) > 1: 
+        #  sighist_ratios[1].SetLineColor(R.kOrange-5)
+        #  sighist_ratios[1].DrawCopy("e0same")
+        #if len(sighist_ratios) > 1:
+
+        #  sighist_ratios[2].SetLineColor(R.kGreen+3)
+        #  sighist_ratios[2].DrawCopy("e0same")
 
 
         ratio_bkghist.SetMarkerSize(0)

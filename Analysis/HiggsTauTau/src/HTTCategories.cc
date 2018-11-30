@@ -1835,7 +1835,7 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    /* wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0; */
+    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : wt_dysoup_;
 
     // adding some gen stuff tempoarily can be deleted later
     std::vector<double> parton_pt_vec;

@@ -249,7 +249,6 @@ if options.proc_embed or options.proc_all:
         
   embed_samples = []
   data_eras = ['B','C','D','E','F']
-  #data_eras = ['B','C']
   for chn in channels:
     for era in data_eras:
       if 'em' in chn:
@@ -356,11 +355,13 @@ if options.proc_bkg or options.proc_all:
             nperjob = 15
         if 'QCD' in sa:
             nperjob = 15
-        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=5
+        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=10
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')
+        else: 
+          FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -400,6 +401,7 @@ if options.mg_signal or options.proc_sm:
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1

@@ -113,7 +113,8 @@ namespace ic {
         std::string::size_type channelpos = outputadd_.find(chan);
         if(channelpos != std::string::npos){
           outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
-        } 
+        }
+        outputadd_ = "svfit_"+outputadd_; 
         outputadd_noyearorchan_ = outputadd_;
         std::string::size_type yearpos = outputadd_.npos;
         if (outputadd_.find("2016") != outputadd_.npos) yearpos = outputadd_.find("2016");

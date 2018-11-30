@@ -434,6 +434,114 @@ if SCHEME == 'cpsummer16_ff_fracs':
   ANA = 'sm'
 
 
+if SCHEME == 'control_plots':
+  scheme_mt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+
+    ("17",   "inclusive",    "lomsv_pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+
+    ("17",   "inclusive",    "himsv_pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+
+  ]
+  scheme_et=scheme_mt
+  scheme_tt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --do_ff_systs '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --do_ff_systs '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --do_ff_systs '),
+
+    ("17",   "inclusive",    "lomsv_pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+ 
+    ("17",   "inclusive",    "himsv_pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+
+  ]
+  scheme_em=[
+    ("19",   "inclusive",    "pt_1",  'pt_1[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
+    ("19",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '), 
+    ("19",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+
+    ("19",   "inclusive",    "lomsv_pt_1",  'pt_1[10,15,20,25,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+
+    ("19",   "inclusive",    "himsv_pt_1",  'pt_1[10,15,20,25,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+
+  ]
+
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
 
 cat_schemes = {
   'et' : scheme_et,

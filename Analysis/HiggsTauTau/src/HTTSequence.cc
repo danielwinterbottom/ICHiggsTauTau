@@ -647,16 +647,16 @@ void HTTSequence::BuildSequence(){
       if(era_type == era::data_2016) {
         n_inc = 2897630.;  
         n_2 = 13901510.;
-        frac = 0.279594;
+        frac = 0.279594; 
         // private sample numbers
         //n_inc = 3089015.;
         //n_2 = 14254055.;
         //frac = 0.279662;
       }
       if(era_type == era::data_2017) {
-        n_inc = 11986570.;
+        n_inc = 13719412.;
         n_2 = 10989343.;
-        frac = 0.291202;
+        frac = 0.291244; 
       }
       do_ggH_stitch = true;
     }
@@ -672,7 +672,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017) {
         n_inc = 3329183.;
-        n_2 = 10665018.;
+        n_2 = 15713406.;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -689,7 +689,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017) {
         n_inc = 3201858.;
-        n_2 = 13347131.;
+        n_2=15907023.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
@@ -2697,14 +2697,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           //// for Ele23 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsEle23Ele12")
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          .set_extra_l1_probe_pt(20.)
-          .set_extra_l1_iso_probe_pt(18.)
-          // for Ele12 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          //.set_extra_l1_probe_pt(10.)
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          //.set_extra_l1_probe_pt(20.)
+          //.set_extra_l1_iso_probe_pt(18.)
+          // for Ele12 leg of EMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsEle23Ele12")
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
           //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
           //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
           .set_probe_id(elec_probe_id)
