@@ -487,6 +487,9 @@ class HTTCategories : public ModuleBase {
   unsigned gen_match_2_;
   double gen_match_1_pt_;
   double gen_match_2_pt_;
+  double gen_sjdphi_;
+  double gen_m_;
+  double gen_pt_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
