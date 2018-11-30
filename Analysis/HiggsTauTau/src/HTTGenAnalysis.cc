@@ -761,7 +761,7 @@ namespace ic {
       rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
       a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
     }
-    std::vector<ic::GenParticle> leptons;
+    /* std::vector<ic::GenParticle> leptons;
     for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
     for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
     TLorentzVector lvec1;
@@ -833,7 +833,7 @@ namespace ic {
     if(cp_channel_!=-1){
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
       aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
-    } 
+    } */
     
     /* if(gen_tau_jets_ptr.size()>=2){
       if(rho_1.first && rho_2.first) { 
