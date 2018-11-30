@@ -803,14 +803,6 @@ namespace ic {
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
-      outtree_->Branch("jlrm_1",            &jlrm_1_);
-      outtree_->Branch("jarea_1",           &jarea_1_);
-      outtree_->Branch("jchm_1",            &jchm_1_);
-      outtree_->Branch("jnm_1",             &jnm_1_);
-      outtree_->Branch("jchemf_1",          &jchemf_1_);
-      outtree_->Branch("jnemf_1",           &jnemf_1_);
-      outtree_->Branch("jchhf_1",           &jchhf_1_);
-      outtree_->Branch("jnhf_1",            &jnhf_1_);
       outtree_->Branch("dijetpt",           &dijetpt_);
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         outtree_->Branch("sjdphi",             &sjdphi_);
@@ -905,7 +897,6 @@ namespace ic {
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
       outtree_->Branch("jmva_1",             &jmva_1_);
       outtree_->Branch("jmva_2",             &jmva_2_);
-      outtree_->Branch("pujid",             &pujid_);
 
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -3955,17 +3946,6 @@ namespace ic {
       jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/lowpt_jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
-      // add bool whether or not passes jmva_1 (loose wp) in EE noise region only
-      if (lowpt_jets[0]->pt() > 30. && std::fabs(lowpt_jets[0]->eta()) > 2.65 && std::fabs(lowpt_jets[0]->eta()) < 3.139) { // don't care about 30>pt>20 GeV jets for this
-        if (std::fabs(lowpt_jets[0]->eta()) < 2.5) 
-            pujid_ = lowpt_jets[0]->pu_id_mva_value() > -0.89;
-        else if (std::fabs(lowpt_jets[0]->eta()) < 2.75) 
-            pujid_ = lowpt_jets[0]->pu_id_mva_value() > -0.52;
-        else if (std::fabs(lowpt_jets[0]->eta()) < 3.0) 
-            pujid_ = lowpt_jets[0]->pu_id_mva_value() > -0.38;
-        else if (std::fabs(lowpt_jets[0]->eta()) < 5.0) 
-            pujid_ = lowpt_jets[0]->pu_id_mva_value() > -0.30;
-      }
       jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
       jctm_1_ = lowpt_jets[0]->charged_multiplicity_nopu();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
@@ -3977,13 +3957,6 @@ namespace ic {
         j1_dm_ = -1;
       }
       dphi_jtt_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector()));
-      jarea_1_ = lowpt_jets[0]->jet_area();
-      jchm_1_ = lowpt_jets[0]->charged_multiplicity();
-      jnm_1_ = lowpt_jets[0]->neutral_multiplicity();
-      jchemf_1_ = lowpt_jets[0]->charged_em_energy()/lowpt_jets[0]->uncorrected_energy();
-      jnemf_1_ = lowpt_jets[0]->neutral_em_energy()/lowpt_jets[0]->uncorrected_energy();
-      jchhf_1_ = lowpt_jets[0]->charged_had_energy()/lowpt_jets[0]->uncorrected_energy();
-      jnhf_1_ = lowpt_jets[0]->neutral_had_energy()/lowpt_jets[0]->uncorrected_energy();
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
@@ -3995,13 +3968,6 @@ namespace ic {
       jlrm_1_ = -9999;
       jctm_1_ = -9999;
       dphi_jtt_ = -9999.;
-      jarea_1_ = -9999.;
-      jchm_1_ = 9999;
-      jnm_1_ = 9999;
-      jchemf_1_ = -9999.;
-      jnemf_1_ = -9999.;
-      jchhf_1_ = -9999.;
-      jnhf_1_ = -9999.;
     }
 
     if (n_lowpt_jets_ >= 2) {
