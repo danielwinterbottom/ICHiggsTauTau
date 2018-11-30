@@ -4,7 +4,11 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
     "max_events":   -1,
     "timings":      true,
+<<<<<<< HEAD
+    "channels":     ["tt","mt"],
+=======
     "channels":     ["et","mt","em","tt"],
+>>>>>>> origin/master
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]

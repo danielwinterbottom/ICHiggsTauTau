@@ -2849,9 +2849,9 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.25,0.2,3,0.01)
+    legend = PositionedLegend(0.45,0.2,3,0.01)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
+    legend.SetTextSize(0.020)
     legend.SetFillColor(0)
     
 
@@ -2868,8 +2868,8 @@ def CompareHists(hists=[],
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    #DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    # DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()
@@ -3399,7 +3399,8 @@ def HTTPlotUnrolled(nodename,
     
     if vbf_background:
         for key in background_schemes: 
-            background_schemes[key].insert(0,backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+            background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
         if not chan in background_schemes: continue  
@@ -3505,7 +3506,7 @@ def HTTPlotUnrolled(nodename,
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
         if log_y: 
-            axish[0].SetMinimum(0.0009)
+            axish[0].SetMinimum(0.01)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
@@ -3733,7 +3734,10 @@ def HTTPlotUnrolled(nodename,
       latex.SetTextSize(0.028)
       
       Nybins = len(y_bins)
-      if Nybins > 5: latex.SetTextSize(0.023)
+      if Nybins > 4: 
+          latex.SetTextSize(0.023)
+      if Nybins > 5: 
+          latex.SetTextSize(0.02)
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
@@ -3744,14 +3748,16 @@ def HTTPlotUnrolled(nodename,
                 y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
         else: 
             if ymax == -1: 
-                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
+                y_bin_label = '%s #geq %.2f %s' % (var,ymin,unit)
             else: 
-                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit)
+                y_bin_label = '%.2f #leq %s < %.2f %s' % (ymin,var,ymax,unit)
         if "tau decay mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
           if i == 2: y_bin_label = "3 prong"
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
+        if Nybins > 5: 
+            xshift = 0.76/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
         
     
