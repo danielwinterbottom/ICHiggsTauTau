@@ -107,7 +107,13 @@ namespace ic {
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
       }
-      
+     
+      if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+        outtree_->Branch("wt_prefire", &wt_prefire_);
+        outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
+        outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
+      }
+  
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -1918,6 +1924,12 @@ namespace ic {
         wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
         wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
         wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
+    }
+
+    if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+      wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
+      wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
+      wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
     }
 
     

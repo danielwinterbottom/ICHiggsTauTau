@@ -3022,6 +3022,8 @@ if is_2d and options.do_unrolling:
  
     if not isinstance(hist,ROOT.TDirectory):
       include_of = True
+      if 'dijet' in options.cat: include_of = False
+ 
       if options.symmetrise: Symmetrise(hist)
       h1d = UnrollHist2D(hist,include_of)
       hists_to_add.append(h1d)

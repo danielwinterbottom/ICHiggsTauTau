@@ -59,6 +59,7 @@
 #include "HiggsTauTau/interface/TagAndProbe.h"
 #include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
 #include "HiggsTauTau/interface/HTTSmearScale.h"
+#include "HiggsTauTau/interface/HTTPreFireWeight.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1116,6 +1117,14 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
     .set_strategy(strategy_type)
     .set_do_legacy(true)
     .set_jet_label(jets_label));
+}
+
+if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_embedded && !is_data) {
+  TH2F prefire_hist; 
+  if(strategy_type == strategy::cpsummer16) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
+  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
+  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
+    .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));

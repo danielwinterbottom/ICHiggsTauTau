@@ -196,45 +196,45 @@ if SCHEME == 'cpsummer16_ff':
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
 
-  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
-  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
-  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
-  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150],(12,-3.2,3.2)'
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
   scheme_et = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --do_ff_systs ')
   ]
   scheme_mt = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
 
   ]
   scheme_tt = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_TT, ' --do_ff_systs '),
-    ("17",   "boosted", "boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --do_ff_systs ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_TT, ' --do_ff_systs '),
+    ("17",   "boosted", "2017_boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --do_ff_systs ')
   ]
   scheme_em = [
-    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "inclusive",    "ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
-    ("19",   "dijet_loosemjj_lowboost",     "dijet_loosemjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_tightmjj_lowboost",     "dijet_tightmjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
+    ("19",   "0jet",    "2017_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "boosted", "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
+    ("19",   "inclusive",    "2017_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
+    ("19",   "dijet_loosemjj_lowboost",     "2017_dijet_loosemjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_lowboost",     "2017_dijet_tightmjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
   ]
   bkg_schemes = {
     'et' : 'et_default',

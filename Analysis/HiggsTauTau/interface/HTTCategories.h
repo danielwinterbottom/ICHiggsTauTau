@@ -1383,6 +1383,10 @@ class HTTCategories : public ModuleBase {
   bool tau_id_olddm_vvtight_2_;
   bool tau_id_newdm_vvtight_2_;
 
+  double wt_prefire_;
+  double wt_prefire_up_;
+  double wt_prefire_down_;
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();
