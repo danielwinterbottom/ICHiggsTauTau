@@ -14,7 +14,7 @@ def load_files(filelist):
     return file_names
 
 # files = load_files("scripts/files_2017_v3.txt")
-files = load_files("scripts/sig_mc_2017.txt")
+files = load_files("scripts/jhu_mc_2017.txt")
 
 channels = ["tt","mt","et","em"]
 for file_ in files:

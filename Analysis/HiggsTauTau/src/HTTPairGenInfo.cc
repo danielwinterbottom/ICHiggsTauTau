@@ -210,7 +210,17 @@ namespace ic {
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
       }
       unsigned ngenjets = gen_jets.size();
+      double gen_sjdphi_ = -999;
+      if (ngenjets >= 2) {
+        if(gen_jets[0]->eta() > gen_jets[1]->eta())
+          gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[0]->vector(), gen_jets[1]->vector());
+        
+        else
+          gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[1]->vector(), gen_jets[0]->vector());
+        
+      }
       event->Add("ngenjets", ngenjets);
+      event->Add("gen_sjdphi", gen_sjdphi_);
     }
 
     return 0;
