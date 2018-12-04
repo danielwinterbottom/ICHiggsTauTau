@@ -146,13 +146,22 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
+        # 'VBFHToTauTau_M-125',
+        # 'VBFHToPseudoscalarTauTau_GEN',
+        # 'VBFHToMaxmixTauTau_GEN',
+        # 'SUSYGluGluToHToTauTau_M-120',
+
+        # 'GluGluHToTauTau_M-125',
+        # 'GluGluHToPseudoscalarTauTau_GEN',
+        # 'GluGluHToMaxmixTauTau_GEN',
+
         # 'GluGluHToTauTau_M-125-ext',
         # 'GluGluHToTauTau_M-125',
-        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
         # 'VBFHToTauTau_M-125',
         # 'WminusHToTauTau_M-125',
@@ -391,6 +400,14 @@ if options.mg_signal or options.proc_sm:
       user='adow'
       SIG_FILELIST = 'filelists/Nov02_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1]
+    # elif 'GEN' in sa:
+    #   user='adow'
+    #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
+    #   SIG_DIR = 'Dec03_GENSIM_94X'
+    # elif 'SUSY' in sa:
+    #   user='adow'
+    #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
+    #   SIG_DIR = 'Dec03_SUSYMC_94X'
     else:
       user='adow'
       SIG_FILELIST = FILELIST
@@ -405,7 +422,7 @@ if options.mg_signal or options.proc_sm:
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1
-        if 'MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa: nperjob = 10
+        if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())

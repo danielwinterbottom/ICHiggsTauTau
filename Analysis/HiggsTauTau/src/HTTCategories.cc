@@ -3976,7 +3976,6 @@ namespace ic {
       jrawf_1_ = -9999;
       jptunc_1_ = -9999;
       jmva_1_ = -9999;
-      pujid_ = 0;
       jlrm_1_ = -9999;
       jctm_1_ = -9999;
       dphi_jtt_ = -9999.;
