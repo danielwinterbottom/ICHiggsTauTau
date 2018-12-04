@@ -1,5 +1,6 @@
 import ROOT as R
 import math
+import numpy as np
 from array import array
 import re
 import json
@@ -2745,13 +2746,17 @@ def CompareHists(hists=[],
     hs = R.THStack("hs","")
     hist_count=0
     legend_hists=[]
-    if isinstance(uncert_hist, (list,)):
-     for i in uncert_hist: 
-       if norm_bins: i.Scale(1.0,"width")
-    else:
-      if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
+    # if isinstance(uncert_hist, (list,)):
+    #  for i in uncert_hist: 
+    #    if norm_bins: i.Scale(1.0,"width")
+    # else:
+    #   if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
 
     for hist in hists:
+        # for bin_ in range(1, hist.GetNbinsX()+1):
+        #     print hist.GetBinContent(bin_)
+        #     print np.sqrt(hist.GetBinContent(bin_))
+        #     hist.SetBinError(bin_, np.sqrt(hist.GetBinContent(bin_)))
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         if norm_bins: hist.Scale(1.0,"width")
         h = hist.Clone()
