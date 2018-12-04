@@ -12,4 +12,20 @@ void ModuleBase::PrintHeader(std::string const& classname) {
   std::cout << classname << ": " << module_name_ << "\n";
   std::cout << "-------------------------------------\n";
 }
+
+bool ModuleBase::ProductExists(std::string const& name) {
+  if (products_.count(name)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+std::map<std::string, boost::any> ModuleBase::GetProducts() {
+  return products_;
+}
+
+
+
+
 }

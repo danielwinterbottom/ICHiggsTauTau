@@ -109,7 +109,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
-  std::cout<<"do recoil: " << do_recoil<<std::endl;
+
+
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
@@ -2465,7 +2466,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-if(js["baseline"]["do_ff_weights"].asBool() && addit_output_folder==""){
+if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
       .set_ditau_label("ditau")

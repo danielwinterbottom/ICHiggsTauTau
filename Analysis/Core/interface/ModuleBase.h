@@ -4,9 +4,11 @@
 #include <string>
 #include <iostream>                     // for operator<<, cout, ostream, etc
 #include <vector>                       // for vector
+#include <map>
 #include "boost/bind.hpp"               // for bind
 #include "boost/function.hpp"
 #include "boost/format.hpp"
+#include "boost/any.hpp"
 namespace ic { class TreeEvent; }
 
 #define CLASS_MEMBER(classn,type,name)                                                \
@@ -22,6 +24,7 @@ class ModuleBase {
  private:
   std::string module_name_;
   unsigned events_processed_;
+  std::map<std::string, boost::any> products_; 
 
  protected:
   void PrintHeader(std::string const& classname);
@@ -42,6 +45,30 @@ class ModuleBase {
   virtual int Execute(ic::TreeEvent*) = 0;
   inline virtual int PostAnalysis() { return 0; }
   inline virtual void PrintInfo() { return; }
+
+  bool ProductExists(std::string const& name);
+  std::map<std::string, boost::any> GetProducts();
+
+  template <class T>
+  T& GetProduct(std::string const& name) {
+    if (ProductExists(name)) {
+      return boost::any_cast<T&>(products_[name]);
+    } else {
+      throw std::runtime_error(
+          "[ic::ModuleBase::Get] No product with name " + name + " exists");
+    }
+  }
+
+  template <class T>
+  void AddToProducts(std::string name, T const& product) {
+    if (!ProductExists(name)) {
+      products_[name] = product;
+    } else {
+      throw std::runtime_error(
+          "[ic::ModuleBase::Add] Product with name " + name + " already exists");
+    }
+  }
+
 };
 }
 
