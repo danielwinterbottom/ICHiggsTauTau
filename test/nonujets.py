@@ -7,7 +7,7 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-opts.register('file', 'root://xrootd.unl.edu//store/user/dwinterb/MG5MC_2016/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2016-GEN/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2016-GEN/180801_114835/0000/test_gen_295.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 'root://xrootd-cms.infn.it//store/user/adow/PHMC_20Nov18/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/181121_113710/0000/HIG-RunIIFall17wmLHEGS-02619_12.root', parser.VarParsing.multiplicity.singleton,
 
 #opts.register('file', 'root://xrootd.unl.edu//store/user/dwinterb/MG5MC/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/180702_190927/0001/test_gen_1412.root', parser.VarParsing.multiplicity.singleton,
 

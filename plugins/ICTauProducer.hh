@@ -242,6 +242,15 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_dz_vertex(packedCand->dz());
         dest.set_lead_dxy_vertex(packedCand->dxy());
         dest.set_lead_p(packedCand->p());
+
+        dest.set_lead_pt(packedCand->pt());
+        dest.set_lead_energy(packedCand->energy());
+        dest.set_lead_eta(packedCand->eta());
+        dest.set_lead_phi(packedCand->phi());
+
+        dest.set_svx(packedCand->vx());
+        dest.set_svy(packedCand->vy());
+        dest.set_svz(packedCand->vz());
       }
     }
 
