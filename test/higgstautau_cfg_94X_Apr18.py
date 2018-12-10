@@ -115,7 +115,10 @@ process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 from UserCode.ICHiggsTauTau.runTauIdMVA import *
 na = TauIDEmbedder(process, cms,
     debug=True,
-    toKeep = ["2017v2", "newDM2017v2", "dR0p32017v2"]
+    toKeep = ["2017v2", "newDM2017v2", "dR0p32017v2",
+        "deepTau2017v1", #deepTau Tau-Ids
+        "DPFTau_2016_v0", #DeepPFlow Tau-Id
+        ]
 )
 na.runTauID()
 
