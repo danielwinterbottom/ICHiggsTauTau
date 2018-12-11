@@ -160,15 +160,6 @@ sample_list = [
     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown',
-    'VBFHiggs0MToTauTau',
-    'VBFHiggs0Mf05ph0ToTauTau',
-    'VBFHiggs0PMToTauTau',
-    'WHiggs0MToTauTau',
-    'WHiggs0Mf05ph0ToTauTau',
-    'WHiggs0PMToTauTau',
-    'ZHiggs0MToTauTau',
-    'ZHiggs0Mf05ph0ToTauTau',
-    'ZHiggs0PMToTauTau'
 	]
 
 

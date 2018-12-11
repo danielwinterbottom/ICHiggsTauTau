@@ -56,7 +56,7 @@ defaults = {
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
     "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"",
     "vbf_background":False, "syst_em_qcd_rate_0jet":"", "syst_em_qcd_rate_1jet":"",
-    "syst_em_qcd_shape_0jet":"", "syst_em_qcd_shape_1jet":"", "syst_em_qcd_extrap":"",
+    "syst_em_qcd_shape_0jet":"", "syst_em_qcd_shape_1jet":"", "syst_em_qcd_extrap":"", "syst_prefire":"",
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
@@ -335,6 +335,8 @@ parser.add_argument("--em_qcd_weight", dest="em_qcd_weight", type=str,
     help="Define custom em QCD OSSS weight/function")
 parser.add_argument("--syst_qcd_bkg", dest="syst_qcd_bkg", type=str,
     help="If set, adds systematic templates corresponding to shifting background subtraction in QCD method up/down by +/-10\% ")
+parser.add_argument("--syst_prefire", dest="syst_prefire", type=str,
+    help="If set, adds systematic templates corresponding to uncertainty on pre-firing correction.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -1261,6 +1263,9 @@ if options.syst_em_qcd_extrap != '' and options.channel == 'em':
 if options.syst_em_qcd_btag != '' and options.channel == 'em':
     systematics['syst_em_qcd_btag_up'] = ('' , '_'+options.syst_em_qcd_btag+'Up', 'wt*wt_em_qcd_bjetsup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_em_qcd_btag_down'] = ('' , '_'+options.syst_em_qcd_btag+'Down', 'wt*wt_em_qcd_bjetsdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+if options.syst_prefire != '':
+    systematics['syst_prefire_up'] = ('' , '_'+options.syst_prefire+'Up', 'wt*wt_prefire_up', ['QCD','jetFakes','EmbedZTT'], False)
+    systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down', ['QCD','jetFakes','EmbedZTT'], False)
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
@@ -2511,7 +2516,6 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         add_fake_factor_selection = "gen_match_2<6"
         if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
-        #wt+='*wt_prefire*wt_prefire_down'  
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
         if 'ZTT' not in samples_to_skip and not options.embedding:
