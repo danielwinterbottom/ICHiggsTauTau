@@ -302,6 +302,16 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         }
         dest.set_iso_gamma_cands(ids);
       }
+
+      if (src.signalNeutrHadrCands().isNonnull()) {
+        auto cands = src.signalNeutrHadrCands();
+        std::vector<std::size_t> ids;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
+          ids.push_back(cand_hasher_(&(*(cands[c]))));
+        }
+        dest.set_sig_neutral_cands(ids);
+      }
     }
 #endif
   }

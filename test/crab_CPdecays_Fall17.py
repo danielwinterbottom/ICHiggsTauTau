@@ -3,18 +3,18 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Dec03_GENSIM_94X'
+config.General.workArea='Dec10_GENSIM_94X'
 config.section_('JobType')
 config.JobType.psetName = 'nonujets.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 CfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v15']
 config.section_('Data')
-config.Data.unitsPerJob = 10000
-config.Data.splitting = 'EventAwareLumiBased'
+# config.Data.unitsPerJob = 10000
+# config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-# config.Data.inputDBS = 'phys03'
-config.Data.outLFNDirBase='/store/user/adow/Dec03_GENSIM_94X/'
+config.Data.inputDBS = 'phys03'
+config.Data.outLFNDirBase='/store/user/adow/Dec10_GENSIM_94X/'
 config.Data.allowNonValidInputDataset = True
 config.section_('User')
 config.section_('Site')
@@ -48,7 +48,10 @@ if __name__ == '__main__':
     # tasks.append(('GluGluHToPseudoscalarTauTau_GEN', '/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/adow-GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST-7bf405a5752cd2de7cd85ee9641268bf/USER'))
     # tasks.append(('GluGluHToMaxmixTauTau_GEN', '/GluGluHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/adow-GluGluHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST-7bf405a5752cd2de7cd85ee9641268bf/USER'))
 
-    tasks.append(('SUSYGluGluToHToTauTau_M-120', '/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    # tasks.append(('SUSYGluGluToHToTauTau_M-120', '/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    
+    tasks.append(('GluGluHToPseudoscalarTauTau_GEN', '/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST10Dec18/adow-GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST10Dec18-7bf405a5752cd2de7cd85ee9641268bf/USER'))
+    tasks.append(('GluGluHToMaxmixTauTau_GEN', '/GluGluHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST10Dec18/adow-GluGluHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST10Dec18-7bf405a5752cd2de7cd85ee9641268bf/USER'))
 
     for task in tasks:
         print task[0]

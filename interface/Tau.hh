@@ -107,6 +107,11 @@ class Tau : public Candidate {
   inline std::vector<std::size_t> const& iso_gamma_cands() const {
     return iso_gamma_cands_;
   }
+
+  /// A vector referring to the signal neutral PFCandidates
+  inline std::vector<std::size_t> const& sig_neutral_cands() const {
+    return sig_neutral_cands_;
+  }
   /**@}*/
 
   /// @name Setters
@@ -203,6 +208,11 @@ class Tau : public Candidate {
       std::vector<std::size_t> const& iso_gamma_cands) {
     iso_gamma_cands_ = iso_gamma_cands;
   }
+
+  inline void set_sig_neutral_cands(
+      std::vector<std::size_t> const& sig_neutral_cands) {
+    sig_neutral_cands_ = sig_neutral_cands;
+  }
   /**@}*/
 
   /**
@@ -255,6 +265,7 @@ class Tau : public Candidate {
   std::vector<std::size_t> iso_charged_cands_;
   std::vector<std::size_t> sig_gamma_cands_;
   std::vector<std::size_t> iso_gamma_cands_;
+  std::vector<std::size_t> sig_neutral_cands_;
 
  #ifndef SKIP_CINT_DICT
  public:
