@@ -2076,6 +2076,8 @@ def HTTPlot(nodename,
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
 
     sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
+    # sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False )
+    # sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2207,7 +2209,7 @@ def HTTPlot(nodename,
         axish[1].GetXaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetNdivisions(4)
         if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
-        else: axish[1].GetYaxis().SetTitle("Data/Exp")
+        else: axish[1].GetYaxis().SetTitle("Obs/Exp")
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
@@ -2281,6 +2283,7 @@ def HTTPlot(nodename,
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
             signal_split_schemes = ['sm_cp','sm_qqH']
+            # signal_split_schemes = ['sm_cp','sm_ps','sm_mm']
 
         for index,split_scheme in enumerate(signal_split_schemes):
             sighists[split_scheme] = R.TH1F()
@@ -2297,6 +2300,10 @@ def HTTPlot(nodename,
                     sighists[split_scheme].SetLineColor(R.kRed)
                 elif split_scheme == 'sm_qqH':
                     sighists[split_scheme].SetLineColor(R.kBlue)
+                elif split_scheme == 'sm_ps':
+                    sighists[split_scheme].SetLineColor(R.kGreen+3)
+                elif split_scheme == 'sm_mm':
+                    sighists[split_scheme].SetLineColor(R.kOrange-5)
 
                 sighists[split_scheme].SetLineWidth(3)
                 sighists[split_scheme].Scale(signal_scale)
@@ -2383,6 +2390,9 @@ def HTTPlot(nodename,
         else:
             for split_scheme in signal_split_schemes:
                 legend.AddEntry(sighists[split_scheme],sig_schemes[split_scheme][0],"l")
+                # if split_scheme != "sm_cp":
+                #     ks_score =  sighists[split_scheme].KolmogorovTest(sighists["sm_cp"],"DNOU")
+                #     legend.AddEntry(R.TObject(), "K-S ({}) = {:.3f}".format(split_scheme,ks_score), "")
 
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(350 GeV)#rightarrow#tau#tau","l")  
@@ -2482,6 +2492,31 @@ def HTTPlot(nodename,
 
     
     #Add ratio plot if required
+    # replace commented with uncommented/vice versa to plot ratio of signal hists
+    # for comparison of ggH signal shapes
+    # if ratio:
+    #     ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
+    #     # blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+    #     sighist_ratios = []
+    #     for index,split_scheme in enumerate(signal_split_schemes):
+    #         sighist_ratio = MakeRatioHist(sighists[split_scheme].Clone(),sighists["sm_cp"].Clone(),False,False)
+    #         sighist_ratio.SetMarkerSize(0)
+    #         sighist_ratios.append(sighist_ratio)
+    #     pads[1].cd()
+    #     pads[1].SetGrid(0,1)
+    #     axish[1].Draw("axis")
+    #     axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+    #     axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+    #     sighist_ratios[0].Draw("e0same")
+    #     sighist_ratios[1].SetLineColor(R.kOrange-5)
+    #     sighist_ratios[1].DrawCopy("e0same")
+    #     sighist_ratios[2].SetLineColor(R.kGreen+3)
+    #     sighist_ratios[2].DrawCopy("e0same")
+    #     # ratio_bkghist.SetMarkerSize(0)
+    #     # ratio_bkghist.Draw("e2same")
+    #     # blind_ratio.DrawCopy("e0same")
+    #     pads[1].RedrawAxis("G")
+
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
@@ -2814,9 +2849,9 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.25,0.2,3,0.01)
+    legend = PositionedLegend(0.45,0.2,3,0.01)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
+    legend.SetTextSize(0.020)
     legend.SetFillColor(0)
     
 
@@ -2833,7 +2868,7 @@ def CompareHists(hists=[],
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
@@ -3333,6 +3368,8 @@ def HTTPlotUnrolled(nodename,
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
+    #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -3362,7 +3399,8 @@ def HTTPlotUnrolled(nodename,
     
     if vbf_background:
         for key in background_schemes: 
-            background_schemes[key].insert(0,backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+            background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
         if not chan in background_schemes: continue  
@@ -3468,7 +3506,7 @@ def HTTPlotUnrolled(nodename,
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
         if log_y: 
-            axish[0].SetMinimum(0.0009)
+            axish[0].SetMinimum(0.01)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
@@ -3487,27 +3525,30 @@ def HTTPlotUnrolled(nodename,
     sighist_blind = []
     if signal_mass != "":
         for signal_scheme in sig_schemes:
-          sighist = R.TH1F()  
-          sig_scheme = sig_schemes[signal_scheme]
-          for i in sig_scheme[1]: 
-              h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-              if sighist.GetEntries() == 0: sighist = h
-              else: sighist.Add(h)
-          sighist.SetLineColor(sig_scheme[3])
-          sighist.SetLineWidth(2)
-          sighist.Scale(signal_scale)
-          if sig_scheme[2]: 
-              s = sighist.Clone()
-              if norm_bins: Norm2DBins(s)
-              stack.Add(s)
-              if not custom_y_range: 
-                axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-          sighist_blind.append(sighist.Clone())      
-          if norm_bins: Norm2DBins(sighist)
-          stack.Draw("histsame")
-          sighist.SetName(signal_scheme)
-          sighists.append(sighist.Clone())
-          #if not sig_scheme[2]: sighist.Draw("histsame")
+            sighist = R.TH1F()  
+            sig_scheme = sig_schemes[signal_scheme]
+            for i in sig_scheme[1]: 
+                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+                if sighist.GetEntries() == 0: 
+                    sighist = h
+                else: 
+                    sighist.Add(h)
+            sighist.SetLineColor(sig_scheme[3])
+            sighist.SetLineWidth(2)
+            sighist.Scale(signal_scale)
+            if sig_scheme[2]: 
+                s = sighist.Clone()
+                if norm_bins: 
+                    Norm2DBins(s)
+                stack.Add(s)
+                if not custom_y_range: 
+                    axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+            sighist_blind.append(sighist.Clone())      
+            if norm_bins: Norm2DBins(sighist)
+            stack.Draw("histsame")
+            sighist.SetName(signal_scheme)
+            sighists.append(sighist.Clone())
+            #if not sig_scheme[2]: sighist.Draw("histsame")
         for sig in sighists: sig.Draw("histsame")
             
     else:
@@ -3579,6 +3620,7 @@ def HTTPlotUnrolled(nodename,
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
+
     
     #Setup legend
     legend = PositionedLegend(0.13,0.45,7,0.02)
@@ -3622,14 +3664,38 @@ def HTTPlotUnrolled(nodename,
     DrawTitle(pads[0], lumi, 3, scale=0.5)
 
     #Add ratio plot if required
+    # replace commented with uncommented/vice versa to plot ratio of signal hists
+    # for comparison of ggH signal shapes
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+
+        sighist_ratios = []
+        ks_scores = []
+        for sighist in sighists:
+            sighist_ratio = MakeRatioHist(sighist.Clone(),sighists[0].Clone(),True,False)
+            sighist_ratio.SetMarkerSize(0)
+            # if sighist != sighists[0]:
+            #     ks_score =  sighist.KolmogorovTest(sighists[0],"DNOU")
+            #     legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
+            sighist_ratios.append(sighist_ratio)
+
         pads[1].cd()
         pads[1].SetGrid(0,1)
         axish[1].Draw("axis")
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+
+        #sighist_ratios[0].Draw("e0same")
+        #if len(sighist_ratios) > 1: 
+        #  sighist_ratios[1].SetLineColor(R.kOrange-5)
+        #  sighist_ratios[1].DrawCopy("e0same")
+        #if len(sighist_ratios) > 1:
+
+        #  sighist_ratios[2].SetLineColor(R.kGreen+3)
+        #  sighist_ratios[2].DrawCopy("e0same")
+
+
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
@@ -3668,7 +3734,10 @@ def HTTPlotUnrolled(nodename,
       latex.SetTextSize(0.028)
       
       Nybins = len(y_bins)
-      if Nybins > 5: latex.SetTextSize(0.023)
+      if Nybins > 4: 
+          latex.SetTextSize(0.023)
+      if Nybins > 5: 
+          latex.SetTextSize(0.02)
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
@@ -3679,14 +3748,16 @@ def HTTPlotUnrolled(nodename,
                 y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
         else: 
             if ymax == -1: 
-                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
+                y_bin_label = '%s #geq %.2f %s' % (var,ymin,unit)
             else: 
-                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit)
+                y_bin_label = '%.2f #leq %s < %.2f %s' % (ymin,var,ymax,unit)
         if "tau decay mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
           if i == 2: y_bin_label = "3 prong"
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
+        if Nybins > 5: 
+            xshift = 0.76/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
         
     

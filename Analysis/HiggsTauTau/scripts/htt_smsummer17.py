@@ -146,20 +146,34 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-        'GluGluHToTauTau_M-125-ext',
-        'GluGluHToTauTau_M-125',
+         'GluGluHToTauTau_M-125-ext',
+         'GluGluHToTauTau_M-125',
         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToHToTauTau_M125_amcatnloFXFX',
+         'GluGluToHToTauTau_M125_amcatnloFXFX',
         'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+         'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
         'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-        'VBFHToTauTau_M-125',
-        'WminusHToTauTau_M-125',
-        'WplusHToTauTau_M-125',
-        'ZHToTauTau_M-125',
+         'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+         'VBFHToTauTau_M-125',
+         'WminusHToTauTau_M-125',
+         'WplusHToTauTau_M-125',
+         'ZHToTauTau_M-125',
+         'VBFHiggs0Mf05ph0ToTauTau',
+         'VBFHiggs0MToTauTau',
+         'VBFHiggs0PMToTauTau',
+         'WHiggs0Mf05ph0ToTauTau',
+         'WHiggs0MToTauTau',
+         'WHiggs0PMToTauTau',
+         'ZHiggs0Mf05ph0ToTauTau',
+         'ZHiggs0MToTauTau',
+         'ZHiggs0PMToTauTau',
         ]
-
+   # signal_mc += [
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
+   #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown'
+   # ] 
   
     
 
@@ -292,13 +306,6 @@ if options.proc_bkg or options.proc_all:
      'DYJetsToLL-LO',
      'DYJetsToLL',
      'DYJetsToLL-ext',
-     'TTToSemiLeptonic',
-     'TTToHadronic',
-     'TTTo2L2Nu',
-     'T-tW',
-     'T-t',
-     'Tbar-tW',
-     'Tbar-t',
      'EWKZ2Jets',
      'EWKWPlus2Jets',
      'EWKWMinus2Jets',
@@ -319,7 +326,14 @@ if options.proc_bkg or options.proc_all:
      'ZZTo2L2Nu',
      'ZZTo2L2Q',
      'ZZTo4L-ext',
-     'ZZTo4L'
+     'ZZTo4L',
+     'TTToSemiLeptonic',
+     'TTToHadronic',
+     'TTTo2L2Nu',
+     'T-tW',
+     'T-t',
+     'Tbar-tW',
+     'Tbar-t', 
      ]
   
 
@@ -329,6 +343,7 @@ if options.proc_bkg or options.proc_all:
   for sa in central_samples:
       JOB='%s_2017' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+
       job_num=0
       for FLATJSONPATCH in flatjsons:
         nperjob = 20
@@ -340,11 +355,13 @@ if options.proc_bkg or options.proc_all:
             nperjob = 15
         if 'QCD' in sa:
             nperjob = 15
-        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=5
+        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=10
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')
+        else: 
+          FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -362,12 +379,29 @@ if options.mg_signal or options.proc_sm:
   SIG_FILELIST = FILELIST
   for sa in signal_mc:
     user='adow'
+    if 'WHiggs' in sa or 'ZHiggs' in sa or 'VBFHiggs' in sa or 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX' in sa or 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX' in sa: 
+      user='adow'
+      SIG_FILELIST='filelists/Nov02_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1] 
+    elif 'PSDown' in sa or 'PSUp' in sa or 'UEUp' in sa or 'UEDown' in sa:
+      user='dwinterb'
+      SIG_FILELIST='filelists/Nov01_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1].replace('94X','80X') 
+    elif 'Higgs0' in sa or 'MaxmixHToTauTauPlusTwoJets' in sa or 'PseudoscalarHToTauTauPlusTwoJets' in sa:
+      user='adow'
+      SIG_FILELIST = 'filelists/Nov02_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1]
+    else:
+      user='adow'
+      SIG_FILELIST = FILELIST
+      SIG_DIR = SIG_FILELIST.split('/')[1]
     JOB='%s_2017' % (sa)
-    SIG_DIR = SIG_FILELIST.split('/')[1]
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+      FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1

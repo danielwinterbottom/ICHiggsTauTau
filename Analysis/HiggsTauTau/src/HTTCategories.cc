@@ -107,7 +107,13 @@ namespace ic {
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
       }
-      
+     
+      if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+        outtree_->Branch("wt_prefire", &wt_prefire_);
+        outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
+        outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
+      }
+  
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
@@ -802,6 +808,7 @@ namespace ic {
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
+      outtree_->Branch("dphi_jtt",          &dphi_jtt_);
       outtree_->Branch("dijetpt",           &dijetpt_);
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         outtree_->Branch("sjdphi",             &sjdphi_);
@@ -827,6 +834,9 @@ namespace ic {
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
+      outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
+      outtree_->Branch("genM", &gen_m_);
+      outtree_->Branch("genpT", &gen_pt_);
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
       outtree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1);
@@ -891,6 +901,8 @@ namespace ic {
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+      outtree_->Branch("jmva_1",             &jmva_1_);
+      outtree_->Branch("jmva_2",             &jmva_2_);
 
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -1820,7 +1832,7 @@ namespace ic {
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    /* wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : 1.0; */
+    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : wt_dysoup_;
 
     // adding some gen stuff tempoarily can be deleted later
     std::vector<double> parton_pt_vec;
@@ -1916,6 +1928,12 @@ namespace ic {
         wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
         wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
         wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
+    }
+
+    if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+      wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
+      wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
+      wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
     }
 
     
@@ -2574,6 +2592,8 @@ namespace ic {
     if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
     if(event->Exists("subleading_lepton_match_DR")) subleading_lepton_match_DR_ = event->Get<double>("subleading_lepton_match_DR");*/
+
+    if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
    
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
@@ -2952,6 +2972,9 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+
+    event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
+    event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
 
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -3945,6 +3968,7 @@ namespace ic {
       } else {
         j1_dm_ = -1;
       }
+      dphi_jtt_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector()));
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
@@ -3954,6 +3978,7 @@ namespace ic {
       jmva_1_ = -9999;
       jlrm_1_ = -9999;
       jctm_1_ = -9999;
+      dphi_jtt_ = -9999.;
     }
 
     if (n_lowpt_jets_ >= 2) {
@@ -3970,12 +3995,6 @@ namespace ic {
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
 
-      /* if (!(lowpt_jets[0]->pt()>50 || fabs(lowpt_jets[0]->eta())>3.139 || fabs(lowpt_jets[0]->eta())<2.65) || 
-              !(lowpt_jets[1]->pt()>50 || fabs(lowpt_jets[1]->eta())>3.139 || fabs(lowpt_jets[1]->eta())<2.65)) {
-        std::cout << "(lowpt_jets[0]->pt(), lowpt_jets[0]->eta()): " << lowpt_jets[0]->pt() << ","<< fabs(lowpt_jets[0]->eta()) << std::endl;
-        std::cout << "(lowpt_jets[1]->pt(), lowpt_jets[1]->eta()): " << lowpt_jets[1]->pt() << ","<< fabs(lowpt_jets[1]->eta()) << std::endl;
-      } */
-      
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
         else D0_ = -9999;
@@ -4098,8 +4117,14 @@ namespace ic {
         wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
         wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
       } else {
-        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.33 : 1.0; 
-        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.72 : 1.0;
+        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.27 : 1.0;
+        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.77 : 1.0;
+        // MM 2.26750 1.76825
+        // PS 2.26810 1.76739
+        // SM 2.26824 1.76799
+        // private numbers
+        //wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.33 : 1.0; 
+        //wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.72 : 1.0;
       }
       //SM = 1.18179 0.844494, MM = 2.32794 1.71996 PS = 2.32857 1.72129  -> for 2017!
     }
