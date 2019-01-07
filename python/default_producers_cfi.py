@@ -39,6 +39,15 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
     inputVertices             = cms.InputTag("offlinePrimaryVertices"),
     includeBeamspotIP         = cms.bool(False),
     inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+    inputPostCorr             = cms.string("ecalTrkEnergyPostCorr"),
+    inputPreCorr              = cms.string("ecalTrkEnergyPreCorr"),
+    inputErrPostCorr          = cms.string("ecalTrkEnergyErrPostCorr"),
+    inputErrPreCorr           = cms.string("ecalTrkEnergyErrPreCorr"),
+    inputScaleUp              = cms.string("energyScaleUp"),
+    inputScaleDown            = cms.string("energyScaleDown"),
+    inputSigmaUp              = cms.string("energySigmaUp"),
+    inputSigmaDown            = cms.string("energySigmaDown"),
+
     includeFloats = cms.PSet(
       # A named list of InputTags identifying edm::ValueMap<float>
       # objects keyed on the input GsfElectron collection. The hash

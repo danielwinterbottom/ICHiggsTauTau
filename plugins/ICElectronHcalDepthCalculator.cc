@@ -11,7 +11,12 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
+#if CMSSW_MAJOR_VERSION<9
+#include "DataFormats/CaloTowers/interface/CaloTowerFwd.h"
+#endif
+#if CMSSW_MAJOR_VERSION>=9
 #include "DataFormats/CaloTowers/interface/CaloTowerDefs.h"
+#endif
 #include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
