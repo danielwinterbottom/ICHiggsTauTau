@@ -45,6 +45,7 @@ class AnalysisBase {
   unsigned retry_pause_;
   unsigned retry_attempts_;
   bool timings_;
+  std::map<std::string, boost::any> products_;
 
  public:
   AnalysisBase(std::string const& analysis_name,
@@ -74,6 +75,9 @@ class AnalysisBase {
   void RetryFileAfterFailure(unsigned pause_in_seconds,
                              unsigned retry_attempts);
   void CalculateTimings(bool const& value);
+  void AddProducts(ic::ModuleBase* module_ptr);
+  std::map<std::string, boost::any> GetProducts();
+
 };
 }
 

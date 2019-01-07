@@ -249,6 +249,16 @@ namespace ic {
       outtree_->Branch("ysep"     , &ysep_);
       outtree_->Branch("n_pjets"     , &n_pjets_);
       outtree_->Branch("n_pu",      &n_pu_);
+
+      outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("aco_angle_2", &aco_angle_2_);
+      outtree_->Branch("aco_angle_3", &aco_angle_3_);
+      outtree_->Branch("aco_angle_4", &aco_angle_4_);
+      outtree_->Branch("cp_sign_1",     &cp_sign_1_);
+      outtree_->Branch("cp_sign_2",     &cp_sign_2_);
+      outtree_->Branch("cp_sign_3",     &cp_sign_3_);
+      outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+      outtree_->Branch("cp_channel",    &cp_channel_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -273,18 +283,18 @@ namespace ic {
     GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo").Copy(z_pt_weights_sm_);
     topmass_wts_ = GetFromTFile<TH1F>("input/ggh_weights/top_mass_weights.root","/","pt_weight");
 
-    topmass_wts_toponly_ = GetFromTFile<TH1F>("input/ggh_weights/quarkmass_uncerts_hnnlo.root","/","nom");
+    /* topmass_wts_toponly_ = GetFromTFile<TH1F>("input/ggh_weights/quarkmass_uncerts_hnnlo.root","/","nom"); */
    
-    ps_0jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_up");
-    ps_0jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_down");
-    ps_1jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_up");
-    ps_1jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_down");
-    ps_2jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_up");
-    ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down");
-    ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up");
-    ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down");   
-    ue_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_up");
-    ue_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_down"); 
+    /* ps_0jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_up"); */
+    /* ps_0jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_0jet_down"); */
+    /* ps_1jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_up"); */
+    /* ps_1jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_1jet_down"); */
+    /* ps_2jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_up"); */
+    /* ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down"); */
+    /* ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up"); */
+    /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */   
+    /* ue_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_up"); */
+    /* ue_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_down"); */ 
     return 0;
   }
 
@@ -717,6 +727,147 @@ namespace ic {
       }
     }
 
+    std::vector<GenJet> gen_tau_jets = BuildTauJets(gen_particles, false,true);
+    std::vector<GenJet *> gen_tau_jets_ptr;
+    for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
+    ic::erase_if(gen_tau_jets_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
+    std::sort(gen_tau_jets_ptr.begin(), gen_tau_jets_ptr.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    cp_sign_1_ = 999;
+    cp_sign_2_ = 999;
+    cp_sign_3_ = 999;
+    cp_sign_4_ = 999;
+    aco_angle_1_ = 9999.;
+    aco_angle_2_ = 9999.;
+    aco_angle_3_ = 9999.;
+    aco_angle_4_ = 9999.;
+    cp_channel_=-1;
+
+    std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
+    
+    std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
+    std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
+    std::pair<bool,std::vector<GenParticle*>> a1_1 = std::make_pair(false, std::vector<GenParticle*>());
+    std::pair<bool,GenParticle*> pi_2 = std::make_pair(false, new GenParticle());
+    std::pair<bool,std::vector<GenParticle*>> rho_2 = std::make_pair(false, std::vector<GenParticle*>()); 
+    std::pair<bool,std::vector<GenParticle*>> a1_2 = std::make_pair(false, std::vector<GenParticle*>());
+    
+    if(gen_tau_jets_ptr.size()>=1){
+      pi_1 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents()); 
+      rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+      a1_1 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+    } 
+    if(gen_tau_jets_ptr.size()>=2){
+      pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+      rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
+      a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+    }
+    /* std::vector<ic::GenParticle> leptons;
+    for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
+    for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+    if(leptons.size()>=2){
+      cp_channel_=1;
+      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);    
+      lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0);
+      lvec3 = ConvertToLorentz(leptons[0].vector());
+      lvec4 = ConvertToLorentz(leptons[1].vector());
+    } else if(leptons.size()==1){
+      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);
+      lvec3 = ConvertToLorentz(leptons[0].vector());
+      if(pi_1.first) {
+        cp_channel_=1; 
+        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); 
+        lvec4 = ConvertToLorentz(pi_1.second->vector());
+      }
+      if(pi_2.first) {
+        cp_channel_=1; 
+        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); 
+        lvec4 = ConvertToLorentz(pi_2.second->vector());
+      }
+      if(rho_1.first) {
+        cp_channel_=2; 
+        lvec2 = ConvertToLorentz(rho_1.second[1]->vector()); 
+        lvec4 = ConvertToLorentz(rho_1.second[0]->vector()); 
+        cp_sign_1_ = YRho(rho_1.second,TVector3());
+      }
+      if(rho_2.first) {
+        cp_channel_=2; 
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector()); 
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector()); 
+        cp_sign_1_ = YRho(rho_2.second,TVector3());
+      }
+    } else{
+      if(pi_1.first&&pi_2.first){
+        cp_channel_=1;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
+        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        lvec3 = ConvertToLorentz(pi_1.second->vector());
+        lvec4 = ConvertToLorentz(pi_2.second->vector());
+      } else if (pi_1.first&&rho_2.first){
+        cp_channel_=2;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
+        lvec3 = ConvertToLorentz(pi_1.second->vector());
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
+        cp_sign_1_ = YRho(rho_2.second,TVector3());
+      } else if(pi_2.first&&rho_1.first){
+        cp_channel_=2;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        lvec2 = ConvertToLorentz(rho_1.second[1]->vector());
+        lvec3 = ConvertToLorentz(pi_2.second->vector());
+        lvec4 = ConvertToLorentz(rho_1.second[0]->vector());
+        cp_sign_1_ = YRho(rho_1.second,TVector3());
+      } else if (rho_1.first&&rho_2.first){
+        cp_channel_=3;  
+        lvec1 = ConvertToLorentz(rho_1.second[1]->vector());   
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
+        lvec3 = ConvertToLorentz(rho_1.second[0]->vector());   
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
+        cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3());
+      }
+    }
+    
+    if(cp_channel_!=-1){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+    } */
+    
+    /* if(gen_tau_jets_ptr.size()>=2){
+      if(rho_1.first && rho_2.first) { 
+        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+        aco_angle_2_ = angles[0].first;
+        cp_sign_2_ = angles[0].second;
+      }
+      if(rho_1.first && a1_2.first) {
+        cp_channel_ = 3;
+        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);
+        aco_angle_1_ = angles[0].first;
+        cp_sign_1_ = angles[0].second;
+        aco_angle_2_ = angles[1].first;
+        cp_sign_2_ = angles[1].second;
+        aco_angle_3_ = angles[2].first;
+        cp_sign_3_ = angles[2].second;
+        aco_angle_4_ = angles[3].first;
+        cp_sign_4_ = angles[3].second;
+      }
+      if(a1_1.first && rho_2.first) {
+        cp_channel_ = 3;
+        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_2.second,a1_1.second,true);
+        aco_angle_1_ = angles[0].first;
+        cp_sign_1_ = angles[0].second;
+        aco_angle_2_ = angles[1].first;
+        cp_sign_2_ = angles[1].second;
+        aco_angle_3_ = angles[2].first;
+        cp_sign_3_ = angles[2].second;
+        aco_angle_4_ = angles[3].first;
+        cp_sign_4_ = angles[3].second;
+      }
+
+    } */
+
     if(passed_){
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
@@ -881,26 +1032,26 @@ namespace ic {
       spjdphi_ = -9999;
     }
 
-    wt_ps_down_ = 1.0;
-    wt_ps_up_ = 1.0;
-    if(n_jets_==0){
-      wt_ps_up_ =  ps_0jet_up_  .GetBinContent(ps_0jet_up_  .FindBin(HiggsPt_));  
-      wt_ps_down_ =  ps_0jet_down_.GetBinContent(ps_0jet_down_.FindBin(HiggsPt_));   
-    }
-    if(n_jets_==1){ 
-      wt_ps_up_ =  ps_1jet_up_ .GetBinContent(ps_1jet_up_  .FindBin(HiggsPt_));  
-      wt_ps_down_ =  ps_1jet_down_.GetBinContent(ps_1jet_down_.FindBin(HiggsPt_));   
-    }
-    if(n_jets_==2){
-      wt_ps_up_ =  ps_2jet_up_  .GetBinContent(ps_2jet_up_  .FindBin(HiggsPt_));  
-      wt_ps_down_ =  ps_2jet_down_.GetBinContent(ps_2jet_down_.FindBin(HiggsPt_));     
-    }
-    if(n_jets_>2){
-      wt_ps_up_ =  ps_3jet_up_  .GetBinContent(ps_3jet_up_  .FindBin(HiggsPt_));
-      wt_ps_down_ =  ps_3jet_down_.GetBinContent(ps_3jet_down_.FindBin(HiggsPt_));
-    }
-    wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_));
-    wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_));
+    /* wt_ps_down_ = 1.0; */
+    /* wt_ps_up_ = 1.0; */
+    /* if(n_jets_==0){ */
+    /*   wt_ps_up_ =  ps_0jet_up_  .GetBinContent(ps_0jet_up_  .FindBin(HiggsPt_)); */  
+    /*   wt_ps_down_ =  ps_0jet_down_.GetBinContent(ps_0jet_down_.FindBin(HiggsPt_)); */   
+    /* } */
+    /* if(n_jets_==1){ */ 
+    /*   wt_ps_up_ =  ps_1jet_up_ .GetBinContent(ps_1jet_up_  .FindBin(HiggsPt_)); */  
+    /*   wt_ps_down_ =  ps_1jet_down_.GetBinContent(ps_1jet_down_.FindBin(HiggsPt_)); */   
+    /* } */
+    /* if(n_jets_==2){ */
+    /*   wt_ps_up_ =  ps_2jet_up_  .GetBinContent(ps_2jet_up_  .FindBin(HiggsPt_)); */  
+    /*   wt_ps_down_ =  ps_2jet_down_.GetBinContent(ps_2jet_down_.FindBin(HiggsPt_)); */     
+    /* } */
+    /* if(n_jets_>2){ */
+    /*   wt_ps_up_ =  ps_3jet_up_  .GetBinContent(ps_3jet_up_  .FindBin(HiggsPt_)); */
+    /*   wt_ps_down_ =  ps_3jet_down_.GetBinContent(ps_3jet_down_.FindBin(HiggsPt_)); */
+    /* } */
+    /* wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); */
+    /* wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); */
 
 
     std::vector<PileupInfo *> puInfo;

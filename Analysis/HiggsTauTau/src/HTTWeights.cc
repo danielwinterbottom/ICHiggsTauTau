@@ -631,6 +631,9 @@ namespace ic {
             fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
+            fns_["m_looseiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_looseiso_embed_ratio")->functor(w_->argSet("m_pt,m_eta")));
+
 
             TFile fembed(embedding_scalefactor_file_.c_str());
             wembed_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
@@ -644,8 +647,8 @@ namespace ic {
              wembed_->function("m_trg_binned_data")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
             fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
               wembed_->function("m_trg_binned_mc")->functor(wembed_->argSet("m_pt,m_eta,m_iso")));
-            fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(
-              wembed_->function("m_looseiso_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
+            //fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(
+            //  wembed_->function("m_looseiso_ratio")->functor(wembed_->argSet("m_pt,m_eta")));
             fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
                  wembed_->function("e_id_ratio")->functor(wembed_->argSet("e_pt,e_eta")));
             fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -3320,7 +3323,7 @@ namespace ic {
                  double mu_iso = 1.0;
                  m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data());
                  if (m_iso<0.2) {
-                   mu_iso = fns_["m_looseiso_ratio"]->eval(args_1_2.data());
+                   mu_iso = fns_["m_looseiso_embed_ratio"]->eval(args_1_2.data());
                  }
                  else {
                    mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2_2.data());

@@ -10,6 +10,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('python')
 options.register('output','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('input','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('tauSpinner', False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Compute weights using tauspinner")
 
 options.parseArguments()
 #outputfilename = "file:%s_%s.root"%(options.output.replace(".root",""),options.jobnum)
@@ -164,6 +165,23 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeLHEWeights   = cms.bool(True),
     lheProducer         = cms.InputTag("externalLHEProducer"))
 
+################################################################
+# TauSpinner
+################################################################
+
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+  branch                  = cms.string("tauspinner"),
+  input                   = cms.InputTag("prunedGenParticles"),
+  theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
+)
+
+if options.tauSpinner:
+  process.icTauSpinnerSequence = cms.Sequence(
+    process.icTauSpinnerProducer
+  )
+else: process.icTauSpinnerSequence = cms.Sequence()
+
+
 process.icEventProducer = producers.icEventProducer.clone()
 
 process.p = cms.Path(
@@ -174,6 +192,7 @@ process.p = cms.Path(
    process.selectedGenJets+
    process.icGenJetProducer+
    process.icEventInfoProducer+
+   process.icTauSpinnerSequence+
    process.icEventProducer
 )
 

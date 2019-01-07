@@ -3,7 +3,7 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Apr02_MC_80X_ReSub'
+config.General.workArea='Apr02_MC_80X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Nov17_embedding.py'
 config.JobType.pluginName = 'Analysis'
@@ -47,19 +47,19 @@ if __name__ == '__main__':
     
 
     #tasks.append(('EmbeddingMuTauB', '/EmbeddingRun2016B/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2016C/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauD', '/EmbeddingRun2016D/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauE', '/EmbeddingRun2016E/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauF', '/EmbeddingRun2016F/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2016C/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauD', '/EmbeddingRun2016D/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauE', '/EmbeddingRun2016E/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingMuTauF', '/EmbeddingRun2016F/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingMuTauG', '/EmbeddingRun2016G/MuTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingMuTauH', '/EmbeddingRun2016H/MuTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))
 
     #tasks.append(('EmbeddingElTauB', '/EmbeddingRun2016B/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingElTauC', '/EmbeddingRun2016C/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingElTauD', '/EmbeddingRun2016D/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElTauE', '/EmbeddingRun2016E/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingElTauE', '/EmbeddingRun2016E/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingElTauF', '/EmbeddingRun2016F/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElTauG', '/EmbeddingRun2016G/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
+    #tasks.append(('EmbeddingElTauG', '/EmbeddingRun2016G/ElTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingElTauH', '/EmbeddingRun2016H/ElTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v2/USER'))
 
     #tasks.append(('EmbeddingElMuB', '/EmbeddingRun2016B/ElMuFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
@@ -77,6 +77,22 @@ if __name__ == '__main__':
     #tasks.append(('EmbeddingTauTauF', '/EmbeddingRun2016F/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingTauTauG', '/EmbeddingRun2016G/TauTauFinalState-imputSep16DoubleMu_mirror_miniAOD-v2/USER'))
     #tasks.append(('EmbeddingTauTauH', '/EmbeddingRun2016H/TauTauFinalState-imputPromptDoubleMu_mirror_miniAOD-v3/USER'))    
+
+    tasks.append(('EmbeddingMuMuB', '/EmbeddingRun2016B/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuC', '/EmbeddingRun2016C/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuD', '/EmbeddingRun2016D/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuE', '/EmbeddingRun2016E/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuF', '/EmbeddingRun2016F/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuG', '/EmbeddingRun2016G/MuonEmbedding-imputSep16DoubleMu_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingMuMuH', '/EmbeddingRun2016H/MuonEmbedding-imputPromptDoubleMu_miniAOD-v2/USER'))
+
+    tasks.append(('EmbeddingElElB', '/EmbeddingRun2016B/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
+    tasks.append(('EmbeddingElElC', '/EmbeddingRun2016C/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v2/USER'))
+    tasks.append(('EmbeddingElElD', '/EmbeddingRun2016D/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
+    tasks.append(('EmbeddingElElE', '/EmbeddingRun2016E/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
+    tasks.append(('EmbeddingElElF', '/EmbeddingRun2016F/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
+    tasks.append(('EmbeddingElElG', '/EmbeddingRun2016G/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
+    tasks.append(('EmbeddingElElH', '/EmbeddingRun2016H/ElectronEmbedding-imputDoubleMu_mirror_miniAOD-v5/USER'))
 
     for task in tasks:
         print task[0]

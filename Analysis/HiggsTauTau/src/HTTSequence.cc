@@ -59,6 +59,7 @@
 #include "HiggsTauTau/interface/TagAndProbe.h"
 #include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
 #include "HiggsTauTau/interface/HTTSmearScale.h"
+#include "HiggsTauTau/interface/HTTPreFireWeight.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -108,7 +109,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
-  std::cout<<"do recoil: " << do_recoil<<std::endl;
+
+
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
@@ -647,16 +649,16 @@ void HTTSequence::BuildSequence(){
       if(era_type == era::data_2016) {
         n_inc = 2897630.;  
         n_2 = 13901510.;
-        frac = 0.279594;
+        frac = 0.279594; 
         // private sample numbers
         //n_inc = 3089015.;
         //n_2 = 14254055.;
         //frac = 0.279662;
       }
       if(era_type == era::data_2017) {
-        n_inc = 11986570.;
+        n_inc = 13719412.;
         n_2 = 10989343.;
-        frac = 0.291202;
+        frac = 0.291244; 
       }
       do_ggH_stitch = true;
     }
@@ -672,7 +674,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017) {
         n_inc = 3329183.;
-        n_2 = 10665018.;
+        n_2 = 15713406.;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -689,7 +691,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017) {
         n_inc = 3201858.;
-        n_2 = 13347131.;
+        n_2=15907023.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
@@ -1118,6 +1120,14 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
     .set_jet_label(jets_label));
 }
 
+if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_embedded && !is_data) {
+  TH2F prefire_hist; 
+  if(strategy_type == strategy::cpsummer16) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
+  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
+  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
+    .set_prefire_hist(new TH2F(prefire_hist)));
+}
+
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
@@ -1129,32 +1139,10 @@ if(strategy_type == strategy::paper2013) {
 } else if (era_type == era::data_2016) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 } else if (era_type == era::data_2017) {
-  // jetIDFilter.set_predicate(bind(PFJetID2017, _1) && bind(PileupJetID, _1, pu_id_training, false, false)); //bool doTight,bool doLoose,else medium
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
 }
 BuildModule(jetIDFilter);
 
-/*if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, false) ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}*/
-
-if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  jet->pt()  > 50    ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -1230,7 +1218,9 @@ if (era_type == era::data_2017) {
        .set_input_label(shift_jets_label)
        .set_jes_shift_mode(jes_mode)
        .set_uncert_file(jes_input_file)
-       .set_uncert_set(source));
+       .set_uncert_set(source)
+       .set_EENoiseFix(era_type == era::data_2017) 
+     );
 
      // Do b-tag weights for shifted jets
      if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
@@ -1284,6 +1274,7 @@ if (era_type == era::data_2017) {
        .set_sum_uncerts(true)
        .set_correlations(correlations)
        .set_jes_corr_mode(jes_corr_mode)
+       .set_EENoiseFix(era_type == era::data_2017)
      );
    } else {
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -1293,6 +1284,7 @@ if (era_type == era::data_2017) {
        .set_uncert_set(jes_input_set)
        .set_uncert_sets(sources)
        .set_sum_uncerts(true)
+       .set_EENoiseFix(era_type == era::data_2017)
     );
    }
  } else if (jes_corr_mode > 0){
@@ -1329,6 +1321,7 @@ if (era_type == era::data_2017) {
        .set_sum_uncerts(true)
        .set_correlations(correlations)
        .set_jes_corr_mode(jes_corr_mode)
+       .set_EENoiseFix(era_type == era::data_2017)
      );
  } else{  
     
@@ -1336,32 +1329,23 @@ if (era_type == era::data_2017) {
     .set_input_label(jets_label)
     .set_jes_shift_mode(jes_mode)
     .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set));
+    .set_uncert_set(jes_input_set)
+    .set_EENoiseFix(era_type == era::data_2017)
+   );
  }
 
 }
 
-/*if (era_type == era::data_2017) {
+if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, false) ||
+      return  PileupJetID(jet, pu_id_training, false, true) ||
         fabs(jet->eta()) > 3.139 ||
         fabs(jet->eta()) < 2.65 ;
     })
   );
-}
-
-if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetEENoiseFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  jet->pt()  > 50    ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}*/
+} 
 
 
 if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -1519,7 +1503,8 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
        for(unsigned i=0;i<bad_muon_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
        }
-       return !pass_filters;
+       if(do_ggH_stitch && strategy_type == strategy::cpsummer16) return pass_filters; //annoyingly the official ggH samples are 'backwards'
+       else return !pass_filters;
     }));
 };
  
@@ -2481,7 +2466,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-if(js["baseline"]["do_ff_weights"].asBool() && addit_output_folder==""){
+if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
       .set_ditau_label("ditau")
@@ -2722,14 +2707,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           //// for Ele23 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsEle23Ele12")
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          .set_extra_l1_probe_pt(20.)
-          .set_extra_l1_iso_probe_pt(18.)
-          // for Ele12 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          //.set_extra_l1_probe_pt(10.)
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          //.set_extra_l1_probe_pt(20.)
+          //.set_extra_l1_iso_probe_pt(18.)
+          // for Ele12 leg of EMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsEle23Ele12")
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
           //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
           //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
           .set_probe_id(elec_probe_id)

@@ -28,7 +28,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/2017_data/" ,"era":"summer17", "embedded":False, "em_iso":False, "aiso1":False, "aiso2":False, "embed_sel":False, "draw_hists":1 }
+defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TAPElMuLO2016/" ,"era":"summer17", "embedded":True, "em_iso":False, "aiso1":False, "aiso2":False, "embed_sel":False, "draw_hists":1 }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -150,6 +150,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
+          idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
           trg_pt_bins = '[10,12,14,16,18,20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
           #trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
           
@@ -561,7 +562,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era == 'summer17' and ('_iso' in name or '_trg' in name): 
+      if options.era in ['summer17','summer16'] and ('_iso' in name or '_trg' in name): 
           if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
@@ -809,8 +810,8 @@ if options.channel == 'tpzee':
       baseline_tag1+='*(iso_2>0.15)'  
       baseline_tag2+='*(iso_1>0.15)'
   else:    
-    baseline_tag1 = '(m_vis>80&&m_vis<100&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
-    baseline_tag2 = '(m_vis>80&&m_vis<100&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+    baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
 
 iso_probe_1 = '(%s)' % iso_cut_1
 iso_probe_2 = '(%s)' % iso_cut_2

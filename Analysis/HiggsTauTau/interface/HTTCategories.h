@@ -187,6 +187,9 @@ class HTTCategories : public ModuleBase {
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
   double dphi_;
+
+  double dphi_jtt_;
+
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
@@ -476,6 +479,9 @@ class HTTCategories : public ModuleBase {
   unsigned gen_match_2_;
   double gen_match_1_pt_;
   double gen_match_2_pt_;
+  double gen_sjdphi_;
+  double gen_m_;
+  double gen_pt_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
@@ -1382,6 +1388,10 @@ class HTTCategories : public ModuleBase {
   bool tau_id_newdm_vtight_2_ ;
   bool tau_id_olddm_vvtight_2_;
   bool tau_id_newdm_vvtight_2_;
+
+  double wt_prefire_;
+  double wt_prefire_up_;
+  double wt_prefire_down_;
 
  public:
   HTTCategories(std::string const& name);

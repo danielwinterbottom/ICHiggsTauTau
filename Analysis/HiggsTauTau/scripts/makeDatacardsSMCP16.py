@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding
+#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding --total_jes
 
 import sys
 from optparse import OptionParser
@@ -144,31 +144,29 @@ if options.split_jes:
  
 #common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" --syst_eff_b=CMS_eff_b_13TeV --syst_fake_b=CMS_fake_b_13TeV --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" '
 
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" --syst_prefire="CMS_PreFire_13TeV" '
 
 if options.regional_jes or options.total_jes:
   common_shape_systematics += ' --syst_scale_j_full="CMS_scale_j_eta0to5_13TeV" --syst_scale_j_cent="CMS_scale_j_eta0to3_13TeV" --syst_scale_j_hf="CMS_scale_j_eta3to5_13TeV" --syst_scale_j_rbal="CMS_scale_j_RelativeBal_13TeV" '
+  common_shape_systematics += ' --syst_scale_j_full_corr="CMS_scale_j_eta0to5_corr_13TeV" --syst_scale_j_cent_corr="CMS_scale_j_eta0to3_corr_13TeV" --syst_scale_j_hf_corr="CMS_scale_j_eta3to5_corr_13TeV" '
+  common_shape_systematics += ' --syst_scale_j_full_uncorr="CMS_scale_j_eta0to5_uncorr_13TeV" --syst_scale_j_cent_uncorr="CMS_scale_j_eta0to3_uncorr_13TeV" --syst_scale_j_hf_uncorr="CMS_scale_j_eta3to5_uncorr_13TeV" '
+
 if options.total_jes:
   common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
   common_shape_systematics += ' --syst_scale_j_corr="CMS_scale_j_corr_13TeV" '
   common_shape_systematics += ' --syst_scale_j_uncorr="CMS_scale_j_uncorr_13TeV" '
 
 
-em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" --syst_em_qcd_btag="CMS_em_QCD_BTag_13TeV" '
-et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV"  '
+em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" '
+et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
 mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 zmm_shape_systematics=' --folder=/vols/cms/dw515/Offline/output/SM/Apr09/ '
 
 
 if options.embedding:
-  et_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" '
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
-if SCHEME == 'control_plots':
-  et_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
-  em_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
-  mt_shape_systematics+=' --syst_eff_b=CMS_eff_b_13TeV '
 
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
@@ -539,77 +537,52 @@ if SCHEME == 'cpsummer16_ff':
 
   VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
 
-  #VAR_0JET_LT = 'm_vis(20,50,250)'
-  #VAR_0JET_EM = 'm_vis(20,50,250)'
-  #VAR_0JET_TT = 'm_vis(20,50,250)'
+  #VAR_0JET_LT='m_vis(20,50,250)'
+  #VAR_0JET_EM='m_vis(20,50,250)'
+  #VAR_0JET_TT='m_vis(20,50,250)'
 
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
 
-  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
-
-  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,110,145],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,130,160],(12,-3.2,3.2)'
-
-  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
-
-  VAR_EM_TI_LO='m_sv,sjdphi[50,100,115,130,160],(12,-3.2,3.2)'
-
-
-  VAR_DIJET_TT_1 = VAR_DIJET
-  VAR_DIJET_TT_2 = VAR_DIJET
-  VAR_DIJET_MT_1 = VAR_DIJET
-  VAR_DIJET_MT_2 = VAR_DIJET
-  VAR_DIJET_ET_1 = VAR_DIJET
-  VAR_DIJET_ET_2 = VAR_DIJET
-  VAR_DIJET_EM_1 = VAR_DIJET
-  VAR_DIJET_EM_2 = VAR_DIJET
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
   scheme_et = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    #("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    #("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_ET_2, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET_ET_2, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --do_ff_systs ')
   ]
   scheme_mt = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    #("17",   "dijet_lowboost",    "dijet_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    #("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-  
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --do_ff_systs ')
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs ')
 
   ]
   scheme_tt = [
-    ("17",   "0jet",    "0jet",  VAR_0JET_TT, ' --do_ff_systs '),
-    ("17",   "boosted", "boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
-    #("17",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET_TT_1, ' --do_ff_systs '),
-    #("17",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_TT_2, ' --do_ff_systs '),
-
-    ("17",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET_TT_1, ' --do_ff_systs '),
-    ("17",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --do_ff_systs '),
-    ("17",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET_TT_1, ' --do_ff_systs '),
-    ("17",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --do_ff_systs ')
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_TT, ' --do_ff_systs '),
+    ("17",   "boosted", "2016_boosted",  VAR_BOOSTED_TT, ' --do_ff_systs '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --do_ff_systs '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_DIJET, ' --do_ff_systs '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --do_ff_systs ')
   ]
   scheme_em = [
-    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '), 
-    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '), 
-    #("19",   "dijet_lowboost",     "dijet_lowboost",  VAR_DIJET_EM_1, ' --set_alias="sel:pzeta>-10" '),
-    #("19",   "dijet_boosted",     "dijet_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "inclusive",    "ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
-
-    ("19",   "dijet_loosemjj_lowboost",     "dijet_loosemjj_lowboost",  VAR_DIJET_EM_1, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_tightmjj_lowboost",     "dijet_tightmjj_lowboost",  VAR_EM_TI_LO, ' --set_alias="sel:pzeta>-10" '),
-    ("19",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET_EM_2, ' --set_alias="sel:pzeta>-10" ')
+    ("19",   "0jet",    "2016_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "boosted", "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "inclusive",    "2016_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
+    ("19",   "dijet_loosemjj_lowboost",     "2016_dijet_loosemjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_lowboost",     "2016_dijet_tightmjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -619,6 +592,142 @@ if SCHEME == 'cpsummer16_ff':
     'zmm' : 'zmm_default'
   }
   ANA = 'sm'
+
+if SCHEME == 'cpsummer16_ff_newbins':
+  
+  VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+
+  VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+
+  #VAR_0JET_LT='m_vis(20,50,250)'
+  #VAR_0JET_EM='m_vis(20,50,250)'
+  #VAR_0JET_TT='m_vis(20,50,250)'
+
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
+
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+
+  VAR_TT_LO_LO='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_MT_LO_LO='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_LO_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+
+  VAR_TT_TI_LO='m_sv,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
+  VAR_MT_TI_LO='m_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+
+
+  scheme_et = [
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_ET_LO_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_ET_TI_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire ')
+  ]
+  scheme_mt = [
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire ')
+
+  ]
+  scheme_tt = [
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_TT, ' --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "boosted", "2016_boosted",  VAR_BOOSTED_TT, ' --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_TT_LO_LO, ' --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_TT_TI_LO, ' --do_ff_systs --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --do_ff_systs --add_wt=wt_prefire ')
+  ]
+  scheme_em = [
+    ("19",   "0jet",    "2016_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" --add_wt=wt_prefire '),
+    ("19",   "boosted", "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" --add_wt=wt_prefire '),
+    ("19",   "inclusive",    "2016_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)" --add_wt=wt_prefire '),
+    ("19",   "dijet_loosemjj_lowboost",     "2016_dijet_loosemjj_lowboost",  VAR_EM_LO_LO, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
+    ("19",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_EM_LO_HI, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
+    ("19",   "dijet_tightmjj_lowboost",     "2016_dijet_tightmjj_lowboost",  VAR_EM_TI_LO, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
+    ("19",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire ')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
+
+if SCHEME == 'cpsummer16_classic':
+
+  VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+
+  VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+
+  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
+
+  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
+  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150],(12,-3.2,3.2)'
+
+  scheme_et = [
+    ("12",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" ')
+  ]
+  scheme_mt = [
+    ("12",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" '),
+    ("12",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" ')
+
+  ]
+  scheme_tt = [
+    ("8",   "0jet",    "0jet",  VAR_0JET_TT, ' '),
+    ("8",   "boosted", "boosted",  VAR_BOOSTED_TT, ' '),
+    ("8",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' '),
+    ("8",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' '),
+    ("8",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' '),
+    ("8",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' ')
+  ]
+  scheme_em = [
+    ("19",   "0jet",    "0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "boosted", "boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" '),
+    ("19",   "inclusive",    "ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"'),
+    ("19",   "dijet_loosemjj_lowboost",     "dijet_loosemjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_lowboost",     "dijet_tightmjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" '),
+    ("19",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" ')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
 
 if SCHEME == 'cpsummer16_ff_mvis':
 
@@ -1144,37 +1253,7 @@ if SCHEME == 'mlcpsummer16_2d':
 if SCHEME == 'mlcpsummer16_ff':
     # define signal regions for each training
 
-    # LOWMJJ
-    # VAR_MT_LOWMJJ_FAKE =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_LOWMJJ_TT =      'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_LOWMJJ_ZLL =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # VAR_ET_LOWMJJ_FAKE =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_ET_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_ET_LOWMJJ_TT =      'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_ET_LOWMJJ_ZLL =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_ET_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # VAR_TT_LOWMJJ_GGH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_TT_LOWMJJ_QQH =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_TT_LOWMJJ_MISC =    'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_LOWMJJ_QCD =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_LOWMJJ_ZTT =     'IC_lowMjj_July05_3_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_EM_LOWMJJ_GGH =     'IC_lowMjj_July05_4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_EM_LOWMJJ_QQH =     'IC_lowMjj_July05_4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_LOWMJJ_MISC =    'IC_lowMjj_July05_4_max_score[0.0,0.3,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_LOWMJJ_TT =      'IC_lowMjj_July05_4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_LOWMJJ_QCD =     'IC_lowMjj_July05_4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_LOWMJJ_ZTT =     'IC_lowMjj_July05_4_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # LOWMJJ
+    # LowMjj
     # with embedding and FF
     VAR_TT_LOWMJJ_GGH =      'IC_lowMjj_Oct05_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
     VAR_TT_LOWMJJ_QQH =      'IC_lowMjj_Oct05_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
@@ -1201,103 +1280,7 @@ if SCHEME == 'mlcpsummer16_ff':
     VAR_EM_LOWMJJ_QCD =      'IC_lowMjj_Oct05_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_EM_LOWMJJ_ZTTEMBED = 'IC_lowMjj_Oct05_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
-    # # 12 bins
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # # 6 bins
-    # # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.85],(6,-3.2,3.2)'
-    # # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.725,0.75,0.775,0.8,0.85,0.9],(6,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July25_1
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.75,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # # July25_1 July05_1 binning
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July25_2
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # # July25_2 July05_1 binning
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July26
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # July26 July05_1 binning
-    # VAR_MT_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_MT_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_FAKE =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # with madgraph samples, embedding and ff category 
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Aug23_1_max_score,sjdphi[0.0,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Aug28_2_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_MISC =     'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_MT_HIGHMJJ_TT =       'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_JETFAKES = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Sep07_1_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Sep07_1_max_score,sjdphi[0.0,0.45,0.55],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_TT =       'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.75],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_TT =       'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.825],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_TT =       'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_MT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_MT_HIGHMJJ_GGH =      'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_QQH =      'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.7],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_TT =       'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.6,0.65,0.7,0.8,0.9],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,0.,3.2)'
-    # VAR_MT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,0.,3.2)'
-
-    # VAR_MT_HIGHMJJ_GGH_LOOSE =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_GGH_LOOSE_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.5,0.6,0.75],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_GGH_TIGHT_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_MT_HIGHMJJ_TT =              'IC_highMjj_Sep21_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_HIGHMJJ_JETFAKES =        'IC_highMjj_Sep21_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_MT_HIGHMJJ_ZTTEMBED =        'IC_highMjj_Sep21_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
+    # HighMjj
 
     # VAR_MT_HIGHMJJ_GGH_LOOSE =       'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
     # VAR_MT_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
@@ -1307,95 +1290,12 @@ if SCHEME == 'mlcpsummer16_ff':
     # VAR_MT_HIGHMJJ_QQH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
     # VAR_MT_HIGHMJJ_QQH_BOOSTED =     'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
 
-    VAR_MT_HIGHMJJ_GGH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.85],(12,-3.2,3.2)'
-    VAR_MT_HIGHMJJ_MIXH =            'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
+    VAR_MT_HIGHMJJ_GGH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
     VAR_MT_HIGHMJJ_QQH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
     VAR_MT_HIGHMJJ_TT =              'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_MT_HIGHMJJ_JETFAKES =        'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_MT_HIGHMJJ_ZTTEMBED =        'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
-    ### ET
-
-    # # 12 bins
-    # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75,0.85],(12,-3.2,3.2)'
-    # # 6 bins
-    # # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.85],(6,-3.2,3.2)'
-    # # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.75,0.8,0.9],(6,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =      'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_FAKE =    'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July25_2
-    # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_FAKE =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # # July25_2 July05_1 binning
-    # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75,0.85],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_FAKE =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July26
-    # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.7],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_FAKE =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # July26 July05_1 binning
-    # VAR_ET_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.45,0.55,0.65,0.75,0.85],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_FAKE =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # with madgraph samples, embedding and ff category 
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Aug23_1_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Aug28_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_MISC =     'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-    # VAR_ET_HIGHMJJ_TT =       'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_JETFAKES = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Sep07_1_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Sep07_1_max_score,sjdphi[0.0,0.5],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_TT =       'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep07_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.4,0.5,0.6,0.7],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_TT =       'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_TT =       'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_ET_HIGHMJJ_GGH =      'IC_highMjj_Sep14_1_max_score,fabs(jdphi)[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.7],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_QQH =      'IC_highMjj_Sep14_1_max_score,fabs(jdphi)[0.0,0.5],(12,0.,3.2)'
-    # VAR_ET_HIGHMJJ_TT =       'IC_highMjj_Sep14_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep14_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_ET_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep14_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_ET_HIGHMJJ_GGH_LOOSE_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.55,0.75],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_GGH_TIGHT_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.55,0.7,0.85],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_GGH_TIGHT_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_GGH_LOOSE =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.5,0.6,0.7],(12,-3.2,3.2)'
-    # VAR_ET_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
     # latest one
     # VAR_ET_HIGHMJJ_GGH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
     # VAR_ET_HIGHMJJ_GGH_BOOSTED =     'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
@@ -1403,224 +1303,30 @@ if SCHEME == 'mlcpsummer16_ff':
     # VAR_ET_HIGHMJJ_QQH_BOOSTED =     'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.8],(12,-3.2,3.2)'
 
     VAR_ET_HIGHMJJ_GGH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    VAR_ET_HIGHMJJ_MIXH =            'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
     VAR_ET_HIGHMJJ_QQH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
     VAR_ET_HIGHMJJ_TT =              'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_ET_HIGHMJJ_JETFAKES =        'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_ET_HIGHMJJ_ZTTEMBED =        'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_ET_HIGHMJJ_ZLL =             'IC_highMjj_Oct05_max_score[0.0,1.0]'
 
-    ### TT
-
-    # # 12 bins
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.5,0.6,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # # 7 bins
-    # # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8,0.9],(6,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(6,-3.2,3.2)'
-    # # 6 bins
-    # # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8,0.9],(6,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(6,-3.2,3.2)'
-    # # 4 bins
-    # # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.65,0.7,0.75,0.8,0.85],(4,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.35,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.725,0.75,0.775,0.8,0.85,0.9],(4,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July25_1
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.4,0.5,0.6,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July25_1_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July25_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July25_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]'
-
-    # # July25_2
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.65,0.7,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # # July25_2 July05_1 binning
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.5,0.6,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # July26
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.6],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # July26 July05_1 binning
-    # VAR_TT_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.5,0.6,0.75,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_QCD =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # # with madgraph samples, embedding and ff category 
-    # # Aug23_1 (standard), Aug26_1 (mjj wt, add 0.75+0.8 bins), Aug26_2 (negative wts), Aug28_1 (neg weights, factor 1.5, mjj wts)
-    # # Aug28_2 (neg wts, factor 1.5)
-    # # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Aug23_1_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Aug28_1_max_score,sjdphi[0.0,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # # VAR_TT_HIGHMJJ_MISC =     'IC_highMjj_Aug30_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep07_4_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8],(12,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_GGHTIGHT = 'IC_highMjj_Sep07_4_max_score,sjdphi[0.0,0.4,0.45,0.5,0.55,0.65,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep07_4_max_score,sjdphi[0.0,0.45],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep07_4_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep07_4_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep10_2_max_score,sjdphi[0.0,0.45,0.55],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep10_2_max_score,sjdphi[0.0,0.45,0.55,0.65,0.75],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep10_2_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep10_2_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.45,0.55],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep10_5_max_score,fabs(sjdphi)[0.0,0.4,0.5,0.6,0.7,0.8],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep10_5_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep10_5_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.45,0.5,0.55,0.6,0.7],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep11_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep11_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-    
-    # # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep13_1_max_score,fabs(jdphi)[0.0,0.45,0.55,0.6],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.45,0.5,0.55,0.6,0.65,0.7,0.8],(12,0,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep11_2_max_score,fabs(jdphi)[0.0,0.45,0.5,0.55,0.6,0.65,0.75,0.8],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.5,0.6,0.7],(12,0,3.2)'
-    # # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep13_1_max_score[0.0,0.6,0.7,0.8,1.0]'
-    # # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep17_3_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep17_3_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep17_3_max_score,fabs(jdphi)[0.0,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,0,3.2)'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep18_3_max_score,sjdphi[0.0,0.45,0.55,0.65],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep18_3_max_score,sjdphi[0.0,0.45,0.55],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep18_3_max_score,sjdphi[0.0,0.5,0.55,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep18_3_max_score,sjdphi[0.0,0.5,0.55,0.6,0.7,0.8],(12,-3.2,3.2)'
-    
-    # VAR_TT_HIGHMJJ_GGH =       'IC_highMjj_Sep20_6_max_score,sjdphi[0.0,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Sep20_6_max_score,sjdphi[0.0,0.6,0.75,0.9],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH_LOOSE =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.6],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH_LOOSE_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.6,0.7,0.85],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_GGH_TIGHT_BOOST = 'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.7,0.9],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES =  'IC_highMjj_Sep21_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED =  'IC_highMjj_Sep21_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep20_4_max_score,sjdphi[0.0,0.5,0.6,0.7],(12,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_JETFAKES_LOOSE = 'IC_highMjj_Sep18_4_max_score,sjdphi[0.0,0.5,0.55,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # # VAR_TT_HIGHMJJ_JETFAKES_TIGHT = 'IC_highMjj_Sep18_4_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-
-    # VAR_TT_HIGHMJJ_GGH =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.6,0.7,0.85],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =       'IC_highMjj_Sep21_1_max_score,sjdphi[0.0,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
-
-    # VAR_TT_HIGHMJJ_GGH =      'IC_highMjj_Sep12_1_1_max_score,fabs(jdphi)[0.0,0.4,0.5,0.6],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =      'IC_highMjj_Sep12_1_1_max_score,fabs(jdphi)[0.0,0.45,0.55,0.65,0.8],(12,0,3.2)'
-    # VAR_TT_HIGHMJJ_JETFAKES = 'IC_highMjj_Sep12_1_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_TT_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep12_1_1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]'
 
     # VAR_TT_HIGHMJJ_GGH_LOOSE = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.85],(12,-3.2,3.2)'
     # VAR_TT_HIGHMJJ_GGH_TIGHT = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.75,0.9],(12,-3.2,3.2)'
-
     # latest ones
     # VAR_TT_HIGHMJJ_GGH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.7],(12,-3.2,3.2)'
     # VAR_TT_HIGHMJJ_GGH_BOOSTED = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8,0.9],(12,-3.2,3.2)'
     # VAR_TT_HIGHMJJ_QQH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8],(12,-3.2,3.2)'
     # VAR_TT_HIGHMJJ_QQH_BOOSTED = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.85],(12,-3.2,3.2)'
 
-    # VAR_TT_HIGHMJJ_GGH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.7,0.9],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_QQH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8],(12,-3.2,3.2)'
-    # VAR_TT_HIGHMJJ_MIXH =        'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8],(12,-3.2,3.2)'
+    # VAR_TT_HIGHMJJ_GGH_LOWBOOST = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.7],(12,-3.2,3.2)'
+    # VAR_TT_HIGHMJJ_GGH_BOOSTED =  'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.8],(12,-3.2,3.2)'
+    # VAR_TT_HIGHMJJ_QQH_LOWBOOST = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8],(12,-3.2,3.2)'
+    # VAR_TT_HIGHMJJ_QQH_BOOSTED =  'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.7,0.9],(12,-3.2,3.2)'
 
-    VAR_TT_HIGHMJJ_GGH_LOWBOOST = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.7],(12,-3.2,3.2)'
-    VAR_TT_HIGHMJJ_GGH_BOOSTED =  'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.8],(12,-3.2,3.2)'
-    VAR_TT_HIGHMJJ_QQH_LOWBOOST = 'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8],(12,-3.2,3.2)'
-    VAR_TT_HIGHMJJ_QQH_BOOSTED =  'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.7,0.9],(12,-3.2,3.2)'
+    VAR_TT_HIGHMJJ_GGH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.85],(12,-3.2,3.2)'
+    VAR_TT_HIGHMJJ_QQH =         'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.8,0.9],(12,-3.2,3.2)'
     VAR_TT_HIGHMJJ_JETFAKES =    'IC_highMjj_Oct05_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_TT_HIGHMJJ_ZTTEMBED =    'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-
-    ### EM
-
-    # # 12 bins
-    # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.5,0.85],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,-3.2,3.2)'
-    # # 6 bins
-    # # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.4,0.55,0.75],(6,-3.2,3.2)'
-    # # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July05_1_max_score,sjdphi[0.0,0.3,0.325,0.35,0.375,0.4,0.425,0.45,0.475,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.725,0.75,0.775,0.8,0.85,0.9],(6,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_MISC =    'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =      'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTT =     'IC_highMjj_July05_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # # July25_2
-    # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.4,0.6,0.8],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # # July25_2 July05_1 binning
-    # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.4,0.6,0.8],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July25_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_MISC =    'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =      'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTT =     'IC_highMjj_July25_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # # July26
-    # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.8,0.9],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # July26 July05_1 binning
-    # VAR_EM_HIGHMJJ_GGH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.5,0.7,0.85],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =     'IC_highMjj_July26_max_score,sjdphi[0.0,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_MISC =    'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =      'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTT =     'IC_highMjj_July26_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # with madgraph samples, embedding  
-    # VAR_EM_HIGHMJJ_GGH =      'IC_highMjj_Aug23_1_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.525,0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.725,0.75,0.775,0.8,0.85],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =      'IC_highMjj_Aug28_2_max_score,sjdphi[0.0,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,-3.2,3.2)'
-
-    # VAR_EM_HIGHMJJ_GGH =      'IC_highMjj_Aug30_2_2_max_score,sjdphi[0.0,0.4,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =      'IC_highMjj_Aug30_2_2_max_score[0.0,0.5]'
-    # VAR_EM_HIGHMJJ_MISC =     'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_TT =       'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =      'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Aug30_2_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # VAR_EM_HIGHMJJ_GGH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,0.,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =      'IC_highMjj_Sep10_5_max_score,fabs(jdphi)[0.0,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,0.,3.2)'
-    # VAR_EM_HIGHMJJ_TT =       'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =      'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep10_5_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # VAR_EM_HIGHMJJ_GGH =      'IC_highMjj_Sep11_1_max_score,fabs(jdphi)[0.0,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],(12,0.,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =      'IC_highMjj_Sep11_1_max_score[0.0,0.5,0.6,0.7,0.8]'
-    # VAR_EM_HIGHMJJ_TT =       'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =      'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep11_1_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-
-    # VAR_EM_HIGHMJJ_GGH =      'IC_highMjj_Sep11_2_max_score,fabs(jdphi)[0.0,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85],(12,0.,3.2)'
-    # VAR_EM_HIGHMJJ_QQH =      'IC_highMjj_Sep11_2_max_score,fabs(jdphi)[0.0,0.5],(12,0.,3.2)'
-    # VAR_EM_HIGHMJJ_TT =       'IC_highMjj_Sep11_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
-    # VAR_EM_HIGHMJJ_QCD =      'IC_highMjj_Sep11_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]'
-    # VAR_EM_HIGHMJJ_ZTTEMBED = 'IC_highMjj_Sep11_2_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
     # VAR_EM_HIGHMJJ_GGH_LOOSE =       'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7],(12,-3.2,3.2)'
     # VAR_EM_HIGHMJJ_GGH_TIGHT =       'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.7,0.8],(12,-3.2,3.2)'
@@ -1631,8 +1337,7 @@ if SCHEME == 'mlcpsummer16_ff':
     # VAR_EM_HIGHMJJ_QQH_BOOSTED =     'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.8],(12,-3.2,3.2)'
 
     VAR_EM_HIGHMJJ_GGH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    VAR_EM_HIGHMJJ_MIXH =            'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8],(12,-3.2,3.2)'
-    VAR_EM_HIGHMJJ_QQH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.6,0.8,0.9],(12,-3.2,3.2)'
+    VAR_EM_HIGHMJJ_QQH =             'IC_highMjj_Oct05_max_score,sjdphi[0.0,0.5,0.6,0.7,0.8,0.9],(12,-3.2,3.2)'
     VAR_EM_HIGHMJJ_TT =              'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
     VAR_EM_HIGHMJJ_ZTTEMBED =        'IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]'
 
@@ -1644,18 +1349,7 @@ if SCHEME == 'mlcpsummer16_ff':
         ("17",   "zll_lowMjj",    "zll_lowMjj",  VAR_ET_LOWMJJ_ZLL,     ' --do_ff_systs --set_alias="sel:mt_1<50" '),
         ("17",   "zttEmbed_lowMjj",    "zttEmbed_lowMjj",  VAR_ET_LOWMJJ_ZTTEMBED,     ' --do_ff_systs --set_alias="sel:mt_1<50" '),
 
-        # ("17",   "ggh_loose_boost_highMjj",    "ggh_loose_boost_highMjj",  VAR_ET_HIGHMJJ_GGH_LOOSE_BOOST,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_tight_boost_highMjj",    "ggh_tight_boost_highMjj",  VAR_ET_HIGHMJJ_GGH_TIGHT_BOOST,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_loose_highMjj",    "ggh_loose_highMjj",  VAR_ET_HIGHMJJ_GGH_LOOSE,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_tight_highMjj",    "ggh_tight_highMjj",  VAR_ET_HIGHMJJ_GGH_TIGHT,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # latest one
-        # ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_ET_HIGHMJJ_GGH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "ggh_boosted_highMjj",    "ggh_boosted_highMjj",  VAR_ET_HIGHMJJ_GGH_BOOSTED,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_ET_HIGHMJJ_QQH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "qqh_boosted_highMjj",    "qqh_boosted_highMjj",  VAR_ET_HIGHMJJ_QQH_BOOSTED,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-
         ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_ET_HIGHMJJ_GGH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        ("17",   "mixH_highMjj",    "mixH_highMjj",  VAR_ET_HIGHMJJ_MIXH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
         ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_ET_HIGHMJJ_QQH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
         ("17",   "jetFakes_highMjj",   "jetFakes_highMjj", VAR_ET_HIGHMJJ_JETFAKES, ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
         ("17",   "tt_highMjj",     "tt_highMjj",   VAR_ET_HIGHMJJ_TT,   ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
@@ -1672,20 +1366,7 @@ if SCHEME == 'mlcpsummer16_ff':
         ("17",   "zll_lowMjj",    "zll_lowMjj",  VAR_MT_LOWMJJ_ZLL,     ' --do_ff_systs --set_alias="sel:mt_1<50" '),
         ("17",   "zttEmbed_lowMjj",    "zttEmbed_lowMjj",  VAR_MT_LOWMJJ_ZTTEMBED,     ' --do_ff_systs --set_alias="sel:mt_1<50" '),
 
-
-        # ("17",   "ggh_loose_boost_highMjj",    "ggh_loose_boost_highMjj",  VAR_MT_HIGHMJJ_GGH_LOOSE_BOOST,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_tight_boost_highMjj",    "ggh_tight_boost_highMjj",  VAR_MT_HIGHMJJ_GGH_TIGHT_BOOST,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_loose_highMjj",    "ggh_loose_highMjj",  VAR_MT_HIGHMJJ_GGH_LOOSE,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-        # ("17",   "ggh_tight_highMjj",    "ggh_tight_highMjj",  VAR_MT_HIGHMJJ_GGH_TIGHT,  ' --do_ff_systs --set_alias="sel:mt_1<50" '),
-
-        # latest one
-        # ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_MT_HIGHMJJ_GGH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "ggh_boosted_highMjj",    "ggh_boosted_highMjj",  VAR_MT_HIGHMJJ_GGH_BOOSTED,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_MT_HIGHMJJ_QQH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        # ("17",   "qqh_boosted_highMjj",    "qqh_boosted_highMjj",  VAR_MT_HIGHMJJ_QQH_BOOSTED,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-
         ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_MT_HIGHMJJ_GGH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
-        ("17",   "mixH_highMjj",    "mixH_highMjj",  VAR_MT_HIGHMJJ_MIXH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
         ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_MT_HIGHMJJ_QQH,  ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
         ("17",   "jetFakes_highMjj",   "jetFakes_highMjj", VAR_MT_HIGHMJJ_JETFAKES, ' --do_ff_systs --set_alias="sel:mt_1<50" '),
         ("17",   "tt_highMjj",     "tt_highMjj",   VAR_MT_HIGHMJJ_TT,   ' --do_ff_systs --set_alias="sel:mt_1<50"  '),
@@ -1698,34 +1379,9 @@ if SCHEME == 'mlcpsummer16_ff':
         ("17",   "jetFakes_lowMjj",    "jetFakes_lowMjj",  VAR_TT_LOWMJJ_JETFAKES,  ' --do_ff_systs  '),
         ("17",   "qqh_lowMjj",    "qqh_lowMjj",  VAR_TT_LOWMJJ_QQH,  ' --do_ff_systs  '),
         ("17",   "zttEmbed_lowMjj",    "zttEmbed_lowMjj",  VAR_TT_LOWMJJ_ZTTEMBED,  ' --do_ff_systs  '),
-        # ("17",   "misc_lowMjj",   "misc_lowMjj", VAR_TT_LOWMJJ_MISC, ' --do_ff_systs  '),
-        # ("17",   "qcd_lowMjj",    "qcd_lowMjj",  VAR_TT_LOWMJJ_QCD,  ' --do_ff_systs  '),
 
-        # ("17",   "ggh_loose_boost_highMjj",    "ggh_loose_boost_highMjj",  VAR_TT_HIGHMJJ_GGH_LOOSE_BOOST,  ' --do_ff_systs  '),
-        # ("17",   "ggh_tight_boost_highMjj",    "ggh_tight_boost_highMjj",  VAR_TT_HIGHMJJ_GGH_TIGHT_BOOST,  ' --do_ff_systs  '),
-        # ("17",   "misc_highMjj",   "misc_highMjj", VAR_TT_HIGHMJJ_MISC, ' --do_ff_systs  '),
-        # ("17",   "qcd_highMjj",    "qcd_highMjj",  VAR_TT_HIGHMJJ_QCD,  ' --do_ff_systs  '),
-        # ("17",   "jetFakes_tight_highMjj",    "jetFakes_tight_highMjj",  VAR_TT_HIGHMJJ_JETFAKES_TIGHT,  ' --do_ff_systs  '),
-        # ("17",   "jetFakes_loose_highMjj",    "jetFakes_loose_highMjj",  VAR_TT_HIGHMJJ_JETFAKES_LOOSE,  ' --do_ff_systs  '),
-        # ("17",   "ztt_highMjj",    "ztt_highMjj",  VAR_TT_HIGHMJJ_ZTT,  ' --do_ff_systs  '),
-
-        # ("17",   "ggh_loose_highMjj",    "ggh_loose_highMjj",  VAR_TT_HIGHMJJ_GGH_LOOSE,  ' --do_ff_systs  '),
-        # ("17",   "ggh_tight_highMjj",    "ggh_tight_highMjj",  VAR_TT_HIGHMJJ_GGH_TIGHT,  ' --do_ff_systs  '),
-
-        # latest ones
-        # ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_TT_HIGHMJJ_GGH,  ' --do_ff_systs  '),
-        # ("17",   "ggh_boosted_highMjj",    "ggh_boosted_highMjj",  VAR_TT_HIGHMJJ_GGH_BOOSTED,  ' --do_ff_systs  '),
-        # ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_TT_HIGHMJJ_QQH,  ' --do_ff_systs  '),
-        # ("17",   "qqh_boosted_highMjj",    "qqh_boosted_highMjj",  VAR_TT_HIGHMJJ_QQH_BOOSTED,  ' --do_ff_systs  '),
-
-        # ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_TT_HIGHMJJ_GGH,  ' --do_ff_systs  '),
-        # ("17",   "mixH_highMjj",    "mixH_highMjj",  VAR_TT_HIGHMJJ_MIXH,  ' --do_ff_systs  '),
-        # ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_TT_HIGHMJJ_QQH,  ' --do_ff_systs  '),
-
-        ("17",   "ggh_lowboost_highMjj",    "ggh_lowboost_highMjj",  VAR_TT_HIGHMJJ_GGH_LOWBOOST,  ' --do_ff_systs  '),
-        ("17",   "ggh_boosted_highMjj",    "ggh_boosted_highMjj",  VAR_TT_HIGHMJJ_GGH_BOOSTED,  ' --do_ff_systs  '),
-        ("17",   "qqh_lowboost_highMjj",    "qqh_lowboost_highMjj",  VAR_TT_HIGHMJJ_QQH_LOWBOOST,  ' --do_ff_systs  '),
-        ("17",   "qqh_boosted_highMjj",    "qqh_boosted_highMjj",  VAR_TT_HIGHMJJ_QQH_BOOSTED,  ' --do_ff_systs  '),
+        ("17",   "ggh_highMjj",    "ggh_highMjj",  VAR_TT_HIGHMJJ_GGH,  ' --do_ff_systs  '),
+        ("17",   "qqh_highMjj",    "qqh_highMjj",  VAR_TT_HIGHMJJ_QQH,  ' --do_ff_systs  '),
         ("17",   "jetFakes_highMjj",    "jetFakes_highMjj",  VAR_TT_HIGHMJJ_JETFAKES,  ' --do_ff_systs  '),
         ("17",   "zttEmbed_highMjj",    "zttEmbed_highMjj",  VAR_TT_HIGHMJJ_ZTTEMBED,  ' --do_ff_systs  '),
 
@@ -1738,16 +1394,7 @@ if SCHEME == 'mlcpsummer16_ff':
         ("19",   "tt_lowMjj",     "tt_lowMjj",   VAR_EM_LOWMJJ_TT,   '  --set_alias="sel:pzeta>-35" '),
         ("19",   "zttEmbed_lowMjj",  "zttEmbed_lowMjj",  VAR_EM_LOWMJJ_ZTTEMBED,  '  --set_alias="sel:pzeta>-35" '),
 
-        # ("19",   "ggh_loose_highMjj",    "ggh_loose_highMjj",  VAR_EM_HIGHMJJ_GGH_LOOSE,  ' --set_alias="sel:pzeta>-10" '),
-        # ("19",   "ggh_tight_highMjj",    "ggh_tight_highMjj",  VAR_EM_HIGHMJJ_GGH_TIGHT,  ' --set_alias="sel:pzeta>-10" '),
-        # latest one
-        # ("19",   "ggh_highMjj",    "ggh_highMjj",  VAR_EM_HIGHMJJ_GGH,  ' --set_alias="sel:pzeta>-10" '),
-        # ("19",   "ggh_boosted_highMjj",    "ggh_boosted_highMjj",  VAR_EM_HIGHMJJ_GGH_BOOSTED,  ' --set_alias="sel:pzeta>-10" '),
-        # ("19",   "qqh_highMjj",    "qqh_highMjj",  VAR_EM_HIGHMJJ_QQH,  ' --set_alias="sel:pzeta>-10" '),
-        # ("19",   "qqh_boosted_highMjj",    "qqh_boosted_highMjj",  VAR_EM_HIGHMJJ_QQH_BOOSTED,  ' --set_alias="sel:pzeta>-10" '),
-
         ("19",   "ggh_highMjj",    "ggh_highMjj",  VAR_EM_HIGHMJJ_GGH,  ' --set_alias="sel:pzeta>-10" '),
-        ("19",   "mixH_highMjj",    "mixH_highMjj",  VAR_EM_HIGHMJJ_MIXH,  ' --set_alias="sel:pzeta>-10" '),
         ("19",   "qqh_highMjj",    "qqh_highMjj",  VAR_EM_HIGHMJJ_QQH,  ' --set_alias="sel:pzeta>-10" '),
         ("19",   "tt_highMjj",     "tt_highMjj",   VAR_EM_HIGHMJJ_TT,   ' --set_alias="sel:pzeta>-10" '),
         ("19",   "zttEmbed_highMjj",    "zttEmbed_highMjj",  VAR_EM_HIGHMJJ_ZTTEMBED,  ' --set_alias="sel:pzeta>-10" '),
@@ -1762,58 +1409,51 @@ if SCHEME == 'mlcpsummer16_ff':
     ANA = 'sm'
 
 if SCHEME == 'cpsummer16_ff_fracs':
-  
+
   VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
 
   VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
 
   VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
   VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
 
-  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150],(12,-3.2,3.2)'
-
-  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,110,145],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,130,160],(12,-3.2,3.2)'
-
-  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150],(12,-3.2,3.2)'
-
-  VAR_DIJET_TT_1 = VAR_DIJET
-  VAR_DIJET_TT_2 = VAR_DIJET
-  VAR_DIJET_MT_1 = VAR_DIJET
-  VAR_DIJET_MT_2 = VAR_DIJET
-  VAR_DIJET_ET_1 = VAR_DIJET
-  VAR_DIJET_ET_2 = VAR_DIJET
+  VAR_DIJET =  'm_sv,fabs(sjdphi)[50,80,100,115,130,150],(6,0,3.2)'
+  VAR_TT_TI_HI='m_sv,fabs(sjdphi)[50,80,100,115,150],(6,0,3.2)'
+  VAR_TT_LO_HI='m_sv,fabs(sjdphi)[50,80,100,115,150],(6,0,3.2)'
+  VAR_ET_LO_HI='m_sv,fabs(sjdphi)[50,80,100,115,150],(6,0,3.2)'
+  VAR_ET_TI_HI='m_sv,fabs(sjdphi)[50,80,100,150],(6,0,3.2)'
 
   scheme_et = [
     ("0",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
     ("0",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
     ("0",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET_ET_1, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET_ET_2, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" ')
+    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" ')
   ]
   scheme_mt = [
     ("0",   "0jet",    "0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
     ("0",   "boosted",    "boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET_MT_1, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
-    ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET_MT_2, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" ')
+    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" '),
+    ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --set_alias="baseline:({baseline_aisotau})" ')
 
   ]
   scheme_tt = [
     ("0",   "0jet",    "0jet_1",  VAR_0JET_TT, ' --set_alias="baseline:({baseline_aisotau1})" '),
     ("0",   "boosted", "boosted_1",  VAR_BOOSTED_TT, ' --set_alias="baseline:({baseline_aisotau1})" '),
-    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost_1", VAR_DIJET_TT_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost_1", VAR_DIJET, ' --set_alias="baseline:({baseline_aisotau1})" '),
     ("0",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted_1",  VAR_TT_LO_HI, ' --set_alias="baseline:({baseline_aisotau1})" '),
-    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost_1", VAR_DIJET_TT_1, ' --set_alias="baseline:({baseline_aisotau1})" '),
+    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost_1", VAR_DIJET, ' --set_alias="baseline:({baseline_aisotau1})" '),
     ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted_1",  VAR_TT_TI_HI, ' --set_alias="baseline:({baseline_aisotau1})" '),
 
     ("0",   "0jet",    "0jet_2",  VAR_0JET_TT, ' --set_alias="baseline:({baseline_aisotau2})" '),
     ("0",   "boosted", "boosted_2",  VAR_BOOSTED_TT, ' --set_alias="baseline:({baseline_aisotau2})" '),
-    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost_2", VAR_DIJET_TT_1, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "dijet_loosemjj_lowboost",    "dijet_loosemjj_lowboost_2", VAR_DIJET, ' --set_alias="baseline:({baseline_aisotau2})" '),
     ("0",   "dijet_loosemjj_boosted",     "dijet_loosemjj_boosted_2",  VAR_TT_LO_HI, ' --set_alias="baseline:({baseline_aisotau2})" '),
-    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost_2", VAR_DIJET_TT_1, ' --set_alias="baseline:({baseline_aisotau2})" '),
+    ("0",   "dijet_tightmjj_lowboost",    "dijet_tightmjj_lowboost_2", VAR_DIJET, ' --set_alias="baseline:({baseline_aisotau2})" '),
     ("0",   "dijet_tightmjj_boosted",     "dijet_tightmjj_boosted_2",  VAR_TT_TI_HI, ' --set_alias="baseline:({baseline_aisotau2})" ')
 
   ]
@@ -1862,9 +1502,6 @@ if SCHEME == 'cards_us':
   ANA = 'sm'
 
 if SCHEME == 'control_plots':
-  scheme_mt=[]
-  scheme_et=[]
-  scheme_em=[]
   scheme_mt=[
     ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0)" '),
     ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
@@ -1872,9 +1509,30 @@ if SCHEME == 'control_plots':
     ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
     ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
     ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
-    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="sel:mt_1<50" --set_alias="inclusive:(n_jets>1 && n_bjets==0)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
     ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
     ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0)" '),
+
+    ("17",   "inclusive",    "lomsv_pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+
+    ("17",   "inclusive",    "himsv_pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+
   ]
   scheme_et=scheme_mt
   scheme_tt=[
@@ -1887,17 +1545,59 @@ if SCHEME == 'control_plots':
     ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
     ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --do_ff_systs '),
     ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --do_ff_systs '),
+
+    ("17",   "inclusive",    "lomsv_pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+    ("17",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --do_ff_systs --set_alias="inclusive:(m_sv<100)" '),
+ 
+    ("17",   "inclusive",    "himsv_pt_1",  'pt_1[50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs  --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_2",  'pt_2[40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1&&m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+    ("17",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --do_ff_systs --set_alias="inclusive:(m_sv>150)" '),
+
   ]
   scheme_em=[
-    ("19",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
-    ("19",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_1",  'pt_1[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
+    ("19",   "inclusive",    "pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
     ("19",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
     ("19",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0)" '),
     ("19",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
     ("19",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '),
-    ("19",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1 && n_bjets==0)"  '), 
+    ("19",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0)" '), 
     ("19",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
     ("19",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0)" '),
+
+    ("19",   "inclusive",    "lomsv_pt_1",  'pt_1[10,15,20,25,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+    ("19",   "inclusive",    "lomsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv<100)" '),
+
+    ("19",   "inclusive",    "himsv_pt_1",  'pt_1[10,15,20,25,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,120,140,160,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_met",  'met[0,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300,400]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_m_vis",  'm_vis(25,0,250)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+    ("19",   "inclusive",    "himsv_m_sv",  'm_sv(30,0,300)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&m_sv>150)" '),
+
   ]
 
   bkg_schemes = {
@@ -2014,7 +1714,7 @@ cat_schemes = {
   'tt' : scheme_tt
 }
 
-qsub_command = 'qsub -e ./err/ -o ./out/ -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:
