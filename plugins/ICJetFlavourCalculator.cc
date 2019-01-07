@@ -28,7 +28,7 @@ ICJetFlavourCalculator::~ICJetFlavourCalculator() {}
 
 void ICJetFlavourCalculator::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<std::vector<int>> > product(new edm::ValueMap<std::vector<int>>());
+  std::unique_ptr<edm::ValueMap<std::vector<int>> > product(new edm::ValueMap<std::vector<int>>());
   edm::Handle <edm::View <reco::Jet> > jets_handle;
   event.getByLabel(input_, jets_handle);
 
@@ -54,7 +54,7 @@ void ICJetFlavourCalculator::produce(edm::Event& event,
   filler.insert(jets_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICJetFlavourCalculator::beginJob() {}

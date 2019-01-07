@@ -30,7 +30,7 @@ ICElectronConversionCalculator::~ICElectronConversionCalculator() {}
 
 void ICElectronConversionCalculator::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
+  std::unique_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
   // Use an edm::View here so that this will work on a reco::GsfElectron or
   // pat::Electron collection
   edm::Handle<edm::View<reco::GsfElectron> > elecs_handle;
@@ -88,7 +88,7 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
     filler.fill();
   }
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICElectronConversionCalculator::beginJob() {}

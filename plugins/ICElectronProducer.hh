@@ -66,6 +66,15 @@ class ICElectronProducer : public edm::EDProducer {
   bool do_cluster_iso_;
   bool do_pf_iso_03_;
   bool do_pf_iso_04_;
+
+  std::string input_preCorr_;
+  std::string input_postCorr_;
+  std::string input_errPreCorr_;
+  std::string input_errPostCorr_;
+  std::string input_scaleUp_;
+  std::string input_scaleDown_;
+  std::string input_sigmaUp_;
+  std::string input_sigmaDown_;
 };
 
 #endif

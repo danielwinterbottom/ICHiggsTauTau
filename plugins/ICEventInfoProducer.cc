@@ -50,7 +50,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig"))
 {
 #if CMSSW_MAJOR_VERSION >= 7
-      consumes<LHERunInfoProduct, edm::InRun>({lhe_collection_});
+      consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
 #endif
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
@@ -58,7 +58,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       consumes<double>(input_jets_rho_);
       consumes<edm::View<reco::Vertex>>(input_vertices_);
       consumes<reco::BeamHaloSummary>(input_csc_filter_);
-      consumes<edm::TriggerResults>(filtersfromtrig_input_);
+//      consumes<edm::TriggerResults>(filtersfromtrig_input_);
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -125,7 +125,7 @@ void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es)
   if (!do_lhe_weights_) return;
   if (lhe_weight_labels_.size()) return;
   edm::Handle<LHERunInfoProduct> lhe_info;
-  run.getByLabel(lhe_collection_, lhe_info);
+  run.getByLabel("externalLHEProducer", lhe_info);
   bool record = false;
   for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
        ++it) {
@@ -255,10 +255,10 @@ void ICEventInfoProducer::produce(edm::Event& event,
   }
 
   if (do_filtersfromtrig_) {
-    edm::Handle<edm::TriggerResults> triggerResults;
+ /*   edm::Handle<edm::TriggerResults> triggerResults;
     event.getByLabel(filtersfromtrig_input_, triggerResults);
     if (!triggerResults.isValid()) {
-      throw cms::Exception("TriggerNotValid")
+     throw cms::Exception("TriggerNotValid")
           << "Trigger Results is not valid\n";
     }
 
@@ -297,7 +297,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
 
       info_->set_filter_result(trigName, filter_result);
       observed_filters_[trigName] = CityHash64(trigName);
-    }  // loop on triggers
+    }  // loop on triggers*/
   }
 
   edm::Handle<reco::BeamHaloSummary> beam_halo_handle;

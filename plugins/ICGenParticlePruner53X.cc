@@ -226,7 +226,7 @@ void ICGenParticlePruner53X::produce(Event& evt, const EventSetup& es) {
     }
   }
 
-  auto_ptr<GenParticleCollection> out(new GenParticleCollection);
+  unique_ptr<GenParticleCollection> out(new GenParticleCollection);
   GenParticleRefProd outRef = evt.getRefBeforePut<GenParticleCollection>();
   out->reserve(counter);
   for(vector<size_t>::const_iterator i = indices_.begin(); i != indices_.end(); ++i) {
@@ -245,7 +245,7 @@ void ICGenParticlePruner53X::produce(Event& evt, const EventSetup& es) {
     addMotherRefs(moIndxs, newGen, outRef, gen.motherRefVector());
   }
 
-  evt.put(out);
+  evt.put(std::move(out));
 }
 
 

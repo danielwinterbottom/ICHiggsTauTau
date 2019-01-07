@@ -84,7 +84,7 @@ void Merge<T>::endJob() {}
 template <class T>
 void Merge<T>::produce(edm::Event &event,
                                     const edm::EventSetup &setup) {
-  std::auto_ptr<RefVectorVec> product(new RefVectorVec());
+  std::unique_ptr<RefVectorVec> product(new RefVectorVec());
   std::set<T const *> ptr_set;
   for (unsigned i = 0; i < merge_inputs_.size(); ++i) {
     edm::Handle<edm::View<T> > view;
@@ -96,7 +96,7 @@ void Merge<T>::produce(edm::Event &event,
       }
     }
   }
-  event.put(product);
+  event.put(std::move(product));
 }
 }
 

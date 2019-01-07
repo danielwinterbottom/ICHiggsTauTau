@@ -42,7 +42,7 @@ void ICVertexProducer::produce(edm::Event& event,
   edm::Handle<edm::View<reco::Vertex> > vtxs_handle;
   event.getByLabel(input_, vtxs_handle);
 
-  std::auto_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
+  std::unique_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
 
   vertices_->clear();
   if (!first_only_) {
@@ -72,7 +72,7 @@ void ICVertexProducer::produce(edm::Event& event,
     }
     if (first_only_) break;
   }
-  if (request_trks_) event.put(trk_requests, "requestedTracks");
+  if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
 }
 
 void ICVertexProducer::beginJob() {
