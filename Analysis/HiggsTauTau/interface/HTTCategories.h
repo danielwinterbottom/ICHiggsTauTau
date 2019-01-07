@@ -486,6 +486,21 @@ class HTTCategories : public ModuleBase {
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
   double subleading_lepton_match_DR_;*/
+  double genE_pi1_;
+  double genE_pi01_;
+  double genE_pi2_;
+  double genE_pi02_;
+  double gen_aco_angle_1_;
+  double gen_aco_angle_2_;
+  double gen_cp_sign_1_;
+  double lead_pt_1_;
+  double lead_pt_2_;
+  double lead_eta_1_;
+  double lead_eta_2_;
+  double lead_phi_1_;
+  double lead_phi_2_;
+  double lead_energy_1_;
+  double lead_energy_2_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2

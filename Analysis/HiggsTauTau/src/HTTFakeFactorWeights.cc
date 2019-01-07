@@ -56,12 +56,21 @@ namespace ic {
       }
 
       ff_file_name = baseDir + ff_file_name;
-      TFile* ff_file = new TFile(ff_file_name.c_str());
-      FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
+      
       std::string map_key = category_names_[i];
-      fake_factors_[map_key]  = std::shared_ptr<FakeFactor>(ff);
-      ff_file->Close();
-      delete ff_file;
+      std::string map_name = "ff_map_"+channel+"_"+map_key;
+      if(ProductExists(map_name)){
+        fake_factors_[map_key] = GetProduct<std::shared_ptr<FakeFactor>>(map_name);
+        std::cout << "Getting " << fake_factors_[map_key] << std::endl;
+      } else {
+        TFile* ff_file = new TFile(ff_file_name.c_str());
+        FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
+        fake_factors_[map_key]  = std::shared_ptr<FakeFactor>(ff);
+        AddToProducts(map_name, fake_factors_[map_key]);
+        std::cout << "Adding " << fake_factors_[map_key] << std::endl;
+        ff_file->Close();
+        delete ff_file;
+      }
     }
     
     if(fracs_file_!="") {

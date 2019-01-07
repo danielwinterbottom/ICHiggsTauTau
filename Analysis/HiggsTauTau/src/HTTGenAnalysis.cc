@@ -761,7 +761,7 @@ namespace ic {
       rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
       a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
     }
-    /* std::vector<ic::GenParticle> leptons;
+    std::vector<ic::GenParticle> leptons;
     for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
     for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
     TLorentzVector lvec1;
@@ -770,21 +770,21 @@ namespace ic {
     TLorentzVector lvec4;
     if(leptons.size()>=2){
       cp_channel_=1;
-      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);    
-      lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0);
+      /* lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0); */    
+      /* lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0); */
       lvec3 = ConvertToLorentz(leptons[0].vector());
       lvec4 = ConvertToLorentz(leptons[1].vector());
     } else if(leptons.size()==1){
-      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);
+      /* lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0); */
       lvec3 = ConvertToLorentz(leptons[0].vector());
       if(pi_1.first) {
         cp_channel_=1; 
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); 
+        /* lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); */ 
         lvec4 = ConvertToLorentz(pi_1.second->vector());
       }
       if(pi_2.first) {
         cp_channel_=1; 
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); 
+        /* lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); */ 
         lvec4 = ConvertToLorentz(pi_2.second->vector());
       }
       if(rho_1.first) {
@@ -802,20 +802,20 @@ namespace ic {
     } else{
       if(pi_1.first&&pi_2.first){
         cp_channel_=1;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        /* lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); */
+        /* lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); */
         lvec3 = ConvertToLorentz(pi_1.second->vector());
         lvec4 = ConvertToLorentz(pi_2.second->vector());
       } else if (pi_1.first&&rho_2.first){
         cp_channel_=2;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
+        /* lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); */
         lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
         lvec3 = ConvertToLorentz(pi_1.second->vector());
         lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
         cp_sign_1_ = YRho(rho_2.second,TVector3());
       } else if(pi_2.first&&rho_1.first){
         cp_channel_=2;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        /* lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); */
         lvec2 = ConvertToLorentz(rho_1.second[1]->vector());
         lvec3 = ConvertToLorentz(pi_2.second->vector());
         lvec4 = ConvertToLorentz(rho_1.second[0]->vector());
@@ -833,7 +833,7 @@ namespace ic {
     if(cp_channel_!=-1){
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
       aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
-    } */
+    } 
     
     /* if(gen_tau_jets_ptr.size()>=2){
       if(rho_1.first && rho_2.first) { 

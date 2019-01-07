@@ -971,7 +971,10 @@ if options.era in ['cpsummer16']:
         'WHps_htt' : 'WHiggs0M_M-*',
         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
-        'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX']
+        'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+        #'ggHsm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+        #'ggHmm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+        #'ggHps_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar'
     }
 
 if options.era in ['cpsummer17']: 
@@ -2508,7 +2511,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         add_fake_factor_selection = "gen_match_2<6"
         if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
-        
+        #wt+='*wt_prefire*wt_prefire_down'  
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
         if 'ZTT' not in samples_to_skip and not options.embedding:

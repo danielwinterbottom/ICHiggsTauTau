@@ -222,6 +222,50 @@ namespace ic {
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
     }
+    
+    std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+    std::pair<bool, std::vector<ic::GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>());
+    std::pair<bool, std::vector<ic::GenParticle*>> rho_2 = std::make_pair(false, std::vector<GenParticle*>());
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+
+    double genE_pi1_ = -999;
+    double genE_pi01_ = -999;
+    double genE_pi2_ = -999;
+    double genE_pi02_ = -999;
+    double gen_aco_angle_1_ = -999;
+    double gen_aco_angle_2_ = -999;
+    double gen_cp_sign_1_ = -999;
+    if(gen_taus_ptr.size()>=2) {
+      rho_1 = GetTauRhoDaughter(gen_particles, gen_taus_ptr[0]->constituents());  
+      rho_2 = GetTauRhoDaughter(gen_particles, gen_taus_ptr[1]->constituents());  
+      if (rho_1.first && rho_2.first) {
+        lvec1 = ConvertToLorentz(rho_1.second[1]->vector());   
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
+        lvec3 = ConvertToLorentz(rho_1.second[0]->vector());   
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
+
+        genE_pi1_ = rho_1.second[1]->vector().E();
+        genE_pi01_ = rho_1.second[0]->vector().E();
+        genE_pi2_ = rho_2.second[1]->vector().E();
+        genE_pi02_ = rho_2.second[0]->vector().E();
+
+
+        gen_cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3());
+
+        gen_aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+        gen_aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+      }
+    }
+    event->Add("genE_pi1", genE_pi1_);
+    event->Add("genE_pi01", genE_pi01_);
+    event->Add("genE_pi2", genE_pi2_);
+    event->Add("genE_pi02", genE_pi02_);
+    event->Add("gen_cp_sign_1", gen_cp_sign_1_);
+    event->Add("gen_aco_angle_1", gen_aco_angle_1_);
+    event->Add("gen_aco_angle_2", gen_aco_angle_2_);
 
     return 0;
   }

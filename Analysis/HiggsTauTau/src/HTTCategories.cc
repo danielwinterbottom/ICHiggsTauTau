@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
@@ -837,6 +838,21 @@ namespace ic {
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
+      outtree_->Branch("genE_pi1", &genE_pi1_);
+      outtree_->Branch("genE_pi01", &genE_pi01_);
+      outtree_->Branch("genE_pi2", &genE_pi2_);
+      outtree_->Branch("genE_pi02", &genE_pi02_);
+      outtree_->Branch("gen_aco_angle_1", &gen_aco_angle_1_);
+      outtree_->Branch("gen_aco_angle_2", &gen_aco_angle_2_);
+      outtree_->Branch("gen_cp_sign_1", &gen_cp_sign_1_);
+      outtree_->Branch("lead_pt_1",          &lead_pt_1_);
+      outtree_->Branch("lead_pt_2",          &lead_pt_2_);
+      outtree_->Branch("lead_eta_1",          &lead_eta_1_);
+      outtree_->Branch("lead_eta_2",          &lead_eta_2_);
+      outtree_->Branch("lead_phi_1",          &lead_phi_1_);
+      outtree_->Branch("lead_phi_2",          &lead_phi_2_);
+      outtree_->Branch("lead_energy_1",          &lead_energy_1_);
+      outtree_->Branch("lead_energy_2",          &lead_energy_2_);
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
       outtree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1);
@@ -2976,6 +2992,14 @@ namespace ic {
     event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
     event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
 
+    event->Exists("genE_pi1") ? genE_pi1_   = event->Get<double>("genE_pi1") : -999;
+    event->Exists("genE_pi01") ? genE_pi01_ = event->Get<double>("genE_pi01") : -999;
+    event->Exists("genE_pi2") ? genE_pi2_   = event->Get<double>("genE_pi2") : -999;
+    event->Exists("genE_pi02") ? genE_pi02_ = event->Get<double>("genE_pi02") : -999;
+    event->Exists("gen_aco_angle_1") ? gen_aco_angle_1_ = event->Get<double>("gen_aco_angle_1") : -999;
+    event->Exists("gen_aco_angle_2") ? gen_aco_angle_2_ = event->Get<double>("gen_aco_angle_2") : -999;
+    event->Exists("gen_cp_sign_1")   ? gen_cp_sign_1_   = event->Get<double>("gen_cp_sign_1") : -999;
+
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
@@ -3541,6 +3565,15 @@ namespace ic {
       dz_1_ = tau1->lead_dz_vertex();
       d0_2_ = tau2->lead_dxy_vertex();
       dz_2_ = tau2->lead_dz_vertex();
+      lead_pt_1_ = tau1->lead_pt();
+      lead_pt_2_ = tau2->lead_pt();
+      lead_eta_1_ = tau1->lead_eta();
+      lead_eta_2_ = tau2->lead_eta();
+      lead_phi_1_ = tau1->lead_phi();
+      lead_phi_2_ = tau2->lead_phi();
+      lead_energy_1_ = tau1->lead_energy();
+      lead_energy_2_ = tau2->lead_energy();
+
       if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_1_ = tau1->GetTauID("againstElectronMVA5raw");
@@ -4648,6 +4681,69 @@ namespace ic {
         }
       }
     }
+
+    std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+    std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::cout << event_ << std::endl;
+    auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap","pfCandidates");
+    auto const& lead_sig_charged = taus[0]->sig_charged_cands();
+    auto const& lead_sig_neutral = taus[0]->sig_neutral_cands();
+    auto const& sublead_sig_charged = taus[1]->sig_charged_cands();
+    auto const& sublead_sig_neutral = taus[1]->sig_neutral_cands();
+    auto const& lead_sig_gamma  = taus[0]->sig_gamma_cands();
+    auto const& sublead_sig_gamma  = taus[1]->sig_gamma_cands();
+    ic::Candidate lead_charged;
+    ic::Candidate lead_neutral;
+    ic::Candidate sublead_charged;
+    ic::Candidate sublead_neutral;
+    ic::Candidate lead_gamma;
+    ic::Candidate sublead_gamma;
+    std::cout << "lead charged size " << lead_sig_charged.size() << std::endl;
+    std::cout << "sublead charged size " << sublead_sig_charged.size() << std::endl;
+    std::cout << "lead neutral size " << lead_sig_neutral.size() << std::endl;
+    std::cout << "sublead neutral size " << sublead_sig_neutral.size() << std::endl;
+    std::cout << "lead gamma size " << lead_sig_gamma.size() << std::endl;
+    std::cout << "sublead gamma size " << sublead_sig_gamma.size() << std::endl;
+    for (auto id : lead_sig_charged) {
+      std::cout << taus[0]->decay_mode() << std::endl;
+      std::cout << "lead_charged " << id << std::endl;
+      lead_charged.set_vector(lead_charged.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    for (auto id : lead_sig_neutral) {
+      std::cout << taus[0]->decay_mode() << std::endl;
+      std::cout << "lead_neutral " << id << std::endl;
+      lead_neutral.set_vector(lead_neutral.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    for (auto id : sublead_sig_charged) {
+      std::cout << taus[1]->decay_mode() << std::endl;
+      std::cout << "sublead_charged " << id << std::endl;
+      sublead_charged.set_vector(sublead_charged.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    for (auto id : sublead_sig_neutral) {
+      std::cout << taus[1]->decay_mode() << std::endl;
+      std::cout << "sublead_neutral " << id << std::endl;
+      std::cout << "sublead_neutral.vector()" << sublead_neutral.vector() << std::endl; 
+      sublead_neutral.set_vector(sublead_neutral.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    for (auto id : lead_sig_gamma) {
+      std::cout << taus[0]->decay_mode() << std::endl;
+      std::cout << "lead_sig_gamma " << id << std::endl;
+      std::cout << "lead_sig_gamma.vector()" << lead_gamma.vector() << std::endl; 
+      lead_gamma.set_vector(lead_gamma.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    for (auto id : sublead_sig_gamma) {
+      std::cout << taus[1]->decay_mode() << std::endl;
+      std::cout << "sublead_sig_gamma " << id << std::endl;
+      std::cout << "sublead_sig_gamma.vector()" << sublead_gamma.vector() << std::endl; 
+      sublead_gamma.set_vector(sublead_gamma.vector() + pfcands[id]->vector());
+      std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
+    }
+    std::cout << "" << std::endl;
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();

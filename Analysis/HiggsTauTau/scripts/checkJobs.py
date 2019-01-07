@@ -10,7 +10,7 @@ def run_command(command):
 
 path = "./jobs"
 files = [f for f in os.listdir(path) 
-        if os.path.isfile(os.path.join(path, f)) and f.endswith(".log")]
+        if os.path.isfile(os.path.join(path, f)) and "2016" in f and f.endswith(".log")]
 
 counter = 0
 for file_ in files:

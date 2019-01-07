@@ -5,6 +5,7 @@ import datetime
 import os
 import sys
 import shutil
+from multiprocessing import Pool
 
 def transfer(var, dir_prefix):
     today = datetime.date.today()
@@ -25,6 +26,12 @@ def run_command(command):
     out, err = p.communicate()
     print out, err
     return out, err
+
+def multi_job(command,args):
+    print command
+    p = Pool(8)
+    p.map(command, args)
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -54,16 +61,18 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
+                "(lead_p_1-genE_pi1)/genE_pi1[-2,-1.5,-1.0,-0.5,0,0.5,1.0,1.5,2]",
                 # "m_vis(25,20,250)",
-                "jpt_1(16,0,400)",
-                "jpt_2(15,0,300)",
-                "mjj(15,0,1500)",
-                "n_jets(5,0,5)",
+                # "jpt_1(16,0,400)",
+                # "jpt_2(15,0,300)",
+                # "mjj(15,0,1500)",
+                # "n_jets(5,0,5)",
                 # "jeta_1(12,-4.7,4.7)",
                 # "jeta_2(12,-4.7,4.7)",
 
                 # "m_sv(30,0,300)",
                 # "n_jets(5,0,5)",
+                # "genM(30,0,300)",
                 
                 # "pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]",
                 # "pt_tt(60,0,300)",
@@ -72,7 +81,7 @@ def main(args):
                 # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
                 # "IC_binary_Oct11_score(20,0.,1.)",
                 # "mjj(16,0,800)",
-                # "sjdphi(12,-3.2,3.2)",
+                # "(sjdphi-gen_sjdphi)/sjdphi(12,-3.2,3.2)",
                 # "m_vis(25,20,250)","pt_1(20,40,140)","pt_2(12,40,100)",
                 # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
                 # "jpt_1(17,30,200)","jpt_2(17,40,200)",
@@ -83,8 +92,8 @@ def main(args):
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
-        extras += " --split_sm_scheme --ggh_scheme madgraph "
-        # extras += ' --set_alias "inclusive:(fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+        # extras += " --split_sm_scheme --ggh_scheme madgraph "
+        # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
 
@@ -96,7 +105,8 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-                "jpt_1(16,0,400)",
+                "m_sv(30,0,300)",
+                # "jpt_1(16,0,400)",
                 # "jpt_2(30,0,300)",
                 # "mjj(15,0,1500)",
                 # "m_vis(20,20,200)",
@@ -120,9 +130,10 @@ def main(args):
         extras += ' --set_alias "sel:mt_1<50" '
         # extras += ' --set_alias "inclusive:n_bjets==0" '
         # extras += ' --ratio_range 0.3,1.7 '
-        extras += ' --set_alias "inclusive:(mjj>500 && n_jets>1 && n_bjets==0)" '
+        # extras += ' --set_alias "inclusive:(mjj>500 && n_jets>1 && n_bjets==0)" '
+        # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
 
-        # extras += " --cat {} ".format(args.cat)
+        extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
         # extras += ' --ratio_range 0,2 '
         # extras += " --split_sm_scheme --ggh_scheme madgraph "
@@ -181,8 +192,8 @@ def main(args):
                 # "n_jets(10,0,10)",
                 # "jeta_1(12,-4.7,4.7)",
 
-                # "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
-                # "sjdphi(12,-3.2,3.2)",
+                "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
+                # "sjdphi(20,-3.2,3.2)",
                 # "jdeta(25,0,5)",
                 # "jpt_2(17,30,200)",
                 # "jeta_2(12,-4.7,4.7)",
@@ -191,20 +202,20 @@ def main(args):
                 # "met(40,0,400)",
                 # "pt_vis(30,0,300)",
 
-                "jarea_1(8,0.3,0.7)",
-                "jchm_1(20,0,20)",
-                "jnm_1(20,0,20)",
-                "jchemf_1(20,0,1)",
-                "jnemf_1(20,0,1)",
-                "jchhf_1(20,0,1)",
-                "jnhf_1(20,0,1)",
+                # "jarea_1(8,0.3,0.7)",
+                # "jchm_1(20,0,20)",
+                # "jnm_1(20,0,20)",
+                # "jchemf_1(20,0,1)",
+                # "jnemf_1(20,0,1)",
+                # "jchhf_1(20,0,1)",
+                # "jnhf_1(20,0,1)",
 
                 ]
-        extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0,2.5 '
-        # extras += ' --ratio_range 0.3,1.7 '
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
-        # extras += ' --set_alias "inclusive:(n_jets>=1)" '
+        extras += ' --ratio_range 0.3,1.7 '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
+        extras += ' --set_alias "inclusive:(n_jets>=2)" '
         # extras += " add_wt "
         method = "8"
 
@@ -298,6 +309,8 @@ def main(args):
             #             + ' --var "{}" --channel {} '.format(var,args.channel)
             #             + ' --method {} --norm_bins {} '.format(method,extras_n))
             # else:
+            if "sjdphi" in var or "jeta" in var:
+                extras += " --extra_pad 0.55 "
             run_command(' python scripts/HiggsTauTauPlot.py --cfg ' 
                     + ' scripts/plot_sm_2017.cfg --ratio '
                     + ' --var "{}" --channel {} '.format(var,args.channel)

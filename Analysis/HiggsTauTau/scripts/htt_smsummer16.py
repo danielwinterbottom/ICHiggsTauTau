@@ -191,11 +191,11 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.mg_signal:
   signal_mc += [
-  'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-  'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-  'GluGluToHToTauTau_M125_amcatnloFXFX',
-  'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-  'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+  # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+  # 'GluGluToHToTauTau_M125_amcatnloFXFX',
+  # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
 
   ]
@@ -482,7 +482,15 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'WGToLNuG',
     'WGToLNuG-ext',
     'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    'WGstarToLNuMuMu',
+    'EWKWMinus2Jets_WToLNu-ext1',
+    'EWKWMinus2Jets_WToLNu-ext2',
+    'EWKWMinus2Jets_WToLNu',
+    'EWKWPlus2Jets_WToLNu-ext1',
+    'EWKWPlus2Jets_WToLNu-ext2',
+    'EWKWPlus2Jets_WToLNu',
+    'EWKZ2Jets_ZToLL-ext',
+    'EWKZ2Jets_ZToLL'
      ]
   
   if options.analysis == 'sm':

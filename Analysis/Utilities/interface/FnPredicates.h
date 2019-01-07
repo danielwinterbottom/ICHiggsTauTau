@@ -169,6 +169,18 @@ namespace ic {
     p->set_vector(out_vec);
   }
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
+
+  template <class T>
+  TVector3 getIPVector(T *tau, Vertex *vtx){
+    TVector3 k, p, IP;
+    std::cout << tau->lead_dxy_vertex() << std::endl;
+    std::cout << tau->vx() << "    " <<  vtx->vx() << "    " <<  tau->vy() << "    " <<  vtx->vy() << "    " <<  tau->vz() << "    " <<  vtx->vz() << std::endl;
+    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
+    else IP.SetXYZ(-999, -999, -999); 
+     return IP;
+  }
   
   template<class T, class U>
   double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {

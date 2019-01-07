@@ -150,8 +150,9 @@ if options.proc_sm or options.proc_all:
         # 'VBFHToPseudoscalarTauTau_GEN',
         # 'VBFHToMaxmixTauTau_GEN',
         # 'SUSYGluGluToHToTauTau_M-120',
+        # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
-        # 'GluGluHToTauTau_M-125',
+        'GluGluHToTauTau_M-125',
         # 'GluGluHToPseudoscalarTauTau_GEN',
         # 'GluGluHToMaxmixTauTau_GEN',
 
@@ -303,46 +304,46 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-     'DYJetsToLL_M-10-50-LO-ext1',
-     'DYJetsToLL_M-10-50-LO',
-     'DY1JetsToLL-LO',
-     'DY2JetsToLL-LO',
-     'DY2JetsToLL-LO-ext',
-     'DY3JetsToLL-LO',
-     'DY3JetsToLL-LO-ext',
-     'DY4JetsToLL-LO',
+     # 'DYJetsToLL_M-10-50-LO-ext1',
+     # 'DYJetsToLL_M-10-50-LO',
+     # 'DY1JetsToLL-LO',
+     # 'DY2JetsToLL-LO',
+     # 'DY2JetsToLL-LO-ext',
+     # 'DY3JetsToLL-LO',
+     # 'DY3JetsToLL-LO-ext',
+     # 'DY4JetsToLL-LO',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO',
-     'DYJetsToLL',
-     'DYJetsToLL-ext',
-     'EWKZ2Jets',
-     'EWKWPlus2Jets',
-     'EWKWMinus2Jets',
-     'WJetsToLNu-LO',
-     'WJetsToLNu-LO-ext',
-     'W1JetsToLNu-LO',
-     'W2JetsToLNu-LO',
-     'W3JetsToLNu-LO',
-     'W4JetsToLNu-LO',
-     'WGToLNuG',
-     'WWTo2L2Nu',
-     'WWToLNuQQ-ext',
-     'WWToLNuQQ',
-     'WZTo1L1Nu2Q',
-     'WZTo1L3Nu',
-     'WZTo2L2Q',
-     'WZTo3LNu',
-     'ZZTo2L2Nu',
-     'ZZTo2L2Q',
-     'ZZTo4L-ext',
-     'ZZTo4L',
-     'TTToSemiLeptonic',
-     'TTToHadronic',
-     'TTTo2L2Nu',
-     'T-tW',
-     'T-t',
-     'Tbar-tW',
-     'Tbar-t', 
+     # 'DYJetsToLL',
+     # 'DYJetsToLL-ext',
+     # 'EWKZ2Jets',
+     # 'EWKWPlus2Jets',
+     # 'EWKWMinus2Jets',
+     # 'WJetsToLNu-LO',
+     # 'WJetsToLNu-LO-ext',
+     # 'W1JetsToLNu-LO',
+     # 'W2JetsToLNu-LO',
+     # 'W3JetsToLNu-LO',
+     # 'W4JetsToLNu-LO',
+     # 'WGToLNuG',
+     # 'WWTo2L2Nu',
+     # 'WWToLNuQQ-ext',
+     # 'WWToLNuQQ',
+     # 'WZTo1L1Nu2Q',
+     # 'WZTo1L3Nu',
+     # 'WZTo2L2Q',
+     # 'WZTo3LNu',
+     # 'ZZTo2L2Nu',
+     # 'ZZTo2L2Q',
+     # 'ZZTo4L-ext',
+     # 'ZZTo4L',
+     # 'TTToSemiLeptonic',
+     # 'TTToHadronic',
+     # 'TTTo2L2Nu',
+     # 'T-tW',
+     # 'T-t',
+     # 'Tbar-tW',
+     # 'Tbar-t', 
      ]
   
 
@@ -404,10 +405,10 @@ if options.mg_signal or options.proc_sm:
     #   user='adow'
     #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
     #   SIG_DIR = 'Dec03_GENSIM_94X'
-    # elif 'SUSY' in sa:
-    #   user='adow'
-    #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
-    #   SIG_DIR = 'Dec03_SUSYMC_94X'
+    elif 'SUSY' in sa or 'GluGluToHToTauTauPseudoscalarDecay' in sa or 'GluGluHToTauTau_M-125' in sa:
+      user='adow'
+      SIG_FILELIST = 'filelists/Dec04_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1]
     else:
       user='adow'
       SIG_FILELIST = FILELIST
