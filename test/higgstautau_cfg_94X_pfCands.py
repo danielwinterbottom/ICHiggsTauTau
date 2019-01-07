@@ -11,12 +11,14 @@ opts = parser.VarParsing ('analysis')
 opts.register('file', 
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'        
 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
-#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
+# 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
+# opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
+opts.register('globalTag', '94X_mc2017_realistic_v15', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
@@ -114,7 +116,10 @@ process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 from UserCode.ICHiggsTauTau.runTauIdMVA import *
 na = TauIDEmbedder(process, cms,
     debug=True,
-    toKeep = ["2017v2", "newDM2017v2", "dR0p32017v2"]
+    toKeep = ["2017v2", "newDM2017v2", "dR0p32017v2",
+        "deepTau2017v1", #deepTau Tau-Ids
+        "DPFTau_2016_v0", #DeepPFlow Tau-Id
+        ]
 )
 na.runTauID()
 
@@ -240,6 +245,20 @@ process.icVertexSequence = cms.Sequence(
 
 if isData :
   process.icVertexSequence.remove(process.icGenVertexProducer)
+
+################################################################
+# PFCandidates
+################################################################
+process.icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+    branch  = cms.string("pfCandidates"),
+    input   = cms.InputTag("packedPFCandidates"),
+    requestTracks       = cms.bool(False),
+    requestGsfTracks    = cms.bool(False),
+    inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
+    )
+
+process.icPFSequence = cms.Sequence()
+process.icPFSequence += process.icPFFromPackedProducer
 
 ################################################################
 # Electrons
@@ -541,7 +560,7 @@ process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
   requestTracks           = cms.bool(False),
   includeTotalCharged     = cms.bool(False),
   totalChargedLabel       = cms.string('totalCharged'),
-  requestPFCandidates     = cms.bool(False),
+  requestPFCandidates     = cms.bool(True),
   inputPFCandidates       = cms.InputTag("packedPFCandidates"),
   isSlimmed               = cms.bool(True),
   tauIDs = cms.PSet()
@@ -1246,6 +1265,7 @@ process.p = cms.Path(
   process.icMuonSequence+ 
   process.icTauSequence+
   process.icPFJetSequence+
+  process.icPFSequence+
   process.icPfMetSequence+
   process.icGenSequence+
   process.icL1EGammaProducer+
