@@ -83,7 +83,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10000)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -437,6 +437,20 @@ if isData :
 #)
 
 ################################################################
+# PFCandidates
+################################################################
+process.icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+    branch  = cms.string("pfCandidates"),
+    input   = cms.InputTag("icTauProducer", "requestedPFCandidates"),
+    requestTracks       = cms.bool(False),
+    requestGsfTracks    = cms.bool(False),
+    inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
+    )
+
+process.icPFSequence = cms.Sequence()
+process.icPFSequence += process.icPFFromPackedProducer
+
+################################################################
 # Electrons
 ################################################################
 electronLabel = cms.InputTag("gedGsfElectrons")
@@ -782,7 +796,7 @@ if release in ['80XMINIAOD','8031MINIAOD']:
     requestTracks           = cms.bool(False),
     includeTotalCharged     = cms.bool(False),
     totalChargedLabel       = cms.string('totalCharged'),
-    requestPFCandidates     = cms.bool(False),
+    requestPFCandidates     = cms.bool(True),
     inputPFCandidates       = cms.InputTag("packedPFCandidates"),
     isSlimmed               = cms.bool(True),
     tauIDs = cms.PSet()
@@ -2486,7 +2500,6 @@ process.p = cms.Path(
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
-# process.icPFSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauSequence+
@@ -2495,6 +2508,7 @@ process.p = cms.Path(
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPFJetSequence+
+  process.icPFSequence+
   #process.icMvaMetSequence+
   process.icPfMetSequence+
   process.icGenSequence+
