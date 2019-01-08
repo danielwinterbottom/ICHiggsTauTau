@@ -283,6 +283,26 @@ class HTTGenAnalysis : public ModuleBase {
   bool match_2_;
   
   TH2D z_pt_weights_sm_;
+
+  double aco_angle_1_;
+  double aco_angle_2_;
+  double aco_angle_3_;
+  double aco_angle_4_;
+  int cp_sign_1_;
+  int cp_sign_2_;
+  int cp_sign_3_;
+  int cp_sign_4_;
+  
+  int cp_channel_;
+  
+  double ip_dxy_res_1_; 
+  double ip_dxy_res_2_; 
+  double ip_dx_res_1_; 
+  double ip_dx_res_2_; 
+  double ip_dy_res_1_; 
+  double ip_dy_res_2_;
+  double ip_dz_res_1_;
+  double ip_dz_res_2_;
   
  public:
   HTTGenAnalysis(std::string const& name);

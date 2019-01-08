@@ -544,7 +544,24 @@ namespace ic {
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
 
+  std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  std::pair<bool, GenParticle*> GetTauPiDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  std::pair<bool,std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  std::pair<bool,std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi);
+
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
+
+  template <class T>
+  TVector3 getIPVector(T *tau, Vertex *vtx){
+    TVector3 k, p, IP;
+    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
+    else IP.SetXYZ(-999, -999, -999); 
+
+    return IP;
+  }
 
   template <class T, class U>
     void getGenRecoMatches(const std::vector<T*> & recovec,

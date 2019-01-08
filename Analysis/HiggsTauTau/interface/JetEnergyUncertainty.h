@@ -25,6 +25,7 @@ class JetEnergyUncertainty : public ModuleBase {
   CLASS_MEMBER(JetEnergyUncertainty, std::vector<std::string>, uncert_sets)
   CLASS_MEMBER(JetEnergyUncertainty, std::vector<double>, correlations)
   CLASS_MEMBER(JetEnergyUncertainty, unsigned, jes_corr_mode)
+  CLASS_MEMBER(JetEnergyUncertainty, bool, EENoiseFix)
   JetCorrectionUncertainty *uncert_;
   JetCorrectorParameters *params_;
   std::vector<JetCorrectionUncertainty*> uncerts_;
@@ -43,6 +44,7 @@ template <class T>
 JetEnergyUncertainty<T>::JetEnergyUncertainty(std::string const& name) : ModuleBase(name) {
   input_label_ = "pfJetsPFlow";
   sum_uncerts_ = false;
+  EENoiseFix_ = false;
   jes_corr_mode_ = 0;
 }
 
@@ -82,7 +84,8 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
     for (unsigned i = 0; i < vec.size(); ++i) {
-      before+=vec[i]->vector();
+      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
+      if(!skipJet) before+=vec[i]->vector();
       uncert_->setJetPt(vec[i]->pt());
       uncert_->setJetEta(vec[i]->eta());
       if (jes_shift_mode_ == 1) {
@@ -93,14 +96,16 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
         double shift = uncert_->getUncertainty(true); //up
         vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
       }
-      after+=vec[i]->vector();
+      if(!skipJet) after+=vec[i]->vector();
+
     }
     event->Add("jes_shift", after-before);
   } else if (sum_uncerts_){
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
     for (unsigned i = 0; i < vec.size(); ++i) {
-      before+=vec[i]->vector();  
+      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
+      if(!skipJet) before+=vec[i]->vector();  
       double shift=0;
       double factor = 1.; //for correlations
       for (unsigned j=0; j<uncerts_.size(); ++j){
@@ -125,7 +130,7 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       if (jes_shift_mode_ == 2) {
         vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
       }
-      after+=vec[i]->vector();
+      if(!skipJet) after+=vec[i]->vector();
     }
     event->Add("jes_shift", after-before);
   }

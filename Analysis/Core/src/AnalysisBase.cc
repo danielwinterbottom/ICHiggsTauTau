@@ -51,6 +51,7 @@ void AnalysisBase::AddModule(std::string const& seq_name,
   (*seq_it).modules.push_back(module_ptr);
 }
 
+
 void AnalysisBase::DoEventSetup() {}
 
 bool AnalysisBase::PostModule(int status) {
@@ -60,6 +61,16 @@ bool AnalysisBase::PostModule(int status) {
     return true;
   }
 }
+
+void AnalysisBase::AddProducts(ic::ModuleBase* module_ptr) {
+  std::map<std::string, boost::any> add_products_ =  module_ptr->GetProducts();
+  products_.insert(add_products_.begin(), add_products_.end());
+}
+
+std::map<std::string, boost::any> AnalysisBase::GetProducts() {
+  return products_;
+}
+
 
 int AnalysisBase::RunAnalysis() {
   TFile* file_ptr = nullptr;
@@ -105,8 +116,12 @@ int AnalysisBase::RunAnalysis() {
     std::cout << std::string(78, '-') << "\n";
     std::cout << boost::format("%-15s : %-60s\n") % "Pre-analysis" % seq.name;
     std::cout << std::string(78, '-') << "\n";
-    std::for_each(seq.modules.begin(), seq.modules.end(),
-                  boost::bind(&ModuleBase::PreAnalysis, _1));
+    for (unsigned m = 0; m < seq.modules.size(); ++m) {
+      auto mod = (seq.modules)[m];
+      for (auto p : GetProducts()) mod->AddToProducts(p.first, p.second); 
+      mod->PreAnalysis();
+      AddProducts(mod); 
+    }
   }
 
   std::cout << std::string(78, '-') << "\n";

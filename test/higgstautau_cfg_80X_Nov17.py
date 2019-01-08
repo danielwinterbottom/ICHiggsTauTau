@@ -34,7 +34,8 @@ opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
-
+opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 
 
 opts.parseArguments()
@@ -436,6 +437,20 @@ if isData :
 #)
 
 ################################################################
+# PFCandidates
+################################################################
+process.icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+    branch  = cms.string("pfCandidates"),
+    input   = cms.InputTag("icTauProducer", "requestedPFCandidates"),
+    requestTracks       = cms.bool(False),
+    requestGsfTracks    = cms.bool(False),
+    inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
+    )
+
+process.icPFSequence = cms.Sequence()
+process.icPFSequence += process.icPFFromPackedProducer
+
+################################################################
 # Electrons
 ################################################################
 electronLabel = cms.InputTag("gedGsfElectrons")
@@ -781,7 +796,7 @@ if release in ['80XMINIAOD','8031MINIAOD']:
     requestTracks           = cms.bool(False),
     includeTotalCharged     = cms.bool(False),
     totalChargedLabel       = cms.string('totalCharged'),
-    requestPFCandidates     = cms.bool(False),
+    requestPFCandidates     = cms.bool(True),
     inputPFCandidates       = cms.InputTag("packedPFCandidates"),
     isSlimmed               = cms.bool(True),
     tauIDs = cms.PSet()
@@ -2456,7 +2471,21 @@ if isData:
   process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
   process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
   
+################################################################
+# TauSpinner
+################################################################
+  
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+  branch                  = cms.string("tauspinner"),
+  input                   = cms.InputTag("prunedGenParticles"),
+  theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
+)
 
+if opts.tauSpinner:
+  process.icTauSpinnerSequence = cms.Sequence(
+    process.icTauSpinnerProducer 
+  )
+else: process.icTauSpinnerSequence = cms.Sequence()
 
 ################################################################
 # Event
@@ -2471,7 +2500,6 @@ process.p = cms.Path(
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
-# process.icPFSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauSequence+
@@ -2480,6 +2508,7 @@ process.p = cms.Path(
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPFJetSequence+
+  process.icPFSequence+
   #process.icMvaMetSequence+
   process.icPfMetSequence+
   process.icGenSequence+
@@ -2490,6 +2519,7 @@ process.p = cms.Path(
   process.icL1TauProducer+
   process.icL1MuonProducer+
   #process.patDefaultSequence+
+  process.icTauSpinnerSequence+
   process.icEventProducer
 )
 

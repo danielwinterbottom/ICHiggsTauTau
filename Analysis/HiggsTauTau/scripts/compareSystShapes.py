@@ -45,11 +45,12 @@ for key in infile.GetListOfKeys():
             elif 'dijet_loosemjj_boosted' in dirname: binnum=4
             elif 'dijet_tightmjj_lowboost' in dirname: binnum=5
             elif 'dijet_tightmjj_boosted' in dirname: binnum=6
+            elif 'ttbar' in dirname: binnum=7
             else: noPrint = True
-            if '_jhu_' in proc or '_ph_' in proc or '_total_bkg_' in proc or '_ZTT_' in proc or 'plus' in proc or 'minus' in proc: noPrint=True
-            if histo_nom.Integral() > 0 and not noPrint:
-              up = histo_up.Integral()/histo_nom.Integral()
-              down = histo_down.Integral()/histo_nom.Integral()
+            if '_jhu_' in proc or '_ph_' in proc or '_total_bkg_' in proc or '_ZTT_' in proc or 'plus' in proc or 'minus' in proc or 'total_bkg' in proc: noPrint=True
+            if histo_nom.Integral(-1,-1) > 0 and not noPrint:
+              up = histo_up.Integral(-1,-1)/histo_nom.Integral(-1,-1)
+              down = histo_down.Integral(-1,-1)/histo_nom.Integral(-1,-1)
               to_print.append('({\"%s\"}, {%i}, {\"%s\"}, %.3f, %.3f)' % (chan, binnum, proc, down, up))
          
     directory.Close() 
