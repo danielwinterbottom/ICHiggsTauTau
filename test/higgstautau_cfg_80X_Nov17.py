@@ -34,7 +34,8 @@ opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
-
+opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 
 
 opts.parseArguments()
@@ -82,7 +83,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -2456,7 +2457,21 @@ if isData:
   process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
   process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
   
+################################################################
+# TauSpinner
+################################################################
+  
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+  branch                  = cms.string("tauspinner"),
+  input                   = cms.InputTag("prunedGenParticles"),
+  theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
+)
 
+if opts.tauSpinner:
+  process.icTauSpinnerSequence = cms.Sequence(
+    process.icTauSpinnerProducer 
+  )
+else: process.icTauSpinnerSequence = cms.Sequence()
 
 ################################################################
 # Event
@@ -2490,6 +2505,7 @@ process.p = cms.Path(
   process.icL1TauProducer+
   process.icL1MuonProducer+
   #process.patDefaultSequence+
+  process.icTauSpinnerSequence+
   process.icEventProducer
 )
 

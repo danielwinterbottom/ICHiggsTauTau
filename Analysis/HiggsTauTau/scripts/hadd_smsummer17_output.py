@@ -39,6 +39,8 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+    'GluGluHToTauTau_M-125',
+
     # 'DY1JetsToLL-LO',
     # 'DY2JetsToLL-LO',
     # 'DY2JetsToLL-LO-ext',
@@ -84,9 +86,7 @@ sample_list = [
     # 'EmbeddingTauTauD',
     # 'EmbeddingTauTauE',
     # 'EmbeddingTauTauF',
-    'GluGluHToTauTau_M-125',
-    # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
-    # 'SUSYGluGluToHToTauTau_M-120',
+    # 'GluGluHToTauTau_M-125',
     # 'GluGluHToTauTau_M-125-ext',
     # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
     # 'GluGluToHToTauTau_M125_amcatnloFXFX',
@@ -126,8 +126,6 @@ sample_list = [
     # 'Tbar-t',
     # 'Tbar-tW',
     # 'VBFHToTauTau_M-125',
-    # 'GluGluHToPseudoscalarTauTau_GEN',
-    # 'GluGluHToMaxmixTauTau_GEN',
     # 'VBFHiggs0MToTauTau',
     # 'VBFHiggs0Mf05ph0ToTauTau',
     # 'VBFHiggs0PMToTauTau',

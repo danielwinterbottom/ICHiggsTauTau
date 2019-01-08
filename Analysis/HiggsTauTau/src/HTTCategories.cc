@@ -838,10 +838,18 @@ namespace ic {
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
-      outtree_->Branch("genE_pi1", &genE_pi1_);
+      outtree_->Branch("genE_pi1",  &genE_pi1_);
       outtree_->Branch("genE_pi01", &genE_pi01_);
-      outtree_->Branch("genE_pi2", &genE_pi2_);
+      outtree_->Branch("genE_pi2",  &genE_pi2_);
       outtree_->Branch("genE_pi02", &genE_pi02_);
+      outtree_->Branch("genPhi_pi1",  &genPhi_pi1_);
+      outtree_->Branch("genPhi_pi01", &genPhi_pi01_);
+      outtree_->Branch("genPhi_pi2",  &genPhi_pi2_);
+      outtree_->Branch("genPhi_pi02", &genPhi_pi02_);
+      outtree_->Branch("genEta_pi1",  &genEta_pi1_);
+      outtree_->Branch("genEta_pi01", &genEta_pi01_);
+      outtree_->Branch("genEta_pi2",  &genEta_pi2_);
+      outtree_->Branch("genEta_pi02", &genEta_pi02_);
       outtree_->Branch("gen_aco_angle_1", &gen_aco_angle_1_);
       outtree_->Branch("gen_aco_angle_2", &gen_aco_angle_2_);
       outtree_->Branch("gen_cp_sign_1", &gen_cp_sign_1_);
@@ -2992,10 +3000,18 @@ namespace ic {
     event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
     event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
 
-    event->Exists("genE_pi1") ? genE_pi1_   = event->Get<double>("genE_pi1") : -999;
+    event->Exists("genE_pi1")  ? genE_pi1_   = event->Get<double>("genE_pi1") : -999;
     event->Exists("genE_pi01") ? genE_pi01_ = event->Get<double>("genE_pi01") : -999;
-    event->Exists("genE_pi2") ? genE_pi2_   = event->Get<double>("genE_pi2") : -999;
+    event->Exists("genE_pi2")  ? genE_pi2_   = event->Get<double>("genE_pi2") : -999;
     event->Exists("genE_pi02") ? genE_pi02_ = event->Get<double>("genE_pi02") : -999;
+    event->Exists("genPhi_pi1")  ? genPhi_pi1_   = event->Get<double>("genPhi_pi1") : -999;
+    event->Exists("genPhi_pi01") ? genPhi_pi01_  = event->Get<double>("genPhi_pi01") : -999;
+    event->Exists("genPhi_pi2")  ? genPhi_pi2_   = event->Get<double>("genPhi_pi2") : -999;
+    event->Exists("genPhi_pi02") ? genPhi_pi02_  = event->Get<double>("genPhi_pi02") : -999;
+    event->Exists("genEta_pi1")  ? genEta_pi1_   = event->Get<double>("genEta_pi1") : -999;
+    event->Exists("genEta_pi01") ? genEta_pi01_  = event->Get<double>("genEta_pi01") : -999;
+    event->Exists("genEta_pi2")  ? genEta_pi2_   = event->Get<double>("genEta_pi2") : -999;
+    event->Exists("genEta_pi02") ? genEta_pi02_  = event->Get<double>("genEta_pi02") : -999;
     event->Exists("gen_aco_angle_1") ? gen_aco_angle_1_ = event->Get<double>("gen_aco_angle_1") : -999;
     event->Exists("gen_aco_angle_2") ? gen_aco_angle_2_ = event->Get<double>("gen_aco_angle_2") : -999;
     event->Exists("gen_cp_sign_1")   ? gen_cp_sign_1_   = event->Get<double>("gen_cp_sign_1") : -999;
@@ -4682,7 +4698,7 @@ namespace ic {
       }
     }
 
-    std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+    /*std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
     std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::cout << event_ << std::endl;
     auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap","pfCandidates");
@@ -4743,7 +4759,7 @@ namespace ic {
       sublead_gamma.set_vector(sublead_gamma.vector() + pfcands[id]->vector());
       std::cout << "pfcands[id]->vector()" << pfcands[id]->vector() << std::endl;
     }
-    std::cout << "" << std::endl;
+    std::cout << "" << std::endl;*/
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();

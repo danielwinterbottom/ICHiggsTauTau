@@ -43,6 +43,9 @@ class HTTGenAnalysis : public ModuleBase {
   TRandom3  *rand;
   
   unsigned long long event_;
+
+  unsigned n_rho_;
+  unsigned n_tot_;
   
   unsigned count_ee_;
   unsigned count_em_;
@@ -303,6 +306,11 @@ class HTTGenAnalysis : public ModuleBase {
   double ip_dy_res_2_;
   double ip_dz_res_1_;
   double ip_dz_res_2_;
+
+  double Ediff_1_;
+  double Ediff_2_;
+  double Pfrac_1_; 
+  double Pfrac_2_;
   
  public:
   HTTGenAnalysis(std::string const& name);

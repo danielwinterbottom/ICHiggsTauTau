@@ -235,6 +235,17 @@ namespace ic {
     double genE_pi01_ = -999;
     double genE_pi2_ = -999;
     double genE_pi02_ = -999;
+
+    double genPhi_pi1_ = -999;
+    double genPhi_pi01_ = -999;
+    double genPhi_pi2_ = -999;
+    double genPhi_pi02_ = -999;
+
+    double genEta_pi1_ = -999;
+    double genEta_pi01_ = -999;
+    double genEta_pi2_ = -999;
+    double genEta_pi02_ = -999;
+
     double gen_aco_angle_1_ = -999;
     double gen_aco_angle_2_ = -999;
     double gen_cp_sign_1_ = -999;
@@ -247,11 +258,20 @@ namespace ic {
         lvec3 = ConvertToLorentz(rho_1.second[0]->vector());   
         lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
 
-        genE_pi1_ = rho_1.second[1]->vector().E();
-        genE_pi01_ = rho_1.second[0]->vector().E();
-        genE_pi2_ = rho_2.second[1]->vector().E();
-        genE_pi02_ = rho_2.second[0]->vector().E();
+        genE_pi1_ = rho_1.second[0]->vector().E();
+        genE_pi01_ = rho_1.second[1]->vector().E();
+        genE_pi2_ = rho_2.second[0]->vector().E();
+        genE_pi02_ = rho_2.second[1]->vector().E();
 
+        genPhi_pi1_ =  rho_1.second[0]->vector().Phi();
+        genPhi_pi01_ = rho_1.second[1]->vector().Phi();
+        genPhi_pi2_ =  rho_2.second[0]->vector().Phi();
+        genPhi_pi02_ = rho_2.second[1]->vector().Phi();
+
+        genEta_pi1_ =  rho_1.second[0]->vector().Eta();
+        genEta_pi01_ = rho_1.second[1]->vector().Eta();
+        genEta_pi2_ =  rho_2.second[0]->vector().Eta();
+        genEta_pi02_ = rho_2.second[1]->vector().Eta();
 
         gen_cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3());
 
@@ -263,9 +283,28 @@ namespace ic {
     event->Add("genE_pi01", genE_pi01_);
     event->Add("genE_pi2", genE_pi2_);
     event->Add("genE_pi02", genE_pi02_);
+
+    event->Add("genPhi_pi1", genPhi_pi1_);
+    event->Add("genPhi_pi01", genPhi_pi01_);
+    event->Add("genPhi_pi2", genPhi_pi2_);
+    event->Add("genPhi_pi02", genPhi_pi02_);
+
+    event->Add("genEta_pi1",  genEta_pi1_);
+    event->Add("genEta_pi01", genEta_pi01_);
+    event->Add("genEta_pi2",  genEta_pi2_);
+    event->Add("genEta_pi02", genEta_pi02_);
+
     event->Add("gen_cp_sign_1", gen_cp_sign_1_);
     event->Add("gen_aco_angle_1", gen_aco_angle_1_);
     event->Add("gen_aco_angle_2", gen_aco_angle_2_);
+
+    // CP in decay
+    /* std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+    std::pair<bool, std::vector<ic::GenParticle*>> rho_daughters;
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;*/
 
     return 0;
   }

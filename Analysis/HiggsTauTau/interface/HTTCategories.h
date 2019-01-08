@@ -490,6 +490,14 @@ class HTTCategories : public ModuleBase {
   double genE_pi01_;
   double genE_pi2_;
   double genE_pi02_;
+  double genPhi_pi1_;
+  double genPhi_pi01_;
+  double genPhi_pi2_;
+  double genPhi_pi02_;
+  double genEta_pi1_;
+  double genEta_pi01_;
+  double genEta_pi2_;
+  double genEta_pi02_;
   double gen_aco_angle_1_;
   double gen_aco_angle_2_;
   double gen_cp_sign_1_;
