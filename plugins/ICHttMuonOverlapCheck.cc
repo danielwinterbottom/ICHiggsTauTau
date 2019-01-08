@@ -26,7 +26,7 @@ ICHttMuonOverlapCheck::~ICHttMuonOverlapCheck() {}
 
 void ICHttMuonOverlapCheck::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<float> > product(new edm::ValueMap<float>());
+  std::unique_ptr<edm::ValueMap<float> > product(new edm::ValueMap<float>());
   edm::Handle<reco::GsfElectronCollection> elecs_handle;
   event.getByLabel(input_, elecs_handle);
   edm::Handle<edm::View<reco::Muon> > muons_handle;
@@ -50,7 +50,7 @@ void ICHttMuonOverlapCheck::produce(edm::Event& event,
   filler.insert(elecs_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICHttMuonOverlapCheck::beginJob() {}

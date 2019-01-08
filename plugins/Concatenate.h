@@ -55,7 +55,7 @@ void Concatenate<T>::endJob() {}
 template <class T>
 void Concatenate<T>::produce(edm::Event &event,
                                     const edm::EventSetup &setup) {
-  std::auto_ptr<Vec> product(new Vec());
+  std::unique_ptr<Vec> product(new Vec());
   for (unsigned i = 0; i < inputs_.size(); ++i) {
     edm::Handle<Vec> vec;
     event.getByLabel(inputs_[i], vec);
@@ -63,7 +63,7 @@ void Concatenate<T>::produce(edm::Event &event,
       product->push_back(vec->at(j));
     }
   }
-  event.put(product);
+  event.put(std::move(product));
 }
 }
 

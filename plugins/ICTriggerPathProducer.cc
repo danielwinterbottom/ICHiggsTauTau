@@ -106,6 +106,7 @@ void ICTriggerPathProducer::produce(edm::Event& event,
     edm::TriggerNames const& names = event.triggerNames(*trigres_handle);
     paths_->reserve(trigres_handle->size());
     for (unsigned int i = 0, n = trigres_handle->size(); i < n; ++i) {
+      //std::cout << names.triggerName(i) << std::endl;
       if (!trigres_handle->accept(i) && include_if_fired_) continue;
       paths_->push_back(ic::TriggerPath());
       ic::TriggerPath & dest = paths_->back();
@@ -117,7 +118,7 @@ void ICTriggerPathProducer::produce(edm::Event& event,
         unsigned column = l1algo_handle->at(0, 0).getPreScColumn();
         unsigned other_prescale = hlt_config_.prescaleValue(column, names.triggerName(i));
         // if (dest.prescale() != other_prescale) {
-        //   std::cout << names.triggerName(i) << "\t" << hlt_config_.tableName() << "\t" << dest.prescale() << "\t" << other_prescale << "\n";
+           //std::cout << names.triggerName(i) << "\t" << hlt_config_.tableName() << "\t" << dest.prescale() << "\t" << other_prescale << "\n";
         // }
         dest.set_prescale(other_prescale);
       }

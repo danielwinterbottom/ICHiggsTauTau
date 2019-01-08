@@ -66,7 +66,7 @@ ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD()
 // ------------ method called on each new Event  ------------
 void ICElectronIDMVAProducerMiniAOD::produce(edm::Event& event, const edm::EventSetup& setup) {
 //	using namespace edm;
-    std::auto_ptr<edm::ValueMap<float> > out(new edm::ValueMap<float>() );
+    std::unique_ptr<edm::ValueMap<float> > out(new edm::ValueMap<float>() );
     
     
     edm::Handle<pat::ElectronCollection> egCollection;
@@ -89,7 +89,7 @@ void ICElectronIDMVAProducerMiniAOD::produce(edm::Event& event, const edm::Event
     filler.insert(egCollection, values.begin(), values.end() );
     filler.fill();
     
-    event.put(out);
+    event.put(std::move(out));
     
 }
 

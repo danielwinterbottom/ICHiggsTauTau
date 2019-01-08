@@ -128,7 +128,7 @@ struct JetSrcHelper {
       event.getByLabel(input_btags[i].second, btag_handles[i]);
     }
 
-    std::auto_ptr<reco::SecondaryVertexTagInfoRefVector> sv_info_requests(
+    std::unique_ptr<reco::SecondaryVertexTagInfoRefVector> sv_info_requests(
         new reco::SecondaryVertexTagInfoRefVector());
 
     for (unsigned i = 0; i < jets_handle->size(); ++i) {
@@ -210,7 +210,7 @@ struct JetSrcHelper {
       }
     }
     if (include_sv_info_ids) {
-      event.put(sv_info_requests, "requestedSVInfo");
+      event.put(std::move(sv_info_requests), "requestedSVInfo");
     }
   }
 
@@ -273,7 +273,7 @@ struct JetSrcHelper<pat::Jet> {
       event.getByLabel(input_sv_info, sv_info_handle);
     }
 
-    std::auto_ptr<reco::SecondaryVertexTagInfoRefVector> sv_info_requests(
+    std::unique_ptr<reco::SecondaryVertexTagInfoRefVector> sv_info_requests(
         new reco::SecondaryVertexTagInfoRefVector());
 
     for (unsigned i = 0; i < jets_handle->size(); ++i) {
@@ -327,7 +327,7 @@ struct JetSrcHelper<pat::Jet> {
       }
     }
     if (include_sv_info_ids) {
-      event.put(sv_info_requests, "requestedSVInfo");
+      event.put(std::move(sv_info_requests), "requestedSVInfo");
     }
   }
 

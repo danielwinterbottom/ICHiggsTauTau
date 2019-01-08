@@ -49,7 +49,7 @@ void ICGenJetProducer::produce(edm::Event& event,
     }
   }
 
-  std::auto_ptr<reco::GenParticleRefVector> part_requests(
+  std::unique_ptr<reco::GenParticleRefVector> part_requests(
       new reco::GenParticleRefVector());
 
   gen_jets_->clear();
@@ -82,7 +82,7 @@ void ICGenJetProducer::produce(edm::Event& event,
       dest.set_constituents(constituents);
     }
   }
-  if (request_gen_particles_) event.put(part_requests, "requestedGenParticles");
+  if (request_gen_particles_) event.put(std::move(part_requests), "requestedGenParticles");
 }
 
 void ICGenJetProducer::beginJob() {

@@ -171,6 +171,12 @@ class Electron : public Candidate {
   /// The scale & smear correction things
   inline float ecalTrkEnergyPreCorr() const { return ecalTrkEnergyPreCorr_; }
   inline float ecalTrkEnergyPostCorr() const { return ecalTrkEnergyPostCorr_; }
+  inline float ecalTrkEnergyErrPreCorr() const { return ecalTrkEnergyErrPreCorr_; }
+  inline float ecalTrkEnergyErrPostCorr() const { return ecalTrkEnergyErrPostCorr_; }
+  inline float ecalTrkEnergySigmaUp() const { return ecalTrkEnergySigmaUp_; }
+  inline float ecalTrkEnergySigmaDown() const { return ecalTrkEnergySigmaDown_; }
+  inline float ecalTrkEnergyScaleUp() const { return ecalTrkEnergyScaleUp_; }
+  inline float ecalTrkEnergyScaleDown() const { return ecalTrkEnergyScaleDown_; }
 
   /// True if electron is matched to a conversion vertex
   inline bool has_matched_conversion() const { return has_matched_conversion_; }
@@ -348,14 +354,37 @@ class Electron : public Candidate {
   inline void set_ecal_energy(float const& ecal_energy) {
     ecal_energy_ = ecal_energy;
   }
-
-  /// @copybrief preCorr()
+  /// @copybrief ecalTrkEnergyPreCorr()
   inline void set_ecalTrkEnergyPreCorr(float const& ecalTrkEnergyPreCorr) {
     ecalTrkEnergyPreCorr_ = ecalTrkEnergyPreCorr;
   }
-  /// @copybrief postCorr()
+  /// @copybrief ecalTrkEnergyPostCorr()
   inline void set_ecalTrkEnergyPostCorr(float const& ecalTrkEnergyPostCorr) {
     ecalTrkEnergyPostCorr_ = ecalTrkEnergyPostCorr;
+  }
+  /// @copybrief ecalTrkEnergyErrPreCorr()
+  inline void set_ecalTrkEnergyErrPreCorr(float const& ecalTrkEnergyErrPreCorr) {
+    ecalTrkEnergyErrPreCorr_ = ecalTrkEnergyErrPreCorr;
+  }
+  /// @copybrief ecalTrkEnergyErrPostCorr()
+  inline void set_ecalTrkEnergyErrPostCorr(float const& ecalTrkEnergyErrPostCorr) {
+    ecalTrkEnergyErrPostCorr_ = ecalTrkEnergyErrPostCorr;
+  }
+  /// @copybrief ecalTrkEnergyScaleUp()
+  inline void set_ecalTrkEnergyScaleUp(float const& ecalTrkEnergyScaleUp) {
+    ecalTrkEnergyScaleUp_ = ecalTrkEnergyScaleUp;
+  }
+  /// @copybrief ecalTrkEnergyScaleDown()
+  inline void set_ecalTrkEnergyScaleDown(float const& ecalTrkEnergyScaleDown) {
+    ecalTrkEnergyScaleDown_ = ecalTrkEnergyScaleDown;
+  }
+  /// @copybrief ecalTrkEnergySigmaUp()
+  inline void set_ecalTrkEnergySigmaUp(float const& ecalTrkEnergySigmaUp) {
+    ecalTrkEnergySigmaUp_ = ecalTrkEnergySigmaUp;
+  }
+  /// @copybrief ecalTrkEnergySigmaDown()
+  inline void set_ecalTrkEnergySigmaDown(float const& ecalTrkEnergySigmaDown) {
+    ecalTrkEnergySigmaDown_ = ecalTrkEnergySigmaDown;
   }
 
   /// @copybrief has_matched_conversion()
@@ -455,9 +484,15 @@ class Electron : public Candidate {
   float hcal_sum_;
 
   float ecal_energy_;
-  
+
   float ecalTrkEnergyPreCorr_;
   float ecalTrkEnergyPostCorr_;
+  float ecalTrkEnergyErrPreCorr_;
+  float ecalTrkEnergyErrPostCorr_;
+  float ecalTrkEnergyScaleUp_;
+  float ecalTrkEnergyScaleDown_;
+  float ecalTrkEnergySigmaUp_;
+  float ecalTrkEnergySigmaDown_;
 
   bool has_matched_conversion_;
 

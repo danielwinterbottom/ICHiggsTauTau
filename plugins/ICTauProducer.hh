@@ -124,7 +124,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
   edm::Handle<edm::View<reco::Vertex> > vertices_handle;
   if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
 
-  std::auto_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
+  std::unique_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
 
   taus_->clear();
   taus_->resize(taus_handle->size(), ic::Tau());
@@ -177,7 +177,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
     dest.set_vz(src.vz());
   }
   constructSpecific(taus_handle, event, setup);
-  if (request_trks_) event.put(trk_requests, "requestedTracks");
+  if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
 }
 
 // ==================
@@ -221,9 +221,9 @@ void ICTauProducer<pat::Tau>::constructSpecific(
   }
 
 #if CMSSW_MAJOR_VERSION >= 7
-  std::auto_ptr<pat::PackedCandidateRefVector> cand_requests_slimmed(new pat::PackedCandidateRefVector());
+  std::unique_ptr<pat::PackedCandidateRefVector> cand_requests_slimmed(new pat::PackedCandidateRefVector());
 #endif
-  std::auto_ptr<reco::PFCandidateRefVector> cand_requests(new reco::PFCandidateRefVector());
+  std::unique_ptr<reco::PFCandidateRefVector> cand_requests(new reco::PFCandidateRefVector());
 
   for (unsigned i = 0; i < taus_handle->size(); ++i) {
     pat::Tau const& src = taus_handle->at(i);
@@ -300,10 +300,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
   if (request_cands_) {
     if (is_slimmed_) {
 #if CMSSW_MAJOR_VERSION >= 7
-      event.put(cand_requests_slimmed, "requestedPFCandidates");
+      event.put(std::move(cand_requests_slimmed), "requestedPFCandidates");
 #endif
     } else {
-      event.put(cand_requests, "requestedPFCandidates");
+      event.put(std::move(cand_requests), "requestedPFCandidates");
     }
   }
 
