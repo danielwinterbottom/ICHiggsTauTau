@@ -1927,6 +1927,61 @@ namespace ic {
   }
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
+    // set GenJet flavour as tau decay mode, only need 1prong and 3prong
+    // 0 = 1prong, 1 = 1prong+1strip, 2 = 1prong+2strip, 10 = 3prong, 11 = 3prong+1strip
+    // using pythia8 based gen particles
+    std::vector<GenJet> taus;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+        std::vector<bool> status_flags;
+        bool is_prompt=true; 
+        if(use_prompt){
+          status_flags = parts[i]->statusFlags();
+          is_prompt=status_flags[IsPrompt];
+        }
+      if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
+        std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
+        bool has_tau_daughter = false;
+        bool has_lepton_daughter = false;
+        unsigned nPi = 0;
+        unsigned nPi0 =  0;
+        unsigned nHadronicNoNu = 0;
+        int tauDecayFlag = -1; // -1 so that it doesn't interfer with DM=0
+        for (unsigned j = 0; j < daughters.size(); ++j) {
+          if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
+          if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
+          unsigned daughterId = std::abs(daughters[j]->pdgid());
+          if(daughterId == 111) ++nPi0;
+          if(daughterId == 211) ++nPi;
+          if(daughterId!=12 && daughterId!=14 && daughterId!=16) ++nHadronicNoNu;
+        }
+        if (has_tau_daughter) continue;
+        if (has_lepton_daughter && !include_leptonic) continue;
+        if(nHadronicNoNu==1 && nPi==1 && nPi0==0) tauDecayFlag=0; 
+        if(nHadronicNoNu==2 && nPi==1 && nPi0==1) tauDecayFlag=1;
+        if(nHadronicNoNu==3 && nPi==1 && nPi0==2) tauDecayFlag=2;
+        if(nHadronicNoNu==3 && nPi==3 && nPi0==0) tauDecayFlag=10;
+        if(nHadronicNoNu==4 && nPi==3 && nPi0==1) tauDecayFlag=11;
+
+        std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
+        taus.push_back(GenJet());
+        ROOT::Math::PtEtaPhiEVector vec;
+        std::vector<std::size_t> id_vec;
+        for (unsigned k = 0; k < jet_parts.size(); ++k) {
+          if (  abs(jet_parts[k]->pdgid()) == 12 || 
+                abs(jet_parts[k]->pdgid()) == 14 ||
+                abs(jet_parts[k]->pdgid()) == 16 ) continue;
+          vec += jet_parts[k]->vector();
+          taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
+          id_vec.push_back(jet_parts[k]->id());
+        }
+        taus.back().set_vector(vec);
+        taus.back().set_constituents(id_vec);
+        taus.back().set_flavour(tauDecayFlag);
+      }
+    }
+    return taus;
+  }
+  /* std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
     std::vector<GenJet> taus;
     for (unsigned i = 0; i < parts.size(); ++i) {
         std::vector<bool> status_flags;
@@ -1962,7 +2017,7 @@ namespace ic {
       }
     }
     return taus;
-  }
+  } */
 
   // CP in tau decays functions
   ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi) {
@@ -2036,7 +2091,43 @@ namespace ic {
     bool isRho = countgamma == 2 && countpi == 1;
     if (isRho) tau_rho_daughter = {pi,pi0};
     return std::make_pair(isRho, tau_rho_daughter);
-  }
+    }
+
+    // new function for rho daughters
+    /* std::vector<std::pair<ic::GenParticle*>> GetTauRhoDaughterFromGenParticles */
+    /*     (std::vector<ic::GenParticle *> genParticles, std::vector<std::size_t> id) { */
+    /*   unsigned count_taus=0; */
+    /*   for (unsigned i = 0; i < genParticles.size(); ++i) { */
+    /*     if(std::fabs(genParticles[i]->pdgid()) == 15 && genParticles[i]->statusFlags()[IsLastCopy]){ */
+    /*       ic::GenParticle* tau = gen_particles[i]; */
+    /*       std::cout << tau->daughters() << std::endl; */
+    /*       break; */
+    /*       std::cout << "" << std::endl; */
+    /*       ++count_taus; */
+    /*       bool isRho = false; */
+    /*       std::pair<ic::GenParticle*,ic::GenParticle*> rho = */ 
+    /*           std::make_pair(new ic::GenParticle(), new ic::GenParticle()); */
+        
+    /*       /1* for (unsigned d : tau->daughters()){ *1/ */
+    /*       /1*   unsigned daughter_id = std::fabs(gen_particles[d]->pdgid()); *1/ */
+    /*       /1*   if (daughter_id == 211) { *1/ */
+    /*       /1*     rho.first = gen_particles[d]; *1/ */
+    /*       /1*     ++count_pi; *1/ */
+    /*       /1*     continue; *1/ */
+    /*       /1*   } *1/ */
+    /*       /1*   if (daughter_id == 111) { *1/ */
+    /*       /1*     gammasP4 += gen_particles[d]->p4(); *1/ */
+    /*       /1*     ++count_gamma; *1/ */
+    /*       /1*     continue; *1/ */
+    /*       /1*   } *1/ */
+    /*       /1* } *1/ */
+    /*       /1* isRho = (count_gamma==2 && count_pi==1); *1/ */
+    /*       /1* rho.second = *1/ */ 
+
+    /*     } */
+    /*   } */
+    /* } */
+
   
     std::pair<bool, std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;

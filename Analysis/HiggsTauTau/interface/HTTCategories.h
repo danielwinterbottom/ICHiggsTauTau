@@ -482,6 +482,8 @@ class HTTCategories : public ModuleBase {
   double gen_sjdphi_;
   double gen_m_;
   double gen_pt_;
+  int tauDecayFlag_1_;
+  int tauDecayFlag_2_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
@@ -509,6 +511,68 @@ class HTTCategories : public ModuleBase {
   double lead_phi_2_;
   double lead_energy_1_;
   double lead_energy_2_;
+
+  double pi0_pt_1_;
+  double pi0_pt_2_;
+  double pi0_eta_1_;
+  double pi0_eta_2_;
+  double pi0_phi_1_;
+  double pi0_phi_2_;
+  double pi0_E_1_;
+  double pi0_E_2_;
+  //gen 
+  double gen_pi0_pt_1_;
+  double gen_pi0_pt_2_;
+  double gen_pi0_eta_1_;
+  double gen_pi0_eta_2_;
+  double gen_pi0_phi_1_;
+  double gen_pi0_phi_2_;
+  double gen_pi0_E_1_;
+  double gen_pi0_E_2_;
+
+  double gen_pi_pt_1_;
+  double gen_pi_pt_2_;
+  double gen_pi_eta_1_;
+  double gen_pi_eta_2_;
+  double gen_pi_phi_1_;
+  double gen_pi_phi_2_;
+  double gen_pi_E_1_;
+  double gen_pi_E_2_;
+
+  double pi0_cands_pt_1_;
+  double pi0_cands_pt_2_;
+  double pi0_cands_eta_1_;
+  double pi0_cands_eta_2_;
+  double pi0_cands_phi_1_;
+  double pi0_cands_phi_2_;
+  double pi0_cands_E_1_;
+  double pi0_cands_E_2_;
+
+  double pi_cands_pt_1_;
+  double pi_cands_pt_2_;
+  double pi_cands_eta_1_;
+  double pi_cands_eta_2_;
+  double pi_cands_phi_1_;
+  double pi_cands_phi_2_;
+  double pi_cands_E_1_;
+  double pi_cands_E_2_;
+
+  double rho_m_1_;
+  double rho_m_2_;
+  
+  double pi0_E_1_res_;
+  double pi0_E_2_res_;
+  double pi0_eta_1_res_;
+  double pi0_eta_2_res_;
+  double pi0_phi_1_res_;
+  double pi0_phi_2_res_;
+
+  double pi_E_1_res_;
+  double pi_E_2_res_;
+  double pi_eta_1_res_;
+  double pi_eta_2_res_;
+  double pi_phi_1_res_;
+  double pi_phi_2_res_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2

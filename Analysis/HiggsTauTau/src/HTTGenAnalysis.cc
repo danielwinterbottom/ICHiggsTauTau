@@ -746,7 +746,7 @@ namespace ic {
     Pfrac_1_=-9999.; 
     Pfrac_2_=-9999.;
 
-    std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
+    /*std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
     
     std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
     std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
@@ -764,7 +764,7 @@ namespace ic {
       pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
       rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
       a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
-    }
+    }*/
     /* std::vector<ic::GenParticle> leptons;
     for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
     for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
@@ -1085,7 +1085,47 @@ namespace ic {
     }
 
     // CP in decay
-    for (unsigned i=0 ; i < gen_tau_jets_ptr.size(); ++i ) {
+    // just to check the tau daughters pdg ID
+    //
+    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    for (unsigned i = 0; i < gen_particles.size(); ++i) {
+      std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
+      unsigned count_pi = 0;
+      unsigned count_pi0 = 0;
+
+      if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        ic::GenParticle* tau = gen_particles[i];
+        std::cout << "tau: " << i << std::endl;
+        for (unsigned d : tau->daughters()) {
+          unsigned daughter_id = std::abs(gen_particles[d]->pdgid());
+          std::cout << "tau daughters pdgid " << gen_particles[d]->pdgid() << std::endl;
+          if (daughter_id == 211) {
+            std::cout << "pi 4 vector: " << gen_particles[d]->vector() << std::endl;
+            rho.first = gen_particles[d];
+            ++count_pi;
+          }
+          else if (daughter_id == 111) {
+            std::cout << "pi0 4 vector: " << gen_particles[d]->vector() << std::endl;
+            rho.second = gen_particles[d];
+            ++count_pi0;
+          }
+        }
+        std::cout << "pi count: " << count_pi << std::endl;
+        std::cout << "pi0 count: " << count_pi0 << std::endl;
+
+        if (count_pi == 1 && count_pi0 == 1){
+          std::cout << "tau p4: " << tau->vector() << std::endl;
+          std::cout << "pi p4: " << rho.first->vector() << std::endl;
+          std::cout << "pi0 p4: " << rho.second->vector() << std::endl;
+
+          rho_daughters.push_back(rho);
+        }
+      }
+    }
+
+    //
+    //
+    /* for (unsigned i=0 ; i < gen_tau_jets_ptr.size(); ++i ) {
       std::vector<std::size_t> id = gen_tau_jets_ptr[i]->constituents();
       std::cout << "tau " << i << ":  ";
       std::vector<GenParticle*> tau_daughters;
@@ -1099,14 +1139,15 @@ namespace ic {
         }
       }
       std::cout << "\n";
-    }
-    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    } */
+    
+    /* std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters; */
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
     std::vector<Candidate*> tau_rhos;
     std::vector<GenParticle*> pi_daughters;
+    unsigned count_taus=0;   
     for (unsigned i = 0; i < gen_particles.size(); ++i) {
-      unsigned count_taus=0;   
       if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
         GenParticle* tau = gen_particles[i];
         count_taus++;
@@ -1115,7 +1156,8 @@ namespace ic {
         bool foundLep = false;
         unsigned count_pi0 = 0;
         unsigned count_pi = 0;
-        unsigned count_all = 0;
+        unsigned count_K = 0;
+        unsigned count_hadr = 0;
         unsigned count_gamma =0;
         unsigned count_lep=0;
 
@@ -1128,7 +1170,7 @@ namespace ic {
         for (unsigned d : daughters){
           unsigned daughter_id = fabs(gen_particles[d]->pdgid());
           if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
-          count_all++;
+          count_hadr++;
           if(daughter_id == 11 || daughter_id == 13) {
             count_lep++;
             lep.first = gen_particles[d];
@@ -1147,6 +1189,11 @@ namespace ic {
             prho.second = tau;
             continue;
           }
+          if (daughter_id == 130 || daughter_id == 310 
+                  || daughter_id == 311 || daughter_id == 321) {
+            count_K++;
+            continue;
+          }
           if (daughter_id == 111) {
             count_pi0++;
             rho.second = gen_particles[d];
@@ -1156,12 +1203,13 @@ namespace ic {
             std::cout << "found " << daughter_id << std::endl;
             count_pi0 = 0;
             count_pi = 0;
-            count_all=0;
+            count_K = 0;
+            count_hadr=0;
             count_gamma=0;
             std::vector<int> gdaughters = gen_particles[d]->daughters(); 
             for (unsigned g : gdaughters){
               unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
-              count_all++;
+              count_hadr++;
               if (gdaughter_id == 22) {
                 count_gamma++;
                 continue;
@@ -1181,8 +1229,8 @@ namespace ic {
             break;
           }
         }
-        foundRho = foundRho || (count_all-count_gamma==2 && count_pi==1 && count_pi0==1);
-        foundPi = (count_all-count_gamma==1 && count_pi==1 && count_pi0==0);
+        foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1);
+        foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0);
         foundLep = count_lep==1;
         if(foundRho) {
           rho_daughters.push_back(rho);
@@ -1302,7 +1350,7 @@ namespace ic {
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
 
-    std::cout << "% rho decays = " << (double)n_rho_/n_tot_*100 << "%" << std::endl;
+    std::cout << "rho decays = " << (double)n_rho_/n_tot_*100 << std::endl;
     return 0;
   }
 

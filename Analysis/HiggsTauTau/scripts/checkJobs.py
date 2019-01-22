@@ -9,8 +9,9 @@ def run_command(command):
     return out, err
 
 path = "./jobs"
-files = [f for f in os.listdir(path) 
-        if os.path.isfile(os.path.join(path, f)) and "2016" in f and f.endswith(".log")]
+files = [f for f in os.listdir(path) \
+            if os.path.isfile(os.path.join(path, f)) \
+            and "2017" in f and f.endswith(".log")]
 
 counter = 0
 for file_ in files:

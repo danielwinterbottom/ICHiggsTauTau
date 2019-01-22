@@ -2855,7 +2855,7 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.45,0.2,3,0.01)
+    legend = PositionedLegend(0.3,0.2,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.020)
     legend.SetFillColor(0)
@@ -3014,7 +3014,7 @@ def HTTPlotSignal(nodename,
         if x_axis_max > sighist.GetXaxis().GetXmax(): x_axis_max = sighist.GetXaxis().GetXmax()
     if ratio:
         if(log_x): pads[1].SetLogx(1)
-        axish = createAxisHists(2,sighist,sighist.GetXaxis().GetXmin(),sighist.GetXaxis().GetXmax()-0.01)
+        axish = createAxisHists(2,sighist,sighist.GetXaxis().GetXmin(),sighist.GetXaxis().GetXmax())
         axish[1].GetXaxis().SetTitle(x_title)
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetXaxis().SetTitleSize(0.04)

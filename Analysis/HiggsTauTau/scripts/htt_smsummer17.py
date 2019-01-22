@@ -312,8 +312,8 @@ if options.proc_bkg or options.proc_all:
      # 'DY3JetsToLL-LO',
      # 'DY3JetsToLL-LO-ext',
      # 'DY4JetsToLL-LO',
-     'DYJetsToLL-LO-ext1',
-     'DYJetsToLL-LO',
+     # 'DYJetsToLL-LO-ext1',
+     # 'DYJetsToLL-LO',
      # 'DYJetsToLL',
      # 'DYJetsToLL-ext',
      # 'EWKZ2Jets',
@@ -405,9 +405,9 @@ if options.mg_signal or options.proc_sm:
     #   user='adow'
     #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
     #   SIG_DIR = 'Dec03_GENSIM_94X'
-    elif 'SUSY' in sa or 'GluGluToHToTauTauPseudoscalarDecay' in sa or 'GluGluHToTauTau_M-125' in sa:
+    elif 'SUSY' in sa or 'GluGluToHToTauTauPseudoscalarDecay' in sa or 'GluGluHToTauTau_M-125' in sa or 'DYJets' in sa or 'VBFH' in sa:
       user='adow'
-      SIG_FILELIST = 'filelists/Dec04_MC_94X'
+      SIG_FILELIST = 'filelists/Jan11_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1]
     else:
       user='adow'
