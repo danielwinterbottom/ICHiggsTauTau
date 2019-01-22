@@ -57,6 +57,9 @@ void ICGenParticleProducer::produce(edm::Event& event,
     dest.set_index(static_cast<int>((parts_handle->refAt(i).key())));
     dest.set_pdgid(src.pdgId());
     dest.set_status(src.status());
+    ic::Vertex vtx;
+    vtx.set_vx(src.vx()); vtx.set_vy(src.vy()); vtx.set_vz(src.vz());
+    dest.set_vtx(vtx);
 #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 4 )
     if (store_statusFlags_){
       reco::GenStatusFlags statusflags = src.statusFlags();
