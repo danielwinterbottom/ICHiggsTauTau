@@ -2173,12 +2173,39 @@ namespace ic {
       out_vec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),input_vec.M());
       return out_vec;
   }
+
   TVector3 ConvertToTVector3(ROOT::Math::PtEtaPhiEVector input_vec){
       TVector3 out_vec;
       out_vec.SetXYZ(input_vec.Px(),input_vec.Py(),input_vec.Pz());
       return out_vec;
   }
+
+  ROOT::Math::PtEtaPhiEVector ConvertToPtEtaPhiEVector(TLorentzVector input_vec){
+      ROOT::Math::PtEtaPhiEVector out_vec;
+      out_vec.SetPt(input_vec.Pt());
+      out_vec.SetEta(input_vec.Eta());
+      out_vec.SetPhi(input_vec.Phi());
+      out_vec.SetE(input_vec.E());
+      return out_vec;
+  }
   
+  TLorentzVector SmearVectorVar(TLorentzVector input_vec, double smearVal, unsigned indexToSmear, double smearVal_Eta, double smearVal_Phi, double smearVal_E) {
+    TLorentzVector out_vec = input_vec;
+    if (indexToSmear == 1) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt()+(input_vec.P()*((1/std::cosh(input_vec.Eta() * smearVal))-(1/std::cosh(input_vec.Eta())))), input_vec.Eta() * smearVal, input_vec.Phi(), input_vec.E());
+    if (indexToSmear == 2) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt(), input_vec.Eta(), input_vec.Phi() * smearVal, input_vec.E());
+    if (indexToSmear == 3) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt() * smearVal, input_vec.Eta(), input_vec.Phi(), input_vec.E() * smearVal);
+
+    if (indexToSmear == 0) {
+      out_vec.SetPtEtaPhiE(input_vec.Pt()+(input_vec.P()*((1/std::cosh(input_vec.Eta() * smearVal_Eta))-(1/std::cosh(input_vec.Eta())))), input_vec.Eta() * smearVal_Eta, input_vec.Phi(), input_vec.E());
+      out_vec.SetPtEtaPhiE(input_vec.Pt(), input_vec.Eta(), input_vec.Phi() * smearVal_Phi, input_vec.E());
+      out_vec.SetPtEtaPhiE(input_vec.Pt() * smearVal_E, input_vec.Eta(), input_vec.Phi(), input_vec.E() * smearVal_E);
+    }
+    return out_vec;
+  }
+
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
       
@@ -2200,6 +2227,53 @@ namespace ic {
     
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
+  }
+
+  std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
+      std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> sig_gammas = {};
+    auto const& sig_gammas_id = tau->sig_gamma_cands();
+    for (auto id : sig_gammas_id) sig_gammas.push_back(pfcands[id]);
+    std::sort(sig_gammas.begin(), sig_gammas.end(), 
+        bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return sig_gammas;
+  }
+
+  std::vector<ic::PFCandidate*> GetTauChargedHadrCands(ic::Tau const* tau, 
+      std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> sig_charged = {};
+    auto const& sig_charged_id = tau->sig_charged_cands();
+    for (auto id : sig_charged_id) sig_charged.push_back(pfcands[id]);
+    std::sort(sig_charged.begin(), sig_charged.end(), 
+        bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return sig_charged;
+  }
+
+  // need to fix
+  ic::Candidate* GetPi0FromCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    ic::Candidate* pi0 = new ic::Candidate();
+    double sum_E = 0.; 
+    double sum_EEta = 0.; 
+    double sum_EPhi = 0.; 
+    std::vector<ic::PFCandidate*> gammas = GetTauGammaCands(tau, pfcands);
+    for (auto gamma : gammas){
+      sum_E += gamma->energy();
+      sum_EEta += gamma->energy()*gamma->vector().Eta();
+      sum_EPhi += gamma->energy()*gamma->vector().Phi();
+    }
+    double pt = 0.;
+    double eta = 0.;
+    double phi = 0.;
+    if (sum_E != 0) {
+      eta = sum_EEta/sum_E;
+      phi = sum_EPhi/sum_E;
+      double p = sqrt(sum_E*sum_E-0.1349*0.1349);
+      pt = p/cosh(eta); 
+    }
+    ROOT::Math::PtEtaPhiEVector vector(pt, eta, phi, sum_E);
+    pi0->set_vector(vector);
+    return pi0;
   }
   // 
 
