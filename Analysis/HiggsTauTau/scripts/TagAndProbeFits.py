@@ -102,11 +102,11 @@ def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
 
 def GetDataNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    full_selection = BuildCutString('', sel, cat, 'os', '1')
     return ana.SummedFactory('data'+add_name, samples, plot, full_selection)
 
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    full_selection = BuildCutString(wt, sel, cat, 'os', '1')
+    full_selection = BuildCutString('', sel, cat, 'os', '1')
     return ana.SummedFactory('EmbedZLL'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
@@ -122,13 +122,14 @@ def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='
     ana.nodes[nodename].AddNode(embed_node)
 
 def Produce3DHistograms(ana, wt='wt', outfile=None):
-    mass_bins = '(40,70,110)'
+    mass_bins = '(50,65,115)'
     if options.channel == 'tpzmm':
       gen_cuts='gen_match_1==2&&gen_match_2==2'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      idiso_pt_bins = '[10,15,20,25,30,40,50,60,80,100,200]'
+      idiso_pt_bins = '[10,20,25,30,40,45,50,55,60,70,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
+      iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
       if options.embed_sel:
         trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
@@ -146,11 +147,13 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
       idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      idiso_pt_bins = '[13,20,25,30,40,50,100,200]'
+      #idiso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
+      iso_pt_bins   = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]' 
+      idiso_pt_bins = '[10,15,20,25,30,40,50,100,200]'
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
-          idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
+          #idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
           trg_pt_bins = '[10,12,14,16,18,20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
           #trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
           
@@ -158,6 +161,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
     idiso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
     idiso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
+
+    iso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
+    iso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
 
     if not options.embed_sel:
       GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
@@ -180,14 +186,14 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     GenerateData(ana, '_id_tag2_pass', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
     
     if not options.embed_sel:
-      GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-      GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-      GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-      GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
-    GenerateData(ana, '_iso_tag1_fail', data_samples, idiso_plot_probe_2, wt, iso_tag_1, '!%s' % iso_probe_2)
-    GenerateData(ana, '_iso_tag2_fail', data_samples, idiso_plot_probe_1, wt, iso_tag_2, '!%s' % iso_probe_1)
-    GenerateData(ana, '_iso_tag1_pass', data_samples, idiso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-    GenerateData(ana, '_iso_tag2_pass', data_samples, idiso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
+      GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
+    GenerateData(ana, '_iso_tag1_fail', data_samples, iso_plot_probe_2, wt, iso_tag_1, '!%s' % iso_probe_2)
+    GenerateData(ana, '_iso_tag2_fail', data_samples, iso_plot_probe_1, wt, iso_tag_2, '!%s' % iso_probe_1)
+    GenerateData(ana, '_iso_tag1_pass', data_samples, iso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
+    GenerateData(ana, '_iso_tag2_pass', data_samples, iso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
     
     if not options.embed_sel:
       GenerateZLL(ana, '_idiso_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
@@ -211,10 +217,10 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
       GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)
        
-      GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-      GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, idiso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-      GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, idiso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)
       
       GenerateEmbedded(ana, '_idiso_tag1_fail', embed_samples, idiso_plot_probe_2, wt, idiso_tag_1+'&&'+gen_cuts, '!%s' % idiso_probe_2)
       GenerateEmbedded(ana, '_idiso_tag2_fail', embed_samples, idiso_plot_probe_1, wt, idiso_tag_2+'&&'+gen_cuts, '!%s' % idiso_probe_1)
@@ -403,11 +409,11 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     nparams = 6
     pdf_args.extend(
             [
-                "Voigtian::signal1Pass(m_vis, mean1[90,80,100], width[2.495], sigma1[2,1,3])",
-                "Voigtian::signal2Pass(m_vis, mean2[90,80,100], width,        sigma2[4,2,10])",
+                "Voigtian::signal1Pass(m_vis, mean1[90,85,95], width[2.495], sigma1[2,1,4])",
+                "Voigtian::signal2Pass(m_vis, mean2[90,85,95], width,        sigma2[4,2,10])",
                 "SUM::signalPass(vFrac[0.8,0,1]*signal1Pass, signal2Pass)",
-                "Voigtian::signal1Fail(m_vis, mean1[90,80,100], width[2.495], sigma1[2,1,3])",
-                "Voigtian::signal2Fail(m_vis, mean2[90,80,100], width,        sigma2[4,2,10])",
+                "Voigtian::signal1Fail(m_vis, mean1[90,85,95], width[2.495], sigma1[2,1,4])",
+                "Voigtian::signal2Fail(m_vis, mean2[90,85,95], width,        sigma2[4,2,10])",
                 "SUM::signalFail(vFrac[0.8,0,1]*signal1Fail, signal2Fail)",
             ]
         )
@@ -415,11 +421,11 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       nparams = 6
       pdf_args.extend(
               [
-                  "Voigtian::signal1Pass(m_vis, mean1p[90,80,100], widthp[2.495], sigma1p[2,1,3])",
-                  "Voigtian::signal2Pass(m_vis, mean2p[90,80,100], widthp,        sigma2p[4,2,10])",
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,1,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,2,10])",
                   "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
-                  "Voigtian::signal1Fail(m_vis, mean1f[90,80,100], widthf[2.495], sigma1f[2,1,3])",
-                  "Voigtian::signal2Fail(m_vis, mean2f[90,80,100], widthf,        sigma2f[4,2,10])",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,1,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,2,10])",
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
@@ -429,9 +435,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass(m_vis, meanp[90,80,100], sigmap[2,0,10], alphap[1,-50,50], np[1,0,50])",
+                  "CBShape::CBPass(m_vis, meanp[90,85,95], sigmap[2,0,10], alphap[1,-50,50], np[1,0,50])",
                   "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
-                  "CBShape::CBFail(m_vis, meanf[90,80,100], sigmaf[2,0,10], alphaf[1,-50,50], nf[1,0,50])",
+                  "CBShape::CBFail(m_vis, meanf[90,85,95], sigmaf[2,0,10], alphaf[1,-50,50], nf[1,0,50])",
                   "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
               ]
           ) 
@@ -524,6 +530,15 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
               [
                   "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,0.1], gammaPass[0.001,0,1], peak[90])",
                   "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
+                  # attenmpt to limit shape to peak below 90 GeV: beta_max = 90./1000.*gamma              #90./1000.*gammaPass,
+                  #betaFail=62.1537
+                  #Parameter betaFail  has zero or invalid step size - consider it as constant
+                  #"expr::betaMaxPass('gammaPass*90./1000',gammaPass[0.001,0,1])",
+                  #"expr::betaMaxPass('gammaPass2*0.1',gammaPass2[1])",
+                  #"RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,betaMaxPass], gammaPass[0.001,0,1], peak[90])"
+                  #"RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,min(0.0011,gammaFail*90./1000.)], gammaFail[0.001,0,1], peak[90])",
+                  #"RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,gammaPass], gammaPass[0.001,0,1], peak[90])",
+                  #"RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
               ]
           )
   elif bkg_model == 'Chebychev':
@@ -562,8 +577,8 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['summer17','summer16'] and ('_iso' in name or '_trg' in name): 
-          if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
+      #if options.era in ['summer17','summer16'] and ('_iso' in name or '_trg' in name): 
+      #    if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
@@ -579,6 +594,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                                ROOT.RooFit.Minimizer("Minuit2", "Migrad"),
                                ROOT.RooFit.Offset(True),
                                ROOT.RooFit.Extended(True),
+                               ROOT.RooFit.SumW2Error(False),
                                ROOT.RooFit.PrintLevel(-1))
         
         fitres = wsp.pdf("model").fitTo(wsp.data(dat),
@@ -587,15 +603,17 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                                         ROOT.RooFit.Offset(True),
                                         ROOT.RooFit.Extended(True),
                                         ROOT.RooFit.PrintLevel(-1),
+                                        ROOT.RooFit.SumW2Error(False),
                                         ROOT.RooFit.Save())
         fitres.Print()
         
-        canv = ROOT.TCanvas('%s' % (dat), "%s" % (dat))
-        pad_left = ROOT.TPad('left', '', 0., 0., 0.5, 1.)
+        canv = ROOT.TCanvas('%s' % (dat), "%s" % (dat), 0, 0, 700, 400)
+        #canv.SetTopMargin(40)
+        pad_left = ROOT.TPad('left', '', 0., 0., 0.5, 0.97)
         pad_left.SetTicky(1)
         pad_left.SetTickx(1)
         pad_left.Draw()
-        pad_right = ROOT.TPad('right', '', 0.5, 0., 1., 1.)
+        pad_right = ROOT.TPad('right', '', 0.5, 0., 1., 0.97)
         pad_right.SetTicky(1)
         pad_right.SetTickx(1)
         pad_right.Draw()
@@ -609,7 +627,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         splitData = wsp.data(dat).split(wsp.cat('cat'))
         xframe = wsp.var("m_vis").frame(ROOT.RooFit.Title("Passing"))
         width = (wsp.var("m_vis").getMax() - wsp.var("m_vis").getMin()) / splitData.At(1).numEntries()
-        splitData.At(1).plotOn(xframe, ROOT.RooFit.Name("DataPass"))
+        splitData.At(1).plotOn(xframe, ROOT.RooFit.Name("DataPass"),ROOT.RooFit.MarkerStyle(7))
         wsp.pdf("passing").plotOn(xframe,
                                   ROOT.RooFit.Slice(wsp.cat('cat'), "pass"),
                                   ROOT.RooFit.LineColor(ROOT.kBlue),
@@ -620,6 +638,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                                   ROOT.RooFit.LineStyle(ROOT.kDashed),
                                   ROOT.RooFit.LineColor(ROOT.kBlue),
                                   ROOT.RooFit.Name("BkgPass"))
+        splitData.At(1).plotOn(xframe, ROOT.RooFit.Name("DataPass"),ROOT.RooFit.MarkerStyle(7))
         pads[0].cd()
         
         xframe.Draw()
@@ -636,24 +655,23 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         titlelatex = ROOT.TLatex()
         titlelatex.SetNDC()
         titlelatex.SetTextSize(0.035)
-        titlelatex.DrawLatex(0.12, 0.96, 'p_{T}: [%g, %g] GeV #eta: [%g, %g]' % (xmin, xmax, ymin, ymax))
+        titlelatex.DrawLatex(0.12, 0.97, '%g < p_{T} < %g GeV, %g < |#eta| < %g' % (xmin, xmax, ymin, ymax))
         
         latex.SetTextSize(0.035)
         font = latex.GetTextFont()
-        latex.DrawLatex(0.12, 0.92, 'Pass Region')
+        latex.DrawLatex(0.16, 0.84, 'Pass Region')
         latex.SetTextFont(42)
         #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe.chiSquare("AllPass", "DataPass", nparams)))
-        latex.DrawLatex(0.6, 0.7, '#varepsilon = %.4f #pm %.4f' % (wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
+        latex.DrawLatex(0.58, 0.7, '#varepsilon = %.4f #pm %.4f' % (wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
         ROOT.gStyle.SetLegendBorderSize(1)
         legend1 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
-        legend1.AddEntry(xframe.findObject("DataPass"), "data", "ep")
+        legend1.AddEntry(xframe.findObject("DataPass"), "data", "lep")
         if options.channel == 'tpzee': legend1.AddEntry(xframe.findObject("AllPass"), "Z #rightarrow ee + BG", "l")
         else: legend1.AddEntry(xframe.findObject("AllPass"), "Z #rightarrow #mu#mu + BG", "l")
         legend1.AddEntry(xframe.findObject("BkgPass"), "BG", "l")
         legend1.Draw()
-        
-        xframe2 = wsp.var("m_vis").frame(ROOT.RooFit.Title("Failing"))
-        splitData.At(0).plotOn(xframe2, ROOT.RooFit.Name("DataFail"))
+        xframe2 = wsp.var("m_vis").frame(ROOT.RooFit.Title("Failing")) 
+        splitData.At(0).plotOn(xframe2, ROOT.RooFit.Name("DataFail"),ROOT.RooFit.MarkerStyle(7))
         wsp.pdf("failing").plotOn(xframe2,
                                   ROOT.RooFit.Slice(wsp.cat('cat'), "fail"),
                                   ROOT.RooFit.LineColor(ROOT.kRed),
@@ -664,6 +682,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                                   ROOT.RooFit.LineStyle(ROOT.kDashed),
                                   ROOT.RooFit.LineColor(ROOT.kRed),
                                   ROOT.RooFit.Name("BkgFail"))
+        splitData.At(0).plotOn(xframe2, ROOT.RooFit.Name("DataFail"),ROOT.RooFit.MarkerStyle(7))
+        #splitData.At(0).plotOn(xframe, ROOT.RooFit.Name("DataFail"),ROOT.RooFit.MarkerStyle(7))
+
         pads[1].cd()
         xframe2.Draw()
         axis = plotting.GetAxisHist(pads[1])
@@ -674,15 +695,17 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         plotting.Set(axis.GetYaxis().SetTitle('Events / %g GeV' % width))
         plotting.Set(axis.SetTitle(''))
         plotting.Set(axis.GetYaxis().SetTitleOffset(1.4))
+        ROOT.TGaxis().SetMaxDigits(3)
+        ROOT.TGaxis().SetExponentOffset(0., 0.01, "y");
         
         
         #latex.DrawLatex(0.6, 0.75, '#chi^{2} = %.2f' % (xframe2.chiSquare("AllFail", "DataFail", nparams)))
         latex.SetTextFont(font)
-        latex.DrawLatex(0.15, 0.92, 'Fail Region')
+        latex.DrawLatex(0.16, 0.84, 'Fail Region')
         
         
         legend2 = ROOT.TLegend(0.6, 0.8, 0.925, 0.939)
-        legend2.AddEntry(xframe2.findObject("DataFail"), "data", "ep")
+        legend2.AddEntry(xframe2.findObject("DataFail"), "data", "lep")
         if options.channel == 'tpzee': legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow ee + BG", "l")
         else: legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow #mu#mu + BG", "l")
         legend2.AddEntry(xframe2.findObject("BkgFail"), "BG", "l")
@@ -710,12 +733,12 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
 if options.channel == 'tpzmm': 
     if options.era == 'summer17': 
       data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-      #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+      data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     if options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-    #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
 
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
@@ -726,9 +749,9 @@ else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 embed_samples = []
 if options.era == 'summer17':
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
-  if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF']
 else:
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
@@ -886,8 +909,10 @@ for name in wsnames:
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
+  sig_model = 'DoubleVUncorr'
+  #sig_model='BWCBConvUncorr'
   if not options.embed_dz or 'trg' in name:
-    FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,'data' in name)
+    FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
@@ -913,7 +938,7 @@ for i in ['id','iso','trg']:
         x_title = 'P_{T}^{e} (GeV)'
         if 'trg' in i: ratio_range="0.7,1.3"
     label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
-    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='mssmsummer16',ratio_range,True,100,0,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='mssmsummer16',ratio_range,True,100,10,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
   
 outfile.Close()  
 wsfile.Close()
