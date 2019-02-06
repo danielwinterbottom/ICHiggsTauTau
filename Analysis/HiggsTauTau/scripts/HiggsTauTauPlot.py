@@ -473,7 +473,7 @@ if options.era in ['smsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(pt_1>50 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['cpsummer17']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 #if options.era in ['cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) &&  antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -676,6 +676,13 @@ if options.channel == 'em':
     cats['tt_lowMjj'] =   '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_tt)
     cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
 
+# CP in decays categories
+if options.channel == "tt":
+    cats["inclusive_rho"] = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+
+    cats["0jet_rho"] = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["dijet_rho"] = "({} && {})".format(cats["vbf"], cats["inclusive_rho"])
+    cats["boosted_rho"] = "({} && {})".format(cats["boosted"], cats["inclusive_rho"])
     
   
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
@@ -957,23 +964,32 @@ if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_
 
 if options.era in ['cpsummer16']: 
     sm_samples = { 
+        # test CP in decay samples
+        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner",
+        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
+        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner",
+        # "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner",
+        # "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner",
+        # "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner",
+
         'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
-        'qqH_htt' : 'VBFHToTauTau_M-*', 
-        'WplusH_htt' : 'WplusHToTauTau_M-*', 
-        'WminusH_htt' : 'WminusHToTauTau_M-*', 
-        'ZH_htt' : 'ZHToTauTau_M-*', 
-        'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
-        'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
-        'qqHps_htt' : 'VBFHiggs0M_M-*', 
-        'ZHsm_htt' : 'ZHiggs0PM_M-*',
-        'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
-        'ZHps_htt' : 'ZHiggs0M_M-*',
-        'WHsm_htt' : 'WHiggs0PM_M-*',
-        'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
-        'WHps_htt' : 'WHiggs0M_M-*',
-        'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
-        'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
-        'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+        'qqH_htt' : 'VBFHToTauTau_M-*',
+
+        # 'WplusH_htt' : 'WplusHToTauTau_M-*', 
+        # 'WminusH_htt' : 'WminusHToTauTau_M-*', 
+        # 'ZH_htt' : 'ZHToTauTau_M-*', 
+        # 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
+        # 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
+        # 'qqHps_htt' : 'VBFHiggs0M_M-*', 
+        # 'ZHsm_htt' : 'ZHiggs0PM_M-*',
+        # 'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
+        # 'ZHps_htt' : 'ZHiggs0M_M-*',
+        # 'WHsm_htt' : 'WHiggs0PM_M-*',
+        # 'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
+        # 'WHps_htt' : 'WHiggs0M_M-*',
+        # 'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
+        # 'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
+        # 'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
         #'ggHsm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         #'ggHmm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
         #'ggHps_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar'
@@ -2005,6 +2021,24 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
                     add_name_2 = bbh_add_name
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name_2+mass+add_name, sample_name, plot, full_selection))
 
+# for CP signals
+# need to multiply by the weights wt_cp_sm/ps/mm
+def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
+    weights = {"sm": "wt_cp_sm", "ps": "wt_cp_ps", "mm": "wt_cp_mm"}
+    if get_os: 
+        OSSS = 'os'
+    else: 
+        OSSS = '!os'
+    if options.gen_signal: 
+        OSSS='1' 
+    for key, sample in sm_samples.iteritems():
+        for name in weights:
+            if key.split("_")[1] == name:
+                weight=wt+"*"+weights[name]
+                full_selection = BuildCutString(weight, sel, cat, OSSS)
+                name = key
+                ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
+
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
   weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
   if get_os: OSSS = 'os'
@@ -2591,6 +2625,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             procs=[]
             for proc in sm_samples:
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
+            # GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''

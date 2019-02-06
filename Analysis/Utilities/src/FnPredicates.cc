@@ -2200,8 +2200,8 @@ namespace ic {
 
     if (indexToSmear == 0) {
       out_vec.SetPtEtaPhiE(input_vec.Pt()+(input_vec.P()*((1/std::cosh(input_vec.Eta() * smearVal_Eta))-(1/std::cosh(input_vec.Eta())))), input_vec.Eta() * smearVal_Eta, input_vec.Phi(), input_vec.E());
-      out_vec.SetPtEtaPhiE(input_vec.Pt(), input_vec.Eta(), input_vec.Phi() * smearVal_Phi, input_vec.E());
-      out_vec.SetPtEtaPhiE(input_vec.Pt() * smearVal_E, input_vec.Eta(), input_vec.Phi(), input_vec.E() * smearVal_E);
+      out_vec.SetPtEtaPhiE(out_vec.Pt(), out_vec.Eta(), out_vec.Phi() * smearVal_Phi, out_vec.E());
+      out_vec.SetPtEtaPhiE(out_vec.Pt() * smearVal_E, out_vec.Eta(), out_vec.Phi(), out_vec.E() * smearVal_E);
     }
     return out_vec;
   }

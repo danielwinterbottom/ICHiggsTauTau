@@ -2079,6 +2079,9 @@ def HTTPlot(nodename,
     sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
     # sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False )
     # sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False )
+
+    sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False )
+    sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2183,7 +2186,6 @@ def HTTPlot(nodename,
     stack = R.THStack("hs","")
     bkghist = R.TH1F()
     for hists in bkg_histos:
-      print hists
       stack.Add(hists.Clone())
       if bkghist.GetEntries()==0:
           bkghist = hists.Clone()
@@ -2280,7 +2282,8 @@ def HTTPlot(nodename,
         sighists = dict()
 
         if ggh_scheme == 'powheg':
-            signal_split_schemes = ['sm_ggH','sm_qqH']
+            # signal_split_schemes = ['sm_ggH','sm_qqH']
+            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2298,11 +2301,11 @@ def HTTPlot(nodename,
                     else:
                         sighists[split_scheme].Add(h)
 
-                if split_scheme in ['sm_cp','sm_ggH']:
+                if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays']:
                     sighists[split_scheme].SetLineColor(R.kRed)
                 elif split_scheme == 'sm_qqH':
                     sighists[split_scheme].SetLineColor(R.kBlue)
-                elif split_scheme == 'sm_ps':
+                elif split_scheme in ['sm_ps','sm_cp_decays_ps']:
                     sighists[split_scheme].SetLineColor(R.kGreen+3)
                 elif split_scheme == 'sm_mm':
                     sighists[split_scheme].SetLineColor(R.kOrange-5)
@@ -2804,7 +2807,7 @@ def CompareHists(hists=[],
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
           axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     else:
-        axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.005)
         axish[0].GetXaxis().SetLabelSize(0.03)
         axish[0].GetXaxis().SetTitle(x_title)
         axish[0].GetXaxis().SetTitleSize(0.04)
@@ -3373,7 +3376,9 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    # sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
+    sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
 
@@ -3403,9 +3408,9 @@ def HTTPlotUnrolled(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
     
-    if vbf_background:
-        for key in background_schemes: 
-            background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    # if vbf_background:
+    #     for key in background_schemes: 
+    #         background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
 
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:

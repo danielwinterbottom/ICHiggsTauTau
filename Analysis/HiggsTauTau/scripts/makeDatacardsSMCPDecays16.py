@@ -186,7 +186,32 @@ if options.no_shape_systs:
       "zmm" : ' '
   }
 
+# the CP in decays datacards
+if SCHEME == 'cpdecays16':
+    VAR_INCLUSIVE_TT = "m_vis,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
+    VAR_0JET_TT = "m_vis,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
+    VAR_BOOSTED_TT = "pt_tt,aco_angle_mod[0,50,100,170],(20,0,6.3)"
+    VAR_DIJET_TT = "mjj,aco_angle_mod[0,300,500,800],(20,0,6.3)"
 
+    scheme_em = []
+    scheme_et = []
+    scheme_mt = []
+    scheme_tt = [
+        ("8", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
+        ("8",   "0jet_rho",    "0jet_rho",  VAR_0JET_TT, ''),
+        ("8",   "boosted_rho", "boosted_rho",  VAR_BOOSTED_TT, ''),
+        ("8",   "dijet_rho",     "dijet_rho",  VAR_DIJET_TT, ''),
+    ]
+
+    bkg_schemes = {
+        'et' : 'et_default',
+        'mt' : 'mt_with_zmm',
+        'em' : 'em_default',
+        'tt' : 'tt_default',
+    }
+    ANA = 'sm'
+
+#
 if SCHEME == 'cpsummer16':
   
   VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'

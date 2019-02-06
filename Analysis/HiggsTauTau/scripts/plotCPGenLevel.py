@@ -16,75 +16,189 @@ def parse_arguments():
             help="Decide which channel to use")
     parser.add_argument("--sign", action="store", default="neg",
             help="Decide which cp sign to use")
+    parser.add_argument("--smearE", action="store_true", default=False,
+            help="Want to smear E?")
+    parser.add_argument("--smearEta", action="store_true", default=False,
+            help="Want to smear Eta?")
+    parser.add_argument("--smearPhi", action="store_true", default=False,
+            help="Want to smear Phi?")
+    parser.add_argument("--doPi0", action="store_true", default=False,
+            help="Want to smear with Pi0 samplings?")
+    parser.add_argument("--smearAll", action="store_true", default=False,
+            help="Want to smear all for both pi0 and pi+-?")
+    parser.add_argument("--checkSpinner", action="store_true", default=False,
+            help="Check spinner?")
 
     return parser.parse_args()
 
 def main(args):
 
-    file_ = []
-    # file_sm = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/VBFHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
-    # file_ps = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/VBFHToPseudoscalarTauTau_GEN_{}_2017.root".format(args.channel), "READ")
-    # file_mm = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/VBFHToMaxmixTauTau_GEN_{}_2017.root".format(args.channel), "READ")
-    # file_sm = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/GluGluHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
-    # file_ps = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/GluGluHToPseudoscalarTauTau_GEN_{}_2017.root".format(args.channel), "READ")
-    # file_mm = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/GluGluHToMaxmixTauTau_GEN_{}_2017.root".format(args.channel), "READ")
-    # file_ps = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec09_gen/SUSYGluGluToHToTauTau_M-120_{}_2017.root".format(args.channel), "READ")
+    # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan29_2016/GluGluToHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
+    file1_ = ROOT.TFile.Open("/vols/cms/dw515/Offline/output/SM/Jan22/VBFHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
 
-    file_sm = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec09_gen/GluGluHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
-    file_ps = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec09_gen/GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX_{}_2017.root".format(args.channel), "READ")
-    file_dy = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2018/Dec03_GEN/DYJetsToLL-LO_{}_2017.root".format(args.channel), "READ")
+    # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan28/GluGluHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
+    # file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan29/GluGluToHToTauTau_M125_nospinner-2017_{}_2017.root".format(args.channel), "READ")
 
-    file_.extend([file_sm,file_ps,file_dy])
-    tree_sm1 = file_[0].Get("gen_ntuple")
-    tree_ps1 = file_[1].Get("gen_ntuple")
-    # tree_mm1 = file_[2].Get("gen_ntuple")
-    tree_dy = file_[2].Get("gen_ntuple")
+    # tree_ = file_.Get("gen_ntuple")
+    tree1_ = file1_.Get("ntuple")
+    # tree2_ = file2_.Get("gen_ntuple")
+
+    if args.sign == "pos":
+        sel_  = ROOT.TCut("wt*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
+        sel_sm  = ROOT.TCut("wt*wt_cp_sm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
+        sel_ps  = ROOT.TCut("wt*wt_cp_ps*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
+        sel_mm  = ROOT.TCut("wt*wt_cp_mm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
+    else:
+        sel_  = ROOT.TCut("wt*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign<0)")
+        sel_sm  = ROOT.TCut("wt*wt_cp_sm*(pt_1>40 && pt_2>40)*(cp_channel==3)")
+        sel_ps  = ROOT.TCut("wt*wt_cp_ps*(pt_1>40 && pt_2>40)*(cp_channel==3)")
+        sel_mm  = ROOT.TCut("wt*wt_cp_mm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign<0)")
 
     hists = []
-    h1 = ROOT.TH1D("h1","h1",10,0,6.3)
-    h2 = ROOT.TH1D("h2","h2",10,0,6.3)
-    # h3 = ROOT.TH1D("h3","h3",10,0,6.3)
-    h4 = ROOT.TH1D("h4","h4",10,0,6.3)
-    hists.extend([h1,h2,h4])
+    legends = []
+    h1 = ROOT.TH1D("h1","h1",20,0,6.3)
+    tree1_.Draw("aco_angle_mod>>h1", sel_sm)
+    hists.append(h1)
+    legends.append("qqH SM")
 
-    # sel = ROOT.TCut("cp_channel==-1 && aco_angle_2<6.3 && cp_sign_2<0 && pt_1>20 && pt_2>20")
-    if args.sign == "pos":
-        sel  = ROOT.TCut("wt*(genpt_1>20 && genpt_2>20)*(cp_channel==3)*(cp_sign_1>0)")
-    else:
-        sel  = ROOT.TCut("wt*(genpt_1>20 && genpt_2>20)*(cp_channel==3)*(cp_sign_1<0)")
+    h2 = ROOT.TH1D("h2","h2",20,0,6.3)
+    tree1_.Draw("aco_angle_mod>>h2", sel_ps)
+    hists.append(h2)
+    legends.append("qqH PS")
+    
+    plotname = "VBF_reco_CP{}_tauspinner".format(args.sign)
+    # if args.checkSpinner:
+    #     plotname = "ggH_gen_CP{}_tauspinner_check".format(args.sign)
+    #     h2 = ROOT.TH1D("h2","h2",10,0,6.3)
+    #     tree1_.Draw("aco_angle_1>>h2", sel_sm)
+    #     hists.append(h2)
+    #     legends.append("ggH SM tauspinner")
 
-    hist_sm1 = tree_sm1.Draw("aco_angle_2>>h1", sel)
-    hist_ps1 = tree_ps1.Draw("aco_angle_2>>h2", sel)
-    # hist_mm1 = tree_mm1.Draw("aco_angle_2>>h3", sel)
-    hist_dy  =  tree_dy.Draw("aco_angle_2>>h4", sel)
+    # if args.doPi0:
+    #     plotname = "ggH_gen_CP{}_tauspinner_smearingPi0".format(args.sign)
+    #     if args.smearE:
+    #         h2 = ROOT.TH1D("h2","h2",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0ESmeared>>h2", sel_sm)
+    #         hists.append(h2)
+    #         legends.append("ggH SM E(strip) smeared")
+            
+    #     if args.smearPhi:
+    #         h3 = ROOT.TH1D("h3","h3",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0PhiSmeared>>h3", sel_sm)
+    #         hists.append(h3)
+    #         legends.append("ggH SM #phi(strip) smeared")
 
-    legends = [
-            # "VBFHToTauTau SM",
-            # "VBFHToTauTau PS",
-            # "VBFHToTauTau MM",
-            # "GluGluHToTauTau SM",
-            # "GluGluHToTauTau PS",
-            # "GluGluHToTauTau MM",
-            # "SUSYGluGluHToTauTau M120",
-            "GluGluHToTauTau SM",
-            "GluGluHToTauTau PS (MG)",
-            "DY",
-            ]
+    #     if args.smearEta:
+    #         h4 = ROOT.TH1D("h4","h4",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0EtaSmeared>>h4", sel_sm)
+    #         hists.append(h4)
+    #         legends.append("ggH SM #eta(strip) smeared")
+
+    #     h5 = ROOT.TH1D("h5","h5",10,0,6.3)
+    #     tree_.Draw("aco_angle_1>>h5", sel_ps)
+    #     hists.append(h5)
+    #     legends.append("ggH PS")
+    #     if args.smearE:
+    #         h6 = ROOT.TH1D("h6","h6",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0ESmeared>>h6", sel_ps)
+    #         hists.append(h6)
+    #         legends.append("ggH PS E(strip) smeared")
+    #     if args.smearPhi:
+    #         h7 = ROOT.TH1D("h7","h7",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0PhiSmeared>>h7", sel_ps)
+    #         hists.append(h7)
+    #         legends.append("ggH PS #phi(strip) smeared")
+    #     if args.smearEta:
+    #         h8 = ROOT.TH1D("h8","h8",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_Pi0EtaSmeared>>h8", sel_ps)
+    #         hists.append(h8)
+    #         legends.append("ggH PS #eta(strip) smeared")
+    # elif not args.smearAll and not args.checkSpinner:
+    #     plotname = "ggH_gen_CP{}_tauspinner_smearingPi".format(args.sign)
+    #     if args.smearE:
+    #         h2 = ROOT.TH1D("h2","h2",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiESmeared>>h2", sel_sm)
+    #         hists.append(h2)
+    #         legends.append("ggH SM E(CH) smeared")
+            
+    #     if args.smearPhi:
+    #         h3 = ROOT.TH1D("h3","h3",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiPhiSmeared>>h3", sel_sm)
+    #         hists.append(h3)
+    #         legends.append("ggH SM #phi(CH) smeared")
+
+    #     if args.smearEta:
+    #         h4 = ROOT.TH1D("h4","h4",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiEtaSmeared>>h4", sel_sm)
+    #         hists.append(h4)
+    #         legends.append("ggH SM #eta(CH) smeared")
+
+    #     h5 = ROOT.TH1D("h5","h5",10,0,6.3)
+    #     tree_.Draw("aco_angle_1>>h5", sel_ps)
+    #     hists.append(h5)
+    #     legends.append("ggH PS")
+    #     if args.smearE:
+    #         h6 = ROOT.TH1D("h6","h6",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiESmeared>>h6", sel_ps)
+    #         hists.append(h6)
+    #         legends.append("ggH PS E(CH) smeared")
+    #     if args.smearPhi:
+    #         h7 = ROOT.TH1D("h7","h7",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiPhiSmeared>>h7", sel_ps)
+    #         hists.append(h7)
+    #         legends.append("ggH PS #phi(CH) smeared")
+    #     if args.smearEta:
+    #         h8 = ROOT.TH1D("h8","h8",10,0,6.3)
+    #         tree_.Draw("aco_angle_1_PiEtaSmeared>>h8", sel_ps)
+    #         hists.append(h8)
+    #         legends.append("ggH PS #eta(CH) smeared")
+    # elif args.smearAll and not args.checkSpinner:
+    #     plotname = "ggH_gen_CP{}_tauspinner_smearingFull".format(args.sign)
+
+    #     h2 = ROOT.TH1D("h2","h2",10,0,6.3)
+    #     tree1_.Draw("aco_angle_1_FullSmeared>>h2", sel_sm)
+    #     hists.append(h2)
+    #     legends.append("ggH SM smeared")
+
+    #     h5 = ROOT.TH1D("h5","h5",10,0,6.3)
+    #     tree1_.Draw("aco_angle_1>>h5", sel_ps)
+    #     hists.append(h5)
+    #     legends.append("ggH PS")
+
+    #     h6 = ROOT.TH1D("h6","h6",10,0,6.3)
+    #     tree1_.Draw("aco_angle_1_FullSmeared>>h6", sel_ps)
+    #     hists.append(h6)
+    #     legends.append("ggH PS smeared")
+
+
+    # hists.extend([h1,h2,h3,h4,h5,h6,h7,h8])
+
+
+    # legends = [
+    #         "ggH SM",
+    #         "ggH SM E(strip) smeared",
+    #         "ggH SM Phi(strip) smeared",
+    #         "ggH SM Eta(strip) smeared",
+    #         "ggH PS",
+    #         "ggH PS E(strip) smeared",
+    #         "ggH PS Phi(strip) smeared",
+    #         "ggH PS Eta(strip) smeared",
+    #         ]
 
     plotting.CompareHists(
             hists,
             legends,
             ratio=False,
-            # extra_pad=0.3,
+            extra_pad=0.3,
             norm_hists=True,
             norm_bins=False,
             x_title="#phi_{#rho#rho}",
             y_title="a.u.",
-            plot_name="ggH_gen_CP{}_withMG".format(args.sign),
+            plot_name=plotname,
             # plot_name="VBFH_gen_CP{}".format(args.sign),
-            custom_y_range=True,
-            y_axis_min=0.05,
-            y_axis_max=0.20,
+            # custom_y_range=True,
+            # y_axis_min=0.,
+            # y_axis_max=0.25,
             )
 
 if __name__ == "__main__":

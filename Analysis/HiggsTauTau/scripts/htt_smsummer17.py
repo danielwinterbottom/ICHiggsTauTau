@@ -132,7 +132,8 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Oct15_MC_94X'
+# FILELIST='filelists/Oct15_MC_94X'
+FILELIST='filelists/Jan27_MC_94X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -152,12 +153,15 @@ if options.proc_sm or options.proc_all:
         # 'SUSYGluGluToHToTauTau_M-120',
         # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
-        'GluGluHToTauTau_M-125',
+        # 'GluGluToHToTauTau_M125_nospinner-2017',
+        # 'VBFHToTauTau_M125_nospinner-2017',
+
+        # 'GluGluHToTauTau_M-125',
         # 'GluGluHToPseudoscalarTauTau_GEN',
         # 'GluGluHToMaxmixTauTau_GEN',
 
         # 'GluGluHToTauTau_M-125-ext',
-        # 'GluGluHToTauTau_M-125',
+        'GluGluHToTauTau_M-125',
         # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
         # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
@@ -313,13 +317,13 @@ if options.proc_bkg or options.proc_all:
      # 'DY3JetsToLL-LO-ext',
      # 'DY4JetsToLL-LO',
      # 'DYJetsToLL-LO-ext1',
-     # 'DYJetsToLL-LO',
+     'DYJetsToLL-LO',
      # 'DYJetsToLL',
      # 'DYJetsToLL-ext',
      # 'EWKZ2Jets',
      # 'EWKWPlus2Jets',
      # 'EWKWMinus2Jets',
-     # 'WJetsToLNu-LO',
+     'WJetsToLNu-LO',
      # 'WJetsToLNu-LO-ext',
      # 'W1JetsToLNu-LO',
      # 'W2JetsToLNu-LO',
@@ -405,9 +409,13 @@ if options.mg_signal or options.proc_sm:
     #   user='adow'
     #   SIG_FILELIST = 'filelists/Dec03_MC_94X'
     #   SIG_DIR = 'Dec03_GENSIM_94X'
-    elif 'SUSY' in sa or 'GluGluToHToTauTauPseudoscalarDecay' in sa or 'GluGluHToTauTau_M-125' in sa or 'DYJets' in sa or 'VBFH' in sa:
+    elif 'SUSY' in sa or 'GluGluToHToTauTauPseudoscalarDecay' in sa or 'GluGluHToTauTau_M-125' in sa or 'DYJets' in sa or 'VBFH' in sa and not 'nospinner' in sa:
       user='adow'
       SIG_FILELIST = 'filelists/Jan11_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1]
+    elif 'nospinner' in sa:
+      user='adow'
+      SIG_FILELIST = 'filelists/Jan27_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1]
     else:
       user='adow'

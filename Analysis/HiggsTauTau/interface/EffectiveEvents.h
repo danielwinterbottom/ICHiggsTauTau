@@ -20,6 +20,10 @@ class EffectiveEvents : public ModuleBase {
   TTree *outtree_;
   int mcsign_;
   double gen_ht_;
+
+  double wt_cp_sm_;
+  double wt_cp_ps_;
+  double wt_cp_mm_;
   
   double scale1_;
   double scale2_;

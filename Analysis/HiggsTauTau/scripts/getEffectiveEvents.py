@@ -8,14 +8,14 @@ import fnmatch
 from UserCode.ICHiggsTauTau.analysis import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dirname', '-d', 
+parser.add_argument('--dirname', '-d',
         help= 'Directory where NLO get effective outputs are stored')
 args = parser.parse_args()
 file_names = {}
 channels = ['et','mt','tt','em','zmm']
 years = ['2016','2017']
 for file_name in os.listdir(args.dirname):
-    if '.root' not in file_name: 
+    if '.root' not in file_name:
         continue
     for year in years:
         for channel in channels:
@@ -30,7 +30,7 @@ for f in file_names:
     tree = input_file.Get("effective")
     tree.Draw("rand()>>total_hist",'wt',"goff")
     total_hist = tree.GetHistogram()
-    entries = total_hist.Integral(-1,-1) 
-    out_string+=f+"  "+str(entries)+"\n"  
+    entries = total_hist.Integral(-1,-1)
+    out_string+=f+"  "+str(entries)+"\n"
 
 print out_string

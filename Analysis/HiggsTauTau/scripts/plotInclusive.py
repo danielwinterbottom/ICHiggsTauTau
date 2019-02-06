@@ -61,8 +61,26 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
-                "(lead_p_1-genE_pi1)/genE_pi1[-2,-1.5,-1.0,-0.5,0,0.5,1.0,1.5,2]",
+                # "(lead_p_1-genE_pi1)/genE_pi1[-2,-1.5,-1.0,-0.5,0,0.5,1.0,1.5,2]",
+
+                # "Epi0_1(20,0,100)",
+                # "Epi0_2(20,0,100)",
+                # "Epi_1(20,0,100)",
+                # "Epi_2(20,0,100)",
+                # "Mrho_1(20,0,1.8)",
+                # "Mrho_2(20,0,1.8)",
+                # "dnn_tight_1(20,0,1)",
+                # "dnn_tight_2(20,0,1)",
                 # "m_vis(25,20,250)",
+                # "pt_1(20,40,140)","pt_2(12,40,100)",
+                # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
+                # "aco_angle_mod(20,0,6.3)",
+                # "pt_tt,aco_angle_mod[0,100,170],(18,0,6.3)",
+                # "pt_tt(60,0,300)",
+                # "m_vis,aco_angle_mod[0,90,110,130,150],(18,0,6.3)"
+                # "deep_iso_1(20,0,1)",
+                "iso_1(20,0,1)",
+
                 # "jpt_1(16,0,400)",
                 # "jpt_2(15,0,300)",
                 # "mjj(15,0,1500)",
@@ -83,7 +101,6 @@ def main(args):
                 # "mjj(16,0,800)",
                 # "(sjdphi-gen_sjdphi)/sjdphi(12,-3.2,3.2)",
                 # "m_vis(25,20,250)","pt_1(20,40,140)","pt_2(12,40,100)",
-                # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
                 # "jpt_1(17,30,200)","jpt_2(17,40,200)",
                 # "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)",
                 # "met(20,0,200)","n_jets(5,0,5)",
@@ -92,7 +109,7 @@ def main(args):
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
-        # extras += " --split_sm_scheme --ggh_scheme madgraph "
+        # extras += " --split_sm_scheme  "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
@@ -105,7 +122,9 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-                "m_sv(30,0,300)",
+                # "deep_iso_2(40,0,1)",
+                "iso_2(80,-1,1)",
+                # "m_sv(30,0,300)",
                 # "jpt_1(16,0,400)",
                 # "jpt_2(30,0,300)",
                 # "mjj(15,0,1500)",
@@ -280,7 +299,7 @@ def main(args):
             run_command(' python scripts/HiggsTauTauPlot.py --cfg ' 
                     + ' scripts/new_plot_sm_2016_NewPlotting.cfg --ratio '
                     + ' --var "{}" --channel {} '.format(var,args.channel)
-                    + ' --method {} --norm_bins {} '.format(method,extras))
+                    + ' --method {}  {} '.format(method,extras))
         # elif args.channel in ["mt","tt"]:
         #     if "sjdphi" in var or "jeta" in var:
         #         extras += " --extra_pad 0.55 "

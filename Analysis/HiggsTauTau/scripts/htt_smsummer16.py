@@ -178,7 +178,8 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Apr02_MC_80X'
+# FILELIST='filelists/Apr02_MC_80X'
+FILELIST='filelists/Jan21_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -207,34 +208,36 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluToHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass#,
+      # 'GluGluToHToTauTau_M-'+mass,
+      # 'VBFHToTauTau_M-'+mass,
+      # 'ZHToTauTau_M-'+mass,
+      # 'WplusHToTauTau_M-'+mass,
+      # 'WminusHToTauTau_M-'+mass#,
     ]
   if options.proc_sm:  
     signal_mc += [
-        'GluGluHToWWTo2L2Nu_M-125',
-        'VBFHToWWTo2L2Nu_M-125'
+        # 'GluGluHToWWTo2L2Nu_M-125',
+        # 'VBFHToWWTo2L2Nu_M-125'
         ]
   # add cp samples
   if options.cp_signal:
     signal_mc += [
-        'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
-        'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
-        'GluGluH2JetsToTauTau_M125_CPmixing_sm',
-        'VBFHiggs0M_M-125',
-        'VBFHiggs0Mf05ph0_M-125',
-        'VBFHiggs0PM_M-125',
-        'ZHiggs0M_M-125',
-        'ZHiggs0Mf05ph0_M-125',
-        'ZHiggs0PM_M-125',
-        'WHiggs0M_M-125',
-        'WHiggs0Mf05ph0_M-125',
-        'WHiggs0PM_M-125'
-        #'GluGluToHToTauTau_amcNLO_M-125',
-        #'VBFHToTauTau_amcNLO_M-125'
+        'GluGluToHToTauTau_M-125-nospinner',
+        # 'VBFHToTauTau_M-125-nospinner',
+        #'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
+        #'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+        #'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+        #'VBFHiggs0M_M-125',
+        #'VBFHiggs0Mf05ph0_M-125',
+        #'VBFHiggs0PM_M-125',
+        #'ZHiggs0M_M-125',
+        #'ZHiggs0Mf05ph0_M-125',
+        #'ZHiggs0PM_M-125',
+        #'WHiggs0M_M-125',
+        #'WHiggs0Mf05ph0_M-125',
+        #'WHiggs0PM_M-125'
+        ##'GluGluToHToTauTau_amcNLO_M-125',
+        ##'VBFHToTauTau_amcNLO_M-125'
     ]  
     
 if options.proc_mssm or options.proc_all:
@@ -574,7 +577,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
-  if options.analysis == 'sm': SIG_FILELIST='filelists/Apr02_MC_80X' 
+  # if options.analysis == 'sm': SIG_FILELIST='filelists/Apr02_MC_80X' 
+  if options.analysis == 'sm': SIG_FILELIST='filelists/Jan21_MC_80X' 
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
@@ -587,7 +591,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 50
+        nperjob = 1
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
