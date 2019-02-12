@@ -3640,6 +3640,35 @@ namespace ic {
         tau_id_olddm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
+      // add NN tau IDs stuff
+      // Raw DNN scores
+      dpfTauV0_iso_2_           = tau->HasTauID("byDpfTau2016v0VSallraw")       ? tau->GetTauID("byDpfTau2016v0VSallraw"):       0.;
+      dpfTauV1_iso_2_           = tau->HasTauID("byDpfTau2016v1VSallraw")       ? tau->GetTauID("byDpfTau2016v1VSallraw"):       0.;
+
+      deepTauVsJets_iso_2_      = tau->HasTauID("byDeepTau2017v1VSjetraw")      ? tau->GetTauID("byDeepTau2017v1VSjetraw"):      0.;
+      deepTauVsEle_iso_2_       = tau->HasTauID("byDeepTau2017v1VSeraw")        ? tau->GetTauID("byDeepTau2017v1VSeraw"):        0.;
+
+      // Existing workpoints
+      dpfTauV0_tight_2_         = tau->HasTauID("byTightDpfTau2016v0VSall")     ? tau->GetTauID("byTightDpfTau2016v0VSall"):     0.;
+      dpfTauV1_tight_2_         = tau->HasTauID("byTightDpfTau2016v1VSall")     ? tau->GetTauID("byTightDpfTau2016v1VSall"):     0.;
+      
+      deepTauVsJets_vvvloose_2_ = tau->HasTauID("byVVVLooseDeepTau2017v1VSjet") ? tau->GetTauID("byVVVLooseDeepTau2017v1VSjet"): 0.;
+      deepTauVsJets_vvloose_2_  = tau->HasTauID("byVVLooseDeepTau2017v1VSjet")  ? tau->GetTauID("byVVLooseDeepTau2017v1VSjet"):  0.;
+      deepTauVsJets_vloose_2_   = tau->HasTauID("byVLooseDeepTau2017v1VSjet")   ? tau->GetTauID("byVLooseDeepTau2017v1VSjet"):   0.;
+      deepTauVsJets_loose_2_    = tau->HasTauID("byLooseDeepTau2017v1VSjet")    ? tau->GetTauID("byLooseDeepTau2017v1VSjet"):    0.;
+      deepTauVsJets_medium_2_   = tau->HasTauID("byMediumDeepTau2017v1VSjet")   ? tau->GetTauID("byMediumDeepTau2017v1VSjet"):   0.;
+      deepTauVsJets_tight_2_    = tau->HasTauID("byTightDeepTau2017v1VSjet")    ? tau->GetTauID("byTightDeepTau2017v1VSjet"):    0.;
+      deepTauVsJets_vtight_2_   = tau->HasTauID("byVTightDeepTau2017v1VSjet")   ? tau->GetTauID("byVTightDeepTau2017v1VSjet"):   0.;
+      deepTauVsJets_vvtight_2_  = tau->HasTauID("byVVTightDeepTau2017v1VSjet")  ? tau->GetTauID("byVVTightDeepTau2017v1VSjet"):  0.;
+
+      deepTauVsEle_vvvloose_2_  = tau->HasTauID("byVVVLooseDeepTau2017v1VSe")   ? tau->GetTauID("byVVVLooseDeepTau2017v1VSe"):   0.;
+      deepTauVsEle_vvloose_2_   = tau->HasTauID("byVVLooseDeepTau2017v1VSe")    ? tau->GetTauID("byVVLooseDeepTau2017v1VSe"):    0.;
+      deepTauVsEle_vloose_2_    = tau->HasTauID("byVLooseDeepTau2017v1VSe")     ? tau->GetTauID("byVLooseDeepTau2017v1VSe"):     0.;
+      deepTauVsEle_loose_2_     = tau->HasTauID("byLooseDeepTau2017v1VSe")      ? tau->GetTauID("byLooseDeepTau2017v1VSe"):      0.;
+      deepTauVsEle_medium_2_    = tau->HasTauID("byMediumDeepTau2017v1VSe")     ? tau->GetTauID("byMediumDeepTau2017v1VSe"):     0.;
+      deepTauVsEle_tight_2_     = tau->HasTauID("byTightDeepTau2017v1VSe")      ? tau->GetTauID("byTightDeepTau2017v1VSe"):      0.;
+      deepTauVsEle_vtight_2_    = tau->HasTauID("byVTightDeepTau2017v1VSe")     ? tau->GetTauID("byVTightDeepTau2017v1VSe"):     0.;
+      deepTauVsEle_vvtight_2_   = tau->HasTauID("byVVTightDeepTau2017v1VSe")    ? tau->GetTauID("byVVTightDeepTau2017v1VSe"):    0.;
     }
     if (channel_ == channel::em) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);

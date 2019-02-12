@@ -61,6 +61,13 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
+                # "iso_1(20,0,1)",
+                "deep_iso_1(40,-1,1)",
+                "deepTau_iso_1(40,-1,1)",
+
+                # "m_vis,aco_angle_mod[0,90,110,130],(20,0,6.3)",
+                # "pt_tt,aco_angle_mod[0,50,100,170],(20,0,6.3)",
+                # "mjj,aco_angle_mod[0,300,500,800],(20,0,6.3)",
                 # "(lead_p_1-genE_pi1)/genE_pi1[-2,-1.5,-1.0,-0.5,0,0.5,1.0,1.5,2]",
 
                 # "Epi0_1(20,0,100)",
@@ -78,8 +85,12 @@ def main(args):
                 # "pt_tt,aco_angle_mod[0,100,170],(18,0,6.3)",
                 # "pt_tt(60,0,300)",
                 # "m_vis,aco_angle_mod[0,90,110,130,150],(18,0,6.3)"
-                # "deep_iso_1(20,0,1)",
-                "iso_1(20,0,1)",
+                # "dpfTauV0_iso_1(20,0,1)",
+                # "iso_1(20,-1,1)",
+                # "deepTauVsJets_iso_1(20,0,1)",
+                # "deepTauVsEle_iso_1(20,0,1)",
+                # "deep_antie_1(20,0,1)",
+                # "((Epi_1-Epi0_1)/(Epi_1+Epi0_1)),aco_angle_mod[0,1.0],(18,0,6.3)",
 
                 # "jpt_1(16,0,400)",
                 # "jpt_2(15,0,300)",
@@ -111,7 +122,7 @@ def main(args):
         # extras += " --cat {}_highMjj ".format(args.cat)
         # extras += " --split_sm_scheme  "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
-        # extras += ' --ratio_range 0,2 '
+        extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
 
     elif args.channel in ["mt","et"]:
@@ -122,8 +133,10 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-                # "deep_iso_2(40,0,1)",
-                "iso_2(80,-1,1)",
+                # "deepTauVsJets_iso_2(20,0,1)",
+                # "deepTauVsEle_iso_2(20,0,1)",
+                # "dpfTauV0_iso_2(40,-1,1)",
+                "iso_2(20,0,1)",
                 # "m_sv(30,0,300)",
                 # "jpt_1(16,0,400)",
                 # "jpt_2(30,0,300)",

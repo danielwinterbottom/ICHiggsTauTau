@@ -388,7 +388,7 @@ if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 &&  antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
         if options.era in ['cpsummer17','tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
@@ -965,15 +965,15 @@ if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_
 if options.era in ['cpsummer16']: 
     sm_samples = { 
         # test CP in decay samples
-        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner",
-        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
-        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner",
-        # "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner",
-        # "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner",
-        # "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner",
+        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner",
+         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
+        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner",
+        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner",
+        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner",
+        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner",
 
-        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
-        'qqH_htt' : 'VBFHToTauTau_M-*',
+        # 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
+        # 'qqH_htt' : 'VBFHToTauTau_M-*',
 
         # 'WplusH_htt' : 'WplusHToTauTau_M-*', 
         # 'WminusH_htt' : 'WminusHToTauTau_M-*', 
@@ -2625,8 +2625,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             procs=[]
             for proc in sm_samples:
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
-            # GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
-            GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
+            GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
+            # GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''
             if options.bbh_nlo_masses: bbh_add_name = '-LO'
