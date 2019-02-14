@@ -2322,7 +2322,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
   
 
     BuildModule(httWeights);
-    if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+    if(strategy_type == strategy::cpsummer16 && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
 
       HTTStitching httStitching = HTTStitching("HTTStitching")  
           .set_era(era_type)
@@ -2343,6 +2343,29 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
       
       BuildModule(httStitching);   
     }
+    // add cpdecays16 here
+    if(strategy_type == strategy::cpdecays16 && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+
+      HTTStitching httStitching = HTTStitching("HTTStitching")  
+          .set_era(era_type)
+          .set_fs(fs.get())
+          .set_do_ggH_soup(do_ggH_stitch);
+          httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+           if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+             output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+          httStitching.set_do_w_soup(true);
+          httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+          httStitching.SetWInputYields(57026058 + 29705748, 45367044, 29878415 + 30319351, 19798117 + 39269431, 9170576 + 2073275 + 18751462);
+         }
+         if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+           httStitching.set_do_dy_soup(true);
+           httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+           httStitching.SetDYInputYields(96658943 + 49144274, 62627174, 19970551, 5856110, 4197868);
+         }
+      
+      BuildModule(httStitching);   
+    }
+
   }
 
   if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
