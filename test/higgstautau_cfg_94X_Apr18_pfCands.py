@@ -15,8 +15,8 @@ opts.register('file',
 # 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
-# opts.register('globalTag', '94X_dataRun2_v10', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
-opts.register('globalTag', '94X_mc2017_realistic_v15', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 94X_mc2017_realistic_v15
+# opts.register('globalTag', '94X_dataRun2_v11', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '94X_mc2017_realistic_v17', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -32,6 +32,8 @@ opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
+opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 
 opts.parseArguments()
 infile      = opts.file
@@ -66,22 +68,18 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
-  closeFileFast = cms.untracked.bool(True)
+    fileName = cms.string("EventTree.root"),
+    closeFileFast = cms.untracked.bool(True)
 )
 
 ################################################################
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
-
-process.options   = cms.untracked.PSet(
-  wantSummary = cms.untracked.bool(True)
-)
 
 
 ################################################################
@@ -94,7 +92,9 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infi
 process.GlobalTag.globaltag = cms.string(tag)
 
 process.options   = cms.untracked.PSet(
-  FailPath=cms.untracked.vstring("FileReadError")
+    FailPath=cms.untracked.vstring("FileReadError"),
+    wantSummary = cms.untracked.bool(True),
+    numberOfThreads = cms.untracked.uint32(4)
 )
 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
@@ -113,34 +113,17 @@ process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 
 # embed new tauID trainings 
 
-from UserCode.ICHiggsTauTau.runTauIdMVA import *
-na = TauIDEmbedder(process, cms,
-    debug=True,
-    toKeep = ["2017v2", "newDM2017v2", "dR0p32017v2",
-        "deepTau2017v1", #deepTau Tau-Ids
-        "DPFTau_2016_v0", #DeepPFlow Tau-Id
-        ]
-)
-na.runTauID()
+updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
+import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 
-#byIsolationMVArun2017v2DBoldDMwLTraw2017 = cms.string('byIsolationMVArun2017v2DBoldDMwLTraw2017'),
-#byVVLooseIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVVLooseIsolationMVArun2017v2DBoldDMwLT2017'),
-#byVLooseIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVLooseIsolationMVArun2017v2DBoldDMwLT2017'),
-#byLooseIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byLooseIsolationMVArun2017v2DBoldDMwLT2017'),
-#byMediumIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byMediumIsolationMVArun2017v2DBoldDMwLT2017'),
-#byTightIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byTightIsolationMVArun2017v2DBoldDMwLT2017'),
-#byVTightIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVTightIsolationMVArun2017v2DBoldDMwLT2017'),
-#byVVTightIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVVTightIsolationMVArun2017v2DBoldDMwLT2017')
-#
-#byIsolationMVArun2017v2DBnewDMwLTraw2017 = cms.string('byIsolationMVArun2017v2DBnewDMwLTraw2017'),
-#byVVLooseIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byVVLooseIsolationMVArun2017v2DBnewDMwLT2017'),
-#byVLooseIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byVLooseIsolationMVArun2017v2DBnewDMwLT2017'),
-#byLooseIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byLooseIsolationMVArun2017v2DBnewDMwLT2017'),
-#byMediumIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byMediumIsolationMVArun2017v2DBnewDMwLT2017'),
-#byTightIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byTightIsolationMVArun2017v2DBnewDMwLT2017'),
-#byVTightIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byVTightIsolationMVArun2017v2DBnewDMwLT2017'),
-#byVVTightIsolationMVArun2017v2DBnewDMwLT2017 = cms.string('byVVTightIsolationMVArun2017v2DBnewDMwLT2017')
-
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                    updatedTauName = updatedTauName,
+                    toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                               "deepTau2017v1", #deepTau Tau-Ids
+                               "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
+                               "DPFTau_2016_v1", #D[eep]PF[low] Tau-Id
+                               ])
+tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
     src = cms.InputTag("slimmedElectrons"),
@@ -151,19 +134,17 @@ process.selectedMuons = cms.EDFilter("PATMuonRefSelector",
     cut = cms.string("pt > 3 & abs(eta) < 2.6")
     )
 process.selectedTaus = cms.EDFilter("PATTauRefSelector",
-    src = cms.InputTag("NewTauIDsEmbedded"),
+    src = cms.InputTag("slimmedTausNewID"),
     cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
     )
 
-
 process.icSelectionSequence = cms.Sequence()
-
 
 process.icSelectionSequence += cms.Sequence(
   process.selectedElectrons+
   process.selectedMuons+
   process.rerunMvaIsolationSequence+
-  process.NewTauIDsEmbedded+
+  getattr(process,updatedTauName)+
   process.selectedTaus
 )
 
@@ -251,7 +232,7 @@ if isData :
 ################################################################
 process.icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
     branch  = cms.string("pfCandidates"),
-    input   = cms.InputTag("packedPFCandidates"),
+    input   = cms.InputTag("icTauProducer", "requestedPFCandidates"),
     requestTracks       = cms.bool(False),
     requestGsfTracks    = cms.bool(False),
     inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
@@ -1250,6 +1231,21 @@ process.icEventInfoSequence = cms.Sequence(
   process.icEventInfoProducer
 )
 
+################################################################
+# TauSpinner
+################################################################
+
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+  branch                  = cms.string("tauspinner"),
+  input                   = cms.InputTag("prunedGenParticles"),
+  theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
+)
+
+if opts.tauSpinner:
+  process.icTauSpinnerSequence = cms.Sequence(
+    process.icTauSpinnerProducer
+  )
+else: process.icTauSpinnerSequence = cms.Sequence()
   
 ################################################################
 # Event
@@ -1258,8 +1254,8 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
-  process.icSelectionSequence+  
-  process.pfParticleSelectionSequence+  
+  process.icSelectionSequence+
+  process.pfParticleSelectionSequence+
   process.icVertexSequence+ 
   process.icElectronSequence+
   process.icMuonSequence+ 
@@ -1273,6 +1269,7 @@ process.p = cms.Path(
   process.icL1MuonProducer+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
+  process.icTauSpinnerSequence+
   process.icEventInfoSequence+
   process.icEventProducer
 )
