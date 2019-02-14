@@ -220,7 +220,7 @@ namespace ic {
         double tight_wp = 0.8;
         if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
         else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && use_deep_csv_) tight_wp = 0.4941;
-        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !use_deep_csv) tight_wp = 0.8838;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !use_deep_csv_) tight_wp = 0.8838;
         if(jet_flavour == 5){
           if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
