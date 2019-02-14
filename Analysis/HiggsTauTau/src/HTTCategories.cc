@@ -780,7 +780,6 @@ namespace ic {
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
-      outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
       outtree_->Branch("pfmt_2",            &pfmt_2_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
@@ -877,26 +876,39 @@ namespace ic {
       outtree_->Branch("pi0_E_1",          &pi0_E_1_);
       outtree_->Branch("pi0_E_2",          &pi0_E_2_);
 
-      outtree_->Branch("pi0_cands_pt_1",         &pi0_cands_pt_1_);
-      outtree_->Branch("pi0_cands_pt_2",         &pi0_cands_pt_2_);
-      outtree_->Branch("pi0_cands_eta_1",        &pi0_cands_eta_1_);
-      outtree_->Branch("pi0_cands_eta_2",        &pi0_cands_eta_2_);
-      outtree_->Branch("pi0_cands_phi_1",        &pi0_cands_phi_1_);
-      outtree_->Branch("pi0_cands_phi_2",        &pi0_cands_phi_2_);
-      outtree_->Branch("pi0_cands_E_1",          &pi0_cands_E_1_);
-      outtree_->Branch("pi0_cands_E_2",          &pi0_cands_E_2_);
-
-      outtree_->Branch("pi_cands_pt_1",         &pi_cands_pt_1_);
-      outtree_->Branch("pi_cands_pt_2",         &pi_cands_pt_2_);
-      outtree_->Branch("pi_cands_eta_1",        &pi_cands_eta_1_);
-      outtree_->Branch("pi_cands_eta_2",        &pi_cands_eta_2_);
-      outtree_->Branch("pi_cands_phi_1",        &pi_cands_phi_1_);
-      outtree_->Branch("pi_cands_phi_2",        &pi_cands_phi_2_);
-      outtree_->Branch("pi_cands_E_1",          &pi_cands_E_1_);
-      outtree_->Branch("pi_cands_E_2",          &pi_cands_E_2_);
+      outtree_->Branch("pi_pt_1",         &pi_pt_1_);
+      outtree_->Branch("pi_pt_2",         &pi_pt_2_);
+      outtree_->Branch("pi_eta_1",        &pi_eta_1_);
+      outtree_->Branch("pi_eta_2",        &pi_eta_2_);
+      outtree_->Branch("pi_phi_1",        &pi_phi_1_);
+      outtree_->Branch("pi_phi_2",        &pi_phi_2_);
+      outtree_->Branch("pi_E_1",          &pi_E_1_);
+      outtree_->Branch("pi_E_2",          &pi_E_2_);
 
       outtree_->Branch("rho_m_1",                  &rho_m_1_);
       outtree_->Branch("rho_m_2",                  &rho_m_2_);
+      outtree_->Branch("rho_dphi_1",               &rho_dphi_1_);
+      outtree_->Branch("rho_dphi_2",               &rho_dphi_2_);
+      outtree_->Branch("rho_deta_1",               &rho_deta_1_);
+      outtree_->Branch("rho_deta_2",               &rho_deta_2_);
+
+      outtree_->Branch("gamma1_E_1",               &gamma1_E_1_);
+      outtree_->Branch("gamma2_E_1",               &gamma2_E_1_);
+      outtree_->Branch("gamma3_E_1",               &gamma3_E_1_);
+      outtree_->Branch("gamma4_E_1",               &gamma4_E_1_);
+
+      outtree_->Branch("gamma1_E_2",               &gamma1_E_2_);
+      outtree_->Branch("gamma2_E_2",               &gamma2_E_2_);
+      outtree_->Branch("gamma3_E_2",               &gamma3_E_2_);
+      outtree_->Branch("gamma4_E_2",               &gamma4_E_2_);
+
+      outtree_->Branch("gammas_deta_1", &gammas_deta_1_);
+      outtree_->Branch("gammas_deta_2", &gammas_deta_2_);
+      outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_);
+      outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_);
+
+      outtree_->Branch("Ngamma_1", &Ngamma_1_);
+      outtree_->Branch("Ngamma_2", &Ngamma_2_);
 
       outtree_->Branch("pi0_E_1_res",            &pi0_E_1_res_);
       outtree_->Branch("pi0_E_2_res",            &pi0_E_2_res_);
@@ -917,6 +929,30 @@ namespace ic {
       outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
+
+      outtree_->Branch("E_1", & E_1_);
+      outtree_->Branch("E_2", & E_2_);
+      outtree_->Branch("m_1", & m_1_);
+      outtree_->Branch("m_2", & m_2_);
+      outtree_->Branch("q_1", & q_1_);
+      outtree_->Branch("q_2", & q_2_);
+
+      // moved these here from !(systematics_shifts) because want to use
+      // them in BDT
+      outtree_->Branch("phi_1",             &phi_1_.var_double);
+      outtree_->Branch("phi_2",             &phi_2_.var_double);
+      outtree_->Branch("dphi",              &dphi_);
+      outtree_->Branch("dR",              &dR_);
+      outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
+      outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
+      outtree_->Branch("bpt_1",             &bpt_1_.var_float);
+      outtree_->Branch("bpt_2",             &bpt_2_.var_float);
+      outtree_->Branch("beta_1",            &beta_1_.var_float);
+      outtree_->Branch("beta_2",            &beta_2_.var_float);
+      outtree_->Branch("bcsv_1",            &bcsv_1_.var_float);
+      outtree_->Branch("bcsv_2",            &bcsv_2_);
+      outtree_->Branch("met_dphi_1",             &met_dphi_1_);
+      outtree_->Branch("met_dphi_2",             &met_dphi_2_);
 
       // gen 
       outtree_->Branch("gen_pi0_pt_1",         &gen_pi0_pt_1_);
@@ -1434,25 +1470,11 @@ namespace ic {
         outtree_->Branch("wt_trig_down",    &wt_trig_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
-        outtree_->Branch("phi_1",             &phi_1_.var_double);
-        outtree_->Branch("phi_2",             &phi_2_.var_double);
-        outtree_->Branch("dphi",              &dphi_);
-        outtree_->Branch("dR",              &dR_);
-        outtree_->Branch("E_1",               &E_1_);
-        outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("nearjpt_1",             &nearjpt_1_);
         outtree_->Branch("j1_dm",             &j1_dm_);
-        outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
-        outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
-        outtree_->Branch("bpt_1",             &bpt_1_.var_double);
-        outtree_->Branch("bpt_2",             &bpt_2_.var_double);
-        outtree_->Branch("beta_1",            &beta_1_.var_double);
-        outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
-        outtree_->Branch("met_dphi_1",             &met_dphi_1_);
-        outtree_->Branch("met_dphi_2",             &met_dphi_2_);
 /*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
@@ -1682,7 +1704,7 @@ namespace ic {
       // eta
       synctree_->Branch("eta_2", &eta_2_.var_float, "eta_2/F");
       // mass
-      synctree_->Branch("m_2", &m_2_.var_float, "lM2/F");
+      synctree_->Branch("m_2", &m_2_, "lM2/F");
       // charge
       synctree_->Branch("q_2", &q_2_, "lq2/I");
       // delta-beta corrected isolation (relative or absolute as appropriate)
@@ -4926,91 +4948,68 @@ namespace ic {
       ic::Candidate* pi0_tau1 = GetPi0FromCands(tau1, pfcands);
       ic::Candidate* pi0_tau2 = GetPi0FromCands(tau2, pfcands);
 
-      pi0_pt_1_ = pi0_tau1->vector().Pt();
-      pi0_pt_2_ = pi0_tau2->vector().Pt();
+      pi0_pt_1_  = pi0_tau1->vector().Pt();
+      pi0_pt_2_  = pi0_tau2->vector().Pt();
       pi0_eta_1_ = pi0_tau1->vector().Eta();
       pi0_eta_2_ = pi0_tau2->vector().Eta();
       pi0_phi_1_ = pi0_tau1->vector().Phi();
       pi0_phi_2_ = pi0_tau2->vector().Phi();
-      pi0_E_1_ = pi0_tau1->vector().E();
-      pi0_E_2_ = pi0_tau2->vector().E();
+      pi0_E_1_   = pi0_tau1->vector().E();
+      pi0_E_2_   = pi0_tau2->vector().E();
 
-      auto const& leadCharged = tau1->sig_charged_cands();
-      auto const& subleadCharged = tau2->sig_charged_cands();
-      auto const& leadGamma  = tau1->sig_gamma_cands();
-      auto const& subleadGamma  = tau2->sig_gamma_cands();
+      ic::Candidate* pi_tau1 = GetPiFromCands(tau1, pfcands);
+      ic::Candidate* pi_tau2 = GetPiFromCands(tau2, pfcands);
 
-      ic::Candidate lead_gamma;
-      ic::Candidate sublead_gamma;
-      ic::Candidate lead_charged;
-      ic::Candidate sublead_charged;
-      ic::Candidate* pi_1 = new ic::Candidate();
-      ic::Candidate* pi_2 = new ic::Candidate();
+      pi_pt_1_  = pi_tau1->vector().Pt();
+      pi_pt_2_  = pi_tau2->vector().Pt();
+      pi_eta_1_ = pi_tau1->vector().Eta();
+      pi_eta_2_ = pi_tau2->vector().Eta();
+      pi_phi_1_ = pi_tau1->vector().Phi();
+      pi_phi_2_ = pi_tau2->vector().Phi();
+      pi_E_1_   = pi_tau1->vector().E();
+      pi_E_2_   = pi_tau2->vector().E();
 
-      for (auto id : leadCharged) {
-        pi_1->set_vector(pi_1->vector() + pfcands[id]->vector());
-      }
-      for (auto id : subleadCharged) {
-        pi_2->set_vector(pi_2->vector() + pfcands[id]->vector());
-      }
+      std::vector<ic::PFCandidate*> gammas_tau1    = GetTauGammaCands(tau1, pfcands);
+      std::vector<ic::PFCandidate*> gammas_tau2    = GetTauGammaCands(tau2, pfcands);
 
-      for (auto id : leadCharged) {
-        lead_charged.set_vector(lead_charged.vector() + pfcands[id]->vector());
-      }
-      for (auto id : subleadCharged) {
-        sublead_charged.set_vector(sublead_charged.vector() + pfcands[id]->vector());
-      }
+      Ngamma_1_ = gammas_tau1.size();
+      Ngamma_2_ = gammas_tau2.size();
 
-      for (auto id : leadGamma) {
-        lead_gamma.set_vector(lead_gamma.vector() + pfcands[id]->vector());
-      }
-      for (auto id : subleadGamma) {
-        sublead_gamma.set_vector(sublead_gamma.vector() + pfcands[id]->vector());
-      }
+      if(gammas_tau1.size()>=1) gamma1_E_1_ = gammas_tau1[0]->energy();
+      else gamma1_E_1_ = -9999;
+      if(gammas_tau1.size()>=2) gamma2_E_1_ = gammas_tau1[1]->energy();
+      else gamma2_E_1_ = -9999;
+      if(gammas_tau1.size()>=3) gamma3_E_1_ = gammas_tau1[2]->energy();
+      else gamma3_E_1_ = -9999;
+      if(gammas_tau1.size()>=4) gamma4_E_1_ = gammas_tau1[3]->energy();
+      else gamma4_E_1_ = -9999;
 
-      pi0_cands_pt_1_ = lead_gamma.vector().Pt();
-      pi0_cands_pt_2_ = sublead_gamma.vector().Pt();
-      pi0_cands_eta_1_ = lead_gamma.vector().Eta();
-      pi0_cands_eta_2_ = sublead_gamma.vector().Eta();
-      pi0_cands_phi_1_ = lead_gamma.vector().Phi();
-      pi0_cands_phi_2_ = sublead_gamma.vector().Phi();
-      pi0_cands_E_1_ = lead_gamma.vector().E();
-      pi0_cands_E_2_ = sublead_gamma.vector().E();
-
-      pi_cands_pt_1_ = lead_charged.vector().Pt();
-      pi_cands_pt_2_ = sublead_charged.vector().Pt();
-      pi_cands_eta_1_ = lead_charged.vector().Eta();
-      pi_cands_eta_2_ = sublead_charged.vector().Eta();
-      pi_cands_phi_1_ = lead_charged.vector().Phi();
-      pi_cands_phi_2_ = sublead_charged.vector().Phi();
-      pi_cands_E_1_ = lead_charged.vector().E();
-      pi_cands_E_2_ = sublead_charged.vector().E();
-
-
-      if (tau1->decay_mode() == 1)
-        /* rho_m_1_ = (lead_gamma.vector() + lead_charged.vector()).M(); */
-        rho_m_1_ = tau1->M();
-
-        
-      else 
-        rho_m_1_ = -9999.;
-      if (tau2->decay_mode() == 1)
-        /* rho_m_2_ = (sublead_gamma.vector() + sublead_charged.vector()).M(); */
-        rho_m_2_ = tau2->M();
-      else
-        rho_m_2_ = -9999.;
-
+      if(gammas_tau2.size()>=1) gamma1_E_2_ = gammas_tau2[0]->energy();
+      else gamma1_E_2_ = -9999;
+      if(gammas_tau2.size()>=2) gamma2_E_2_ = gammas_tau2[1]->energy();
+      else gamma2_E_2_ = -9999;
+      if(gammas_tau2.size()>=3) gamma3_E_2_ = gammas_tau2[2]->energy();
+      else gamma3_E_2_ = -9999;
+      if(gammas_tau2.size()>=4) gamma4_E_2_ = gammas_tau2[3]->energy();
+      else gamma4_E_2_ = -9999;
+      
       TLorentzVector lvec1;
       TLorentzVector lvec2;
       TLorentzVector lvec3;
       TLorentzVector lvec4;
+
       if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
         cp_channel_=3;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
-        lvec3 = ConvertToLorentz(pi_1->vector());
-        lvec4 = ConvertToLorentz(pi_2->vector());
-        cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_1}),TVector3())*YRho(std::vector<Candidate*>({pi0_tau2, pi_2}),TVector3());
+        lvec3 = ConvertToLorentz(pi_tau1->vector());
+        lvec4 = ConvertToLorentz(pi_tau2->vector());
+        cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3())
+            *YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+      }
+      else {
+        cp_channel_ =-1;
+        cp_sign_ = -9999;
       }
 
       if(cp_channel_!=-1){
@@ -5024,40 +5023,110 @@ namespace ic {
         aco_angle_mod_ = aco_angle_;
         }
       }
+      else {
+        aco_angle_ = -9999;
+        aco_angle_mod_ = -9999;
+      }
+
+      if(tau_decay_mode_1_==1) {
+        ROOT::Math::PtEtaPhiEVector gammas_vector_1;
+        for (auto g : gammas_tau1) gammas_vector_1+=g->vector();
+        pi0_m_1_ = gammas_vector_1.M();
+        rho_m_1_ = tau1->M();
+        rho_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_tau1->vector(),pi0_tau1->vector()));
+        rho_deta_1_ = std::fabs(pi_tau1->eta()-pi0_tau1->eta());
+
+        if(gammas_tau1.size()>1) {
+          gammas_dphi_1_ =  
+              std::fabs(ROOT::Math::VectorUtil::DeltaPhi(
+                          gammas_tau1[0]->vector(),gammas_tau1[1]->vector()));
+          gammas_deta_1_ =  std::fabs(gammas_tau1[0]->eta()-gammas_tau1[1]->eta());
+        }
+      }
+      else {
+        pi0_m_1_       = -9999;
+        rho_m_1_       = -9999;
+        rho_dphi_1_    = -9999;
+        rho_deta_1_    = -9999;
+        gammas_dphi_1_ = -9999;
+        gammas_deta_1_ = -9999;
+      }
+
+      if(tau_decay_mode_2_==1) {
+        ROOT::Math::PtEtaPhiEVector gammas_vector_2;
+        for (auto g : gammas_tau1) gammas_vector_2+=g->vector();
+        pi0_m_2_ = gammas_vector_2.M();
+        rho_m_2_ = tau1->M();
+        rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_tau2->vector(),pi0_tau2->vector()));
+        rho_deta_2_ = std::fabs(pi_tau2->eta()-pi0_tau2->eta());
+
+        if(gammas_tau2.size()>1) {
+          gammas_dphi_2_ =  
+              std::fabs(ROOT::Math::VectorUtil::DeltaPhi(
+                          gammas_tau2[0]->vector(),gammas_tau2[1]->vector()));
+          gammas_deta_2_ =  std::fabs(gammas_tau2[0]->eta()-gammas_tau2[1]->eta());
+        }
+      }
+      else {
+        pi0_m_2_       = -9999;
+        rho_m_2_       = -9999;
+        rho_dphi_2_    = -9999;
+        rho_deta_2_    = -9999;
+        gammas_dphi_2_ = -9999;
+        gammas_deta_2_ = -9999;
+      }
+
 
     }
     else { 
-      pi0_pt_1_ = -9999.;
+      pi0_pt_1_  = -9999.;
       pi0_eta_1_ = -9999.;
       pi0_phi_1_ = -9999.;
-      pi0_E_1_ = -9999.;
-      pi0_pt_2_ = -9999.;
+      pi0_E_1_   = -9999.;
+      pi0_pt_2_  = -9999.;
       pi0_eta_2_ = -9999.;
       pi0_phi_2_ = -9999.;
-      pi0_E_2_ = -9999.;
+      pi0_E_2_   = -9999.;
 
-      pi0_cands_pt_1_ = -9999.;
-      pi0_cands_pt_2_ = -9999.;
-      pi0_cands_eta_1_ = -9999.;
-      pi0_cands_eta_2_ = -9999.;
-      pi0_cands_phi_1_ = -9999.;
-      pi0_cands_phi_2_ = -9999.;
-      pi0_cands_E_1_ = -9999.;
-      pi0_cands_E_2_ = -9999.;
+      pi_pt_1_   = -9999.;
+      pi_eta_1_  = -9999.;
+      pi_phi_1_  = -9999.;
+      pi_E_1_    = -9999.;
+      pi_pt_2_   = -9999.;
+      pi_eta_2_  = -9999.;
+      pi_phi_2_  = -9999.;
+      pi_E_2_    = -9999.;
 
-      pi_cands_pt_1_ = -9999.;
-      pi_cands_pt_2_ = -9999.;
-      pi_cands_eta_1_ = -9999.;
-      pi_cands_eta_2_ = -9999.;
-      pi_cands_phi_1_ = -9999.;
-      pi_cands_phi_2_ = -9999.;
-      pi_cands_E_1_ = -9999.;
-      pi_cands_E_2_ = -9999.;
+      gamma1_E_1_ = -9999;
+      gamma2_E_1_ = -9999;
+      gamma3_E_1_ = -9999;
+      gamma4_E_1_ = -9999;
 
-      rho_m_1_ = -9999.;
-      rho_m_2_ = -9999.;
-      aco_angle_ = -9999;
+      gamma1_E_2_ = -9999;
+      gamma2_E_2_ = -9999;
+      gamma3_E_2_ = -9999;
+      gamma4_E_2_ = -9999;
+
+      aco_angle_     = -9999;
       aco_angle_mod_ = -9999;
+
+      pi0_m_1_    = -9999;
+      rho_m_1_    = -9999;
+      rho_dphi_1_ = -9999;
+      rho_deta_1_ = -9999;
+
+      pi0_m_2_    = -9999;
+      rho_m_2_    = -9999;
+      rho_dphi_2_ = -9999;
+      rho_deta_2_ = -9999;
+
+      gammas_dphi_1_ = -9999;
+      gammas_deta_1_ = -9999;
+      gammas_dphi_2_ = -9999;
+      gammas_deta_2_ = -9999;
+
+      Ngamma_1_ = -9999;
+      Ngamma_2_ = -9999;
     }
 
     // for now try this because don't have the cands() saved yet
@@ -5108,43 +5177,41 @@ namespace ic {
     }*/
       
     if (channel_ == channel::tt) {
-      // add gen stuff
-      gen_pi_pt_1_    = event->Exists("gen_pi_pt_1") ? event->Get<double>("gen_pi_pt_1")   : -9999;
-      gen_pi_eta_1_    = event->Exists("gen_pi_eta_1") ? event->Get<double>("gen_pi_eta_1")   : -9999;
-      gen_pi_phi_1_    = event->Exists("gen_pi_phi_1") ? event->Get<double>("gen_pi_phi_1")   : -9999;
+      gen_pi_pt_1_   = event->Exists("gen_pi_pt_1") ? event->Get<double>("gen_pi_pt_1")   : -9999;
+      gen_pi_eta_1_  = event->Exists("gen_pi_eta_1") ? event->Get<double>("gen_pi_eta_1")   : -9999;
+      gen_pi_phi_1_  = event->Exists("gen_pi_phi_1") ? event->Get<double>("gen_pi_phi_1")   : -9999;
       gen_pi_E_1_    = event->Exists("gen_pi_E_1") ? event->Get<double>("gen_pi_E_1")   : -9999;
 
-      gen_pi0_pt_1_    = event->Exists("gen_pi0_pt_1") ? event->Get<double>("gen_pi0_pt_1")   : -9999;
-      gen_pi0_eta_1_    = event->Exists("gen_pi0_eta_1") ? event->Get<double>("gen_pi0_eta_1")   : -9999;
-      gen_pi0_phi_1_    = event->Exists("gen_pi0_phi_1") ? event->Get<double>("gen_pi0_phi_1")   : -9999;
-      gen_pi0_E_1_    = event->Exists("gen_pi0_E_1") ? event->Get<double>("gen_pi0_E_1")   : -9999;
+      gen_pi0_pt_1_  = event->Exists("gen_pi0_pt_1") ? event->Get<double>("gen_pi0_pt_1")   : -9999;
+      gen_pi0_eta_1_ = event->Exists("gen_pi0_eta_1") ? event->Get<double>("gen_pi0_eta_1")   : -9999;
+      gen_pi0_phi_1_ = event->Exists("gen_pi0_phi_1") ? event->Get<double>("gen_pi0_phi_1")   : -9999;
+      gen_pi0_E_1_   = event->Exists("gen_pi0_E_1") ? event->Get<double>("gen_pi0_E_1")   : -9999;
 
-      gen_pi_pt_2_    = event->Exists("gen_pi_pt_2") ? event->Get<double>("gen_pi_pt_2")   : -9999;
-      gen_pi_eta_2_    = event->Exists("gen_pi_eta_2") ? event->Get<double>("gen_pi_eta_2")   : -9999;
-      gen_pi_phi_2_    = event->Exists("gen_pi_phi_2") ? event->Get<double>("gen_pi_phi_2")   : -9999;
+      gen_pi_pt_2_   = event->Exists("gen_pi_pt_2") ? event->Get<double>("gen_pi_pt_2")   : -9999;
+      gen_pi_eta_2_  = event->Exists("gen_pi_eta_2") ? event->Get<double>("gen_pi_eta_2")   : -9999;
+      gen_pi_phi_2_  = event->Exists("gen_pi_phi_2") ? event->Get<double>("gen_pi_phi_2")   : -9999;
       gen_pi_E_2_    = event->Exists("gen_pi_E_2") ? event->Get<double>("gen_pi_E_2")   : -9999;
 
-      gen_pi0_pt_2_    = event->Exists("gen_pi0_pt_2") ? event->Get<double>("gen_pi0_pt_2")   : -9999;
-      gen_pi0_eta_2_    = event->Exists("gen_pi0_eta_2") ? event->Get<double>("gen_pi0_eta_2")   : -9999;
-      gen_pi0_phi_2_    = event->Exists("gen_pi0_phi_2") ? event->Get<double>("gen_pi0_phi_2")   : -9999;
-      gen_pi0_E_2_    = event->Exists("gen_pi0_E_2") ? event->Get<double>("gen_pi0_E_2")   : -9999;
+      gen_pi0_pt_2_  = event->Exists("gen_pi0_pt_2") ? event->Get<double>("gen_pi0_pt_2")   : -9999;
+      gen_pi0_eta_2_ = event->Exists("gen_pi0_eta_2") ? event->Get<double>("gen_pi0_eta_2")   : -9999;
+      gen_pi0_phi_2_ = event->Exists("gen_pi0_phi_2") ? event->Get<double>("gen_pi0_phi_2")   : -9999;
+      gen_pi0_E_2_   = event->Exists("gen_pi0_E_2") ? event->Get<double>("gen_pi0_E_2")   : -9999;
 
       // add RECO/GEN resolutions
+      
+      pi0_E_1_res_   = event->Exists("gen_pi0_E_1") ? (pi0_E_1_ - gen_pi0_E_1_)/gen_pi0_E_1_ : -9999;
+      pi0_E_2_res_   = event->Exists("gen_pi0_E_2") ? (pi0_E_2_ - gen_pi0_E_2_)/gen_pi0_E_2_ : -9999;
+      pi0_eta_1_res_ = event->Exists("gen_pi0_eta_1") ? (pi0_eta_1_ - gen_pi0_eta_1_)/gen_pi0_eta_1_ : -9999;
+      pi0_eta_2_res_ = event->Exists("gen_pi0_eta_2") ? (pi0_eta_2_ - gen_pi0_eta_2_)/gen_pi0_eta_2_ : -9999;
+      pi0_phi_1_res_ = event->Exists("gen_pi0_phi_1") ? (pi0_phi_1_ - gen_pi0_phi_1_)/gen_pi0_phi_1_ : -9999;
+      pi0_phi_2_res_ = event->Exists("gen_pi0_phi_2") ? (pi0_phi_2_ - gen_pi0_phi_2_)/gen_pi0_phi_2_ : -9999;
 
-      pi0_E_1_res_ = (pi0_E_1_ - gen_pi0_E_1_)/gen_pi0_E_1_;
-      pi0_E_2_res_ = (pi0_E_2_ - gen_pi0_E_2_)/gen_pi0_E_2_;
-      pi0_eta_1_res_ = (pi0_eta_1_ - gen_pi0_eta_1_)/gen_pi0_eta_1_;
-      pi0_eta_2_res_ = (pi0_eta_2_ - gen_pi0_eta_2_)/gen_pi0_eta_2_;
-      pi0_phi_1_res_ = (pi0_phi_1_ - gen_pi0_phi_1_)/gen_pi0_phi_1_;
-      pi0_phi_2_res_ = (pi0_phi_2_ - gen_pi0_phi_2_)/gen_pi0_phi_2_;
-
-      pi_E_1_res_ = (pi_cands_E_1_ - gen_pi_E_1_)/gen_pi_E_1_;
-      pi_E_2_res_ = (pi_cands_E_2_ - gen_pi_E_2_)/gen_pi_E_2_;
-      pi_eta_1_res_ = (pi_cands_eta_1_ - gen_pi_eta_1_)/gen_pi_eta_1_;
-      pi_eta_2_res_ = (pi_cands_eta_2_ - gen_pi_eta_2_)/gen_pi_eta_2_;
-      pi_phi_1_res_ = (pi_cands_phi_1_ - gen_pi_phi_1_)/gen_pi_phi_1_;
-      pi_phi_2_res_ = (pi_cands_phi_2_ - gen_pi_phi_2_)/gen_pi_phi_2_;
-
+      pi_E_1_res_    = event->Exists("gen_pi_E_1") ? (pi_E_1_ - gen_pi_E_1_)/gen_pi_E_1_ : -9999;
+      pi_E_2_res_    = event->Exists("gen_pi_E_2") ? (pi_E_2_ - gen_pi_E_2_)/gen_pi_E_2_ : -9999;
+      pi_eta_1_res_  = event->Exists("gen_pi_eta_1") ? (pi_eta_1_ - gen_pi_eta_1_)/gen_pi_eta_1_ : -9999;
+      pi_eta_2_res_  = event->Exists("gen_pi_eta_2") ? (pi_eta_2_ - gen_pi_eta_2_)/gen_pi_eta_2_ : -9999;
+      pi_phi_1_res_  = event->Exists("gen_pi_phi_1") ? (pi_phi_1_ - gen_pi_phi_1_)/gen_pi_phi_1_ : -9999;
+      pi_phi_2_res_  = event->Exists("gen_pi_phi_2") ? (pi_phi_2_ - gen_pi_phi_2_)/gen_pi_phi_2_ : -9999;
 
     }
 

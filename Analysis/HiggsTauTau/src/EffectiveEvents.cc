@@ -139,14 +139,16 @@ return 0;
 }
 
 int EffectiveEvents::Execute(TreeEvent *event){
- EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
- EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+  EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
   //if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_ = 1.0;
   if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_= 1;
-  if (tauspinner->weight_defined("wt_cp_0")) wt_cp_sm_ = tauspinner->weight("wt_cp_0"); else wt_cp_sm_= 1;
-  if (tauspinner->weight_defined("wt_cp_0p25")) wt_cp_mm_ = tauspinner->weight("wt_cp_0p25"); else wt_cp_mm_= 1;
-  if (tauspinner->weight_defined("wt_cp_0p5")) wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); else wt_cp_ps_= 1;
+  if(event->ExistsInTree("tauspinner")) {
+    EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+    if (tauspinner->weight_defined("wt_cp_0")) wt_cp_sm_ = tauspinner->weight("wt_cp_0"); else wt_cp_sm_= 1;
+    if (tauspinner->weight_defined("wt_cp_0p25")) wt_cp_mm_ = tauspinner->weight("wt_cp_0p25"); else wt_cp_mm_= 1;
+    if (tauspinner->weight_defined("wt_cp_0p5")) wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); else wt_cp_ps_= 1;
+  }
   gen_ht_ = eventInfo->gen_ht();
 //  mcsign_ = eventInfo->weight;
 //  if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_ = 1.0;

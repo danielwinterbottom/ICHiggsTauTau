@@ -188,19 +188,19 @@ if options.no_shape_systs:
 
 # the CP in decays datacards
 if SCHEME == 'cpdecays16':
-    VAR_INCLUSIVE_TT = "m_vis,aco_angle_mod[0,90,110,130],(20,0,6.3)"
-    VAR_0JET_TT = "m_vis,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
-    VAR_BOOSTED_TT = "pt_tt,aco_angle_mod[0,50,100,170],(20,0,6.3)"
-    VAR_DIJET_TT = "mjj,aco_angle_mod[0,300,500,800],(20,0,6.3)"
+    VAR_INCLUSIVE_TT = "m_sv,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
+    VAR_0JET_TT      = "m_sv,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
+    VAR_BOOSTED_TT   = "m_sv,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
+    VAR_DIJET_TT     = "m_sv,aco_angle_mod[0,90,110,130,150],(20,0,6.3)"
 
     scheme_em = []
     scheme_et = []
     scheme_mt = []
     scheme_tt = [
-        ("8", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
-        ("8",   "0jet_rho",    "0jet_rho",  VAR_0JET_TT, ''),
-        ("8",   "boosted_rho", "boosted_rho",  VAR_BOOSTED_TT, ''),
-        ("8",   "dijet_rho",     "dijet_rho",  VAR_DIJET_TT, ''),
+        ("17", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
+        ("17",   "0jet_rho",    "0jet_rho",  VAR_0JET_TT, ''),
+        ("17",   "boosted_rho", "boosted_rho",  VAR_BOOSTED_TT, ''),
+        ("17",   "dijet_rho",     "dijet_rho",  VAR_DIJET_TT, ''),
     ]
 
     bkg_schemes = {
@@ -1762,7 +1762,7 @@ for ch in channels:
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra)s --no_plot ' % vars())
+                    ' --var="%(var)s" %(extra)s --log_y ' % vars())
 
             else:
                 run_command(qsub_command

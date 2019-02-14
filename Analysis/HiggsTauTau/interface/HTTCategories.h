@@ -245,7 +245,7 @@ class HTTCategories : public ModuleBase {
   double z_1_;
   double z_2_;
   float m_1_;
-  branch_var m_2_;
+  float m_2_;
   branch_var mva_1_;
   branch_var mva_2_;
   branch_var pfmet_;
@@ -520,6 +520,19 @@ class HTTCategories : public ModuleBase {
   double pi0_phi_2_;
   double pi0_E_1_;
   double pi0_E_2_;
+  double pi0_m_1_;
+  double pi0_m_2_;
+
+  double pi_pt_1_;
+  double pi_pt_2_;
+  double pi_eta_1_;
+  double pi_eta_2_;
+  double pi_phi_1_;
+  double pi_phi_2_;
+  double pi_E_1_;
+  double pi_E_2_;
+  double pi_m_1_;
+  double pi_m_2_;
   //gen 
   double gen_pi0_pt_1_;
   double gen_pi0_pt_2_;
@@ -539,26 +552,27 @@ class HTTCategories : public ModuleBase {
   double gen_pi_E_1_;
   double gen_pi_E_2_;
 
-  double pi0_cands_pt_1_;
-  double pi0_cands_pt_2_;
-  double pi0_cands_eta_1_;
-  double pi0_cands_eta_2_;
-  double pi0_cands_phi_1_;
-  double pi0_cands_phi_2_;
-  double pi0_cands_E_1_;
-  double pi0_cands_E_2_;
-
-  double pi_cands_pt_1_;
-  double pi_cands_pt_2_;
-  double pi_cands_eta_1_;
-  double pi_cands_eta_2_;
-  double pi_cands_phi_1_;
-  double pi_cands_phi_2_;
-  double pi_cands_E_1_;
-  double pi_cands_E_2_;
-
   double rho_m_1_;
   double rho_m_2_;
+  double rho_dphi_1_;
+  double rho_dphi_2_;
+  double rho_deta_1_;
+  double rho_deta_2_;
+  double gamma1_E_1_;
+  double gamma2_E_1_;
+  double gamma3_E_1_;
+  double gamma4_E_1_;
+  double gamma1_E_2_;
+  double gamma2_E_2_;
+  double gamma3_E_2_;
+  double gamma4_E_2_;
+  double gammas_deta_1_;
+  double gammas_deta_2_;
+  double gammas_dphi_1_;
+  double gammas_dphi_2_;
+
+  int Ngamma_1_;
+  int Ngamma_2_;
 
   double aco_angle_;
   double aco_angle_mod_;

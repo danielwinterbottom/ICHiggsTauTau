@@ -570,7 +570,10 @@ namespace ic {
           std::map<std::size_t, ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauChargedHadrCands(ic::Tau const* tau, 
           std::map<std::size_t, ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauIsoGammaCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands);
   ic::Candidate* GetPi0FromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
+  ic::Candidate* GetPiFromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 

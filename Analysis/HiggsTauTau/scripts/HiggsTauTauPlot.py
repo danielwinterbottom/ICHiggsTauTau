@@ -677,13 +677,23 @@ if options.channel == 'em':
     cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
 
 # CP in decays categories
-if options.channel == "tt":
+if options.channel == 'tt':
     cats["inclusive_rho"] = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
 
     cats["0jet_rho"] = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
-    cats["dijet_rho"] = "({} && {})".format(cats["vbf"], cats["inclusive_rho"])
-    cats["boosted_rho"] = "({} && {})".format(cats["boosted"], cats["inclusive_rho"])
-    
+    cats["dijet_rho"] = "(n_jets>=2 && pt_tt>100 && mjj>300 && {})".format(cats["inclusive_rho"])
+    cats["boosted_rho"] = "(!{} && !(n_jets>=2 && pt_tt>100 && mjj>300) && {})".format(cats["0jet"], cats["inclusive_rho"])
+
+    mva_ggh      = '(IC_Feb13_noSVFit_fix_max_index==0)'
+    mva_jetFakes = '(IC_Feb13_noSVFit_fix_max_index==1)'
+    mva_zttEmbed = '(IC_Feb13_noSVFit_fix_max_index==2)'
+
+    # simplest mjj based qqH vs ggH
+    cats['higgs']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    # cats['ggh']      = '({} && {} && mjj<500)'.format(mva_ggh, cats["inclusive_rho"])
+    # cats['qqh']      = '({} && {} && mjj>500)'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
   
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']: # Remove the False when finished!!!!!
@@ -966,8 +976,9 @@ if options.era in ['cpsummer16']:
     sm_samples = { 
         # test CP in decay samples
         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner",
-         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
+        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
         "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner",
+
         "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner",
         "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner",
         "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner",

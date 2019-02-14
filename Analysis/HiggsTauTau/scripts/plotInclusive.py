@@ -61,9 +61,11 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
+                "IC_Feb13_noSVFit_fix_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+                # "m_1(20,0,2)",
                 # "iso_1(20,0,1)",
-                "deep_iso_1(40,-1,1)",
-                "deepTau_iso_1(40,-1,1)",
+                # "deep_iso_1(40,-1,1)",
+                # "deepTau_iso_1(40,-1,1)",
 
                 # "m_vis,aco_angle_mod[0,90,110,130],(20,0,6.3)",
                 # "pt_tt,aco_angle_mod[0,50,100,170],(20,0,6.3)",
@@ -120,9 +122,9 @@ def main(args):
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
-        # extras += " --split_sm_scheme  "
+        extras += " --split_sm_scheme  "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
-        extras += ' --ratio_range 0,2 '
+        # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
 
     elif args.channel in ["mt","et"]:
@@ -133,10 +135,11 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
+                "m_1(20,0,2)",
                 # "deepTauVsJets_iso_2(20,0,1)",
                 # "deepTauVsEle_iso_2(20,0,1)",
                 # "dpfTauV0_iso_2(40,-1,1)",
-                "iso_2(20,0,1)",
+                # "iso_2(20,0,1)",
                 # "m_sv(30,0,300)",
                 # "jpt_1(16,0,400)",
                 # "jpt_2(30,0,300)",
