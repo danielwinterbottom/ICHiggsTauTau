@@ -669,23 +669,23 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-        process,
-        isData = (bool(isData) or bool(isEmbed)),
-        fixEE2017 = True,
-        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-        postfix = "ModifiedMET"
-)
+# from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+# runMetCorAndUncFromMiniAOD (
+#         process,
+#         isData = (bool(isData) or bool(isEmbed)),
+#         fixEE2017 = True,
+#         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+#         postfix = "ModifiedMET"
+# )
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
-                         input = cms.InputTag("slimmedMETsModifiedMET"), # for 2017 apply re-correction
+                         input = cms.InputTag("slimmedMETs"), # for 2017 apply re-correction
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
 process.icPfMetSequence = cms.Sequence(
-    process.fullPatMetSequenceModifiedMET *
+    # process.fullPatMetSequenceModifiedMET *
     process.icPfMetProducer
 )
 
@@ -1022,7 +1022,7 @@ process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer = producers.icTriggerObj
       storeOnlyIfFired = cms.bool(False)
 )
 
-process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
+process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("selectedPatTrigger"),
       branch = cms.string("triggerObjectsVBFDoubleTightChargedIsoPFTauHPS20"),
       hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
