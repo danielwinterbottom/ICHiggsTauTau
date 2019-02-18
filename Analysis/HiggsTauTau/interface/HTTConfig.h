@@ -53,7 +53,10 @@ struct strategy_def {
     mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
     smsummer16,    //Strategy for running on summer16 samples, SM analysis
     cpsummer16,
-    cpsummer17
+    cpsummer17,
+    cpdecays16,
+    cpdecays17,
+    cpdecays18
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -69,7 +72,10 @@ inline std::string Strategy2String(strategy const& in) {
                 (strategy::mssmsummer16, "mssmsummer16")
                 (strategy::smsummer16, "smsummer16")
                 (strategy::cpsummer16, "cpsummer16")
-                (strategy::cpsummer17, "cpsummer17");
+                (strategy::cpsummer17, "cpsummer17")
+                (strategy::cpdecays16, "cpdecays16")
+                (strategy::cpdecays17, "cpdecays17")
+                (strategy::cpdecays18, "cpdecays18");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -89,7 +95,11 @@ inline strategy String2Strategy(std::string const& in) {
         ("mssmsummer16", strategy::mssmsummer16)
         ("smsummer16", strategy::smsummer16)
         ("cpsummer16", strategy::cpsummer16)
-        ("cpsummer17", strategy::cpsummer17);
+        ("cpsummer17", strategy::cpsummer17)
+        ("cpdecays16", strategy::cpdecays16)
+        ("cpdecays17", strategy::cpdecays17)
+        ("cpdecays18", strategy::cpdecays18);
+
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {

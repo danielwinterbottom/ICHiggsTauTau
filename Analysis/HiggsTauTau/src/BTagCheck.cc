@@ -111,11 +111,11 @@ namespace ic {
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) { 
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) { 
           iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -131,12 +131,12 @@ namespace ic {
         if(era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = PF03IsolationVal(muon, 0.5, 0);
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) {
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);  
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
@@ -165,7 +165,7 @@ namespace ic {
         if( era_ != era::data_2016 && era_ != era::data_2017){
           iso_1 = tau1->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) {
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           iso_1 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");  
           iso_2 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
@@ -218,9 +218,9 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tight_wp = 0.8484;
-        else if(strategy_ == strategy::cpsummer17 && use_deep_csv_) tight_wp = 0.4941;
-        else if(strategy_ == strategy::cpsummer17) tight_wp = 0.8838;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && use_deep_csv_) tight_wp = 0.4941;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !use_deep_csv_) tight_wp = 0.8838;
         if(jet_flavour == 5){
           if(era_!=era::data_2016 && era_ != era::data_2017){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
