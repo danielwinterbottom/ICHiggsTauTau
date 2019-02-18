@@ -60,6 +60,7 @@
 #include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
 #include "HiggsTauTau/interface/HTTSmearScale.h"
 #include "HiggsTauTau/interface/HTTPreFireWeight.h"
+#include "HiggsTauTau/interface/RhoIDEmbedder.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1259,11 +1260,15 @@ BuildModule(jetIDFilter);
    //if(js["baseline"]["jec_region"].asUInt() == 0) sources = {"Total"};
    if(js["baseline"]["jec_region"].asUInt() == 1) sources = {"PileUpPtEC1","PileUpPtEC2","PileUpPtBB","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeStatEC","RelativePtBB"};
    if(js["baseline"]["jec_region"].asUInt() == 2) sources = {"RelativeStatHF","RelativePtHF","PileUpPtHF","RelativeJERHF"};
+   if(js["baseline"]["jec_region"].asUInt() == 3) sources = {"PileUpPtEC1","PileUpPtBB","RelativeJEREC1","RelativePtEC1","RelativeStatEC","RelativePtBB"};
+   if(js["baseline"]["jec_region"].asUInt() == 4) sources = {"PileUpPtEC2","RelativeJEREC2","RelativePtEC2"};
 
    if (jes_corr_mode > 0) {
-     if (js["baseline"]["jec_region"].asUInt() == 0) correlations = {1.,1.,1.,1.,0.,1.,1.,0.,0.5,0.5,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 0) correlations = {1.,1.,1.,1.,0.,1.,1.,0.,0.5,0.5,0.5};
      if (js["baseline"]["jec_region"].asUInt() == 1) correlations = {0.5,0.5,0.5,0.,0.,0.,0.,0.,0.5};
      if (js["baseline"]["jec_region"].asUInt() == 2) correlations = {0.,0.5,0.5,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 3) correlations = {0.5,0.5,0.,0.,0.,0.5};
+     if (js["baseline"]["jec_region"].asUInt() == 4) correlations = {0.5,0.,0.};
 
      BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
        .set_input_label(jets_label)
@@ -1494,7 +1499,7 @@ if(do_met_filters){
 }
 
 
-if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16){
+if ((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16)){
   BuildModule(GenericModule("BadMuonFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -2364,7 +2369,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_quarkmass_higgspt(do_ggH_stitch)
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
-     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v1.root");
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v3.root");
      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
@@ -2486,6 +2491,8 @@ bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_nam
 bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17);
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
+BuildModule(RhoIDEmbedder("RhoIDEmbedder")
+    .set_channel(channel));
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -2572,15 +2579,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(8.)
-          //.set_extra_l1_probe_pt(5.)
-          // to measure em muon trg SF for 23 GeV leg
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(23.)
-          .set_extra_l1_probe_pt(20.)
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          // to measure em muon trg SF for 23 GeV leg
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(23.)
+          //.set_extra_l1_probe_pt(20.)
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
@@ -2629,17 +2636,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
           // for single muon trigger:
-          //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-          //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+          .set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
+          .set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
           // for muon leg of mu+tau cross trigger:
           //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
           //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
           // for mu8 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
           //.set_do_dzmass(true)
-          .set_extra_hlt_probe_pt(8.)
-          .set_extra_l1_probe_pt(5.)
+          //.set_extra_hlt_probe_pt(8.)
+          //.set_extra_l1_probe_pt(5.)
           //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
           //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired
           // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
@@ -2684,14 +2691,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
-          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          //.set_extra_l1_probe_pt(10.)
-          // to measure em electron 23 GeV leg
           .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          .set_extra_l1_probe_pt(23.)
-          .set_extra_l1_iso_probe_pt(20.)
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
+          // to measure em electron 23 GeV leg
+          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          //.set_extra_l1_probe_pt(23.)
+          //.set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {
@@ -3443,6 +3450,7 @@ void HTTSequence::BuildTPZEEPairs() {
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
       .set_input_label("sel_electrons").set_min(2)
+      .set_max(2)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
@@ -3571,7 +3579,7 @@ void HTTSequence::BuildTPZMMPairs() {
    }
 
   BuildModule(SimpleFilter<Muon>("ProbeFilter")
-      .set_input_label("sel_muons").set_min(2)
+      .set_input_label("sel_muons").set_min(2).set_max(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
                 fabs(m->eta())          < muon_eta   &&

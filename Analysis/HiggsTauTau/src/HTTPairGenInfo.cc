@@ -64,7 +64,7 @@ namespace ic {
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
     }
-    
+
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
       gen_match_undecayed_1_eta = undecayed_taus[0]->eta();
@@ -73,6 +73,9 @@ namespace ic {
       gen_match_undecayed_2_pt = undecayed_taus[1]->pt();
       gen_match_undecayed_2_eta = undecayed_taus[1]->eta();
     }
+
+    int tauFlag1 = 0;
+    int tauFlag2 = 0;
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
@@ -87,7 +90,6 @@ namespace ic {
     std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.2, true, true);
     
-
 
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
@@ -136,6 +138,7 @@ namespace ic {
        gen_match_1_pt = leading_tau_match.at(0).second->pt();
   //     leading_lepton_match_DR = DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second);
        gen_match_1 = mcorigin::tauHad;
+       tauFlag1 = leading_tau_match.at(0).second->flavour();
       }
    
 //Now for subleading lepton:
@@ -177,8 +180,11 @@ namespace ic {
        gen_match_2_pt = subleading_tau_match.at(0).second->pt();
       // subleading_lepton_match_DR = DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second);
        gen_match_2 = mcorigin::tauHad;
+       tauFlag2 = subleading_tau_match.at(0).second->flavour(); 
       }
 
+   if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
+   if(gen_match_2 == mcorigin::tauHad) event->Add("subleading_gen_tau", new ic::GenJet(*(subleading_tau_match.at(0).second)));
 
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
@@ -188,6 +194,8 @@ namespace ic {
    event->Add("gen_match_undecayed_2_pt", gen_match_undecayed_2_pt);
    event->Add("gen_match_undecayed_1_eta", gen_match_undecayed_1_eta);
    event->Add("gen_match_undecayed_2_eta", gen_match_undecayed_2_eta);
+   event->Add("tauFlag1", tauFlag1);
+   event->Add("tauFlag2", tauFlag2);
 /*   event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
    event->Add("subleading_lepton_match_pt",subleading_lepton_match_pt);
    event->Add("leading_lepton_match_DR",leading_lepton_match_DR);

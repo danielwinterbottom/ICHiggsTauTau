@@ -117,4 +117,16 @@ mkdir -p -v $1/JESHF_CORR_UP
 mkdir -p -v $1/JESHF_CORR_DOWN
 mkdir -p -v $1/JESHF_UNCORR_UP
 mkdir -p -v $1/JESHF_UNCORR_DOWN
+mkdir -p -v $1/JESBBEE1_DOWN
+mkdir -p -v $1/JESBBEE1_UP
+mkdir -p -v $1/JESBBEE1_UNCORR_DOWN
+mkdir -p -v $1/JESBBEE1_UNCORR_UP
+mkdir -p -v $1/JESBBEE1_CORR_DOWN
+mkdir -p -v $1/JESBBEE1_CORR_UP
+mkdir -p -v $1/JESEE2_DOWN
+mkdir -p -v $1/JESEE2_UP
+mkdir -p -v $1/JESEE2_UNCORR_DOWN
+mkdir -p -v $1/JESEE2_UNCORR_UP
+mkdir -p -v $1/JESEE2_CORR_DOWN
+mkdir -p -v $1/JESEE2_CORR_UP
 

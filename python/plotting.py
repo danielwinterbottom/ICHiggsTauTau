@@ -58,18 +58,18 @@ def SetAxisTitles(plot, channel):
   titles = {}
   titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
   titles['iso_2'] = ['iso_{'+lep2_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep2_label+'}']
-  titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
-  titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
+  titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
+  titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
-  titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)']
+  titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)']
-  if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)']
-  else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)']
+  if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
+  else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
   titles['pzeta'] = ['D_{#zeta} (GeV)','Events / '+bin_width+' GeV', 'dN/dD_{#zeta} (1/GeV)']
@@ -139,15 +139,15 @@ def SetAxisTitles2D(plot, channel):
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
-  titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)','GeV']
-  titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)','GeV']
+  titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)','GeV']
+  titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)','GeV']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)','GeV']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}','']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}','']
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)','GeV']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
-  titles['m_sv'] = ['m_{'+chan_label+'}^{SV} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{SV} (1/GeV)','GeV']
+  titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
   if channel == 'tt':
@@ -159,8 +159,8 @@ def SetAxisTitles2D(plot, channel):
   titles['DCP'] = ['D_{CP}','Events', 'dN/dD_{CP}','']
   titles['D0star'] = ['D_{0}^{*}','Events', 'dN/dD_{0}^{*}','']
 
-  if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)','GeV']
-  else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
+  if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)','GeV']
+  else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{#tau#tau} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
@@ -1043,7 +1043,7 @@ def GraphDivideErrors(num, den):
               res.GetEYhigh()[i] = 0
               res.GetEYlow()[i] = 0  
           else:
-              if res.GetY()[i] == 0 or den.GetY()[i] == 0:   
+              if res.GetY()[i] < 1e-100 or den.GetY()[i] < 1e-100:   
                 res.GetEYhigh()[i] = 0
                 res.GetEYlow()[i] = 0
               else:
@@ -2169,7 +2169,7 @@ def HTTPlot(nodename,
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
-            else: 
+            else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
@@ -2177,6 +2177,7 @@ def HTTPlot(nodename,
     
         if norm_bins:
             h.Scale(1.0,"width")
+        if h.GetName() == '': continue     
         bkg_histos.append(h)
         
     stack = R.THStack("hs","")
