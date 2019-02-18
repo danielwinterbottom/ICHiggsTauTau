@@ -17,6 +17,26 @@ Total lumi using latest PromptReco I could find:
     | 195   | 477  | 233928 | 233536 | 61281229980.854873657 | 58826846900.918640137 |
     +-------+------+--------+--------+-----------------------+-----------------------+
 
-#### 58.8 1/fb
+** 58.8 1/fb **
+
+## Trigger summary
+Get the trigger summary from this:
+
+    wget http://fwyzard.web.cern.ch/fwyzard/hlt/2018/summary
 
 
+## mu tau triggers
+
+    cat hlt2018_summary.txt | grep HLT_IsoMu | sed -e 's/^\w*\ *//' | sed 's/.$//' > IsoMu2018.txt
+
+## e tau triggers
+
+    cat hlt2018_summary.txt | grep HLT_Ele | sed -e 's/^\w*\ *//' | sed 's/.$//' > Ele2018.txt
+
+## tau tau triggers
+
+    cat hlt2018_summary.txt | grep -E "(DoubleLoose|DoubleMedium|DoubleTight)" | sed -e 's/^\w*\ *//' | sed 's/.$//' > Tau2018.txt
+
+## e mu triggers
+    
+    cat hlt2018_summary.txt | grep "HLT_Mu" | grep "TrkIsoVVL" | sed -e 's/^\w*\ *//' | sed 's/.$//' > EMu2018.txt
