@@ -16,6 +16,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 
 namespace ic {
 
@@ -549,6 +550,12 @@ namespace ic {
   std::pair<bool,std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<bool,std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi);
+
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands); 
+  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 
