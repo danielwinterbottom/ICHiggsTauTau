@@ -85,6 +85,8 @@ def SetAxisTitles(plot, channel):
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['aco_angle_mod'] = ['#Delta#phi^{*}_{CP}','Events / '+bin_width, 'dN/d#Delta#phi^{*}_{CP}']
+  titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
 
 
     
@@ -166,6 +168,8 @@ def SetAxisTitles2D(plot, channel):
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['aco_angle_mod'] = ['#Delta#phi^{*}_{CP}','Events', 'dN/d#Delta#phi^{*}_{CP}','']
+  titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']

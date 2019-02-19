@@ -61,7 +61,9 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
-                "IC_Feb13_noSVFit_fix_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+                # "IC_Feb13_fix1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+                # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(20,0,6.3)",
+                "aco_angle_mod(14,0,6.3)",
                 # "m_1(20,0,2)",
                 # "iso_1(20,0,1)",
                 # "deep_iso_1(40,-1,1)",
@@ -135,11 +137,11 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-                "m_1(20,0,2)",
-                # "deepTauVsJets_iso_2(20,0,1)",
-                # "deepTauVsEle_iso_2(20,0,1)",
-                # "dpfTauV0_iso_2(40,-1,1)",
-                # "iso_2(20,0,1)",
+                # "m_1(20,0,2)",
+                "deepTauVsJets_iso_2(20,0,1)",
+                "deepTauVsEle_iso_2(20,0,1)",
+                "dpfTauV0_iso_2(20,0,1)",
+                "iso_2(20,0,1)",
                 # "m_sv(30,0,300)",
                 # "jpt_1(16,0,400)",
                 # "jpt_2(30,0,300)",
@@ -313,9 +315,9 @@ def main(args):
             if "sjdphi" in var or "jeta" in var:
                 extras += " --extra_pad 0.55 "
             run_command(' python scripts/HiggsTauTauPlot.py --cfg ' 
-                    + ' scripts/new_plot_sm_2016_NewPlotting.cfg --ratio '
+                    + ' scripts/plot_cpdecays_2016.cfg --ratio '
                     + ' --var "{}" --channel {} '.format(var,args.channel)
-                    + ' --method {}  {} '.format(method,extras))
+                    + ' --method {} {} '.format(method,extras))
         # elif args.channel in ["mt","tt"]:
         #     if "sjdphi" in var or "jeta" in var:
         #         extras += " --extra_pad 0.55 "

@@ -680,13 +680,15 @@ if options.channel == 'em':
 if options.channel == 'tt':
     cats["inclusive_rho"] = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
 
-    cats["0jet_rho"] = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
-    cats["dijet_rho"] = "(n_jets>=2 && pt_tt>100 && mjj>300 && {})".format(cats["inclusive_rho"])
-    cats["boosted_rho"] = "(!{} && !(n_jets>=2 && pt_tt>100 && mjj>300) && {})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["0jet_rho"]           = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["dijet_boosted_rho"]  = "(n_jets>=2 && pt_tt>200 && mjj>500 && {})".format(cats["inclusive_rho"])
+    cats["dijet_lowboost_rho"] = "(n_jets>=2 && pt_tt<200 && mjj>500 && {})".format(cats["inclusive_rho"])
+    cats["boosted_rho"]        = "(!{} && !(n_jets>=2 && pt_tt>200 && mjj>500) && {})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["lowboost_rho"]       = "(!{} && !(n_jets>=2 && pt_tt<200 && mjj>500) && {})".format(cats["0jet"], cats["inclusive_rho"])
 
-    mva_ggh      = '(IC_Feb13_noSVFit_fix_max_index==0)'
-    mva_jetFakes = '(IC_Feb13_noSVFit_fix_max_index==1)'
-    mva_zttEmbed = '(IC_Feb13_noSVFit_fix_max_index==2)'
+    mva_ggh      = '(IC_Feb13_fix1_max_index==0)'
+    mva_jetFakes = '(IC_Feb13_fix1_max_index==1)'
+    mva_zttEmbed = '(IC_Feb13_fix1_max_index==2)'
 
     # simplest mjj based qqH vs ggH
     cats['higgs']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
@@ -2991,7 +2993,7 @@ if is_2d and options.do_unrolling:
  
     if not isinstance(hist,ROOT.TDirectory):
       include_of = True
-      if 'dijet' in options.cat: include_of = False
+      # if 'dijet' in options.cat: include_of = False
  
       if options.symmetrise: Symmetrise(hist)
       h1d = UnrollHist2D(hist,include_of)

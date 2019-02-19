@@ -301,43 +301,47 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
-    for era in data_eras: 
-         if 'mt' in chn or 'zmm' in chn:
-           if not era == 'H':  
-               data_samples+=[   
-                'SingleMuon'+era]
-           else:
-               data_samples+=[   
-                'SingleMuon'+era+'v2']
-               data_samples+=[   
-                'SingleMuon'+era+'v3']
-         if 'et' in chn or 'zee' in chn:
-           if not era == 'H':  
-               data_samples+=[   
-                'SingleElectron'+era]
-           else:
-               data_samples+=[   
-                'SingleElectron'+era+'v2']
-               data_samples+=[   
-                'SingleElectron'+era+'v3']
-         if 'em' in chn:
-           if not era == 'H':  
-               data_samples+=[   
-                'MuonEG'+era]
-           else:
-               data_samples+=[   
-                'MuonEG'+era+'v2']
-               data_samples+=[   
-                'MuonEG'+era+'v3']
-         if 'tt' in chn:
-           if not era == 'H':  
-               data_samples+=[   
-                'Tau'+era]
-           else:
-               data_samples+=[   
-                'Tau'+era+'v2']
-               data_samples+=[   
-                'Tau'+era+'v3'] 
+    if 'tt' in chn:
+      data_samples+=["TauG","TauHv2","TauB"]
+    if 'mt' in chn:
+      data_samples+=["SingleMuonB"]
+    # for era in data_eras: 
+    #      if 'mt' in chn or 'zmm' in chn:
+    #        if not era == 'H':  
+    #            data_samples+=[   
+    #             'SingleMuon'+era]
+    #        else:
+    #            data_samples+=[   
+    #             'SingleMuon'+era+'v2']
+    #            data_samples+=[   
+    #             'SingleMuon'+era+'v3']
+    #      if 'et' in chn or 'zee' in chn:
+    #        if not era == 'H':  
+    #            data_samples+=[   
+    #             'SingleElectron'+era]
+    #        else:
+    #            data_samples+=[   
+    #             'SingleElectron'+era+'v2']
+    #            data_samples+=[   
+    #             'SingleElectron'+era+'v3']
+    #      if 'em' in chn:
+    #        if not era == 'H':  
+    #            data_samples+=[   
+    #             'MuonEG'+era]
+    #        else:
+    #            data_samples+=[   
+    #             'MuonEG'+era+'v2']
+    #            data_samples+=[   
+    #             'MuonEG'+era+'v3']
+    #      if 'tt' in chn:
+           # if not era == 'H':  
+           #     data_samples+=[   
+           #      'Tau'+era]
+           # else:
+           #     data_samples+=[   
+           #      'Tau'+era+'v2']
+           #     data_samples+=[   
+           #      'Tau'+era+'v3'] 
         
 
 
@@ -455,53 +459,53 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     #'DYJetsToLL',
-    'TT',
-    'VVTo2L2Nu',
-    'VVTo2L2Nu-ext1',
-    'ZZTo2L2Q',
-    'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
-    'WZJToLLLNu',
-    'WZTo1L3Nu',
-    'WZTo2L2Q',
-    'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
-    'T-tW',
-    'Tbar-tW',
-    'DYJetsToLL-LO-ext1',
-    'DYJetsToLL-LO-ext2',
-    'DYJetsToLL_M-10-50-LO',
-    'DY1JetsToLL-LO',
-    'DY2JetsToLL-LO',
-    'DY3JetsToLL-LO',
-    'DY4JetsToLL-LO',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W2JetsToLNu-LO-ext',
+    # 'TT',
+    # 'VVTo2L2Nu',
+    # 'VVTo2L2Nu-ext1',
+    # 'ZZTo2L2Q',
+    # 'ZZTo4L-amcat',
+    # 'WWTo1L1Nu2Q',
+    # 'WZJToLLLNu',
+    # 'WZTo1L3Nu',
+    # 'WZTo2L2Q',
+    # 'WZTo1L1Nu2Q',
+    # 'T-t',
+    # 'Tbar-t',
+    # 'T-tW',
+    # 'Tbar-tW',
+    # 'DYJetsToLL-LO-ext1',
+    # 'DYJetsToLL-LO-ext2',
+    # 'DYJetsToLL_M-10-50-LO',
+    # 'DY1JetsToLL-LO',
+    # 'DY2JetsToLL-LO',
+    # 'DY3JetsToLL-LO',
+    # 'DY4JetsToLL-LO',
+    # 'WJetsToLNu-LO',
+    # 'WJetsToLNu-LO-ext',
+    # 'W1JetsToLNu-LO',
+    # 'W2JetsToLNu-LO',
+    # 'W2JetsToLNu-LO-ext',
     'W3JetsToLNu-LO',
-    'W3JetsToLNu-LO-ext',
-    'W4JetsToLNu-LO',
-    'W4JetsToLNu-LO-ext1',
-    'W4JetsToLNu-LO-ext2',
-    'WGToLNuG',
-    'WGToLNuG-ext',
-    'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    # 'W3JetsToLNu-LO-ext',
+    # 'W4JetsToLNu-LO',
+    # 'W4JetsToLNu-LO-ext1',
+    # 'W4JetsToLNu-LO-ext2',
+    # 'WGToLNuG',
+    # 'WGToLNuG-ext',
+    # 'WGstarToLNuEE',
+    # 'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-     'EWKWMinus2Jets_WToLNu-ext1',
-     'EWKWMinus2Jets_WToLNu-ext2',
-     'EWKWMinus2Jets_WToLNu',
-     'EWKWPlus2Jets_WToLNu-ext1',
-     'EWKWPlus2Jets_WToLNu-ext2',
-     'EWKWPlus2Jets_WToLNu',
-     'EWKZ2Jets_ZToLL-ext',
-     'EWKZ2Jets_ZToLL'
+     # 'EWKWMinus2Jets_WToLNu-ext1',
+     # 'EWKWMinus2Jets_WToLNu-ext2',
+     # 'EWKWMinus2Jets_WToLNu',
+     # 'EWKWPlus2Jets_WToLNu-ext1',
+     # 'EWKWPlus2Jets_WToLNu-ext2',
+     # 'EWKWPlus2Jets_WToLNu',
+     # 'EWKZ2Jets_ZToLL-ext',
+     # 'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
