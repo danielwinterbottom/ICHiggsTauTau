@@ -575,6 +575,22 @@ namespace ic {
   ic::Candidate* GetPi0FromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
   ic::Candidate* GetPiFromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
 
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands); 
+  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
+
+  ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
+
+  template <class T>
+  TVector3 getIPVector(T *tau, Vertex *vtx){
+    TVector3 k, p, IP;
+    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
+    else IP.SetXYZ(-999, -999, -999); 
+
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 
   template <class T, class U>

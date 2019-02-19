@@ -50,71 +50,83 @@ mkdir -p -v $1/JES_CORR_UP
 mkdir -p -v $1/JES_CORR_DOWN
 mkdir -p -v $1/JES_UNCORR_UP
 mkdir -p -v $1/JES_UNCORR_DOWN
-# mkdir -p -v $1/MET_SCALE_UP
-# mkdir -p -v $1/MET_SCALE_DOWN
-# mkdir -p -v $1/MET_RES_UP
-# mkdir -p -v $1/MET_RES_DOWN
-# mkdir -p -v $1/MET_SCALE_NJETS0_DOWN
-# mkdir -p -v $1/MET_SCALE_NJETS0_UP
-# mkdir -p -v $1/MET_SCALE_NJETS1_DOWN
-# mkdir -p -v $1/MET_SCALE_NJETS1_UP
-# mkdir -p -v $1/MET_SCALE_NJETS2_DOWN
-# mkdir -p -v $1/MET_SCALE_NJETS2_UP
-# mkdir -p -v $1/MET_RES_NJETS0_DOWN
-# mkdir -p -v $1/MET_RES_NJETS0_UP
-# mkdir -p -v $1/MET_RES_NJETS1_DOWN
-# mkdir -p -v $1/MET_RES_NJETS1_UP
-# mkdir -p -v $1/MET_SCALE_NJETS2_DOWN
-# mkdir -p -v $1/MET_RES_NJETS2_DOWN
-# mkdir -p -v $1/MET_RES_NJETS2_UP
-# mkdir -p -v $1/EFAKE0PI_DOWN
-# mkdir -p -v $1/EFAKE0PI_UP
-# mkdir -p -v $1/EFAKE1PI_DOWN
-# mkdir -p -v $1/EFAKE1PI_UP
-# mkdir -p -v $1/MUFAKE0PI_DOWN
-# mkdir -p -v $1/MUFAKE0PI_UP
-# mkdir -p -v $1/MUFAKE1PI_DOWN
-# mkdir -p -v $1/MUFAKE1PI_UP
-# mkdir -p -v $1/MUSCALE_DOWN
-# mkdir -p -v $1/MUSCALE_UP
-# mkdir -p -v $1/ESCALE_DOWN
-# mkdir -p -v $1/ESCALE_UP
-# mkdir -p -v $1/METUNCL_UP
-# mkdir -p -v $1/METUNCL_DOWN
-# mkdir -p -v $1/METCL_UP
-# mkdir -p -v $1/METCL_DOWN
-# mkdir -p -v $1/JESFULL_UP
-# mkdir -p -v $1/JESFULL_DOWN
-# mkdir -p -v $1/JESCENT_UP
-# mkdir -p -v $1/JESCENT_DOWN
-# mkdir -p -v $1/JESHF_UP
-# mkdir -p -v $1/JESHF_DOWN
-# mkdir -p -v $1/JESFULL_CORR_UP
-# mkdir -p -v $1/JESFULL_CORR_DOWN
-# mkdir -p -v $1/JESCENT_CORR_UP
-# mkdir -p -v $1/JESCENT_CORR_DOWN
-# mkdir -p -v $1/JESHF_CORR_UP
-# mkdir -p -v $1/JESHF_CORR_DOWN
-# mkdir -p -v $1/JESFULL_UNCORR_UP
-# mkdir -p -v $1/JESFULL_UNCORR_DOWN
-# mkdir -p -v $1/JESCENT_UNCORR_UP
-# mkdir -p -v $1/JESCENT_UNCORR_DOWN
-# mkdir -p -v $1/JESHF_UNCORR_UP
-# mkdir -p -v $1/JESHF_UNCORR_DOWN
-# mkdir -p -v $1/JESRBAL_DOWN
-# mkdir -p -v $1/JESRBAL_UP
-# mkdir -p -v $1/JESRSAMP_DOWN
-# mkdir -p -v $1/JESRSAMP_UP
-# mkdir -p -v $1/JESFULL_CORR_UP
-# mkdir -p -v $1/JESFULL_CORR_DOWN
-# mkdir -p -v $1/JESFULL_UNCORR_UP
-# mkdir -p -v $1/JESFULL_UNCORR_DOWN
-# mkdir -p -v $1/JESCENT_CORR_UP
-# mkdir -p -v $1/JESCENT_CORR_DOWN
-# mkdir -p -v $1/JESCENT_UNCORR_UP
-# mkdir -p -v $1/JESCENT_UNCORR_DOWN
-# mkdir -p -v $1/JESHF_CORR_UP
-# mkdir -p -v $1/JESHF_CORR_DOWN
-# mkdir -p -v $1/JESHF_UNCORR_UP
-# mkdir -p -v $1/JESHF_UNCORR_DOWN
+mkdir -p -v $1/MET_SCALE_UP
+mkdir -p -v $1/MET_SCALE_DOWN
+mkdir -p -v $1/MET_RES_UP
+mkdir -p -v $1/MET_RES_DOWN
+mkdir -p -v $1/MET_SCALE_NJETS0_DOWN
+mkdir -p -v $1/MET_SCALE_NJETS0_UP
+mkdir -p -v $1/MET_SCALE_NJETS1_DOWN
+mkdir -p -v $1/MET_SCALE_NJETS1_UP
+mkdir -p -v $1/MET_SCALE_NJETS2_DOWN
+mkdir -p -v $1/MET_SCALE_NJETS2_UP
+mkdir -p -v $1/MET_RES_NJETS0_DOWN
+mkdir -p -v $1/MET_RES_NJETS0_UP
+mkdir -p -v $1/MET_RES_NJETS1_DOWN
+mkdir -p -v $1/MET_RES_NJETS1_UP
+mkdir -p -v $1/MET_SCALE_NJETS2_DOWN
+mkdir -p -v $1/MET_RES_NJETS2_DOWN
+mkdir -p -v $1/MET_RES_NJETS2_UP
+mkdir -p -v $1/EFAKE0PI_DOWN
+mkdir -p -v $1/EFAKE0PI_UP
+mkdir -p -v $1/EFAKE1PI_DOWN
+mkdir -p -v $1/EFAKE1PI_UP
+mkdir -p -v $1/MUFAKE0PI_DOWN
+mkdir -p -v $1/MUFAKE0PI_UP
+mkdir -p -v $1/MUFAKE1PI_DOWN
+mkdir -p -v $1/MUFAKE1PI_UP
+mkdir -p -v $1/MUSCALE_DOWN
+mkdir -p -v $1/MUSCALE_UP
+mkdir -p -v $1/ESCALE_DOWN
+mkdir -p -v $1/ESCALE_UP
+mkdir -p -v $1/METUNCL_UP
+mkdir -p -v $1/METUNCL_DOWN
+mkdir -p -v $1/METCL_UP
+mkdir -p -v $1/METCL_DOWN
+mkdir -p -v $1/JESFULL_UP
+mkdir -p -v $1/JESFULL_DOWN
+mkdir -p -v $1/JESCENT_UP
+mkdir -p -v $1/JESCENT_DOWN
+mkdir -p -v $1/JESHF_UP
+mkdir -p -v $1/JESHF_DOWN
+mkdir -p -v $1/JESFULL_CORR_UP
+mkdir -p -v $1/JESFULL_CORR_DOWN
+mkdir -p -v $1/JESCENT_CORR_UP
+mkdir -p -v $1/JESCENT_CORR_DOWN
+mkdir -p -v $1/JESHF_CORR_UP
+mkdir -p -v $1/JESHF_CORR_DOWN
+mkdir -p -v $1/JESFULL_UNCORR_UP
+mkdir -p -v $1/JESFULL_UNCORR_DOWN
+mkdir -p -v $1/JESCENT_UNCORR_UP
+mkdir -p -v $1/JESCENT_UNCORR_DOWN
+mkdir -p -v $1/JESHF_UNCORR_UP
+mkdir -p -v $1/JESHF_UNCORR_DOWN
+mkdir -p -v $1/JESRBAL_DOWN
+mkdir -p -v $1/JESRBAL_UP
+mkdir -p -v $1/JESRSAMP_DOWN
+mkdir -p -v $1/JESRSAMP_UP
+mkdir -p -v $1/JESFULL_CORR_UP
+mkdir -p -v $1/JESFULL_CORR_DOWN
+mkdir -p -v $1/JESFULL_UNCORR_UP
+mkdir -p -v $1/JESFULL_UNCORR_DOWN
+mkdir -p -v $1/JESCENT_CORR_UP
+mkdir -p -v $1/JESCENT_CORR_DOWN
+mkdir -p -v $1/JESCENT_UNCORR_UP
+mkdir -p -v $1/JESCENT_UNCORR_DOWN
+mkdir -p -v $1/JESHF_CORR_UP
+mkdir -p -v $1/JESHF_CORR_DOWN
+mkdir -p -v $1/JESHF_UNCORR_UP
+mkdir -p -v $1/JESHF_UNCORR_DOWN
+mkdir -p -v $1/JESBBEE1_DOWN
+mkdir -p -v $1/JESBBEE1_UP
+mkdir -p -v $1/JESBBEE1_UNCORR_DOWN
+mkdir -p -v $1/JESBBEE1_UNCORR_UP
+mkdir -p -v $1/JESBBEE1_CORR_DOWN
+mkdir -p -v $1/JESBBEE1_CORR_UP
+mkdir -p -v $1/JESEE2_DOWN
+mkdir -p -v $1/JESEE2_UP
+mkdir -p -v $1/JESEE2_UNCORR_DOWN
+mkdir -p -v $1/JESEE2_UNCORR_UP
+mkdir -p -v $1/JESEE2_CORR_DOWN
+mkdir -p -v $1/JESEE2_CORR_UP
 

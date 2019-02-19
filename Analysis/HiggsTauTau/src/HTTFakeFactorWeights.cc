@@ -444,6 +444,47 @@ namespace ic {
             std::string syst_name = "wt_"+syst;
             event->Add(syst_name+"_1", ff_syst_1);
             event->Add(syst_name+"_2", ff_syst_2);
+
+            if(syst_name.find("_frac_syst_") != std::string::npos) {
+              double w_frac_1 = tt_inputs_1[6], tt_frac_1 = tt_inputs_1[7], qcd_frac_1 = tt_inputs_1[5];
+              double w_frac_2 = tt_inputs_2[6], tt_frac_2 = tt_inputs_2[7], qcd_frac_2 = tt_inputs_2[5];
+              double w_frac_1_up = w_frac_1, tt_frac_1_up = tt_frac_1, qcd_frac_1_up = qcd_frac_1, w_frac_2_up = w_frac_2, tt_frac_2_up = tt_frac_2, qcd_frac_2_up = qcd_frac_2;
+ 
+              if(syst=="ff_w_frac_syst_up") {
+                w_frac_1_up =  (w_frac_1)*1.2;
+                qcd_frac_1_up+=w_frac_1-w_frac_1_up;
+
+                w_frac_2_up =  (w_frac_2)*1.2;
+                qcd_frac_2_up+=w_frac_2-w_frac_2_up;
+              } else if(syst=="ff_w_frac_syst_down") {
+                w_frac_1_up =  (w_frac_1)*0.8;
+                qcd_frac_1_up+=w_frac_1-w_frac_1_up;
+
+                w_frac_2_up =  (w_frac_2)*0.8;
+                qcd_frac_2_up+=w_frac_2-w_frac_2_up;
+              } else if(syst=="ff_tt_frac_syst_up") {
+                tt_frac_1_up =  (tt_frac_1)*1.2;
+                qcd_frac_1_up+=tt_frac_1-tt_frac_1_up;
+
+                tt_frac_2_up =  (tt_frac_2)*1.2;
+                qcd_frac_2_up+=tt_frac_2-tt_frac_2_up;
+
+              } else if(syst=="ff_tt_frac_syst_down") {
+                tt_frac_1_up =  (tt_frac_1)*0.8;
+                qcd_frac_1_up+=tt_frac_1-tt_frac_1_up;
+
+                tt_frac_2_up =  (tt_frac_2)*0.8;
+                qcd_frac_2_up+=tt_frac_2-tt_frac_2_up;
+              } 
+              auto tt_inputs_1_shift = tt_inputs_1;
+              auto tt_inputs_2_shift = tt_inputs_2;
+              tt_inputs_1_shift[5]=qcd_frac_1_up; tt_inputs_1_shift[6] = w_frac_1_up; tt_inputs_1_shift[7] = tt_frac_1_up;
+              tt_inputs_2_shift[5]=qcd_frac_2_up; tt_inputs_2_shift[6] = w_frac_2_up; tt_inputs_2_shift[7] = tt_frac_2_up;
+              double ff_shift_1 = fake_factors_[map_key]->value(tt_inputs_1_shift)*0.5;
+              double ff_shift_2 = fake_factors_[map_key]->value(tt_inputs_2_shift)*0.5;
+              event->Add(syst_name+"_alt_1", ff_shift_1);
+              event->Add(syst_name+"_alt_2", ff_shift_2);
+            }
           } 
         }
       }

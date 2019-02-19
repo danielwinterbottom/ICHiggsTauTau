@@ -274,8 +274,12 @@ namespace ic {
                  w_->function("e_trg_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
                 w_->function("e_trg24_fromDoubleE_data")->functor(w_->argSet("e_pt,e_eta")));
-             fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
-        	 w_->function("e_trg24_fromDoubleE_mc")->functor(w_->argSet("e_pt,e_eta")));
+              fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trg24_fromDoubleE_mc")->functor(w_->argSet("e_pt,e_eta")));
+              //fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
+              //  w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+              //fns_["e_trg24_mc"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("e_trg24_mc")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_idiso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_idiso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
               fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -690,7 +694,11 @@ namespace ic {
            fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg24_fromDoubleE_data")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_trg24_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_trg24_fromDoubleE_embed")->functor(w_->argSet("e_pt,e_eta")));
+              w_->function("e_trg24_fromDoubleE_embed")->functor(w_->argSet("e_pt,e_eta"))); 
+           //fns_["e_trg24_data"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("e_trg24_data")->functor(w_->argSet("e_pt,e_eta")));
+           //fns_["e_trg24_embed"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("e_trg24_embed")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_idiso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_idiso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
            fns_["e_iso_binned_embed_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1805,12 +1813,6 @@ namespace ic {
           if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
           else tau_trg_mc = fns_["t_trg_tight_et_embed"]->eval(args_3_nophi.data());
 
-          auto args_pt_1 = std::vector<double>{t_pt};
-          double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
-          double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
-          event->Add("trigweight_up", tau_trg_up);
-          event->Add("trigweight_down", tau_trg_down);
-
           double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
           double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
@@ -1825,10 +1827,30 @@ namespace ic {
           if(e_pt<28.) xtrg_OR_sf = xtrg_et_sf;
           if(t_pt<30.) xtrg_OR_sf = single_e_sf;
 
-          //std::cout << "----------" << std::endl;
-          //std::cout << e_pt << "    " << e_eta << "    " << e_signed_eta << "    " << t_pt << "    " << t_signed_eta <<  "    " << t_phi << std::endl;
-          //std::cout << xtrg_OR_sf << "    " << single_e_sf << "    " << xtrg_et_sf << std::endl;
-          //std::cout << ele_xtrg << "    " << ele_xtrg_mc << std::endl;
+          //auto args_pt_1 = std::vector<double>{t_pt};
+          //double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
+          //double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
+          //
+
+          double trigweight_up =  ( (ele_trg*(1-std::min(tau_trg*1.05,1.)) + ele_xtrg*std::min(tau_trg*1.05,1.))/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) )/xtrg_OR_sf;
+          double trigweight_down = ( (ele_trg*(1-tau_trg*0.95) + ele_xtrg*tau_trg*0.95)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) )/xtrg_OR_sf;
+          if(is_embedded_ && e_pt<40 && fabs(e_eta)>1.479){
+            trigweight_up =  ( ele_trg*(1-std::min(tau_trg*1.05,1.)) + ele_xtrg*std::min(tau_trg*1.05,1.) )/xtrg_OR_sf;
+            trigweight_down = ( ele_trg*(1-tau_trg*0.95) + ele_xtrg*tau_trg*0.95 )/xtrg_OR_sf;
+          }
+
+          if(t_pt<30.) {
+            trigweight_up = 1.0;
+            trigweight_down = 1.0;
+          }
+          if(e_pt<28.){
+            trigweight_up = 1.05;
+            trigweight_down = 0.95;
+          } 
+
+          event->Add("trigweight_up", trigweight_up);
+          event->Add("trigweight_down", trigweight_down);
+       
 
           // have xtrg OR as default but save others to check 
           event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_e_sf/xtrg_OR_sf);
@@ -2066,6 +2088,9 @@ namespace ic {
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else if(mc_ == mc::summer16_80X && (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16)){
+       
+                      double trigweight_up = 1.0;
+                      double trigweight_down = 1.0;
                       if(pt>=23){
                         // use signle muon trigger for pt_1>23
                         if(is_embedded_){
@@ -2080,6 +2105,8 @@ namespace ic {
                           }
                         }
                       } else {
+                        trigweight_up=1.05;
+                        trigweight_down=0.95;
                         auto t_args = std::vector<double>{t_pt,t_eta};
                         // use cross triggers for pt_1<23
                         unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
@@ -2103,6 +2130,8 @@ namespace ic {
                         }
                       }
                       // may want to add different SFs for anti-iso
+                      event->Add("trigweight_up", trigweight_up);
+                      event->Add("trigweight_down", trigweight_down);
                     }  else{
                       if(m_iso<0.15 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
                         mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
@@ -2145,12 +2174,22 @@ namespace ic {
              if(pt<25.) xtrg_OR_sf = xtrg_mt_sf;
              if(t_pt<30.) xtrg_OR_sf = single_m_sf;
 
-             auto args_pt_1 = std::vector<double>{t_pt};
-             double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
-             double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
-             event->Add("trigweight_up", tau_trg_up);
-             event->Add("trigweight_down", tau_trg_down);
-
+             //auto args_pt_1 = std::vector<double>{t_pt};
+             //double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
+             //double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data());
+             double trigweight_up = ((mu_trg*(1-std::min(tau_trg*1.05,1.)) + mu_xtrg*std::min(tau_trg*1.05,1.))/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) )/xtrg_OR_sf;
+             double trigweight_down = ((mu_trg*(1-tau_trg*0.95) + mu_xtrg*tau_trg*0.95)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) )/xtrg_OR_sf;
+             if(t_pt<30.) {
+               trigweight_up = 1.0;
+               trigweight_down = 1.0;
+             }
+             if(pt<25.){
+               trigweight_up = 1.05;
+               trigweight_down = 0.95;
+             }
+             event->Add("trigweight_up", trigweight_up);
+             event->Add("trigweight_down", trigweight_down);
+  
 
              // have xtrg OR as default but save others to check 
              event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_m_sf/xtrg_OR_sf);

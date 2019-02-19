@@ -738,7 +738,7 @@ if options.channel == 'tpzmm':
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     if options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-    if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
 
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
@@ -910,6 +910,7 @@ for name in wsnames:
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
   sig_model = 'DoubleVUncorr'
+  #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
   if not options.embed_dz or 'trg' in name:
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
