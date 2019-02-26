@@ -192,7 +192,7 @@ void ICElectronProducer::produce(edm::Event& event,
     dest.set_dphi_sc_tk_at_vtx(src.deltaPhiSuperClusterTrackAtVtx());
     dest.set_deta_sc_tk_at_vtx(src.deltaEtaSuperClusterTrackAtVtx());
     if (src.gsfTrack().isNonnull()) {
-#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
+#if CMSSW_MAJOR_VERSION > 9 || (CMSSW_MAJOR_VERSION == 9 && CMSSW_MINOR_VERSION >= 4)
       dest.set_gsf_tk_nhits(
           src.gsfTrack()->hitPattern().numberOfLostHits( //rather than numberOfAllHits
               reco::HitPattern::MISSING_INNER_HITS));
@@ -272,7 +272,7 @@ void ICElectronProducer::produce(edm::Event& event,
     }
     
     // 2017 smear and scale
-#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
+#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 
     dest.set_ecalTrkEnergyPostCorr(src.userFloat(input_postCorr_));
     dest.set_ecalTrkEnergyPreCorr(src.userFloat(input_preCorr_));
     dest.set_ecalTrkEnergyErrPostCorr(src.userFloat(input_errPostCorr_));
