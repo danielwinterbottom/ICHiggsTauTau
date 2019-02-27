@@ -60,6 +60,7 @@ defaults = {
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
+    "ff_ss_closure":False,
 }
 
 if options.cfg:
@@ -339,6 +340,9 @@ parser.add_argument("--syst_prefire", dest="syst_prefire", type=str,
     help="If set, adds systematic templates corresponding to uncertainty on pre-firing correction.")
 parser.add_argument("--syst_xtrg", dest="syst_xtrg", type=str,
     help="Do shape uncertainty corresponding to shifting the tau leg efficiency of the cross-trigger up/down by 5%")
+parser.add_argument("--ff_ss_closure", dest="ff_ss_closure", action='store_true',
+    help="If set then applies a non-closure correction to fake factor yields based on differences in SS data.")
+
 
 options = parser.parse_args(remaining_argv)   
 
@@ -1954,15 +1958,54 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
     
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
         full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2_data, OSSS, '')
-        
-        ff_total_node = SummedNode('jetFakes'+add_name)
-        f1_total_node = SummedNode('data')
-        f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
-        f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
-        f2_total_node = SummedNode('total_bkg')
-        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
-        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
-        ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
+     
+        if options.ff_ss_closure:
+          # usual OS FF
+          ff_total_node = SummedNode('jetFakes_pre'+add_name)
+          f1_total_node = SummedNode('data')
+          f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
+          f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
+          f2_total_node = SummedNode('total_bkg')
+          f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
+          f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+          #ana.nodes[nodename].AddNode(SubtractNode('jetFakes_pre'+add_name, f1_total_node, f2_total_node))
+
+          # FF for SS data
+          full_selection_1_ss = BuildCutString(wt_1, sel, ff_cat_1_data, '!os', '')
+          full_selection_2_ss = BuildCutString(wt_2, sel, ff_cat_2_data, '!os', '')
+          ff_total_node_ss = SummedNode('jetFakes_ss'+add_name)
+          f1_total_node_ss = SummedNode('data_ss')
+          f1_total_node_ss.AddNode(ana.SummedFactory('data_1_ss', data, plot_unmodified, full_selection_1_ss))
+          f1_total_node_ss.AddNode(ana.SummedFactory('data_2_ss', data, plot_unmodified, full_selection_2_ss))
+          f2_total_node_ss = SummedNode('total_bkg_ss')
+          f2_total_node_ss.AddNode(GetSubtractNode(ana,'_1_ss',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,False,True))
+          f2_total_node_ss.AddNode(GetSubtractNode(ana,'_2_ss',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,False,True))
+          den_node = SubtractNode('jetFakes_ss'+add_name, f1_total_node_ss, f2_total_node_ss)
+
+          # SS data - bkg
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel+'*(gen_match_1<6 && gen_match_2<6)',cats[cat_name]+'&&'+cats['baseline'],cats_unmodified[cat_name]+'&&'+cats['baseline'],8,1.0,False,True)
+          num_selection = BuildCutString(wt, sel, cats_unmodified[cat_name]+'&&'+cats['baseline'], '!os')
+          num_node = SubtractNode('ratio_num',
+                     ana.SummedFactory('data', data, plot_unmodified, num_selection),
+                     subtract_node)
+
+          ana.nodes[nodename].AddNode(HttQCDNode('jetFakes'+add_name,
+          f1_total_node,
+          f2_total_node,
+          1,
+          None,
+          num_node,
+          den_node))
+        else: 
+          ff_total_node = SummedNode('jetFakes'+add_name)
+          f1_total_node = SummedNode('data')
+          f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
+          f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
+          f2_total_node = SummedNode('total_bkg')
+          f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
+          f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+          ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
+
       
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = '',processes=['ggH','qqH','ZH','WminusH','WplusH']):
@@ -2530,6 +2573,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         doVVJ=False
         doTTJ=False
         if 'jetFakes' not in samples_to_skip:
+#'*((rho_id_1>=0.5)*1.15+(rho_id_1<0.5)*0.82)*((rho_id_2>=0.5)*1.15+(rho_id_2<0.5)*0.82)'
             GenerateFakeTaus(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
         
         # use existing methods to calculate background due to non-fake taus
