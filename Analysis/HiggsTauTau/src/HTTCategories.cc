@@ -929,6 +929,8 @@ namespace ic {
       outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
+      outtree_->Branch("rho_id_1", &rho_id_1_);
+      outtree_->Branch("rho_id_2", &rho_id_2_);
 
       outtree_->Branch("E_1", & E_1_);
       outtree_->Branch("E_2", & E_2_);
@@ -4940,6 +4942,9 @@ namespace ic {
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
     }
+    rho_id_1_ = event->Exists("rho_id_1") ? event->Get<double>("rho_id_1") : 1.0;
+    rho_id_2_ = event->Exists("rho_id_2") ? event->Get<double>("rho_id_2") : 1.0;
+
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);

@@ -34,39 +34,41 @@ def parse_arguments():
 def main(args):
 
     # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan29_2016/GluGluToHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
-    file1_ = ROOT.TFile.Open("/vols/cms/dw515/Offline/output/SM/Jan22/VBFHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
+    # file1_ = ROOT.TFile.Open("/vols/cms/dw515/Offline/output/SM/Jan22/VBFHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
 
     # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan28/GluGluHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
     # file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan29/GluGluToHToTauTau_M125_nospinner-2017_{}_2017.root".format(args.channel), "READ")
 
+    file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Feb25_2016_gen/GluGluToHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
+
     # tree_ = file_.Get("gen_ntuple")
-    tree1_ = file1_.Get("ntuple")
+    tree1_ = file1_.Get("gen_ntuple")
     # tree2_ = file2_.Get("gen_ntuple")
 
     if args.sign == "pos":
-        sel_  = ROOT.TCut("wt*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
-        sel_sm  = ROOT.TCut("wt*wt_cp_sm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
-        sel_ps  = ROOT.TCut("wt*wt_cp_ps*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
-        sel_mm  = ROOT.TCut("wt*wt_cp_mm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign>0)")
+        sel_   = ROOT.TCut("wt*(cp_channel==2)*(cp_sign_1>0)")
+        sel_sm = ROOT.TCut("wt*wt_cp_sm*(cp_channel==2)*(cp_sign_1>0)")
+        sel_ps = ROOT.TCut("wt*wt_cp_ps*(cp_channel==2)*(cp_sign_1>0)")
+        sel_mm = ROOT.TCut("wt*wt_cp_mm*(cp_channel==2)*(cp_sign_1>0)")
     else:
-        sel_  = ROOT.TCut("wt*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign<0)")
-        sel_sm  = ROOT.TCut("wt*wt_cp_sm*(pt_1>40 && pt_2>40)*(cp_channel==3)")
-        sel_ps  = ROOT.TCut("wt*wt_cp_ps*(pt_1>40 && pt_2>40)*(cp_channel==3)")
-        sel_mm  = ROOT.TCut("wt*wt_cp_mm*(pt_1>40 && pt_2>40)*(cp_channel==3)*(cp_sign<0)")
+        sel_   = ROOT.TCut("wt*(cp_channel==2)*(cp_sign_1<0)")
+        sel_sm = ROOT.TCut("wt*wt_cp_sm*(cp_channel==2)*(cp_sign_1<0)")
+        sel_ps = ROOT.TCut("wt*wt_cp_ps*(cp_channel==2)*(cp_sign_1<0)")
+        sel_mm = ROOT.TCut("wt*wt_cp_mm*(cp_channel==2)*(cp_sign_1<0)")
 
     hists = []
     legends = []
     h1 = ROOT.TH1D("h1","h1",20,0,6.3)
-    tree1_.Draw("aco_angle_mod>>h1", sel_sm)
+    tree1_.Draw("aco_angle_1>>h1", sel_sm)
     hists.append(h1)
-    legends.append("qqH SM")
+    legends.append("ggH SM")
 
     h2 = ROOT.TH1D("h2","h2",20,0,6.3)
-    tree1_.Draw("aco_angle_mod>>h2", sel_ps)
+    tree1_.Draw("aco_angle_1>>h2", sel_ps)
     hists.append(h2)
-    legends.append("qqH PS")
+    legends.append("ggH PS")
     
-    plotname = "VBF_reco_CP{}_tauspinner".format(args.sign)
+    plotname = "ggH_gen_mixed_CP{}".format(args.sign)
     # if args.checkSpinner:
     #     plotname = "ggH_gen_CP{}_tauspinner_check".format(args.sign)
     #     h2 = ROOT.TH1D("h2","h2",10,0,6.3)
@@ -192,7 +194,7 @@ def main(args):
             extra_pad=0.3,
             norm_hists=True,
             norm_bins=False,
-            x_title="#phi_{#rho#rho}",
+            x_title="#phi_{CP}",
             y_title="a.u.",
             plot_name=plotname,
             # plot_name="VBFH_gen_CP{}".format(args.sign),

@@ -141,7 +141,7 @@ extra_channel = {
 jes_systematics=''
 if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
- 
+
 #common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" --syst_eff_b=CMS_eff_b_13TeV --syst_fake_b=CMS_fake_b_13TeV --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" '
 
 # common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" --syst_prefire="CMS_PreFire_13TeV" '
@@ -188,10 +188,11 @@ if options.no_shape_systs:
 
 # the CP in decays datacards
 if SCHEME == 'cpdecays16':
-    VAR_INCLUSIVE_TT = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
-    VAR_0JET_TT      = "m_sv,aco_angle_mod[0,100,130,150],(14,0,6.3)"
-    VAR_BOOSTED_TT   = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
-    VAR_DIJET_TT     = "m_sv,aco_angle_mod[0,90,110,140],(14,0,6.3)"
+    VAR_INCLUSIVE_TT     = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
+    VAR_0JET_TT          = "m_sv,aco_angle_mod[0,110,150],(14,0,6.3)"
+    VAR_BOOSTED_TT       = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
+    VAR_DIJET_TT         = "m_sv,aco_angle_mod[0,90,110,140],(14,0,6.3)"
+    VAR_DIJETWIDE_TT     = "m_sv,aco_angle_mod[0,90,150],(14,0,6.3)"
 
     scheme_em = []
     scheme_et = []
@@ -200,10 +201,66 @@ if SCHEME == 'cpdecays16':
         # ("17", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
         ("17",   "0jet_rho",    "0jet_rho",  VAR_0JET_TT, ''),
         ("17",   "boosted_rho", "boosted_rho",  VAR_BOOSTED_TT, ''),
-        ("17",   "lowboost_rho", "lowboost_rho",  VAR_BOOSTED_TT, ''),
-        # ("17",   "dijet_rho",     "dijet_rho",  VAR_DIJET_TT, ''),
+        # ("17",   "dijet_rho", "dijet_rho",  VAR_DIJETWIDE_TT, ''),
         ("17",   "dijet_lowboost_rho",    "dijet_lowboost_rho",  VAR_DIJET_TT, ''),
         ("17",   "dijet_boosted_rho",     "dijet_boosted_rho",  VAR_DIJET_TT, ''),
+
+        ("17",   "0jet_rho_idg0p5",    "0jet_rho_idg0p5",  VAR_0JET_TT, ''),
+        ("17",   "boosted_rho_idg0p5",  "boosted_rho_idg0p5",  VAR_BOOSTED_TT, ''),
+        ("17",   "dijet_rho_idg0p5", "dijet_rho_idg0p5",  VAR_DIJETWIDE_TT, ''),
+        # ("17",   "dijet_lowboost_rho_idg0p5",   "dijet_lowboost_rho_idg0p5",  VAR_DIJET_TT, ''),
+        # ("17",   "dijet_boosted_rho_idg0p5",     "dijet_boosted_rho_idg0p5",  VAR_DIJET_TT, ''),
+
+        ("17",   "0jet_rho_idl0p5",    "0jet_rho_idl0p5",  VAR_0JET_TT, ''),
+        ("17",   "boosted_rho_idl0p5",  "boosted_rho_idl0p5",  VAR_BOOSTED_TT, ''),
+        ("17",   "dijet_rho_idl0p5", "dijet_rho_idl0p5",  VAR_DIJETWIDE_TT, ''),
+        # ("17",   "dijet_lowboost_rho_idl0p5",   "dijet_lowboost_rho_idl0p5",  VAR_DIJET_TT, ''),
+        # ("17",   "dijet_boosted_rho_idl0p5",     "dijet_boosted_rho_idl0p5",  VAR_DIJET_TT, ''),
+    ]
+
+    bkg_schemes = {
+        'et' : 'et_default',
+        'mt' : 'mt_with_zmm',
+        'em' : 'em_default',
+        'tt' : 'tt_default',
+    }
+    ANA = 'sm'
+
+if SCHEME == 'cpdecays16_ss':
+    VAR_INCLUSIVE_TT     = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
+
+    VAR_0JET_TT          = "m_sv,aco_angle_mod[0,110,150],(14,0,6.3)"
+    VAR_0JETIDG0p5_TT    = "m_sv,aco_angle_mod[0,115,150],(14,0,6.3)"
+    VAR_0JETIDL0p5_TT    = "m_sv,aco_angle_mod[0,115,150],(14,0,6.3)"
+
+    VAR_BOOSTED_TT       = "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)"
+
+    VAR_DIJET_TT         = "m_sv,aco_angle_mod[0,90,110,150],(14,0,6.3)"
+
+    VAR_DIJETWIDE_TT     = "m_sv,aco_angle_mod[0,90,150],(14,0,6.3)"
+
+    scheme_em = []
+    scheme_et = []
+    scheme_mt = []
+    scheme_tt = [
+        # ("17", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
+        ("8",   "0jet_rho",    "0jet_rho",  VAR_0JETIDG0p5_TT, ''),
+        ("8",   "boosted_rho", "boosted_rho",  VAR_BOOSTED_TT, ''),
+        ("8",   "dijet_rho", "dijet_rho",  VAR_DIJETWIDE_TT, ''),
+        # ("8",   "dijet_lowboost_rho",    "dijet_lowboost_rho",  VAR_DIJET_TT, ''),
+        # ("8",   "dijet_boosted_rho",     "dijet_boosted_rho",   VAR_DIJET_TT, ''),
+
+        ("8",   "0jet_rho_idg0p5",    "0jet_rho_idg0p5",  VAR_0JETIDG0p5_TT, ''),
+        ("8",   "boosted_rho_idg0p5",  "boosted_rho_idg0p5",  VAR_BOOSTED_TT, ''),
+        ("8",   "dijet_rho_idg0p5", "dijet_rho_idg0p5",  VAR_DIJETWIDE_TT, ''),
+        # ("17",   "dijet_lowboost_rho_idg0p5",   "dijet_lowboost_rho_idg0p5",  VAR_DIJET_TT, ''),
+        # ("17",   "dijet_boosted_rho_idg0p5",     "dijet_boosted_rho_idg0p5",  VAR_DIJET_TT, ''),
+
+        ("8",   "0jet_rho_idl0p5",    "0jet_rho_idl0p5",  VAR_0JETIDL0p5_TT, ''),
+        ("8",   "boosted_rho_idl0p5",  "boosted_rho_idl0p5",  VAR_BOOSTED_TT, ''),
+        ("8",   "dijet_rho_idl0p5", "dijet_rho_idl0p5",  VAR_DIJETWIDE_TT, ''),
+        # ("17",   "dijet_lowboost_rho_idl0p5",   "dijet_lowboost_rho_idl0p5",  VAR_DIJET_TT, ''),
+        # ("17",   "dijet_boosted_rho_idl0p5",     "dijet_boosted_rho_idl0p5",  VAR_DIJET_TT, ''),
     ]
 
     bkg_schemes = {
@@ -220,13 +277,24 @@ if SCHEME == 'mlcpdecays16':
     VAR_ZTTEMBED_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)"
     VAR_JETFAKES_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)"
 
+    VAR_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.3)"
+    VAR_H_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.3)"
+
     scheme_em = []
     scheme_et = []
     scheme_mt = []
     scheme_tt = [
-        ("17",   "higgs"    , "higgs"   ,  VAR_H_TT       , ''),
-        ("17",   "zttEmbed" , "zttEmbed",  VAR_ZTTEMBED_TT, ''),
-        ("17",   "jetFakes" , "jetFakes",  VAR_JETFAKES_TT, ''),
+        ("8",   "higgs"    , "higgs"   ,  VAR_H_IDG0p5_TT       , ''),
+        ("8",   "zttEmbed" , "zttEmbed",  VAR_IDG0p5_TT, ''),
+        ("8",   "jetFakes" , "jetFakes",  VAR_IDG0p5_TT, ''),
+
+        ("8",      "higgs_idg0p5"    , "higgs_idg0p5"   ,  VAR_H_IDG0p5_TT       , ''),
+        ("8",   "zttEmbed_idg0p5" , "zttEmbed_idg0p5",  VAR_IDG0p5_TT, ''),
+        ("8",   "jetFakes_idg0p5" , "jetFakes_idg0p5",  VAR_IDG0p5_TT, ''),
+
+        ("8",      "higgs_idl0p5"    , "higgs_idl0p5"   ,  VAR_H_IDG0p5_TT       , ''),
+        ("8",   "zttEmbed_idl0p5" , "zttEmbed_idl0p5",  VAR_IDG0p5_TT, ''),
+        ("8",   "jetFakes_idl0p5" , "jetFakes_idl0p5",  VAR_IDG0p5_TT, ''),
     ]
 
     bkg_schemes = {

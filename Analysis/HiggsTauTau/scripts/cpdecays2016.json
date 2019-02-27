@@ -5,7 +5,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan31_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -61,7 +61,7 @@
     "do_qcd_scale_wts": false,
     // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2016/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec05_JES_2016/",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Feb12_2016/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Feb26_2016/",
     // "output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

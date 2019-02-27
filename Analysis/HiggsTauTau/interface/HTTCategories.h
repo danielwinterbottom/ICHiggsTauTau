@@ -582,6 +582,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+
+  double rho_id_1_;
+  double rho_id_2_;
   
   double pi0_E_1_res_;
   double pi0_E_2_res_;

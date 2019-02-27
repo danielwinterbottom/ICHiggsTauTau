@@ -680,24 +680,47 @@ if options.channel == 'em':
 
 # CP in decays categories
 if options.channel == 'tt':
-    cats["inclusive_rho"] = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+    cats["inclusive_rho"]         = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+    cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
+    cats["idg0p5"]                = "(rho_id_1>0.5 && rho_id_2>0.5)"
+    cats["rho_idg0p5"]            = "{} && {}".format(cats["inclusive_rho"], cats["idg0p5"])
+    cats["rho_idl0p5"]            = "{} && !({})".format(cats["inclusive_rho"], cats["idg0p5"])
 
-    cats["0jet_rho"]           = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
-    cats["dijet_boosted_rho"]  = "(n_jets>=2 && pt_tt>200 && mjj>500 && {})".format(cats["inclusive_rho"])
-    cats["dijet_lowboost_rho"] = "(n_jets>=2 && pt_tt<200 && mjj>500 && {})".format(cats["inclusive_rho"])
-    cats["boosted_rho"]        = "(!{} && !(n_jets>=2 && pt_tt>200 && mjj>500) && {})".format(cats["0jet"], cats["inclusive_rho"])
-    cats["lowboost_rho"]       = "(!{} && !(n_jets>=2 && pt_tt<200 && mjj>500) && {})".format(cats["0jet"], cats["inclusive_rho"])
+    # cut based categories
+    cats["0jet_rho"]              = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
+    # cats["dijet_rho"]                 = "({} && {})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["dijet_boosted_rho"]     = "({} && pt_tt>100 && {})".format(cats["dijet_rho"] ,cats["inclusive_rho"])
+    cats["dijet_lowboost_rho"]    = "({} && pt_tt<100 && {})".format(cats["dijet_rho"] ,cats["inclusive_rho"])
+    cats["boosted_rho"]               = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_rho"], cats["inclusive_rho"])
 
+    cats["0jet_rho_idg0p5"]           = "({} && {})".format(cats["0jet_rho"], cats["idg0p5"])
+    # cats["dijet_boosted_rho_idg0p5"]  = "({} && {})".format(cats["dijet_boosted_rho"], cats["idg0p5"])
+    # cats["dijet_lowboost_rho_idg0p5"] = "({} && {})".format(cats["dijet_lowboost_rho"], cats["idg0p5"])
+    cats["dijet_rho_idg0p5"]          = "({} && {})".format(cats["dijet_rho"], cats["idg0p5"])
+    cats["boosted_rho_idg0p5"]        = "({} && {})".format(cats["boosted_rho"], cats["idg0p5"])
+
+    cats["0jet_rho_idl0p5"]           = "({} && !({}))".format(cats["0jet_rho"], cats["idg0p5"])
+    # cats["dijet_boosted_rho_idl0p5"]  = "({} && !({}))".format(cats["dijet_boosted_rho"], cats["idg0p5"])
+    # cats["dijet_lowboost_rho_idl0p5"] = "({} && !({}))".format(cats["dijet_lowboost_rho"], cats["idg0p5"])
+    cats["dijet_rho_idl0p5"]          = "({} && !({}))".format(cats["dijet_rho"], cats["idg0p5"])
+    cats["boosted_rho_idl0p5"]        = "({} && !({}))".format(cats["boosted_rho"], cats["idg0p5"])
+
+    # MVA multiclass categories
     mva_ggh      = '(IC_Feb13_fix1_max_index==0)'
     mva_jetFakes = '(IC_Feb13_fix1_max_index==1)'
     mva_zttEmbed = '(IC_Feb13_fix1_max_index==2)'
 
-    # simplest mjj based qqH vs ggH
-    cats['higgs']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    # cats['ggh']      = '({} && {} && mjj<500)'.format(mva_ggh, cats["inclusive_rho"])
-    # cats['qqh']      = '({} && {} && mjj>500)'.format(mva_ggh, cats["inclusive_rho"])
+    cats['higgs']    = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
     cats['zttEmbed'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
     cats['jetFakes'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+
+    cats['higgs_idg0p5']    = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_idg0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_idg0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
+
+    cats['higgs_idl0p5']    = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_idl0p5'] = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_idl0p5'] = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
   
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']: # Remove the False when finished!!!!!
@@ -3013,7 +3036,7 @@ if is_2d and options.do_unrolling:
  
     if not isinstance(hist,ROOT.TDirectory):
       include_of = True
-      # if 'dijet' in options.cat: include_of = False
+      if 'dijet' in options.cat: include_of = False
  
       if options.symmetrise: Symmetrise(hist)
       h1d = UnrollHist2D(hist,include_of)

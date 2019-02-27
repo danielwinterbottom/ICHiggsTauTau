@@ -61,9 +61,11 @@ def main(args):
     extras = ""
     if args.channel == "tt":
         plot_vars = [
+                "rho_id_1(10,0,1)",
+                "rho_id_2(10,0,1)",
                 # "IC_Feb13_fix1_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
                 # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(20,0,6.3)",
-                "aco_angle_mod(14,0,6.3)",
+                # "aco_angle_mod(14,0,6.3)",
                 # "m_1(20,0,2)",
                 # "iso_1(20,0,1)",
                 # "deep_iso_1(40,-1,1)",
@@ -127,7 +129,7 @@ def main(args):
         extras += " --split_sm_scheme  "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --ratio_range 0,2 '
-        # extras += ' --ratio_range 0.3,1.7 '
+        extras += ' --ratio_range 0.3,1.7 '
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [

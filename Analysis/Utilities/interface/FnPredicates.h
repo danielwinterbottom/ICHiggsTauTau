@@ -583,16 +583,6 @@ namespace ic {
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 
-  template <class T>
-  TVector3 getIPVector(T *tau, Vertex *vtx){
-    TVector3 k, p, IP;
-    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
-    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
-    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
-    else IP.SetXYZ(-999, -999, -999); 
-
-  ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
-
   template <class T, class U>
     void getGenRecoMatches(const std::vector<T*> & recovec,
 			   const std::vector<U*> & genvec, 

@@ -1368,7 +1368,7 @@ namespace ic {
       cp_channel_=1;
     }
 
-    /* if (rho_daughters.size()==1 && pi_daughters.size()==1){
+    if (rho_daughters.size()==1 && pi_daughters.size()==1){
         cp_channel_=2;
         //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
         //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
@@ -1390,8 +1390,11 @@ namespace ic {
         lvec2 = ConvertToLorentz(l_daughters[0].second->vector());
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
         lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
-        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
-    } */
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {l_daughters[0].first, l_daughters[0].second}),TVector3());
+    }
 
     if (rho_daughters.size()==2){
         cp_channel_=3;  
@@ -1418,6 +1421,11 @@ namespace ic {
         lvec4 = ConvertToLorentz(prho_daughters[1].first->vector());
         //cp_sign_1_ = YRho(std::vector<GenParticle*>({prho_daughters[0].first, prho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({prho_daughters[1].first, prho_daughters[1].second}),TVector3());
     } */
+    if(cp_channel_==2){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+    }
+
     if(cp_channel_!=-1 && cp_channel_==3){
       /* std::cout << "aco angle before " << aco_angle_1_ << std::endl; */
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
