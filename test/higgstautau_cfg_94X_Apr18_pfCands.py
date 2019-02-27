@@ -94,7 +94,6 @@ process.GlobalTag.globaltag = cms.string(tag)
 process.options   = cms.untracked.PSet(
     FailPath=cms.untracked.vstring("FileReadError"),
     wantSummary = cms.untracked.bool(True),
-    numberOfThreads = cms.untracked.uint32(4)
 )
 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
