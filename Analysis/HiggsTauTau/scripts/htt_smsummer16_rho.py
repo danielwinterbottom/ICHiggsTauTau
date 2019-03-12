@@ -140,7 +140,7 @@ for scale in scale_list:
     flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
  
 if analysis == 'sm':
-  CONFIG='scripts/configsm2016.json'
+  CONFIG='scripts/configsm2016cpdecay.json'
 else:
   CONFIG='scripts/config2016.json'
 if options.config != '': CONFIG = options.config
@@ -215,14 +215,14 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
     signal_mc += [
       'GluGluToHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
-      #'ZHToTauTau_M-'+mass,
-      #'WplusHToTauTau_M-'+mass,
-      #'WminusHToTauTau_M-'+mass#,
+      'ZHToTauTau_M-'+mass,
+      'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass#,
     ]
   if options.proc_sm:  
     signal_mc += [
-        #'GluGluHToWWTo2L2Nu_M-125',
-        #'VBFHToWWTo2L2Nu_M-125'
+        'GluGluHToWWTo2L2Nu_M-125',
+        'VBFHToWWTo2L2Nu_M-125'
         ]
   # add cp samples
   if options.cp_signal:
@@ -339,7 +339,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
                data_samples+=[   
                 'Tau'+era+'v3'] 
         
-
 
   DATAFILELIST="./filelists/Jan31_Data_80X"
 
@@ -469,39 +468,39 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     # 'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    # 'DYJetsToLL-LO-ext1',
-    # 'DYJetsToLL-LO-ext2',
-    # 'DYJetsToLL_M-10-50-LO',
-    # 'DY1JetsToLL-LO',
+    'DYJetsToLL-LO-ext1',
+    'DYJetsToLL-LO-ext2',
+    'DYJetsToLL_M-10-50-LO',
+    'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
-    # 'WJetsToLNu-LO',
-    # 'WJetsToLNu-LO-ext',
-    # 'W1JetsToLNu-LO',
-    # 'W2JetsToLNu-LO',
-    # 'W2JetsToLNu-LO-ext',
-    # 'W3JetsToLNu-LO',
-    # 'W3JetsToLNu-LO-ext',
+    'WJetsToLNu-LO',
+    'WJetsToLNu-LO-ext',
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W2JetsToLNu-LO-ext',
+    'W3JetsToLNu-LO',
+    'W3JetsToLNu-LO-ext',
     'W4JetsToLNu-LO',
-    # 'W4JetsToLNu-LO-ext1',
+    'W4JetsToLNu-LO-ext1',
     'W4JetsToLNu-LO-ext2',
-    # 'WGToLNuG',
-    # 'WGToLNuG-ext',
-    # 'WGstarToLNuEE',
-    # 'WGstarToLNuMuMu'
+    'WGToLNuG',
+    'WGToLNuG-ext',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-     # 'EWKWMinus2Jets_WToLNu-ext1',
-     # 'EWKWMinus2Jets_WToLNu-ext2',
-     # 'EWKWMinus2Jets_WToLNu',
-     # 'EWKWPlus2Jets_WToLNu-ext1',
-     # 'EWKWPlus2Jets_WToLNu-ext2',
-     # 'EWKWPlus2Jets_WToLNu',
-     # 'EWKZ2Jets_ZToLL-ext',
-     # 'EWKZ2Jets_ZToLL'
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
