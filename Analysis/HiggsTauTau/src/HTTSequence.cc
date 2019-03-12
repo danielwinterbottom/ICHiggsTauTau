@@ -156,7 +156,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      muon_dxy = 0.02;
      muon_dz = 0.1;
      pair_dr = 0.3;
-    if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
+    if(era_type == era::data_2015 || era_type == era::data_2016 
+            || era_type == era::data_2017 || era_type == era::data_2018){
        if(js["store_hltpaths"].asBool()){
          elec_dxy = 0.045;
          elec_dz = 0.2;
@@ -263,7 +264,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
    }
 
-   } else if (era_type == era::data_2017){
+   } else if (era_type == era::data_2017 || era_type == era::data_2018){
      min_taus = 1;
      pair_dr = 0.5;
      elec_pt = 25;
@@ -351,7 +352,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
     }
 
-   } else if(era_type == era::data_2017){
+   } else if(era_type == era::data_2017 || era_type == era::data_2018){
       muon_pt = 20.0;
       muon_eta = 2.1;
       tau_pt = 20;
@@ -539,7 +540,8 @@ void HTTSequence::BuildSequence(){
                         || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
-  if ((era_type == era::data_2016 || era_type == era::data_2017) && !is_data) real_tau_sample = true;
+  if ((era_type == era::data_2016 || era_type == era::data_2017 
+              || era_type == era::data_2018) && !is_data) real_tau_sample = true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
   if (channel == channel::em && strategy_type ==strategy::mssmsummer16){
     //Apply jet->lepton fake rates?
@@ -718,10 +720,10 @@ void HTTSequence::BuildSequence(){
     data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
     if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
   }
-  if (era_type == era::data_2017){
-    data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
-  }
-
+  if (era_type == era::data_2017) 
+      data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
+  else if (era_type == era::data_2018)
+      data_json= "input/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -829,7 +831,8 @@ void HTTSequence::BuildSequence(){
   } else{
 
   HTTPrint httPrint("HTTPrint");
-  if(era_type==era::data_2015 || era_type==era::data_2016  || era_type == era::data_2017){
+  if(era_type==era::data_2015 || era_type==era::data_2016  
+          || era_type == era::data_2017 || era_type == era::data_2018){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -1067,7 +1070,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
 
 
- if(is_embedded&&era_type != era::data_2016  && era_type != era::data_2017){
+ if(is_embedded&&era_type != era::data_2016  && era_type != era::data_2017 && era_type != era::data_2018){
   BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
@@ -1141,6 +1144,8 @@ if(strategy_type == strategy::paper2013) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 } else if (era_type == era::data_2017) {
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
+} else if (era_type == era::data_2018) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
 }
 BuildModule(jetIDFilter);
 
@@ -1162,7 +1167,11 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt"; // new one available
+    jes_input_set  = "Total";
+  }
+  if (era_type == era::data_2018) {
+    jes_input_file = "input/jec/Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1194,12 +1203,15 @@ BuildModule(jetIDFilter);
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
     } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && use_deep_csv) {
-      // update to 2017
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
     } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !use_deep_csv) {
-      // update to 2017
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2018) {
+      // update for 2018
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
@@ -1428,7 +1440,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
-       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017))){
+       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017 || era_type == era::data_2018))){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
                .set_mc(mc_type)
@@ -1486,6 +1498,7 @@ if(do_met_filters){
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
        std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
+       //if (era_type == era::data_2018) {met_filters.push_back("Flag_ecalBadCalibFilter")};
        bool pass_filters = true;
        for(unsigned i=0;i<met_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -1677,7 +1690,8 @@ if(channel != channel::wmnu) {
     .set_do_preselection(false)
     .set_MC(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
- if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
+ if(era_type == era::data_2015 || era_type == era::data_2016 
+         || era_type == era::data_2017 || era_type == era::data_2018){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
    svFitTest.set_read_svfit_mt(true);

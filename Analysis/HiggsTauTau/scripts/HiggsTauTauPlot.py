@@ -60,7 +60,7 @@ defaults = {
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
-    "ff_ss_closure":False,
+    "ff_ss_closure":False, "threePads":False,
 }
 
 if options.cfg:
@@ -342,6 +342,8 @@ parser.add_argument("--syst_xtrg", dest="syst_xtrg", type=str,
     help="Do shape uncertainty corresponding to shifting the tau leg efficiency of the cross-trigger up/down by 5%")
 parser.add_argument("--ff_ss_closure", dest="ff_ss_closure", action='store_true',
     help="If set then applies a non-closure correction to fake factor yields based on differences in SS data.")
+parser.add_argument("--threePads", dest="threePads", action='store_true',
+    help="If set then draws three pads (one ratio + additional).")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -440,7 +442,7 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era in ['smsummer16','cpsummer16','tauid2016']: 
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>50)'
+        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>40)'
         cats['baseline_aisotau1'] = '(pt_1>50 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
@@ -479,7 +481,7 @@ if options.era in ['smsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(pt_1>50 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['cpsummer17']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 #if options.era in ['cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) &&  antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -687,6 +689,8 @@ if options.channel == 'tt':
     cats["inclusive_rho"]         = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
     cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
     cats["idg0p5"]                = "(rho_id_1>0.5 && rho_id_2>0.5)"
+    cats["idgl0p5"]               = "((rho_id_1>0.5 && rho_id_2<0.5) || (rho_id_1<0.5 && rho_id_2>0.5))"
+    cats["idl0p5"]                = "(rho_id_1<0.5 && rho_id_2<0.5)"
     cats["rho_idg0p5"]            = "{} && {}".format(cats["inclusive_rho"], cats["idg0p5"])
     cats["rho_idl0p5"]            = "{} && !({})".format(cats["inclusive_rho"], cats["idg0p5"])
 
@@ -710,21 +714,34 @@ if options.channel == 'tt':
     cats["boosted_rho_idl0p5"]        = "({} && !({}))".format(cats["boosted_rho"], cats["idg0p5"])
 
     # MVA multiclass categories
-    mva_ggh      = '(IC_Feb13_fix1_max_index==0)'
-    mva_jetFakes = '(IC_Feb13_fix1_max_index==1)'
-    mva_zttEmbed = '(IC_Feb13_fix1_max_index==2)'
+    mva_ggh                  = '(IC_Feb13_fix1_max_index==0)'
+    mva_jetFakes             = '(IC_Feb13_fix1_max_index==1)'
+    mva_zttEmbed             = '(IC_Feb13_fix1_max_index==2)'
 
-    cats['higgs']    = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    cats['zttEmbed'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
-    cats['jetFakes'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+    cats['higgs']            = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
 
-    cats['higgs_idg0p5']    = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
-    cats['zttEmbed_idg0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
-    cats['jetFakes_idg0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
+    # both taus pass ID>0.5
+    cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_idg0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_idg0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
 
-    cats['higgs_idl0p5']    = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
-    cats['zttEmbed_idl0p5'] = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
-    cats['jetFakes_idl0p5'] = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
+    # one tau passes ID>0.5
+    cats['higgs_idgl0p5']    = '({} && {})'.format(cats["higgs"], cats["idgl0p5"])
+    cats['zttEmbed_idgl0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idgl0p5"])
+    cats['jetFakes_idgl0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idgl0p5"])
+
+    # both taus fail ID>0.5
+    cats['higgs_idl0p5']     = '({} && {})'.format(cats["higgs"], cats["idl0p5"])
+    cats['zttEmbed_idl0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idl0p5"])
+    cats['jetFakes_idl0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idl0p5"])
+
+    # !(both taus pass ID>0.5)
+    cats['higgs_NOTidg0p5']     = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_NOTidg0p5']  = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_NOTidg0p5']  = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
+
   
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']: # Remove the False when finished!!!!!
@@ -3225,6 +3242,7 @@ if not options.no_plot:
         options.x_blind_min,
         options.x_blind_max,
         options.ratio,
+        options.threePads,
         options.log_y,
         options.log_x,
         options.ratio_range,
@@ -3250,7 +3268,8 @@ if not options.no_plot:
         options.embedding,
         vbf_background,
         options.split_sm_scheme,
-        options.ggh_scheme
+        options.ggh_scheme,
+        options.cat,
         )
     else:    
       plotting.HTTPlotSignal(nodename, 

@@ -140,6 +140,8 @@ namespace ic {
   bool PFJetID2016(PFJet const* jet);
   // Standard particle-flow jet id for 2017
   bool PFJetID2017(PFJet const* jet);
+  // Standard particle-flow jet id for 2018
+  bool PFJetID2018(PFJet const* jet);
 
 
   // Particle-flow jet id without the HF energy in the neutral energy cut
@@ -174,12 +176,10 @@ namespace ic {
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
 
   template <class T>
-  TVector3 getIPVector(T *tau, Vertex *vtx){
+  TVector3 getIPVector(T *tau, T *decayProduct){
     TVector3 k, p, IP;
-    std::cout << tau->lead_dxy_vertex() << std::endl;
-    std::cout << tau->vx() << "    " <<  vtx->vx() << "    " <<  tau->vy() << "    " <<  vtx->vy() << "    " <<  tau->vz() << "    " <<  vtx->vz() << std::endl;
-    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
-    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    k.SetXYZ(tau->vector().X(), tau->vector().Y(), tau->vector().Z());
+    p.SetXYZ(decayProduct->vector().Px(), decayProduct->vector().Py(), decayProduct->vector().Pz());
     if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
     else IP.SetXYZ(-999, -999, -999); 
      return IP;

@@ -455,53 +455,53 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     # 'DYJetsToLL',
-    'TT',
+    # 'TT',
     'VVTo2L2Nu',
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
     'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
+    # 'WWTo1L1Nu2Q',
     'WZJToLLLNu',
-    'WZTo1L3Nu',
+    # 'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
+    # 'T-t',
+    # 'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'DYJetsToLL-LO-ext1',
-    'DYJetsToLL-LO-ext2',
-    'DYJetsToLL_M-10-50-LO',
-    'DY1JetsToLL-LO',
+    # 'DYJetsToLL-LO-ext1',
+    # 'DYJetsToLL-LO-ext2',
+    # 'DYJetsToLL_M-10-50-LO',
+    # 'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W2JetsToLNu-LO-ext',
-    'W3JetsToLNu-LO',
-    'W3JetsToLNu-LO-ext',
+    # 'WJetsToLNu-LO',
+    # 'WJetsToLNu-LO-ext',
+    # 'W1JetsToLNu-LO',
+    # 'W2JetsToLNu-LO',
+    # 'W2JetsToLNu-LO-ext',
+    # 'W3JetsToLNu-LO',
+    # 'W3JetsToLNu-LO-ext',
     'W4JetsToLNu-LO',
-    'W4JetsToLNu-LO-ext1',
+    # 'W4JetsToLNu-LO-ext1',
     'W4JetsToLNu-LO-ext2',
-    'WGToLNuG',
-    'WGToLNuG-ext',
-    'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    # 'WGToLNuG',
+    # 'WGToLNuG-ext',
+    # 'WGstarToLNuEE',
+    # 'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-     'EWKWMinus2Jets_WToLNu-ext1',
-     'EWKWMinus2Jets_WToLNu-ext2',
-     'EWKWMinus2Jets_WToLNu',
-     'EWKWPlus2Jets_WToLNu-ext1',
-     'EWKWPlus2Jets_WToLNu-ext2',
-     'EWKWPlus2Jets_WToLNu',
-     'EWKZ2Jets_ZToLL-ext',
-     'EWKZ2Jets_ZToLL'
+     # 'EWKWMinus2Jets_WToLNu-ext1',
+     # 'EWKWMinus2Jets_WToLNu-ext2',
+     # 'EWKWMinus2Jets_WToLNu',
+     # 'EWKWPlus2Jets_WToLNu-ext1',
+     # 'EWKWPlus2Jets_WToLNu-ext2',
+     # 'EWKWPlus2Jets_WToLNu',
+     # 'EWKZ2Jets_ZToLL-ext',
+     # 'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
@@ -536,13 +536,13 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20
         if 'scale' in FLATJSONPATCH:
-          nperjob = 15
+          nperjob = 5
         if 'DY' in sa and 'JetsToLL' in sa:
-          nperjob = 10
+          nperjob = 5
         if 'TT' in sa:
           nperjob = 10
           if 'scale' in FLATJSONPATCH:
-            nperjob = 15
+            nperjob = 2
 #        if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
 #          nperjob = 30
         if 'QCD' in sa:

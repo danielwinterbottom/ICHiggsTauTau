@@ -249,6 +249,37 @@ namespace ic {
     return result;
   } 
 
+  bool PFJetID2018(PFJet const* jet) {
+    // Applying JetID criteria (not JetIDLepVeto) from 
+    // https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2018
+    double eta = fabs(jet->eta());
+    bool result = false;
+    
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+    
+    if (eta <= 2.6) {
+      result = neutralFrac   < 0.90
+      && jet->neutral_em_energy_frac()    < 0.90
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1.
+      && jet->charged_had_energy_frac()   > 0.
+      && jet->charged_multiplicity()      > 0.;
+    } else if (eta <= 2.7){
+      result = neutralFrac < 0.90
+      && jet->neutral_em_energy_frac()   < 0.99
+      && jet->charged_multiplicity()     > 0.;
+    } else if(eta<=3.0){
+      result = jet->neutral_em_energy_frac() < 0.99
+      && jet->neutral_em_energy_frac()       > 0.02
+      && jet->neutral_multiplicity()         > 2;
+    }
+    else{
+      result = jet->neutral_em_energy_frac() < 0.90
+      && neutralFrac                         > 0.02
+      && jet->neutral_multiplicity()         >10;
+    }
+    return result;
+  } 
+
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),
     // Pt3050_Loose   = cms.vdouble(-0.80,-0.74,-0.68,-0.77)
@@ -2342,11 +2373,17 @@ namespace ic {
     
     TVector3 n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
     TVector3 n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
     n1 = n1.Unit();
     n2 = n2.Unit();
+    /* std::cout << "n1 unit: " << n1.Px() << n1.Py() << n1.Pz() << std::endl; */
+    /* std::cout << "n2 unit: " << n2.Px() << n2.Py() << n2.Pz() << std::endl; */
     
     double angle = acos(n1.Dot(n2));
     double sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+
+    /* std::cout << "angle: " << angle << std::endl; */
+    /* std::cout << "sign : " << sign << std::endl; */
     
     if(sign<0) angle = 2*M_PI - angle;
     return angle;

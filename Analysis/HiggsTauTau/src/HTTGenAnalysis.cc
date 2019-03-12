@@ -1245,6 +1245,7 @@ namespace ic {
     std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
+    std::vector<std::vector<GenParticle*>> a1_daughters;
     std::vector<Candidate*> tau_rhos;
     std::vector<GenParticle*> pi_daughters;
     unsigned count_taus=0;   
@@ -1255,6 +1256,7 @@ namespace ic {
         bool foundRho = false;
         bool foundPi = false;
         bool foundLep = false;
+        bool foundA1 = false;
         unsigned count_pi0 = 0;
         unsigned count_pi = 0;
         unsigned count_K = 0;
@@ -1265,6 +1267,7 @@ namespace ic {
         std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
         std::pair<GenParticle*,GenParticle*> prho = std::make_pair(new GenParticle(), new GenParticle());
         std::pair<GenParticle*,GenParticle*> lep = std::make_pair(new GenParticle(), new GenParticle());
+        std::vector<GenParticle*> a1 = {};
         GenParticle* pi = new GenParticle();
         std::vector<int> daughters = gen_particles[i]->daughters();
 
@@ -1284,11 +1287,12 @@ namespace ic {
           }
           if (daughter_id == 211) {
             ++count_pi;
-            /* std::cout << "pi charge " << gen_particles[d]->vector() << std::endl; */
+            /* std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl; */
             rho.first = gen_particles[d];
             pi = gen_particles[d];
             prho.first = pi;
             prho.second = tau;
+            a1.push_back(gen_particles[d]);
             continue;
           }
           if (daughter_id == 130 || daughter_id == 310 
@@ -1303,7 +1307,7 @@ namespace ic {
             continue;
           }
           if (daughter_id == 213) {
-            /* std::cout << "found " << daughter_id << std::endl; */
+            /* std::cout << "found 213 rho " << daughter_id << std::endl; */
             count_pi0 = 0;
             count_pi = 0;
             count_K = 0;
@@ -1335,6 +1339,7 @@ namespace ic {
         foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1);
         foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0);
         foundLep = count_lep==1;
+        foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
         if(foundRho) {
           rho_daughters.push_back(rho);
           Candidate * tauvis = new Candidate();
@@ -1348,6 +1353,8 @@ namespace ic {
         if(foundLep) {
           l_daughters.push_back(lep);
         }
+        if(foundA1)
+          a1_daughters.push_back(a1);
 
       }
     }
@@ -1376,12 +1383,57 @@ namespace ic {
         //lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
-        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
-        lvec2 = ConvertToLorentz(prho_daughters[0].second->vector());
-        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
-        lvec4 = ConvertToLorentz(prho_daughters[0].first->vector());
-        lvec2.SetT(0.);
-        //lvec4.SetT(0.);
+        // test things
+        // charge prong
+        /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
+        TVector3 IPtest = getIPVector(prho_daughters[0].second, prho_daughters[0].first); 
+        /* std::cout << "IP: " << IPtest.X() << IPtest.Y() << IPtest.Z() << std::endl; */
+        /* std::cout << "tau vector: " << prho_daughters[0].second->vector() << std::endl; */
+        /* std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << prho_daughters[0].first->vtx().vy() << prho_daughters[0].first->vtx().vz() << std::endl; */
+        /* std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << prho_daughters[0].second->vtx().vy() << prho_daughters[0].second->vtx().vz() << std::endl; */
+
+        TLorentzVector ip_vec;
+        ip_vec.SetXYZT(IPtest.X(), IPtest.Y(), IPtest.Z(), 0.);
+
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        lvec2 = ConvertToLorentz(prho_daughters[0].second->vector()); //tau
+        /* lvec2 = ip_vec; */
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(prho_daughters[0].first->vector()); //pi charge from tau
+        //
+        //
+
+        // TESTING
+        // rho first is pi charge
+        // rho second is pi zero
+        //print pdgids 
+        /* std::cout << "pdgid of pizero_rho: " << rho_daughters[0].first->pdgid() << */
+        /*     "pdgid of pi_charge_rho: " << rho_daughters[0].second->pdgid() << */ 
+        /*     "pdgid of pi_charge_tau: " << prho_daughters[0].first->pdgid() << std::endl; */
+        TVector3 boost = (lvec3 + lvec4).BoostVector();
+        lvec3.Boost(-boost); //boost pi charge
+        lvec1.Boost(-boost); //boost pi zero
+        // find unit vector for transverse neutral pion momentum
+        TVector3 qstar_perp = (lvec1.Vect() - lvec1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        /* std::cout << "qstar perp: " << qstar_perp.Px() << qstar_perp.Py() << qstar_perp.Pz() << std::endl; */
+
+        // a- part
+        //
+        lvec4.Boost(-boost);
+        ip_vec.Boost(-boost);
+        // component of ip vec perpendicular to 3-momentum of pion
+        TVector3 ip_vec_perp = (ip_vec.Vect() - ip_vec.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        /* std::cout << "IP vec perp: " << ip_vec_perp.Px() << ip_vec_perp.Py() << ip_vec_perp.Pz() << std::endl; */
+
+        /* double anglee = acos(qstar_perp.Dot(ip_vec_perp)); */
+        /* std::cout << "angle from perps: " << anglee << std::endl; */
+        /* double signn = lvec4.Vect().Unit().Dot(qstar_perp.Cross(ip_vec_perp)); */
+        /* std::cout << "sign from perps: " << signn << std::endl; */
+
+
+
+
     }
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
@@ -1391,9 +1443,7 @@ namespace ic {
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
         lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
         cp_sign_1_ = YRho(std::vector<GenParticle*>(
-                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
-                    YRho(std::vector<GenParticle*>(
-                    {l_daughters[0].first, l_daughters[0].second}),TVector3());
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
     }
 
     if (rho_daughters.size()==2){

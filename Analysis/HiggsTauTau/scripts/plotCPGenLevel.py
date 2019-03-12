@@ -39,22 +39,23 @@ def main(args):
     # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan28/GluGluHToTauTau_M-125_{}_2017.root".format(args.channel), "READ")
     # file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jan29/GluGluToHToTauTau_M125_nospinner-2017_{}_2017.root".format(args.channel), "READ")
 
-    file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Feb25_2016_gen/GluGluToHToTauTau_M-125-nospinner_{}_2016.root".format(args.channel), "READ")
+    file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/GluGluToHToTauTau_M-125-nospinner_mt_2016.root", "READ")
+    file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/DYJetsToLL_mt_2016.root", "READ")
 
     # tree_ = file_.Get("gen_ntuple")
     tree1_ = file1_.Get("gen_ntuple")
-    # tree2_ = file2_.Get("gen_ntuple")
+    tree2_ = file2_.Get("gen_ntuple")
 
     if args.sign == "pos":
-        sel_   = ROOT.TCut("wt*(cp_channel==2)*(cp_sign_1>0)")
-        sel_sm = ROOT.TCut("wt*wt_cp_sm*(cp_channel==2)*(cp_sign_1>0)")
-        sel_ps = ROOT.TCut("wt*wt_cp_ps*(cp_channel==2)*(cp_sign_1>0)")
-        sel_mm = ROOT.TCut("wt*wt_cp_mm*(cp_channel==2)*(cp_sign_1>0)")
+        sel_   = ROOT.TCut('wt*(cp_channel==2)*(cp_sign_1>0)')
+        sel_sm = ROOT.TCut('wt*wt_cp_sm*(cp_channel==2)*(cp_sign_1>0)&(higgsDecay=="{}")'.format(args.channel))
+        sel_ps = ROOT.TCut('wt*wt_cp_ps*(cp_channel==2)*(cp_sign_1>0)&(higgsDecay=="{}")'.format(args.channel))
+        sel_mm = ROOT.TCut('wt*wt_cp_mm*(cp_channel==2)*(cp_sign_1>0)&(higgsDecay=="{}")'.format(args.channel))
     else:
-        sel_   = ROOT.TCut("wt*(cp_channel==2)*(cp_sign_1<0)")
-        sel_sm = ROOT.TCut("wt*wt_cp_sm*(cp_channel==2)*(cp_sign_1<0)")
-        sel_ps = ROOT.TCut("wt*wt_cp_ps*(cp_channel==2)*(cp_sign_1<0)")
-        sel_mm = ROOT.TCut("wt*wt_cp_mm*(cp_channel==2)*(cp_sign_1<0)")
+        sel_   = ROOT.TCut('wt*(genpt_1>40&&genpt_2>40)*(cp_channel==2)*(cp_sign_1<0)')
+        sel_sm = ROOT.TCut('wt*(genpt_1>40&&genpt_2>40)*wt_cp_sm*(cp_channel==2)*(cp_sign_1<0)&(higgsDecay=="{}")'.format(args.channel))
+        sel_ps = ROOT.TCut('wt*(genpt_1>40&&genpt_2>40)*wt_cp_ps*(cp_channel==2)*(cp_sign_1<0)&(higgsDecay=="{}")'.format(args.channel))
+        sel_mm = ROOT.TCut('wt*(genpt_1>40&&genpt_2>40)*wt_cp_mm*(cp_channel==2)*(cp_sign_1<0)&(higgsDecay=="{}")'.format(args.channel))
 
     hists = []
     legends = []
@@ -67,8 +68,13 @@ def main(args):
     tree1_.Draw("aco_angle_1>>h2", sel_ps)
     hists.append(h2)
     legends.append("ggH PS")
+
+    h3 = ROOT.TH1D("h3","h3",20,0,6.3)
+    tree1_.Draw("aco_angle_1>>h3", sel_)
+    hists.append(h3)
+    legends.append("DYJetsToLL")
     
-    plotname = "ggH_gen_mixed_CP{}".format(args.sign)
+    plotname = "ggH_gen_mixed_CP{}_{}_ptcut".format(args.sign, args.channel)
     # if args.checkSpinner:
     #     plotname = "ggH_gen_CP{}_tauspinner_check".format(args.sign)
     #     h2 = ROOT.TH1D("h2","h2",10,0,6.3)
@@ -198,9 +204,9 @@ def main(args):
             y_title="a.u.",
             plot_name=plotname,
             # plot_name="VBFH_gen_CP{}".format(args.sign),
-            # custom_y_range=True,
-            # y_axis_min=0.,
-            # y_axis_max=0.25,
+            custom_y_range=True,
+            y_axis_min=0.,
+            y_axis_max=0.1,
             )
 
 if __name__ == "__main__":

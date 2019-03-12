@@ -1085,6 +1085,41 @@ def MakeRatioHist(num, den, num_err, den_err,ZeroFix=False):
         for i in xrange(1,result.GetNbinsX()+1):
             if result.GetBinContent(i) == 0 and den_fix.GetBinContent(i) == 0: result.SetBinContent(i,1)
     return result
+
+def MakePurityHist(sighist, stack, category):
+    """Make a new purity TH1 from stack(bkgs TH1s) and sighist TH1
+
+    Args:
+        hist (TH1): histogram
+
+    Returns:
+        TH1: A new TH1 containing the bin purity
+    """
+    total = sighist.Clone()
+    bkghists = stack.GetHists()
+    hist_dict = {}
+    for bkghist in bkghists:
+        # define a dict to use later
+        hist_dict[bkghist.GetName()] = bkghist
+        total.Add(bkghist.Clone())
+    fraction = 0.
+    fraction_hist = sighist.Clone()
+    for i in xrange(0, fraction_hist.GetNbinsX()+1):
+        fraction_hist.SetBinContent(i,0.)
+        fraction_hist.SetBinError(i,0.)
+    for i in xrange(1, total.GetNbinsX()+1):
+        total_content = total.GetBinContent(i)
+
+        if category == "higgs":
+            fraction = sighist.GetBinContent(i)/total_content
+        elif category == "zttEmbed":
+            fraction = hist_dict["EmbedZTT"].GetBinContent(i)/total_content
+        elif category == "jetFakes":
+            fraction = hist_dict["jetFakes"].GetBinContent(i)/total_content
+        fraction_hist.SetBinContent(i, fraction)
+        fraction_hist.SetBinError(i,np.sqrt(total_content))
+
+    return fraction_hist
 ##@}
 
 
@@ -2035,9 +2070,10 @@ def HTTPlot(nodename,
             norm_bins=True,
             channel="mt",
             blind=False,
-            x_blind_min=0,
-            x_blind_max=4000,
+            x_blind_min=-1e5,
+            x_blind_max=1e5,
             ratio=True,
+            threePads=False,
             log_y=False,
             log_x=False,
             ratio_range="0.7,1.3",
@@ -2063,7 +2099,8 @@ def HTTPlot(nodename,
             embedding=False,
             vbf_background=False,
             split_sm_scheme=False,
-            ggh_scheme="powheg"
+            ggh_scheme="powheg",
+            cat="",
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2157,11 +2194,11 @@ def HTTPlot(nodename,
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind:
         for i in range(0,total_datahist.GetNbinsX()):
-          low_edge = total_datahist.GetBinLowEdge(i+1)
-          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
-          if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
-            blind_datahist.SetBinContent(i+1,0)
-            blind_datahist.SetBinError(i+1,0)
+            low_edge = total_datahist.GetBinLowEdge(i+1)
+            high_edge = low_edge+total_datahist.GetBinWidth(i+1)
+            if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
+                blind_datahist.SetBinContent(i+1,0)
+                blind_datahist.SetBinError(i+1,0)
     if norm_bins:
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
@@ -2200,8 +2237,10 @@ def HTTPlot(nodename,
     c1 = R.TCanvas()
     c1.cd()    
     
-    if ratio:
+    if ratio and not threePads:
         pads=TwoPadSplit(0.29,0.01,0.01)
+    elif ratio and threePads:
+        pads=MultiRatioSplit([0.25,0.15],[0.,0.01],[0.01,0.01])
     else:
         pads=OnePad()
     pads[0].cd()
@@ -2212,24 +2251,54 @@ def HTTPlot(nodename,
         if x_axis_max > bkghist.GetXaxis().GetXmax(): x_axis_max = bkghist.GetXaxis().GetXmax()
     if ratio:
         if(log_x): pads[1].SetLogx(1)
-        axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
-        axish[1].GetXaxis().SetTitle(x_title)
-        axish[1].GetXaxis().SetLabelSize(0.03)
-        axish[1].GetXaxis().SetTitleSize(0.04)
-        axish[1].GetYaxis().SetNdivisions(4)
-        if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
-        else: axish[1].GetYaxis().SetTitle("Obs/Exp")
-        axish[1].GetYaxis().SetTitleOffset(1.6)
-        axish[1].GetYaxis().SetTitleSize(0.04)
-        axish[1].GetYaxis().SetLabelSize(0.03)
+        if not threePads:
+            axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+            axish[1].GetXaxis().SetTitle(x_title)
+            axish[1].GetXaxis().SetLabelSize(0.03)
+            axish[1].GetXaxis().SetTitleSize(0.04)
+            axish[1].GetYaxis().SetNdivisions(4)
+            if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
+            else: axish[1].GetYaxis().SetTitle("Obs/Exp")
+            axish[1].GetYaxis().SetTitleOffset(1.6)
+            axish[1].GetYaxis().SetTitleSize(0.04)
+            axish[1].GetYaxis().SetLabelSize(0.03)
     
-        axish[0].GetXaxis().SetTitleSize(0)
-        axish[0].GetXaxis().SetLabelSize(0)
-        if custom_x_range:
-          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:
-          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+            axish[0].GetXaxis().SetTitleSize(0)
+            axish[0].GetXaxis().SetLabelSize(0)
+            if custom_x_range:
+              axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+              axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+            if custom_y_range:
+              axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+        elif threePads:
+            axish = createAxisHists(3,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+
+            axish[1].GetYaxis().SetTitle("Obs/Exp")
+            axish[1].GetYaxis().SetTitleOffset(1.3)
+            axish[1].GetYaxis().SetTitleSize(0.03)
+            axish[1].GetYaxis().SetLabelSize(0.03)
+            axish[1].GetYaxis().SetNdivisions(4)
+
+            axish[2].GetXaxis().SetTitle(x_title)
+            axish[2].GetXaxis().SetLabelSize(0.03)
+            axish[2].GetXaxis().SetTitleSize(0.04)
+            axish[2].GetYaxis().SetNdivisions(4)
+            axish[2].GetYaxis().SetTitle("Purity")
+            axish[2].GetYaxis().SetTitleOffset(1.2)
+            axish[2].GetYaxis().SetTitleSize(0.03)
+            axish[2].GetYaxis().SetLabelSize(0.03)
+    
+            axish[0].GetXaxis().SetTitleSize(0)
+            axish[0].GetXaxis().SetLabelSize(0)
+            axish[1].GetXaxis().SetTitleSize(0)
+            axish[1].GetXaxis().SetLabelSize(0)
+            if custom_x_range:
+              axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+              axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+              axish[2].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+            if custom_y_range:
+              axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+
     else:
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[0].GetXaxis().SetTitle(x_title)
@@ -2417,6 +2486,7 @@ def HTTPlot(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
+    if "MVA" in x_title: channel_label += " {}".format(cat)
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
@@ -2563,7 +2633,16 @@ def HTTPlot(nodename,
         large_uncert_hist.SetMarkerColor(CreateTransparentColor(2,0.4))
         #if not no_large_uncerts: large_uncert_hist.Draw("e2same")
 
-        
+    if threePads:
+        purity_hist = MakePurityHist(sighist.Clone(), stack, cat)
+        pads[2].cd()
+        pads[2].SetGrid(0,1)
+        axish[2].Draw("axis")
+        axish[2].SetMinimum(0.)
+        axish[2].SetMaximum(1.)
+        purity_hist.Draw("histsame")
+
+
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
@@ -2835,7 +2914,7 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
 
-    hs.Draw("nostack e same")
+    hs.Draw("nostack same")
     
     uncert_hs = R.THStack()
     if uncert_hist is not None:
@@ -3376,7 +3455,6 @@ def HTTPlotUnrolled(nodename,
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    
 
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
@@ -3451,7 +3529,7 @@ def HTTPlotUnrolled(nodename,
         h.SetMarkerSize(0)
     
         bkg_histos.append(h)
-        
+
     stack = R.THStack("hs","")
     bkghist_blind = R.TH1F()
     for hists in bkg_histos:
@@ -3459,9 +3537,9 @@ def HTTPlotUnrolled(nodename,
           bkghist_blind = hists.Clone()
       else:
           bkghist_blind.Add(hists.Clone())
-          
+
     bkghist = R.TH1F()
-    
+
     for hists in bkg_histos:
       if norm_bins: Norm2DBins(hists)  
       stack.Add(hists.Clone())
@@ -3469,17 +3547,16 @@ def HTTPlotUnrolled(nodename,
           bkghist = hists.Clone()
       else:
           bkghist.Add(hists.Clone())
-    
-      
+
     c1 = R.TCanvas()
-    c1.cd()    
-    
+    c1.cd()
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
         pads=OnePad()
     pads[0].cd()
-    
+
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
 
@@ -3513,7 +3590,7 @@ def HTTPlotUnrolled(nodename,
         axish[0].GetXaxis().SetLabelSize(0.03)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(0.8)
@@ -3559,13 +3636,13 @@ def HTTPlotUnrolled(nodename,
                 stack.Add(s)
                 if not custom_y_range: 
                     axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-            sighist_blind.append(sighist.Clone())      
+            sighist_blind.append(sighist.Clone())
             if norm_bins: Norm2DBins(sighist)
-            stack.Draw("histsame")
+            # stack.Draw("histsame")
             sighist.SetName(signal_scheme)
             sighists.append(sighist.Clone())
             #if not sig_scheme[2]: sighist.Draw("histsame")
-        for sig in sighists: sig.Draw("histsame")
+        # for sig in sighists: sig.Draw("histsame")
             
     else:
         stack.Draw("histsame")
@@ -3617,7 +3694,7 @@ def HTTPlotUnrolled(nodename,
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          band_center = max(bin_up,bin_down) - error          
+          band_center = max(bin_up,bin_down) - error
           if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
@@ -3633,8 +3710,8 @@ def HTTPlotUnrolled(nodename,
       #Norm2DBins(error_hist)    
       #Norm2DBins(blind_datahist)
           
-    error_hist.Draw("e2same")
-    blind_datahist.Draw("E same")
+    # error_hist.Draw("e2same")
+    # blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
 
     
@@ -3683,12 +3760,13 @@ def HTTPlotUnrolled(nodename,
     # replace commented with uncommented/vice versa to plot ratio of signal hists
     # for comparison of ggH signal shapes
     if ratio:
-        ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
-        blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+        # ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
+        # blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
 
         sighist_ratios = []
-        ks_scores = []
+        # ks_scores = []
         for sighist in sighists:
+            print(sighist)
             sighist_ratio = MakeRatioHist(sighist.Clone(),sighists[0].Clone(),True,False)
             sighist_ratio.SetMarkerSize(0)
             # if sighist != sighists[0]:
@@ -3702,20 +3780,20 @@ def HTTPlotUnrolled(nodename,
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
 
-        #sighist_ratios[0].Draw("e0same")
-        #if len(sighist_ratios) > 1: 
-        #  sighist_ratios[1].SetLineColor(R.kOrange-5)
-        #  sighist_ratios[1].DrawCopy("e0same")
-        #if len(sighist_ratios) > 1:
+        pads[0].cd()
 
-        #  sighist_ratios[2].SetLineColor(R.kGreen+3)
-        #  sighist_ratios[2].DrawCopy("e0same")
+        if len(sighist_ratios) >= 1:
+            sighist_ratios[0].SetLineColor(R.kRed)
+            sighist_ratios[0].DrawCopy("e0same")
+        if len(sighist_ratios) >= 2:
+            sighist_ratios[1].SetLineColor(R.kGreen+3)
+            sighist_ratios[1].DrawCopy("e0same")
 
 
-        ratio_bkghist.SetMarkerSize(0)
-        ratio_bkghist.Draw("e2same")
-        blind_ratio.DrawCopy("e0same")
-        pads[1].RedrawAxis("G")
+        # ratio_bkghist.SetMarkerSize(0)
+        # ratio_bkghist.Draw("e2same")
+        # blind_ratio.DrawCopy("e0same")
+        # pads[1].RedrawAxis("G")
         
     pads[0].cd()
     pads[0].GetFrame().Draw()
@@ -3767,7 +3845,7 @@ def HTTPlotUnrolled(nodename,
                 y_bin_label = '%s #geq %.2f %s' % (var,ymin,unit)
             else: 
                 y_bin_label = '%.2f #leq %s < %.2f %s' % (ymin,var,ymax,unit)
-        if "tau decay mode" in var and Nybins == 3:
+        if "tau_decay_mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
           if i == 2: y_bin_label = "3 prong"
@@ -3775,7 +3853,7 @@ def HTTPlotUnrolled(nodename,
         if Nybins > 5: 
             xshift = 0.76/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
-        
+
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
