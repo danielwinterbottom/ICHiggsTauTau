@@ -19,10 +19,24 @@ namespace ic {
 
 
   int RhoIDEmbedder::PreAnalysis() {
-    //if(fs_){  
-    //  outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
-    //  outtree_->Branch("wt"       , &wt_       );
-    //}
+    if(fs_){  
+      outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
+      outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("Ngammas"    , &var11 );
+      outtree_->Branch("Egamma1"    , &var0 );
+      outtree_->Branch("Egamma2"    , &var1 );
+      outtree_->Branch("Egamma3"    , &var2 );
+      outtree_->Branch("Egamma4"    , &var3 );
+      outtree_->Branch("Epi"        , &var4 );
+      outtree_->Branch("Mpi0"       , &var5 );
+      outtree_->Branch("Mrho"       , &var6 );
+      outtree_->Branch("dphi"       , &var10 );
+      outtree_->Branch("dEta"       , &var9 );
+      outtree_->Branch("gammas_dEta", &var7 );
+      outtree_->Branch("gammas_dphi", &var8 );
+      outtree_->Branch("pt"         , &var13 );
+      outtree_->Branch("eta"        , &var12 );
+    }
     reader_ = new TMVA::Reader();
     TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
   
@@ -150,6 +164,8 @@ namespace ic {
         event->Add("rho_id_1", score1);
       } 
     }
+
+    if(fs_) outtree_->Fill();
 
     return 0;
   }
