@@ -21,6 +21,8 @@ namespace ic {
   int RhoIDEmbedder::PreAnalysis() {
     if(fs_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
+      outtree_->Branch("tauFlag1"    , &tauFlag1_ );     
+      outtree_->Branch("tauFlag2"    , &tauFlag2_ );
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("Ngammas_1"    , &Ngammas_1_ );
       outtree_->Branch("Egamma1_1"    , &Egamma1_1_ );
@@ -92,6 +94,9 @@ namespace ic {
     std::vector<ic::PFCandidate*> gammas2;
     std::pair<ic::Candidate*, ic::Candidate*> rho_1; 
     std::pair<ic::Candidate*, ic::Candidate*> rho_2;
+
+    if (event->Exists("tauFlag1")) tauFlag1_ = event->Get<int>("tauFlag1");
+    if (event->Exists("tauFlag2")) tauFlag2_ = event->Get<int>("tauFlag2");
 
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
