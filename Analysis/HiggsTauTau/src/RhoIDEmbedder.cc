@@ -21,9 +21,11 @@ namespace ic {
   int RhoIDEmbedder::PreAnalysis() {
     if(fs_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
-      outtree_->Branch("tauFlag1"    , &tauFlag1_ );     
-      outtree_->Branch("tauFlag2"    , &tauFlag2_ );
-      outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("tauFlag1"     , &tauFlag1_ );     
+      outtree_->Branch("tauFlag2"     , &tauFlag2_ );
+      outtree_->Branch("gen_match_1"  , &gen_match_1_);
+      outtree_->Branch("gen_match_2"  , &gen_match_2_);
+      outtree_->Branch("wt"           , &wt_       );
       outtree_->Branch("Ngammas_1"    , &Ngammas_1_ );
       outtree_->Branch("Egamma1_1"    , &Egamma1_1_ );
       outtree_->Branch("Egamma2_1"    , &Egamma2_1_ );
@@ -97,6 +99,9 @@ namespace ic {
 
     if (event->Exists("tauFlag1")) tauFlag1_ = event->Get<int>("tauFlag1");
     if (event->Exists("tauFlag2")) tauFlag2_ = event->Get<int>("tauFlag2");
+
+    if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+    if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
 
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);

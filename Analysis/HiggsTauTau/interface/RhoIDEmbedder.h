@@ -41,6 +41,8 @@ class RhoIDEmbedder : public ModuleBase {
 
   double tauFlag1_;
   double tauFlag2_;
+  double gen_match_1_;
+  double gen_match_2_;
   double Etau_1_;
   double Etau_2_;
   double rho_dEta_1_;
