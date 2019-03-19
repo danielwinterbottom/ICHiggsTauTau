@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Feb19_MC_102X'
+config.General.workArea='Feb27_MC_102X'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Nov18.py'
 config.JobType.pluginName = 'Analysis'
@@ -12,18 +12,24 @@ config.JobType.maxMemoryMB = 2500
 CfgParams = ['isData=0', 'globalTag=102X_upgrade2018_realistic_v15']
 config.JobType.allowUndistributedCMSSW = True
 # for deep tau need the next line
-config.JobType.scriptExe = 'submitCrabDeepTau.sh'
+# config.JobType.scriptExe = 'submitCrabDeepTau.sh'
 
-config.Data.unitsPerJob = 240 # for automatic 
-config.Data.splitting = 'Automatic'
-# config.Data.unitsPerJob = 100000
-# config.Data.splitting = 'EventAwareLumiBased'
+# config.Data.unitsPerJob = 240 # for automatic
+# config.Data.splitting = 'Automatic'
+config.Data.unitsPerJob = 100000
+config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Feb19_MC_102X/'
+config.Data.outLFNDirBase='/store/user/adow/Feb27_MC_102X/'
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 
 config.Site.storageSite = 'T2_UK_London_IC'
+
+config.Debug.extraJDL = [
+    '+DESIRED_Sites="T3_UK_Opportunistic"',
+    '+JOB_CMSSite="T3_UK_Opportunistic"',
+    '+AccountingGroup="highprio.adowot"'
+]
 
 if __name__ == '__main__':
 
@@ -48,7 +54,7 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('DYJetsToLL', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM')) 
+    tasks.append(('DYJetsToLL', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('DYJetsToLL_M-10-50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
@@ -77,7 +83,7 @@ if __name__ == '__main__':
 
     tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     # not found
-    # tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM')) 
+    # tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     # tasks.append(('WWTo4Q', '/WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     # tasks.append(('WWToLNuQQ', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     # tasks.append(('WWToLNuQQ-ext', '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'))
@@ -100,7 +106,7 @@ if __name__ == '__main__':
     tasks.append(('VBFHToTauTau_M-125-ext1', '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v1/MINIAODSIM'))
     tasks.append(('ZHToTauTau_M-125', '/ZHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('WminusHToTauTau_M-125', '/WminusHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
-    tasks.append(('WplusHToTauTau_M-125', '/WplusHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM')) 
+    tasks.append(('WplusHToTauTau_M-125', '/WplusHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
 
 
     # tasks.append(('GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
@@ -125,7 +131,7 @@ if __name__ == '__main__':
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
- 
+
         if "DY4JetsToLL-LO" in task[0]:
           # talk to DBS to get list of files in this dataset
           from dbs.apis.dbsClient import DbsApi
@@ -144,17 +150,21 @@ if __name__ == '__main__':
           config.Data.inputDataset = None
         else:
           config.Data.inputDataset = task[1]
-          config.Data.unitsPerJob = 240 # for automatic 
-          config.Data.splitting = 'Automatic'
-          # config.Data.unitsPerJob = 100000
-          # config.Data.splitting = 'EventAwareLumiBased'
+          # config.Data.unitsPerJob = 240 # for automatic
+          # config.Data.splitting = 'Automatic'
+
+          config.Data.unitsPerJob = 100000
+          config.Data.splitting = 'EventAwareLumiBased'
+
+          # config.Data.splitting = 'FileBased'
+          # config.Data.unitsPerJob = 1
           config.Data.userInputFiles = None
-            
+
         if "HToTauTau" in task[0]:
             config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1']
             if 'amcatnloFXFX' in task[0]: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','includenpNLO=True','doHT=1']
         else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
-            
+
         if ("DY" in task[0] and "JetsToLL-LO" in task[0]) or ("W" in task[0] and "JetsToLNu-LO" in task[0]):
             config.JobType.pyCfgParams = CfgParams + ['doHT=1']
 
@@ -164,7 +174,7 @@ if __name__ == '__main__':
             config.JobType.pyCfgParams = CfgParams
         print config.Data.unitsPerJob
         print config.Data.splitting
-        
+
         print(config)
         submit(config)
 
