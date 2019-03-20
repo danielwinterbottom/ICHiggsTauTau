@@ -40,6 +40,7 @@ namespace ic {
       outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_ );
       outtree_->Branch("pt_1"         , &pt_1_ );
       outtree_->Branch("eta_1"        , &eta_1_ );
+      outtree_->Branch("Etau_1"       , &Etau_1_);
       outtree_->Branch("Ngammas_2"    , &Ngammas_2_ );
       outtree_->Branch("Egamma1_2"    , &Egamma1_2_ );
       outtree_->Branch("Egamma2_2"    , &Egamma2_2_ );
@@ -54,6 +55,7 @@ namespace ic {
       outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_ );
       outtree_->Branch("pt_2"         , &pt_2_ );
       outtree_->Branch("eta_2"        , &eta_2_ );
+      outtree_->Branch("Etau_2"       , &Etau_2_); 
 
     }
     reader_ = new TMVA::Reader();
@@ -187,11 +189,11 @@ namespace ic {
         // variables for leading tau
 
         Ngammas_1_     = gammas1.size();       
-        Egamma1_1_     = Egamma1_1_/Etau_1_;  
-        Egamma2_1_     = Egamma2_1_/Etau_1_;  
-        Egamma3_1_     = Egamma3_1_/Etau_1_;   
-        Egamma4_1_     = Egamma4_1_/Etau_1_;   
-        Epi_1_         = Epi_1_/Etau_1_;
+        Egamma1_1_     = Egamma1_1_///Etau_1_;  
+        Egamma2_1_     = Egamma2_1_///Etau_1_;  
+        Egamma3_1_     = Egamma3_1_///Etau_1_;   
+        Egamma4_1_     = Egamma4_1_///Etau_1_;   
+        Epi_1_         = Epi_1_///Etau_1_;
         Mpi0_1_        = Mpi0_1_;   
         Mrho_1_        = Mrho_1_; 
         dphi_1_        = rho_dphi_1_; 
@@ -204,10 +206,10 @@ namespace ic {
         // variables for subleading tau
 
         Ngammas_2_     = gammas2.size();
-        Egamma1_2_     = Egamma1_2_/Etau_2_;
-        Egamma2_2_     = Egamma2_2_/Etau_2_;
-        Egamma3_2_     = Egamma3_2_/Etau_2_;
-        Egamma4_2_     = Egamma4_2_/Etau_2_;
+        Egamma1_2_     = Egamma1_2_///Etau_2_;
+        Egamma2_2_     = Egamma2_2_///Etau_2_;
+        Egamma3_2_     = Egamma3_2_///Etau_2_;
+        Egamma4_2_     = Egamma4_2_///Etau_2_;
         Epi_2_         = Epi_2_/Etau_2_;
         Mpi0_2_        = Mpi0_2_;
         Mrho_2_        = Mrho_2_;
