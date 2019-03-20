@@ -1556,6 +1556,15 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsEle_vvtight_2_;
   //
 
+  double primary_vtx_x_;
+  double primary_vtx_y_;
+  double primary_vtx_z_;
+  double tau_svx_1_;
+  double tau_svy_1_;
+  double tau_svz_1_;
+  double tau_svx_2_;
+  double tau_svy_2_;
+  double tau_svz_2_;
 
 
  public:

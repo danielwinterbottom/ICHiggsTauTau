@@ -304,6 +304,13 @@ namespace ic {
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("pT_A", &pT_A_);
+
+      outtree_->Branch("reco_pvx", &reco_pvx_);
+      outtree_->Branch("reco_pvy", &reco_pvy_);
+      outtree_->Branch("reco_pvz", &reco_pvz_);
+      outtree_->Branch("gen_pvx",  &gen_pvx_);
+      outtree_->Branch("gen_pvy",  &gen_pvy_);
+      outtree_->Branch("gen_pvz",  &gen_pvz_);
       
     }
     count_ee_ = 0;
@@ -1377,6 +1384,7 @@ namespace ic {
 
     if (rho_daughters.size()==1 && pi_daughters.size()==1){
         cp_channel_=2;
+        std::cout << "cp channel: " << cp_channel_ << std::endl;
         //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
         //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
         //lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
@@ -1386,21 +1394,36 @@ namespace ic {
         // test things
         // charge prong
         /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
-        TVector3 IPtest = getIPVector(prho_daughters[0].second, prho_daughters[0].first); 
-        /* std::cout << "IP: " << IPtest.X() << IPtest.Y() << IPtest.Z() << std::endl; */
-        /* std::cout << "tau vector: " << prho_daughters[0].second->vector() << std::endl; */
-        /* std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << prho_daughters[0].first->vtx().vy() << prho_daughters[0].first->vtx().vz() << std::endl; */
-        /* std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << prho_daughters[0].second->vtx().vy() << prho_daughters[0].second->vtx().vz() << std::endl; */
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++)
+          std::cout << "vertex " << i << " " << vertex_vec[i]->vx() << " " << vertex_vec[i]->vy() << " " << vertex_vec[i]->vz() << std::endl;
+        reco_pvx_ = vertex_vec[0]->vx();
+        reco_pvy_ = vertex_vec[0]->vy();
+        reco_pvz_ = vertex_vec[0]->vz();
+        std::cout << "genv : " << gen_vertices[0]->vx() << " " << gen_vertices[0]->vy() << " " << gen_vertices[0]->vz() << std::endl;
+        gen_pvx_ = gen_vertices[0]->vx();
+        gen_pvy_ = gen_vertices[0]->vy();
+        gen_pvz_ = gen_vertices[0]->vz();
 
-        TLorentzVector ip_vec;
-        ip_vec.SetXYZT(IPtest.X(), IPtest.Y(), IPtest.Z(), 0.);
+        TVector3 IPtest = getIPVector(prho_daughters[0].second);
+        std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl;
+        /* std::cout << "tau vector: " << prho_daughters[0].second->vector() << std::endl; */
+        std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << " " << prho_daughters[0].first->vtx().vy() << " " << prho_daughters[0].first->vtx().vz() << std::endl;
+        std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << " " << prho_daughters[0].second->vtx().vy() << " " << prho_daughters[0].second->vtx().vz() << std::endl;
+
+        TLorentzVector ip_vec(
+                prho_daughters[0].first->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
+                prho_daughters[0].first->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
+                prho_daughters[0].first->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
+                0.);
 
 
         lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
-        lvec2 = ConvertToLorentz(prho_daughters[0].second->vector()); //tau
-        /* lvec2 = ip_vec; */
+        /* lvec2 = ConvertToLorentz(prho_daughters[0].second->vector()); //tau */
+        lvec2 = ip_vec;
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
-        lvec4 = ConvertToLorentz(prho_daughters[0].first->vector()); //pi charge from tau
+        lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
         //
         //
 
@@ -1411,35 +1434,41 @@ namespace ic {
         /* std::cout << "pdgid of pizero_rho: " << rho_daughters[0].first->pdgid() << */
         /*     "pdgid of pi_charge_rho: " << rho_daughters[0].second->pdgid() << */ 
         /*     "pdgid of pi_charge_tau: " << prho_daughters[0].first->pdgid() << std::endl; */
-        TVector3 boost = (lvec3 + lvec4).BoostVector();
-        lvec3.Boost(-boost); //boost pi charge
-        lvec1.Boost(-boost); //boost pi zero
+        /* TVector3 boost = (lvec3 + lvec4).BoostVector(); */
+        /* lvec3.Boost(-boost); //boost pi charge */
+        /* lvec1.Boost(-boost); //boost pi zero */
         // find unit vector for transverse neutral pion momentum
-        TVector3 qstar_perp = (lvec1.Vect() - lvec1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        /* TVector3 qstar_perp = (lvec1.Vect() - lvec1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit(); */
         /* std::cout << "qstar perp: " << qstar_perp.Px() << qstar_perp.Py() << qstar_perp.Pz() << std::endl; */
 
         // a- part
         //
-        lvec4.Boost(-boost);
-        ip_vec.Boost(-boost);
+        /* lvec4.Boost(-boost); */
+        /* ip_vec.Boost(-boost); */
         // component of ip vec perpendicular to 3-momentum of pion
-        TVector3 ip_vec_perp = (ip_vec.Vect() - ip_vec.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        /* TVector3 ip_vec_perp = (ip_vec.Vect() - ip_vec.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit(); */
         /* std::cout << "IP vec perp: " << ip_vec_perp.Px() << ip_vec_perp.Py() << ip_vec_perp.Pz() << std::endl; */
 
         /* double anglee = acos(qstar_perp.Dot(ip_vec_perp)); */
         /* std::cout << "angle from perps: " << anglee << std::endl; */
         /* double signn = lvec4.Vect().Unit().Dot(qstar_perp.Cross(ip_vec_perp)); */
         /* std::cout << "sign from perps: " << signn << std::endl; */
-
-
-
-
     }
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
-        cp_channel_=2;
+        cp_channel_=4;
+        std::cout << "cp channel: " << cp_channel_ << std::endl;
+        /* TVector3 IPtest = getIPVector(l_daughters[0].second); */
+        TLorentzVector ip_vec(
+                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
+                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
+                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
+                0.);
+        /* std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl; */
+
         lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
-        lvec2 = ConvertToLorentz(l_daughters[0].second->vector());
+        /* lvec2 = ConvertToLorentz(l_daughters[0].second->vector()); */
+        lvec2 = ip_vec;
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
         lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
         cp_sign_1_ = YRho(std::vector<GenParticle*>(
@@ -1471,8 +1500,16 @@ namespace ic {
         lvec4 = ConvertToLorentz(prho_daughters[1].first->vector());
         //cp_sign_1_ = YRho(std::vector<GenParticle*>({prho_daughters[0].first, prho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({prho_daughters[1].first, prho_daughters[1].second}),TVector3());
     } */
-    if(cp_channel_==2){
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+    if(cp_channel_==2 || cp_channel_==4){
+      bool doAnti = false;
+      if (cp_channel_ == 2) {
+        doAnti = pi_daughters[0]->pdgid() > 0 ? true : false;
+      }
+      else if (cp_channel_ == 4){
+        doAnti = l_daughters[0].first->pdgid() < 0 ? true : false;
+      }
+
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false,true,doAnti);    
       aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
     }
 

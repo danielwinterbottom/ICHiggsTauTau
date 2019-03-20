@@ -454,18 +454,18 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     # 'DYJetsToLL',
-    # 'TT',
+    'TT',
     'VVTo2L2Nu',
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
     'ZZTo4L-amcat',
-    # 'WWTo1L1Nu2Q',
+    'WWTo1L1Nu2Q',
     'WZJToLLLNu',
-    # 'WZTo1L3Nu',
+    'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
-    # 'T-t',
-    # 'Tbar-t',
+    'T-t',
+    'Tbar-t',
     'T-tW',
     'Tbar-tW',
     'DYJetsToLL-LO-ext1',
@@ -539,7 +539,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
         if 'DY' in sa and 'JetsToLL' in sa:
           nperjob = 5
         if 'TT' in sa:
-          nperjob = 10
+          nperjob = 5
           if 'scale' in FLATJSONPATCH:
             nperjob = 2
 #        if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
@@ -588,7 +588,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 10
+        nperjob = 5
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())

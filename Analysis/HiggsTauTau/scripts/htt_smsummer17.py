@@ -153,7 +153,7 @@ if options.proc_sm or options.proc_all:
         # 'SUSYGluGluToHToTauTau_M-120',
         # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
-        # 'GluGluToHToTauTau_M125_nospinner-2017',
+        'GluGluToHToTauTau_M125_nospinner-2017',
         # 'VBFHToTauTau_M125_nospinner-2017',
 
         # 'GluGluHToTauTau_M-125',
@@ -161,7 +161,7 @@ if options.proc_sm or options.proc_all:
         # 'GluGluHToMaxmixTauTau_GEN',
 
         # 'GluGluHToTauTau_M-125-ext',
-        'GluGluHToTauTau_M-125',
+        # 'GluGluHToTauTau_M-125',
         # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
         # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
@@ -415,7 +415,7 @@ if options.mg_signal or options.proc_sm:
       SIG_DIR = SIG_FILELIST.split('/')[1]
     elif 'nospinner' in sa:
       user='adow'
-      SIG_FILELIST = 'filelists/Jan27_MC_94X'
+      SIG_FILELIST = 'filelists/Jan31_MC_94X'
       SIG_DIR = SIG_FILELIST.split('/')[1]
     else:
       user='adow'
@@ -423,6 +423,10 @@ if options.mg_signal or options.proc_sm:
       SIG_DIR = SIG_FILELIST.split('/')[1]
     JOB='%s_2017' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+    if "nospinner" in sa and "GluGlu" in sa:
+        JSONPATCH = JSONPATCH.replace(r"pileup_2017_%(sa)s"%vars(),r"pileup_2017_GluGluHToTauTau_M-125")
+    if "nospinner" in sa and "VBF" in sa:
+        JSONPATCH = JSONPATCH.replace(r"pileup_2017_%(sa)s"%vars(),r"pileup_2017_VBFHToTauTau_M-125")
 
     job_num=0
     for FLATJSONPATCH in flatjsons:

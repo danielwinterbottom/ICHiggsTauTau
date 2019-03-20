@@ -354,6 +354,13 @@ class HTTGenAnalysis : public ModuleBase {
   double pi0_ESmeared_2_;
   double pi_ESmeared_1_;
   double pi_ESmeared_2_;
+
+  double reco_pvx_;
+  double reco_pvy_;
+  double reco_pvz_;
+  double gen_pvx_;
+  double gen_pvy_;
+  double gen_pvz_;
   
  public:
   HTTGenAnalysis(std::string const& name);

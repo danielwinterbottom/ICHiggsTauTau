@@ -77,6 +77,9 @@ class RhoIDEmbedder : public ModuleBase {
   double pt_2_;
   double eta_2_;
 
+  int tauFlag1_;
+  int tauFlag2_;
+
   
 
 };

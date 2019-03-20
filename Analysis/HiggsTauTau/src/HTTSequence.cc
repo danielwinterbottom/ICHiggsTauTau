@@ -2387,7 +2387,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 
   }
 
-  if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+  if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) && channel!=channel::wmnu){
     TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
   
     HTTWeights httWeights = HTTWeights("HTTWeights")   
@@ -2462,6 +2462,78 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
        BuildModule(httStitching);   
      }
    }
+// adding 2018 stitching
+//
+  if((strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
+  
+    HTTWeights httWeights = HTTWeights("HTTWeights")   
+     .set_channel(channel)
+     .set_era(era_type)
+     .set_mc(mc_type)
+     .set_do_tau_id_weights(real_tau_sample)
+     .set_do_tau_id_sf(real_tau_sample && !js["do_mt_tagandprobe"].asBool())
+     .set_do_jlepton_fake(jlepton_fake)
+     .set_do_em_qcd_weights(true)
+     .set_ditau_label("ditau")
+     .set_jets_label(jets_label)
+     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
+     .set_do_cross_trg(js["do_leptonplustau"].asBool())
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
+     httWeights.set_strategy(strategy_type);
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v3.root");
+     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
+     httWeights.set_is_embedded(is_embedded);
+     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
+   if (!is_data ) {
+     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
+     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
+     if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
+   }
+  
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
+     httWeights.set_do_zpt_weight(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+   }
+  
+   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+     httWeights.set_do_tau_fake_weights(true);
+   }
+   
+  
+     BuildModule(httWeights);
+     /*if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+       HTTStitching httStitching = HTTStitching("HTTStitching")  
+           .set_era(era_type)
+           .set_fs(fs.get())
+           .set_do_ggH_soup(do_ggH_stitch);
+            httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+            if (output_name.find("WJetsToLNu-LO") != output_name.npos  || 
+                output_name.find("W1JetsToLNu-LO") != output_name.npos || 
+                output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+                output_name.find("W3JetsToLNu-LO") != output_name.npos || 
+                output_name.find("W4JetsToLNu-LO") != output_name.npos){
+             httStitching.set_do_w_soup(true);
+             // W numbers need updating
+             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+             httStitching.SetWInputYields(66386958.0,51047866.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
+          }
+          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
+                      && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+            httStitching.set_do_dy_soup(true);
+            // DY XS's are relative to the inclusive XS
+            httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+            httStitching.SetDYInputYields(34955045.0,68852433.0,20441071.0,5646595.0,2790780.0); // correspond to params Mar18
+          }
+       
+       BuildModule(httStitching);   
+     }*/
+   }
+///
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -2528,9 +2600,12 @@ bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_nam
 bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-BuildModule(RhoIDEmbedder("RhoIDEmbedder")
-    .set_fs(fs.get())
-    .set_channel(channel));
+
+if (strategy_type != strategy::cpdecays18) {
+  BuildModule(RhoIDEmbedder("RhoIDEmbedder")
+      .set_fs(fs.get())
+      .set_channel(channel));
+}
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)

@@ -54,10 +54,10 @@ namespace ic {
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
-    } else if (era_ == era::data_2017) {
+    } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) {
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PFMET_2017.root";
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root";
-    } else if (era_ == era::data_2018) {
+    } else if (strategy_ == strategy::cpdecays18) {
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2018.root";
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root"; // update when available
     } else{

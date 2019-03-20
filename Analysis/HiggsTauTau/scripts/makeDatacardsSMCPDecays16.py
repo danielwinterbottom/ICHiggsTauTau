@@ -244,7 +244,12 @@ if SCHEME == 'cpdecays16_ss':
 
     scheme_em = []
     scheme_et = []
-    scheme_mt = []
+    scheme_mt = [
+        ("12",   "0jet_mixed",    "0jet_mixed",  VAR_0JET_TT, ' --set_alias="sel:mt_1<50" '),
+        ("12",   "boosted_mixed", "boosted_mixed",  VAR_BOOSTED_TT, ' --set_alias="sel:mt_1<50" '),
+        ("12",   "dijet_lowboost_mixed",    "dijet_lowboost_mixed",  VAR_DIJET_TT, ' --set_alias="sel:mt_1<50" '),
+        ("12",   "dijet_boosted_mixed",      "dijet_boosted_mixed",   VAR_DIJET_TT, ' --set_alias="sel:mt_1<50" '),
+    ]
     scheme_tt = [
         # ("17", "inclusive_rho", "inclusive_rho", VAR_INCLUSIVE_TT, ''),
         ("8",   "0jet_rho",    "0jet_rho",  VAR_0JETIDG0p5_TT, ''),
@@ -1862,7 +1867,7 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
+                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s ' % vars()
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'

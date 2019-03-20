@@ -173,13 +173,15 @@ namespace ic {
     ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
     p->set_vector(out_vec);
   }
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed=false, bool anti=false);
 
   template <class T>
-  TVector3 getIPVector(T *tau, T *decayProduct){
+  TVector3 getIPVector(T *tau/*, Vertex *vtx*/){
     TVector3 k, p, IP;
-    k.SetXYZ(tau->vector().X(), tau->vector().Y(), tau->vector().Z());
-    p.SetXYZ(decayProduct->vector().Px(), decayProduct->vector().Py(), decayProduct->vector().Pz());
+    // std::cout << tau->lead_dxy_vertex() << std::endl;
+    /* std::cout << tau->vtx().vx() << "    " <<  vtx->vx() << "    " <<  tau->vtx().vy() << "    " <<  vtx->vy() << "    " <<  tau->vtx().vz() << "    " <<  vtx->vz() << std::endl; */
+    k.SetXYZ(tau->vtx().vx()/* - vtx->vx()*/, tau->vtx().vy()/* - vtx->vy()*/, tau->vtx().vz()/* - vtx->vz()*/);
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
     if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
     else IP.SetXYZ(-999, -999, -999); 
      return IP;

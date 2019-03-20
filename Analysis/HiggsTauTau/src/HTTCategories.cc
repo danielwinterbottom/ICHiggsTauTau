@@ -940,6 +940,16 @@ namespace ic {
       outtree_->Branch("q_1", & q_1_);
       outtree_->Branch("q_2", & q_2_);
 
+      outtree_->Branch("primary_vtx_x", &primary_vtx_x_);
+      outtree_->Branch("primary_vtx_y", &primary_vtx_y_);
+      outtree_->Branch("primary_vtx_z", &primary_vtx_z_);
+      outtree_->Branch("tau_svx_1",     &tau_svx_1_);
+      outtree_->Branch("tau_svy_1",     &tau_svy_1_);
+      outtree_->Branch("tau_svz_1",     &tau_svz_1_);
+      outtree_->Branch("tau_svx_2",     &tau_svx_2_);
+      outtree_->Branch("tau_svy_2",     &tau_svy_2_);
+      outtree_->Branch("tau_svz_2",     &tau_svz_2_);
+
       // moved these here from !(systematics_shifts) because want to use
       // them in BDT
       outtree_->Branch("phi_1",             &phi_1_.var_double);
@@ -2770,8 +2780,8 @@ namespace ic {
 
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
 
-    if(event->Exists("tauFlag_1")) tauFlag_1_ = event->Get<int>("tauFlag1");
-    if(event->Exists("tauFlag_2")) tauFlag_2_ = event->Get<int>("tauFlag2");
+    if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
+    if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
    
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
@@ -5003,23 +5013,53 @@ namespace ic {
       TLorentzVector lvec2;
       TLorentzVector lvec3;
       TLorentzVector lvec4;
+      TLorentzVector pvtosv;
 
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      primary_vtx_x_ = vertex_vec[0]->vx();
+      primary_vtx_y_ = vertex_vec[0]->vy();
+      primary_vtx_z_ = vertex_vec[0]->vz();
+
+      tau_svx_1_ = tau1->svx();
+      tau_svy_1_ = tau1->svy();
+      tau_svz_1_ = tau1->svz();
+
+      tau_svx_2_ = tau2->svx();
+      tau_svy_2_ = tau2->svy();
+      tau_svz_2_ = tau2->svz();
+
+      bool doAnti = false;
       if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
-        lvec2 = ConvertToLorentz(tau2->vector());
+        /* lvec2 = ConvertToLorentz(tau2->vector()); */
+        pvtosv.SetXYZT(
+                tau2->svx() - vertex_vec[0]->vx(),
+                tau2->svy() - vertex_vec[0]->vy(),
+                tau2->svz() - vertex_vec[0]->vz(),
+                0.);
         lvec3 = ConvertToLorentz(pi_tau1->vector());
         lvec4 = ConvertToLorentz(pi_tau2->vector());
 
-        cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
+        doAnti = q_2_ > 0 ? true : false;
+
+        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
       }
       else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        lvec2 = ConvertToLorentz(tau1->vector());
+        /* lvec2 = ConvertToLorentz(tau1->vector()); */
+        pvtosv.SetXYZT(
+                tau1->svx() - vertex_vec[0]->vx(),
+                tau1->svy() - vertex_vec[0]->vy(),
+                tau1->svz() - vertex_vec[0]->vz(),
+                0.);
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(pi_tau1->vector());
-        cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+
+        doAnti = q_1_ > 0 ? true : false;
+
+        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
       }
       else if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
         cp_channel_=3;
@@ -5036,9 +5076,12 @@ namespace ic {
       }
 
       if(cp_channel_!=-1){
-        aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        if (cp_channel_ == 2)
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+        else
+          aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }
-      if(cp_channel_==3) {
+      if(cp_channel_==3 || cp_channel_==2) {
         if (cp_sign_<0) {
           if (aco_angle_<M_PI) aco_angle_mod_ = aco_angle_+M_PI;
           else                  aco_angle_mod_ = aco_angle_-M_PI;
@@ -5073,9 +5116,9 @@ namespace ic {
 
       if(tau_decay_mode_2_==1) {
         ROOT::Math::PtEtaPhiEVector gammas_vector_2;
-        for (auto g : gammas_tau1) gammas_vector_2+=g->vector();
+        for (auto g : gammas_tau2) gammas_vector_2+=g->vector();
         pi0_m_2_ = gammas_vector_2.M();
-        rho_m_2_ = tau1->M();
+        rho_m_2_ = tau2->M();
         rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_tau2->vector(),pi0_tau2->vector()));
         rho_deta_2_ = std::fabs(pi_tau2->eta()-pi0_tau2->eta());
 
@@ -5096,6 +5139,112 @@ namespace ic {
       }
 
 
+    }
+    else if (channel_ == channel::mt && event->ExistsInTree("pfCandidates")) {
+      Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
+      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap","pfCandidates");
+      ic::Candidate* pi0_tau2 = GetPi0FromCands(tau2, pfcands);
+
+      pi0_pt_2_  = pi0_tau2->vector().Pt();
+      pi0_eta_2_ = pi0_tau2->vector().Eta();
+      pi0_phi_2_ = pi0_tau2->vector().Phi();
+      pi0_E_2_   = pi0_tau2->vector().E();
+
+      ic::Candidate* pi_tau2 = GetPiFromCands(tau2, pfcands);
+
+      pi_pt_2_  = pi_tau2->vector().Pt();
+      pi_eta_2_ = pi_tau2->vector().Eta();
+      pi_phi_2_ = pi_tau2->vector().Phi();
+      pi_E_2_   = pi_tau2->vector().E();
+
+      std::vector<ic::PFCandidate*> gammas_tau2    = GetTauGammaCands(tau2, pfcands);
+
+      Ngamma_2_ = gammas_tau2.size();
+
+      if(gammas_tau2.size()>=1) gamma1_E_2_ = gammas_tau2[0]->energy();
+      else gamma1_E_2_ = -9999;
+      if(gammas_tau2.size()>=2) gamma2_E_2_ = gammas_tau2[1]->energy();
+      else gamma2_E_2_ = -9999;
+      if(gammas_tau2.size()>=3) gamma3_E_2_ = gammas_tau2[2]->energy();
+      else gamma3_E_2_ = -9999;
+      if(gammas_tau2.size()>=4) gamma4_E_2_ = gammas_tau2[3]->energy();
+      else gamma4_E_2_ = -9999;
+      
+      TLorentzVector lvec1;
+      TLorentzVector lvec2;
+      TLorentzVector lvec3;
+      TLorentzVector lvec4;
+      TLorentzVector pvtosv;
+
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      primary_vtx_x_ = vertex_vec[0]->vx();
+      primary_vtx_y_ = vertex_vec[0]->vy();
+      primary_vtx_z_ = vertex_vec[0]->vz();
+
+      bool doAnti = false;
+      if(tau_decay_mode_2_==1){
+        cp_channel_=2;
+        lvec1 = ConvertToLorentz(pi0_tau2->vector());
+        /* lvec2 = ConvertToLorentz(tau2->vector()); */
+        pvtosv.SetXYZT(
+                muon1->vx() - vertex_vec[0]->vx(),
+                muon1->vy() - vertex_vec[0]->vy(),
+                muon1->vz() - vertex_vec[0]->vz(),
+                0.);
+        lvec3 = ConvertToLorentz(pi_tau2->vector());
+        lvec4 = ConvertToLorentz(muon1->vector());
+
+        doAnti = q_1_ > 0 ? true : false;
+
+        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
+      }
+      else {
+        cp_channel_ =-1;
+        cp_sign_ = -9999;
+      }
+
+      if(cp_channel_!=-1){
+        if (cp_channel_ == 2)
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+        else
+          aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+      }
+      if(cp_channel_==3 || cp_channel_==2) {
+        if (cp_sign_<0) {
+          if (aco_angle_<M_PI) aco_angle_mod_ = aco_angle_+M_PI;
+          else                  aco_angle_mod_ = aco_angle_-M_PI;
+      } else {
+        aco_angle_mod_ = aco_angle_;
+        }
+      }
+
+      if(tau_decay_mode_2_==1) {
+        ROOT::Math::PtEtaPhiEVector gammas_vector_2;
+        for (auto g : gammas_tau2) gammas_vector_2+=g->vector();
+        pi0_m_2_ = gammas_vector_2.M();
+        rho_m_2_ = tau2->M();
+        rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_tau2->vector(),pi0_tau2->vector()));
+        rho_deta_2_ = std::fabs(pi_tau2->eta()-pi0_tau2->eta());
+
+        if(gammas_tau2.size()>1) {
+          gammas_dphi_2_ =  
+              std::fabs(ROOT::Math::VectorUtil::DeltaPhi(
+                          gammas_tau2[0]->vector(),gammas_tau2[1]->vector()));
+          gammas_deta_2_ =  std::fabs(gammas_tau2[0]->eta()-gammas_tau2[1]->eta());
+        }
+      }
+      else {
+        pi0_m_2_       = -9999;
+        rho_m_2_       = -9999;
+        rho_dphi_2_    = -9999;
+        rho_deta_2_    = -9999;
+        gammas_dphi_2_ = -9999;
+        gammas_deta_2_ = -9999;
+      }
+
+      
     }
     else { 
       pi0_pt_1_  = -9999.;
