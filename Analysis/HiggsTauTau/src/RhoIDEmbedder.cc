@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/RhoIDEmbedder.h"
+
  
 
 namespace ic {
@@ -56,7 +57,15 @@ namespace ic {
       outtree_->Branch("pt_2"         , &pt_2_ );
       outtree_->Branch("eta_2"        , &eta_2_ );
       outtree_->Branch("Etau_2"       , &Etau_2_); 
-
+//Added by Mohammad
+      outtree_->Branch("ConeRadiusMax_2",&ConeRadiusMax_2_);
+      outtree_->Branch("ConeRadiusMedian_2",&ConeRadiusMedian_2_);
+      outtree_->Branch("ConeRadiusMean_2",&ConeRadiusMean_2_);
+      outtree_->Branch("ConeRadiusStdDev_2",&ConeRadiusStdDev_2_);
+      outtree_->Branch("ConeRadiusMax_1",&ConeRadiusMax_1_);
+      outtree_->Branch("ConeRadiusMedian_1",&ConeRadiusMedian_1_);
+      outtree_->Branch("ConeRadiusMean_1",&ConeRadiusMean_1_);
+      outtree_->Branch("ConeRadiusStdDev_1",&ConeRadiusStdDev_1_);
     }
     reader_ = new TMVA::Reader();
     TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
@@ -105,6 +114,7 @@ namespace ic {
     if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
 
+//-------------------------------------subleading tau--------------------
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       if (tau2->decay_mode()==1) {
@@ -139,7 +149,38 @@ namespace ic {
 
         pt_2_ = tau2->pt();
         eta_2_ = tau2->eta();
-
+	
+	//New variables by Mohammad
+        CenterEta=-1;  CenterPhi=-1;//temp variables 
+        ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
+                
+        if(gammas2.size()>=1){
+          
+          CenterEta=pi_2->eta();
+          for(auto g : gammas2) CenterEta+=g->eta();
+          CenterEta/=(1.0+double(gammas2.size()));
+          
+          CenterPhi=pi_2->phi();
+          for(auto g : gammas2) CenterPhi+=g->phi();
+          CenterPhi/=(1.0+double(gammas2.size()));           
+          
+          std::vector<double> DistToCenter; 
+          DistToCenter.push_back( sqrt( std::pow(CenterPhi-pi_2->phi(),2) + std::pow(CenterEta-pi_2->eta(),2) ) );
+          for(auto g : gammas2) DistToCenter.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter.size()=1+gammas.size()
+          sort( DistToCenter.begin() , DistToCenter.end() );
+          ConeRadiusMedian_2_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
+          ConeRadiusMax_2_=DistToCenter[DistToCenter.size()-1];
+          ConeRadiusMean_2_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0)/double(DistToCenter.size());
+          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0) - DistToCenter.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter.size());
+          ConeRadiusStdDev_2_=sqrt(ConeRadiusStdDev_2_);//Variance to StdDeV                    
+        }
+        
+        
+        
+        
+        
+        
+	
         std::vector<double> inputs2 = {Egamma1_2_/Etau_2_, Egamma2_2_/Etau_2_, Egamma3_2_/Etau_2_, Egamma4_2_/Etau_2_, Epi_2_/Etau_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
 
         double score2 = read_mva_score(inputs2);
@@ -147,7 +188,7 @@ namespace ic {
       }
     }
 
-
+//-------------------------------------leading tau--------------------
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       if(tau1->decay_mode()==1) {
@@ -184,16 +225,50 @@ namespace ic {
         pt_1_ = tau1->pt();
         eta_1_ = tau1->eta();
 
+
+
+
+
+	//New variables by Mohammad
+        CenterEta=-1;  CenterPhi=-1;//temp variables 
+        ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
+                
+        if(gammas1.size()>=1){
+          
+          CenterEta=pi_1->eta();
+          for(auto g : gammas1) CenterEta+=g->eta();
+          CenterEta/=(1.0+double(gammas1.size()));
+          
+          CenterPhi=pi_1->phi();
+          for(auto g : gammas1) CenterPhi+=g->phi();
+          CenterPhi/=(1.0+double(gammas1.size()));           
+          
+          std::vector<double> DistToCenter; 
+          DistToCenter.push_back( sqrt( std::pow(CenterPhi-pi_1->phi(),2) + std::pow(CenterEta-pi_1->eta(),2) ) );
+          for(auto g : gammas1) DistToCenter.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter.size()=1+gammas.size()
+          sort( DistToCenter.begin() , DistToCenter.end() );
+          ConeRadiusMedian_1_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
+          ConeRadiusMax_1_=DistToCenter[DistToCenter.size()-1];
+          ConeRadiusMean_1_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0)/double(DistToCenter.size());
+          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0) - DistToCenter.size()*pow(ConeRadiusMean_1_,2))/(-1+DistToCenter.size());
+          ConeRadiusStdDev_1_=sqrt(ConeRadiusStdDev_1_);//Variance to StdDeV                    
+        }
+
+
+
+
+
+
         std::vector<double> inputs1 = {Egamma1_1_/Etau_1_, Egamma2_1_/Etau_1_, Egamma3_1_/Etau_1_, Egamma4_1_/Etau_1_, Epi_1_/Etau_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
         // variables for leading tau
 
         Ngammas_1_     = gammas1.size();       
-        Egamma1_1_     = Egamma1_1_///Etau_1_;  
-        Egamma2_1_     = Egamma2_1_///Etau_1_;  
-        Egamma3_1_     = Egamma3_1_///Etau_1_;   
-        Egamma4_1_     = Egamma4_1_///Etau_1_;   
-        Epi_1_         = Epi_1_///Etau_1_;
+        Egamma1_1_     = Egamma1_1_;///Etau_1_;  
+        Egamma2_1_     = Egamma2_1_;///Etau_1_;  
+        Egamma3_1_     = Egamma3_1_;///Etau_1_;   
+        Egamma4_1_     = Egamma4_1_;///Etau_1_;   
+        Epi_1_         = Epi_1_;///Etau_1_;
         Mpi0_1_        = Mpi0_1_;   
         Mrho_1_        = Mrho_1_; 
         dphi_1_        = rho_dphi_1_; 
@@ -206,11 +281,11 @@ namespace ic {
         // variables for subleading tau
 
         Ngammas_2_     = gammas2.size();
-        Egamma1_2_     = Egamma1_2_///Etau_2_;
-        Egamma2_2_     = Egamma2_2_///Etau_2_;
-        Egamma3_2_     = Egamma3_2_///Etau_2_;
-        Egamma4_2_     = Egamma4_2_///Etau_2_;
-        Epi_2_         = Epi_2_/Etau_2_;
+        Egamma1_2_     = Egamma1_2_;///Etau_2_;
+        Egamma2_2_     = Egamma2_2_;///Etau_2_;
+        Egamma3_2_     = Egamma3_2_;///Etau_2_;
+        Egamma4_2_     = Egamma4_2_;///Etau_2_;
+        Epi_2_         = Epi_2_;///Etau_2_;
         Mpi0_2_        = Mpi0_2_;
         Mrho_2_        = Mrho_2_;
         dphi_2_        = rho_dphi_2_;       

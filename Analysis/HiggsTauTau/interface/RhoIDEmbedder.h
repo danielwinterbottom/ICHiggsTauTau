@@ -81,7 +81,21 @@ class RhoIDEmbedder : public ModuleBase {
   double pt_2_;
   double eta_2_;
 
-  
+  // variables by Mohammad
+  double ConeRadiusMax_2_;
+  double ConeRadiusMedian_2_;
+  double ConeRadiusMean_2_;
+  double ConeRadiusStdDev_2_;
+  double ConeRadiusMax_1_;
+  double ConeRadiusMedian_1_;
+  double ConeRadiusMean_1_;
+  double ConeRadiusStdDev_1_;
+
+
+  //temp variables
+  double CenterEta;
+  double CenterPhi;
+
 
 };
 
