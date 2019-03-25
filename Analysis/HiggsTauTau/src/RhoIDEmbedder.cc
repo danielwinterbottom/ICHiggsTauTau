@@ -41,7 +41,11 @@ namespace ic {
       outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_ );
       outtree_->Branch("pt_1"         , &pt_1_ );
       outtree_->Branch("eta_1"        , &eta_1_ );
-      outtree_->Branch("Etau_1"       , &Etau_1_);
+      outtree_->Branch("E_1"          , &E_1_);
+      outtree_->Branch("rho_dphi_1"   ,&rho_dphi_1_);
+      outtree_->Branch("rho_dEta_1"   ,&rho_dEta_1_);
+      outtree_->Branch("Epi0_1",&Epi0_1_);
+      outtree_->Branch("tau_decay_mode_1",&tau_decay_mode_1_);
       outtree_->Branch("Ngammas_2"    , &Ngammas_2_ );
       outtree_->Branch("Egamma1_2"    , &Egamma1_2_ );
       outtree_->Branch("Egamma2_2"    , &Egamma2_2_ );
@@ -56,16 +60,21 @@ namespace ic {
       outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_ );
       outtree_->Branch("pt_2"         , &pt_2_ );
       outtree_->Branch("eta_2"        , &eta_2_ );
-      outtree_->Branch("Etau_2"       , &Etau_2_); 
+      outtree_->Branch("E_2"          , &E_2_);
+      outtree_->Branch("rho_dphi_2"   ,&rho_dphi_2_);
+      outtree_->Branch("rho_dEta_2"   ,&rho_dEta_2_);
+      outtree_->Branch("Epi0_2",&Epi0_2_);
+      outtree_->Branch("tau_decay_mode_2",&tau_decay_mode_2_);
+      
 //Added by Mohammad
-      outtree_->Branch("ConeRadiusMax_2",&ConeRadiusMax_2_);
-      outtree_->Branch("ConeRadiusMedian_2",&ConeRadiusMedian_2_);
-      outtree_->Branch("ConeRadiusMean_2",&ConeRadiusMean_2_);
-      outtree_->Branch("ConeRadiusStdDev_2",&ConeRadiusStdDev_2_);
-      outtree_->Branch("ConeRadiusMax_1",&ConeRadiusMax_1_);
-      outtree_->Branch("ConeRadiusMedian_1",&ConeRadiusMedian_1_);
-      outtree_->Branch("ConeRadiusMean_1",&ConeRadiusMean_1_);
-      outtree_->Branch("ConeRadiusStdDev_1",&ConeRadiusStdDev_1_);
+      outtree_->Branch("ConeRadiusMax_2"     ,&ConeRadiusMax_2_);
+      outtree_->Branch("ConeRadiusMedian_2"  ,&ConeRadiusMedian_2_);
+      outtree_->Branch("ConeRadiusMean_2"    ,&ConeRadiusMean_2_);
+      outtree_->Branch("ConeRadiusStdDev_2"  ,&ConeRadiusStdDev_2_);
+      outtree_->Branch("ConeRadiusMax_1"     ,&ConeRadiusMax_1_);
+      outtree_->Branch("ConeRadiusMedian_1"  ,&ConeRadiusMedian_1_);
+      outtree_->Branch("ConeRadiusMean_1"    ,&ConeRadiusMean_1_);
+      outtree_->Branch("ConeRadiusStdDev_1"  ,&ConeRadiusStdDev_1_);
     }
     reader_ = new TMVA::Reader();
     TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
@@ -117,6 +126,7 @@ namespace ic {
 //-------------------------------------subleading tau--------------------
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+      tau_decay_mode_2_=tau2->decay_mode();
       if (tau2->decay_mode()==1) {
         gammas2 = GetTauGammas(tau2, pfcands);
 
@@ -126,7 +136,7 @@ namespace ic {
         Candidate *pi0_2 = rho_2.second;
 
         Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
-        Etau_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
+        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
         if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
@@ -137,9 +147,10 @@ namespace ic {
           gammas_dEta_2_ =  std::fabs(gammas2[0]->eta()-gammas2[1]->eta());
         }
 
-        Etau_2_ = tau2->energy();
+        E_2_ = tau2->energy();
 
         Epi_2_ = pi_2->energy();
+        Epi0_2_ = pi0_2->energy();
         ROOT::Math::PtEtaPhiEVector gammas_vector_2;
         for (auto g : gammas2) gammas_vector_2+=g->vector();
         Mpi0_2_ = gammas_vector_2.M();
@@ -149,8 +160,8 @@ namespace ic {
 
         pt_2_ = tau2->pt();
         eta_2_ = tau2->eta();
-	
-	//New variables by Mohammad
+    
+    //New variables by Mohammad
         CenterEta=-1;  CenterPhi=-1;//temp variables 
         ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
                 
@@ -180,8 +191,8 @@ namespace ic {
         
         
         
-	
-        std::vector<double> inputs2 = {Egamma1_2_/Etau_2_, Egamma2_2_/Etau_2_, Egamma3_2_/Etau_2_, Egamma4_2_/Etau_2_, Epi_2_/Etau_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
+    
+        std::vector<double> inputs2 = {Egamma1_2_/E_2_, Egamma2_2_/E_2_, Egamma3_2_/E_2_, Egamma4_2_/E_2_, Epi_2_/E_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
 
         double score2 = read_mva_score(inputs2);
         event->Add("rho_id_2", score2);
@@ -191,6 +202,7 @@ namespace ic {
 //-------------------------------------leading tau--------------------
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+      tau_decay_mode_1_=tau1->decay_mode();
       if(tau1->decay_mode()==1) {
         gammas1 = GetTauGammas(tau1, pfcands);
 
@@ -201,7 +213,7 @@ namespace ic {
 
 
         Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
-        Etau_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.;
+        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.;
         if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
@@ -212,9 +224,10 @@ namespace ic {
           gammas_dEta_1_ =  std::fabs(gammas1[0]->eta()-gammas1[1]->eta());
         }
 
-        Etau_1_ = tau1->energy();
+        E_1_ = tau1->energy();
 
         Epi_1_ = pi_1->energy();
+        Epi0_1_ = pi0_1->energy();
         ROOT::Math::PtEtaPhiEVector gammas_vector_1;
         for (auto g : gammas1) gammas_vector_1+=g->vector();
         Mpi0_1_ = gammas_vector_1.M();
@@ -229,7 +242,7 @@ namespace ic {
 
 
 
-	//New variables by Mohammad
+    //New variables by Mohammad
         CenterEta=-1;  CenterPhi=-1;//temp variables 
         ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
                 
@@ -259,7 +272,7 @@ namespace ic {
 
 
 
-        std::vector<double> inputs1 = {Egamma1_1_/Etau_1_, Egamma2_1_/Etau_1_, Egamma3_1_/Etau_1_, Egamma4_1_/Etau_1_, Epi_1_/Etau_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
+        std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
         // variables for leading tau
 
