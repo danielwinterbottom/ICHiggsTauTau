@@ -35,8 +35,8 @@ namespace ic {
       outtree_->Branch("Epi_1"        , &Epi_1_ );
       outtree_->Branch("Mpi0_1"       , &Mpi0_1_ );
       outtree_->Branch("Mrho_1"       , &Mrho_1_ );
-      outtree_->Branch("dphi_1"       , &dphi_1_ );
-      outtree_->Branch("dEta_1"       , &dEta_1_ );
+      //outtree_->Branch("dphi_1"       , &dphi_1_ );
+      //outtree_->Branch("dEta_1"       , &dEta_1_ );
       outtree_->Branch("gammas_dEta_1", &gammas_dEta_1_ );
       outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_ );
       outtree_->Branch("pt_1"         , &pt_1_ );
@@ -44,7 +44,7 @@ namespace ic {
       outtree_->Branch("E_1"          , &E_1_);
       outtree_->Branch("rho_dphi_1"   ,&rho_dphi_1_);
       outtree_->Branch("rho_dEta_1"   ,&rho_dEta_1_);
-      outtree_->Branch("Epi0_1",&Epi0_1_);
+      outtree_->Branch("Epi0_1"       ,&Epi0_1_);
       outtree_->Branch("tau_decay_mode_1",&tau_decay_mode_1_);
       outtree_->Branch("Ngammas_2"    , &Ngammas_2_ );
       outtree_->Branch("Egamma1_2"    , &Egamma1_2_ );
@@ -54,8 +54,8 @@ namespace ic {
       outtree_->Branch("Epi_2"        , &Epi_2_ );
       outtree_->Branch("Mpi0_2"       , &Mpi0_2_ );
       outtree_->Branch("Mrho_2"       , &Mrho_2_ );
-      outtree_->Branch("dphi_2"       , &dphi_2_ );
-      outtree_->Branch("dEta_2"       , &dEta_2_ );
+      //outtree_->Branch("dphi_2"       , &dphi_2_ );
+      //outtree_->Branch("dEta_2"       , &dEta_2_ );
       outtree_->Branch("gammas_dEta_2", &gammas_dEta_2_ );
       outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_ );
       outtree_->Branch("pt_2"         , &pt_2_ );
@@ -63,7 +63,7 @@ namespace ic {
       outtree_->Branch("E_2"          , &E_2_);
       outtree_->Branch("rho_dphi_2"   ,&rho_dphi_2_);
       outtree_->Branch("rho_dEta_2"   ,&rho_dEta_2_);
-      outtree_->Branch("Epi0_2",&Epi0_2_);
+      outtree_->Branch("Epi0_2"       ,&Epi0_2_);
       outtree_->Branch("tau_decay_mode_2",&tau_decay_mode_2_);
       
 //Added by Mohammad
