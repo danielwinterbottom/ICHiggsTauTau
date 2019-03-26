@@ -11,13 +11,14 @@ opts = parser.VarParsing ('analysis')
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
-'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root'
+# 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
+'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
 # 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root'
-,parser.VarParsing.multiplicity.singleton,
+parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_dataRun2_Prompt_v11', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_upgrade2018_realistic_v18', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
@@ -25,7 +26,7 @@ opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
-opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('doHT', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
@@ -68,7 +69,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1413,15 +1414,23 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeCSCFilter    = cms.bool(False),
     inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
     includeFiltersFromTrig = cms.bool(True),
+    inputfiltersfromtrig = cms.InputTag("TriggerResults","","PAT"),
     filters             = cms.PSet(
         badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
         badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
+        ecalBadCalibReducedMINIAODFilter = cms.InputTag("ecalBadCalibReducedMINIAODFilter"),
     ),
-    filtersfromtrig     = cms.vstring("Flag_goodVertices","Flag_globalTightHalo2016Filter","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_BadPFMuonFilter","Flag_BadChargedCandidateFilter","Flag_eeBadScFilter","Flag_ecalBadCalibFilter")
+    filtersfromtrig     = cms.vstring(
+        "Flag_goodVertices","Flag_globalSuperTightHalo2016Filter",
+        "Flag_globalTightHalo2016Filter","Flag_HBHENoiseFilter",
+        "Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
+        "Flag_BadPFMuonFilter","Flag_BadChargedCandidateFilter",
+        "Flag_eeBadScFilter","Flag_ecalBadCalibFilter","ecalBadCalibReducedMINIAODFilter",
+        )
 )
 
 process.icEventInfoSequence = cms.Sequence(
-    # process.ecalBadCalibReducedMINIAODFilter+
+    process.ecalBadCalibReducedMINIAODFilter+
     process.BadPFMuonFilter+
     process.BadChargedCandidateFilter+
     process.icEventInfoProducer
