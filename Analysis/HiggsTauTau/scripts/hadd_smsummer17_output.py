@@ -39,6 +39,8 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+    'GluGluHToTauTau_M-125',
+
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY2JetsToLL-LO-ext',
@@ -85,6 +87,8 @@ sample_list = [
     'EmbeddingTauTauE',
     'EmbeddingTauTauF',
     'GluGluHToTauTau_M-125',
+    'GluGluToHToTauTau_M125_nospinner-2017',
+    'VBFHToTauTau_M125_nospinner-2017',
     'GluGluHToTauTau_M-125-ext',
     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
     'GluGluToHToTauTau_M125_amcatnloFXFX',
@@ -160,11 +164,6 @@ sample_list = [
     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown',
-    'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
-    'SUSYGluGluToHToTauTau_M-120',
-    'GluGluToHToTauTau_M-125-nospinner',
-    'VBFHToTauTau_M-125-nospinner'
-
 	]
 
 

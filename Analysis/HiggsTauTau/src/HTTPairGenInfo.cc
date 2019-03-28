@@ -90,6 +90,13 @@ namespace ic {
     std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.2, true, true);
     
+    /* if (leading_tau_match.size()!=0) */
+    /*     std::cout << "tau: " << leading_tau_match.at(0).first->eta() << std::endl; */
+    /*     std::cout << "tau gen jet: " << leading_tau_match.at(0).second->eta() << std::endl; */
+    /* if (subleading_tau_match.size()!=0) */
+    /*     std::cout << "tau: " << subleading_tau_match.at(0).first->eta() << std::endl; */
+    /*     std::cout << "tau gen jet: " << subleading_tau_match.at(0).second->eta() << std::endl; */
+    
 
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
@@ -186,6 +193,7 @@ namespace ic {
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
    if(gen_match_2 == mcorigin::tauHad) event->Add("subleading_gen_tau", new ic::GenJet(*(subleading_tau_match.at(0).second)));
 
+
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
    event->Add("gen_match_1_pt", gen_match_1_pt);
@@ -230,6 +238,232 @@ namespace ic {
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
     }
+    
+    // new cp stuff
+    std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+
+    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    std::vector<ic::GenParticle*> gen_taus_from_particles;
+
+    double gen_pi_pt_1 ;
+    double gen_pi_eta_1;
+    double gen_pi_phi_1;
+    double gen_pi_E_1  ;
+
+    double gen_pi0_pt_1 ;
+    double gen_pi0_eta_1;
+    double gen_pi0_phi_1;
+    double gen_pi0_E_1  ;
+
+    double gen_pi_pt_2 ;
+    double gen_pi_eta_2;
+    double gen_pi_phi_2;
+    double gen_pi_E_2  ;
+
+    double gen_pi0_pt_2 ;
+    double gen_pi0_eta_2;
+    double gen_pi0_phi_2;
+    double gen_pi0_E_2  ;
+
+    for (unsigned i = 0; i < gen_particles.size(); ++i) {
+      std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
+      unsigned count_pi = 0;
+      unsigned count_pi0 = 0;
+
+      if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        ic::GenParticle* tau = gen_particles[i];
+
+        /* std::cout << "gen tau: " << i << std::endl; */
+        /* std::cout << "gen tau p4: " << tau->vector() << std::endl; */
+        for (unsigned d : tau->daughters()) {
+          unsigned daughter_id = std::abs(gen_particles[d]->pdgid());
+          /* std::cout << "tau daughters pdgid " << gen_particles[d]->pdgid() << std::endl; */
+          if (daughter_id == 211) {
+            /* std::cout << "pi 4 vector: " << gen_particles[d]->vector() << std::endl; */
+            rho.first = gen_particles[d];
+            ++count_pi;
+          }
+          else if (daughter_id == 111) {
+            /* std::cout << "pi0 4 vector: " << gen_particles[d]->vector() << std::endl; */
+            rho.second = gen_particles[d];
+            ++count_pi0;
+          }
+        }
+        /* std::cout << "pi count: " << count_pi << std::endl; */
+        /* std::cout << "pi0 count: " << count_pi0 << std::endl; */
+
+        if (count_pi == 1 && count_pi0 == 1 && tauFlag1==1 && tauFlag2==1){
+          /* std::cout << "gen pi p4: " << rho.first->vector() << std::endl; */
+          /* std::cout << "gen pi0 p4: " << rho.second->vector() << std::endl; */
+
+          rho_daughters.push_back(rho);
+
+          ic::Candidate* tauvis = new Candidate();
+          tauvis->set_vector(rho.first->vector()+rho.second->vector());
+
+          double leadingdR = DR(leading_lepton[0],tauvis);
+          double subleadingdR = DR(subleading_lepton[0],tauvis);
+
+          /* std::cout << "DR (leading tau, gentau): " << leadingdR << std::endl; */
+          /* std::cout << "DR (subleading tau, gentau): " << subleadingdR << std::endl; */
+
+          if (leadingdR < 0.2) {
+            gen_pi_pt_1 = rho.first->vector().Pt();
+            gen_pi_eta_1 = rho.first->vector().Eta();
+            gen_pi_phi_1 = rho.first->vector().Phi();
+            gen_pi_E_1 = rho.first->vector().E();
+
+            gen_pi0_pt_1 = rho.second->vector().Pt();
+            gen_pi0_eta_1 = rho.second->vector().Eta();
+            gen_pi0_phi_1 = rho.second->vector().Phi();
+            gen_pi0_E_1 = rho.second->vector().E();
+            
+            break;
+          }
+          else {
+            gen_pi_pt_1  = -9999.; 
+            gen_pi_eta_1 = -9999.;
+            gen_pi_phi_1 = -9999.;
+            gen_pi_E_1   = -9999.; 
+
+            gen_pi0_pt_1  = -9999.;
+            gen_pi0_eta_1 = -9999.;
+            gen_pi0_phi_1 = -9999.;
+            gen_pi0_E_1   = -9999.;
+          }
+          if (subleadingdR < 0.2) {
+            gen_pi_pt_2 = rho.first->vector().Pt();
+            gen_pi_eta_2 = rho.first->vector().Eta();
+            gen_pi_phi_2 = rho.first->vector().Phi();
+            gen_pi_E_2 = rho.first->vector().E();
+
+            gen_pi0_pt_2 = rho.second->vector().Pt();
+            gen_pi0_eta_2 = rho.second->vector().Eta();
+            gen_pi0_phi_2 = rho.second->vector().Phi();
+            gen_pi0_E_2 = rho.second->vector().E();
+
+            break;
+          }
+          else {
+            gen_pi_pt_1  = -9999.; 
+            gen_pi_eta_1 = -9999.;
+            gen_pi_phi_1 = -9999.;
+            gen_pi_E_1   = -9999.; 
+
+            gen_pi0_pt_2  = -9999.;
+            gen_pi0_eta_2 = -9999.;
+            gen_pi0_phi_2 = -9999.;
+            gen_pi0_E_2   = -9999.;
+          }
+        }
+      }
+    }
+    event->Add("gen_pi_pt_1", gen_pi_pt_1);
+    event->Add("gen_pi_eta_1", gen_pi_eta_1);
+    event->Add("gen_pi_phi_1", gen_pi_phi_1);
+    event->Add("gen_pi_E_1", gen_pi_E_1);
+
+    event->Add("gen_pi_pt_2", gen_pi_pt_2);
+    event->Add("gen_pi_eta_2", gen_pi_eta_2);
+    event->Add("gen_pi_phi_2", gen_pi_phi_2);
+    event->Add("gen_pi_E_2", gen_pi_E_2);
+
+    event->Add("gen_pi0_pt_1", gen_pi0_pt_1);
+    event->Add("gen_pi0_eta_1", gen_pi0_eta_1);
+    event->Add("gen_pi0_phi_1", gen_pi0_phi_1);
+    event->Add("gen_pi0_E_1", gen_pi0_E_1);
+    
+    event->Add("gen_pi0_pt_2", gen_pi0_pt_2);
+    event->Add("gen_pi0_eta_2", gen_pi0_eta_2);
+    event->Add("gen_pi0_phi_2", gen_pi0_phi_2);
+    event->Add("gen_pi0_E_2", gen_pi0_E_2);
+
+    /* std::pair<bool, std::vector<ic::GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); */
+    /* std::pair<bool, std::vector<ic::GenParticle*>> rho_2 = std::make_pair(false, std::vector<GenParticle*>()); */
+    /* TLorentzVector lvec1; */
+    /* TLorentzVector lvec2; */
+    /* TLorentzVector lvec3; */
+    /* TLorentzVector lvec4; */
+
+    /* double genE_pi1_ = -999; */
+    /* double genE_pi01_ = -999; */
+    /* double genE_pi2_ = -999; */
+    /* double genE_pi02_ = -999; */
+
+    /* double genPhi_pi1_ = -999; */
+    /* double genPhi_pi01_ = -999; */
+    /* double genPhi_pi2_ = -999; */
+    /* double genPhi_pi02_ = -999; */
+
+    /* double genEta_pi1_ = -999; */
+    /* double genEta_pi01_ = -999; */
+    /* double genEta_pi2_ = -999; */
+    /* double genEta_pi02_ = -999; */
+
+    /* double gen_aco_angle_1_ = -999; */
+    /* double gen_aco_angle_2_ = -999; */
+    /* double gen_cp_sign_1_ = -999; */
+    /* if(gen_taus_ptr.size()>=2) { */
+    /*   rho_1 = GetTauRhoDaughter(particles, gen_taus_ptr[0]->constituents()); */  
+    /*   rho_2 = GetTauRhoDaughter(particles, gen_taus_ptr[1]->constituents()); */  
+    /*   if (rho_1.first && rho_2.first && tauDecayFlag_1==1 && tauDecayFlag_2==1) { */
+    /*     lvec1 = ConvertToLorentz(rho_1.second[1]->vector()); */   
+    /*     lvec2 = ConvertToLorentz(rho_2.second[1]->vector()); */
+    /*     lvec3 = ConvertToLorentz(rho_1.second[0]->vector()); */   
+    /*     lvec4 = ConvertToLorentz(rho_2.second[0]->vector()); */
+
+    /*     std::cout << "gen pi_1: " << rho_1.second[1]->vector() << std::endl; */
+    /*     std::cout << "gen pi0_1 : " << rho_2.second[1]->vector() << std::endl; */
+    /*     std::cout << "gen pi_2 : " << rho_1.second[0]->vector() << std::endl; */
+    /*     std::cout << "gen pi0_2 : " << rho_2.second[0]->vector() << std::endl; */
+
+    /*     genE_pi1_ = rho_1.second[0]->vector().E(); */
+    /*     genE_pi01_ = rho_1.second[1]->vector().E(); */
+    /*     genE_pi2_ = rho_2.second[0]->vector().E(); */
+    /*     genE_pi02_ = rho_2.second[1]->vector().E(); */
+
+    /*     genPhi_pi1_ =  rho_1.second[0]->vector().Phi(); */
+    /*     genPhi_pi01_ = rho_1.second[1]->vector().Phi(); */
+    /*     genPhi_pi2_ =  rho_2.second[0]->vector().Phi(); */
+    /*     genPhi_pi02_ = rho_2.second[1]->vector().Phi(); */
+
+    /*     genEta_pi1_ =  rho_1.second[0]->vector().Eta(); */
+    /*     genEta_pi01_ = rho_1.second[1]->vector().Eta(); */
+    /*     genEta_pi2_ =  rho_2.second[0]->vector().Eta(); */
+    /*     genEta_pi02_ = rho_2.second[1]->vector().Eta(); */
+
+    /*     gen_cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3()); */
+
+    /*     gen_aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false); */    
+    /*     gen_aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true); */
+    /*   } */
+    /* } */
+    /* event->Add("genE_pi1", genE_pi1_); */
+    /* event->Add("genE_pi01", genE_pi01_); */
+    /* event->Add("genE_pi2", genE_pi2_); */
+    /* event->Add("genE_pi02", genE_pi02_); */
+
+    /* event->Add("genPhi_pi1", genPhi_pi1_); */
+    /* event->Add("genPhi_pi01", genPhi_pi01_); */
+    /* event->Add("genPhi_pi2", genPhi_pi2_); */
+    /* event->Add("genPhi_pi02", genPhi_pi02_); */
+
+    /* event->Add("genEta_pi1",  genEta_pi1_); */
+    /* event->Add("genEta_pi01", genEta_pi01_); */
+    /* event->Add("genEta_pi2",  genEta_pi2_); */
+    /* event->Add("genEta_pi02", genEta_pi02_); */
+
+    /* event->Add("gen_cp_sign_1", gen_cp_sign_1_); */
+    /* event->Add("gen_aco_angle_1", gen_aco_angle_1_); */
+    /* event->Add("gen_aco_angle_2", gen_aco_angle_2_); */
+
+    // CP in decay
+    /* std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+    std::pair<bool, std::vector<ic::GenParticle*>> rho_daughters;
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;*/
 
     return 0;
   }

@@ -20,6 +20,13 @@ class HTTTauEfficiency : public ModuleBase {
  private:
   TFileDirectory * dir_;
   TTree * outtree_;
+
+  double deepTauVsJets_iso_raw_;
+  double deepTauVsEle_iso_raw_;
+  double deepTauVsMu_iso_raw_;
+  double dpfTauV0_iso_raw_;
+  double dpfTauV1_iso_raw_;
+
   double iso_mva_newDMwoLTraw_;
   double iso_mva_newDMwLTraw_;
   double iso_mva_oldDMwoLTraw_;

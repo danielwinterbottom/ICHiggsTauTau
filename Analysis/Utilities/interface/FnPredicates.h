@@ -140,6 +140,8 @@ namespace ic {
   bool PFJetID2016(PFJet const* jet);
   // Standard particle-flow jet id for 2017
   bool PFJetID2017(PFJet const* jet);
+  // Standard particle-flow jet id for 2018
+  bool PFJetID2018(PFJet const* jet);
 
 
   // Particle-flow jet id without the HF energy in the neutral energy cut
@@ -161,6 +163,8 @@ namespace ic {
   // CP in in tau decays functions
   TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec);
   TVector3 ConvertToTVector3 (ROOT::Math::PtEtaPhiEVector input_vec);
+  ROOT::Math::PtEtaPhiEVector ConvertToPtEtaPhiEVector(TLorentzVector input_vec);
+  TLorentzVector SmearVectorVar(TLorentzVector input_vec, double smearVal, unsigned indexToSmear, double smearVal_Eta=1.0, double smearVal_Phi=1.0, double smearVal_E=1.0);
   TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec);
   template<class T>
   void BoostVec(T p, TVector3 boost){
@@ -169,7 +173,19 @@ namespace ic {
     ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
     p->set_vector(out_vec);
   }
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed=false, bool anti=false);
+
+  template <class T>
+  TVector3 getIPVector(T *tau/*, Vertex *vtx*/){
+    TVector3 k, p, IP;
+    // std::cout << tau->lead_dxy_vertex() << std::endl;
+    /* std::cout << tau->vtx().vx() << "    " <<  vtx->vx() << "    " <<  tau->vtx().vy() << "    " <<  vtx->vy() << "    " <<  tau->vtx().vz() << "    " <<  vtx->vz() << std::endl; */
+    k.SetXYZ(tau->vtx().vx()/* - vtx->vx()*/, tau->vtx().vy()/* - vtx->vy()*/, tau->vtx().vz()/* - vtx->vz()*/);
+    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
+    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
+    else IP.SetXYZ(-999, -999, -999); 
+     return IP;
+  }
   
   template<class T, class U>
   double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
@@ -549,7 +565,17 @@ namespace ic {
   std::pair<bool, GenParticle*> GetTauPiDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<bool,std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<bool,std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  /* std::vector<GenParticle*>> GetTauRhoDaughterFromGenParticles(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id); */
   ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi);
+
+  std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauChargedHadrCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauIsoGammaCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands);
+  ic::Candidate* GetPi0FromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
+  ic::Candidate* GetPiFromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
 
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
@@ -558,17 +584,6 @@ namespace ic {
   std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
-
-  template <class T>
-  TVector3 getIPVector(T *tau, Vertex *vtx){
-    TVector3 k, p, IP;
-    k.SetXYZ(tau->vx() - vtx->vx(), tau->vy() - vtx->vy(), tau->vz() - vtx->vz());
-    p.SetXYZ(tau->vector().Px(), tau->vector().Py(), tau->vector().Pz());
-    if (p.Mag() != 0) IP = k - (p.Dot(k) / p.Mag2()) * p;
-    else IP.SetXYZ(-999, -999, -999); 
-
-    return IP;
-  }
 
   template <class T, class U>
     void getGenRecoMatches(const std::vector<T*> & recovec,

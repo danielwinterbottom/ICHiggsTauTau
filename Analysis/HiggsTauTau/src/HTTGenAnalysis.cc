@@ -67,6 +67,7 @@ namespace ic {
       fns_["A_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt"))); 
     }
+
       
     rand = new TRandom3(0);
     if(fs_){  
@@ -85,6 +86,10 @@ namespace ic {
       outtree_->Branch("cand_2"       , &cand_2_       );
       outtree_->Branch("match_1"       , &match_1_       );
       outtree_->Branch("match_2"       , &match_2_       );
+
+      outtree_->Branch("wt_cp_sm"       , &wt_cp_sm_);
+      outtree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
+      outtree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -259,6 +264,34 @@ namespace ic {
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
       outtree_->Branch("cp_channel",    &cp_channel_);
+
+      // smeared ones
+      outtree_->Branch("aco_angle_1_Pi0ESmeared",   &aco_angle_1_Pi0ESmeared_);
+      outtree_->Branch("aco_angle_1_Pi0EtaSmeared", &aco_angle_1_Pi0EtaSmeared_);
+      outtree_->Branch("aco_angle_1_Pi0PhiSmeared", &aco_angle_1_Pi0PhiSmeared_);
+      outtree_->Branch("aco_angle_2_Pi0ESmeared",   &aco_angle_2_Pi0ESmeared_);
+      outtree_->Branch("aco_angle_2_Pi0EtaSmeared", &aco_angle_2_Pi0EtaSmeared_);
+      outtree_->Branch("aco_angle_2_Pi0PhiSmeared", &aco_angle_2_Pi0PhiSmeared_);
+
+      outtree_->Branch("aco_angle_1_PiESmeared",   &aco_angle_1_PiESmeared_);
+      outtree_->Branch("aco_angle_1_PiEtaSmeared", &aco_angle_1_PiEtaSmeared_);
+      outtree_->Branch("aco_angle_1_PiPhiSmeared", &aco_angle_1_PiPhiSmeared_);
+      outtree_->Branch("aco_angle_2_PiESmeared",   &aco_angle_2_PiESmeared_);
+      outtree_->Branch("aco_angle_2_PiEtaSmeared", &aco_angle_2_PiEtaSmeared_);
+      outtree_->Branch("aco_angle_2_PiPhiSmeared", &aco_angle_2_PiPhiSmeared_);
+
+      outtree_->Branch("aco_angle_1_FullSmeared",   &aco_angle_1_FullSmeared_);
+      outtree_->Branch("aco_angle_2_FullSmeared",   &aco_angle_2_FullSmeared_);
+
+      outtree_->Branch("pi0_E_1", &pi0_E_1_);
+      outtree_->Branch("pi0_E_2", &pi0_E_2_);
+      outtree_->Branch("pi_E_1", &pi_E_1_);
+      outtree_->Branch("pi_E_2", &pi_E_2_);
+      outtree_->Branch("pi0_ESmeared_1", &pi0_ESmeared_1_);
+      outtree_->Branch("pi0_ESmeared_2", &pi0_ESmeared_2_);
+      outtree_->Branch("pi_ESmeared_1", &pi_ESmeared_1_);
+      outtree_->Branch("pi_ESmeared_2", &pi_ESmeared_2_);
+      outtree_->Branch("cp_sign_1_Pi0ESmeared",     &cp_sign_1_Pi0ESmeared_);
       
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -271,6 +304,13 @@ namespace ic {
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("pT_A", &pT_A_);
+
+      outtree_->Branch("reco_pvx", &reco_pvx_);
+      outtree_->Branch("reco_pvy", &reco_pvy_);
+      outtree_->Branch("reco_pvz", &reco_pvz_);
+      outtree_->Branch("gen_pvx",  &gen_pvx_);
+      outtree_->Branch("gen_pvy",  &gen_pvy_);
+      outtree_->Branch("gen_pvz",  &gen_pvz_);
       
     }
     count_ee_ = 0;
@@ -305,6 +345,20 @@ namespace ic {
     wt_ = 1;
     
     wt_ = eventInfo->total_weight();
+
+    wt_cp_sm_=0.0; 
+    wt_cp_ps_=0.0; 
+    wt_cp_mm_=0.0; 
+
+    // test tauspinner weights
+    if(event->ExistsInTree("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+
+      wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+      wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
+      wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+
+    }
 
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
@@ -741,8 +795,29 @@ namespace ic {
     aco_angle_3_ = 9999.;
     aco_angle_4_ = 9999.;
     cp_channel_=-1;
+    Ediff_1_ = -9999.;
+    Ediff_2_ = -9999.;  
+    Pfrac_1_=-9999.; 
+    Pfrac_2_=-9999.;
+    
+    aco_angle_1_Pi0EtaSmeared_ = 9999;
+    aco_angle_1_Pi0PhiSmeared_ = 9999;
+    aco_angle_1_Pi0ESmeared_ = 9999;
+    aco_angle_2_Pi0EtaSmeared_ = 9999;
+    aco_angle_2_Pi0PhiSmeared_ = 9999;
+    aco_angle_2_Pi0ESmeared_ = 9999;
 
-    std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
+    aco_angle_1_PiEtaSmeared_ = 9999;
+    aco_angle_1_PiPhiSmeared_ = 9999;
+    aco_angle_1_PiESmeared_ = 9999;
+    aco_angle_2_PiEtaSmeared_ = 9999;
+    aco_angle_2_PiPhiSmeared_ = 9999;
+    aco_angle_2_PiESmeared_ = 9999;
+
+    aco_angle_1_FullSmeared_ = 9999;
+    aco_angle_2_FullSmeared_ = 9999;
+        
+    /*std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
     
     std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
     std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
@@ -760,7 +835,7 @@ namespace ic {
       pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
       rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
       a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
-    }
+    }*/
     /* std::vector<ic::GenParticle> leptons;
     for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
     for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
@@ -770,7 +845,7 @@ namespace ic {
     TLorentzVector lvec4;
     if(leptons.size()>=2){
       cp_channel_=1;
-      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);    
+      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);
       lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0);
       lvec3 = ConvertToLorentz(leptons[0].vector());
       lvec4 = ConvertToLorentz(leptons[1].vector());
@@ -1080,6 +1155,469 @@ namespace ic {
       wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
     }
 
+    // CP in decay
+    // just to check the tau daughters pdg ID
+    //
+    // add smearing stuff first
+    gRandom = new TRandom3(0);
+    gRandom->SetSeed(100000*phi_1_);
+
+    TFile *ofile = new TFile("Resolutions.root");
+    if (!ofile) {
+      std::cout << "Warning, unable to open file " << std::endl;
+    }
+    TH1D *ohistPi0E = dynamic_cast<TH1D *>(ofile->Get("h_pi0_E_1_res"));
+    TH1D *ohistPi0Eta = dynamic_cast<TH1D *>(ofile->Get("h_pi0_eta_1_res"));
+    TH1D *ohistPi0Phi = dynamic_cast<TH1D *>(ofile->Get("h_pi0_phi_1_res"));
+
+    TH1D *ohistPiE   = dynamic_cast<TH1D *>(ofile->Get("h_pi_E_1_res"));
+    TH1D *ohistPiEta = dynamic_cast<TH1D *>(ofile->Get("h_pi_eta_1_res"));
+    TH1D *ohistPiPhi = dynamic_cast<TH1D *>(ofile->Get("h_pi_phi_1_res"));
+
+    // for pi0 from lead tau
+    rand_from_histPi0E_1   = ohistPi0E->GetRandom()+1;
+    rand_from_histPi0Eta_1 = ohistPi0Eta->GetRandom()+1;
+    rand_from_histPi0Phi_1 = ohistPi0Phi->GetRandom()+1;
+    // for pi0 from sublead tau
+    rand_from_histPi0E_2   = ohistPi0E->GetRandom()+1;
+    rand_from_histPi0Eta_2 = ohistPi0Eta->GetRandom()+1;
+    rand_from_histPi0Phi_2 = ohistPi0Phi->GetRandom()+1;
+
+    // for pi from lead tau
+    rand_from_histPiE_1   = ohistPiE->GetRandom()+1;
+    rand_from_histPiEta_1 = ohistPiEta->GetRandom()+1;
+    rand_from_histPiPhi_1 = ohistPiPhi->GetRandom()+1;
+    // for pi from sublead tau
+    rand_from_histPiE_2   = ohistPiE->GetRandom()+1;
+    rand_from_histPiEta_2 = ohistPiEta->GetRandom()+1;
+    rand_from_histPiPhi_2 = ohistPiPhi->GetRandom()+1;
+
+    ofile->Close();
+    delete ofile;
+
+    /* std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters; */
+    /* for (unsigned i = 0; i < gen_particles.size(); ++i) { */
+    /*   std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle()); */
+    /*   unsigned count_pi = 0; */
+    /*   unsigned count_pi0 = 0; */
+
+    /*   if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){ */
+    /*     ic::GenParticle* tau = gen_particles[i]; */
+    /*     /1* std::cout << "tau: " << i << std::endl; *1/ */
+    /*     for (unsigned d : tau->daughters()) { */
+    /*       unsigned daughter_id = std::abs(gen_particles[d]->pdgid()); */
+    /*       /1* std::cout << "tau daughters pdgid " << gen_particles[d]->pdgid() << std::endl; *1/ */
+    /*       if (daughter_id == 211) { */
+    /*         /1* std::cout << "pi 4 vector: " << gen_particles[d]->vector() << std::endl; *1/ */
+    /*         rho.first = gen_particles[d]; */
+    /*         ++count_pi; */
+    /*       } */
+    /*       else if (daughter_id == 111) { */
+    /*         /1* std::cout << "pi0 4 vector: " << gen_particles[d]->vector() << std::endl; *1/ */
+    /*         rho.second = gen_particles[d]; */
+    /*         ++count_pi0; */
+    /*       } */
+    /*     } */
+    /*     /1* std::cout << "pi count: " << count_pi << std::endl; *1/ */
+    /*     /1* std::cout << "pi0 count: " << count_pi0 << std::endl; *1/ */
+
+    /*     if (count_pi == 1 && count_pi0 == 1){ */
+    /*       /1* std::cout << "tau p4: " << tau->vector() << std::endl; *1/ */
+    /*       /1* std::cout << "pi p4: " << rho.first->vector() << std::endl; *1/ */
+    /*       /1* std::cout << "pi0 p4: " << rho.second->vector() << std::endl; *1/ */
+
+    /*       rho_daughters.push_back(rho); */
+    /*     } */
+    /*   } */
+    /* } */
+
+    //
+    //
+    /* for (unsigned i=0 ; i < gen_tau_jets_ptr.size(); ++i ) {
+      std::vector<std::size_t> id = gen_tau_jets_ptr[i]->constituents();
+      std::cout << "tau " << i << ":  ";
+      std::vector<GenParticle*> tau_daughters;
+      for (unsigned i = 0; i < gen_particles.size(); ++i) {
+        for (unsigned j = 0; j < id.size(); ++j) {
+          if(gen_particles[i]->id() == id[j]){
+            tau_daughters.push_back(gen_particles[i]);
+            std::cout << gen_particles[i]->pdgid() << "   ";
+            continue;
+          }
+        }
+      }
+      std::cout << "\n";
+    } */
+    
+    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
+    std::vector<std::vector<GenParticle*>> a1_daughters;
+    std::vector<Candidate*> tau_rhos;
+    std::vector<GenParticle*> pi_daughters;
+    unsigned count_taus=0;   
+    for (unsigned i = 0; i < gen_particles.size(); ++i) {
+      if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        GenParticle* tau = gen_particles[i];
+        ++count_taus;
+        bool foundRho = false;
+        bool foundPi = false;
+        bool foundLep = false;
+        bool foundA1 = false;
+        unsigned count_pi0 = 0;
+        unsigned count_pi = 0;
+        unsigned count_K = 0;
+        unsigned count_hadr = 0;
+        unsigned count_gamma =0;
+        unsigned count_lep=0;
+
+        std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
+        std::pair<GenParticle*,GenParticle*> prho = std::make_pair(new GenParticle(), new GenParticle());
+        std::pair<GenParticle*,GenParticle*> lep = std::make_pair(new GenParticle(), new GenParticle());
+        std::vector<GenParticle*> a1 = {};
+        GenParticle* pi = new GenParticle();
+        std::vector<int> daughters = gen_particles[i]->daughters();
+
+        for (unsigned d : daughters){
+          unsigned daughter_id = fabs(gen_particles[d]->pdgid());
+          if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
+          ++count_hadr;
+          if(daughter_id == 11 || daughter_id == 13) {
+            ++count_lep;
+            lep.first = gen_particles[d];
+            lep.second = tau;
+            continue;
+          }
+          if (daughter_id == 22) {
+            ++count_gamma;
+            continue;
+          }
+          if (daughter_id == 211) {
+            ++count_pi;
+            /* std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl; */
+            rho.first = gen_particles[d];
+            pi = gen_particles[d];
+            prho.first = pi;
+            prho.second = tau;
+            a1.push_back(gen_particles[d]);
+            continue;
+          }
+          if (daughter_id == 130 || daughter_id == 310 
+                  || daughter_id == 311 || daughter_id == 321) {
+            ++count_K;
+            continue;
+          }
+          if (daughter_id == 111) {
+            ++count_pi0;
+            rho.second = gen_particles[d];
+            /* std::cout << "pi zero " << gen_particles[d]->vector() << std::endl; */
+            continue;
+          }
+          if (daughter_id == 213) {
+            /* std::cout << "found 213 rho " << daughter_id << std::endl; */
+            count_pi0 = 0;
+            count_pi = 0;
+            count_K = 0;
+            count_hadr=0;
+            count_gamma=0;
+            std::vector<int> gdaughters = gen_particles[d]->daughters(); 
+            for (unsigned g : gdaughters){
+              unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
+              ++count_hadr;
+              if (gdaughter_id == 22) {
+                ++count_gamma;
+                continue;
+              }
+              if (gdaughter_id == 211) {
+                ++count_pi;
+                rho.first = gen_particles[g];
+                continue;
+              }
+              if (gdaughter_id == 111) {
+                ++count_pi0;
+                rho.second = gen_particles[g];
+                continue;
+              }
+            }
+            foundRho = true;
+            break;
+          }
+        }
+        foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1);
+        foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0);
+        foundLep = count_lep==1;
+        foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
+        if(foundRho) {
+          rho_daughters.push_back(rho);
+          Candidate * tauvis = new Candidate();
+          tauvis->set_vector(rho.first->vector()+rho.second->vector());
+          tau_rhos.push_back(tauvis);
+        }
+        if(foundPi) {
+          prho_daughters.push_back(prho);
+          pi_daughters.push_back(pi);
+        }
+        if(foundLep) {
+          l_daughters.push_back(lep);
+        }
+        if(foundA1)
+          a1_daughters.push_back(a1);
+
+      }
+    }
+
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+ 
+    if(prho_daughters.size()==1){
+      Pfrac_1_ = prho_daughters[0].first->vector().P()/prho_daughters[0].second->vector().P();
+    }
+    if(prho_daughters.size()==2){
+      Pfrac_2_ = prho_daughters[1].first->vector().P()/prho_daughters[1].second->vector().P();
+    }
+
+    if(prho_daughters.size()==2){
+      cp_channel_=1;
+    }
+
+    if (rho_daughters.size()==1 && pi_daughters.size()==1){
+        cp_channel_=2;
+        /* std::cout << "cp channel: " << cp_channel_ << std::endl; */
+        //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
+        //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
+        //lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
+        //lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+        // test things
+        // charge prong
+        /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          /* std::cout << "vertex " << i << " " << vertex_vec[i]->vx() << " " << vertex_vec[i]->vy() << " " << vertex_vec[i]->vz() << std::endl; */
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        /* std::cout << "genv : " << gen_vertices[0]->vx() << " " << gen_vertices[0]->vy() << " " << gen_vertices[0]->vz() << std::endl; */
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+
+        TVector3 IPtest = getIPVector(prho_daughters[0].second);
+        /* std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl; */
+        /* std::cout << "tau vector: " << prho_daughters[0].second->vector() << std::endl; */
+        /* std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << " " << prho_daughters[0].first->vtx().vy() << " " << prho_daughters[0].first->vtx().vz() << std::endl; */
+        /* std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << " " << prho_daughters[0].second->vtx().vy() << " " << prho_daughters[0].second->vtx().vz() << std::endl; */
+
+        TLorentzVector ip_vec(
+                prho_daughters[0].first->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
+                prho_daughters[0].first->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
+                prho_daughters[0].first->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
+                0.);
+
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        /* lvec2 = ConvertToLorentz(prho_daughters[0].second->vector()); //tau */
+        lvec2 = ip_vec;
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
+        //
+        //
+
+        // TESTING
+        // rho first is pi charge
+        // rho second is pi zero
+        //print pdgids 
+        /* std::cout << "pdgid of pizero_rho: " << rho_daughters[0].first->pdgid() << */
+        /*     "pdgid of pi_charge_rho: " << rho_daughters[0].second->pdgid() << */ 
+        /*     "pdgid of pi_charge_tau: " << prho_daughters[0].first->pdgid() << std::endl; */
+        /* TVector3 boost = (lvec3 + lvec4).BoostVector(); */
+        /* lvec3.Boost(-boost); //boost pi charge */
+        /* lvec1.Boost(-boost); //boost pi zero */
+        // find unit vector for transverse neutral pion momentum
+        /* TVector3 qstar_perp = (lvec1.Vect() - lvec1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit(); */
+        /* std::cout << "qstar perp: " << qstar_perp.Px() << qstar_perp.Py() << qstar_perp.Pz() << std::endl; */
+
+        // a- part
+        //
+        /* lvec4.Boost(-boost); */
+        /* ip_vec.Boost(-boost); */
+        // component of ip vec perpendicular to 3-momentum of pion
+        /* TVector3 ip_vec_perp = (ip_vec.Vect() - ip_vec.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit(); */
+        /* std::cout << "IP vec perp: " << ip_vec_perp.Px() << ip_vec_perp.Py() << ip_vec_perp.Pz() << std::endl; */
+
+        /* double anglee = acos(qstar_perp.Dot(ip_vec_perp)); */
+        /* std::cout << "angle from perps: " << anglee << std::endl; */
+        /* double signn = lvec4.Vect().Unit().Dot(qstar_perp.Cross(ip_vec_perp)); */
+        /* std::cout << "sign from perps: " << signn << std::endl; */
+    }
+
+    else if (rho_daughters.size()==1 && l_daughters.size()==1){
+        cp_channel_=4;
+        /* std::cout << "cp channel: " << cp_channel_ << std::endl; */
+        /* TVector3 IPtest = getIPVector(l_daughters[0].second); */
+        TLorentzVector ip_vec(
+                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
+                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
+                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
+                0.);
+        /* std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl; */
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
+        /* lvec2 = ConvertToLorentz(l_daughters[0].second->vector()); */
+        lvec2 = ip_vec;
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
+        lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+    }
+
+    if (rho_daughters.size()==2){
+        cp_channel_=3;  
+        // do smearing of pi 0 energy
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());   
+        lvec2 = ConvertToLorentz(rho_daughters[1].second->vector());
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());   
+        lvec4 = ConvertToLorentz(rho_daughters[1].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {rho_daughters[1].first, rho_daughters[1].second}),TVector3());
+        Ediff_1_ = (rho_daughters[0].first->vector().E() - rho_daughters[0].second->vector().E())/
+            (rho_daughters[0].first->vector().E() + rho_daughters[0].second->vector().E());
+        Ediff_2_ = (rho_daughters[1].first->vector().E() - rho_daughters[1].second->vector().E())/
+            (rho_daughters[1].first->vector().E() + rho_daughters[1].second->vector().E());
+    }
+    /* if (prho_daughters.size()==2){
+        cp_channel_=1;
+        lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
+        lvec2 = ConvertToLorentz(prho_daughters[1].second->vector());
+        lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
+        lvec4 = ConvertToLorentz(prho_daughters[1].first->vector());
+        //cp_sign_1_ = YRho(std::vector<GenParticle*>({prho_daughters[0].first, prho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({prho_daughters[1].first, prho_daughters[1].second}),TVector3());
+    } */
+    if(cp_channel_==2 || cp_channel_==4){
+      bool doAnti = false;
+      if (cp_channel_ == 2) {
+        doAnti = pi_daughters[0]->pdgid() > 0 ? true : false;
+      }
+      else if (cp_channel_ == 4){
+        doAnti = l_daughters[0].first->pdgid() < 0 ? true : false;
+      }
+
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false,true,doAnti);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+    }
+
+    if(cp_channel_!=-1 && cp_channel_==3){
+      /* std::cout << "aco angle before " << aco_angle_1_ << std::endl; */
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+      /* std::cout << "aco angle after " << aco_angle_1_ << std::endl; */
+
+      // smear full
+      /* std::cout << "lvec1 pt, eta, phi, E, px, py, pz, p: " << lvec1.Pt() << " "  << lvec1.Eta() << " " << lvec1.Phi() << " "  << lvec1.E() << " " << lvec1.Px() << " " << lvec1.Py() << " " << lvec1.Pz() << " " << lvec1.P() << std::endl; */
+      TLorentzVector FullSmearedlvec1 = SmearVectorVar(lvec1, rand_from_histPi0Eta_1, 0, rand_from_histPi0Eta_1, rand_from_histPi0Phi_1, rand_from_histPi0E_1);
+      TLorentzVector FullSmearedlvec2 = SmearVectorVar(lvec2, rand_from_histPi0Eta_2, 0, rand_from_histPi0Eta_2, rand_from_histPi0Phi_2, rand_from_histPi0E_2);
+      TLorentzVector FullSmearedlvec3 = SmearVectorVar(lvec3, rand_from_histPiEta_1, 0, rand_from_histPiEta_1, rand_from_histPiPhi_1, rand_from_histPiE_1);
+      TLorentzVector FullSmearedlvec4 = SmearVectorVar(lvec4, rand_from_histPiEta_2, 0, rand_from_histPiEta_2, rand_from_histPiPhi_2, rand_from_histPiE_2);
+      /* std::cout << "FullSmearedlvec1 pt, eta, phi, E, px, py, pz, p: " << FullSmearedlvec1.Pt() << " "  << FullSmearedlvec1.Eta() << " " << FullSmearedlvec1.Phi() << " "  << FullSmearedlvec1.E() << " " << FullSmearedlvec1.Px() << " " << FullSmearedlvec1.Py() << " " << FullSmearedlvec1.Pz() << " " << FullSmearedlvec1.P() << std::endl; */
+
+      aco_angle_1_FullSmeared_ = IPAcoAngle(FullSmearedlvec1, FullSmearedlvec2, FullSmearedlvec3, FullSmearedlvec4,false);
+      aco_angle_2_FullSmeared_ = IPAcoAngle(FullSmearedlvec1, FullSmearedlvec2, FullSmearedlvec3, FullSmearedlvec4,true);
+
+      // need to smear lvec1 and lvec2 for pi0
+      /* std::cout << "lvec1 pt, eta, phi, E, px, py, pz, p: " << lvec1.Pt() << " "  << lvec1.Eta() << " " << lvec1.Phi() << " "  << lvec1.E() << " " << lvec1.Px() << " " << lvec1.Py() << " " << lvec1.Pz() << " " << lvec1.P() << std::endl; */
+      /* std::cout << "smearing E value " << rand_from_histPi0E_1 << std::endl; */
+      /* std::cout << "smearing Eta value " << rand_from_histPi0Eta_1 << std::endl; */
+      /* std::cout << "smearing Phi value " << rand_from_histPi0Phi_1 << std::endl; */
+      TLorentzVector EtaSmearedlvec1 = SmearVectorVar(lvec1, rand_from_histPi0Eta_1, 1);
+      TLorentzVector EtaSmearedlvec2 = SmearVectorVar(lvec2, rand_from_histPi0Eta_2, 1);
+      TLorentzVector PhiSmearedlvec1 = SmearVectorVar(lvec1, rand_from_histPi0Phi_1, 2);
+      TLorentzVector PhiSmearedlvec2 = SmearVectorVar(lvec2, rand_from_histPi0Phi_2, 2);
+      TLorentzVector ESmearedlvec1   = SmearVectorVar(lvec1, rand_from_histPi0E_1, 3);
+      TLorentzVector ESmearedlvec2   = SmearVectorVar(lvec2, rand_from_histPi0E_2, 3);
+
+      TLorentzVector EtaSmearedlvec3 = SmearVectorVar(lvec3, rand_from_histPiEta_1, 1);
+      TLorentzVector EtaSmearedlvec4 = SmearVectorVar(lvec4, rand_from_histPiEta_2, 1);
+      TLorentzVector PhiSmearedlvec3 = SmearVectorVar(lvec3, rand_from_histPiPhi_1, 2);
+      TLorentzVector PhiSmearedlvec4 = SmearVectorVar(lvec4, rand_from_histPiPhi_2, 2);
+      TLorentzVector ESmearedlvec3   = SmearVectorVar(lvec3, rand_from_histPiE_1, 3);
+      TLorentzVector ESmearedlvec4   = SmearVectorVar(lvec4, rand_from_histPiE_2, 3);
+
+      /* std::cout << "ESmearedlvec1 pt, eta, phi, E, px, py, pz, p: " << ESmearedlvec1.Pt() << " "  << ESmearedlvec1.Eta() << " " << ESmearedlvec1.Phi() << " "  << ESmearedlvec1.E() << " " << ESmearedlvec1.Px() << " " << ESmearedlvec1.Py() << " " << ESmearedlvec1.Pz() << " " << ESmearedlvec1.P() << std::endl; */
+      /* std::cout << "EtaSmearedlvec1 pt, eta, phi, E, px, py, pz, p: " << EtaSmearedlvec1.Pt() << " "  << EtaSmearedlvec1.Eta() << " " << EtaSmearedlvec1.Phi() << " "  << EtaSmearedlvec1.E() << " " << EtaSmearedlvec1.Px() << " " << EtaSmearedlvec1.Py() << " " << EtaSmearedlvec1.Pz() << " " << EtaSmearedlvec1.P() << std::endl; */
+      /* std::cout << "PhiSmearedlvec1 pt, eta, phi, E, px, py, pz, p: " << PhiSmearedlvec1.Pt() << " "  << PhiSmearedlvec1.Phi() << " " << PhiSmearedlvec1.Phi() << " "  << PhiSmearedlvec1.E() << " " << PhiSmearedlvec1.Px() << " " << PhiSmearedlvec1.Py() << " " << PhiSmearedlvec1.Pz() << " " << PhiSmearedlvec1.P() << std::endl; */
+
+      pi_E_1_ = rho_daughters[0].first->vector().E();
+      pi_E_2_ = rho_daughters[1].first->vector().E();
+      pi0_E_1_ = rho_daughters[0].second->vector().E();
+      pi0_E_2_ = rho_daughters[1].second->vector().E();
+      pi0_ESmeared_1_ = ESmearedlvec1.E();
+      pi0_ESmeared_2_ = ESmearedlvec2.E();
+      pi_ESmeared_1_ = ESmearedlvec3.E();
+      pi_ESmeared_2_ = ESmearedlvec4.E();
+
+      // pi 0 smeared angles
+      /* std::cout << "smear aco angle before " << aco_angle_1_Pi0ESmeared_ << std::endl; */
+      aco_angle_1_Pi0ESmeared_ = IPAcoAngle(ESmearedlvec1, ESmearedlvec2, lvec3, lvec4,false);
+      aco_angle_1_Pi0EtaSmeared_ = IPAcoAngle(EtaSmearedlvec1, EtaSmearedlvec2, lvec3, lvec4,false);
+      aco_angle_1_Pi0PhiSmeared_ = IPAcoAngle(PhiSmearedlvec1, PhiSmearedlvec2, lvec3, lvec4,false);
+
+      aco_angle_2_Pi0ESmeared_ = IPAcoAngle(ESmearedlvec1, ESmearedlvec2, lvec3, lvec4,true);
+      aco_angle_2_Pi0EtaSmeared_ = IPAcoAngle(EtaSmearedlvec1, EtaSmearedlvec2, lvec3, lvec4,true);
+      aco_angle_2_Pi0PhiSmeared_ = IPAcoAngle(PhiSmearedlvec1, PhiSmearedlvec2, lvec3, lvec4,true);
+
+      /* std::cout << "smear aco angle after " << aco_angle_1_Pi0ESmeared_ << std::endl; */
+
+      // pi charged smeared angles
+      aco_angle_1_PiESmeared_   = IPAcoAngle(lvec1, lvec2, ESmearedlvec3,   ESmearedlvec4,false);
+      aco_angle_1_PiEtaSmeared_ = IPAcoAngle(lvec1, lvec2, EtaSmearedlvec3, EtaSmearedlvec4,false);
+      aco_angle_1_PiPhiSmeared_ = IPAcoAngle(lvec1, lvec2, PhiSmearedlvec3, PhiSmearedlvec4,false);
+
+      aco_angle_2_PiESmeared_   = IPAcoAngle(lvec1, lvec2, ESmearedlvec3,   ESmearedlvec4,true);
+      aco_angle_2_PiEtaSmeared_ = IPAcoAngle(lvec1, lvec2, EtaSmearedlvec3, EtaSmearedlvec4,true);
+      aco_angle_2_PiPhiSmeared_ = IPAcoAngle(lvec1, lvec2, PhiSmearedlvec3, PhiSmearedlvec4,true);
+
+      rho_daughters[0].second->set_vector(ConvertToPtEtaPhiEVector(ESmearedlvec1));
+      rho_daughters[1].second->set_vector(ConvertToPtEtaPhiEVector(ESmearedlvec2));
+      /* std::cout << "smeared vec rho_daughters[0].second " << rho_daughters[0].second->vector() << std::endl; */
+
+      /* std::cout << "cp sign 1 " << cp_sign_1_ << std::endl; */
+      cp_sign_1_Pi0ESmeared_ = 
+          YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3()) 
+          * YRho(std::vector<GenParticle*>({rho_daughters[1].first, rho_daughters[1].second}),TVector3());
+      /* std::cout << "cp sign 1 smeared " << cp_sign_1_Pi0ESmeared_ << std::endl; */
+
+    }
+
+    
+
+    //if(event->ExistsInTree("taus")){
+    //  std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+    //  unsigned count_taus==0;
+    //  for (auto p : rho_daughters){
+    //    Candidate *gen_rho = new Candidate();
+    //    gen_rho->set_vector(p.first->vector()+p.second->vector());
+    //    std::vector<Candiate*> gen_rho_vec = {gen_rho};
+    //    std::vector<std::pair<Tau*, Candidate*> > tau_matches = MatchByDR(taus, gen_rho_vec, 0.2, true, true);
+
+    //    if(tau_matches.size()>0){
+    //      Candidate *reco_pi = new Candidate();
+    //      Candidate *reco_p0 = new Candidate();
+    //      reco_pi.set_vector(tau_matches[0].first->vector());
+    //    }    
+    //    count_taus++; 
+    //  }
+    //}
+
     if(fs_) outtree_->Fill();
     
     return 0;
@@ -1091,6 +1629,7 @@ namespace ic {
     std::cout << "mm count = " << count_mm_ << std::endl;
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
+
     return 0;
   }
 

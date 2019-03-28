@@ -13,6 +13,7 @@ namespace ic {
     do_legacy_ = true;
     dilepton_label_ = "ditau";
     use_deep_csv_ = false;
+    use_deep_jet_ = false;
   }
 
   BTagCheck::~BTagCheck() {
@@ -52,26 +53,31 @@ namespace ic {
       hists_->Create("NBtag_otherflav_genmatch",19,pt_range,4,eta_range);
       hists_->Create("NTot_otherflav_genmatch",19,pt_range,4,eta_range);
       outtree_ = fs_->make<TTree>("btageff","btageff");
-      outtree_->Branch("wt",&wt); 
-      outtree_->Branch("pt",&pt);
-      outtree_->Branch("eta",&eta);
-      outtree_->Branch("csv_value",&csv);
-      outtree_->Branch("csv_value_deepcsv_b",&csv_b);
-      outtree_->Branch("csv_value_deepcsv_bb",&csv_bb);
-      outtree_->Branch("jet_flavour",&jet_flavour);
-      outtree_->Branch("gen_match",&gen_match);
-      outtree_->Branch("iso_1",&iso_1);
-      outtree_->Branch("iso_2",&iso_2);
-      outtree_->Branch("leptonveto",&leptonveto);
-      outtree_->Branch("os",&os);
-      outtree_->Branch("antiele_pass",&antiele_pass);
-      outtree_->Branch("antimu_pass",&antimu_pass);
-      outtree_->Branch("sf",&sf);
+      outtree_->Branch("wt",                     & wt);
+      outtree_->Branch("pt",                     & pt);
+      outtree_->Branch("eta",                    & eta);
+      outtree_->Branch("csv_value",              & csv);
+      outtree_->Branch("csv_value_deepcsv_b",    & csv_b);
+      outtree_->Branch("csv_value_deepcsv_bb",   & csv_bb);
+      outtree_->Branch("csv_value_deepjet_b",    & csv_b);
+      outtree_->Branch("csv_value_deepjet_bb",   & csv_bb);
+      outtree_->Branch("csv_value_deepjet_lepb", & csv_lepb);
+      outtree_->Branch("jet_flavour",            & jet_flavour);
+      outtree_->Branch("gen_match",              & gen_match);
+      outtree_->Branch("iso_1",                  & iso_1);
+      outtree_->Branch("iso_2",                  & iso_2);
+      outtree_->Branch("leptonveto",             & leptonveto);
+      outtree_->Branch("os",                     & os);
+      outtree_->Branch("antiele_pass",           & antiele_pass);
+      outtree_->Branch("antimu_pass",            & antimu_pass);
+      outtree_->Branch("sf",                     & sf);
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V3_B_F.csv";
-    if(era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    else if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+    else if(era_ == era::data_2017 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    else if (era_ == era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+    else if (era_ == era::data_2018 && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepJet_102XSF_V1.csv";
     std::cout << "SF: " << csv_file_path << std::endl;
     calib  = new const BTagCalibration("csvv2",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
@@ -209,6 +215,11 @@ namespace ic {
           csv_bb = embed_jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
           csv = csv_b + csv_bb;
         }
+        else if (use_deep_jet_) {
+          csv_b    = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+          csv_bb   = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+          csv_lepb = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+        }
         else {
           csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         }
@@ -219,10 +230,12 @@ namespace ic {
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
         if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
-        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && use_deep_csv_) tight_wp = 0.4941;
-        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !use_deep_csv_) tight_wp = 0.8838;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && use_deep_csv_) tight_wp = 0.4941;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && !use_deep_csv_) tight_wp = 0.8838;
+        else if (era_ == era::data_2018 && use_deep_csv_) tight_wp = 0.4184; //medium deepCSV wp
+        else if (era_ == era::data_2018 && use_deep_jet_) tight_wp = 0.2770; //medium deepJet wp
         if(jet_flavour == 5){
-          if(era_!=era::data_2016 && era_ != era::data_2017){
+          if(era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
@@ -233,7 +246,7 @@ namespace ic {
           }
         } else if(jet_flavour == 4){
           hists_->Fill("NTot_cflav",pt,eta,wt);
-          if(era_!=era::data_2016 && era_ != era::data_2017){
+          if(era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);

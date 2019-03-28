@@ -60,7 +60,7 @@ defaults = {
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
-    "ff_ss_closure":False,
+    "ff_ss_closure":False, "threePads":False,
 }
 
 if options.cfg:
@@ -342,6 +342,8 @@ parser.add_argument("--syst_xtrg", dest="syst_xtrg", type=str,
     help="Do shape uncertainty corresponding to shifting the tau leg efficiency of the cross-trigger up/down by 5%")
 parser.add_argument("--ff_ss_closure", dest="ff_ss_closure", action='store_true',
     help="If set then applies a non-closure correction to fake factor yields based on differences in SS data.")
+parser.add_argument("--threePads", dest="threePads", action='store_true',
+    help="If set then draws three pads (one ratio + additional).")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -394,12 +396,13 @@ if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 &&  antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
-        if options.era in ['cpsummer17','tauid2017']:
+        if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
-        if options.era in ['cpsummer17']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
+        if options.era in ['cpsummer17','cp18']:
+          # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon&&pt_1>25)&& pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -440,7 +443,7 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era in ['smsummer16','cpsummer16','tauid2016']: 
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>50)'
+        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>40)'
         cats['baseline_aisotau1'] = '(pt_1>50 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
@@ -464,7 +467,7 @@ elif options.channel == 'em':
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
-    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummer17','cp18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
@@ -479,7 +482,7 @@ if options.era in ['smsummer16']: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+if options.era in ['smsummer16','cpsummer16']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['cpsummer17']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 #if options.era in ['cpsummer16']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) &&  antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -526,7 +529,7 @@ if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)
 cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['vbf'])
 if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['vbf'])
 
-if options.era in ['cpsummer16','cpsummer17']:
+if options.era in ['cpsummer16','cpsummer17','cp18']:
   cats['ttbar'] = 'n_jets>0'  
   if options.channel in ['mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0)'
@@ -682,7 +685,82 @@ if options.channel == 'em':
     cats['tt_lowMjj'] =   '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_tt)
     cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
 
-    
+# CP in decays categories
+if options.channel == "mt":
+    cats["inclusive_mixed"]         = "(tau_decay_mode_2==1)"
+    cats["dijet_mixed"]             = "(n_jets>=2 && mjj>300)"
+    cats["0jet_mixed"]              = "({} && {})".format(cats["0jet"], cats["inclusive_mixed"])
+    cats["dijet_boosted_mixed"]     = "({} && pt_tt>100 && {})".format(cats["dijet_mixed"] ,cats["inclusive_mixed"])
+    cats["dijet_lowboost_mixed"]    = "({} && pt_tt<100 && {})".format(cats["dijet_mixed"] ,cats["inclusive_mixed"])
+    cats["boosted_mixed"]               = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_mixed"], cats["inclusive_mixed"])
+
+if options.channel == 'tt':
+    cats["inclusive_rho"]         = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+    # cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
+    cats["idg0p5"]                = "(rho_id_1>0.5 && rho_id_2>0.5)"
+    cats["idgl0p5"]               = "((rho_id_1>0.5 && rho_id_2<0.5) || (rho_id_1<0.5 && rho_id_2>0.5))"
+    cats["idl0p5"]                = "(rho_id_1<0.5 && rho_id_2<0.5)"
+    cats["rho_idg0p5"]            = "{} && {}".format(cats["inclusive_rho"], cats["idg0p5"])
+    cats["rho_idl0p5"]            = "{} && !({})".format(cats["inclusive_rho"], cats["idg0p5"])
+
+    cats["lowPtH_rho"]            = "({} && pt_tt<150)".format(cats["inclusive_rho"])
+    cats["highPtH_rho"]            = "({} && pt_tt>150)".format(cats["inclusive_rho"])
+
+    # cut based categories
+    cats["0jet_rho"]              = "({} && {})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["1jet_rho"]              = "(n_jets==1 && {})".format(cats["inclusive_rho"])
+    cats["2jet_rho"]              = "(n_jets==2 && {})".format(cats["inclusive_rho"])
+    cats["vbf_rho"]                   = "({} && mjj>500 && n_jets>=2)".format(cats["inclusive_rho"])
+    cats["dijet_rho"]             = "({} && {})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["dijet_boosted_rho"]     = "({} && pt_tt>100 && {})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["dijet_lowboost_rho"]    = "({} && pt_tt<100 && {})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["boosted_rho"]           = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_rho"], cats["inclusive_rho"])
+
+    cats["0jet_rho_idg0p5"]           = "({} && {})".format(cats["0jet_rho"], cats["idg0p5"])
+    cats["1jet_rho_idg0p5"]           = "({} && {})".format(cats["1jet_rho"], cats["idg0p5"])
+    cats["2jet_rho_idg0p5"]           = "({} && {})".format(cats["2jet_rho"], cats["idg0p5"])
+    cats["dijet_boosted_rho_idg0p5"]  = "({} && {})".format(cats["dijet_boosted_rho"], cats["idg0p5"])
+    cats["dijet_lowboost_rho_idg0p5"] = "({} && {})".format(cats["dijet_lowboost_rho"], cats["idg0p5"])
+    cats["dijet_rho_idg0p5"]          = "({} && {})".format(cats["dijet_rho"], cats["idg0p5"])
+    cats["boosted_rho_idg0p5"]        = "({} && {})".format(cats["boosted_rho"], cats["idg0p5"])
+
+    cats["0jet_rho_idl0p5"]           = "({} && !({}))".format(cats["0jet_rho"], cats["idg0p5"])
+    cats["1jet_rho_idl0p5"]           = "({} && !({}))".format(cats["1jet_rho"], cats["idg0p5"])
+    cats["2jet_rho_idl0p5"]           = "({} && !({}))".format(cats["2jet_rho"], cats["idg0p5"])
+    cats["dijet_boosted_rho_idl0p5"]  = "({} && !({}))".format(cats["dijet_boosted_rho"], cats["idg0p5"])
+    cats["dijet_lowboost_rho_idl0p5"] = "({} && !({}))".format(cats["dijet_lowboost_rho"], cats["idg0p5"])
+    cats["dijet_rho_idl0p5"]          = "({} && !({}))".format(cats["dijet_rho"], cats["idg0p5"])
+    cats["boosted_rho_idl0p5"]        = "({} && !({}))".format(cats["boosted_rho"], cats["idg0p5"])
+
+    # MVA multiclass categories
+    mva_ggh                  = '(IC_Feb13_fix1_max_index==0)'
+    mva_jetFakes             = '(IC_Feb13_fix1_max_index==1)'
+    mva_zttEmbed             = '(IC_Feb13_fix1_max_index==2)'
+
+    cats['higgs']            = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+
+    # both taus pass ID>0.5
+    cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_idg0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_idg0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
+
+    # one tau passes ID>0.5
+    cats['higgs_idgl0p5']    = '({} && {})'.format(cats["higgs"], cats["idgl0p5"])
+    cats['zttEmbed_idgl0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idgl0p5"])
+    cats['jetFakes_idgl0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idgl0p5"])
+
+    # both taus fail ID>0.5
+    cats['higgs_idl0p5']     = '({} && {})'.format(cats["higgs"], cats["idl0p5"])
+    cats['zttEmbed_idl0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idl0p5"])
+    cats['jetFakes_idl0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idl0p5"])
+
+    # !(both taus pass ID>0.5)
+    cats['higgs_NOTidg0p5']     = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
+    cats['zttEmbed_NOTidg0p5']  = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
+    cats['jetFakes_NOTidg0p5']  = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
+
   
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16']: # Remove the False when finished!!!!!
@@ -819,7 +897,7 @@ if options.era in ["smsummer16"]:
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
 
-if options.era in ['cpsummer16','tauid2016','cpsummer17','tauid2017']:
+if options.era in ['cpsummer16','tauid2016','cpsummer17','tauid2017','cp18']:
   # define these selections to make them more compatible with the fake-factor method and embedded samples
   if options.channel =='em':
     z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
@@ -956,6 +1034,37 @@ if options.era in ['cpsummer17','tauid2017']:
     if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
     if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
 
+if options.era in ['cp18']:
+    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    # ztt_samples = ['DYJetsToLL'] # NL0 filelists
+    top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+    vv_samples = [
+            'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','T-t','WWTo2L2Nu',
+            'WWTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','WZTo3LNu-ext1','WZTo2L2Q',
+            'ZZTo2L2Nu-ext1','ZZTo2L2Nu-ext2','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L'
+            ]
+    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    wgam_samples = ['WGToLNuG']
+    ewkz_samples = ['EWKZ2Jets']
+    gghww_samples = []
+    qqhww_samples = []
+    
+    if options.channel in ['mt','zmm','mj']:
+        data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
+    if options.channel == 'em':
+        data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
+    if options.channel == 'et' or options.channel == 'zee':
+        data_samples = ['SingleElectronA','SingleElectronB','SingleElectronC','SingleElectronD']
+    if options.channel == 'tt':
+        data_samples = ['TauA','TauB','TauC','TauD']
+
+    # if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
+    # if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF']
+    # if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF']
+    # if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF']
+    # if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
+    # if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
+
 if options.method==0: ztt_samples+=ewkz_samples
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
@@ -963,23 +1072,33 @@ if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_
 
 if options.era in ['cpsummer16']: 
     sm_samples = { 
-        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
-        'qqH_htt' : 'VBFHToTauTau_M-*', 
-        'WplusH_htt' : 'WplusHToTauTau_M-*', 
-        'WminusH_htt' : 'WminusHToTauTau_M-*', 
-        'ZH_htt' : 'ZHToTauTau_M-*', 
-        'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
-        'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
-        'qqHps_htt' : 'VBFHiggs0M_M-*', 
-        'ZHsm_htt' : 'ZHiggs0PM_M-*',
-        'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
-        'ZHps_htt' : 'ZHiggs0M_M-*',
-        'WHsm_htt' : 'WHiggs0PM_M-*',
-        'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
-        'WHps_htt' : 'WHiggs0M_M-*',
-        'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
-        'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
-        'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+        # test CP in decay samples
+        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner",
+        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner",
+        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner",
+
+        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner",
+        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner",
+        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner",
+
+        # 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
+        # 'qqH_htt' : 'VBFHToTauTau_M-*',
+
+        # 'WplusH_htt' : 'WplusHToTauTau_M-*', 
+        # 'WminusH_htt' : 'WminusHToTauTau_M-*', 
+        # 'ZH_htt' : 'ZHToTauTau_M-*', 
+        # 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
+        # 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
+        # 'qqHps_htt' : 'VBFHiggs0M_M-*', 
+        # 'ZHsm_htt' : 'ZHiggs0PM_M-*',
+        # 'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
+        # 'ZHps_htt' : 'ZHiggs0M_M-*',
+        # 'WHsm_htt' : 'WHiggs0PM_M-*',
+        # 'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
+        # 'WHps_htt' : 'WHiggs0M_M-*',
+        # 'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
+        # 'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
+        # 'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
         #'ggHsm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_sm',
         #'ggHmm_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
         #'ggHps_jhu_htt': 'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar'
@@ -1008,6 +1127,18 @@ if options.era in ['cpsummer17']:
             'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
             'WHsm_htt' : 'WHiggs0PMToTauTau',
             }
+
+if options.era in ['cp18']:
+    sm_samples = {
+        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*', 
+        'qqH_htt' : 'VBFHToTauTau_M-*-ext1',
+
+        'WplusH_htt': 'WplusHToTauTau_M-*', 
+        'WminusH_htt': 'WminusHToTauTau_M-*', 
+        }
+
+
+
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -1354,10 +1485,10 @@ else:
           qcd_os_ss_ratio = 1.0
           qcd_os_ss_ratio = 1.13 
           if options.cat == '0jet':
-            if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 0.97
+            if options.era in ['cpsummer16','cpsummer17','cp18']: qcd_os_ss_ratio = 0.97
             else: qcd_os_ss_ratio = 1.0
           elif options.cat == 'boosted':
-            if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 1.61
+            if options.era in ['cpsummer16','cpsummer17','cp18']: qcd_os_ss_ratio = 1.61
             else: qcd_os_ss_ratio = 1.28
           elif options.cat in ['vbf']: qcd_os_ss_ratio = 1.0
           elif options.cat in ['dijet','dijet_lowboost','dijet_boosted',
@@ -1369,10 +1500,10 @@ else:
           #qcd_os_ss_ratio = 1.07
           qcd_os_ss_ratio = 1.12
           if options.cat == '0jet':
-            if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 1.15
+            if options.era in ['cpsummer16','cpsummer17','cp18']: qcd_os_ss_ratio = 1.15
             else: qcd_os_ss_ratio = 1.07
           elif options.cat == 'boosted':
-            if options.era in ['cpsummer16','cpsummer17']: qcd_os_ss_ratio = 1.18
+            if options.era in ['cpsummer16','cpsummer17','cp18']: qcd_os_ss_ratio = 1.18
             else: qcd_os_ss_ratio = 1.06
           elif options.cat in ['vbf']: qcd_os_ss_ratio = 1.0
           elif options.cat in ['dijet','dijet_lowboost','dijet_boosted',
@@ -1757,7 +1888,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   else:
     ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ztt_node)
-  if options.era in ['smsummer16','cpsummer16','tauid2016','tauid2017','cpsummer17'] and options.method!=0: 
+  if options.era in ['smsummer16','cpsummer16','tauid2016','tauid2017','cpsummer17','cp18'] and options.method!=0: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
@@ -2054,6 +2185,24 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
                     sample_name = mssm_lo_samples['bbH-LO'].replace('*',mass)
                     add_name_2 = bbh_add_name
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name_2+mass+add_name, sample_name, plot, full_selection))
+
+# for CP signals
+# need to multiply by the weights wt_cp_sm/ps/mm
+def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
+    weights = {"sm": "wt_cp_sm", "ps": "wt_cp_ps", "mm": "wt_cp_mm"}
+    if get_os: 
+        OSSS = 'os'
+    else: 
+        OSSS = '!os'
+    if options.gen_signal: 
+        OSSS='1' 
+    for key, sample in sm_samples.iteritems():
+        for name in weights:
+            if key.split("_")[1] == name:
+                weight=wt+"*"+weights[name]
+                full_selection = BuildCutString(weight, sel, cat, OSSS)
+                name = key
+                ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
 
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
   weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
@@ -2590,7 +2739,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
-        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017']: 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017','cp18']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
     
     else:
@@ -2627,7 +2776,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
-        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017'] and options.method!=0: 
+        if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','tauid2016','cpsummer17','tauid2017','cp18'] and options.method!=0: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16'] and options.channel == 'em':
             GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
@@ -2655,7 +2804,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             procs=[]
             for proc in sm_samples:
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
-            GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
+            GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
+            # GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''
             if options.bbh_nlo_masses: bbh_add_name = '-LO'
@@ -3154,6 +3304,7 @@ if not options.no_plot:
         options.x_blind_min,
         options.x_blind_max,
         options.ratio,
+        options.threePads,
         options.log_y,
         options.log_x,
         options.ratio_range,
@@ -3179,7 +3330,8 @@ if not options.no_plot:
         options.embedding,
         vbf_background,
         options.split_sm_scheme,
-        options.ggh_scheme
+        options.ggh_scheme,
+        options.cat,
         )
     else:    
       plotting.HTTPlotSignal(nodename, 
@@ -3258,7 +3410,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16','cpsummer17'] and options.channel != 'zmm':
+if options.era in ["smsummer16",'cpsummer16','cpsummer17','cp18'] and options.channel != 'zmm':
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []

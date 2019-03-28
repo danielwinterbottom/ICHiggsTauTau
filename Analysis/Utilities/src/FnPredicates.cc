@@ -249,6 +249,37 @@ namespace ic {
     return result;
   } 
 
+  bool PFJetID2018(PFJet const* jet) {
+    // Applying JetID criteria (not JetIDLepVeto) from 
+    // https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2018
+    double eta = fabs(jet->eta());
+    bool result = false;
+    
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+    
+    if (eta <= 2.6) {
+      result = neutralFrac   < 0.90
+      && jet->neutral_em_energy_frac()    < 0.90
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1.
+      && jet->charged_had_energy_frac()   > 0.
+      && jet->charged_multiplicity()      > 0.;
+    } else if (eta <= 2.7){
+      result = neutralFrac < 0.90
+      && jet->neutral_em_energy_frac()   < 0.99
+      && jet->charged_multiplicity()     > 0.;
+    } else if(eta<=3.0){
+      result = jet->neutral_em_energy_frac() < 0.99
+      && jet->neutral_em_energy_frac()       > 0.02
+      && jet->neutral_multiplicity()         > 2;
+    }
+    else{
+      result = jet->neutral_em_energy_frac() < 0.90
+      && neutralFrac                         > 0.02
+      && jet->neutral_multiplicity()         >10;
+    }
+    return result;
+  } 
+
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),
     // Pt3050_Loose   = cms.vdouble(-0.80,-0.74,-0.68,-0.77)
@@ -1954,12 +1985,12 @@ namespace ic {
         }
         if (has_tau_daughter) continue;
         if (has_lepton_daughter && !include_leptonic) continue;
-        int tauFlag=0;
+        int tauFlag = -1;
+        if(count_tot==1 && count_pi==1 && count_pi0==0) tauFlag=0;
         if(count_tot==2 && count_pi==1 && count_pi0==1) tauFlag=1; 
-        if(count_tot==1 && count_pi==1 && count_pi0==0) tauFlag=2;
-        if(count_tot==3 && count_pi==1 && count_pi0==2) tauFlag=3;
-        if(count_tot==3 && count_pi==3 && count_pi0==0) tauFlag=4;
-        if(count_tot==4 && count_pi==3 && count_pi0==1) tauFlag=5;
+        if(count_tot==3 && count_pi==1 && count_pi0==2) tauFlag=2;
+        if(count_tot==3 && count_pi==3 && count_pi0==0) tauFlag=10;
+        if(count_tot==4 && count_pi==3 && count_pi0==1) tauFlag=11;
         std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
         taus.push_back(GenJet());
         ROOT::Math::PtEtaPhiEVector vec;
@@ -2214,7 +2245,43 @@ namespace ic {
     bool isRho = countgamma == 2 && countpi == 1;
     if (isRho) tau_rho_daughter = {pi,pi0};
     return std::make_pair(isRho, tau_rho_daughter);
-  }
+    }
+
+    // new function for rho daughters
+    /* std::vector<std::pair<ic::GenParticle*>> GetTauRhoDaughterFromGenParticles */
+    /*     (std::vector<ic::GenParticle *> genParticles, std::vector<std::size_t> id) { */
+    /*   unsigned count_taus=0; */
+    /*   for (unsigned i = 0; i < genParticles.size(); ++i) { */
+    /*     if(std::fabs(genParticles[i]->pdgid()) == 15 && genParticles[i]->statusFlags()[IsLastCopy]){ */
+    /*       ic::GenParticle* tau = gen_particles[i]; */
+    /*       std::cout << tau->daughters() << std::endl; */
+    /*       break; */
+    /*       std::cout << "" << std::endl; */
+    /*       ++count_taus; */
+    /*       bool isRho = false; */
+    /*       std::pair<ic::GenParticle*,ic::GenParticle*> rho = */ 
+    /*           std::make_pair(new ic::GenParticle(), new ic::GenParticle()); */
+        
+    /*       /1* for (unsigned d : tau->daughters()){ *1/ */
+    /*       /1*   unsigned daughter_id = std::fabs(gen_particles[d]->pdgid()); *1/ */
+    /*       /1*   if (daughter_id == 211) { *1/ */
+    /*       /1*     rho.first = gen_particles[d]; *1/ */
+    /*       /1*     ++count_pi; *1/ */
+    /*       /1*     continue; *1/ */
+    /*       /1*   } *1/ */
+    /*       /1*   if (daughter_id == 111) { *1/ */
+    /*       /1*     gammasP4 += gen_particles[d]->p4(); *1/ */
+    /*       /1*     ++count_gamma; *1/ */
+    /*       /1*     continue; *1/ */
+    /*       /1*   } *1/ */
+    /*       /1* } *1/ */
+    /*       /1* isRho = (count_gamma==2 && count_pi==1); *1/ */
+    /*       /1* rho.second = *1/ */ 
+
+    /*     } */
+    /*   } */
+    /* } */
+
   
     std::pair<bool, std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;
@@ -2260,35 +2327,163 @@ namespace ic {
       out_vec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),input_vec.M());
       return out_vec;
   }
+
   TVector3 ConvertToTVector3(ROOT::Math::PtEtaPhiEVector input_vec){
       TVector3 out_vec;
       out_vec.SetXYZ(input_vec.Px(),input_vec.Py(),input_vec.Pz());
       return out_vec;
   }
+
+  ROOT::Math::PtEtaPhiEVector ConvertToPtEtaPhiEVector(TLorentzVector input_vec){
+      ROOT::Math::PtEtaPhiEVector out_vec;
+      out_vec.SetPt(input_vec.Pt());
+      out_vec.SetEta(input_vec.Eta());
+      out_vec.SetPhi(input_vec.Phi());
+      out_vec.SetE(input_vec.E());
+      return out_vec;
+  }
   
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+  TLorentzVector SmearVectorVar(TLorentzVector input_vec, double smearVal, unsigned indexToSmear, double smearVal_Eta, double smearVal_Phi, double smearVal_E) {
+    TLorentzVector out_vec = input_vec;
+    if (indexToSmear == 1) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt()+(input_vec.P()*((1/std::cosh(input_vec.Eta() * smearVal))-(1/std::cosh(input_vec.Eta())))), input_vec.Eta() * smearVal, input_vec.Phi(), input_vec.E());
+    if (indexToSmear == 2) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt(), input_vec.Eta(), input_vec.Phi() * smearVal, input_vec.E());
+    if (indexToSmear == 3) 
+      out_vec.SetPtEtaPhiE(input_vec.Pt() * smearVal, input_vec.Eta(), input_vec.Phi(), input_vec.E() * smearVal);
+
+    if (indexToSmear == 0) {
+      out_vec.SetPtEtaPhiE(input_vec.Pt()+(input_vec.P()*((1/std::cosh(input_vec.Eta() * smearVal_Eta))-(1/std::cosh(input_vec.Eta())))), input_vec.Eta() * smearVal_Eta, input_vec.Phi(), input_vec.E());
+      out_vec.SetPtEtaPhiE(out_vec.Pt(), out_vec.Eta(), out_vec.Phi() * smearVal_Phi, out_vec.E());
+      out_vec.SetPtEtaPhiE(out_vec.Pt() * smearVal_E, out_vec.Eta(), out_vec.Phi(), out_vec.E() * smearVal_E);
+    }
+    return out_vec;
+  }
+
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed, bool anti){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+    //
+    TVector3 boost, n1, n2;
+    if (doMixed) {
+      TVector3 k = (p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
+      TLorentzVector ip(k, 0.);
+      if(ZMF) boost = (p1+ip+p3+p4).BoostVector();
+      else boost = (p3+p4).BoostVector();
+      p1.Boost(-boost);
+      ip.Boost(-boost);
+      p2.Boost(-boost);
+      p3.Boost(-boost);
+      p4.Boost(-boost);
+      n1 = (p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit()).Unit();
+      n2 = (ip.Vect() - ip.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
+    }
+    else {
+      if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+      else boost = (p3+p4).BoostVector();
+      p1.Boost(-boost);
+      p2.Boost(-boost);
+      p3.Boost(-boost);
+      p4.Boost(-boost);
       
-    TVector3 boost;
-    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
-    else boost = (p3+p4).BoostVector();
-    p1.Boost(-boost);
-    p2.Boost(-boost);
-    p3.Boost(-boost);
-    p4.Boost(-boost);
-    
-    TVector3 n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
-    TVector3 n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
-    n1 = n1.Unit();
-    n2 = n2.Unit();
+      n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
+      n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+      n1 = n1.Unit();
+      n2 = n2.Unit();
+    }
+    /* std::cout << "n1 unit: " << n1.Px() << n1.Py() << n1.Pz() << std::endl; */
+    /* std::cout << "n2 unit: " << n2.Px() << n2.Py() << n2.Pz() << std::endl; */
     
     double angle = acos(n1.Dot(n2));
-    double sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    double sign;
+
+    if (doMixed)
+      sign = p4.Vect().Unit().Dot(n1.Cross(n2));
+    else
+      sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    if (anti) sign = -sign;
+
+    /* std::cout << "angle: " << angle << std::endl; */
+    /* std::cout << "sign : " << sign << std::endl; */
     
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
   }
-  // 
+
+  std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
+      std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> sig_gammas = {};
+    auto const& sig_gammas_id = tau->sig_gamma_cands();
+    for (auto id : sig_gammas_id) sig_gammas.push_back(pfcands[id]);
+    std::sort(sig_gammas.begin(), sig_gammas.end(), 
+        bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return sig_gammas;
+  }
+
+  std::vector<ic::PFCandidate*> GetTauChargedHadrCands(ic::Tau const* tau, 
+      std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> sig_charged = {};
+    auto const& sig_charged_id = tau->sig_charged_cands();
+    for (auto id : sig_charged_id) sig_charged.push_back(pfcands[id]);
+    std::sort(sig_charged.begin(), sig_charged.end(), 
+        bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return sig_charged;
+  }
+
+  std::vector<ic::PFCandidate*> GetTauIsoGammaCands(ic::Tau const* tau, 
+      std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> iso_gammas = {};
+    auto const& iso_gammas_id = tau->iso_gamma_cands();
+    for (auto id : iso_gammas_id) iso_gammas.push_back(pfcands[id]);
+    std::sort(iso_gammas.begin(), iso_gammas.end(), 
+        bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return iso_gammas;
+  }
+
+  ic::Candidate* GetPiFromCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    ic::Candidate* pi = new ic::Candidate();
+    double pt = 0.; 
+    double E = 0.; 
+    double eta = 0.; 
+    double phi = 0.; 
+    std::vector<ic::PFCandidate*> hadrons = GetTauChargedHadrCands(tau, pfcands);
+    for (auto hadron : hadrons){
+      pt  += hadron->pt();
+      E   += hadron->energy();
+      eta += hadron->vector().Eta();
+      phi += hadron->vector().Phi();
+    }
+    ROOT::Math::PtEtaPhiEVector vector(pt, eta, phi, E);
+    pi->set_vector(vector);
+    return pi;
+  }
+
+  ic::Candidate* GetPi0FromCands(ic::Tau const* tau, 
+          std::map<std::size_t, ic::PFCandidate*> pfcands) {
+    ic::Candidate* pi0 = new ic::Candidate();
+    double sum_E = 0.; 
+    double sum_EEta = 0.; 
+    double sum_EPhi = 0.; 
+    std::vector<ic::PFCandidate*> gammas = GetTauGammaCands(tau, pfcands);
+    for (auto gamma : gammas){
+      sum_E += gamma->energy();
+      sum_EEta += gamma->energy()*gamma->vector().Eta();
+      sum_EPhi += gamma->energy()*gamma->vector().Phi();
+    }
+    double pt = 0.;
+    double eta = 0.;
+    double phi = 0.;
+    if (sum_E != 0) {
+      eta = sum_EEta/sum_E;
+      phi = sum_EPhi/sum_E;
+      double p = sqrt(sum_E*sum_E-0.1349*0.1349);
+      pt = p/cosh(eta); 
+    }
+    ROOT::Math::PtEtaPhiEVector vector(pt, eta, phi, sum_E);
+    pi0->set_vector(vector);
+    return pi0;
+  }
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 

@@ -156,7 +156,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      muon_dxy = 0.02;
      muon_dz = 0.1;
      pair_dr = 0.3;
-    if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
+    if(era_type == era::data_2015 || era_type == era::data_2016 
+            || era_type == era::data_2017 || era_type == era::data_2018){
        if(js["store_hltpaths"].asBool()){
          elec_dxy = 0.045;
          elec_dz = 0.2;
@@ -263,7 +264,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
    }
 
-   } else if (era_type == era::data_2017){
+   } else if (era_type == era::data_2017 || era_type == era::data_2018){
      min_taus = 1;
      pair_dr = 0.5;
      elec_pt = 25;
@@ -351,7 +352,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
     }
 
-   } else if(era_type == era::data_2017){
+   } else if(era_type == era::data_2017 || era_type == era::data_2018){
       muon_pt = 20.0;
       muon_eta = 2.1;
       tau_pt = 20;
@@ -539,7 +540,8 @@ void HTTSequence::BuildSequence(){
                         || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
-  if ((era_type == era::data_2016 || era_type == era::data_2017) && !is_data) real_tau_sample = true;
+  if ((era_type == era::data_2016 || era_type == era::data_2017 
+              || era_type == era::data_2018) && !is_data) real_tau_sample = true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
   if (channel == channel::em && strategy_type ==strategy::mssmsummer16){
     //Apply jet->lepton fake rates?
@@ -718,10 +720,10 @@ void HTTSequence::BuildSequence(){
     data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
     if(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
   }
-  if (era_type == era::data_2017){
-    data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
-  }
-
+  if (era_type == era::data_2017) 
+      data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
+  else if (era_type == era::data_2018)
+      data_json= "input/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -829,7 +831,8 @@ void HTTSequence::BuildSequence(){
   } else{
 
   HTTPrint httPrint("HTTPrint");
-  if(era_type==era::data_2015 || era_type==era::data_2016  || era_type == era::data_2017){
+  if(era_type==era::data_2015 || era_type==era::data_2016  
+          || era_type == era::data_2017 || era_type == era::data_2018){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -1067,7 +1070,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
 
 
- if(is_embedded&&era_type != era::data_2016  && era_type != era::data_2017){
+ if(is_embedded&&era_type != era::data_2016  && era_type != era::data_2017 && era_type != era::data_2018){
   BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
@@ -1141,6 +1144,8 @@ if(strategy_type == strategy::paper2013) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 } else if (era_type == era::data_2017) {
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
+} else if (era_type == era::data_2018) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
 }
 BuildModule(jetIDFilter);
 
@@ -1162,7 +1167,11 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt"; // new one available
+    jes_input_set  = "Total";
+  }
+  if (era_type == era::data_2018) {
+    jes_input_file = "input/jec/Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1194,12 +1203,15 @@ BuildModule(jetIDFilter);
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
     } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && use_deep_csv) {
-      // update to 2017
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
     } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !use_deep_csv) {
-      // update to 2017
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2018) {
+      // update for 2018
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
@@ -1428,7 +1440,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
-       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017))){
+       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017 || era_type == era::data_2018))){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
                .set_mc(mc_type)
@@ -1484,17 +1496,22 @@ if(do_met_filters && is_data){
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
-       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
-       bool pass_filters = true;
-       for(unsigned i=0;i<met_filters.size();++i){
-        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
-       }
-       if(js["make_sync_ntuple"].asBool()){
-         event->Add("flagMETFilter", pass_filters);  
-         return false;    
-       }
-       return !pass_filters;
+      EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      std::vector<std::string> met_filters = {
+        "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
+        "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
+      };
+      // if (era_type == era::data_2017 || era_type == era::data_2018) 
+      //   {met_filters.push_back("ecalBadCalibReducedMINIAODFilter")};
+      bool pass_filters = true;
+      for(unsigned i=0;i<met_filters.size();++i){
+       pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
+      }
+      if(js["make_sync_ntuple"].asBool()){
+        event->Add("flagMETFilter", pass_filters);  
+        return false;    
+      }
+      return !pass_filters;
     }));
 }
 
@@ -1677,7 +1694,8 @@ if(channel != channel::wmnu) {
     .set_do_preselection(false)
     .set_MC(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
- if(era_type == era::data_2015 || era_type == era::data_2016 || era_type == era::data_2017){
+ if(era_type == era::data_2015 || era_type == era::data_2016 
+         || era_type == era::data_2017 || era_type == era::data_2018){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
    svFitTest.set_read_svfit_mt(true);
@@ -2327,7 +2345,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
   
 
     BuildModule(httWeights);
-    if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+    if(strategy_type == strategy::cpsummer16 && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
 
       HTTStitching httStitching = HTTStitching("HTTStitching")  
           .set_era(era_type)
@@ -2348,9 +2366,32 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
       
       BuildModule(httStitching);   
     }
+    // add cpdecays16 here
+    if(strategy_type == strategy::cpdecays16 && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+
+      HTTStitching httStitching = HTTStitching("HTTStitching")  
+          .set_era(era_type)
+          .set_fs(fs.get())
+          .set_do_ggH_soup(do_ggH_stitch);
+          httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+           if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+             output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+          httStitching.set_do_w_soup(true);
+          httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+          httStitching.SetWInputYields(57026058 + 29705748, 45367044, 29878415 + 30319351, 19798117 + 39269431, 9170576 + 2073275 + 18751462);
+         }
+         if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+           httStitching.set_do_dy_soup(true);
+           httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+           httStitching.SetDYInputYields(96658943 + 49144274, 62627174, 19970551, 5856110, 4197868);
+         }
+      
+      BuildModule(httStitching);   
+    }
+
   }
 
-  if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+  if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) && channel!=channel::wmnu){
     TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
   
     HTTWeights httWeights = HTTWeights("HTTWeights")   
@@ -2425,6 +2466,78 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
        BuildModule(httStitching);   
      }
    }
+// adding 2018 stitching
+//
+  if((strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
+  
+    HTTWeights httWeights = HTTWeights("HTTWeights")   
+     .set_channel(channel)
+     .set_era(era_type)
+     .set_mc(mc_type)
+     .set_do_tau_id_weights(real_tau_sample)
+     .set_do_tau_id_sf(real_tau_sample && !js["do_mt_tagandprobe"].asBool())
+     .set_do_jlepton_fake(jlepton_fake)
+     .set_do_em_qcd_weights(true)
+     .set_ditau_label("ditau")
+     .set_jets_label(jets_label)
+     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
+     .set_do_cross_trg(js["do_leptonplustau"].asBool())
+     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
+     httWeights.set_strategy(strategy_type);
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v3.root");
+     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
+     httWeights.set_is_embedded(is_embedded);
+     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
+   if (!is_data ) {
+     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
+     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
+     if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
+   }
+  
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
+     httWeights.set_do_zpt_weight(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+   }
+  
+   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+     httWeights.set_do_tau_fake_weights(true);
+   }
+   
+  
+     BuildModule(httWeights);
+     if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+       HTTStitching httStitching = HTTStitching("HTTStitching")  
+         .set_era(era_type)
+         .set_fs(fs.get())
+         .set_do_ggH_soup(do_ggH_stitch);
+          httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+          if (output_name.find("WJetsToLNu-LO") != output_name.npos  || 
+              output_name.find("W1JetsToLNu-LO") != output_name.npos || 
+              output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+              output_name.find("W3JetsToLNu-LO") != output_name.npos || 
+              output_name.find("W4JetsToLNu-LO") != output_name.npos){
+            httStitching.set_do_w_soup(true);
+            // W numbers need updating
+            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+            httStitching.SetWInputYields(66293867.0,51033967.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
+          }
+          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
+              && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+            httStitching.set_do_dy_soup(true);
+            // DY XS's are relative to the inclusive XS
+            httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+            httStitching.SetDYInputYields(100112060.0,68852433.0,20420790.0,5646595.0,2810735.0); // correspond to params Mar18
+          }
+       
+       BuildModule(httStitching);   
+     }
+   }
+///
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -2491,9 +2604,12 @@ bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_nam
 bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-BuildModule(RhoIDEmbedder("RhoIDEmbedder")
-    .set_fs(fs.get())
-    .set_channel(channel));
+
+if (strategy_type != strategy::cpdecays18) {
+  BuildModule(RhoIDEmbedder("RhoIDEmbedder")
+      .set_fs(fs.get())
+      .set_channel(channel));
+}
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
