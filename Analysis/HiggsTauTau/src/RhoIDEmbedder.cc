@@ -181,14 +181,14 @@ namespace ic {
           sort( DistToCenter.begin() , DistToCenter.end() );
           ConeRadiusMedian_2_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
           ConeRadiusMax_2_=DistToCenter[DistToCenter.size()-1];
-          ConeRadiusMean_2_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0)/double(DistToCenter.size());
-          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0) - DistToCenter.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter.size());
+          ConeRadiusMean_2_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0.0)/double(DistToCenter.size());
+          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0.0) - DistToCenter.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter.size());
           ConeRadiusStdDev_2_=sqrt(ConeRadiusStdDev_2_);//Variance to StdDeV                    
-        }
         
-        
-        
-        
+        } 
+
+
+
         
         
     
@@ -262,9 +262,42 @@ namespace ic {
           sort( DistToCenter.begin() , DistToCenter.end() );
           ConeRadiusMedian_1_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
           ConeRadiusMax_1_=DistToCenter[DistToCenter.size()-1];
-          ConeRadiusMean_1_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0)/double(DistToCenter.size());
-          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0) - DistToCenter.size()*pow(ConeRadiusMean_1_,2))/(-1+DistToCenter.size());
+          ConeRadiusMean_1_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0.0)/double(DistToCenter.size());
+          
+          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0.0) - DistToCenter.size()*pow(ConeRadiusMean_1_,2))
+                              /(-1+DistToCenter.size());
           ConeRadiusStdDev_1_=sqrt(ConeRadiusStdDev_1_);//Variance to StdDeV                    
+          
+          
+          /*
+
+          double tmpsum=0;
+          double tmpmean =0;
+          for (unsigned i=0; i<DistToCenter.size(); i++)
+            tmpsum += DistToCenter[i];
+          tmpmean = tmpsum/DistToCenter.size();
+          
+          
+
+          std::cout << "gammas1.size()=: " << gammas1.size() <<"  DistToCenter.size()= "<<DistToCenter.size()<< std::endl;
+          //std::cout << "Dist.begin="<<DistToCenter.begin()<< "  Dist.end=" <<DistToCenter.end()<<std::endl;  
+          for(unsigned j=0;j<DistToCenter.size();j++)
+            std::cout <<"index="<< j <<", Dist=" <<DistToCenter[j] << std::endl;
+          
+          double tmpStdDeV=0;
+          for(unsigned j=0;j<DistToCenter.size();j++)
+            tmpStdDeV+=pow(DistToCenter[j],2);
+          tmpStdDeV-=DistToCenter.size()*pow(tmpmean,2);
+          tmpStdDeV/=(double(DistToCenter.size())-1.0);
+          tmpStdDeV=sqrt(tmpStdDeV);
+          std::cout << "tmpmean=" << tmpmean << std::endl;
+          std::cout << "ConeMean=" << ConeRadiusMean_1_ << std::endl;
+          std::cout <<"ConeStd: " << ConeRadiusStdDev_1_ << std::endl;
+          std::cout<<"tpmStdDeV: "<<tmpStdDeV<<std::endl;
+          std::cout<<"ConeMax:"<<ConeRadiusMax_1_<<std::endl;
+          std::cout<<"ConeMedian:"<<ConeRadiusMedian_1_<<std::endl;
+          std::cout<<"-----------------------"<<std::endl;
+          */
         }
 
 
