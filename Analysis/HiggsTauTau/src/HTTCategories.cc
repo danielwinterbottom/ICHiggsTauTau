@@ -940,9 +940,12 @@ namespace ic {
       outtree_->Branch("q_1", & q_1_);
       outtree_->Branch("q_2", & q_2_);
 
-      outtree_->Branch("primary_vtx_x", &primary_vtx_x_);
-      outtree_->Branch("primary_vtx_y", &primary_vtx_y_);
-      outtree_->Branch("primary_vtx_z", &primary_vtx_z_);
+      outtree_->Branch("primary_vtx_x", & primary_vtx_x_);
+      outtree_->Branch("primary_vtx_y", & primary_vtx_y_);
+      outtree_->Branch("primary_vtx_z", & primary_vtx_z_);
+      outtree_->Branch("gen_pvx",       & gen_pvx_);
+      outtree_->Branch("gen_pvy",       & gen_pvy_);
+      outtree_->Branch("gen_pvz",       & gen_pvz_);
       outtree_->Branch("tau_svx_1",     &tau_svx_1_);
       outtree_->Branch("tau_svy_1",     &tau_svy_1_);
       outtree_->Branch("tau_svz_1",     &tau_svz_1_);
@@ -5016,9 +5019,6 @@ namespace ic {
       TLorentzVector pvtosv;
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      primary_vtx_x_ = vertex_vec[0]->vx();
-      primary_vtx_y_ = vertex_vec[0]->vy();
-      primary_vtx_z_ = vertex_vec[0]->vz();
 
       tau_svx_1_ = tau1->svx();
       tau_svy_1_ = tau1->svy();
@@ -5179,9 +5179,6 @@ namespace ic {
       TLorentzVector pvtosv;
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      primary_vtx_x_ = vertex_vec[0]->vx();
-      primary_vtx_y_ = vertex_vec[0]->vy();
-      primary_vtx_z_ = vertex_vec[0]->vz();
 
       bool doAnti = false;
       if(tau_decay_mode_2_==1){
@@ -5383,6 +5380,18 @@ namespace ic {
 
     }
 
+    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+    primary_vtx_x_ = vertex_vec[0]->vx();
+    primary_vtx_y_ = vertex_vec[0]->vy();
+    primary_vtx_z_ = vertex_vec[0]->vz();
+    if (!is_data_) {
+      std::vector<ic::Vertex*> & gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
+      if (gen_vertices.size()>0) {
+        gen_pvx_ = gen_vertices[0]->vx();
+        gen_pvy_ = gen_vertices[0]->vy();
+        gen_pvz_ = gen_vertices[0]->vz();
+      }
+    }
 
     /*std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
     std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));

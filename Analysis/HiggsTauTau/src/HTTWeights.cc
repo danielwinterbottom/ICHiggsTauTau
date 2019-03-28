@@ -957,7 +957,7 @@ namespace ic {
     }
     
     if (do_tau_fake_weights_){
-      if(era_ != era::data_2016 && era_ != era::data_2017){
+      if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
         double fake_weight = tau_fake_weights_->Eval(fake_pt);
@@ -1086,7 +1086,8 @@ namespace ic {
             double medium_tau_sf_2 = (gen_match_2 == 5 && !is_embedded_) ? 0.97 : 1.0;
             event->Add("wt_tau_id_loose",loose_tau_sf_2/(tau_sf_2));
             event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
-        } else if( (mc_==mc::mc2017 || mc_ == mc::mc2018) && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        } else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        else if(mc_ == mc::mc2018 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.90 : 1.0;
         else if (mc_==mc::mc2017 && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;
           else if (decay_mode_2==0) tau_sf_2=0.975;
@@ -1121,7 +1122,8 @@ namespace ic {
             else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
           } else tau_sf_1 = 1.0;
         } 
-        else if( (mc_==mc::mc2017 || mc_ == mc::mc2018) && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.89 : 1.0; 
+        else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.89 : 1.0; 
+        else if(mc_ == mc::mc2018 && !is_embedded_) tau_sf_1  = (gen_match_1 == 5 && !is_embedded_) ? 0.90 : 1.0; 
         else if (mc_==mc::mc2017 && is_embedded_) {
           if(gen_match_1!=5) tau_sf_1=1.0;
           else {
@@ -1142,7 +1144,8 @@ namespace ic {
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
           } else tau_sf_2 = 1.0;
         } 
-        else if( (mc_==mc::mc2017 || mc_ == mc::mc2018) && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        else if(mc_==mc::mc2017 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.89 : 1.0;
+        else if(mc_ == mc::mc2018 && !is_embedded_) tau_sf_2  = (gen_match_2 == 5 && !is_embedded_) ? 0.90 : 1.0;
         else if (mc_==mc::mc2017 && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;
           else {

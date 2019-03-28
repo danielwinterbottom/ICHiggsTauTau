@@ -1384,7 +1384,7 @@ namespace ic {
 
     if (rho_daughters.size()==1 && pi_daughters.size()==1){
         cp_channel_=2;
-        std::cout << "cp channel: " << cp_channel_ << std::endl;
+        /* std::cout << "cp channel: " << cp_channel_ << std::endl; */
         //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
         //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
         //lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
@@ -1396,21 +1396,24 @@ namespace ic {
         /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
         std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
         std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
-        for (unsigned i = 0; i < vertex_vec.size(); i++)
-          std::cout << "vertex " << i << " " << vertex_vec[i]->vx() << " " << vertex_vec[i]->vy() << " " << vertex_vec[i]->vz() << std::endl;
-        reco_pvx_ = vertex_vec[0]->vx();
-        reco_pvy_ = vertex_vec[0]->vy();
-        reco_pvz_ = vertex_vec[0]->vz();
-        std::cout << "genv : " << gen_vertices[0]->vx() << " " << gen_vertices[0]->vy() << " " << gen_vertices[0]->vz() << std::endl;
-        gen_pvx_ = gen_vertices[0]->vx();
-        gen_pvy_ = gen_vertices[0]->vy();
-        gen_pvz_ = gen_vertices[0]->vz();
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          /* std::cout << "vertex " << i << " " << vertex_vec[i]->vx() << " " << vertex_vec[i]->vy() << " " << vertex_vec[i]->vz() << std::endl; */
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        /* std::cout << "genv : " << gen_vertices[0]->vx() << " " << gen_vertices[0]->vy() << " " << gen_vertices[0]->vz() << std::endl; */
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
 
         TVector3 IPtest = getIPVector(prho_daughters[0].second);
-        std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl;
+        /* std::cout << "IP: " << IPtest.X() << " " << IPtest.Y() << " " << IPtest.Z() << std::endl; */
         /* std::cout << "tau vector: " << prho_daughters[0].second->vector() << std::endl; */
-        std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << " " << prho_daughters[0].first->vtx().vy() << " " << prho_daughters[0].first->vtx().vz() << std::endl;
-        std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << " " << prho_daughters[0].second->vtx().vy() << " " << prho_daughters[0].second->vtx().vz() << std::endl;
+        /* std::cout << "pi vtx: " << prho_daughters[0].first->vtx().vx() << " " << prho_daughters[0].first->vtx().vy() << " " << prho_daughters[0].first->vtx().vz() << std::endl; */
+        /* std::cout << "tau vtx: " << prho_daughters[0].second->vtx().vx() << " " << prho_daughters[0].second->vtx().vy() << " " << prho_daughters[0].second->vtx().vz() << std::endl; */
 
         TLorentzVector ip_vec(
                 prho_daughters[0].first->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
@@ -1457,7 +1460,7 @@ namespace ic {
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
         cp_channel_=4;
-        std::cout << "cp channel: " << cp_channel_ << std::endl;
+        /* std::cout << "cp channel: " << cp_channel_ << std::endl; */
         /* TVector3 IPtest = getIPVector(l_daughters[0].second); */
         TLorentzVector ip_vec(
                 l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 

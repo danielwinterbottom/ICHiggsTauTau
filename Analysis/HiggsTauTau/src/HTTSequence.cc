@@ -1496,18 +1496,22 @@ if(do_met_filters && is_data){
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
-       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
-       //if (era_type == era::data_2018) {met_filters.push_back("Flag_ecalBadCalibFilter")};
-       bool pass_filters = true;
-       for(unsigned i=0;i<met_filters.size();++i){
-        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
-       }
-       if(js["make_sync_ntuple"].asBool()){
-         event->Add("flagMETFilter", pass_filters);  
-         return false;    
-       }
-       return !pass_filters;
+      EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      std::vector<std::string> met_filters = {
+        "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
+        "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
+      };
+      // if (era_type == era::data_2017 || era_type == era::data_2018) 
+      //   {met_filters.push_back("ecalBadCalibReducedMINIAODFilter")};
+      bool pass_filters = true;
+      for(unsigned i=0;i<met_filters.size();++i){
+       pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
+      }
+      if(js["make_sync_ntuple"].asBool()){
+        event->Add("flagMETFilter", pass_filters);  
+        return false;    
+      }
+      return !pass_filters;
     }));
 }
 
@@ -2506,32 +2510,32 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
    
   
      BuildModule(httWeights);
-     /*if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
+     if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
-           .set_era(era_type)
-           .set_fs(fs.get())
-           .set_do_ggH_soup(do_ggH_stitch);
-            httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
-            if (output_name.find("WJetsToLNu-LO") != output_name.npos  || 
-                output_name.find("W1JetsToLNu-LO") != output_name.npos || 
-                output_name.find("W2JetsToLNu-LO") != output_name.npos ||
-                output_name.find("W3JetsToLNu-LO") != output_name.npos || 
-                output_name.find("W4JetsToLNu-LO") != output_name.npos){
-             httStitching.set_do_w_soup(true);
-             // W numbers need updating
-             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-             httStitching.SetWInputYields(66386958.0,51047866.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
+         .set_era(era_type)
+         .set_fs(fs.get())
+         .set_do_ggH_soup(do_ggH_stitch);
+          httStitching.SetggHInputYieldsAndFrac(n_inc, n_2, frac);
+          if (output_name.find("WJetsToLNu-LO") != output_name.npos  || 
+              output_name.find("W1JetsToLNu-LO") != output_name.npos || 
+              output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+              output_name.find("W3JetsToLNu-LO") != output_name.npos || 
+              output_name.find("W4JetsToLNu-LO") != output_name.npos){
+            httStitching.set_do_w_soup(true);
+            // W numbers need updating
+            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+            httStitching.SetWInputYields(66293867.0,51033967.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
-                      && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+              && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(34955045.0,68852433.0,20441071.0,5646595.0,2790780.0); // correspond to params Mar18
+            httStitching.SetDYInputYields(100112060.0,68852433.0,20420790.0,5646595.0,2810735.0); // correspond to params Mar18
           }
        
        BuildModule(httStitching);   
-     }*/
+     }
    }
 ///
 

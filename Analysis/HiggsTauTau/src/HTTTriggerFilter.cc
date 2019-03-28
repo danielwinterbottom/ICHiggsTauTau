@@ -80,7 +80,7 @@ namespace ic {
     double min_online_singletau_pt=0;
     std::string singletau_leg1_filter;
     
-    if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
+    if (is_data_) { 
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
       unsigned run = eventInfo->run();
@@ -147,7 +147,8 @@ namespace ic {
         }
         if (channel_ == channel::tt){
           if (run >= 250985 && run <= 284044 && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
-          if (run >= 294927 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
+          if (run >= 294927 && run < 317527 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
+          if (run >= 317527 /*&& run < xxxxx*/ && (name.find("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v") != name.npos )) path_found=true;
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
@@ -157,7 +158,7 @@ namespace ic {
           //2012 Triggers
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
         }
-        if (is_embedded_ && !(era_== era::data_2016 || era_== era::data_2017)) {
+        if (is_embedded_ && !(era_== era::data_2016 || era_== era::data_2017 || era_ == era::data_2018)) {
           path_found = false;
           if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) {
             path_found = true;
@@ -368,7 +369,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        else if (run >= 317527) {
+        if (run >= 317527) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -499,7 +500,7 @@ namespace ic {
             alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
           }
         }
-        if(run >= 294927 /*&& run <= xxxxx*/){
+        if(run >= 294927 && run < 317527){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
@@ -509,6 +510,11 @@ namespace ic {
           alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
           alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+        }
+        if (run >= 317527) {
+          trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35";
+          leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
+          leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
         }
       }
       if (channel_ == channel::mtmet) {
@@ -873,6 +879,10 @@ namespace ic {
              alt_leg1_filter_2=leg1_filter;
              alt_leg2_filter_2=leg1_filter;
           }
+        } else if (mc_ == mc::mc2018) {
+            trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
+            leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
+            leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
         }
     }
       /*
@@ -1215,7 +1225,7 @@ namespace ic {
     
    bool passed_doubletau = false;
    bool match_l1_parts = false;
-   if (channel_ == channel::tt && (mc_ == mc::summer16_80X || mc_ == mc::mc2017)){
+   if (channel_ == channel::tt && (mc_ == mc::summer16_80X || mc_ == mc::mc2017 || mc_ == mc::mc2018)){
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;

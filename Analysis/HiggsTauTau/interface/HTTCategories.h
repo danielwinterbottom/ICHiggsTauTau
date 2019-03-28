@@ -1559,6 +1559,10 @@ class HTTCategories : public ModuleBase {
   double primary_vtx_x_;
   double primary_vtx_y_;
   double primary_vtx_z_;
+  double gen_pvx_;
+  double gen_pvy_;
+  double gen_pvz_;
+
   double tau_svx_1_;
   double tau_svy_1_;
   double tau_svz_1_;
