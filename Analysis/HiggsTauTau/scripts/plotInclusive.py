@@ -1,5 +1,6 @@
 from __future__ import print_function
 import argparse
+import numpy as np
 import shlex
 from subprocess import Popen, PIPE
 import datetime
@@ -64,9 +65,9 @@ def main(args):
         plot_vars = [
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
-            "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,1.0]",
+            # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,1.0]",
             # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)",
-            # "aco_angle_mod(14,0,6.3)",
+            # "aco_angle_mod(14,0,{})".format(2*np.pi),
             # "m_1(20,0,2)",
             # "iso_1(20,0,1)",
             # "deep_iso_1(40,-1,1)",
@@ -76,6 +77,7 @@ def main(args):
             # "pt_tt,aco_angle_mod[0,50,100,170],(20,0,6.3)",
             # "mjj,aco_angle_mod[0,300,500,800],(20,0,6.3)",
             # "(lead_p_1-genE_pi1)/genE_pi1[-2,-1.5,-1.0,-0.5,0,0.5,1.0,1.5,2]",
+            "pt_tt(10,0,100)"
 
             # "Epi0_1(20,0,100)",
             # "Epi0_2(20,0,100)",
@@ -148,9 +150,10 @@ def main(args):
         # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
-        extras += '  --ff_ss_closure '
-        extras += " --threePads "
-        extras += " --extra_pad 0.55 "
+
+        # extras += '  --ff_ss_closure '
+        # extras += " --threePads "
+        # extras += " --extra_pad 0.55 "
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
@@ -160,7 +163,7 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-            "pt_1(20,20,120)","pt_2(14,30,100)",
+            # "pt_1(20,20,120)","pt_2(14,30,100)",
             # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)",
             # "m_sv(30,0,300)",
@@ -173,12 +176,12 @@ def main(args):
             # "m_sv(30,0,300)",
             # "tau_decay_mode_2(11,0,11)",
             
-            # "jpt_1(16,0,300)",
-            # "jpt_2(30,0,250)",
-            # "mjj(15,0,1500)",
-            # "n_jets(7,0,7)",
+            "jpt_1(16,0,300)",
+            "jpt_2(30,0,250)",
+            "mjj(15,0,1500)",
+            "n_jets(7,0,7)",
             # "n_bjets(3,0,3)",
-            # "sjdphi(12,-3.2,3.2)",
+            "sjdphi(12,-3.2,3.2)",
 
             # "m_vis(20,20,200)",
             # "m_sv(30,0,300)",
@@ -190,9 +193,9 @@ def main(args):
             # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_binary_Oct11_score(20,0.,1.)",
             # "met(20,0,200)",
-            # "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)",
+            "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)",
             # "mjj(16,0,800)",
-            # "sjdphi(12,-3.2,3.2)",
+            "sjdphi(12,-3.2,3.2)",
             # "jpt_1(17,30,200)","jpt_2(17,40,200)",
             # "n_jets(5,0,5)"
             ]
@@ -261,16 +264,16 @@ def main(args):
             # "pt_1(30,0,30)",
             # "pt_2(30,0,30)",
             # "jpt_1(17,30,200)",
-            # "n_jets(10,0,10)",
+            # "n_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
 
-            "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
+            # # "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
             # "sjdphi(20,-3.2,3.2)",
             # "jdeta(25,0,5)",
             # "jpt_2(17,30,200)",
             # "jeta_2(12,-4.7,4.7)",
 
-            # "mjj(16,0,800)",
+            "mjj(16,0,1000)",
             # "met(40,0,400)",
             # "pt_vis(30,0,300)",
 
@@ -284,10 +287,10 @@ def main(args):
 
             ]
         # extras += ' --ratio_range 0,2.5 '
-        extras += ' --ratio_range 0.3,1.7 '
+        # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
-        extras += ' --set_alias "inclusive:(n_jets>=2)" '
+        # extras += ' --set_alias "inclusive:(n_jets>=2)" '
         # extras += " add_wt "
         method = "8"
 
@@ -359,10 +362,10 @@ def main(args):
         print(var)
         # if "sjdphi" in var or "eta" in var:
         #     pad_extra = " --extra_pad 0.55 "
-            
+
         if var.split("(")[0] in ["jeta_1","jpt_1"]:
             custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
-        elif var.split("(")[0] in ["jpt_2","jeta_2","mjj","sjdphi"]:
+        elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi"]:
             custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
 
         run_command(' python scripts/HiggsTauTauPlot.py '
