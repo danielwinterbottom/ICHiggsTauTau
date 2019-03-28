@@ -17,7 +17,8 @@ for file_name in os.listdir(sys.argv[1]):
 out_string=''
 
 for f in file_names:
-    if f in ["SingleMuonA","SingleMuonB","SingleMuonC","SingleMuonD"]:
+    if "SingleMuon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
+            f in ["Tau?"]:
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])
         tree = input_file.Get("effective")
         entries = tree.GetEntries()

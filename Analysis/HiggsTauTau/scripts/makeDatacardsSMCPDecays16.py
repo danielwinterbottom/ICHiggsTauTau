@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding --total_jes
+#./scripts/makeDatacardsSMCPDecays16.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'em,et,mt,tt' scripts/Params_2016_cpdecays16.json -s 'cpsummer16_ss' --embedding --total_jes
 
 import sys
 from optparse import OptionParser
