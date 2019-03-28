@@ -39,8 +39,6 @@ class RhoIDEmbedder : public ModuleBase {
 
   float var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13;
 
-  double tauFlag1_;
-  double tauFlag2_;
   double Etau_1_;
   double Etau_2_;
   double rho_dEta_1_;
