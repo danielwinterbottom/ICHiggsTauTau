@@ -75,6 +75,16 @@ namespace ic {
       outtree_->Branch("ConeRadiusMedian_1"  ,&ConeRadiusMedian_1_);
       outtree_->Branch("ConeRadiusMean_1"    ,&ConeRadiusMean_1_);
       outtree_->Branch("ConeRadiusStdDev_1"  ,&ConeRadiusStdDev_1_);
+ 
+      outtree_->Branch("ConeRadiusMaxWRTtau_2"     ,&ConeRadiusMaxWRTtau_2_);
+      outtree_->Branch("ConeRadiusMedianWRTtau_2"  ,&ConeRadiusMedianWRTtau_2_);
+      outtree_->Branch("ConeRadiusMeanWRTtau_2"    ,&ConeRadiusMeanWRTtau_2_);
+      outtree_->Branch("ConeRadiusStdDevWRTtau_2"  ,&ConeRadiusStdDevWRTtau_2_);
+      outtree_->Branch("ConeRadiusMaxWRTtau_1"     ,&ConeRadiusMaxWRTtau_1_);
+      outtree_->Branch("ConeRadiusMedianWRTtau_1"  ,&ConeRadiusMedianWRTtau_1_);
+      outtree_->Branch("ConeRadiusMeanWRTtau_1"    ,&ConeRadiusMeanWRTtau_1_);
+      outtree_->Branch("ConeRadiusStdDevWRTtau_1"  ,&ConeRadiusStdDevWRTtau_1_);
+ 
     }
     reader_ = new TMVA::Reader();
     TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
@@ -164,6 +174,7 @@ namespace ic {
     //New variables by Mohammad
         CenterEta=-1;  CenterPhi=-1;//temp variables 
         ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
+        ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
                 
         if(gammas2.size()>=1){
           
@@ -175,16 +186,30 @@ namespace ic {
           for(auto g : gammas2) CenterPhi+=g->phi();
           CenterPhi/=(1.0+double(gammas2.size()));           
           
-          std::vector<double> DistToCenter; 
-          DistToCenter.push_back( sqrt( std::pow(CenterPhi-pi_2->phi(),2) + std::pow(CenterEta-pi_2->eta(),2) ) );
-          for(auto g : gammas2) DistToCenter.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter.size()=1+gammas.size()
-          sort( DistToCenter.begin() , DistToCenter.end() );
-          ConeRadiusMedian_2_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
-          ConeRadiusMax_2_=DistToCenter[DistToCenter.size()-1];
-          ConeRadiusMean_2_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0.0)/double(DistToCenter.size());
-          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0.0) - DistToCenter.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter.size());
+          std::vector<double> DistToCenter2; 
+          DistToCenter2.push_back( sqrt( std::pow(CenterPhi-pi_2->phi(),2) + std::pow(CenterEta-pi_2->eta(),2) ) );
+          for(auto g : gammas2) DistToCenter2.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter2.size()=1+gammas.size()
+          sort( DistToCenter2.begin() , DistToCenter2.end() );
+          ConeRadiusMedian_2_= DistToCenter2[DistToCenter2.size()/2] * 0.5 + DistToCenter2[(DistToCenter2.size()+1)/2-1] * 0.5;
+          ConeRadiusMax_2_=DistToCenter2[DistToCenter2.size()-1];
+          ConeRadiusMean_2_= std::accumulate(DistToCenter2.begin(), DistToCenter2.end(), 0.0)/double(DistToCenter2.size());
+          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter2.begin(), DistToCenter2.end(), DistToCenter2.begin(), 0.0) - DistToCenter2.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter2.size());
           ConeRadiusStdDev_2_=sqrt(ConeRadiusStdDev_2_);//Variance to StdDeV                    
         
+
+          //--------------Now calculate the same thing with tau->Eta and tau->phi, instead of unweighted average which are  CenterPhi and CenterEta------
+          std::vector<double> DistTotau2;
+          DistTotau2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi_2->vector(),tau2->vector())));
+          for(auto g : gammas2) DistTotau2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector())));       
+          sort( DistTotau2.begin() , DistTotau2.end() );
+          ConeRadiusMedianWRTtau_2_= DistTotau2[DistTotau2.size()/2] * 0.5 + DistTotau2[(DistTotau2.size()+1)/2-1] * 0.5;
+          ConeRadiusMaxWRTtau_2_=DistTotau2[DistTotau2.size()-1];
+          ConeRadiusMeanWRTtau_2_= std::accumulate(DistTotau2.begin(), DistTotau2.end(), 0.0)/double(DistTotau2.size());
+          
+          ConeRadiusStdDevWRTtau_2_=(std::inner_product(DistTotau2.begin(), DistTotau2.end(), DistTotau2.begin(), 0.0) - DistTotau2.size()*pow(ConeRadiusMeanWRTtau_2_,2))
+                              /(-1+DistTotau2.size());
+          ConeRadiusStdDevWRTtau_2_=sqrt(ConeRadiusStdDevWRTtau_2_);//Variance to StdDeV                    
+          
         } 
 
 
@@ -245,6 +270,7 @@ namespace ic {
     //New variables by Mohammad
         CenterEta=-1;  CenterPhi=-1;//temp variables 
         ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
+        ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
                 
         if(gammas1.size()>=1){
           
@@ -256,20 +282,55 @@ namespace ic {
           for(auto g : gammas1) CenterPhi+=g->phi();
           CenterPhi/=(1.0+double(gammas1.size()));           
           
-          std::vector<double> DistToCenter; 
-          DistToCenter.push_back( sqrt( std::pow(CenterPhi-pi_1->phi(),2) + std::pow(CenterEta-pi_1->eta(),2) ) );
-          for(auto g : gammas1) DistToCenter.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter.size()=1+gammas.size()
-          sort( DistToCenter.begin() , DistToCenter.end() );
-          ConeRadiusMedian_1_= DistToCenter[DistToCenter.size()/2] * 0.5 + DistToCenter[(DistToCenter.size()+1)/2-1] * 0.5;
-          ConeRadiusMax_1_=DistToCenter[DistToCenter.size()-1];
-          ConeRadiusMean_1_= std::accumulate(DistToCenter.begin(), DistToCenter.end(), 0.0)/double(DistToCenter.size());
+          std::vector<double> DistToCenter1; 
+          DistToCenter1.push_back( sqrt( std::pow(CenterPhi-pi_1->phi(),2) + std::pow(CenterEta-pi_1->eta(),2) ) );
+          for(auto g : gammas1) DistToCenter1.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter1.size()=1+gammas.size()
+          sort( DistToCenter1.begin() , DistToCenter1.end() );
+          ConeRadiusMedian_1_= DistToCenter1[DistToCenter1.size()/2] * 0.5 + DistToCenter1[(DistToCenter1.size()+1)/2-1] * 0.5;
+          ConeRadiusMax_1_=DistToCenter1[DistToCenter1.size()-1];
+          ConeRadiusMean_1_= std::accumulate(DistToCenter1.begin(), DistToCenter1.end(), 0.0)/double(DistToCenter1.size());
           
-          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter.begin(), DistToCenter.end(), DistToCenter.begin(), 0.0) - DistToCenter.size()*pow(ConeRadiusMean_1_,2))
-                              /(-1+DistToCenter.size());
+          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter1.begin(), DistToCenter1.end(), DistToCenter1.begin(), 0.0) - DistToCenter1.size()*pow(ConeRadiusMean_1_,2))
+                              /(-1+DistToCenter1.size());
           ConeRadiusStdDev_1_=sqrt(ConeRadiusStdDev_1_);//Variance to StdDeV                    
+          //Problem: if Phi=3.1 and another Phi=-3.0 the delta=6.1???? 
+
+
+
+          //--------------Now calculate the same thing with tau->Eta and tau->phi, instead of unweighted average which are  CenterPhi and CenterEta---------
+        
+          std::vector<double> DistTotau1;
+          DistTotau1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi_1->vector(),tau1->vector())));
+          for(auto g : gammas1) DistTotau1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau1->vector())));       
+          sort( DistTotau1.begin() , DistTotau1.end() );
+          ConeRadiusMedianWRTtau_1_= DistTotau1[DistTotau1.size()/2] * 0.5 + DistTotau1[(DistTotau1.size()+1)/2-1] * 0.5;
+          ConeRadiusMaxWRTtau_1_=DistTotau1[DistTotau1.size()-1];
+          ConeRadiusMeanWRTtau_1_= std::accumulate(DistTotau1.begin(), DistTotau1.end(), 0.0)/double(DistTotau1.size());
           
+          ConeRadiusStdDevWRTtau_1_=(std::inner_product(DistTotau1.begin(), DistTotau1.end(), DistTotau1.begin(), 0.0) - DistTotau1.size()*pow(ConeRadiusMeanWRTtau_1_,2))
+                              /(-1+DistTotau1.size());
+          ConeRadiusStdDevWRTtau_1_=sqrt(ConeRadiusStdDevWRTtau_1_);//Variance to StdDeV                    
           
-          /*
+
+          /*if(ConeRadiusMax_1_>1.0){
+            std::cout<<"ConeMax="<<ConeRadiusMax_1_<<std::endl;
+            for(unsigned j=0;j<DistToCenter.size();j++)
+                std::cout <<"index="<< j <<", Dist=" <<DistToCenter[j] << std::endl;
+            for(auto g: gammas1){
+              std::cout<<"gEta="<<g->eta()<<std::endl;
+              std::cout<<"gPhi="<<g->phi()<<std::endl;
+            }
+            std::cout<<"pi_1Eta="<<pi_1->eta()<<std::endl;
+            std::cout<<"pi_1phi="<<pi_1->phi()<<std::endl;
+            std::cout<<"Center_Eta="<<CenterEta<<std::endl;
+            std::cout<<"Center_phi="<<CenterPhi<<std::endl;
+            std::cout<<"-----------------------"<<std::endl;
+            
+          }
+
+
+
+          
 
           double tmpsum=0;
           double tmpmean =0;
