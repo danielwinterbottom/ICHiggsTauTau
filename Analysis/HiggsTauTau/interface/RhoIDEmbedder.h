@@ -24,7 +24,7 @@ class RhoIDEmbedder : public ModuleBase {
   CLASS_MEMBER(RhoIDEmbedder, ic::channel, channel)
   
   TTree *outtree_;
-  int wt_;
+  double wt_;
   TMVA::Reader *reader_;
 
  public:
