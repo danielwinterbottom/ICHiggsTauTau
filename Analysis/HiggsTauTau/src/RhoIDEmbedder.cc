@@ -28,7 +28,6 @@ namespace ic {
       outtree_->Branch("gen_match_2"    , &gen_match_2_);
       outtree_->Branch("wt"             , &wt_       );
       outtree_->Branch("Ngammas_1"      , &Ngammas_1_ );
-      outtree_->Branch("NgammasModif_1" , &NgammasModif_1_ );
       outtree_->Branch("Egamma1_1"      , &Egamma1_1_ );
       outtree_->Branch("Egamma2_1"      , &Egamma2_1_ );
       outtree_->Branch("Egamma3_1"      , &Egamma3_1_ );
@@ -48,7 +47,6 @@ namespace ic {
       outtree_->Branch("Epi0_1"         ,&Epi0_1_);
       outtree_->Branch("tau_decay_mode_1",&tau_decay_mode_1_);
       outtree_->Branch("Ngammas_2"      , &Ngammas_2_ );
-      outtree_->Branch("NgammasModif_2" , &NgammasModif_2_ );
       outtree_->Branch("Egamma1_2"      , &Egamma1_2_ );
       outtree_->Branch("Egamma2_2"      , &Egamma2_2_ );
       outtree_->Branch("Egamma3_2"      , &Egamma3_2_ );
@@ -87,6 +85,31 @@ namespace ic {
       outtree_->Branch("ConeRadiusMeanWRTtau_1"    ,&ConeRadiusMeanWRTtau_1_);
       outtree_->Branch("ConeRadiusStdDevWRTtau_1"  ,&ConeRadiusStdDevWRTtau_1_);
  
+      outtree_->Branch("NgammasModif_1"       , &NgammasModif_1_ );
+      outtree_->Branch("NgammasModif_2"       , &NgammasModif_2_ );
+    
+      outtree_->Branch("Etagamma1_1"          , &Etagamma1_1_);
+      outtree_->Branch("Etagamma2_1"          , &Etagamma2_1_);
+      outtree_->Branch("Etagamma3_1"          , &Etagamma3_1_);
+      outtree_->Branch("Etagamma4_1"          , &Etagamma4_1_);
+      outtree_->Branch("Etagamma1_2"          , &Etagamma1_2_);
+      outtree_->Branch("Etagamma2_2"          , &Etagamma2_2_);
+      outtree_->Branch("Etagamma3_2"          , &Etagamma3_2_);
+      outtree_->Branch("Etagamma4_2"          , &Etagamma4_2_);
+      outtree_->Branch("Etapi_1"              , &Etapi_1_);
+      outtree_->Branch("Etapi_2"              , &Etapi_2_);
+      outtree_->Branch("Phigamma1_1"          , &Phigamma1_1_);
+      outtree_->Branch("Phigamma2_1"          , &Phigamma2_1_);
+      outtree_->Branch("Phigamma3_1"          , &Phigamma3_1_);
+      outtree_->Branch("Phigamma4_1"          , &Phigamma4_1_);
+      outtree_->Branch("Phigamma1_2"          , &Phigamma1_2_);
+      outtree_->Branch("Phigamma2_2"          , &Phigamma2_2_);
+      outtree_->Branch("Phigamma3_2"          , &Phigamma3_2_);
+      outtree_->Branch("Phigamma4_2"          , &Phigamma4_2_);
+      outtree_->Branch("Phipi_1"              , &Phipi_1_);
+      outtree_->Branch("Phipi_2"              , &Phipi_2_);
+
+    
     }
     reader_ = new TMVA::Reader();
     TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
@@ -178,6 +201,15 @@ namespace ic {
         eta_2_ = tau2->eta();
     
     //New variables by Mohammad
+        Etagamma1_2_=-999; Phigamma1_2_=-999; Etagamma2_2_=-999; Phigamma2_2_=-999; 
+        Etagamma3_2_=-999; Phigamma3_2_=-999; Etagamma4_2_=-999; Phigamma4_2_=-999;
+        Etapi_2_=-999; Phipi_2_=-999;
+        
+        if(gammas2.size()>=1) {Etagamma1_2_ = gammas2[0]->eta(); Phigamma1_2_= gammas2[0]->phi();}
+        if(gammas2.size()>=2) {Etagamma2_2_ = gammas2[1]->eta(); Phigamma2_2_= gammas2[1]->phi();}
+        if(gammas2.size()>=3) {Etagamma3_2_ = gammas2[2]->eta(); Phigamma3_2_= gammas2[2]->phi();}
+        if(gammas2.size()>=4) {Etagamma4_2_ = gammas2[3]->eta(); Phigamma4_2_= gammas2[3]->phi();}
+        Etapi_2_=pi_2->eta(); Phipi_2_=pi_2->phi();
         
         NgammasModif_2_=0;
         for (auto g : gammas2) 
@@ -268,7 +300,7 @@ namespace ic {
           gammas_dEta_1_ =  std::fabs(gammas1[0]->eta()-gammas1[1]->eta());
         }
 
-        std::cout<<"test\n";
+        
 
         E_1_ = tau1->energy();
 
@@ -286,7 +318,17 @@ namespace ic {
 
 
     //New variables by Mohammad
-    
+
+        Etagamma1_1_=-999; Phigamma1_1_=-999; Etagamma2_1_=-999; Phigamma2_1_=-999; 
+        Etagamma3_1_=-999; Phigamma3_1_=-999; Etagamma4_1_=-999; Phigamma4_1_=-999;
+        Etapi_1_=-999; Phipi_1_=-999;
+        
+        if(gammas1.size()>=1) {Etagamma1_1_ = gammas1[0]->eta(); Phigamma1_1_= gammas1[0]->phi();}
+        if(gammas1.size()>=2) {Etagamma2_1_ = gammas1[1]->eta(); Phigamma2_1_= gammas1[1]->phi();}
+        if(gammas1.size()>=3) {Etagamma3_1_ = gammas1[2]->eta(); Phigamma3_1_= gammas1[2]->phi();}
+        if(gammas1.size()>=4) {Etagamma4_1_ = gammas1[3]->eta(); Phigamma4_1_= gammas1[3]->phi();}
+        Etapi_1_=pi_1->eta(); Phipi_1_=pi_1->phi();
+        
         NgammasModif_1_=0;
         for (auto g : gammas1) 
           if (g->energy()>1.0){

@@ -106,6 +106,27 @@ class RhoIDEmbedder : public ModuleBase {
 
   double NgammasModif_2_;
   double NgammasModif_1_;
+    
+  double Etagamma1_1_;
+  double Etagamma2_1_;
+  double Etagamma3_1_;
+  double Etagamma4_1_;
+  double Etagamma1_2_;
+  double Etagamma2_2_;
+  double Etagamma3_2_;
+  double Etagamma4_2_;
+  double Etapi_1_;
+  double Etapi_2_;
+  double Phigamma1_1_;
+  double Phigamma2_1_;
+  double Phigamma3_1_;
+  double Phigamma4_1_;
+  double Phigamma1_2_;
+  double Phigamma2_2_;
+  double Phigamma3_2_;
+  double Phigamma4_2_;
+  double Phipi_1_;
+  double Phipi_2_;
 
   //temp variables
   double CenterEta_1;
