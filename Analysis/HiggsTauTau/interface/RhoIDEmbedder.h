@@ -104,10 +104,15 @@ class RhoIDEmbedder : public ModuleBase {
   double ConeRadiusMeanWRTtau_1_;
   double ConeRadiusStdDevWRTtau_1_;
 
+  double NgammasModif_2_;
+  double NgammasModif_1_;
 
   //temp variables
-  double CenterEta;
-  double CenterPhi;
+  double CenterEta_1;
+  double CenterPhi_1;
+  double CenterEta_2;
+  double CenterPhi_2;
+
 
 
 };

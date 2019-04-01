@@ -22,38 +22,40 @@ namespace ic {
   int RhoIDEmbedder::PreAnalysis() {
     if(fs_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
-      outtree_->Branch("tauFlag1"     , &tauFlag1_ );     
-      outtree_->Branch("tauFlag2"     , &tauFlag2_ );
-      outtree_->Branch("gen_match_1"  , &gen_match_1_);
-      outtree_->Branch("gen_match_2"  , &gen_match_2_);
-      outtree_->Branch("wt"           , &wt_       );
-      outtree_->Branch("Ngammas_1"    , &Ngammas_1_ );
-      outtree_->Branch("Egamma1_1"    , &Egamma1_1_ );
-      outtree_->Branch("Egamma2_1"    , &Egamma2_1_ );
-      outtree_->Branch("Egamma3_1"    , &Egamma3_1_ );
-      outtree_->Branch("Egamma4_1"    , &Egamma4_1_ );
-      outtree_->Branch("Epi_1"        , &Epi_1_ );
-      outtree_->Branch("Mpi0_1"       , &Mpi0_1_ );
-      outtree_->Branch("Mrho_1"       , &Mrho_1_ );
+      outtree_->Branch("tauFlag1"       , &tauFlag1_ );     
+      outtree_->Branch("tauFlag2"       , &tauFlag2_ );
+      outtree_->Branch("gen_match_1"    , &gen_match_1_);
+      outtree_->Branch("gen_match_2"    , &gen_match_2_);
+      outtree_->Branch("wt"             , &wt_       );
+      outtree_->Branch("Ngammas_1"      , &Ngammas_1_ );
+      outtree_->Branch("NgammasModif_1" , &NgammasModif_1_ );
+      outtree_->Branch("Egamma1_1"      , &Egamma1_1_ );
+      outtree_->Branch("Egamma2_1"      , &Egamma2_1_ );
+      outtree_->Branch("Egamma3_1"      , &Egamma3_1_ );
+      outtree_->Branch("Egamma4_1"      , &Egamma4_1_ );
+      outtree_->Branch("Epi_1"          , &Epi_1_ );
+      outtree_->Branch("Mpi0_1"         , &Mpi0_1_ );
+      outtree_->Branch("Mrho_1"         , &Mrho_1_ );
       //outtree_->Branch("dphi_1"       , &dphi_1_ );
       //outtree_->Branch("dEta_1"       , &dEta_1_ );
-      outtree_->Branch("gammas_dEta_1", &gammas_dEta_1_ );
-      outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_ );
-      outtree_->Branch("pt_1"         , &pt_1_ );
-      outtree_->Branch("eta_1"        , &eta_1_ );
-      outtree_->Branch("E_1"          , &E_1_);
-      outtree_->Branch("rho_dphi_1"   ,&rho_dphi_1_);
-      outtree_->Branch("rho_dEta_1"   ,&rho_dEta_1_);
-      outtree_->Branch("Epi0_1"       ,&Epi0_1_);
+      outtree_->Branch("gammas_dEta_1"  , &gammas_dEta_1_ );
+      outtree_->Branch("gammas_dphi_1"  , &gammas_dphi_1_ );
+      outtree_->Branch("pt_1"           , &pt_1_ );
+      outtree_->Branch("eta_1"          , &eta_1_ );
+      outtree_->Branch("E_1"            , &E_1_);
+      outtree_->Branch("rho_dphi_1"     ,&rho_dphi_1_);
+      outtree_->Branch("rho_dEta_1"     ,&rho_dEta_1_);
+      outtree_->Branch("Epi0_1"         ,&Epi0_1_);
       outtree_->Branch("tau_decay_mode_1",&tau_decay_mode_1_);
-      outtree_->Branch("Ngammas_2"    , &Ngammas_2_ );
-      outtree_->Branch("Egamma1_2"    , &Egamma1_2_ );
-      outtree_->Branch("Egamma2_2"    , &Egamma2_2_ );
-      outtree_->Branch("Egamma3_2"    , &Egamma3_2_ );
-      outtree_->Branch("Egamma4_2"    , &Egamma4_2_ );
-      outtree_->Branch("Epi_2"        , &Epi_2_ );
-      outtree_->Branch("Mpi0_2"       , &Mpi0_2_ );
-      outtree_->Branch("Mrho_2"       , &Mrho_2_ );
+      outtree_->Branch("Ngammas_2"      , &Ngammas_2_ );
+      outtree_->Branch("NgammasModif_2" , &NgammasModif_2_ );
+      outtree_->Branch("Egamma1_2"      , &Egamma1_2_ );
+      outtree_->Branch("Egamma2_2"      , &Egamma2_2_ );
+      outtree_->Branch("Egamma3_2"      , &Egamma3_2_ );
+      outtree_->Branch("Egamma4_2"      , &Egamma4_2_ );
+      outtree_->Branch("Epi_2"          , &Epi_2_ );
+      outtree_->Branch("Mpi0_2"         , &Mpi0_2_ );
+      outtree_->Branch("Mrho_2"         , &Mrho_2_ );
       //outtree_->Branch("dphi_2"       , &dphi_2_ );
       //outtree_->Branch("dEta_2"       , &dEta_2_ );
       outtree_->Branch("gammas_dEta_2", &gammas_dEta_2_ );
@@ -134,20 +136,24 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
 
 //-------------------------------------subleading tau--------------------
+    Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
+    E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
+    CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
+    ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
+    ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
+ 
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
       if (tau2->decay_mode()==1) {
         gammas2 = GetTauGammas(tau2, pfcands);
 
-        rho_2 = GetRho(tau2, pfcands);
+    
 
         Candidate *pi_2 = rho_2.first;
         Candidate *pi0_2 = rho_2.second;
 
-        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
-        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
-        if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
+       if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
         if(gammas2.size()>=4) Egamma4_2_ = gammas2[3]->energy();
@@ -172,23 +178,32 @@ namespace ic {
         eta_2_ = tau2->eta();
     
     //New variables by Mohammad
-        CenterEta=-1;  CenterPhi=-1;//temp variables 
-        ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
-        ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
-                
+        
+        NgammasModif_2_=0;
+        for (auto g : gammas2) 
+          if (g->energy()>1.0){
+            if (g->energy()>10.0)
+              NgammasModif_2_+=2;
+            else
+              NgammasModif_2_+=1;
+          }
+
+
+
         if(gammas2.size()>=1){
           
-          CenterEta=pi_2->eta();
-          for(auto g : gammas2) CenterEta+=g->eta();
-          CenterEta/=(1.0+double(gammas2.size()));
-          
-          CenterPhi=pi_2->phi();
-          for(auto g : gammas2) CenterPhi+=g->phi();
-          CenterPhi/=(1.0+double(gammas2.size()));           
-          
+          CenterEta_2=pi_2->eta();
+          CenterPhi_2=pi_2->phi();
+          for(auto g : gammas2) {
+          CenterEta_2+=g->eta();
+          CenterPhi_2+=g->phi();
+          }
+          CenterEta_2/=(1.0+double(gammas2.size()));
+          CenterPhi_2/=(1.0+double(gammas2.size()));            
+        
           std::vector<double> DistToCenter2; 
-          DistToCenter2.push_back( sqrt( std::pow(CenterPhi-pi_2->phi(),2) + std::pow(CenterEta-pi_2->eta(),2) ) );
-          for(auto g : gammas2) DistToCenter2.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter2.size()=1+gammas.size()
+          DistToCenter2.push_back( sqrt( std::pow(CenterPhi_2-pi_2->phi(),2) + std::pow(CenterEta_2-pi_2->eta(),2) ) );
+          for(auto g : gammas2) DistToCenter2.push_back( sqrt( std::pow(CenterPhi_2-g->phi(),2) + std::pow(CenterEta_2-g->eta(),2) ) );//FYI: DistToCenter2.size()=1+gammas.size()
           sort( DistToCenter2.begin() , DistToCenter2.end() );
           ConeRadiusMedian_2_= DistToCenter2[DistToCenter2.size()/2] * 0.5 + DistToCenter2[(DistToCenter2.size()+1)/2-1] * 0.5;
           ConeRadiusMax_2_=DistToCenter2[DistToCenter2.size()-1];
@@ -209,7 +224,7 @@ namespace ic {
           ConeRadiusStdDevWRTtau_2_=(std::inner_product(DistTotau2.begin(), DistTotau2.end(), DistTotau2.begin(), 0.0) - DistTotau2.size()*pow(ConeRadiusMeanWRTtau_2_,2))
                               /(-1+DistTotau2.size());
           ConeRadiusStdDevWRTtau_2_=sqrt(ConeRadiusStdDevWRTtau_2_);//Variance to StdDeV                    
-          
+        
         } 
 
 
@@ -225,6 +240,12 @@ namespace ic {
     }
 
 //-------------------------------------leading tau--------------------
+    Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
+    E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
+    CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
+    ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
+    ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
+
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       tau_decay_mode_1_=tau1->decay_mode();
@@ -237,9 +258,7 @@ namespace ic {
         Candidate *pi0_1 = rho_1.second;
 
 
-        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
-        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.;
-        if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
+       if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
         if(gammas1.size()>=4) Egamma4_1_ = gammas1[3]->energy();
@@ -268,23 +287,32 @@ namespace ic {
 
 
     //New variables by Mohammad
-        CenterEta=-1;  CenterPhi=-1;//temp variables 
-        ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
-        ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
-                
+    
+        NgammasModif_1_=0;
+        for (auto g : gammas1) 
+          if (g->energy()>1.0){
+            if (g->energy()>10.0)
+              NgammasModif_1_+=2;
+            else
+              NgammasModif_1_+=1;
+          }
+
+
+
         if(gammas1.size()>=1){
           
-          CenterEta=pi_1->eta();
-          for(auto g : gammas1) CenterEta+=g->eta();
-          CenterEta/=(1.0+double(gammas1.size()));
-          
-          CenterPhi=pi_1->phi();
-          for(auto g : gammas1) CenterPhi+=g->phi();
-          CenterPhi/=(1.0+double(gammas1.size()));           
-          
+          CenterEta_1=pi_1->eta();
+          CenterPhi_1=pi_1->phi();
+          for(auto g : gammas1) {
+          CenterEta_1+=g->eta();
+          CenterPhi_1+=g->phi();
+          }
+          CenterEta_1/=(1.0+double(gammas1.size()));
+          CenterPhi_1/=(1.0+double(gammas1.size()));            
+                 
           std::vector<double> DistToCenter1; 
-          DistToCenter1.push_back( sqrt( std::pow(CenterPhi-pi_1->phi(),2) + std::pow(CenterEta-pi_1->eta(),2) ) );
-          for(auto g : gammas1) DistToCenter1.push_back( sqrt( std::pow(CenterPhi-g->phi(),2) + std::pow(CenterEta-g->eta(),2) ) );//FYI: DistToCenter1.size()=1+gammas.size()
+          DistToCenter1.push_back( sqrt( std::pow(CenterPhi_1-pi_1->phi(),2) + std::pow(CenterEta_1-pi_1->eta(),2) ) );
+          for(auto g : gammas1) DistToCenter1.push_back( sqrt( std::pow(CenterPhi_1-g->phi(),2) + std::pow(CenterEta_1-g->eta(),2) ) );//FYI: DistToCenter1.size()=1+gammas.size()
           sort( DistToCenter1.begin() , DistToCenter1.end() );
           ConeRadiusMedian_1_= DistToCenter1[DistToCenter1.size()/2] * 0.5 + DistToCenter1[(DistToCenter1.size()+1)/2-1] * 0.5;
           ConeRadiusMax_1_=DistToCenter1[DistToCenter1.size()-1];
@@ -311,6 +339,11 @@ namespace ic {
                               /(-1+DistTotau1.size());
           ConeRadiusStdDevWRTtau_1_=sqrt(ConeRadiusStdDevWRTtau_1_);//Variance to StdDeV                    
           
+            
+
+         /* std::cout<<"tauflag1="<<tauFlag1_<<", N_g1="<<gammas1.size()<<" --> ";
+          for(auto g : gammas1) std::cout<<g->energy()<<"  ";
+          std::cout<<std::endl<<"-------------------------------------------------"<<std::endl;*/
 
           /*if(ConeRadiusMax_1_>1.0){
             std::cout<<"ConeMax="<<ConeRadiusMax_1_<<std::endl;
@@ -327,19 +360,12 @@ namespace ic {
             std::cout<<"-----------------------"<<std::endl;
             
           }
-
-
-
-          
-
           double tmpsum=0;
           double tmpmean =0;
           for (unsigned i=0; i<DistToCenter.size(); i++)
             tmpsum += DistToCenter[i];
           tmpmean = tmpsum/DistToCenter.size();
           
-          
-
           std::cout << "gammas1.size()=: " << gammas1.size() <<"  DistToCenter.size()= "<<DistToCenter.size()<< std::endl;
           //std::cout << "Dist.begin="<<DistToCenter.begin()<< "  Dist.end=" <<DistToCenter.end()<<std::endl;  
           for(unsigned j=0;j<DistToCenter.size();j++)
