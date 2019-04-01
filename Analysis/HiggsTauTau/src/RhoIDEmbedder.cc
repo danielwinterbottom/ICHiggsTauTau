@@ -136,24 +136,24 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
 
 //-------------------------------------subleading tau--------------------
-    Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
-    E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
-    CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
-    ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
-    ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
- 
+
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
+      
+     
+      
       if (tau2->decay_mode()==1) {
         gammas2 = GetTauGammas(tau2, pfcands);
-
     
-
+        rho_2 = GetRho(tau2, pfcands);
         Candidate *pi_2 = rho_2.first;
         Candidate *pi0_2 = rho_2.second;
 
-       if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
+        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
+        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
+ 
+        if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
         if(gammas2.size()>=4) Egamma4_2_ = gammas2[3]->energy();
@@ -188,7 +188,9 @@ namespace ic {
               NgammasModif_2_+=1;
           }
 
-
+        CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
+        ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
+        ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
 
         if(gammas2.size()>=1){
           
@@ -240,15 +242,11 @@ namespace ic {
     }
 
 //-------------------------------------leading tau--------------------
-    Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
-    E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
-    CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
-    ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
-    ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
-
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       tau_decay_mode_1_=tau1->decay_mode();
+      
+
       if(tau1->decay_mode()==1) {
         gammas1 = GetTauGammas(tau1, pfcands);
 
@@ -256,9 +254,11 @@ namespace ic {
 
         Candidate *pi_1 = rho_1.first;
         Candidate *pi0_1 = rho_1.second;
-
-
-       if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
+      
+        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
+        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
+     
+        if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
         if(gammas1.size()>=4) Egamma4_1_ = gammas1[3]->energy();
@@ -267,6 +267,8 @@ namespace ic {
           gammas_dphi_1_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas1[0]->vector(),gammas1[1]->vector()));
           gammas_dEta_1_ =  std::fabs(gammas1[0]->eta()-gammas1[1]->eta());
         }
+
+        std::cout<<"test\n";
 
         E_1_ = tau1->energy();
 
@@ -283,9 +285,6 @@ namespace ic {
         eta_1_ = tau1->eta();
 
 
-
-
-
     //New variables by Mohammad
     
         NgammasModif_1_=0;
@@ -297,7 +296,9 @@ namespace ic {
               NgammasModif_1_+=1;
           }
 
-
+        CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
+        ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
+        ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
 
         if(gammas1.size()>=1){
           
