@@ -168,19 +168,22 @@ namespace ic {
       
       if (tau2->decay_mode()==1) {
         gammas2 = GetTauGammas(tau2, pfcands);
-    
+
         rho_2 = GetRho(tau2, pfcands);
         Candidate *pi_2 = rho_2.first;
         Candidate *pi0_2 = rho_2.second;
 
         Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
         E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
- 
+        Ngammas_2_=-999; 
         if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
         if(gammas2.size()>=4) Egamma4_2_ = gammas2[3]->energy();
 
+        //------test------
+        //std::cout<<gammas2.size()<<"   "<<Egamma1_2_<<"   "<<Egamma2_2_<<"    "<<Egamma3_2_<<std::endl;
+        //------------
         if(gammas2.size()>1) {
           gammas_dphi_2_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas2[0]->vector(),gammas2[1]->vector()));
           gammas_dEta_2_ =  std::fabs(gammas2[0]->eta()-gammas2[1]->eta());
@@ -268,6 +271,24 @@ namespace ic {
     
         std::vector<double> inputs2 = {Egamma1_2_/E_2_, Egamma2_2_/E_2_, Egamma3_2_/E_2_, Egamma4_2_/E_2_, Epi_2_/E_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
 
+
+        // variables for subleading tau
+
+        Ngammas_2_     = gammas2.size();
+        Egamma1_2_     = Egamma1_2_;///Etau_2_;
+        Egamma2_2_     = Egamma2_2_;///Etau_2_;
+        Egamma3_2_     = Egamma3_2_;///Etau_2_;
+        Egamma4_2_     = Egamma4_2_;///Etau_2_;
+        Epi_2_         = Epi_2_;///Etau_2_;
+        Mpi0_2_        = Mpi0_2_;
+        Mrho_2_        = Mrho_2_;
+        dphi_2_        = rho_dphi_2_;       
+        dEta_2_        = rho_dEta_2_;       
+        gammas_dEta_2_  = gammas_dEta_2_;
+        gammas_dphi_2_ = gammas_dphi_2_;
+        pt_2_          = pt_2_;
+        eta_2_         = eta_2_;
+
         double score2 = read_mva_score(inputs2);
         event->Add("rho_id_2", score2);
       }
@@ -289,7 +310,7 @@ namespace ic {
       
         Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
         E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
-     
+        Ngammas_1_=-999;
         if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
@@ -453,23 +474,6 @@ namespace ic {
         gammas_dphi_1_ = gammas_dphi_1_;
         pt_1_          = pt_1_; 
         eta_1_         = eta_1_;
-
-        // variables for subleading tau
-
-        Ngammas_2_     = gammas2.size();
-        Egamma1_2_     = Egamma1_2_;///Etau_2_;
-        Egamma2_2_     = Egamma2_2_;///Etau_2_;
-        Egamma3_2_     = Egamma3_2_;///Etau_2_;
-        Egamma4_2_     = Egamma4_2_;///Etau_2_;
-        Epi_2_         = Epi_2_;///Etau_2_;
-        Mpi0_2_        = Mpi0_2_;
-        Mrho_2_        = Mrho_2_;
-        dphi_2_        = rho_dphi_2_;       
-        dEta_2_        = rho_dEta_2_;       
-        gammas_dEta_2_  = gammas_dEta_2_;
-        gammas_dphi_2_ = gammas_dphi_2_;
-        pt_2_          = pt_2_;
-        eta_2_         = eta_2_;
 
         double score1 = read_mva_score(inputs1);
         event->Add("rho_id_1", score1);
