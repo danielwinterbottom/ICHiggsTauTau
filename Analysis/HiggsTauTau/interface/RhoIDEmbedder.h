@@ -68,6 +68,7 @@ class RhoIDEmbedder : public ModuleBase {
   double gammas_dphi_1_;
   double pt_1_;
   double eta_1_; 
+  double phi_1_;
 
   unsigned Ngammas_2_;
   double Egamma1_2_;
@@ -84,6 +85,7 @@ class RhoIDEmbedder : public ModuleBase {
   double gammas_dphi_2_;
   double pt_2_;
   double eta_2_;
+  double phi_2_;
 
   // variables by Mohammad
   double ConeRadiusMax_2_;
@@ -103,6 +105,15 @@ class RhoIDEmbedder : public ModuleBase {
   double ConeRadiusMedianWRTtau_1_;
   double ConeRadiusMeanWRTtau_1_;
   double ConeRadiusStdDevWRTtau_1_;
+
+  double ConeRadiusMaxWRTpi0_2_;
+  double ConeRadiusMedianWRTpi0_2_;
+  double ConeRadiusMeanWRTpi0_2_;
+  double ConeRadiusStdDevWRTpi0_2_;
+  double ConeRadiusMaxWRTpi0_1_;
+  double ConeRadiusMedianWRTpi0_1_;
+  double ConeRadiusMeanWRTpi0_1_;
+  double ConeRadiusStdDevWRTpi0_1_;
 
   double NgammasModif_2_;
   double NgammasModif_1_;

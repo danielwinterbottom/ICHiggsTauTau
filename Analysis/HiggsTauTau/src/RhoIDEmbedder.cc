@@ -41,6 +41,7 @@ namespace ic {
       outtree_->Branch("gammas_dphi_1"  , &gammas_dphi_1_ );
       outtree_->Branch("pt_1"           , &pt_1_ );
       outtree_->Branch("eta_1"          , &eta_1_ );
+      outtree_->Branch("phi_1"          , &phi_1_ );
       outtree_->Branch("E_1"            , &E_1_);
       outtree_->Branch("rho_dphi_1"     ,&rho_dphi_1_);
       outtree_->Branch("rho_dEta_1"     ,&rho_dEta_1_);
@@ -60,6 +61,7 @@ namespace ic {
       outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_ );
       outtree_->Branch("pt_2"         , &pt_2_ );
       outtree_->Branch("eta_2"        , &eta_2_ );
+      outtree_->Branch("phi_2"        , &phi_2_ );
       outtree_->Branch("E_2"          , &E_2_);
       outtree_->Branch("rho_dphi_2"   ,&rho_dphi_2_);
       outtree_->Branch("rho_dEta_2"   ,&rho_dEta_2_);
@@ -84,6 +86,16 @@ namespace ic {
       outtree_->Branch("ConeRadiusMedianWRTtau_1"  ,&ConeRadiusMedianWRTtau_1_);
       outtree_->Branch("ConeRadiusMeanWRTtau_1"    ,&ConeRadiusMeanWRTtau_1_);
       outtree_->Branch("ConeRadiusStdDevWRTtau_1"  ,&ConeRadiusStdDevWRTtau_1_);
+
+      outtree_->Branch("ConeRadiusMaxWRTpi0_2"     ,&ConeRadiusMaxWRTpi0_2_);
+      outtree_->Branch("ConeRadiusMedianWRTpi0_2"  ,&ConeRadiusMedianWRTpi0_2_);
+      outtree_->Branch("ConeRadiusMeanWRTpi0_2"    ,&ConeRadiusMeanWRTpi0_2_);
+      outtree_->Branch("ConeRadiusStdDevWRTpi0_2"  ,&ConeRadiusStdDevWRTpi0_2_);
+      outtree_->Branch("ConeRadiusMaxWRTpi0_1"     ,&ConeRadiusMaxWRTpi0_1_);
+      outtree_->Branch("ConeRadiusMedianWRTpi0_1"  ,&ConeRadiusMedianWRTpi0_1_);
+      outtree_->Branch("ConeRadiusMeanWRTpi0_1"    ,&ConeRadiusMeanWRTpi0_1_);
+      outtree_->Branch("ConeRadiusStdDevWRTpi0_1"  ,&ConeRadiusStdDevWRTpi0_1_);
+ 
  
       outtree_->Branch("NgammasModif_1"       , &NgammasModif_1_ );
       outtree_->Branch("NgammasModif_2"       , &NgammasModif_2_ );
@@ -174,8 +186,8 @@ namespace ic {
         Candidate *pi0_2 = rho_2.second;
 
         Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
-        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-1;
-        Ngammas_2_=-999; 
+        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
+        Ngammas_2_=-999; phi_2_=-999;
         if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
@@ -202,7 +214,7 @@ namespace ic {
 
         pt_2_ = tau2->pt();
         eta_2_ = tau2->eta();
-    
+        phi_2_= tau2->phi();
     //New variables by Mohammad
         Etagamma1_2_=-999; Phigamma1_2_=-999; Etagamma2_2_=-999; Phigamma2_2_=-999; 
         Etagamma3_2_=-999; Phigamma3_2_=-999; Etagamma4_2_=-999; Phigamma4_2_=-999;
@@ -226,7 +238,7 @@ namespace ic {
         CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
         ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
         ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
-
+        ConeRadiusMaxWRTpi0_2_=-1; ConeRadiusMedianWRTpi0_2_=-1; ConeRadiusMeanWRTpi0_2_=-1; ConeRadiusStdDevWRTpi0_2_=-1;
         if(gammas2.size()>=1){
           
           CenterEta_2=pi_2->eta();
@@ -257,11 +269,21 @@ namespace ic {
           ConeRadiusMedianWRTtau_2_= DistTotau2[DistTotau2.size()/2] * 0.5 + DistTotau2[(DistTotau2.size()+1)/2-1] * 0.5;
           ConeRadiusMaxWRTtau_2_=DistTotau2[DistTotau2.size()-1];
           ConeRadiusMeanWRTtau_2_= std::accumulate(DistTotau2.begin(), DistTotau2.end(), 0.0)/double(DistTotau2.size());
-          
           ConeRadiusStdDevWRTtau_2_=(std::inner_product(DistTotau2.begin(), DistTotau2.end(), DistTotau2.begin(), 0.0) - DistTotau2.size()*pow(ConeRadiusMeanWRTtau_2_,2))
                               /(-1+DistTotau2.size());
           ConeRadiusStdDevWRTtau_2_=sqrt(ConeRadiusStdDevWRTtau_2_);//Variance to StdDeV                    
-        
+       
+
+       //--------------Now calculate the same thing with pi0->Eta and pi0->phi------
+          std::vector<double> DistTopi0_2;
+          for(auto g: gammas2) DistTopi0_2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi0_2->vector(),g->vector())));
+          sort(DistTopi0_2.begin(),DistTopi0_2.end());
+          ConeRadiusMedianWRTpi0_2_=DistTopi0_2[DistTopi0_2.size()/2] * 0.5 + DistTopi0_2[(DistTopi0_2.size()+1)/2-1] * 0.5;
+          ConeRadiusMaxWRTpi0_2_=DistTopi0_2[DistTopi0_2.size()-1];
+          ConeRadiusMeanWRTpi0_2_=std::accumulate(DistTopi0_2.begin(), DistTopi0_2.end(), 0.0)/double(DistTopi0_2.size());
+          ConeRadiusStdDevWRTpi0_2_=(std::inner_product(DistTopi0_2.begin(), DistTopi0_2.end(), DistTopi0_2.begin(), 0.0) - DistTopi0_2.size()*pow(ConeRadiusMeanWRTpi0_2_,2))
+                                    /(-1+DistTopi0_2.size());
+          ConeRadiusStdDevWRTpi0_2_=sqrt(ConeRadiusStdDevWRTpi0_2_);//Variance to StdDeV
         } 
 
 
@@ -309,8 +331,8 @@ namespace ic {
         Candidate *pi0_1 = rho_1.second;
       
         Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
-        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-1, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
-        Ngammas_1_=-999;
+        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
+        Ngammas_1_=-999; phi_1_=-999;
         if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
@@ -336,7 +358,7 @@ namespace ic {
 
         pt_1_ = tau1->pt();
         eta_1_ = tau1->eta();
-
+        phi_1_ = tau1->phi();
 
     //New variables by Mohammad
 
@@ -362,7 +384,7 @@ namespace ic {
         CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
         ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
         ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
-
+        ConeRadiusMaxWRTpi0_1_=-1; ConeRadiusMedianWRTpi0_1_=-1; ConeRadiusMeanWRTpi0_1_=-1; ConeRadiusStdDevWRTpi0_1_=-1;
         if(gammas1.size()>=1){
           
           CenterEta_1=pi_1->eta();
@@ -403,7 +425,20 @@ namespace ic {
                               /(-1+DistTotau1.size());
           ConeRadiusStdDevWRTtau_1_=sqrt(ConeRadiusStdDevWRTtau_1_);//Variance to StdDeV                    
           
-            
+
+       //--------------Now calculate the same thing with pi0->Eta and pi0->phi------
+          std::vector<double> DistTopi0_1;
+          for(auto g: gammas1) DistTopi0_1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi0_1->vector(),g->vector())));
+          sort(DistTopi0_1.begin(),DistTopi0_1.end());
+          ConeRadiusMedianWRTpi0_1_=DistTopi0_1[DistTopi0_1.size()/2] * 0.5 + DistTopi0_1[(DistTopi0_1.size()+1)/2-1] * 0.5;
+          ConeRadiusMaxWRTpi0_1_=DistTopi0_1[DistTopi0_1.size()-1];
+          ConeRadiusMeanWRTpi0_1_=std::accumulate(DistTopi0_1.begin(), DistTopi0_1.end(), 0.0)/double(DistTopi0_1.size());
+          ConeRadiusStdDevWRTpi0_1_=(std::inner_product(DistTopi0_1.begin(), DistTopi0_1.end(), DistTopi0_1.begin(), 0.0) - DistTopi0_1.size()*pow(ConeRadiusMeanWRTpi0_1_,2))
+                                    /(-1+DistTopi0_1.size());
+          ConeRadiusStdDevWRTpi0_1_=sqrt(ConeRadiusStdDevWRTpi0_1_);//Variance to StdDeV
+
+
+
 
          /* std::cout<<"tauflag1="<<tauFlag1_<<", N_g1="<<gammas1.size()<<" --> ";
           for(auto g : gammas1) std::cout<<g->energy()<<"  ";
