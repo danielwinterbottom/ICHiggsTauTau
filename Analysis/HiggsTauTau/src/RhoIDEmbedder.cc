@@ -95,11 +95,15 @@ namespace ic {
       outtree_->Branch("ConeRadiusMedianWRTpi0_1"  ,&ConeRadiusMedianWRTpi0_1_);
       outtree_->Branch("ConeRadiusMeanWRTpi0_1"    ,&ConeRadiusMeanWRTpi0_1_);
       outtree_->Branch("ConeRadiusStdDevWRTpi0_1"  ,&ConeRadiusStdDevWRTpi0_1_);
- 
- 
+  
       outtree_->Branch("NgammasModif_1"       , &NgammasModif_1_ );
       outtree_->Branch("NgammasModif_2"       , &NgammasModif_2_ );
-    
+
+      outtree_->Branch("DeltaR2WRTtau_1"      , &DeltaR2WRTtau_1_);
+      outtree_->Branch("DeltaR2WRTtau_2"      , &DeltaR2WRTtau_2_);
+      outtree_->Branch("DeltaR2WRTpi0_1"      , &DeltaR2WRTpi0_1_);
+      outtree_->Branch("DeltaR2WRTpi0_2"      , &DeltaR2WRTpi0_2_);
+
       outtree_->Branch("Etagamma1_1"          , &Etagamma1_1_);
       outtree_->Branch("Etagamma2_1"          , &Etagamma2_1_);
       outtree_->Branch("Etagamma3_1"          , &Etagamma3_1_);
@@ -239,6 +243,7 @@ namespace ic {
         ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
         ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
         ConeRadiusMaxWRTpi0_2_=-1; ConeRadiusMedianWRTpi0_2_=-1; ConeRadiusMeanWRTpi0_2_=-1; ConeRadiusStdDevWRTpi0_2_=-1;
+        DeltaR2WRTtau_2_=-999; DeltaR2WRTpi0_2_=-999;
         if(gammas2.size()>=1){
           
           CenterEta_2=pi_2->eta();
@@ -284,6 +289,30 @@ namespace ic {
           ConeRadiusStdDevWRTpi0_2_=(std::inner_product(DistTopi0_2.begin(), DistTopi0_2.end(), DistTopi0_2.begin(), 0.0) - DistTopi0_2.size()*pow(ConeRadiusMeanWRTpi0_2_,2))
                                     /(-1+DistTopi0_2.size());
           ConeRadiusStdDevWRTpi0_2_=sqrt(ConeRadiusStdDevWRTpi0_2_);//Variance to StdDeV
+          
+
+          //--------------------------Shape based variables---------------
+          //WRT tau
+          DeltaR2WRTtau_2_=0;
+          SumPt_2=0;
+          DeltaR2WRTtau_2_=std::pow(ROOT::Math::VectorUtil::DeltaR(pi_2->vector(),tau2->vector()),2)*std::pow(pi_2->pt(),2);
+          SumPt_2=std::pow(pi_2->pt(),2);
+          for(auto g : gammas2){
+            DeltaR2WRTtau_2_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector()),2)*std::pow(g->pt(),2);
+            SumPt_2+=std::pow(g->pt(),2);
+          }
+          DeltaR2WRTtau_2_/=SumPt_2;
+          
+
+          //WRT pi0 (ignoring prong)
+          DeltaR2WRTpi0_2_=0;          
+          SumPt_2=0;
+          for(auto g : gammas2){
+            DeltaR2WRTpi0_2_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),pi0_2->vector()),2)*std::pow(g->pt(),2);
+            SumPt_2+=std::pow(g->pt(),2);
+          }
+          DeltaR2WRTpi0_2_/=SumPt_2;
+
         } 
 
 
@@ -385,6 +414,7 @@ namespace ic {
         ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
         ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
         ConeRadiusMaxWRTpi0_1_=-1; ConeRadiusMedianWRTpi0_1_=-1; ConeRadiusMeanWRTpi0_1_=-1; ConeRadiusStdDevWRTpi0_1_=-1;
+        DeltaR2WRTtau_1_=-999; DeltaR2WRTpi0_1_=-999;
         if(gammas1.size()>=1){
           
           CenterEta_1=pi_1->eta();
@@ -438,52 +468,29 @@ namespace ic {
           ConeRadiusStdDevWRTpi0_1_=sqrt(ConeRadiusStdDevWRTpi0_1_);//Variance to StdDeV
 
 
-
-
-         /* std::cout<<"tauflag1="<<tauFlag1_<<", N_g1="<<gammas1.size()<<" --> ";
-          for(auto g : gammas1) std::cout<<g->energy()<<"  ";
-          std::cout<<std::endl<<"-------------------------------------------------"<<std::endl;*/
-
-          /*if(ConeRadiusMax_1_>1.0){
-            std::cout<<"ConeMax="<<ConeRadiusMax_1_<<std::endl;
-            for(unsigned j=0;j<DistToCenter.size();j++)
-                std::cout <<"index="<< j <<", Dist=" <<DistToCenter[j] << std::endl;
-            for(auto g: gammas1){
-              std::cout<<"gEta="<<g->eta()<<std::endl;
-              std::cout<<"gPhi="<<g->phi()<<std::endl;
-            }
-            std::cout<<"pi_1Eta="<<pi_1->eta()<<std::endl;
-            std::cout<<"pi_1phi="<<pi_1->phi()<<std::endl;
-            std::cout<<"Center_Eta="<<CenterEta<<std::endl;
-            std::cout<<"Center_phi="<<CenterPhi<<std::endl;
-            std::cout<<"-----------------------"<<std::endl;
-            
+          //--------------------------Shape based variables---------------
+          //WRT tau
+          DeltaR2WRTtau_1_=0;
+          SumPt_1=0;
+          DeltaR2WRTtau_1_=std::pow(ROOT::Math::VectorUtil::DeltaR(pi_1->vector(),tau1->vector()),2)*std::pow(pi_1->pt(),2);
+          SumPt_1=std::pow(pi_1->pt(),2);
+          for(auto g : gammas1){
+            DeltaR2WRTtau_1_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau1->vector()),2)*std::pow(g->pt(),2);
+            SumPt_1+=std::pow(g->pt(),2);
           }
-          double tmpsum=0;
-          double tmpmean =0;
-          for (unsigned i=0; i<DistToCenter.size(); i++)
-            tmpsum += DistToCenter[i];
-          tmpmean = tmpsum/DistToCenter.size();
+          DeltaR2WRTtau_1_/=SumPt_1;
           
-          std::cout << "gammas1.size()=: " << gammas1.size() <<"  DistToCenter.size()= "<<DistToCenter.size()<< std::endl;
-          //std::cout << "Dist.begin="<<DistToCenter.begin()<< "  Dist.end=" <<DistToCenter.end()<<std::endl;  
-          for(unsigned j=0;j<DistToCenter.size();j++)
-            std::cout <<"index="<< j <<", Dist=" <<DistToCenter[j] << std::endl;
-          
-          double tmpStdDeV=0;
-          for(unsigned j=0;j<DistToCenter.size();j++)
-            tmpStdDeV+=pow(DistToCenter[j],2);
-          tmpStdDeV-=DistToCenter.size()*pow(tmpmean,2);
-          tmpStdDeV/=(double(DistToCenter.size())-1.0);
-          tmpStdDeV=sqrt(tmpStdDeV);
-          std::cout << "tmpmean=" << tmpmean << std::endl;
-          std::cout << "ConeMean=" << ConeRadiusMean_1_ << std::endl;
-          std::cout <<"ConeStd: " << ConeRadiusStdDev_1_ << std::endl;
-          std::cout<<"tpmStdDeV: "<<tmpStdDeV<<std::endl;
-          std::cout<<"ConeMax:"<<ConeRadiusMax_1_<<std::endl;
-          std::cout<<"ConeMedian:"<<ConeRadiusMedian_1_<<std::endl;
-          std::cout<<"-----------------------"<<std::endl;
-          */
+
+          //WRT pi0 (ignoring prong)
+          DeltaR2WRTpi0_1_=0;          
+          SumPt_1=0;
+          for(auto g : gammas1){
+            DeltaR2WRTpi0_1_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),pi0_1->vector()),2)*std::pow(g->pt(),2);
+            SumPt_1+=std::pow(g->pt(),2);
+          }
+          DeltaR2WRTpi0_1_/=SumPt_1;
+
+
         }
 
 

@@ -138,13 +138,18 @@ class RhoIDEmbedder : public ModuleBase {
   double Phigamma4_2_;
   double Phipi_1_;
   double Phipi_2_;
+  double DeltaR2WRTtau_1_;
+  double DeltaR2WRTpi0_1_;
+  double DeltaR2WRTtau_2_;
+  double DeltaR2WRTpi0_2_;  
 
   //temp variables
   double CenterEta_1;
   double CenterPhi_1;
   double CenterEta_2;
   double CenterPhi_2;
-
+  double SumPt_1;
+  double SumPt_2;
 
 
 };
