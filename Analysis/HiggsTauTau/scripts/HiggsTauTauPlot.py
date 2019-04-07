@@ -58,7 +58,7 @@ defaults = {
     "vbf_background":False, "syst_em_qcd_rate_0jet":"", "syst_em_qcd_rate_1jet":"",
     "syst_em_qcd_shape_0jet":"", "syst_em_qcd_shape_1jet":"", "syst_em_qcd_extrap":"", "syst_prefire":"",
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
-    "ggh_scheme": "powheg", "symmetrise":False, 'em_qcd_weight':"",
+    "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
     "ff_ss_closure":False, "threePads":False,
 }
@@ -332,6 +332,8 @@ parser.add_argument("--ggh_scheme", dest="ggh_scheme", type=str,
     help="Decide which ggH scheme to plot with in split SM scheme mode (powheg or JHU)")
 parser.add_argument("--symmetrise", dest="symmetrise", action='store_true',
     help="Use this option to symmetrise dijet Delta_phi bins in 2D histogram around centre bin")
+parser.add_argument("--mergeXbins", dest="mergeXbins", action='store_true',
+    help="Use this option to merge x bins to improve stats - to be used is the backgrounds are flat as a function of the X variable")
 parser.add_argument("--em_qcd_weight", dest="em_qcd_weight", type=str,
     help="Define custom em QCD OSSS weight/function")
 parser.add_argument("--syst_qcd_bkg", dest="syst_qcd_bkg", type=str,
@@ -3144,6 +3146,19 @@ def Symmetrise(hist):
       hist.SetBinError(lo_bin,j,enew)
       hist.SetBinError(hi_bin,j,enew)
 
+def MergeXBins(hist):
+  nxbins = hist.GetNbinsX()
+  nybins = hist.GetNbinsY()
+  nbins = hist.GetNbinsX()*hist.GetNbinsY()
+  to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
+  if True in [x in hist.GetName() for x in to_skip]: return
+  for i in range(1,nybins+2):
+    tot_err = ROOT.Double()
+    tot = hist.IntegralAndError(1,nxbins,i,i,tot_err)
+    for j in range(1, nxbins+1):
+      hist.SetBinContent(j,i,tot)
+      hist.SetBinError(j,i,tot_err)
+
 # sm 2D unrolling
 if is_2d and options.do_unrolling:
   x_lines = []
@@ -3162,6 +3177,7 @@ if is_2d and options.do_unrolling:
       if 'dijet' in options.cat: include_of = False
  
       if options.symmetrise: Symmetrise(hist)
+      if options.mergeXbins: MergeXBins(hist)
       h1d = UnrollHist2D(hist,include_of)
       hists_to_add.append(h1d)
       if first_hist:
