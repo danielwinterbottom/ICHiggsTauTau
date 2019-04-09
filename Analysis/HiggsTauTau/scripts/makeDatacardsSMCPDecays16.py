@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCPDecays16.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'em,et,mt,tt' scripts/Params_2016_cpdecays16.json -s 'cpsummer16_ss' --embedding --total_jes
+#./scripts/makeDatacardsSMCPDecays16.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'em,et,mt,tt' scripts/Params_2016_cpdecays16.json -s 'mlcpdecays16' --embedding --total_jes
 
 import sys
 from optparse import OptionParser
@@ -281,12 +281,12 @@ if SCHEME == 'cpdecays16_ss':
 
 if SCHEME == 'mlcpdecays16':
 
-    VAR_H_TT        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)"
-    VAR_ZTTEMBED_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)"
-    VAR_JETFAKES_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.3)"
+    VAR_H_TT        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-    VAR_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.3)"
-    VAR_H_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.3)"
+    VAR_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
+    VAR_H_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
 
     scheme_em = []
     scheme_et = []

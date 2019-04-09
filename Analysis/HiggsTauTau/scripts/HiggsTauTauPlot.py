@@ -3156,8 +3156,8 @@ def MergeXBins(hist):
     tot_err = ROOT.Double()
     tot = hist.IntegralAndError(1,nxbins,i,i,tot_err)
     for j in range(1, nxbins+1):
-      hist.SetBinContent(j,i,tot)
-      hist.SetBinError(j,i,tot_err)
+      hist.SetBinContent(j,i,tot/nxbins)
+      hist.SetBinError(j,i,tot_err/nxbins)
 
 # sm 2D unrolling
 if is_2d and options.do_unrolling:
@@ -3178,6 +3178,7 @@ if is_2d and options.do_unrolling:
  
       if options.symmetrise: Symmetrise(hist)
       if options.mergeXbins: MergeXBins(hist)
+
       h1d = UnrollHist2D(hist,include_of)
       hists_to_add.append(h1d)
       if first_hist:
