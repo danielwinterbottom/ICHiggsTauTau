@@ -48,10 +48,20 @@ namespace ic {
       outtree_->Branch("Epi0_1"         ,&Epi0_1_);
       outtree_->Branch("tau_decay_mode_1",&tau_decay_mode_1_);
       outtree_->Branch("Ngammas_2"      , &Ngammas_2_ );
+
       outtree_->Branch("Egamma1_2"      , &Egamma1_2_ );
       outtree_->Branch("Egamma2_2"      , &Egamma2_2_ );
       outtree_->Branch("Egamma3_2"      , &Egamma3_2_ );
       outtree_->Branch("Egamma4_2"      , &Egamma4_2_ );
+      outtree_->Branch("Egamma5_2"      , &Egamma5_2_ );
+      outtree_->Branch("Egamma6_2"      , &Egamma6_2_ );
+      outtree_->Branch("Egamma7_2"      , &Egamma7_2_ );
+      outtree_->Branch("Egamma8_2"      , &Egamma8_2_ );
+      outtree_->Branch("Egamma9_2"      , &Egamma9_2_ );
+      outtree_->Branch("Egamma10_2"     , &Egamma10_2_ );
+      outtree_->Branch("Egamma11_2"     , &Egamma11_2_ );
+      outtree_->Branch("Egamma12_2"     , &Egamma12_2_ );
+      
       outtree_->Branch("Epi_2"          , &Epi_2_ );
       outtree_->Branch("Mpi0_2"         , &Mpi0_2_ );
       outtree_->Branch("Mrho_2"         , &Mrho_2_ );
@@ -108,20 +118,57 @@ namespace ic {
       outtree_->Branch("Etagamma2_1"          , &Etagamma2_1_);
       outtree_->Branch("Etagamma3_1"          , &Etagamma3_1_);
       outtree_->Branch("Etagamma4_1"          , &Etagamma4_1_);
+      outtree_->Branch("Etagamma5_1"          , &Etagamma5_1_);
+      outtree_->Branch("Etagamma6_1"          , &Etagamma6_1_);
+      outtree_->Branch("Etagamma7_1"          , &Etagamma7_1_);
+      outtree_->Branch("Etagamma8_1"          , &Etagamma8_1_);
+      outtree_->Branch("Etagamma9_1"          , &Etagamma9_1_);
+      outtree_->Branch("Etagamma10_1"         , &Etagamma10_1_);
+      outtree_->Branch("Etagamma11_1"         , &Etagamma11_1_);
+      outtree_->Branch("Etagamma12_1"         , &Etagamma12_1_);
+      
       outtree_->Branch("Etagamma1_2"          , &Etagamma1_2_);
       outtree_->Branch("Etagamma2_2"          , &Etagamma2_2_);
       outtree_->Branch("Etagamma3_2"          , &Etagamma3_2_);
       outtree_->Branch("Etagamma4_2"          , &Etagamma4_2_);
+      outtree_->Branch("Etagamma5_2"          , &Etagamma5_2_);
+      outtree_->Branch("Etagamma6_2"          , &Etagamma6_2_);
+      outtree_->Branch("Etagamma7_2"          , &Etagamma7_2_);
+      outtree_->Branch("Etagamma8_2"          , &Etagamma8_2_);
+      outtree_->Branch("Etagamma9_2"          , &Etagamma9_2_);
+      outtree_->Branch("Etagamma10_2"         , &Etagamma10_2_);
+      outtree_->Branch("Etagamma11_2"         , &Etagamma11_2_);
+      outtree_->Branch("Etagamma12_2"         , &Etagamma12_2_);
+      
       outtree_->Branch("Etapi_1"              , &Etapi_1_);
       outtree_->Branch("Etapi_2"              , &Etapi_2_);
+
       outtree_->Branch("Phigamma1_1"          , &Phigamma1_1_);
       outtree_->Branch("Phigamma2_1"          , &Phigamma2_1_);
       outtree_->Branch("Phigamma3_1"          , &Phigamma3_1_);
       outtree_->Branch("Phigamma4_1"          , &Phigamma4_1_);
+      outtree_->Branch("Phigamma5_1"          , &Phigamma5_1_);
+      outtree_->Branch("Phigamma6_1"          , &Phigamma6_1_);
+      outtree_->Branch("Phigamma7_1"          , &Phigamma7_1_);
+      outtree_->Branch("Phigamma8_1"          , &Phigamma8_1_);
+      outtree_->Branch("Phigamma9_1"          , &Phigamma9_1_);
+      outtree_->Branch("Phigamma10_1"         , &Phigamma10_1_);
+      outtree_->Branch("Phigamma11_1"         , &Phigamma11_1_);
+      outtree_->Branch("Phigamma12_1"         , &Phigamma12_1_);
+      
       outtree_->Branch("Phigamma1_2"          , &Phigamma1_2_);
       outtree_->Branch("Phigamma2_2"          , &Phigamma2_2_);
       outtree_->Branch("Phigamma3_2"          , &Phigamma3_2_);
       outtree_->Branch("Phigamma4_2"          , &Phigamma4_2_);
+      outtree_->Branch("Phigamma5_2"          , &Phigamma5_2_);
+      outtree_->Branch("Phigamma6_2"          , &Phigamma6_2_);
+      outtree_->Branch("Phigamma7_2"          , &Phigamma7_2_);
+      outtree_->Branch("Phigamma8_2"          , &Phigamma8_2_);
+      outtree_->Branch("Phigamma9_2"          , &Phigamma9_2_);
+      outtree_->Branch("Phigamma10_2"         , &Phigamma10_2_);
+      outtree_->Branch("Phigamma11_2"         , &Phigamma11_2_);
+      outtree_->Branch("Phigamma12_2"         , &Phigamma12_2_);
+   
       outtree_->Branch("Phipi_1"              , &Phipi_1_);
       outtree_->Branch("Phipi_2"              , &Phipi_2_);
 
@@ -185,7 +232,8 @@ namespace ic {
       if (tau2->decay_mode()==1) {
         gammas2 = GetTauGammas(tau2, pfcands);
 
-        rho_2 = GetRho(tau2, pfcands);
+        std::pair<ic::Candidate*, ic::Candidate*> rho_2 = GetRho(tau2, pfcands);
+
         Candidate *pi_2 = rho_2.first;
         Candidate *pi0_2 = rho_2.second;
         
@@ -376,6 +424,8 @@ namespace ic {
       tau_decay_mode_1_=tau1->decay_mode();
       
 
+
+
       if(tau1->decay_mode()==1) {
         gammas1 = GetTauGammas(tau1, pfcands);
 
@@ -383,14 +433,27 @@ namespace ic {
 
         Candidate *pi_1 = rho_1.first;
         Candidate *pi0_1 = rho_1.second;
-      
-        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1;
-        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
-        Ngammas_1_=-999; phi_1_=-999;
+       
+        //------------------
+        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1; Egamma5_1_=-1, Egamma6_1_=-1, Egamma7_1_=-1, Egamma8_1_=-1;
+        Egamma9_1_=-1, Egamma10_1_=-1, Egamma11_1_=-1, Egamma12_1_=-1;
+
         if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
         if(gammas1.size()>=4) Egamma4_1_ = gammas1[3]->energy();
+        if(gammas1.size()>=5) Egamma5_1_ = gammas1[4]->energy();
+        if(gammas1.size()>=6) Egamma6_1_ = gammas1[5]->energy();
+        if(gammas1.size()>=7) Egamma7_1_ = gammas1[6]->energy();
+        if(gammas1.size()>=8) Egamma8_1_ = gammas1[7]->energy();
+        if(gammas1.size()>=9) Egamma9_1_ = gammas1[8]->energy();
+        if(gammas1.size()>=10) Egamma10_1_ = gammas1[9]->energy();
+        if(gammas1.size()>=11) Egamma11_1_ = gammas1[10]->energy();
+        if(gammas1.size()>=12) Egamma12_1_ = gammas1[11]->energy();
+        //--------------------
+
+        E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
+        Ngammas_1_=-999; phi_1_=-999;
 
         if(gammas1.size()>1) { 
           gammas_dphi_1_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas1[0]->vector(),gammas1[1]->vector()));
@@ -415,17 +478,31 @@ namespace ic {
         phi_1_ = tau1->phi();
 
     //New variables by Mohammad
-
-        Etagamma1_1_=-999; Phigamma1_1_=-999; Etagamma2_1_=-999; Phigamma2_1_=-999; 
-        Etagamma3_1_=-999; Phigamma3_1_=-999; Etagamma4_1_=-999; Phigamma4_1_=-999;
+        //------charged prong eta & phi-----
         Etapi_1_=-999; Phipi_1_=-999;
+        Etapi_1_=pi_1->eta(); Phipi_1_=pi_1->phi();
+
+        //------------gammas/e----
+        Etagamma1_1_=-999; Etagamma2_1_=-999; Etagamma3_1_=-999; Etagamma4_1_=-999; Etagamma5_1_=-999; Etagamma6_1_=-999; Etagamma7_1_=-999; Etagamma8_1_=-999;
+        Etagamma9_1_=-999; Etagamma10_1_=-999; Etagamma11_1_=-999; Etagamma12_1_=-999;
+        
+        Phigamma1_1_=-999; Phigamma2_1_=-999; Phigamma3_1_=-999; Phigamma4_1_=-999; Phigamma5_1_=-999; Phigamma6_1_=-999; Phigamma7_1_=-999; Phigamma8_1_=-999;
+        Phigamma9_1_=-999; Phigamma10_1_=-999; Phigamma11_1_=-999; Phigamma12_1_=-999;
         
         if(gammas1.size()>=1) {Etagamma1_1_ = gammas1[0]->eta(); Phigamma1_1_= gammas1[0]->phi();}
         if(gammas1.size()>=2) {Etagamma2_1_ = gammas1[1]->eta(); Phigamma2_1_= gammas1[1]->phi();}
         if(gammas1.size()>=3) {Etagamma3_1_ = gammas1[2]->eta(); Phigamma3_1_= gammas1[2]->phi();}
         if(gammas1.size()>=4) {Etagamma4_1_ = gammas1[3]->eta(); Phigamma4_1_= gammas1[3]->phi();}
-        Etapi_1_=pi_1->eta(); Phipi_1_=pi_1->phi();
+        if(gammas1.size()>=5) {Etagamma5_1_ = gammas1[4]->eta(); Phigamma5_1_= gammas1[4]->phi();}
+        if(gammas1.size()>=6) {Etagamma6_1_ = gammas1[5]->eta(); Phigamma6_1_= gammas1[5]->phi();}
+        if(gammas1.size()>=7) {Etagamma7_1_ = gammas1[6]->eta(); Phigamma7_1_= gammas1[6]->phi();}
+        if(gammas1.size()>=8) {Etagamma8_1_ = gammas1[7]->eta(); Phigamma8_1_= gammas1[7]->phi();}
+        if(gammas1.size()>=9) {Etagamma9_1_ = gammas1[8]->eta(); Phigamma9_1_= gammas1[8]->phi();}
+        if(gammas1.size()>=10) {Etagamma10_1_ = gammas1[9]->eta(); Phigamma10_1_= gammas1[9]->phi();}
+        if(gammas1.size()>=11) {Etagamma11_1_ = gammas1[10]->eta(); Phigamma11_1_= gammas1[10]->phi();}
+        if(gammas1.size()>=12) {Etagamma12_1_ = gammas1[11]->eta(); Phigamma12_1_= gammas1[11]->phi();}
         
+         //-----NgammasModif---
         NgammasModif_1_=0;
         for (auto g : gammas1) 
           if (g->energy()>1.0){
@@ -434,7 +511,7 @@ namespace ic {
             else
               NgammasModif_1_+=1;
           }
-
+        //------------------
         CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
         ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
         ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
