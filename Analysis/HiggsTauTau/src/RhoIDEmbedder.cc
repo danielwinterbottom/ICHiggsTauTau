@@ -188,18 +188,28 @@ namespace ic {
         rho_2 = GetRho(tau2, pfcands);
         Candidate *pi_2 = rho_2.first;
         Candidate *pi0_2 = rho_2.second;
+        
+        //-----------------
+        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1; Egamma5_2_=-1, Egamma6_2_=-1, Egamma7_2_=-1, Egamma8_2_=-1;
+        Egamma9_2_=-1, Egamma10_2_=-1, Egamma11_2_=-1, Egamma12_2_=-1;
 
-        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1;
-        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
-        Ngammas_2_=-999; phi_2_=-999;
         if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
         if(gammas2.size()>=4) Egamma4_2_ = gammas2[3]->energy();
+        if(gammas2.size()>=5) Egamma5_2_ = gammas2[4]->energy();
+        if(gammas2.size()>=6) Egamma6_2_ = gammas2[5]->energy();
+        if(gammas2.size()>=7) Egamma7_2_ = gammas2[6]->energy();
+        if(gammas2.size()>=8) Egamma8_2_ = gammas2[7]->energy();
+        if(gammas2.size()>=9) Egamma9_2_ = gammas2[8]->energy();
+        if(gammas2.size()>=10) Egamma10_2_ = gammas2[9]->energy();
+        if(gammas2.size()>=11) Egamma11_2_ = gammas2[10]->energy();
+        if(gammas2.size()>=12) Egamma12_2_ = gammas2[11]->energy();
+        //-----------
 
-        //------test------
-        //std::cout<<gammas2.size()<<"   "<<Egamma1_2_<<"   "<<Egamma2_2_<<"    "<<Egamma3_2_<<std::endl;
-        //------------
+        E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
+        Ngammas_2_=-999; phi_2_=-999;
+
         if(gammas2.size()>1) {
           gammas_dphi_2_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas2[0]->vector(),gammas2[1]->vector()));
           gammas_dEta_2_ =  std::fabs(gammas2[0]->eta()-gammas2[1]->eta());
@@ -220,16 +230,31 @@ namespace ic {
         eta_2_ = tau2->eta();
         phi_2_= tau2->phi();
     //New variables by Mohammad
-        Etagamma1_2_=-999; Phigamma1_2_=-999; Etagamma2_2_=-999; Phigamma2_2_=-999; 
-        Etagamma3_2_=-999; Phigamma3_2_=-999; Etagamma4_2_=-999; Phigamma4_2_=-999;
+        //------charged prong eta & phi-----
         Etapi_2_=-999; Phipi_2_=-999;
+        Etapi_2_=pi_2->eta(); Phipi_2_=pi_2->phi();
+       
+        //------------gammas/e---
+        Etagamma1_2_=-999; Etagamma2_2_=-999; Etagamma3_2_=-999; Etagamma4_2_=-999; Etagamma5_2_=-999; Etagamma6_2_=-999; Etagamma7_2_=-999; Etagamma8_2_=-999;  
+        Etagamma9_2_=-999; Etagamma10_2_=-999; Etagamma11_2_=-999; Etagamma12_2_=-999;
+
+        Phigamma1_2_=-999; Phigamma2_2_=-999; Phigamma3_2_=-999; Phigamma4_2_=-999; Phigamma5_2_=-999; Phigamma6_2_=-999; Phigamma7_2_=-999; Phigamma8_2_=-999;
+        Phigamma9_2_=-999; Phigamma10_2_=-999; Phigamma11_2_=-999; Phigamma12_2_=-999;
         
         if(gammas2.size()>=1) {Etagamma1_2_ = gammas2[0]->eta(); Phigamma1_2_= gammas2[0]->phi();}
         if(gammas2.size()>=2) {Etagamma2_2_ = gammas2[1]->eta(); Phigamma2_2_= gammas2[1]->phi();}
         if(gammas2.size()>=3) {Etagamma3_2_ = gammas2[2]->eta(); Phigamma3_2_= gammas2[2]->phi();}
         if(gammas2.size()>=4) {Etagamma4_2_ = gammas2[3]->eta(); Phigamma4_2_= gammas2[3]->phi();}
-        Etapi_2_=pi_2->eta(); Phipi_2_=pi_2->phi();
-        
+        if(gammas2.size()>=5) {Etagamma5_2_ = gammas2[4]->eta(); Phigamma5_2_= gammas2[4]->phi();}
+        if(gammas2.size()>=6) {Etagamma6_2_ = gammas2[5]->eta(); Phigamma6_2_= gammas2[5]->phi();}
+        if(gammas2.size()>=7) {Etagamma7_2_ = gammas2[6]->eta(); Phigamma7_2_= gammas2[6]->phi();}
+        if(gammas2.size()>=8) {Etagamma8_2_ = gammas2[7]->eta(); Phigamma8_2_= gammas2[7]->phi();}
+        if(gammas2.size()>=9) {Etagamma9_2_ = gammas2[8]->eta(); Phigamma9_2_= gammas2[8]->phi();}
+        if(gammas2.size()>=10) {Etagamma10_2_ = gammas2[9]->eta(); Phigamma10_2_= gammas2[9]->phi();}
+        if(gammas2.size()>=11) {Etagamma11_2_ = gammas2[10]->eta(); Phigamma11_2_= gammas2[10]->phi();}
+        if(gammas2.size()>=12) {Etagamma12_2_ = gammas2[11]->eta(); Phigamma12_2_= gammas2[11]->phi();}
+
+        //-----NgammasModif---
         NgammasModif_2_=0;
         for (auto g : gammas2) 
           if (g->energy()>1.0){
@@ -238,7 +263,7 @@ namespace ic {
             else
               NgammasModif_2_+=1;
           }
-
+        //------------------
         CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
         ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
         ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
