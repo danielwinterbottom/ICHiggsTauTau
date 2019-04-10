@@ -28,10 +28,20 @@ namespace ic {
       outtree_->Branch("gen_match_2"    , &gen_match_2_);
       outtree_->Branch("wt"             , &wt_       );
       outtree_->Branch("Ngammas_1"      , &Ngammas_1_ );
+      
       outtree_->Branch("Egamma1_1"      , &Egamma1_1_ );
       outtree_->Branch("Egamma2_1"      , &Egamma2_1_ );
       outtree_->Branch("Egamma3_1"      , &Egamma3_1_ );
       outtree_->Branch("Egamma4_1"      , &Egamma4_1_ );
+      outtree_->Branch("Egamma5_1"      , &Egamma5_1_ );
+      outtree_->Branch("Egamma6_1"      , &Egamma6_1_ );
+      outtree_->Branch("Egamma7_1"      , &Egamma7_1_ );
+      outtree_->Branch("Egamma8_1"      , &Egamma8_1_ );
+      outtree_->Branch("Egamma9_1"      , &Egamma9_1_ );
+      outtree_->Branch("Egamma10_1"     , &Egamma10_1_ );
+      outtree_->Branch("Egamma11_1"     , &Egamma11_1_ );
+      outtree_->Branch("Egamma12_1"     , &Egamma12_1_ );
+      
       outtree_->Branch("Epi_1"          , &Epi_1_ );
       outtree_->Branch("Mpi0_1"         , &Mpi0_1_ );
       outtree_->Branch("Mrho_1"         , &Mrho_1_ );
