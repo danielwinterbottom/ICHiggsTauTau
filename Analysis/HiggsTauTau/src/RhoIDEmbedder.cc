@@ -322,11 +322,11 @@ namespace ic {
       }
 
       Ngammas_1_     = gammas1.size();       
-      Egamma1_1_     = Egamma1_1_/Etau_1_;  
-      Egamma2_1_     = Egamma2_1_/Etau_1_;  
-      Egamma3_1_     = Egamma3_1_/Etau_1_;   
-      Egamma4_1_     = Egamma4_1_/Etau_1_;   
-      Epi_1_         = Epi_1_/Etau_1_;
+      Egamma1_1_     = Egamma1_1_/E_1_;  
+      Egamma2_1_     = Egamma2_1_/E_1_;  
+      Egamma3_1_     = Egamma3_1_/E_1_;   
+      Egamma4_1_     = Egamma4_1_/E_1_;   
+      Epi_1_         = Epi_1_/E_1_;
       Mpi0_1_        = Mpi0_1_;   
       Mrho_1_        = Mrho_1_; 
       dphi_1_        = rho_dphi_1_; 
@@ -339,11 +339,11 @@ namespace ic {
       // variables for subleading tau
 
       Ngammas_2_     = gammas2.size();
-      Egamma1_2_     = Egamma1_2_/Etau_2_;
-      Egamma2_2_     = Egamma2_2_/Etau_2_;
-      Egamma3_2_     = Egamma3_2_/Etau_2_;
-      Egamma4_2_     = Egamma4_2_/Etau_2_;
-      Epi_2_         = Epi_2_/Etau_2_;
+      Egamma1_2_     = Egamma1_2_/E_2_;
+      Egamma2_2_     = Egamma2_2_/E_2_;
+      Egamma3_2_     = Egamma3_2_/E_2_;
+      Egamma4_2_     = Egamma4_2_/E_2_;
+      Epi_2_         = Epi_2_/E_2_;
       Mpi0_2_        = Mpi0_2_;
       Mrho_2_        = Mrho_2_;
       dphi_2_        = rho_dphi_2_;       
@@ -353,7 +353,7 @@ namespace ic {
       pt_2_          = pt_2_;
       eta_2_         = eta_2_;
 
-      std::vector<double> inputs1 = {Egamma1_1_/Etau_1_, Egamma2_1_/Etau_1_, Egamma3_1_/Etau_1_, Egamma4_1_/Etau_1_, Epi_1_/Etau_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
+      std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
       double score1 = read_mva_score(inputs1);
       event->Add("rho_id_1", score1);
