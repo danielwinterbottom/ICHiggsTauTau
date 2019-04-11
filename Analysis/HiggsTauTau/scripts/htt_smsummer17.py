@@ -45,8 +45,6 @@ parser.add_option("--all", dest="proc_all", action='store_true', default=False,
 
 parser.add_option("--short_signal", dest="short_signal", action='store_true', default=False,
                   help="Only process the 125/160 signal samples")
-parser.add_option("--cp_signal", dest="cp_signal", action='store_true', default=False,
-                  help="Process the samples needed for CP studies")
 parser.add_option("--mg_signal", dest="mg_signal", action='store_true', default=False,
                   help="Process the MG signal samples")
 parser.add_option("--no_json", dest="no_json", action='store_true', default=False,
@@ -313,13 +311,13 @@ if options.proc_bkg or options.proc_all:
   central_samples = [
      # 'DYJetsToLL_M-10-50-LO-ext1',
      # 'DYJetsToLL_M-10-50-LO',
-     'DY1JetsToLL-LO', #new pmx
-     'DY1JetsToLL-LO-ext', #new sample
+     # 'DY1JetsToLL-LO', #new pmx
+     # 'DY1JetsToLL-LO-ext', #new sample
      # 'DY2JetsToLL-LO',
      # 'DY2JetsToLL-LO-ext',
      # 'DY3JetsToLL-LO',
      # 'DY3JetsToLL-LO-ext',
-     'DY4JetsToLL-LO', # new
+     # 'DY4JetsToLL-LO', # new
      # 'DYJetsToLL-LO-ext1',
      # 'DYJetsToLL-LO',
      # 'DYJetsToLL',
@@ -336,44 +334,50 @@ if options.proc_bkg or options.proc_all:
      # 'WGToLNuG',
      # 'WWTo2L2Nu',
      # 'WWToLNuQQ-ext',
-     'WWToLNuQQ', # new pmx
+     # 'WWToLNuQQ', # new pmx
      # 'WZTo1L1Nu2Q',
      # 'WZTo1L3Nu',
      # 'WZTo2L2Q',
-     'WZTo3LNu', # new pmx
+     # 'WZTo3LNu', # new pmx
      # 'ZZTo2L2Nu',
      # 'ZZTo2L2Q',
      # 'ZZTo4L-ext',
-     'ZZTo4L', # new pmx
-     'TTToSemiLeptonic', #new pmx
-     'TTToHadronic', #new sample v2 and pmx
+     # 'ZZTo4L', # new pmx
+     # 'TTToSemiLeptonic', #new pmx
+     # 'TTToHadronic', #new sample v2 and pmx
      'TTTo2L2Nu', #new pmx
      # 'T-tW',
      # 'T-t',
      # 'Tbar-tW',
      # 'Tbar-t', 
      ]
-  
 
 
   
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)
+      FILELIST='filelists/Mar11_MC_94X'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+      if "LO" in sa and ("JetsToLL-" in sa or "JetsToLNu-" in sa):
+          FILELIST='filelists/Mar29_MC_94X'
+          JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Mar29_MC_94X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
 
       job_num=0
       for FLATJSONPATCH in flatjsons:
         nperjob = 20
         if 'scale' in FLATJSONPATCH:
-          nperjob = 15
+          nperjob = 5
         if 'TT' in sa:
           nperjob = 20
           if 'scale' in FLATJSONPATCH:
-            nperjob = 15
+            nperjob = 5
         if 'QCD' in sa:
             nperjob = 15
-        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa: nperjob=10
+        if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa or 'WWTo2L2Nu' in sa or 'WZTo3LNu' in sa or 'DY3JetsToLL-LO' in sa:
+            nperjob=5
+        if 'scale' in FLATJSONPATCH:
+          nperjob = 2
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
