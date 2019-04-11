@@ -288,6 +288,7 @@ if SCHEME == 'mlcpdecays16':
     VAR_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
     VAR_H_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
 
+
     scheme_em = []
     scheme_et = []
     scheme_mt = []
@@ -320,6 +321,53 @@ if SCHEME == 'mlcpdecays16':
         'tt' : 'tt_default',
     }
     ANA = 'sm'
+
+if SCHEME == 'mlcpdecays16_new':
+
+    VAR_H_TT        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+
+    VAR_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
+    VAR_H_IDG0p5_TT = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
+
+    VAR_IDG0p5_TT  = VAR_H_TT
+    VAR_H_IDG0p5_TT = VAR_H_TT
+
+    scheme_em = []
+    scheme_et = []
+    scheme_mt = []
+    scheme_tt = [
+        ("17", "higgs"   ,         "higgs"  ,          VAR_H_TT,        ' --ff_ss_closure '),
+        ("17", "zttEmbed",         "zttEmbed",         VAR_ZTTEMBED_TT, ' --ff_ss_closure '),
+        ("17", "jetFakes",         "jetFakes",         VAR_JETFAKES_TT, ' --ff_ss_closure '),
+
+        # ("17", "higgs"   ,         "higgs"  ,          VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
+        # ("17", "zttEmbed",         "zttEmbed",         VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+        # ("17", "jetFakes",         "jetFakes",         VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+
+        ("17", "higgs_idg0p5",     "higgs_idg0p5",     VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
+        ("17", "zttEmbed_idg0p5",  "zttEmbed_idg0p5",  VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+        ("17", "jetFakes_idg0p5",  "jetFakes_idg0p5",  VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+
+        ("17", "higgs_idgl0p5",    "higgs_idgl0p5",    VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
+        ("17", "zttEmbed_idgl0p5", "zttEmbed_idgl0p5", VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+        ("17", "jetFakes_idgl0p5", "jetFakes_idgl0p5", VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+
+        ("17", "higgs_idl0p5",     "higgs_idl0p5",     VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
+        ("17", "zttEmbed_idl0p5",  "zttEmbed_idl0p5",  VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+        ("17", "jetFakes_idl0p5",  "jetFakes_idl0p5",  VAR_IDG0p5_TT,   ' --ff_ss_closure '),
+    ]
+
+    bkg_schemes = {
+        'et' : 'et_default',
+        'mt' : 'mt_with_zmm',
+        'em' : 'em_default',
+        'tt' : 'tt_default',
+    }
+    ANA = 'sm'
+
+
 
 if SCHEME == 'cpsummer16':
   

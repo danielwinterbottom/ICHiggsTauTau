@@ -204,7 +204,9 @@ if options.mg_signal:
 if options.cp_decay:
   signal_mc += [
   'GluGluToHToTauTau_M-125-nospinner',
-  'VBFHToTauTau_M-125-nospinner'
+  'VBFHToTauTau_M-125-nospinner',
+  'GluGluToHToTauTau_M-125-nospinner-filter',
+  'VBFHToTauTau_M-125-nospinner-filter'
   ]
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
@@ -454,53 +456,53 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     # 'DYJetsToLL',
-    'TT',
+    #'TT',
     'VVTo2L2Nu',
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
-    'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
+    #'ZZTo4L-amcat',
+    #'WWTo1L1Nu2Q',
     'WZJToLLLNu',
-    'WZTo1L3Nu',
+    #'WZTo1L3Nu',
     'WZTo2L2Q',
-    'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
+    #'WZTo1L1Nu2Q',
+    #'T-t',
+    #'Tbar-t',
     'T-tW',
     'Tbar-tW',
     'DYJetsToLL-LO-ext1',
-    'DYJetsToLL-LO-ext2',
-    'DYJetsToLL_M-10-50-LO',
-    'DY1JetsToLL-LO',
-    'DY2JetsToLL-LO',
-    'DY3JetsToLL-LO',
-    'DY4JetsToLL-LO',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W2JetsToLNu-LO-ext',
-    'W3JetsToLNu-LO',
-    'W3JetsToLNu-LO-ext',
-    'W4JetsToLNu-LO',
-    'W4JetsToLNu-LO-ext1',
-    'W4JetsToLNu-LO-ext2',
-    'WGToLNuG',
-    'WGToLNuG-ext',
-    'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    #'DYJetsToLL-LO-ext2',
+    #'DYJetsToLL_M-10-50-LO',
+    #'DY1JetsToLL-LO',
+    #'DY2JetsToLL-LO',
+    #'DY3JetsToLL-LO',
+    #'DY4JetsToLL-LO',
+    #'WJetsToLNu-LO',
+    #'WJetsToLNu-LO-ext',
+    #'W1JetsToLNu-LO',
+    #'W2JetsToLNu-LO',
+    #'W2JetsToLNu-LO-ext',
+    #'W3JetsToLNu-LO',
+    #'W3JetsToLNu-LO-ext',
+    #'W4JetsToLNu-LO',
+    #'W4JetsToLNu-LO-ext1',
+    #'W4JetsToLNu-LO-ext2',
+    #'WGToLNuG',
+    #'WGToLNuG-ext',
+    #'WGstarToLNuEE',
+    #'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-      'EWKWMinus2Jets_WToLNu-ext1',
-      'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu',
-      'EWKWPlus2Jets_WToLNu-ext1',
-      'EWKWPlus2Jets_WToLNu-ext2',
-      'EWKWPlus2Jets_WToLNu',
-      'EWKZ2Jets_ZToLL-ext',
-      'EWKZ2Jets_ZToLL'
+      #'EWKWMinus2Jets_WToLNu-ext1',
+      #'EWKWMinus2Jets_WToLNu-ext2',
+      #'EWKWMinus2Jets_WToLNu',
+      #'EWKWPlus2Jets_WToLNu-ext1',
+      #'EWKWPlus2Jets_WToLNu-ext2',
+      #'EWKWPlus2Jets_WToLNu',
+      #'EWKZ2Jets_ZToLL-ext',
+      #'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
@@ -533,7 +535,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
+        nperjob = 5 #20
         if 'scale' in FLATJSONPATCH:
           nperjob = 5
         if 'DY' in sa and 'JetsToLL' in sa:
@@ -576,6 +578,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     SIG_FILELIST='filelists/Jan31_MC_80X'
+    print sa
     if 'nospinner' in sa: SIG_FILELIST='filelists/Jan31_MC_80X'
     if 'Higgs0' in sa or 'GluGluH2JetsToTauTau' in sa: SIG_FILELIST='filelists/Apr02_MC_80X'
     JOB='%s_2016' % (sa)

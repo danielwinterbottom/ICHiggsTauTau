@@ -5384,7 +5384,7 @@ namespace ic {
     primary_vtx_x_ = vertex_vec[0]->vx();
     primary_vtx_y_ = vertex_vec[0]->vy();
     primary_vtx_z_ = vertex_vec[0]->vz();
-    if (!is_data_) {
+    if (!is_data_ && !is_embedded_) {
       std::vector<ic::Vertex*> & gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
       if (gen_vertices.size()>0) {
         gen_pvx_ = gen_vertices[0]->vx();

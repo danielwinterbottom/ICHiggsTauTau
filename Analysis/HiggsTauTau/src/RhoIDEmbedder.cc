@@ -5,6 +5,7 @@ namespace ic {
 
   RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt) {
     fs_ = NULL;
+    maketrees_ = false;
   }
 
   RhoIDEmbedder::~RhoIDEmbedder() {
@@ -19,7 +20,11 @@ namespace ic {
 
 
   int RhoIDEmbedder::PreAnalysis() {
-    if(fs_){  
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "RhoIDEmbedder" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+
+    if(fs_&&maketrees_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
       outtree_->Branch("tauFlag1"    , &tauFlag1_ );     
       outtree_->Branch("tauFlag2"    , &tauFlag2_ );
@@ -54,31 +59,41 @@ namespace ic {
       outtree_->Branch("eta_2"        , &eta_2_ );
 
     }
-    reader_ = new TMVA::Reader();
-    TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
-  
-    reader_->AddVariable( "Ngammas"    , &var11 );
-    reader_->AddVariable( "Egamma1"    , &var0 );
-    reader_->AddVariable( "Egamma2"    , &var1 );
-    reader_->AddVariable( "Egamma3"    , &var2 );
-    reader_->AddVariable( "Egamma4"    , &var3 );
-    reader_->AddVariable( "Epi"        , &var4 );
-    reader_->AddVariable( "Mpi0"       , &var5 );
-    reader_->AddVariable( "Mrho"       , &var6 );
-    reader_->AddVariable( "dphi"       , &var10 );
-    reader_->AddVariable( "dEta"       , &var9 );
-    reader_->AddVariable( "gammas_dEta", &var7 );
-    reader_->AddVariable( "gammas_dphi", &var8 );
-    reader_->AddVariable( "pt"         , &var13 );
-    reader_->AddVariable( "eta"        , &var12 );
-  
-    reader_->BookMVA( "BDT method", filename );
+
+    if(ProductExists("MVAreader")){
+        reader_ = GetProduct<TMVA::Reader*>("MVAreader");
+        std::cout << "Getting MVAreader" << std::endl;
+      } else { 
+        reader_ = new TMVA::Reader();
+        TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/TMVAClassification_BDT_rhoID.weights.xml";
+      
+        reader_->AddVariable( "Ngammas"    , &var11 );
+        reader_->AddVariable( "Egamma1"    , &var0 );
+        reader_->AddVariable( "Egamma2"    , &var1 );
+        reader_->AddVariable( "Egamma3"    , &var2 );
+        reader_->AddVariable( "Egamma4"    , &var3 );
+        reader_->AddVariable( "Epi"        , &var4 );
+        reader_->AddVariable( "Mpi0"       , &var5 );
+        reader_->AddVariable( "Mrho"       , &var6 );
+        reader_->AddVariable( "dphi"       , &var10 );
+        reader_->AddVariable( "dEta"       , &var9 );
+        reader_->AddVariable( "gammas_dEta", &var7 );
+        reader_->AddVariable( "gammas_dphi", &var8 );
+        reader_->AddVariable( "pt"         , &var13 );
+        reader_->AddVariable( "eta"        , &var12 );
+      
+        reader_->BookMVA( "BDT method", filename );
+
+        AddToProducts("MVAreader", reader_); 
+        std::cout << "Adding MVAreader" << std::endl;
+    }
 
     return 0;
   }
 
   int RhoIDEmbedder::Execute(TreeEvent *event) {
 
+    if (!(channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et)) return 0;
     
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_ = 1;
@@ -177,48 +192,49 @@ namespace ic {
         pt_1_ = tau1->pt();
         eta_1_ = tau1->eta();
 
-        std::vector<double> inputs1 = {Egamma1_1_/Etau_1_, Egamma2_1_/Etau_1_, Egamma3_1_/Etau_1_, Egamma4_1_/Etau_1_, Epi_1_/Etau_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
-
         // variables for leading tau
+      }
 
-        Ngammas_1_     = gammas1.size();       
-        Egamma1_1_     = Egamma1_1_/Etau_1_;  
-        Egamma2_1_     = Egamma2_1_/Etau_1_;  
-        Egamma3_1_     = Egamma3_1_/Etau_1_;   
-        Egamma4_1_     = Egamma4_1_/Etau_1_;   
-        Epi_1_         = Epi_1_/Etau_1_;
-        Mpi0_1_        = Mpi0_1_;   
-        Mrho_1_        = Mrho_1_; 
-        dphi_1_        = rho_dphi_1_; 
-        dEta_1_        = rho_dEta_1_; 
-        gammas_dEta_1_  = gammas_dEta_1_;  
-        gammas_dphi_1_ = gammas_dphi_1_;
-        pt_1_          = pt_1_; 
-        eta_1_         = eta_1_;
+      Ngammas_1_     = gammas1.size();       
+      Egamma1_1_     = Egamma1_1_/Etau_1_;  
+      Egamma2_1_     = Egamma2_1_/Etau_1_;  
+      Egamma3_1_     = Egamma3_1_/Etau_1_;   
+      Egamma4_1_     = Egamma4_1_/Etau_1_;   
+      Epi_1_         = Epi_1_/Etau_1_;
+      Mpi0_1_        = Mpi0_1_;   
+      Mrho_1_        = Mrho_1_; 
+      dphi_1_        = rho_dphi_1_; 
+      dEta_1_        = rho_dEta_1_; 
+      gammas_dEta_1_  = gammas_dEta_1_;  
+      gammas_dphi_1_ = gammas_dphi_1_;
+      pt_1_          = pt_1_; 
+      eta_1_         = eta_1_;
 
-        // variables for subleading tau
+      // variables for subleading tau
 
-        Ngammas_2_     = gammas2.size();
-        Egamma1_2_     = Egamma1_2_/Etau_2_;
-        Egamma2_2_     = Egamma2_2_/Etau_2_;
-        Egamma3_2_     = Egamma3_2_/Etau_2_;
-        Egamma4_2_     = Egamma4_2_/Etau_2_;
-        Epi_2_         = Epi_2_/Etau_2_;
-        Mpi0_2_        = Mpi0_2_;
-        Mrho_2_        = Mrho_2_;
-        dphi_2_        = rho_dphi_2_;       
-        dEta_2_        = rho_dEta_2_;       
-        gammas_dEta_2_  = gammas_dEta_2_;
-        gammas_dphi_2_ = gammas_dphi_2_;
-        pt_2_          = pt_2_;
-        eta_2_         = eta_2_;
+      Ngammas_2_     = gammas2.size();
+      Egamma1_2_     = Egamma1_2_/Etau_2_;
+      Egamma2_2_     = Egamma2_2_/Etau_2_;
+      Egamma3_2_     = Egamma3_2_/Etau_2_;
+      Egamma4_2_     = Egamma4_2_/Etau_2_;
+      Epi_2_         = Epi_2_/Etau_2_;
+      Mpi0_2_        = Mpi0_2_;
+      Mrho_2_        = Mrho_2_;
+      dphi_2_        = rho_dphi_2_;       
+      dEta_2_        = rho_dEta_2_;       
+      gammas_dEta_2_  = gammas_dEta_2_;
+      gammas_dphi_2_ = gammas_dphi_2_;
+      pt_2_          = pt_2_;
+      eta_2_         = eta_2_;
 
-        double score1 = read_mva_score(inputs1);
-        event->Add("rho_id_1", score1);
-      } 
+      std::vector<double> inputs1 = {Egamma1_1_/Etau_1_, Egamma2_1_/Etau_1_, Egamma3_1_/Etau_1_, Egamma4_1_/Etau_1_, Epi_1_/Etau_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
+
+      double score1 = read_mva_score(inputs1);
+      event->Add("rho_id_1", score1);
+       
     }
 
-    if(fs_) outtree_->Fill();
+    if(fs_&&maketrees_) outtree_->Fill();
 
     return 0;
   }

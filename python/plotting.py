@@ -2895,13 +2895,6 @@ def CompareHists(hists=[],
        if norm_bins: i.Scale(1.0,"width")
     else:
       if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
-    
-    # add flat histogram to check shapes
-    flat_hist = R.TH1D("flat_hist","flat_hist",14,0,2*np.pi)
-    for bin_ in xrange(flat_hist.GetNbinsX()+1):
-        flat_hist.SetBinContent(bin_,1)
-        flat_hist.SetBinError(bin_,0)
-    hists.append(flat_hist)
 
     for hist in hists:
         # print hist.GetName()
@@ -3003,34 +2996,16 @@ def CompareHists(hists=[],
     hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
-    # Add fit
-    fits = []
-    pvalues = []
-    cols = [R.kBlue, R.kRed]
-    ks_tests = []
-    i = 0
-    for hist in hists:
-        if i >= 2: continue
-        fit = hist.Fit("pol0","SL","same")
-        fits.append(fit)
-        print("prob: {}".format(fit.Prob()))
-        pvalues.append(fit.Prob())
-        hist.GetFunction("pol0").SetLineColor(cols[i])
-        hist.GetFunction("pol0").SetLineWidth(3)
-        hist.GetFunction("pol0").SetLineStyle(2)
-        i += 1
-        ks_tests.append(hist.KolmogorovTest(flat_hist))
-
+    
     #Setup legend
-    legend = PositionedLegend(0.58,0.2,3,0.01)
+    legend = PositionedLegend(0.3,0.2,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.020)
     legend.SetFillColor(0)
-
+    
 
     for legi,hist in enumerate(legend_hists):
-        if legi >= 2: continue
-        legend.AddEntry(hist,legend_titles[legi]+" / p(chi2): {0:.3f} / p(KS): {1:.3f}".format(pvalues[legi],ks_tests[legi]),"l")
+        legend.AddEntry(hist,legend_titles[legi],"l")
     if isinstance(uncert_hist, (list,)):
      count=0
      for i in uncert_hist:
@@ -3042,8 +3017,8 @@ def CompareHists(hists=[],
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    # DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    # DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()
@@ -3052,8 +3027,7 @@ def CompareHists(hists=[],
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,label)
-
-
+    
     #Add ratio plot if required
     if ratio:
         ratio_hs = R.THStack("ratio_hs","")

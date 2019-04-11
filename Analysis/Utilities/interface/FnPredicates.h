@@ -188,8 +188,11 @@ namespace ic {
   }
   
   template<class T, class U>
-  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
-    // get boost vector to boost to COM frame 
+  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2, bool mod_angle) {
+    // get boost vector to boost to COM frame
+    if (p1.size()!=2 && p2.size()!=2) return -9999;
+    double cp_sign = YRho(p1,TVector3())*YRho(p2,TVector3());
+ 
     TLorentzVector ltotal(0,0,0,0);
     for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
     for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
@@ -203,6 +206,12 @@ namespace ic {
     double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
     int sign = plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector()))/fabs(plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector())));
     if (sign<0) angle = 2*M_PI - angle;
+    if(mod_angle) {
+      if (cp_sign<0) {
+          if (angle<M_PI) angle = angle+M_PI;
+          else            angle = angle-M_PI;
+      } 
+    }
     // boost back to origional frame
     for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);    
     for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);

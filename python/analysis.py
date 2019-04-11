@@ -675,6 +675,7 @@ class Analysis(object):
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
                 else:
                     data['sf'] = 1.0
+                if 'eff' in data: data['sf'] *= float(data['eff'])
         #pprint.pprint(self.info)
 
     def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
