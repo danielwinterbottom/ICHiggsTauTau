@@ -920,7 +920,7 @@ namespace ic {
       double top_wt_up = 1.0;
       double top_wt_down = 1.0;
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      if(era_ != era::data_2015 && era_!=era::data_2016 && era_ != era::data_2017){
+      if(era_ != era::data_2015 && era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
         for (unsigned i = 0; i < parts.size(); ++i) {
           if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
             double pt = parts[i]->pt();

@@ -2485,6 +2485,15 @@ namespace ic {
     return pi0;
   }
 
+  double boundPhi(double dphi) {
+    if (dphi >= M_PI)
+      dphi -= 2*M_PI;
+    else if (dphi < -M_PI)
+      dphi += 2*M_PI;
+
+    return dphi;
+  }
+
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 
 

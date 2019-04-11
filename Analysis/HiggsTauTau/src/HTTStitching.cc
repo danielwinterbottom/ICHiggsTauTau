@@ -255,7 +255,7 @@ namespace ic {
           }
           if (id == 23) count_jets = true; 
         }
-      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
+      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2017 ||  era_ == era::data_2018){ 
         t_ht_=0;
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
