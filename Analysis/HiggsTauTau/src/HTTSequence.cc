@@ -1501,6 +1501,10 @@ if(do_met_filters){
         "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
         "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
       };
+      if (era_type == era::data_2016 || era_type == era::data_2017) {
+        met_filters.pop_back();
+        met_filters.push_back("Flag_globalTightHalo2016Filter");
+      }
       // if (era_type == era::data_2017 || era_type == era::data_2018) 
       //   {met_filters.push_back("ecalBadCalibReducedMINIAODFilter")};
       bool pass_filters = true;
@@ -2460,7 +2464,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48632630.0+49082157.0,34833034.0, 88795.0+9691457.0, 5740168.0 + 1147725.0, 4336026.0); // correspond to Params v5
+            httStitching.SetDYInputYields(48632630.0+49069662.0,42299237.0+33643695.0, 88795.0+9691457.0, 5740168.0 + 1446624.0, 4295167.0); // correspond to Params v5
           }
        
        BuildModule(httStitching);   
@@ -2605,7 +2609,7 @@ bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_nam
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
-if (strategy_type != strategy::cpdecays18) {
+if (strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
       .set_channel(channel));
