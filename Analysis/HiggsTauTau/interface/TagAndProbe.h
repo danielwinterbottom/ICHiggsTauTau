@@ -523,8 +523,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
       bool found_match_probe = false;
       for(unsigned ta=0; ta<l1taus.size(); ++ta){
-        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0 && fabs(l1taus[ta]->eta())<2.17){
-        //if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && fabs(l1taus[ta]->eta())<2.17){
+        //if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0 && fabs(l1taus[ta]->eta())<2.17){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && fabs(l1taus[ta]->eta())<2.17){ // this for non isolated taus
           // must pass L1 pT cut and be matched by DR to the tau
           if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
         }

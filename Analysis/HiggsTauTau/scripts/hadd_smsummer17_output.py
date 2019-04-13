@@ -42,6 +42,7 @@ sample_list = [
     'GluGluHToTauTau_M-125',
 
     'DY1JetsToLL-LO',
+    'DY1JetsToLL-LO-ext',
     'DY2JetsToLL-LO',
     'DY2JetsToLL-LO-ext',
     'DY3JetsToLL-LO',

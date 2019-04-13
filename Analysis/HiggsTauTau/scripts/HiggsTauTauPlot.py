@@ -403,8 +403,8 @@ if options.analysis == 'sm':
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
-          # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon&&pt_1>25)&& pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
+          #cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_mutaucross && pt_2>30)||trg_singlemuon&&pt_1>25)&& pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -1009,7 +1009,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16','tauid2016']:
     
     
 if options.era in ['cpsummer17','tauid2017']:
-    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
     #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
@@ -1102,8 +1103,8 @@ if options.era in ['cpdecay16']:
     sm_samples = {
         # test CP in decay samples
 
-        'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'],
-        'qqH_htt': 'VBFHToTauTau_M-*',
+        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
+        'qqH_htt' : 'VBFHToTauTau_M-*',
 
         "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
         "ggH_ps_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
@@ -2231,11 +2232,11 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
              #ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
 
              sample_names=[]
-             if isinstance(samples[key], (list,)):
-               for i in samples[key]:
+             if isinstance(sm_samples[key], (list,)):
+               for i in sm_samples[key]:
                  sample_names.append(i.replace('*',mass))
-             else: sample_names = [samples[key].replace('*',mass)]
-             ana.nodes[nodename].AddNode(ana.SummedFactory(key+add_str+add_name, sample_names, plot, full_selection))
+             else: sample_names = [sm_samples[key].replace('*',mass)]
+             ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
 
 
 

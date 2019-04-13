@@ -109,8 +109,7 @@
   },
   "GluGluToHToTauTau_M-125-nospinner": {
     "xs": 3.045966,
-    "evt": 4942600.0,
-    "eff": 0.5
+    "evt": 4942600.0
   },
   "GluGluToHToTauTau_M-125-nospinner-filter": {
     "xs": 3.045966,

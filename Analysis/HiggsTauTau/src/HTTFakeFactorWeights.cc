@@ -220,7 +220,8 @@ namespace ic {
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
     } else {
-      m_sv_ = -9999;
+      //m_sv_ = -9999;
+      m_sv_ = m_vis_*1.4; // not intended for use in a propper analysis but quick fix for cases when sv fit mas has not been calculated yet. 1.4 factor is roughly the ratio of m_sv/m_vis for QCD/W jets events
     }
     double pt_tt_ = (ditau->vector() + met->vector()).pt();   
  
