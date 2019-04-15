@@ -450,8 +450,8 @@ if options.channel == 'tt':
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
-    if options.era in ['cpsummer17']:
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau && pt_1>50)'
+    if options.era in ['cpsummer17','cp18']:
+        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau1'] = '(pt_1>50 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(pt_1>40 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
@@ -688,13 +688,39 @@ if options.channel == 'em':
     cats['zttEmbed_lowMjj'] =  '({} && !(n_jets>=2 && mjj>300))'.format(mva_lowMjj_zttEmbed)
 
 # CP in decays categories
-if options.channel == "mt":
+if options.channel in ["mt","et"]:
     cats["inclusive_mixed"]         = "(tau_decay_mode_2==1)"
     cats["dijet_mixed"]             = "(n_jets>=2 && mjj>300)"
     cats["0jet_mixed"]              = "({} && {})".format(cats["0jet"], cats["inclusive_mixed"])
     cats["dijet_boosted_mixed"]     = "({} && pt_tt>100 && {})".format(cats["dijet_mixed"] ,cats["inclusive_mixed"])
     cats["dijet_lowboost_mixed"]    = "({} && pt_tt<100 && {})".format(cats["dijet_mixed"] ,cats["inclusive_mixed"])
     cats["boosted_mixed"]               = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_mixed"], cats["inclusive_mixed"])
+
+    # MVA multiclass categories
+    if options.channel == "et":
+        mva_ggh      = '(IC_Apr02_max_index==0)'
+        mva_jetFakes = '(IC_Apr02_max_index==1)'
+        mva_tt       = '(IC_Apr02_max_index==2)'
+        mva_zll      = '(IC_Apr02_max_index==3)'
+        mva_zttEmbed = '(IC_Apr02_max_index==4)'
+    elif options.channel == "mt":
+        mva_ggh      = '(IC_Mar26_fix2_max_index==0)'
+        mva_jetFakes = '(IC_Mar26_fix2_max_index==1)'
+        mva_tt       = '(IC_Mar26_fix2_max_index==2)'
+        mva_zll      = '(IC_Mar26_fix2_max_index==3)'
+        mva_zttEmbed = '(IC_Mar26_fix2_max_index==4)'
+
+    cats['higgs']          = '({} && {})'.format(mva_ggh, cats["inclusive_mixed"])
+    cats['zttEmbed']       = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mixed"])
+    cats['jetFakes']       = '({} && {})'.format(mva_jetFakes, cats["inclusive_mixed"])
+    cats['zll']            = '({} && {})'.format(mva_zll, cats["inclusive_mixed"])
+    cats['tt']             = '({} && {})'.format(mva_tt, cats["inclusive_mixed"])
+
+    cats['higgs_other']    = '({} && !({}))'.format(mva_ggh, cats["inclusive_mixed"])
+    cats['zttEmbed_other'] = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_mixed"])
+    cats['jetFakes_other'] = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_mixed"])
+    cats['zll_other']      = '({} && !({}))'.format(mva_zll, cats["inclusive_mixed"])
+    cats['tt_other']       = '({} && !({}))'.format(mva_tt, cats["inclusive_mixed"])
 
 if options.channel == 'tt':
     cats["inclusive_rho"]         = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
@@ -743,6 +769,10 @@ if options.channel == 'tt':
     cats['zttEmbed']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
     cats['jetFakes']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
 
+    cats['higgs_other']      = '({} && !({}))'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed_other']   = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_other']   = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_rho"])
+
     # both taus pass ID>0.5
     cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
     cats['zttEmbed_idg0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
@@ -763,7 +793,7 @@ if options.channel == 'tt':
     cats['zttEmbed_NOTidg0p5']  = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
     cats['jetFakes_NOTidg0p5']  = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
 
-  
+
 # 2016 sm analysis uses relaxed shape selections for W + QCD processes in et and mt channel, these are set here
 if options.era in ['smsummer16','cpsummer16','cpdecay16']: # Remove the False when finished!!!!!
     if options.channel in ['et','mt'] and options.cat in ['boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
@@ -1015,7 +1045,8 @@ if options.era in ['cpsummer17','tauid2017']:
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
     #vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
-    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    # wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','EWKWMinus2Jets','EWKWPlus2Jets']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []
@@ -1042,7 +1073,7 @@ if options.era in ['cp18']:
     # ztt_samples = ['DYJetsToLL'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = [
-            'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','T-t','WWTo2L2Nu',
+            'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
             'WWTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','WZTo3LNu-ext1','WZTo2L2Q',
             'ZZTo2L2Nu-ext1','ZZTo2L2Nu-ext2','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L'
             ]
@@ -3123,6 +3154,8 @@ while len(systematics) > 0:
       if options.scheme == 'signal': 
           samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL'])
           do_data = False
+      if options.scheme == "noTT":
+          samples_to_skip.extend(["TTT","TTJ"])
       RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
       if options.era == "tauid2016" and options.channel in ['et','mt']: 
           RunPlotting(ana, cats['pass']+'&&'+cats['baseline'], cats_unmodified['pass']+'&&'+cats_unmodified['baseline'], sel, "pass"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)

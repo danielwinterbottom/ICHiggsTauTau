@@ -2,10 +2,10 @@
   "job": {
     "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
     // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Feb27_MC_102X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar25_MC_102X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zmm","mt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -62,7 +62,7 @@
     // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2016/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec05_JES_2016/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar22_2018_updated/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr12_2018/",
     // "output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -76,7 +76,7 @@
     "mela_mode" : 0,
     "njets_mode" : 0,
     //"event_check_file":"checkfile.dat",
-    "pu_id_training": 2,
+    "pu_id_training": 4,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,

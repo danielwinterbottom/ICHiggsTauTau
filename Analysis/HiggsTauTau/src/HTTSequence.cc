@@ -2425,7 +2425,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
    }
   
-   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
      httWeights.set_do_zpt_weight(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
    }
   
@@ -2473,7 +2473,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 // adding 2018 stitching
 //
   if((strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
-    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
+    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2018.root","/","zptmass_histo");
   
     HTTWeights httWeights = HTTWeights("HTTWeights")   
      .set_channel(channel)
@@ -2491,7 +2491,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_quarkmass_higgspt(do_ggH_stitch)
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
-     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v4.root");
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2018_v1.root");
      if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
@@ -2502,7 +2502,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
    }
   
-   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos))){
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
      httWeights.set_do_zpt_weight(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
    }
   
@@ -2535,7 +2535,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(100112060.0,68852433.0,20420790.0,5646595.0,2810735.0); // correspond to params Mar18
+            httStitching.SetDYInputYields(100114403.0,68852433.0,20441071.0,5646595.0,2812482.0); // correspond to params Mar18
           }
        
        BuildModule(httStitching);   

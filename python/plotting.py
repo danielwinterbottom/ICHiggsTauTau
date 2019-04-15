@@ -87,6 +87,8 @@ def SetAxisTitles(plot, channel):
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events / '+bin_width, 'dN/d#phi^{*}_{CP}']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
+  titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events']
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['lead tau decay mode','Events', 'Events']
@@ -174,6 +176,8 @@ def SetAxisTitles2D(plot, channel):
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['aco_angle_mod'] = ['#Delta#phi^{*}_{CP}','Events', 'dN/d#Delta#phi^{*}_{CP}','']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
