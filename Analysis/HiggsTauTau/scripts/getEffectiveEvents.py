@@ -3,7 +3,7 @@ import sys
 import os
 
 file_names = {}
-channels = ['zmm']
+channels = ['mt']
 years = ['2016','2017','2018']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
@@ -26,7 +26,10 @@ for f in file_names:
     else:
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])
         tree = input_file.Get("effective")
-        tree.Draw("rand()>>total_hist",'wt',"goff")
-        total_hist = tree.GetHistogram()
-        entries = total_hist.Integral(-1,-1)
+        #entries = tree.GetEntries()
+        entries = tree.GetEntries('wt>0') - tree.GetEntries('wt<0')
+        #tree.Draw("rand()>>total_hist",'wt',"goff")
+        #tree.Draw("rand()>>total_hist",'',"goff")
+        #total_hist = tree.GetHistogram()
+        #entries = total_hist.Integral(-1,-1)
         print("{}  {}".format(f,entries))
