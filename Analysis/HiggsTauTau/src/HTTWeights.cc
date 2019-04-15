@@ -302,32 +302,32 @@ namespace ic {
                  w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
               fns_["e_looseidiso_pog_ratio"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_looseidiso_pog_ratio")->functor(w_->argSet("e_pt,e_eta")));
-              fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-              fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+              fns_["t_trg_tight_ditau_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_ditau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+              fns_["t_trg_tight_ditau_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_ditau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
               fns_["t_trg_tight_tt_mcclose"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_trg_tight_tt_mcclose")->functor(w_->argSet("t_pt,t_eta")));
-              fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-              fns_["t_trg_tight_mt_mc"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_mt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-              fns_["t_trg_tight_et_data"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-              fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-              fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
-              fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
-              fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
-              fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
-              fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
-              fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
-                 w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
+              fns_["t_trg_tight_mutau_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_mutau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+              fns_["t_trg_tight_mutau_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_mutau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+              fns_["t_trg_tight_etau_data"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_etau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+              fns_["t_trg_tight_etau_mc"] = std::shared_ptr<RooFunctor>(
+                 w_->function("t_trg_tight_etau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+              //fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
+              //fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
+              //fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
+              //fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
+              //fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
+              //fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
+              //   w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
               // et cross trigger
               fns_["e_trg_EleTau_Ele24Leg_desy_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("e_trg_EleTau_Ele24Leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
@@ -715,34 +715,34 @@ namespace ic {
               w_->function("e_id_embed_ratio")->functor(w_->argSet("e_pt,e_eta")));
            fns_["e_trg_EleTau_Ele24Leg_desy_data"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trg_EleTau_Ele24Leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
-           fns_["t_trg_tight_tt_data"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-           fns_["t_trg_tight_tt_mc"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-           fns_["t_trg_tight_tt_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_embed")->functor(w_->argSet("t_pt,t_eta")));
-           fns_["t_trg_tight_et_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_et_embed")->functor(w_->argSet("t_pt,t_eta")));
-           fns_["t_trg_tight_mt_embed"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_mt_embed")->functor(w_->argSet("t_pt,t_eta")));
-           fns_["t_trg_tight_mt_data"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_mt_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-           fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
-           fns_["t_trg_tight_et_data"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_et_data")->functor(w_->argSet("t_pt,t_eta,t_phi")));
-           fns_["t_trg_tight_et_mc"] = std::shared_ptr<RooFunctor>(
-              w_->function("t_trg_tight_et_mc")->functor(w_->argSet("t_pt,t_eta,t_phi")));
+           fns_["t_trg_tight_ditau_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_ditau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+           fns_["t_trg_tight_ditau_mc"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_ditau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+           fns_["t_trg_tight_ditau_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_ditau_embed")->functor(w_->argSet("t_pt,t_eta,t_dm")));
+           fns_["t_trg_tight_etau_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_etau_embed")->functor(w_->argSet("t_pt,t_eta,t_dm")));
+           fns_["t_trg_tight_mutau_embed"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mutau_embed")->functor(w_->argSet("t_pt,t_eta,t_dm")));
+           fns_["t_trg_tight_mutau_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_mutau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+           //fns_["t_trg_tight_tt_up"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_tt_up")->functor(w_->argSet("t_pt")));
+           //fns_["t_trg_tight_tt_down"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_tt_down")->functor(w_->argSet("t_pt")));
+           //fns_["t_trg_tight_mt_up"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_mt_up")->functor(w_->argSet("t_pt")));
+           //fns_["t_trg_tight_mt_down"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_mt_down")->functor(w_->argSet("t_pt")));
+           //fns_["t_trg_tight_et_up"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_et_up")->functor(w_->argSet("t_pt")));
+           //fns_["t_trg_tight_et_down"] = std::shared_ptr<RooFunctor>(
+           //   w_->function("t_trg_tight_et_down")->functor(w_->argSet("t_pt")));
+           fns_["t_trg_tight_etau_data"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_etau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+           fns_["t_trg_tight_etau_mc"] = std::shared_ptr<RooFunctor>(
+              w_->function("t_trg_tight_etau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
            fns_["t_trg_nonclosure"] = std::shared_ptr<RooFunctor>(
               w_->function("t_trg_nonclosure")->functor(w_->argSet("t_pt_1,t_pt_2")));
            fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1823,19 +1823,19 @@ namespace ic {
           else ele_trg_mc = fns_["e_trg_binned_embed"]->eval(args_1.data());
 
           double single_e_sf = ele_trg_mc > 0 ? ele_trg / ele_trg_mc : 0;
-
+          double t_dm = tau->decay_mode();
           auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
-          auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
-          auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta};
+          auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
+          auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta,t_dm};
           double ele_xtrg = fns_["e_trg24_data"]->eval(args_2.data());
           double ele_xtrg_mc = 1.0;
      
           if(!is_embedded_) ele_xtrg_mc = fns_["e_trg24_mc"]->eval(args_2.data());
           else ele_xtrg_mc = fns_["e_trg24_embed"]->eval(args_2.data());
 
-          tau_trg = fns_["t_trg_tight_et_data"]->eval(args_3.data());
-          if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_et_mc"]->eval(args_3.data());
-          else tau_trg_mc = fns_["t_trg_tight_et_embed"]->eval(args_3_nophi.data());
+          tau_trg = fns_["t_trg_tight_etau_data"]->eval(args_3.data());
+          if(!is_embedded_) tau_trg_mc = fns_["t_trg_tight_etau_mc"]->eval(args_3.data());
+          else tau_trg_mc = fns_["t_trg_tight_etau_embed"]->eval(args_3_nophi.data());
 
           double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
@@ -1849,7 +1849,7 @@ namespace ic {
           }
 
           if(e_pt<28.) xtrg_OR_sf = xtrg_et_sf;
-          if(t_pt<30.) xtrg_OR_sf = single_e_sf;
+          if(t_pt<35.) xtrg_OR_sf = single_e_sf;
 
           //auto args_pt_1 = std::vector<double>{t_pt};
           //double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data());
@@ -2179,18 +2179,18 @@ namespace ic {
              else mu_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data());
 
              double single_m_sf = mu_trg / mu_trg_mc;
-
+             double t_dm = tau->decay_mode();
              auto args_2 = std::vector<double>{pt,m_signed_eta};  
-             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi};  
-             auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta};
+             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
+             auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta,t_dm};
              double mu_xtrg = fns_["m_trg20_data"]->eval(args_2.data());
              double mu_xtrg_mc;
              if(is_embedded_) mu_xtrg_mc = fns_["m_trg20_embed"]->eval(args_2.data());
              else mu_xtrg_mc = fns_["m_trg20_mc"]->eval(args_2.data());
-
-             tau_trg = fns_["t_trg_tight_mt_data"]->eval(args_3.data());
-             if(is_embedded_) tau_trg_mc = fns_["t_trg_tight_mt_embed"]->eval(args_3_nophi.data());
-             else tau_trg_mc = fns_["t_trg_tight_mt_mc"]->eval(args_3.data());
+             
+             tau_trg = fns_["t_trg_tight_mutau_data"]->eval(args_3.data());
+             if(is_embedded_) tau_trg_mc = fns_["t_trg_tight_mutau_embed"]->eval(args_3_nophi.data());
+             else tau_trg_mc = fns_["t_trg_tight_mutau_mc"]->eval(args_3.data());
 
              double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
@@ -2716,19 +2716,21 @@ namespace ic {
            double eta_2 = tau2->eta();  
            double phi_1 = tau1->phi();
            double phi_2 = tau2->phi();
-           auto args_1 = std::vector<double>{pt_1,eta_1,phi_1};  
-           auto args_2 = std::vector<double>{pt_2,eta_2,phi_2}; 
-           tau1_trg = fns_["t_trg_tight_tt_data"]->eval(args_1.data());
-           tau1_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_1.data());
-           tau2_trg = fns_["t_trg_tight_tt_data"]->eval(args_2.data());
-           tau2_trg_mc = fns_["t_trg_tight_tt_mc"]->eval(args_2.data());
+           double dm_1 = tau1->decay_mode();
+           double dm_2 = tau2->decay_mode();
+           auto args_1 = std::vector<double>{pt_1,eta_1,phi_1,dm_1};  
+           auto args_2 = std::vector<double>{pt_2,eta_2,phi_2,dm_2}; 
+           tau1_trg = fns_["t_trg_tight_ditau_data"]->eval(args_1.data());
+           tau1_trg_mc = fns_["t_trg_tight_ditau_mc"]->eval(args_1.data());
+           tau2_trg = fns_["t_trg_tight_ditau_data"]->eval(args_2.data());
+           tau2_trg_mc = fns_["t_trg_tight_ditau_mc"]->eval(args_2.data());
 
-           auto args_pt_1 = std::vector<double>{pt_1};
-           auto args_pt_2 = std::vector<double>{pt_2};
-           double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_up"]->eval(args_pt_2.data());
-           double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_down"]->eval(args_pt_2.data());
-           event->Add("trigweight_up", tau_trg_up);
-           event->Add("trigweight_down", tau_trg_down);
+           //auto args_pt_1 = std::vector<double>{pt_1};
+           //auto args_pt_2 = std::vector<double>{pt_2};
+           //double tau_trg_up = fns_["t_trg_tight_tt_up"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_up"]->eval(args_pt_2.data());
+           //double tau_trg_down = fns_["t_trg_tight_tt_down"]->eval(args_pt_1.data())*fns_["t_trg_tight_tt_down"]->eval(args_pt_2.data());
+           //event->Add("trigweight_up", tau_trg_up);
+           //event->Add("trigweight_down", tau_trg_down);
            // these buts for bias study
            //auto args_1_nophi = std::vector<double>{pt_1,eta_1};
            //auto args_2_nophi = std::vector<double>{pt_2,eta_2};
@@ -2740,14 +2742,15 @@ namespace ic {
            //tau2_trg_mc=1.0;
 
            if(is_embedded_){
-             auto args_1 = std::vector<double>{pt_1,eta_1};
-             auto args_2 = std::vector<double>{pt_2,eta_2};
-             tau1_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_1.data());
-             tau2_trg_mc = fns_["t_trg_tight_tt_embed"]->eval(args_2.data());
+             auto args_1 = std::vector<double>{pt_1,eta_1,dm_1};
+             auto args_2 = std::vector<double>{pt_2,eta_2,dm_2};
+             tau1_trg_mc = fns_["t_trg_tight_ditau_embed"]->eval(args_1.data());
+             tau2_trg_mc = fns_["t_trg_tight_ditau_embed"]->eval(args_2.data());
              //auto args_ditau = std::vector<double>{pt_1,pt_2};
              //double trg_nonclosure = fns_["t_trg_nonclosure"]->eval(args_ditau.data());
              //eventInfo->set_weight("trg_nonclosure",trg_nonclosure);
            }
+           //std::cout << pt_1 << "    " << eta_1 << "    " << phi_1 << "    " << dm_1 << "    " << pt_2 << "    " << eta_2 << "    " << phi_2 << "    " << dm_2 << "  : " << tau1_trg << "    " << tau1_trg_mc << "    " << tau2_trg << "    " << tau2_trg_mc << "   =  " << tau1_trg / tau1_trg_mc * tau2_trg / tau2_trg_mc << std::endl;
         }
         if(trg_applied_in_mc_){
           tau1_trg = tau1_trg / tau1_trg_mc;

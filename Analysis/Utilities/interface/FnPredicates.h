@@ -188,8 +188,11 @@ namespace ic {
   }
   
   template<class T, class U>
-  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
-    // get boost vector to boost to COM frame 
+  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2, bool mod_angle) {
+    // get boost vector to boost to COM frame
+    if (p1.size()!=2 && p2.size()!=2) return -9999;
+    double cp_sign = YRho(p1,TVector3())*YRho(p2,TVector3());
+ 
     TLorentzVector ltotal(0,0,0,0);
     for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
     for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
@@ -203,6 +206,12 @@ namespace ic {
     double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
     int sign = plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector()))/fabs(plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector())));
     if (sign<0) angle = 2*M_PI - angle;
+    if(mod_angle) {
+      if (cp_sign<0) {
+          if (angle<M_PI) angle = angle+M_PI;
+          else            angle = angle-M_PI;
+      } 
+    }
     // boost back to origional frame
     for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);    
     for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
@@ -393,14 +402,14 @@ namespace ic {
   double GetEffectiveArea2017(T const* cand){
     double cand_eta = cand->eta();
     using std::abs;
-    //From  https://github.com/lsoffi/cmssw/blob/CMSSW_9_2_X_TnP/RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt
-    if(abs(cand_eta)<1.) return 0.1566;
-    else if(abs(cand_eta)<1.479) return 0.1626;
-    else if(abs(cand_eta)<2.) return 0.1073;
-    else if(abs(cand_eta)<2.2) return 0.0854;
-    else if(abs(cand_eta)<2.3) return 0.1051;
-    else if(abs(cand_eta)<2.4) return 0.1204;
-    else if(abs(cand_eta)<5.) return 0.1524;
+    //From  https://github.com/cms-sw/cmssw/blob/master/RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt
+    if(abs(cand_eta)<1.) return 0.1440;
+    else if(abs(cand_eta)<1.479) return 0.1562;
+    else if(abs(cand_eta)<2.) return 0.1032;
+    else if(abs(cand_eta)<2.2) return 0.0859;
+    else if(abs(cand_eta)<2.3) return 0.1116;
+    else if(abs(cand_eta)<2.4) return 0.1321;
+    else if(abs(cand_eta)<5.) return 0.1654;
     return 0;
   }
 

@@ -1323,7 +1323,6 @@ namespace ic {
         }
       } 
       double wp = c - A*exp(-pt/tau);
-      /* std::cout << "idmva: " << idmva << "wp: " << wp << std::endl; */
       bool pass_mva = idmva > wp;
       return pass_mva;
     }

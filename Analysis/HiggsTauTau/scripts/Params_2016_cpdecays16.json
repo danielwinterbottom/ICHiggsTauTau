@@ -111,6 +111,11 @@
     "xs": 3.045966,
     "evt": 4942600.0
   },
+  "GluGluToHToTauTau_M-125-nospinner-filter": {
+    "xs": 3.045966,
+    "evt": 15252367.0,
+    "eff": 0.2514
+  },
   "T-t": {
     "xs": 136.02,
     "evt": 67240808.0
@@ -150,6 +155,11 @@
   "VBFHToTauTau_M-125-nospinner": {
     "xs": 0.2371314,
     "evt": 4881664.0
+  },
+  "VBFHToTauTau_M-125-nospinner-filter": {
+    "xs": 0.2371314,
+    "evt": 9875845.0,
+    "eff": 0.2825
   },
   "VVTo2L2Nu": {
     "xs": 11.95,

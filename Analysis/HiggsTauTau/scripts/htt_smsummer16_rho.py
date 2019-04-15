@@ -204,7 +204,9 @@ if options.mg_signal:
 if options.cp_decay:
   signal_mc += [
   'GluGluToHToTauTau_M-125-nospinner',
-  'VBFHToTauTau_M-125-nospinner'
+  'VBFHToTauTau_M-125-nospinner',
+  'GluGluToHToTauTau_M-125-nospinner-filter',
+  'VBFHToTauTau_M-125-nospinner-filter'
   ]
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
@@ -454,6 +456,7 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     # 'DYJetsToLL',
+<<<<<<< HEAD
     'TT',
     # 'VVTo2L2Nu',
     # 'VVTo2L2Nu-ext1',
@@ -493,14 +496,14 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      # 'EWKWMinus2Jets_WToLNu-ext1',
-      # 'EWKWMinus2Jets_WToLNu-ext2',
-      # 'EWKWMinus2Jets_WToLNu',
-      # 'EWKWPlus2Jets_WToLNu-ext1',
-      # 'EWKWPlus2Jets_WToLNu-ext2',
-      # 'EWKWPlus2Jets_WToLNu',
-      # 'EWKZ2Jets_ZToLL-ext',
-      # 'EWKZ2Jets_ZToLL'
+      #'EWKWMinus2Jets_WToLNu-ext1',
+      #'EWKWMinus2Jets_WToLNu-ext2',
+      #'EWKWMinus2Jets_WToLNu',
+      #'EWKWPlus2Jets_WToLNu-ext1',
+      #'EWKWPlus2Jets_WToLNu-ext2',
+      #'EWKWPlus2Jets_WToLNu',
+      #'EWKZ2Jets_ZToLL-ext',
+      #'EWKZ2Jets_ZToLL'
     ]
     central_samples.extend(extra_samples)
 
@@ -533,7 +536,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
+        nperjob = 5 #20
         if 'scale' in FLATJSONPATCH:
           nperjob = 5
         if 'DY' in sa and 'JetsToLL' in sa:
@@ -578,6 +581,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     SIG_FILELIST='filelists/Jan31_MC_80X'
+    print sa
     if 'nospinner' in sa: SIG_FILELIST='filelists/Jan31_MC_80X'
     if 'Higgs0' in sa or 'GluGluH2JetsToTauTau' in sa: SIG_FILELIST='filelists/Apr02_MC_80X'
     JOB='%s_2016' % (sa)

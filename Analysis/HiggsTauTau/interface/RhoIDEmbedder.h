@@ -22,6 +22,7 @@ class RhoIDEmbedder : public ModuleBase {
  private:
   CLASS_MEMBER(RhoIDEmbedder, fwlite::TFileService*, fs)
   CLASS_MEMBER(RhoIDEmbedder, ic::channel, channel)
+  CLASS_MEMBER(RhoIDEmbedder, bool, maketrees)
   
   TTree *outtree_;
   int wt_;
