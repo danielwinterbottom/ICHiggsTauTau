@@ -659,8 +659,8 @@ void HTTSequence::BuildSequence(){
         //frac = 0.279662;
       }
       if(era_type == era::data_2017) {
-        n_inc = 13719412.;
-        n_2 = 10989343.;
+        n_inc = 20381115.0;
+        n_2 = 10988981.0;
         frac = 0.291244; 
       }
       do_ggH_stitch = true;
@@ -677,7 +677,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017) {
         n_inc = 3329183.;
-        n_2 = 15713406.;
+        n_2 = 16011774.0;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -2457,14 +2457,16 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0); // correspond to Params v5
+           //httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0); // correspond to Params v5
+           httStitching.SetWInputYields(33043732.0+44586629.0,54106926.0,6570442.0,19669693.0,11273215.0); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48632630.0+49069662.0,42299237.0+33643695.0, 88795.0+9691457.0, 5740168.0 + 1446624.0, 4295167.0); // correspond to Params v5
+            //httStitching.SetDYInputYields(48632630.0+49069662.0,42299237.0+33643695.0, 88795.0+9691457.0, 5740168.0 + 1446624.0, 4295167.0); // correspond to Params v5
+            httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33259078.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
           }
        
        BuildModule(httStitching);   
