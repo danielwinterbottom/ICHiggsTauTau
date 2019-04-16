@@ -1167,7 +1167,7 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V6_MC_UncertaintySources_AK4PFchs.txt"; // new one available
+    jes_input_file = "input/jec/Fall17_17Nov2017_V23_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2018) {
