@@ -109,11 +109,11 @@
   },
   "GluGluToHToTauTau_M-125-nospinner": {
     "xs": 3.045966,
-    "evt": 4942600.0
+    "evt": 4881664
   },
   "GluGluToHToTauTau_M-125-nospinner-filter": {
     "xs": 3.045966,
-    "evt": 15252367.0,
+    "evt": 18561576,
     "eff": 0.2514
   },
   "T-t": {
@@ -158,7 +158,12 @@
   },
   "VBFHToTauTau_M-125-nospinner-filter": {
     "xs": 0.2371314,
-    "evt": 9875845.0,
+    "evt": 21629887,
+    "eff": 0.2825
+  },
+  "VBFHToTauTau_M-125-nospinner-filter-ext": {
+    "xs": 0.2371314,
+    "evt": 21629887,
     "eff": 0.2825
   },
   "VVTo2L2Nu": {
