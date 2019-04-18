@@ -2393,7 +2393,7 @@ def HTTPlot(nodename,
         sighist = R.TH1F()
         if signal_mass != "":
             sig_scheme = sig_schemes[signal_scheme]
-            for i in sig_scheme[1]: 
+            for i in sig_scheme[1]:
                 h = infile.Get(nodename+'/'+i+signal_mass).Clone()
                 if sighist.GetEntries() == 0: sighist = h
                 else: sighist.Add(h)
