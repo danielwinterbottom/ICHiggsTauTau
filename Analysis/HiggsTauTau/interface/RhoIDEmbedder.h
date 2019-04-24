@@ -201,6 +201,14 @@ class RhoIDEmbedder : public ModuleBase {
   double DeltaR2WRTtau_2_;
   double DeltaR2WRTpi0_2_;  
 
+  double FracPtDepos_dRLessThan0p008_2_;
+  double FracPtDepos_dR0p008To0p04_2_; 
+  double FracPtDepos_dRMoreThan0p04_2_;
+  double FracPtDepos_dRLessThan0p008_1_;
+  double FracPtDepos_dR0p008To0p04_1_;
+  double FracPtDepos_dRMoreThan0p04_1_;
+
+
   //temp variables
   double CenterEta_1;
   double CenterPhi_1;

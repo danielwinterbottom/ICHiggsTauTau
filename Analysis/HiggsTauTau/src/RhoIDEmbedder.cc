@@ -182,6 +182,14 @@ namespace ic {
       outtree_->Branch("Phipi_1"              , &Phipi_1_);
       outtree_->Branch("Phipi_2"              , &Phipi_2_);
 
+      outtree_->Branch("FracPtDepos_dRLessThan0p008_2"              , &FracPtDepos_dRLessThan0p008_2_);
+      outtree_->Branch("FracPtDepos_dR0p008To0p04_2"              , &FracPtDepos_dR0p008To0p04_2_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p04_2"              , &FracPtDepos_dRMoreThan0p04_2_);
+
+      outtree_->Branch("FracPtDepos_dRLessThan0p008_1"              , &FracPtDepos_dRLessThan0p008_1_);
+      outtree_->Branch("FracPtDepos_dR0p008To0p04_1"              , &FracPtDepos_dR0p008To0p04_1_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p04_1"              , &FracPtDepos_dRMoreThan0p04_1_);
+
     
     }
     reader_ = new TMVA::Reader();
@@ -240,6 +248,12 @@ namespace ic {
      
       
       if (tau2->decay_mode()==1) {
+
+    //---initializing some of the variables-----------
+    FracPtDepos_dRLessThan0p008_2_=-999;  FracPtDepos_dR0p008To0p04_2_=-999;   FracPtDepos_dRMoreThan0p04_2_=-999;
+    //-----------------------------------------
+
+
         gammas2 = GetTauGammas(tau2, pfcands);
 
         std::pair<ic::Candidate*, ic::Candidate*> rho_2 = GetRho(tau2, pfcands);
@@ -399,7 +413,28 @@ namespace ic {
         } 
 
 
+     //------------------EnergyFraction-------------------- 
+        FracPtDepos_dRLessThan0p008_2_=0;  FracPtDepos_dR0p008To0p04_2_=0;   FracPtDepos_dRMoreThan0p04_2_=0;
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.008 )
+          FracPtDepos_dRLessThan0p008_2_+=pi_2->pt()/tau2->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.04)
+          FracPtDepos_dR0p008To0p04_2_+=pi_2->pt()/tau2->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.04)
+          FracPtDepos_dRMoreThan0p04_2_+=pi_2->pt()/tau2->pt();
+                
+        for (auto g: gammas2){
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.008)
+            FracPtDepos_dRLessThan0p008_2_+=g->pt()/tau2->pt();
 
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.04)
+            FracPtDepos_dR0p008To0p04_2_+=g->pt()/tau2->pt();
+
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.04)
+            FracPtDepos_dRMoreThan0p04_2_+=g->pt()/tau2->pt();
+        }
         
         
     
@@ -425,6 +460,9 @@ namespace ic {
 
         double score2 = read_mva_score(inputs2);
         event->Add("rho_id_2", score2);
+      
+      
+      
       }
     }
 
@@ -437,6 +475,11 @@ namespace ic {
 
 
       if(tau1->decay_mode()==1) {
+        
+    //---initializing some of the variables-----------        
+    FracPtDepos_dRLessThan0p008_1_=-999;  FracPtDepos_dR0p008To0p04_1_=-999;   FracPtDepos_dRMoreThan0p04_1_=-999;
+    //-------------------------    
+        
         gammas1 = GetTauGammas(tau1, pfcands);
 
         std::pair<ic::Candidate*, ic::Candidate*> rho_1 = GetRho(tau1, pfcands);
@@ -606,6 +649,28 @@ namespace ic {
         }
 
 
+     //------------------EnergyFraction-------------------- 
+        FracPtDepos_dRLessThan0p008_1_=0;  FracPtDepos_dR0p008To0p04_1_=0;   FracPtDepos_dRMoreThan0p04_1_=0;
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.008 )
+          FracPtDepos_dRLessThan0p008_1_+=pi_1->pt()/tau1->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.04)
+          FracPtDepos_dR0p008To0p04_1_+=pi_1->pt()/tau1->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.04)
+          FracPtDepos_dRMoreThan0p04_1_+=pi_1->pt()/tau1->pt();
+                
+        for (auto g: gammas1){
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
+            FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
+
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.04)
+            FracPtDepos_dR0p008To0p04_1_+=g->pt()/tau1->pt();
+
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.04)
+            FracPtDepos_dRMoreThan0p04_1_+=g->pt()/tau1->pt();
+        }
 
 
 
