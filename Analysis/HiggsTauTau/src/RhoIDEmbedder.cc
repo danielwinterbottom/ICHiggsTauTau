@@ -199,7 +199,6 @@ namespace ic {
     
     }
 
-    return 0;
     if(ProductExists("MVAreader")){
         reader_ = GetProduct<TMVA::Reader*>("MVAreader");
         std::cout << "Getting MVAreader" << std::endl;
@@ -227,6 +226,7 @@ namespace ic {
         AddToProducts("MVAreader", reader_); 
         std::cout << "Adding MVAreader" << std::endl;
      }
+    return 0;
   }
 
   int RhoIDEmbedder::Execute(TreeEvent *event) {
@@ -687,7 +687,7 @@ namespace ic {
         std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
         // variables for leading tau
-      }
+      
 
         Ngammas_1_     = gammas1.size();       
         Egamma1_1_     = Egamma1_1_;///Etau_1_;  
