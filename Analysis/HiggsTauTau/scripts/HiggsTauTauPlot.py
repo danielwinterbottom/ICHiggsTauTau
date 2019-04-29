@@ -1158,9 +1158,10 @@ if options.era in ['cpdecay16']:
         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
 
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        
     }
 
 
@@ -2264,7 +2265,14 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
                 weight=wt+"*"+weights[name]
                 full_selection = BuildCutString(weight, sel, cat, OSSS)
                 name = key
-                ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
+
+                sample_names=[]
+                if isinstance(sm_samples[key], (list,)):
+                  for i in sm_samples[key]:
+                    sample_names.append(i.replace('*',mass))
+                else: sample_names = [sm_samples[key].replace('*',mass)]
+                ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
+                #ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
         if non_cp:
              full_selection = BuildCutString(wt, sel, cat, OSSS)
              name = key

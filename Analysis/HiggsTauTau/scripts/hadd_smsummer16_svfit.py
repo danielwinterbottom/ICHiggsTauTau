@@ -243,7 +243,10 @@ sample_list = [
    'GluGluToMaxmixHToTauTauPlusOneJet_M125_MG5_2016',
    'GluGluToPseudoscalarHToTauTauPlusOneJet_M125_MG5_2016',
    'GluGluToHToTauTau_M-125-nospinner',
-   'VBFHToTauTau_M-125-nospinner'
+   'VBFHToTauTau_M-125-nospinner',
+   'VBFHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter-ext',
+   'GluGluToHToTauTau_M-125-nospinner-filter'
 
 ]
 

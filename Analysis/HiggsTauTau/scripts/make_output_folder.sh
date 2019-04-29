@@ -44,8 +44,8 @@ mkdir -p -v $1/LFSTATS1_UP
 mkdir -p -v $1/LFSTATS1_DOWN
 mkdir -p -v $1/LFSTATS2_UP
 mkdir -p -v $1/LFSTATS2_DOWN
-# mkdir -p -v $1/JES_UP
-# mkdir -p -v $1/JES_DOWN
+mkdir -p -v $1/JES_UP
+mkdir -p -v $1/JES_DOWN
 mkdir -p -v $1/JES_CORR_UP
 mkdir -p -v $1/JES_CORR_DOWN
 mkdir -p -v $1/JES_UNCORR_UP
