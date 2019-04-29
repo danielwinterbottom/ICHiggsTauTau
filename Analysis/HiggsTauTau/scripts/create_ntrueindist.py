@@ -10,7 +10,6 @@ def load_files(filelist):
     with open(filelist) as f:
          files = f.read().splitlines()
          file_names = [os.path.splitext(os.path.basename(file))[0] for file in files]
-         
     return file_names
 
 files = load_files("scripts/new_files_2017.txt")

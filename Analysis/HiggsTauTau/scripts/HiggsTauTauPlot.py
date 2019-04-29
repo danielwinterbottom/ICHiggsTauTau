@@ -421,8 +421,11 @@ if options.analysis == 'sm':
           cats['baseline_loosemu'] = '(iso_1<0.1 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singleelectron)'
           cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
-        if options.era in ['cpsummer17','cp18']:
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)' 
+        if options.era in ['cpsummer17']:
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
+          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
+        if options.era in ['cp18']:
+          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>33)) && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
         
 elif options.analysis == 'mssm':
@@ -743,6 +746,11 @@ if options.channel == 'tt':
     cats["dijet_boosted_rho"]     = "({} && pt_tt>100 && {})".format(cats["dijet"] ,cats["inclusive_rho"])
     cats["dijet_lowboost_rho"]    = "({} && pt_tt<100 && {})".format(cats["dijet"] ,cats["inclusive_rho"])
     cats["boosted_rho"]           = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_rho"], cats["inclusive_rho"])
+
+    cats["0jet_other"]              = "({} && !{})".format(cats["0jet"], cats["inclusive_rho"])
+    cats["dijet_boosted_other"]     = "({} && pt_tt>100 && !{})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["dijet_lowboost_other"]    = "({} && pt_tt<100 && !{})".format(cats["dijet"] ,cats["inclusive_rho"])
+    cats["boosted_other"]           = "(!{} && !({}) && !{})".format(cats["0jet"], cats["dijet_rho"], cats["inclusive_rho"])
 
     cats["0jet_rho_idg0p5"]           = "({} && {})".format(cats["0jet_rho"], cats["idg0p5"])
     cats["1jet_rho_idg0p5"]           = "({} && {})".format(cats["1jet_rho"], cats["idg0p5"])
@@ -1078,6 +1086,7 @@ if options.era in ['cp18']:
             'ZZTo2L2Nu-ext1','ZZTo2L2Nu-ext2','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L'
             ]
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    # wjets_samples = ['WJetsToLNu-LO',]
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []
@@ -1086,9 +1095,9 @@ if options.era in ['cp18']:
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     if options.channel == 'em':
-        data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
+        data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
     if options.channel == 'et' or options.channel == 'zee':
-        data_samples = ['SingleElectronA','SingleElectronB','SingleElectronC','SingleElectronD']
+        data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
@@ -3038,8 +3047,10 @@ while len(systematics) > 0:
       ana.remaps['MuonEG'] = 'data_obs'
   elif options.channel in ['mt','mj','zmm']:
       ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.channel == 'et' or options.channel == 'zee':
+  elif options.era != 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
       ana.remaps['SingleElectron'] = 'data_obs'
+  elif options.era == 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
+      ana.remaps['EGamma'] = 'data_obs'
   elif options.channel == 'tt':
       ana.remaps['Tau'] = 'data_obs'  
       
@@ -3510,4 +3521,4 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16','cpsummer17','cp18'] an
   for hist in hists_to_add: hist.Write()
       
 outfile.Close()
-          
+

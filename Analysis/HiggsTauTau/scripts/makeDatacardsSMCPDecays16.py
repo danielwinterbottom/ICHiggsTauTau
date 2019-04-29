@@ -204,23 +204,28 @@ if SCHEME == 'cpdecays16':
     scheme_mt = []
     scheme_tt = [
         # ("17", "inclusive_rho", "inclusive_rho",               VAR_INCLUSIVE_TT, ''),
-        ("17", "0jet_rho",           "0jet_rho",                 VAR_0JET_TT,      ' --ff_ss_closure '),
-        ("17", "boosted_rho",        "boosted_rho",              VAR_BOOSTED_TT,   ' --ff_ss_closure '),
+        ("17", "0jet_rho",           "0jet_rho",                 VAR_0JET_TT,      ' --ff_ss_closure --add_wt=wt_prefire'),
+        ("17", "boosted_rho",        "boosted_rho",              VAR_BOOSTED_TT,   ' --ff_ss_closure --add_wt=wt_prefire'),
         # ("17",   "dijet_rho", "dijet_rho",  VAR_DIJETWIDE_TT, ''),
-        ("17", "dijet_lowboost_rho", "dijet_lowboost_rho",       VAR_DIJET_TT,     ' --ff_ss_closure '),
-        ("17", "dijet_boosted_rho",  "dijet_boosted_rho",        VAR_DIJET_TT,     ' --ff_ss_closure '),
+        ("17", "dijet_lowboost_rho", "dijet_lowboost_rho",       VAR_DIJET_TT,     ' --ff_ss_closure --add_wt=wt_prefire'),
+        ("17", "dijet_boosted_rho",  "dijet_boosted_rho",        VAR_DIJET_TT,     ' --ff_ss_closure --add_wt=wt_prefire'),
 
-        ("17", "0jet_rho_idg0p5",    "0jet_rho_idg0p5",          VAR_0JET_TT,      ' --ff_ss_closure '),
-        ("17", "boosted_rho_idg0p5", "boosted_rho_idg0p5",       VAR_BOOSTED_TT,   ' --ff_ss_closure '),
-        ("17", "dijet_rho_idg0p5",   "dijet_rho_idg0p5",         VAR_DIJETWIDE_TT, ' --ff_ss_closure '),
-        # ("17",   "dijet_lowboost_rho_idg0p5",   "dijet_lowboost_rho_idg0p5",  VAR_DIJET_TT, ''),
-        # ("17",   "dijet_boosted_rho_idg0p5",     "dijet_boosted_rho_idg0p5",  VAR_DIJET_TT, ''),
+        ("17", "0jet_other",           "0jet_other",                 VAR_0JET_TT,      ' --ff_ss_closure --add_wt=wt_prefire'),
+        ("17", "boosted_other",        "boosted_other",              VAR_BOOSTED_TT,   ' --ff_ss_closure --add_wt=wt_prefire'),
+        ("17", "dijet_lowboost_other", "dijet_lowboost_other",       VAR_DIJET_TT,     ' --ff_ss_closure --add_wt=wt_prefire'),
+        ("17", "dijet_boosted_other",  "dijet_boosted_other",        VAR_DIJET_TT,     ' --ff_ss_closure --add_wt=wt_prefire'),
 
-        ("17", "0jet_rho_idl0p5",    "0jet_rho_idl0p5",          VAR_0JET_TT,      ' --ff_ss_closure '),
-        ("17", "boosted_rho_idl0p5", "boosted_rho_idl0p5",       VAR_BOOSTED_TT,   ' --ff_ss_closure '),
-        ("17", "dijet_rho_idl0p5",   "dijet_rho_idl0p5",         VAR_DIJETWIDE_TT, ' --ff_ss_closure '),
-        # ("17",   "dijet_lowboost_rho_idl0p5", "dijet_lowboost_rho_idl0p5",  VAR_DIJET_TT, ''),
-        # ("17",   "dijet_boosted_rho_idl0p5",   "dijet_boosted_rho_idl0p5",  VAR_DIJET_TT, ''),
+        # ("17", "0jet_rho_idg0p5",    "0jet_rho_idg0p5",          VAR_0JET_TT,      ' --ff_ss_closure --add_wt=wt_prefire'),
+        # ("17", "boosted_rho_idg0p5", "boosted_rho_idg0p5",       VAR_BOOSTED_TT,   ' --ff_ss_closure --add_wt=wt_prefire'),
+        # ("17", "dijet_rho_idg0p5",   "dijet_rho_idg0p5",         VAR_DIJETWIDE_TT, ' --ff_ss_closure --add_wt=wt_prefire'),
+        # # ("17",   "dijet_lowboost_rho_idg0p5",   "dijet_lowboost_rho_idg0p5",  VAR_DIJET_TT, ''),
+        # # ("17",   "dijet_boosted_rho_idg0p5",     "dijet_boosted_rho_idg0p5",  VAR_DIJET_TT, ''),
+
+        # ("17", "0jet_rho_idl0p5",    "0jet_rho_idl0p5",          VAR_0JET_TT,      ' --ff_ss_closure --add_wt=wt_prefire'),
+        # ("17", "boosted_rho_idl0p5", "boosted_rho_idl0p5",       VAR_BOOSTED_TT,   ' --ff_ss_closure --add_wt=wt_prefire'),
+        # ("17", "dijet_rho_idl0p5",   "dijet_rho_idl0p5",         VAR_DIJETWIDE_TT, ' --ff_ss_closure --add_wt=wt_prefire'),
+        # # ("17",   "dijet_lowboost_rho_idl0p5", "dijet_lowboost_rho_idl0p5",  VAR_DIJET_TT, ''),
+        # # ("17",   "dijet_boosted_rho_idl0p5",   "dijet_boosted_rho_idl0p5",  VAR_DIJET_TT, ''),
     ]
 
     bkg_schemes = {

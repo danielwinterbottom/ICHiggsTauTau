@@ -203,8 +203,8 @@ if options.mg_signal:
 
 if options.cp_decay:
   signal_mc += [
-  'GluGluToHToTauTau_M-125-nospinner',
-  'VBFHToTauTau_M-125-nospinner',
+  # 'GluGluToHToTauTau_M-125-nospinner',
+  # 'VBFHToTauTau_M-125-nospinner',
   'GluGluToHToTauTau_M-125-nospinner-filter',
   'VBFHToTauTau_M-125-nospinner-filter'
   ]

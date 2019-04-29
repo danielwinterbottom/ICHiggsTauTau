@@ -441,7 +441,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
          trg_tag_2_ = trg_tag_2_ && passed_extra_1;
       }
 
-      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
         // we have to do this here so that the ID is compted before the smear and scale shift
         float  preCorr_1 = elec1_1->ecalTrkEnergyPreCorr();
         float postCorr_1 = elec1_1->ecalTrkEnergyPostCorr();

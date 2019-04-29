@@ -1,4 +1,4 @@
-void Plot_weights(std::string input_file = "input.root"){
+void plot_Z_weights(std::string input_file = "input/zpt_weights/Zpt2018.root"){
 //zpt_weights_summer2016_v3.root
 //ExtrapUncert_v3.root
 TH1D *h_nom;
@@ -11,7 +11,6 @@ h->GetXaxis()->SetTitle("Mass [GeV]");
 h->GetYaxis()->SetTitle("pT [GeV]");
 h->GetZaxis()->SetTitle("weight");
 h->SetStats(0);
-gStyle->SetPalette(1, 0);
 TCanvas c1;
 h_nom = (TH1D*)h->Clone();
 h->Draw("COLZ");

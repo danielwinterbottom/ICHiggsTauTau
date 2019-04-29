@@ -200,15 +200,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
-              data_samples+=['SingleMuon'+era]
+                data_samples+=['SingleMuon'+era]
             if 'et' in chn or 'zee' in chn:
-              data_samples+=['SingleElectron'+era]
+                data_samples+=['EGamma'+era]
             if 'em' in chn:
-              data_samples+=['EGamma'+era]
+                data_samples+=['MuonEG'+era]
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
-          
-    data_samples = list(set(data_samples))
 
     DATAFILELIST="./filelists/Mar25_Data_102X"
 
@@ -294,12 +292,12 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-       'DYJetsToLL',
-       # 'DY1JetsToLL-LO',
-       # 'DY2JetsToLL-LO',
-       # 'DY3JetsToLL-LO',
-       # 'DY4JetsToLL-LO',
-       # 'DYJetsToLL-LO',
+       # 'DYJetsToLL',
+       'DY1JetsToLL-LO',
+       'DY2JetsToLL-LO',
+       'DY3JetsToLL-LO',
+       'DY4JetsToLL-LO',
+       'DYJetsToLL-LO',
        'DYJetsToLL_M-10-50-LO',
        'EWKWMinus2Jets',
        'EWKWPlus2Jets',

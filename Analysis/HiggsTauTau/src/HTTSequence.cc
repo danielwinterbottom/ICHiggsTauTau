@@ -2702,15 +2702,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
+          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          // .set_extra_hlt_probe_pt(8.)
+          // .set_extra_l1_probe_pt(5.)
+          // to measure em muon trg SF for 23 GeV leg
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(8.)
-          .set_extra_l1_probe_pt(5.)
-          // to measure em muon trg SF for 23 GeV leg
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(23.)
-          //.set_extra_l1_probe_pt(20.)
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
@@ -2815,14 +2815,14 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
-          //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          //.set_extra_l1_probe_pt(10.)
-          // to measure em electron 23 GeV leg
           .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          .set_extra_l1_probe_pt(23.)
-          .set_extra_l1_iso_probe_pt(20.)
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
+          // to measure em electron 23 GeV leg
+          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          // .set_extra_l1_probe_pt(23.)
+          // .set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {
