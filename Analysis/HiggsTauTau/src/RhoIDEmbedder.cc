@@ -189,17 +189,32 @@ namespace ic {
       outtree_->Branch("Phipi_2"              , &Phipi_2_);
 
       outtree_->Branch("FracPtDepos_dRLessThan0p008_2"              , &FracPtDepos_dRLessThan0p008_2_);
-      outtree_->Branch("FracPtDepos_dR0p008To0p04_2"              , &FracPtDepos_dR0p008To0p04_2_);
-      outtree_->Branch("FracPtDepos_dRMoreThan0p04_2"              , &FracPtDepos_dRMoreThan0p04_2_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p008_2"              , &FracPtDepos_dRMoreThan0p008_2_);
 
       outtree_->Branch("FracPtDepos_dRLessThan0p008_1"              , &FracPtDepos_dRLessThan0p008_1_);
-      outtree_->Branch("FracPtDepos_dR0p008To0p04_1"              , &FracPtDepos_dR0p008To0p04_1_);
-      outtree_->Branch("FracPtDepos_dRMoreThan0p04_1"              , &FracPtDepos_dRMoreThan0p04_1_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p008_1"              , &FracPtDepos_dRMoreThan0p008_1_);
+      
+      outtree_->Branch("Mpi0_TwoHighGammas_2"                       , &Mpi0_TwoHighGammas_2_); 
+      outtree_->Branch("Mpi0_ThreeHighGammas_2"                     , &Mpi0_ThreeHighGammas_2_); 
+      outtree_->Branch("Mpi0_FourHighGammas_2"                      , &Mpi0_FourHighGammas_2_); 
+      
+      outtree_->Branch("Mpi0_TwoHighGammas_1"                       , &Mpi0_TwoHighGammas_1_); 
+      outtree_->Branch("Mpi0_ThreeHighGammas_1"                     , &Mpi0_ThreeHighGammas_1_); 
+      outtree_->Branch("Mpi0_FourHighGammas_1"                      , &Mpi0_FourHighGammas_1_); 
+      
+      outtree_->Branch("Mrho_OneHighGammas_1"                       , &Mrho_OneHighGammas_1_);
+      outtree_->Branch("Mrho_TwoHighGammas_1"                       , &Mrho_TwoHighGammas_1_);
+      outtree_->Branch("Mrho_ThreeHighGammas_1"                     , &Mrho_ThreeHighGammas_1_);
+      outtree_->Branch("Mrho_subleadingGamma_1"                     , &Mrho_subleadingGamma_1_);
 
-    
+      outtree_->Branch("Mrho_OneHighGammas_2"                       , &Mrho_OneHighGammas_2_);
+      outtree_->Branch("Mrho_TwoHighGammas_2"                       , &Mrho_TwoHighGammas_2_);
+      outtree_->Branch("Mrho_ThreeHighGammas_2"                     , &Mrho_ThreeHighGammas_2_);
+      outtree_->Branch("Mrho_subleadingGamma_2"                     , &Mrho_subleadingGamma_2_);
     }
 
-    return 0;
+
+
     if(ProductExists("MVAreader")){
         reader_ = GetProduct<TMVA::Reader*>("MVAreader");
         std::cout << "Getting MVAreader" << std::endl;
@@ -227,6 +242,7 @@ namespace ic {
         AddToProducts("MVAreader", reader_); 
         std::cout << "Adding MVAreader" << std::endl;
      }
+    return 0;
   }
 
   int RhoIDEmbedder::Execute(TreeEvent *event) {
@@ -263,7 +279,7 @@ namespace ic {
       if (tau2->decay_mode()==1) {
 
     //---initializing some of the variables-----------
-    FracPtDepos_dRLessThan0p008_2_=-999;  FracPtDepos_dR0p008To0p04_2_=-999;   FracPtDepos_dRMoreThan0p04_2_=-999;
+    FracPtDepos_dRLessThan0p008_2_=-999; FracPtDepos_dRMoreThan0p008_2_=-999;
     //-----------------------------------------
 
 
@@ -290,8 +306,19 @@ namespace ic {
         if(gammas2.size()>=10) Egamma10_2_ = gammas2[9]->energy();
         if(gammas2.size()>=11) Egamma11_2_ = gammas2[10]->energy();
         if(gammas2.size()>=12) Egamma12_2_ = gammas2[11]->energy();
-        //-----------
-
+        //--------Mpi0---
+        Mpi0_TwoHighGammas_2_=-1; Mpi0_ThreeHighGammas_2_=-1; Mpi0_FourHighGammas_2_=-1;
+        if(gammas2.size()>=2) Mpi0_TwoHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector()).M();
+        if(gammas2.size()>=3) Mpi0_ThreeHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector()).M();
+        if(gammas2.size()>=4) Mpi0_FourHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() + gammas2[3]->vector()).M();
+        //--------Mrho------
+        Mrho_OneHighGammas_2_=-1; Mrho_TwoHighGammas_2_=-1; Mrho_ThreeHighGammas_2_=-1; Mrho_subleadingGamma_2_=-1;
+        if(gammas2.size()>=1) Mrho_OneHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() ).M();
+        if(gammas2.size()>=2) Mrho_TwoHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector()  ).M();
+        if(gammas2.size()>=3) Mrho_ThreeHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() ).M();
+        if(gammas2.size()>=2) Mrho_subleadingGamma_2_= (pi_2->vector() + gammas2[1]->vector()).M();
+        //------------
+        
         E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
         Ngammas_2_=-999; phi_2_=-999;
 
@@ -427,26 +454,22 @@ namespace ic {
 
 
      //------------------EnergyFraction-------------------- 
-        FracPtDepos_dRLessThan0p008_2_=0;  FracPtDepos_dR0p008To0p04_2_=0;   FracPtDepos_dRMoreThan0p04_2_=0;
+        FracPtDepos_dRLessThan0p008_2_=0;  FracPtDepos_dRMoreThan0p008_2_=0;
         
         if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.008 )
           FracPtDepos_dRLessThan0p008_2_+=pi_2->pt()/tau2->pt();
         
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.04)
-          FracPtDepos_dR0p008To0p04_2_+=pi_2->pt()/tau2->pt();
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) >= 0.008 )
+          FracPtDepos_dRMoreThan0p008_2_+=pi_2->pt()/tau2->pt();
         
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.04)
-          FracPtDepos_dRMoreThan0p04_2_+=pi_2->pt()/tau2->pt();
                 
         for (auto g: gammas2){
           if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.008)
             FracPtDepos_dRLessThan0p008_2_+=g->pt()/tau2->pt();
 
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.04)
-            FracPtDepos_dR0p008To0p04_2_+=g->pt()/tau2->pt();
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) >= 0.008 )
+            FracPtDepos_dRMoreThan0p008_2_+=g->pt()/tau2->pt();
 
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.04)
-            FracPtDepos_dRMoreThan0p04_2_+=g->pt()/tau2->pt();
         }
         
         
@@ -487,7 +510,7 @@ namespace ic {
       if(tau1->decay_mode()==1) {
         
     //---initializing some of the variables-----------        
-    FracPtDepos_dRLessThan0p008_1_=-999;  FracPtDepos_dR0p008To0p04_1_=-999;   FracPtDepos_dRMoreThan0p04_1_=-999;
+    FracPtDepos_dRLessThan0p008_1_=-999; FracPtDepos_dRMoreThan0p008_1_=-999;
     //-------------------------    
         
         gammas1 = GetTauGammas(tau1, pfcands);
@@ -514,7 +537,17 @@ namespace ic {
         if(gammas1.size()>=11) Egamma11_1_ = gammas1[10]->energy();
         if(gammas1.size()>=12) Egamma12_1_ = gammas1[11]->energy();
         //--------------------
-
+        Mpi0_TwoHighGammas_1_=-1; Mpi0_ThreeHighGammas_1_=-1; Mpi0_FourHighGammas_1_=-1;
+        if(gammas1.size()>=2) Mpi0_TwoHighGammas_1_= (gammas1[0]->vector() + gammas1[1]->vector()).M();
+        if(gammas1.size()>=3) Mpi0_ThreeHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector()).M();
+        if(gammas1.size()>=4) Mpi0_FourHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() + gammas1[3]->vector()).M();
+        //-----------
+        Mrho_OneHighGammas_1_=-1; Mrho_TwoHighGammas_1_=-1; Mrho_ThreeHighGammas_1_=-1; Mrho_subleadingGamma_1_=-1;
+        if(gammas1.size()>=1) Mrho_OneHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() ).M();
+        if(gammas1.size()>=2) Mrho_TwoHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector()  ).M();
+        if(gammas1.size()>=3) Mrho_ThreeHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() ).M();
+        if(gammas1.size()>=2) Mrho_subleadingGamma_1_= (pi_1->vector() + gammas1[1]->vector()).M();
+        //------------
         E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
         Ngammas_1_=-999; phi_1_=-999;
 
@@ -659,26 +692,22 @@ namespace ic {
 
 
      //------------------EnergyFraction-------------------- 
-        FracPtDepos_dRLessThan0p008_1_=0;  FracPtDepos_dR0p008To0p04_1_=0;   FracPtDepos_dRMoreThan0p04_1_=0;
+        FracPtDepos_dRLessThan0p008_1_=0; FracPtDepos_dRMoreThan0p008_1_=0;
         
         if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.008 )
           FracPtDepos_dRLessThan0p008_1_+=pi_1->pt()/tau1->pt();
         
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.04)
-          FracPtDepos_dR0p008To0p04_1_+=pi_1->pt()/tau1->pt();
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) >= 0.008 )
+          FracPtDepos_dRMoreThan0p008_1_+=pi_1->pt()/tau1->pt();
         
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.04)
-          FracPtDepos_dRMoreThan0p04_1_+=pi_1->pt()/tau1->pt();
                 
         for (auto g: gammas1){
           if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
             FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
 
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.04)
-            FracPtDepos_dR0p008To0p04_1_+=g->pt()/tau1->pt();
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) >= 0.008 )
+            FracPtDepos_dRMoreThan0p008_1_+=g->pt()/tau1->pt();
 
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.04)
-            FracPtDepos_dRMoreThan0p04_1_+=g->pt()/tau1->pt();
         }
 
 
@@ -687,7 +716,7 @@ namespace ic {
         std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
         // variables for leading tau
-      }
+      
 
         Ngammas_1_     = gammas1.size();       
         Egamma1_1_     = Egamma1_1_;///Etau_1_;  

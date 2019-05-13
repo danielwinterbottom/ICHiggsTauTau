@@ -203,12 +203,27 @@ class RhoIDEmbedder : public ModuleBase {
   double DeltaR2WRTpi0_2_;  
 
   double FracPtDepos_dRLessThan0p008_2_;
-  double FracPtDepos_dR0p008To0p04_2_; 
-  double FracPtDepos_dRMoreThan0p04_2_;
+  double FracPtDepos_dRMoreThan0p008_2_;
   double FracPtDepos_dRLessThan0p008_1_;
-  double FracPtDepos_dR0p008To0p04_1_;
-  double FracPtDepos_dRMoreThan0p04_1_;
+  double FracPtDepos_dRMoreThan0p008_1_;
 
+  double Mpi0_TwoHighGammas_2_;
+  double Mpi0_ThreeHighGammas_2_;
+  double Mpi0_FourHighGammas_2_;
+
+  double Mpi0_TwoHighGammas_1_;
+  double Mpi0_ThreeHighGammas_1_;
+  double Mpi0_FourHighGammas_1_;
+
+  double Mrho_OneHighGammas_1_;
+  double Mrho_TwoHighGammas_1_;
+  double Mrho_ThreeHighGammas_1_;
+  double Mrho_subleadingGamma_1_;
+
+  double Mrho_OneHighGammas_2_;
+  double Mrho_TwoHighGammas_2_;
+  double Mrho_ThreeHighGammas_2_; 
+  double Mrho_subleadingGamma_2_;
 
   //temp variables
   double CenterEta_1;
