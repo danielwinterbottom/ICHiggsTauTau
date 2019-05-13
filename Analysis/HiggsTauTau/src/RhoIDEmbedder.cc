@@ -205,10 +205,12 @@ namespace ic {
       outtree_->Branch("Mrho_OneHighGammas_1"                       , &Mrho_OneHighGammas_1_);
       outtree_->Branch("Mrho_TwoHighGammas_1"                       , &Mrho_TwoHighGammas_1_);
       outtree_->Branch("Mrho_ThreeHighGammas_1"                     , &Mrho_ThreeHighGammas_1_);
-      
+      outtree_->Branch("Mrho_subleadingGamma_1"                     , &Mrho_subleadingGamma_1_);
+
       outtree_->Branch("Mrho_OneHighGammas_2"                       , &Mrho_OneHighGammas_2_);
       outtree_->Branch("Mrho_TwoHighGammas_2"                       , &Mrho_TwoHighGammas_2_);
       outtree_->Branch("Mrho_ThreeHighGammas_2"                     , &Mrho_ThreeHighGammas_2_);
+      outtree_->Branch("Mrho_subleadingGamma_2"                     , &Mrho_subleadingGamma_2_);
     }
 
 
@@ -304,17 +306,19 @@ namespace ic {
         if(gammas2.size()>=10) Egamma10_2_ = gammas2[9]->energy();
         if(gammas2.size()>=11) Egamma11_2_ = gammas2[10]->energy();
         if(gammas2.size()>=12) Egamma12_2_ = gammas2[11]->energy();
-        //-----------
+        //--------Mpi0---
         Mpi0_TwoHighGammas_2_=-1; Mpi0_ThreeHighGammas_2_=-1; Mpi0_FourHighGammas_2_=-1;
         if(gammas2.size()>=2) Mpi0_TwoHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector()).M();
         if(gammas2.size()>=3) Mpi0_ThreeHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector()).M();
         if(gammas2.size()>=4) Mpi0_FourHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() + gammas2[3]->vector()).M();
-        //----------
-        Mrho_OneHighGammas_2_=-1; Mrho_TwoHighGammas_2_=-1; Mrho_ThreeHighGammas_2_=-1;
+        //--------Mrho------
+        Mrho_OneHighGammas_2_=-1; Mrho_TwoHighGammas_2_=-1; Mrho_ThreeHighGammas_2_=-1; Mrho_subleadingGamma_2_=-1;
         if(gammas2.size()>=1) Mrho_OneHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() ).M();
         if(gammas2.size()>=2) Mrho_TwoHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector()  ).M();
         if(gammas2.size()>=3) Mrho_ThreeHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() ).M();
+        if(gammas2.size()>=2) Mrho_subleadingGamma_2_= (pi_2->vector() + gammas2[1]->vector()).M();
         //------------
+        
         E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
         Ngammas_2_=-999; phi_2_=-999;
 
@@ -538,10 +542,11 @@ namespace ic {
         if(gammas1.size()>=3) Mpi0_ThreeHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector()).M();
         if(gammas1.size()>=4) Mpi0_FourHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() + gammas1[3]->vector()).M();
         //-----------
-        Mrho_OneHighGammas_1_=-1; Mrho_TwoHighGammas_1_=-1; Mrho_ThreeHighGammas_1_=-1;
+        Mrho_OneHighGammas_1_=-1; Mrho_TwoHighGammas_1_=-1; Mrho_ThreeHighGammas_1_=-1; Mrho_subleadingGamma_1_=-1;
         if(gammas1.size()>=1) Mrho_OneHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() ).M();
         if(gammas1.size()>=2) Mrho_TwoHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector()  ).M();
         if(gammas1.size()>=3) Mrho_ThreeHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() ).M();
+        if(gammas1.size()>=2) Mrho_subleadingGamma_1_= (pi_1->vector() + gammas1[1]->vector()).M();
         //------------
         E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
         Ngammas_1_=-999; phi_1_=-999;
