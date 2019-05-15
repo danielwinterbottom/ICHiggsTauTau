@@ -135,6 +135,10 @@
     "xs": 3.045966,
     "evt": 214096.0
   },
+  "GluGluToHToTauTau_M-125-nospinner": {
+    "xs": 3.045966,
+    "evt": 4942600.0
+  },
   "T-t": {
     "xs": 136.02,
     "evt": 67080603.0
@@ -190,6 +194,10 @@
   "VBFHiggs0PM_M-125": {
     "xs": 0.2371314,
     "evt": 998600.0
+  },
+  "VBFHToTauTau_M-125-nospinner": {
+    "xs": 0.2371314,
+    "evt": 4781840.0
   },
   "VVTo2L2Nu": {
     "xs": 11.95,

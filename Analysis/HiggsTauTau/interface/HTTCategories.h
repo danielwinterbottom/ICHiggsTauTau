@@ -245,7 +245,7 @@ class HTTCategories : public ModuleBase {
   double z_1_;
   double z_2_;
   float m_1_;
-  branch_var m_2_;
+  float m_2_;
   branch_var mva_1_;
   branch_var mva_2_;
   branch_var pfmet_;
@@ -482,10 +482,38 @@ class HTTCategories : public ModuleBase {
   double gen_sjdphi_;
   double gen_m_;
   double gen_pt_;
+  int tauFlag_1_;
+  int tauFlag_2_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
   double subleading_lepton_match_DR_;*/
+
+  double aco_angle_;
+  double aco_angle_mod_;
+  int cp_channel_;
+  int cp_sign_;
+
+  double wt_cp_sm_;
+  double wt_cp_ps_;
+  double wt_cp_mm_;
+
+  double rho_id_1_;
+  double rho_id_2_;
+  
+  double pi0_E_1_res_;
+  double pi0_E_2_res_;
+  double pi0_eta_1_res_;
+  double pi0_eta_2_res_;
+  double pi0_phi_1_res_;
+  double pi0_phi_2_res_;
+
+  double pi_E_1_res_;
+  double pi_E_2_res_;
+  double pi_eta_1_res_;
+  double pi_eta_2_res_;
+  double pi_phi_1_res_;
+  double pi_phi_2_res_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
@@ -1392,6 +1420,71 @@ class HTTCategories : public ModuleBase {
   double wt_prefire_;
   double wt_prefire_up_;
   double wt_prefire_down_;
+
+  // NN tau Ids
+  double dpfTauV0_iso_1_;
+  double dpfTauV0_iso_2_;
+  double dpfTauV1_iso_1_;
+  double dpfTauV1_iso_2_;
+  double deepTauVsJets_iso_1_;
+  double deepTauVsJets_iso_2_;
+  double deepTauVsEle_iso_1_;
+  double deepTauVsEle_iso_2_;
+
+  bool dpfTauV0_tight_1_;
+  bool dpfTauV0_tight_2_;
+  bool dpfTauV1_tight_1_;
+  bool dpfTauV1_tight_2_;
+
+  bool deepTauVsJets_vvvloose_1_;
+  bool deepTauVsJets_vvvloose_2_;
+  bool deepTauVsJets_vvloose_1_;
+  bool deepTauVsJets_vvloose_2_;
+  bool deepTauVsJets_vloose_1_;
+  bool deepTauVsJets_vloose_2_;
+  bool deepTauVsJets_loose_1_;
+  bool deepTauVsJets_loose_2_;
+  bool deepTauVsJets_medium_1_;
+  bool deepTauVsJets_medium_2_;
+  bool deepTauVsJets_tight_1_;
+  bool deepTauVsJets_tight_2_;
+  bool deepTauVsJets_vtight_1_;
+  bool deepTauVsJets_vtight_2_;
+  bool deepTauVsJets_vvtight_1_;
+  bool deepTauVsJets_vvtight_2_;
+
+  bool deepTauVsEle_vvvloose_1_;
+  bool deepTauVsEle_vvvloose_2_;
+  bool deepTauVsEle_vvloose_1_;
+  bool deepTauVsEle_vvloose_2_;
+  bool deepTauVsEle_vloose_1_;
+  bool deepTauVsEle_vloose_2_;
+  bool deepTauVsEle_loose_1_;
+  bool deepTauVsEle_loose_2_;
+  bool deepTauVsEle_medium_1_;
+  bool deepTauVsEle_medium_2_;
+  bool deepTauVsEle_tight_1_;
+  bool deepTauVsEle_tight_2_;
+  bool deepTauVsEle_vtight_1_;
+  bool deepTauVsEle_vtight_2_;
+  bool deepTauVsEle_vvtight_1_;
+  bool deepTauVsEle_vvtight_2_;
+  //
+
+  double primary_vtx_x_;
+  double primary_vtx_y_;
+  double primary_vtx_z_;
+  double gen_pvx_;
+  double gen_pvy_;
+  double gen_pvz_;
+
+  double tau_svx_1_;
+  double tau_svy_1_;
+  double tau_svz_1_;
+  double tau_svx_2_;
+  double tau_svy_2_;
+  double tau_svz_2_;
+
 
  public:
   HTTCategories(std::string const& name);

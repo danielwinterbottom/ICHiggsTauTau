@@ -43,6 +43,9 @@ class HTTGenAnalysis : public ModuleBase {
   TRandom3  *rand;
   
   unsigned long long event_;
+
+  unsigned n_rho_;
+  unsigned n_tot_;
   
   unsigned count_ee_;
   unsigned count_em_;
@@ -88,6 +91,9 @@ class HTTGenAnalysis : public ModuleBase {
   double wtzpt_;
   double mass_;
   double wt_;
+  double wt_cp_sm_;
+  double wt_cp_ps_;
+  double wt_cp_mm_;
   double HiggsPt_;
   std::string decayType;
   double wt_ggh_pt_           ;
@@ -303,6 +309,58 @@ class HTTGenAnalysis : public ModuleBase {
   double ip_dy_res_2_;
   double ip_dz_res_1_;
   double ip_dz_res_2_;
+
+  double Ediff_1_;
+  double Ediff_2_;
+  double Pfrac_1_; 
+  double Pfrac_2_;
+
+  double rand_from_histPi0E_1;
+  double rand_from_histPi0Eta_1;
+  double rand_from_histPi0Phi_1;
+  double rand_from_histPi0E_2;
+  double rand_from_histPi0Eta_2;
+  double rand_from_histPi0Phi_2;
+  double aco_angle_1_Pi0ESmeared_;
+  double aco_angle_1_Pi0EtaSmeared_;
+  double aco_angle_1_Pi0PhiSmeared_;
+  double aco_angle_2_Pi0ESmeared_;
+  double aco_angle_2_Pi0EtaSmeared_;
+  double aco_angle_2_Pi0PhiSmeared_;
+
+  double rand_from_histPiE_1;
+  double rand_from_histPiEta_1;
+  double rand_from_histPiPhi_1;
+  double rand_from_histPiE_2;
+  double rand_from_histPiEta_2;
+  double rand_from_histPiPhi_2;
+  double aco_angle_1_PiESmeared_;
+  double aco_angle_1_PiEtaSmeared_;
+  double aco_angle_1_PiPhiSmeared_;
+  double aco_angle_2_PiESmeared_;
+  double aco_angle_2_PiEtaSmeared_;
+  double aco_angle_2_PiPhiSmeared_;
+
+  double aco_angle_1_FullSmeared_;
+  double aco_angle_2_FullSmeared_;
+
+  double cp_sign_1_Pi0ESmeared_;
+
+  double pi0_E_1_;
+  double pi0_E_2_;
+  double pi_E_1_;
+  double pi_E_2_;
+  double pi0_ESmeared_1_;
+  double pi0_ESmeared_2_;
+  double pi_ESmeared_1_;
+  double pi_ESmeared_2_;
+
+  double reco_pvx_;
+  double reco_pvy_;
+  double reco_pvz_;
+  double gen_pvx_;
+  double gen_pvy_;
+  double gen_pvz_;
   
  public:
   HTTGenAnalysis(std::string const& name);

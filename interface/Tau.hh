@@ -57,6 +57,18 @@ class Tau : public Candidate {
 
   inline float const& lead_dz_vertex_error() const { return lead_dz_vertex_error_; }
 
+  /// Transverse momentum of the leading charged PF constituent
+  inline float const& lead_pt() const { return lead_pt_; }
+
+  /// Eta of the leading charged PF constituent
+  inline float const& lead_eta() const { return lead_eta_; }
+
+  /// Phi of the leading charged PF constituent
+  inline float const& lead_phi() const { return lead_phi_; }
+
+  /// Energy of the leading charged PF constituent
+  inline float const& lead_energy() const { return lead_energy_; }
+
   /// The x-coordinate of the leading track PCA
   inline double vx() const { return ref_point_.x(); }
 
@@ -65,6 +77,15 @@ class Tau : public Candidate {
 
   /// The z-coordinate of the leading track PCA
   inline double vz() const { return ref_point_.z(); }
+
+  /// The x-coordinate of the leading track PCA
+  inline double svx() const { return s_ref_point_.x(); }
+  
+  /// The y-coordinate of the leading track PCA
+  inline double svy() const { return s_ref_point_.y(); }
+  
+  /// The z-coordinate of the leading track PCA
+  inline double svz() const { return s_ref_point_.z(); }
 
   /// A vector referring to the constituent track ic::Track::id()
   inline std::vector<std::size_t> const& constituent_tracks() const {
@@ -89,6 +110,11 @@ class Tau : public Candidate {
   /// A vector referring to the isolation PFCandidates
   inline std::vector<std::size_t> const& iso_gamma_cands() const {
     return iso_gamma_cands_;
+  }
+
+  /// A vector referring to the signal neutral PFCandidates
+  inline std::vector<std::size_t> const& sig_neutral_cands() const {
+    return sig_neutral_cands_;
   }
   /**@}*/
 
@@ -136,6 +162,17 @@ class Tau : public Candidate {
   inline void set_lead_dz_vertex_error(float const& lead_dz_vertex_error) {
     lead_dz_vertex_error_ = lead_dz_vertex_error;
   }
+  /// @copybrief lead_pt()
+  inline void set_lead_pt(float const& lead_pt) { lead_pt_ = lead_pt; }
+
+  /// @copybrief lead_energy()
+  inline void set_lead_energy(float const& lead_energy) { lead_energy_ = lead_energy; }
+
+  /// @copybrief lead_eta()
+  inline void set_lead_eta(float const& lead_eta) { lead_eta_ = lead_eta; }
+
+  /// @copybrief lead_phi()
+  inline void set_lead_phi(float const& lead_phi) { lead_phi_ = lead_phi; }
 
   /// @copybrief vx()
   inline void set_vx(double const& x) { ref_point_.SetX(x); }
@@ -145,6 +182,15 @@ class Tau : public Candidate {
 
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+
+  /// @copybrief svx()
+  inline void set_svx(double const& x) { s_ref_point_.SetX(x); }
+
+   /// @copybrief svy()
+  inline void set_svy(double const& y) { s_ref_point_.SetY(y); }
+  
+  /// @copybrief svz()
+  inline void set_svz(double const& z) { s_ref_point_.SetZ(z); }
 
   /// @copybrief constituent_tracks()
   inline void set_constituent_tracks(
@@ -174,6 +220,11 @@ class Tau : public Candidate {
   inline void set_iso_gamma_cands(
       std::vector<std::size_t> const& iso_gamma_cands) {
     iso_gamma_cands_ = iso_gamma_cands;
+  }
+
+  inline void set_sig_neutral_cands(
+      std::vector<std::size_t> const& sig_neutral_cands) {
+    sig_neutral_cands_ = sig_neutral_cands;
   }
   /**@}*/
 
@@ -216,13 +267,20 @@ class Tau : public Candidate {
   float lead_dxy_vertex_error_;
   float lead_dz_vertex_error_;
 
+  float lead_pt_;
+  float lead_eta_;
+  float lead_phi_;
+  float lead_energy_;
+
   Point ref_point_;
+  Point s_ref_point_;
 
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;
   std::vector<std::size_t> iso_charged_cands_;
   std::vector<std::size_t> sig_gamma_cands_;
   std::vector<std::size_t> iso_gamma_cands_;
+  std::vector<std::size_t> sig_neutral_cands_;
 
  #ifndef SKIP_CINT_DICT
  public:

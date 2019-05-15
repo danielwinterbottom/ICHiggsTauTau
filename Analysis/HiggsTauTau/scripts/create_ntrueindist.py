@@ -13,15 +13,17 @@ def load_files(filelist):
          
     return file_names
 
-# files = load_files("scripts/files_2017_v3.txt")
-files = load_files("scripts/jhu_mc_2017.txt")
+files = load_files("scripts/new_files_2017.txt")
+# files = load_files("scripts/files_2018.txt")
+# files = load_files("scripts/jhu_mc_2017.txt")
 
-channels = ["tt","mt","et","em"]
+channels = ["mt"]
 for file_ in files:
     for path in glob.glob(sys.argv[1]):
         print path
         # hist = ROOT.TH1D("pileup_{}".format(file_), ";PileUp_nTrueInt", 200, 0., 200.)
-        hist = ROOT.TH1D("pileup", ";PileUp_nTrueInt", 200, 0., 200.)
+        hist = ROOT.TH1D("pileup", ";PileUp_nTrueInt", 200, 0., 200.) # for 2017
+        # hist = ROOT.TH1D("pileup", ";PileUp_nTrueInt", 100, 0., 100.) # for 2018
         chain = ROOT.TChain("gen_ntuple")
         for channel in channels:
             chain.AddFile("{}/{}_{}_2017.root".format(path,file_,channel))
@@ -35,7 +37,7 @@ for file_ in files:
         if not os.path.exists(os.path.join(path, "pileupDistribution")):
             os.makedirs(os.path.join(path, "pileupDistribution"))
         new_file = ROOT.TFile.Open(os.path.join(path, "pileupDistribution/pileup_2017_{}.root".format(file_)), "RECREATE")
-
+    
         # if not os.path.exists(os.path.join(path, "pileupDistribution_forHTT")):
         #     os.makedirs(os.path.join(path, "pileupDistribution_forHTT"))
         # new_file = ROOT.TFile.Open(os.path.join(path, "pileupDistribution_forHTT/pileup_2017_{}.root".format(file_)), "RECREATE")

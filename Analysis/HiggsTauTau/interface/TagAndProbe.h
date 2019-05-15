@@ -318,7 +318,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -371,7 +371,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       pass_dimu_ =false;
 
       std::vector<TriggerObject *> objs_dz = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZ");
-      if(strategy_ == strategy::cpsummer17){ 
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){ 
         std::vector<TriggerObject *> objs_dzmass = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8DZmass8");
         bool leg_1_pass = IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first || IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).first;
         if(leg_1_pass) leg_1_pass = leg_1_pass && (objs_dzmass[IsFilterMatchedWithIndex(ditau->At(0), objs_dzmass, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17 || objs_dz[IsFilterMatchedWithIndex(ditau->At(0), objs_dz, "hltDiMuon178RelTrkIsoFiltered0p4", 0.5).second]->pt()>17);
@@ -402,10 +402,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
-      if(strategy_ == strategy::cpsummer17) {
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
       } else {
@@ -441,7 +441,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
          trg_tag_2_ = trg_tag_2_ && passed_extra_1;
       }
 
-      if(strategy_ == strategy::cpsummer17){
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         // we have to do this here so that the ID is compted before the smear and scale shift
         float  preCorr_1 = elec1_1->ecalTrkEnergyPreCorr();
         float postCorr_1 = elec1_1->ecalTrkEnergyPostCorr();
@@ -479,7 +479,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       bool found_match_tag_1 = false;
       bool found_match_tag_2 = false;
       int isocut=1;
-      if(strategy_ == strategy::cpsummer17) isocut=3;
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) isocut=3;
    
       for(unsigned eg=0; eg<l1electrons.size(); ++eg){
         if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()>=isocut){
@@ -495,7 +495,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(channel_ == channel::tpmt){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon = dynamic_cast<T>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -504,7 +504,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_probe_1_ = 0;
       id_probe_2_ = tau->GetTauID("decayModeFinding");
       pass_antilep_ = tau->GetTauID("againstMuonTight3") && tau->GetTauID("againstElectronVLooseMVA6");
-      if( strategy_ == strategy::cpsummer17) {
+      if( strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
         iso_vloose_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
         iso_loose_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
         iso_medium_ = tau->GetTauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017");
@@ -523,8 +523,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
       bool found_match_probe = false;
       for(unsigned ta=0; ta<l1taus.size(); ++ta){
-        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0 && fabs(l1taus[ta]->eta())<2.17){
-        //if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && fabs(l1taus[ta]->eta())<2.17){
+        //if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && l1taus[ta]->isolation()>0 && fabs(l1taus[ta]->eta())<2.17){
+        if(l1taus[ta]->vector().Pt()>extra_l1_probe_pt_ && fabs(l1taus[ta]->eta())<2.17){ // this for non isolated taus
           // must pass L1 pT cut and be matched by DR to the tau
           if(DR(l1taus[ta],lep2)<0.5) found_match_probe = true;
         }
@@ -557,7 +557,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   if(channel_ == channel::tpem){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);
