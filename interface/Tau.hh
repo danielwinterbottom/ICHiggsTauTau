@@ -53,6 +53,10 @@ class Tau : public Candidate {
   /// with the primary vertex
   inline float const& lead_dz_vertex() const { return lead_dz_vertex_; }
 
+  inline float const& lead_dxy_vertex_error() const { return lead_dxy_vertex_error_; }
+
+  inline float const& lead_dz_vertex_error() const { return lead_dz_vertex_error_; }
+
   /// The x-coordinate of the leading track PCA
   inline double vx() const { return ref_point_.x(); }
 
@@ -121,6 +125,16 @@ class Tau : public Candidate {
   /// @copybrief lead_dz_vertex()
   inline void set_lead_dz_vertex(float const& lead_dz_vertex) {
     lead_dz_vertex_ = lead_dz_vertex;
+  }
+
+  /// @copybrief lead_dxy_vertex()
+  inline void set_lead_dxy_vertex_error(float const& lead_dxy_vertex_error) {
+    lead_dxy_vertex_error_ = lead_dxy_vertex_error;
+  }
+
+  /// @copybrief lead_dz_vertex()
+  inline void set_lead_dz_vertex_error(float const& lead_dz_vertex_error) {
+    lead_dz_vertex_error_ = lead_dz_vertex_error;
   }
 
   /// @copybrief vx()
@@ -199,6 +213,8 @@ class Tau : public Candidate {
   float lead_p_;
   float lead_dxy_vertex_;
   float lead_dz_vertex_;
+  float lead_dxy_vertex_error_;
+  float lead_dz_vertex_error_;
 
   Point ref_point_;
 
@@ -210,7 +226,7 @@ class Tau : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Tau, 3);
+  ClassDef(Tau, 4);
  #endif
 };
 
