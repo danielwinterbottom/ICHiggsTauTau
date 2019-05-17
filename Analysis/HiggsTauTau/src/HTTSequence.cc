@@ -61,6 +61,7 @@
 #include "HiggsTauTau/interface/HTTSmearScale.h"
 #include "HiggsTauTau/interface/HTTPreFireWeight.h"
 #include "HiggsTauTau/interface/RhoIDEmbedder.h"
+#include "HiggsTauTau/interface/MVADMEmbedder.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -2614,8 +2615,14 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 if (strategy_type == strategy::cpdecays16) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
+      .set_maketrees(true)
+      .set_channel(channel));
+
+  BuildModule(MVADMEmbedder("MVADMEmbedder")
+      .set_fs(fs.get())
       .set_channel(channel));
 }
+do_sm_scale_wts = true; // set this to false after!
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -2647,7 +2654,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_qcd_scale_wts(do_qcd_scale_wts_)
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
-    .set_do_sm_scale_wts(do_sm_scale_wts)
+    .set_do_sm_scale_wts(do_sm_scale_wts) 
     .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_jes_vars(do_jes_vars)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())

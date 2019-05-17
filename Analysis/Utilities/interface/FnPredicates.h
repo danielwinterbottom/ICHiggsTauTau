@@ -186,12 +186,45 @@ namespace ic {
     else IP.SetXYZ(-999, -999, -999); 
      return IP;
   }
+
+  template<class T>
+  std::vector<T> SortA1Products (std::vector<T> const& a1) {
+    std::vector<T> sorted_a1;
+    if(a1.size()==3){
+      double q1 = a1[0]->charge();
+      double q2 = a1[1]->charge();
+      double q3 = a1[2]->charge();
+      double mass1, mass2;
+      double rho_mass = 0.77526;
+      if(q1!=q2 && q1!=q3){
+         sorted_a1.push_back(a1[0]);
+         mass1 = std::fabs((a1[0]->vector()+a1[1]->vector()).M() - rho_mass);
+         mass2 = std::fabs((a1[0]->vector()+a1[2]->vector()).M() - rho_mass);
+         if(mass1<mass2) {sorted_a1.push_back(a1[1]); sorted_a1.push_back(a1[1]);}
+         else {sorted_a1.push_back(a1[2]); sorted_a1.push_back(a1[1]);}
+      }
+      else if(q2!=q1 && q2!=q3){
+        sorted_a1.push_back(a1[1]); 
+        mass1 = std::fabs((a1[1]->vector()+a1[0]->vector()).M() - rho_mass);
+        mass2 = std::fabs((a1[1]->vector()+a1[2]->vector()).M() - rho_mass);
+        if(mass1<mass2){ sorted_a1.push_back(a1[0]); sorted_a1.push_back(a1[2]);}
+        else{ sorted_a1.push_back(a1[2]); sorted_a1.push_back(a1[0]);}
+      }
+      else{
+        sorted_a1.push_back(a1[2]);
+        mass1 = std::fabs((a1[2]->vector()+a1[0]->vector()).M() - rho_mass);
+        mass2 = std::fabs((a1[2]->vector()+a1[1]->vector()).M() - rho_mass);
+        if(mass1<mass2) { sorted_a1.push_back(a1[0]); sorted_a1.push_back(a1[1]);}
+        else {sorted_a1.push_back(a1[1]); sorted_a1.push_back(a1[0]);}
+      } 
+    } 
+    return sorted_a1;
+  }
   
   template<class T, class U>
-  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2, bool mod_angle) {
+  double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
     // get boost vector to boost to COM frame
     if (p1.size()!=2 && p2.size()!=2) return -9999;
-    double cp_sign = YRho(p1,TVector3())*YRho(p2,TVector3());
  
     TLorentzVector ltotal(0,0,0,0);
     for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
@@ -206,14 +239,42 @@ namespace ic {
     double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
     int sign = plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector()))/fabs(plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector())));
     if (sign<0) angle = 2*M_PI - angle;
-    if(mod_angle) {
-      if (cp_sign<0) {
-          if (angle<M_PI) angle = angle+M_PI;
-          else            angle = angle-M_PI;
-      } 
-    }
     // boost back to origional frame
     for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);    
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
+    return angle;
+  }
+  
+  template<class T, class U>
+  double AcoplanarityAngle2(std::vector<T> const& p1, std::vector<U> const& p2) {
+    // get boost vector to boost to COM frame
+    if (p1.size()!=2 && p2.size()!=2) return -9999;
+
+    TLorentzVector ltotal(0,0,0,0);
+    for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
+    for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
+    TVector3 boost = ltotal.BoostVector();
+    // boost to rest frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],-boost);
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],-boost);
+
+    //p3, p4 = rhos/a1s p1,p2 = charged prong
+    TLorentzVector lp1 = ConvertToLorentz(p1[0]->vector());
+    TLorentzVector lp2 = ConvertToLorentz(p2[0]->vector());
+    TLorentzVector lp3 = ConvertToLorentz(p1[0]->vector() + p1[1]->vector());
+    TLorentzVector lp4 = ConvertToLorentz(p2[0]->vector() + p2[1]->vector());
+
+    TVector3 n1 = lp1.Vect() - lp1.Vect().Dot(lp3.Vect().Unit())*lp3.Vect().Unit();
+    TVector3 n2 = lp2.Vect() - lp2.Vect().Dot(lp4.Vect().Unit())*lp4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+    double angle = acos(n1.Dot(n2));
+    double sign = lp2.Vect().Unit().Dot(n1.Cross(n2));
+    if(sign<0) angle = 2*M_PI - angle;
+
+    // boost back to origional frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);
     for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
     return angle;
   }
@@ -286,7 +347,7 @@ namespace ic {
     double E_pi = p[0]->vector().E();
     double E_pi0 = p[1]->vector().E();
     double y = (E_pi-E_pi0)/(E_pi+E_pi0);
-    double y_sign = y/fabs(y);
+    double y_sign = y;///fabs(y);
     // boost back to origional frame
     for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],boost);
     return y_sign;
@@ -302,7 +363,7 @@ namespace ic {
     double Mpi = 139.57061/1000; 
     double Mrho = p[0]->vector().M();
     double y = (E_rho-E_pi)/(E_rho+E_pi) - (Ma*Ma - Mpi*Mpi + Mrho*Mrho)/(2*Ma*Ma);
-    double y_sign = y/fabs(y);
+    double y_sign = y;///fabs(y);
     // boost back to origional frame
     for(unsigned i=0; i<p.size(); ++i) BoostVec(p[i],boost);
     return y_sign;
@@ -589,7 +650,8 @@ namespace ic {
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
-  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands); 
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands); 
   std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
 
   double boundPhi(double dphi);

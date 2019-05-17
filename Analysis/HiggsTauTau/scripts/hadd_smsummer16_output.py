@@ -197,6 +197,7 @@ sample_list = [
    'VBFHToTauTau_M-125',
    'VBFHToTauTau_M-125-nospinner',
    'VBFHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter-ext',
    'VBFHToTauTau_M-130',
    'VBFHToTauTau_M-140',
    'VBFHToTauTau_amcNLO_M-125',

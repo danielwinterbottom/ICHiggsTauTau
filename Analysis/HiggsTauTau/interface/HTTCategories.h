@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "TRandom3.h"
 
 #include <string>
 
@@ -54,6 +55,8 @@ class HTTCategories : public ModuleBase {
   TTree *outtree_;
   TTree *synctree_;
   TFile *lOFile;
+
+  TRandom3  *rand;
 
   struct branch_var {
       double var_double;  
@@ -492,7 +495,23 @@ class HTTCategories : public ModuleBase {
   double aco_angle_;
   double aco_angle_mod_;
   int cp_channel_;
-  int cp_sign_;
+  double cp_sign_;
+
+  double aco_angle_1_;
+  double aco_angle_2_;
+  double aco_angle_3_;
+  double aco_angle_4_;
+  double mass1_, mass2_;
+  double y_1_1_;
+  double y_1_2_;
+  double y_2_2_;
+  double y_3_2_;
+  double y_4_2_;
+  double rand_;
+  double cp_sign_1_;
+  double cp_sign_2_;
+  double cp_sign_3_;
+  double cp_sign_4_;
 
   double wt_cp_sm_;
   double wt_cp_ps_;

@@ -276,6 +276,9 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
         reco::Vertex const& vtx = vertices_handle->at(0);
         dest.set_dz_vertex(src.muonBestTrack()->dz(vtx.position()));
         dest.set_dxy_vertex(src.muonBestTrack()->dxy(vtx.position()));
+        //std::cout << src.muonBestTrack()->dzError() << "    " << src.muonBestTrack()->dz(vtx.position()) << "    " << src.muonBestTrack()->dz()  << std::endl;
+        dest.set_dz_vertex_error(src.muonBestTrack()->dzError());
+        dest.set_dxy_vertex_error(src.muonBestTrack()->dxyError());
     }
     if (do_beamspot_ip_&& src.muonBestTrack().isNonnull()) {
       dest.set_dxy_beamspot(src.muonBestTrack()->dxy(*beamspot_handle));

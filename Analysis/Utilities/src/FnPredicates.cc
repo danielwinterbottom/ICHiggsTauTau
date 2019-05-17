@@ -2085,6 +2085,13 @@ namespace ic {
     }
     return std::make_pair(pi,pi0);
   }
+  std::vector<ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
+    std::vector<ic::Candidate*> output;
+    for (auto i: hads) output.push_back(dynamic_cast<ic::Candidate*>(i));
+    return output;
+  }
+
   
   std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
 

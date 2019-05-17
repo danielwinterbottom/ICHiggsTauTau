@@ -25,7 +25,7 @@ class RhoIDEmbedder : public ModuleBase {
   CLASS_MEMBER(RhoIDEmbedder, bool, maketrees)
   
   TTree *outtree_;
-  int wt_;
+  double wt_;
   TMVA::Reader *reader_;
 
  public:
@@ -55,10 +55,20 @@ class RhoIDEmbedder : public ModuleBase {
 
   // variables for training trees
   unsigned Ngammas_1_;
+
   double Egamma1_1_;
   double Egamma2_1_;
   double Egamma3_1_;
   double Egamma4_1_;
+  double Egamma5_1_;
+  double Egamma6_1_;
+  double Egamma7_1_;
+  double Egamma8_1_;
+  double Egamma9_1_;
+  double Egamma10_1_;
+  double Egamma11_1_;
+  double Egamma12_1_;
+  
   double Epi_1_;
   double Epi0_1_;
   double Mpi0_1_;   
@@ -69,12 +79,23 @@ class RhoIDEmbedder : public ModuleBase {
   double gammas_dphi_1_;
   double pt_1_;
   double eta_1_; 
+  double phi_1_;
 
   unsigned Ngammas_2_;
+
   double Egamma1_2_;
   double Egamma2_2_;
   double Egamma3_2_;
   double Egamma4_2_;
+  double Egamma5_2_;
+  double Egamma6_2_;
+  double Egamma7_2_;
+  double Egamma8_2_;
+  double Egamma9_2_;
+  double Egamma10_2_;
+  double Egamma11_2_;
+  double Egamma12_2_;
+  
   double Epi_2_;
   double Epi0_2_;
   double Mpi0_2_;
@@ -85,6 +106,7 @@ class RhoIDEmbedder : public ModuleBase {
   double gammas_dphi_2_;
   double pt_2_;
   double eta_2_;
+  double phi_2_;
 
   // variables by Mohammad
   double ConeRadiusMax_2_;
@@ -96,10 +118,120 @@ class RhoIDEmbedder : public ModuleBase {
   double ConeRadiusMean_1_;
   double ConeRadiusStdDev_1_;
 
+  double ConeRadiusMaxWRTtau_2_;
+  double ConeRadiusMedianWRTtau_2_;
+  double ConeRadiusMeanWRTtau_2_;
+  double ConeRadiusStdDevWRTtau_2_;
+  double ConeRadiusMaxWRTtau_1_;
+  double ConeRadiusMedianWRTtau_1_;
+  double ConeRadiusMeanWRTtau_1_;
+  double ConeRadiusStdDevWRTtau_1_;
+
+  double ConeRadiusMaxWRTpi0_2_;
+  double ConeRadiusMedianWRTpi0_2_;
+  double ConeRadiusMeanWRTpi0_2_;
+  double ConeRadiusStdDevWRTpi0_2_;
+  double ConeRadiusMaxWRTpi0_1_;
+  double ConeRadiusMedianWRTpi0_1_;
+  double ConeRadiusMeanWRTpi0_1_;
+  double ConeRadiusStdDevWRTpi0_1_;
+
+  double NgammasModif_2_;
+  double NgammasModif_1_;
+    
+  double Etagamma1_1_;
+  double Etagamma2_1_;
+  double Etagamma3_1_;
+  double Etagamma4_1_;
+  double Etagamma5_1_;
+  double Etagamma6_1_;
+  double Etagamma7_1_;
+  double Etagamma8_1_;
+  double Etagamma9_1_;
+  double Etagamma10_1_;
+  double Etagamma11_1_;
+  double Etagamma12_1_;
+
+  double Etagamma1_2_;
+  double Etagamma2_2_;
+  double Etagamma3_2_;
+  double Etagamma4_2_;
+  double Etagamma5_2_;
+  double Etagamma6_2_;
+  double Etagamma7_2_;
+  double Etagamma8_2_;
+  double Etagamma9_2_;
+  double Etagamma10_2_;
+  double Etagamma11_2_;
+  double Etagamma12_2_;
+  
+  double Etapi_1_;
+  double Etapi_2_;
+  
+  double Phigamma1_1_;
+  double Phigamma2_1_;
+  double Phigamma3_1_;
+  double Phigamma4_1_;
+  double Phigamma5_1_;
+  double Phigamma6_1_;
+  double Phigamma7_1_;
+  double Phigamma8_1_;
+  double Phigamma9_1_;
+  double Phigamma10_1_;
+  double Phigamma11_1_;
+  double Phigamma12_1_;
+  
+  double Phigamma1_2_;
+  double Phigamma2_2_;
+  double Phigamma3_2_;
+  double Phigamma4_2_;
+  double Phigamma5_2_;
+  double Phigamma6_2_;
+  double Phigamma7_2_;
+  double Phigamma8_2_;
+  double Phigamma9_2_;
+  double Phigamma10_2_;
+  double Phigamma11_2_;
+  double Phigamma12_2_;
+  
+  double Phipi_1_;
+  double Phipi_2_;
+  
+  double DeltaR2WRTtau_1_;
+  double DeltaR2WRTpi0_1_;
+  double DeltaR2WRTtau_2_;
+  double DeltaR2WRTpi0_2_;  
+
+  double FracPtDepos_dRLessThan0p008_2_;
+  double FracPtDepos_dRMoreThan0p008_2_;
+  double FracPtDepos_dRLessThan0p008_1_;
+  double FracPtDepos_dRMoreThan0p008_1_;
+
+  double Mpi0_TwoHighGammas_2_;
+  double Mpi0_ThreeHighGammas_2_;
+  double Mpi0_FourHighGammas_2_;
+
+  double Mpi0_TwoHighGammas_1_;
+  double Mpi0_ThreeHighGammas_1_;
+  double Mpi0_FourHighGammas_1_;
+
+  double Mrho_OneHighGammas_1_;
+  double Mrho_TwoHighGammas_1_;
+  double Mrho_ThreeHighGammas_1_;
+  double Mrho_subleadingGamma_1_;
+
+  double Mrho_OneHighGammas_2_;
+  double Mrho_TwoHighGammas_2_;
+  double Mrho_ThreeHighGammas_2_; 
+  double Mrho_subleadingGamma_2_;
 
   //temp variables
-  double CenterEta;
-  double CenterPhi;
+  double CenterEta_1;
+  double CenterPhi_1;
+  double CenterEta_2;
+  double CenterPhi_2;
+  double SumPt_1;
+  double SumPt_2;
 
 
 };

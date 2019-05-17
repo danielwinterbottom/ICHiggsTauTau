@@ -70,7 +70,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
-
+    rand = new TRandom3(0);
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
@@ -852,6 +852,23 @@ namespace ic {
       outtree_->Branch("rho_id_1", &rho_id_1_);
       outtree_->Branch("rho_id_2", &rho_id_2_);
 
+      outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("aco_angle_2", &aco_angle_2_);
+      outtree_->Branch("aco_angle_3", &aco_angle_3_);
+      outtree_->Branch("aco_angle_4", &aco_angle_4_);
+      outtree_->Branch("mass1", &mass1_);
+      outtree_->Branch("mass2", &mass2_);
+      outtree_->Branch("y_1_1", &y_1_1_);
+      outtree_->Branch("y_1_2", &y_1_2_);
+      outtree_->Branch("y_2_2", &y_2_2_);
+      outtree_->Branch("y_3_2", &y_3_2_);
+      outtree_->Branch("y_4_2", &y_4_2_);
+      outtree_->Branch("rand", &rand_);
+      outtree_->Branch("cp_sign_1",     &cp_sign_1_);
+      outtree_->Branch("cp_sign_2",     &cp_sign_2_);
+      outtree_->Branch("cp_sign_3",     &cp_sign_3_);
+      outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+
       outtree_->Branch("primary_vtx_x", & primary_vtx_x_);
       outtree_->Branch("primary_vtx_y", & primary_vtx_y_);
       outtree_->Branch("primary_vtx_z", & primary_vtx_z_);
@@ -1390,7 +1407,7 @@ namespace ic {
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
         outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
 */        
-        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_){
+        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_scale_et_0jet"   , &wt_scale_et_0jet_    );
           outtree_->Branch("wt_scale_et_boosted" , &wt_scale_et_boosted_ );
           outtree_->Branch("wt_scale_et_vbf"    , &wt_scale_et_vbf_     );
@@ -1404,7 +1421,7 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
-        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_){
+        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
           outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
         }
@@ -2022,7 +2039,9 @@ namespace ic {
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
-    
+    rand->SetSeed(event_);
+    rand_ = rand->Uniform();
+  
       // fake-factor weights        
       if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){
         if(strategy_ == strategy::mssmsummer16){  
@@ -4281,7 +4300,7 @@ namespace ic {
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
-    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ && !systematic_shift_){
+    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
       if (official_ggH_){
         wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
         wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
@@ -4899,6 +4918,68 @@ namespace ic {
         lvec4 = ConvertToLorentz(pi_tau2->vector());
         cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3())
             *YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+        y_1_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
+        y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+      }
+      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
+        cp_channel_=4;
+
+        std::vector<ic::Candidate*> a1_daughters;
+        std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+        if(tau_decay_mode_1_==10){
+          a1_daughters  = GetA1(tau1, pfcands);
+          rho_daughters = GetRho(tau2, pfcands);
+          rho_id_1_ = rho_id_2_;
+        }
+        if(tau_decay_mode_2_==10){
+          a1_daughters  = GetA1(tau2, pfcands);
+          rho_daughters = GetRho(tau1, pfcands);
+        }
+
+        a1_daughters = SortA1Products(a1_daughters);
+        mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
+        mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
+
+        aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
+        aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})); 
+
+        Candidate* rho_1  = new Candidate();
+        Candidate* rho_2  = new Candidate();
+        rho_1->set_vector(a1_daughters[0]->vector()+a1_daughters[1]->vector());
+        rho_2->set_vector(a1_daughters[0]->vector()+a1_daughters[2]->vector());
+        aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
+        aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]}));
+
+        y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
+
+        y_1_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+        y_3_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[2]}),TVector3());
+        y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
+        y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
+
+        cp_sign_1_ = y_1_1_*y_1_2_;
+        cp_sign_2_ = y_1_1_*y_2_2_;
+        cp_sign_3_ = y_1_1_*y_3_2_;
+        cp_sign_4_ = y_1_1_*y_4_2_;
+
+
+        if (cp_sign_1_<0) {
+          if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+          else                   aco_angle_1_ -= M_PI;
+        }
+        if (cp_sign_2_<0) {
+          if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
+          else                   aco_angle_2_ -= M_PI;
+        }
+        if (cp_sign_3_<0) {
+          if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
+          else                   aco_angle_3_ -= M_PI;
+        }
+        if (cp_sign_4_<0) {
+          if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
+          else                   aco_angle_4_ -= M_PI;
+        }
+
       }
       else {
         cp_channel_ =-1;
@@ -4918,6 +4999,7 @@ namespace ic {
       } else {
         aco_angle_mod_ = aco_angle_;
         }
+        aco_angle_1_ = aco_angle_mod_;
       }
 
     }
@@ -4997,7 +5079,6 @@ namespace ic {
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        /* lvec2 = ConvertToLorentz(tau2->vector()); */
         pvtosv.SetXYZT(
                 ele1->vx() - vertex_vec[0]->vx(),
                 ele1->vy() - vertex_vec[0]->vy(),
@@ -5035,53 +5116,6 @@ namespace ic {
       aco_angle_     = -9999;
       aco_angle_mod_ = -9999;
     }
-
-    // for now try this because don't have the cands() saved yet
-    /*if (channel_ == channel::tt) {
-      Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
-      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-
-      ic::Candidate *pi0_1 = new Candidate();
-      ic::Candidate *pi0_2 = new Candidate();
-      ic::Candidate *pi_1 = new Candidate();
-      ic::Candidate *pi_2 = new Candidate();
-
-      if (tau1->decay_mode() == 1) {
-        pi_1->set_vector({tau1->lead_pt(), tau1->lead_eta(), tau1->lead_phi(), tau1->lead_energy()});
-
-        pi0_1->set_vector(tau1->vector() - pi_1->vector());
-
-        pi0_pt_1_ = pi0_1->vector().Pt();
-        pi0_eta_1_ = pi0_1->vector().Eta();
-        pi0_phi_1_ = pi0_1->vector().Phi();
-        pi0_E_1_ = pi0_1->vector().E();
-      } 
-      else {
-        pi0_pt_1_ = -9999.;
-        pi0_eta_1_ = -9999.;
-        pi0_phi_1_ = -9999.;
-        pi0_E_1_ = -9999.;
-      }
-          
-      if (tau2->decay_mode() == 1) {
-        pi_2->set_vector({tau2->lead_pt(), tau2->lead_eta(), tau2->lead_phi(), tau2->lead_energy()});
-
-        pi0_2->set_vector(tau2->vector() - pi_2->vector());
-
-        pi0_pt_2_ = pi0_2->vector().Pt();
-        pi0_eta_2_ = pi0_2->vector().Eta();
-        pi0_phi_2_ = pi0_2->vector().Phi();
-        pi0_E_2_ = pi0_2->vector().E();
-      }
-      else {
-        pi0_pt_2_ = -9999.;
-        pi0_eta_2_ = -9999.;
-        pi0_phi_2_ = -9999.;
-        pi0_E_2_ = -9999.;
-      }
-
-
-    }*/
       
 
     std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
