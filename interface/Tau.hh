@@ -53,6 +53,10 @@ class Tau : public Candidate {
   /// with the primary vertex
   inline float const& lead_dz_vertex() const { return lead_dz_vertex_; }
 
+  inline float const& lead_dxy_vertex_error() const { return lead_dxy_vertex_error_; }
+
+  inline float const& lead_dz_vertex_error() const { return lead_dz_vertex_error_; }
+
   /// Transverse momentum of the leading charged PF constituent
   inline float const& lead_pt() const { return lead_pt_; }
 
@@ -149,6 +153,15 @@ class Tau : public Candidate {
     lead_dz_vertex_ = lead_dz_vertex;
   }
 
+  /// @copybrief lead_dxy_vertex()
+  inline void set_lead_dxy_vertex_error(float const& lead_dxy_vertex_error) {
+    lead_dxy_vertex_error_ = lead_dxy_vertex_error;
+  }
+
+  /// @copybrief lead_dz_vertex()
+  inline void set_lead_dz_vertex_error(float const& lead_dz_vertex_error) {
+    lead_dz_vertex_error_ = lead_dz_vertex_error;
+  }
   /// @copybrief lead_pt()
   inline void set_lead_pt(float const& lead_pt) { lead_pt_ = lead_pt; }
 
@@ -251,6 +264,8 @@ class Tau : public Candidate {
   float lead_p_;
   float lead_dxy_vertex_;
   float lead_dz_vertex_;
+  float lead_dxy_vertex_error_;
+  float lead_dz_vertex_error_;
 
   float lead_pt_;
   float lead_eta_;

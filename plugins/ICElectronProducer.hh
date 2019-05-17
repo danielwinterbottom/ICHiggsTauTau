@@ -67,6 +67,7 @@ class ICElectronProducer : public edm::EDProducer {
   bool do_pf_iso_03_;
   bool do_pf_iso_04_;
 
+  bool doSmearAndScale_;
   std::string input_preCorr_;
   std::string input_postCorr_;
   std::string input_errPreCorr_;

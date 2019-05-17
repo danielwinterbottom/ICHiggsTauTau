@@ -40,7 +40,7 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(-1)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -75,7 +75,7 @@ process.MINIAODSIMoutput = cms.OutputModule("PoolOutputModule",
     dropMetaData = cms.untracked.string('ALL'),
     eventAutoFlushCompressedSize = cms.untracked.int32(15728640),
     fastCloning = cms.untracked.bool(False),
-    fileName = cms.untracked.string('file:HIG-RunIISummer16MiniAODv2-00187.root'),
+    fileName = cms.untracked.string('file:gen_1.root'),
     outputCommands = cms.untracked.vstring(
         'drop *',
         'keep *_prunedGenParticles_*_*',
