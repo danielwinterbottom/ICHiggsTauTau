@@ -519,7 +519,17 @@ class HTTCategories : public ModuleBase {
 
   double rho_id_1_;
   double rho_id_2_;
-  
+ 
+  float mvadm_rho_1_;
+  float mvadm_a1_1_;
+  float mvadm_pi_1_;
+  float mvadm_other_1_;
+  float mvadm_rho_2_;
+  float mvadm_a1_2_;
+  float mvadm_pi_2_;
+  float mvadm_other_2_;
+ 
+ 
   double pi0_E_1_res_;
   double pi0_E_2_res_;
   double pi0_eta_1_res_;

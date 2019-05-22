@@ -226,6 +226,8 @@ namespace ic {
       outtree_->Branch("event", &event_);
     }
 
+
+
     if(ProductExists("MVAreader")){
         reader_ = GetProduct<TMVA::Reader*>("MVAreader");
         std::cout << "Getting MVAreader" << std::endl;
@@ -317,6 +319,9 @@ namespace ic {
     //---initializing some of the variables-----------
     FracPtDepos_dRLessThan0p008_2_=-999; FracPtDepos_dRMoreThan0p008_2_=-999;
     //-----------------------------------------
+
+
+
 
         std::pair<ic::Candidate*, ic::Candidate*> rho_2 = GetRho(tau2, pfcands);
 
@@ -752,10 +757,27 @@ namespace ic {
           if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
             FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
 
+     //------------------EnergyFraction-------------------- 
+        FracPtDepos_dRLessThan0p008_1_=0; FracPtDepos_dRMoreThan0p008_1_=0;
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.008 )
+          FracPtDepos_dRLessThan0p008_1_+=pi_1->pt()/tau1->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) >= 0.008 )
+          FracPtDepos_dRMoreThan0p008_1_+=pi_1->pt()/tau1->pt();
+        
+                
+        for (auto g: gammas1){
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
+            FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
+
           if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) >= 0.008 )
             FracPtDepos_dRMoreThan0p008_1_+=g->pt()/tau1->pt();
 
         }
+
+
+        std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
 
         std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};

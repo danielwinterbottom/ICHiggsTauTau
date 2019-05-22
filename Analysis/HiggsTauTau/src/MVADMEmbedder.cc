@@ -12,8 +12,11 @@ namespace ic {
     ;
   }
 
-  std::vector<float> MVADMEmbedder::read_mva_scores() {
-      std::vector<float> scores = reader_->EvaluateMulticlass("BDT method"); 
+  std::vector<float> MVADMEmbedder::read_mva_scores(unsigned isEven) {
+      std::vector<float> scores;
+      if(isEven) scores = reader_even_->EvaluateMulticlass("BDT method"); 
+      else       scores = reader_odd_->EvaluateMulticlass("BDT method");
+      
       return scores;
   }
 
@@ -23,45 +26,82 @@ namespace ic {
     std::cout << "MVADMEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    if(ProductExists("MVADMreader")){
-        reader_ = GetProduct<TMVA::Reader*>("MVADMreader");
-        std::cout << "Getting MVADMreader" << std::endl;
+    if(ProductExists("MVADMreaderOdd") && ProductExists("MVADMreaderEven")){
+        reader_even_ = GetProduct<TMVA::Reader*>("MVADMreaderEven");
+        std::cout << "Getting MVADMreaderEven" << std::endl;
+        reader_odd_ = GetProduct<TMVA::Reader*>("MVADMreaderOdd");
+        std::cout << "Getting MVADMreaderOdd" << std::endl;
       } else { 
-        reader_ = new TMVA::Reader();
-        TString filename = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mva_dm1_model.xml";
-     
-        reader_->AddVariable( "Egamma1_tau", &Egamma1_tau_ );
-        reader_->AddVariable( "Egamma2_tau", &Egamma2_tau_ );
-        reader_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
-        reader_->AddVariable( "Epi_tau", &Epi_tau_ );
-        reader_->AddVariable( "rho_dEta_tau", &rho_dEta_tau_ );
-        reader_->AddVariable( "rho_dphi_tau", &rho_dphi_tau_ );
-        reader_->AddVariable( "gammas_dEta_tau", &gammas_dEta_tau_ );
-        reader_->AddVariable( "gammas_dR_tau", &gammas_dR_tau_ );
-        reader_->AddVariable( "DeltaR2WRTtau_tau", &DeltaR2WRTtau_tau_ );
-        reader_->AddVariable( "eta", &eta_ );
-        reader_->AddVariable( "pt", &pt_ );
-        reader_->AddVariable( "Epi0", &Epi0_ );
-        reader_->AddVariable( "Epi", &Epi_ );
-        reader_->AddVariable( "rho_dEta", &rho_dEta_ );
-        reader_->AddVariable( "rho_dphi", &rho_dphi_ );
-        reader_->AddVariable( "gammas_dEta", &gammas_dEta_ );
-        reader_->AddVariable( "tau_decay_mode", &tau_decay_mode_ );
-        reader_->AddVariable( "Mrho", &Mrho_ );
-        reader_->AddVariable( "Mpi0", &Mpi0_ );
-        reader_->AddVariable( "DeltaR2WRTtau", &DeltaR2WRTtau_ );
-        reader_->AddVariable( "Mpi0_TwoHighGammas", &Mpi0_TwoHighGammas_ );
-        reader_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
-        reader_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
-        reader_->AddVariable( "Mrho_OneHighGammas", &Mrho_OneHighGammas_ );
-        reader_->AddVariable( "Mrho_TwoHighGammas", &Mrho_TwoHighGammas_ );
-        reader_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
-        reader_->AddVariable( "Mrho_subleadingGamma", &Mrho_subleadingGamma_ );
-       
-        reader_->BookMVA( "BDT method", filename );
+        reader_even_ = new TMVA::Reader();
+        reader_odd_ = new TMVA::Reader();
 
-        AddToProducts("MVADMreader", reader_); 
-        std::cout << "Adding MVADMreader" << std::endl;
+        TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_0p5gammas_2fold_applytoeven.xml";
+        TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_0p5gammas_2fold_applytoodd.xml";
+        reader_even_->AddVariable( "event", &event_);
+        reader_even_->AddVariable( "Egamma1_tau", &Egamma1_tau_ );
+        reader_even_->AddVariable( "Egamma2_tau", &Egamma2_tau_ );
+        reader_even_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
+        reader_even_->AddVariable( "Epi_tau", &Epi_tau_ );
+        reader_even_->AddVariable( "rho_dEta_tau", &rho_dEta_tau_ );
+        reader_even_->AddVariable( "rho_dphi_tau", &rho_dphi_tau_ );
+        reader_even_->AddVariable( "gammas_dEta_tau", &gammas_dEta_tau_ );
+        reader_even_->AddVariable( "gammas_dR_tau", &gammas_dR_tau_ );
+        reader_even_->AddVariable( "DeltaR2WRTtau_tau", &DeltaR2WRTtau_tau_ );
+        reader_even_->AddVariable( "eta", &eta_ );
+        reader_even_->AddVariable( "pt", &pt_ );
+        reader_even_->AddVariable( "Epi0", &Epi0_ );
+        reader_even_->AddVariable( "Epi", &Epi_ );
+        reader_even_->AddVariable( "rho_dEta", &rho_dEta_ );
+        reader_even_->AddVariable( "rho_dphi", &rho_dphi_ );
+        reader_even_->AddVariable( "gammas_dEta", &gammas_dEta_ );
+        reader_even_->AddVariable( "tau_decay_mode", &tau_decay_mode_ );
+        reader_even_->AddVariable( "Mrho", &Mrho_ );
+        reader_even_->AddVariable( "Mpi0", &Mpi0_ );
+        reader_even_->AddVariable( "DeltaR2WRTtau", &DeltaR2WRTtau_ );
+        reader_even_->AddVariable( "Mpi0_TwoHighGammas", &Mpi0_TwoHighGammas_ );
+        reader_even_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
+        reader_even_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
+        reader_even_->AddVariable( "Mrho_OneHighGammas", &Mrho_OneHighGammas_ );
+        reader_even_->AddVariable( "Mrho_TwoHighGammas", &Mrho_TwoHighGammas_ );
+        reader_even_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
+        reader_even_->AddVariable( "Mrho_subleadingGamma", &Mrho_subleadingGamma_ );
+
+        reader_odd_->AddVariable( "event", &event_);
+        reader_odd_->AddVariable( "Egamma1_tau", &Egamma1_tau_ );
+        reader_odd_->AddVariable( "Egamma2_tau", &Egamma2_tau_ );
+        reader_odd_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
+        reader_odd_->AddVariable( "Epi_tau", &Epi_tau_ );
+        reader_odd_->AddVariable( "rho_dEta_tau", &rho_dEta_tau_ );
+        reader_odd_->AddVariable( "rho_dphi_tau", &rho_dphi_tau_ );
+        reader_odd_->AddVariable( "gammas_dEta_tau", &gammas_dEta_tau_ );
+        reader_odd_->AddVariable( "gammas_dR_tau", &gammas_dR_tau_ );
+        reader_odd_->AddVariable( "DeltaR2WRTtau_tau", &DeltaR2WRTtau_tau_ );
+        reader_odd_->AddVariable( "eta", &eta_ );
+        reader_odd_->AddVariable( "pt", &pt_ );
+        reader_odd_->AddVariable( "Epi0", &Epi0_ );
+        reader_odd_->AddVariable( "Epi", &Epi_ );
+        reader_odd_->AddVariable( "rho_dEta", &rho_dEta_ );
+        reader_odd_->AddVariable( "rho_dphi", &rho_dphi_ );
+        reader_odd_->AddVariable( "gammas_dEta", &gammas_dEta_ );
+        reader_odd_->AddVariable( "tau_decay_mode", &tau_decay_mode_ );
+        reader_odd_->AddVariable( "Mrho", &Mrho_ );
+        reader_odd_->AddVariable( "Mpi0", &Mpi0_ );
+        reader_odd_->AddVariable( "DeltaR2WRTtau", &DeltaR2WRTtau_ );
+        reader_odd_->AddVariable( "Mpi0_TwoHighGammas", &Mpi0_TwoHighGammas_ );
+        reader_odd_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
+        reader_odd_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
+        reader_odd_->AddVariable( "Mrho_OneHighGammas", &Mrho_OneHighGammas_ );
+        reader_odd_->AddVariable( "Mrho_TwoHighGammas", &Mrho_TwoHighGammas_ );
+        reader_odd_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
+        reader_odd_->AddVariable( "Mrho_subleadingGamma", &Mrho_subleadingGamma_ );
+       
+        reader_even_->BookMVA( "BDT method", filename_even );
+        reader_odd_->BookMVA( "BDT method", filename_odd );
+
+        AddToProducts("MVADMreaderOdd", reader_odd_); 
+        std::cout << "Adding MVADMreaderOdd" << std::endl;
+        AddToProducts("MVADMreaderEven", reader_even_);
+        std::cout << "Adding MVADMreaderEven" << std::endl;
      }
     return 0;
   }
@@ -69,8 +109,8 @@ namespace ic {
   int MVADMEmbedder::Execute(TreeEvent *event) {
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    event_ = eventInfo->event() % 2 == 0; // if even then event_ = 1, odd = 0
-
+    isEven_ = eventInfo->event() % 2 == 0; // if even then event_ = 1, odd = 0
+    event_ = (float)isEven_;
 
     if (!(channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et)) return 0;
     
@@ -132,7 +172,6 @@ namespace ic {
         }
         gammas_dEta_tau_ = gammas_dEta_ * E;
         gammas_dR_tau_ =  sqrt(gammas_dEta_*gammas_dEta_ + gammas_dphi*gammas_dphi)*E;
-
         //--------Mpi0---
         Mpi0_=-1, Mpi0_TwoHighGammas_=-1; Mpi0_ThreeHighGammas_=-1; Mpi0_FourHighGammas_=-1;
         ROOT::Math::PtEtaPhiEVector gammas_vector_2;
@@ -148,7 +187,7 @@ namespace ic {
         if(gammas2.size()>=2) Mrho_TwoHighGammas_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector()  ).M();
         if(gammas2.size()>=3) Mrho_ThreeHighGammas_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() ).M();
         if(gammas2.size()>=2) Mrho_subleadingGamma_= (pi_2->vector() + gammas2[1]->vector()).M();
-        //------------
+        //-----------
 
 
         DeltaR2WRTtau_=0;
@@ -161,13 +200,12 @@ namespace ic {
         }
         DeltaR2WRTtau_/=SumPt;
 
-        std::vector<float> scores = read_mva_scores();
+        std::vector<float> scores = read_mva_scores(isEven_);
 
         event->Add("mvadm_other_2", scores[0]);
         event->Add("mvadm_rho_2", scores[1]);
         event->Add("mvadm_pi_2", scores[2]);
         event->Add("mvadm_a1_2", scores[3]); 
-
       }
     }
 
@@ -245,7 +283,7 @@ namespace ic {
         }
         DeltaR2WRTtau_/=SumPt;
 
-        std::vector<float> scores = read_mva_scores();
+        std::vector<float> scores = read_mva_scores(isEven_);
 
         event->Add("mvadm_other_1", scores[0]);
         event->Add("mvadm_rho_1", scores[1]);

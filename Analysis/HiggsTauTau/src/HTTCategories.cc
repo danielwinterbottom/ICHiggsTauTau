@@ -851,6 +851,14 @@ namespace ic {
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
       outtree_->Branch("rho_id_1", &rho_id_1_);
       outtree_->Branch("rho_id_2", &rho_id_2_);
+      outtree_->Branch("mvadm_rho_1", &mvadm_rho_1_);
+      outtree_->Branch("mvadm_a1_1", &mvadm_a1_1_);
+      outtree_->Branch("mvadm_other_1", &mvadm_other_1_);
+      outtree_->Branch("mvadm_pi_1", &mvadm_pi_1_);
+      outtree_->Branch("mvadm_rho_2", &mvadm_rho_2_);
+      outtree_->Branch("mvadm_a1_2", &mvadm_a1_2_);
+      outtree_->Branch("mvadm_other_2", &mvadm_other_2_);
+      outtree_->Branch("mvadm_pi_2", &mvadm_pi_2_);
 
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
@@ -4847,6 +4855,16 @@ namespace ic {
     }
     rho_id_1_ = event->Exists("rho_id_1") ? event->Get<double>("rho_id_1") : 1.0;
     rho_id_2_ = event->Exists("rho_id_2") ? event->Get<double>("rho_id_2") : 1.0;
+
+    mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 1.0;
+    mvadm_a1_1_ = event->Exists("mvadm_a1_1") ? event->Get<float>("mvadm_a1_1") : 1.0;
+    mvadm_other_1_ = event->Exists("mvadm_other_1") ? event->Get<float>("mvadm_other_1") : 1.0;
+    mvadm_pi_1_ = event->Exists("mvadm_pi_1") ? event->Get<float>("mvadm_pi_1") : 1.0;
+
+    mvadm_rho_2_ = event->Exists("mvadm_rho_2") ? event->Get<float>("mvadm_rho_2") : 1.0;
+    mvadm_a1_2_ = event->Exists("mvadm_a1_2") ? event->Get<float>("mvadm_a1_2") : 1.0;
+    mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 1.0;
+    mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 1.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
