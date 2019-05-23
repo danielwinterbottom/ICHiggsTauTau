@@ -109,13 +109,15 @@ process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 
-tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = True,
                     updatedTauName = updatedTauName,
-                    toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                    toKeep = [ 
+                            "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                            "deepTau2017v2" # latest deepTau ID
                                # "deepTau2017v1", #deepTau Tau-Ids
                                # "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
                                # "DPFTau_2016_v1", #D[eep]PF[low] Tau-Id
-                               ])
+                            ])
 tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -243,10 +245,13 @@ process.icElectronSequence = cms.Sequence()
 
 # electron smear and scale
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       era='2018-Prompt')
+setupEgammaPostRecoSeq(
+        process,
+        era='2018-Prompt',
+        runVID=False,
+        )
 process.icElectronSequence += cms.Sequence(
-    # process.egammaPostRecoSeq
+    process.egammaPostRecoSeq
     )
 
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
@@ -270,8 +275,8 @@ process.electronMVAVariableHelper.conversions = cms.InputTag("reducedEgamma:redu
 process.electronMVAVariableHelper.conversionsMiniAOD = cms.InputTag("reducedEgamma:reducedConversions")
 
 process.icElectronSequence+=cms.Sequence(
-   process.electronMVAVariableHelper+
-   process.electronMVAValueMapProducer
+    process.electronMVAVariableHelper+
+    process.electronMVAValueMapProducer
    )
 
 #Electron PF iso sequence:
@@ -926,6 +931,14 @@ process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
+process.icEle28ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsEle28"),
+    hltPath = cms.string("HLT_Ele28_WPTight_Gsf_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
 process.icEle32ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsEle32"),
@@ -1289,6 +1302,7 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icDoubleMu20ObjectProducer+
     process.icDoubleMu178ObjectProducer+
     process.icEle27ObjectProducer+
+    process.icEle28ObjectProducer+
     process.icEle32ObjectProducer+
     process.icEle32L1DoubleEGObjectProducer+
     process.icEle35ObjectProducer+
