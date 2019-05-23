@@ -272,7 +272,7 @@ void ICElectronProducer::produce(edm::Event& event,
     }
     
     // 2017 smear and scale
-#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 
+#if CMSSW_MAJOR_VERSION > 9 || (CMSSW_MAJOR_VERSION == 9 && CMSSW_MINOR_VERSION >= 4)
     dest.set_ecalTrkEnergyPostCorr(src.userFloat(input_postCorr_));
     dest.set_ecalTrkEnergyPreCorr(src.userFloat(input_preCorr_));
     dest.set_ecalTrkEnergyErrPostCorr(src.userFloat(input_errPostCorr_));
