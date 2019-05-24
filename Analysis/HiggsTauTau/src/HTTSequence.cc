@@ -1787,7 +1787,7 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
-  } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && use_deep_csv) {
+  } else if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) && use_deep_csv) {
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
@@ -1795,6 +1795,10 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Winter2017.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpdecays18 && use_deep_csv) {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_oth");
   }
 
   BuildModule(BTagWeightRun2("BTagWeightRun2")
@@ -2530,7 +2534,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_w_soup(true);
             // W numbers need updating
             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-            httStitching.SetWInputYields(66293867.0,51033967.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
+            httStitching.SetWInputYields(66386958.0,51047866.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
               && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -2695,8 +2699,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
 
 
-          //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
-          //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
           //.set_probe_id(muon_probe_id)
           //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
           //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
@@ -2707,10 +2711,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // .set_extra_hlt_probe_pt(8.)
           // .set_extra_l1_probe_pt(5.)
           // to measure em muon trg SF for 23 GeV leg
-          .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(23.)
-          .set_extra_l1_probe_pt(20.)
+          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          // .set_extra_hlt_probe_pt(23.)
+          // .set_extra_l1_probe_pt(20.)
           
           //For Embedding selection efficiencies:
           // for mu8 leg of MuMu cross-trigger
@@ -2801,6 +2805,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for single with extra trigger (for nano)
           //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32,triggerObjectsEle35")
           //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+          .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
           
  
           // these lines to measure elec24 from double electron trigger (doesnt work for runB)
@@ -2815,9 +2821,9 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
-          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          .set_extra_l1_probe_pt(10.)
+          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          // .set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
           // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
           // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")

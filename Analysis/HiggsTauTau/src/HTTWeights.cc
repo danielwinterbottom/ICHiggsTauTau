@@ -1304,7 +1304,7 @@ namespace ic {
              qcd_weight_up = qcd_weight;
          }
            // 2017 em qcd weights
-       } else if (era_ == era::data_2017) {
+       } else if (era_ == era::data_2017 || era_ == era::data_2018) {
            if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
              std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
              ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -1395,6 +1395,9 @@ namespace ic {
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+          // if want to try with reco vars to check if weight applied properly
+          // double zpt = event->Exists("pt_tt") ? event->Get<double>("pt_tt") : 0;
+          // double zmass = event->Exists("m_vis") ? event->Get<double>("m_vis") : 0;
       if((mc_ != mc::summer16_80X && mc_ != mc::mc2017 && mc_ != mc::mc2018)|| strategy_== strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
           double wtzpt_down=1.0;
@@ -1440,13 +1443,22 @@ namespace ic {
         event->Add("wt_zpt_up",wtzpt_up/wtzpt);
         event->Add("wt_zpt_down",wtzpt_down/wtzpt);
       } else if (mc_ == mc::mc2018){
-        auto args = std::vector<double>{zmass,zpt};  
+
+        /* auto args = std::vector<double>{zmass,zpt};  
         double wtzpt = fns_["zpt_weight_nom"]->eval(args.data());
         double wtzpt_down=1.0;
         double wtzpt_up = wtzpt*wtzpt;
         eventInfo->set_weight("wt_zpt",wtzpt);
         event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+        event->Add("wt_zpt_down",wtzpt_down/wtzpt); */
+        // just take straight from histogram defined in HTTSequence
+        double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+        double wtzpt_down=1.0;
+        double wtzpt_up = wtzpt*wtzpt;
+        eventInfo->set_weight("wt_zpt",wtzpt);
+        event->Add("wt_zpt_up",wtzpt_up/wtzpt);
         event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+
       }
 
     }
@@ -2999,7 +3011,7 @@ namespace ic {
           ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
           ele1_trg_mc = 1-((1-ele1_trg_mc)*(1-ele2_trg_mc));
         } 
-        // for summer16/summer17 only allow first electron to fire trigger
+        // for summer16/summer17/18 only allow first electron to fire trigger
         ele2_trg = 1.0;
         ele2_trg_mc = 1.0;
         if (trg_applied_in_mc_) {
@@ -3120,12 +3132,12 @@ namespace ic {
           auto args_2 = std::vector<double>{pt1,m1_signed_eta};
 
           if (is_embedded_) {
-            mu1_trg = fns_["m_trgIsoMu24orIsoMu27_desy_data"]->eval(args_2.data());
+            mu1_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
             mu1_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data()); 
             //std::cout << " trg = " << mu1_trg/mu1_trg_mc << std::endl;
           } else {
-            mu1_trg = fns_["m_trgIsoMu24orIsoMu27_desy_data"]->eval(args_2.data());
-            mu1_trg_mc = fns_["m_trgIsoMu24orIsoMu27_desy_mc"]->eval(args_2.data());
+            mu1_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
+            mu1_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
           }
           mu2_trg = 1.0;
           mu2_trg_mc = 1.0;
@@ -3725,8 +3737,8 @@ namespace ic {
             m_2_idiso = fns_["m_idiso_binned_embed_ratio"]->eval(args2_2.data());
             //std::cout << "idiso = " << m_1_idiso << "    " << m_2_idiso << std::endl;
           } else {
-            m_1_idiso = fns_["m_idiso_desy_ratio"]->eval(args1_1.data());
-            m_2_idiso = fns_["m_idiso_desy_ratio"]->eval(args2_1.data());
+            m_1_idiso = fns_["m_idiso_binned_ratio"]->eval(args1_2.data());
+            m_2_idiso = fns_["m_idiso_binned_ratio"]->eval(args2_2.data());
           }
         }
 
