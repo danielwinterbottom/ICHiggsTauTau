@@ -162,7 +162,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       iso_pt_bins   = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]' 
       idiso_pt_bins = '[10,15,20,25,30,40,50,100,200]'
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      Trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
+      trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
           #idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
           trg_pt_bins = '[10,12,14,16,18,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
@@ -806,13 +806,13 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
   
-  if options.era == 'summer17':
+  if options.era in ['summer17','summer18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'  
+    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
     if options.aiso1:
       baseline_tag1+='*(iso_2>0.2)'
       baseline_tag2+='*(iso_1>0.2)'
-  else:    
+  else:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
      
