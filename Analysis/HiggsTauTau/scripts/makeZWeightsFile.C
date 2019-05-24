@@ -1,13 +1,13 @@
-void makeZWeightsFile(std::string outfile){
+void makeZWeightsFile(std::string outfile="Zpt2018test.root"){
 
 double x_bins[10] = {0,50,80,90,100,120,160,200,400,800};
 double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
-std::vector<std::string> MC_add_strings = {""/*, "_ESUp", "_ESDown","_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
-//std::vector<std::string> MC_add_strings = {""};
+// std::vector<std::string> MC_add_strings = {"_ESUp", "_ESDown","_TTUp", "_TTDown", "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"};
+std::vector<std::string> MC_add_strings = {""};
 int n_xbins = 9;
 int n_ybins = 14;
 TFile *fout = new TFile(outfile.c_str(),"RECREATE");
-std::vector<std::string> file_names = {"datacard_pt_tt_inclusive_zmm_2016_mvis50to80.root", "datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root", "datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root", "datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root", "datacard_pt_tt_inclusive_zmm_2016_mvis120to160.root", "datacard_pt_tt_inclusive_zmm_2016_mvis160to200.root","datacard_pt_tt_inclusive_zmm_2016_mvis200to400.root","datacard_pt_tt_inclusive_zmm_2016_mvis400toinf.root"};
+std::vector<std::string> file_names = {"datacard_pt_tt_inclusive_zmm_2018_mvis50to80.root", "datacard_pt_tt_inclusive_zmm_2018_mvis80to90.root", "datacard_pt_tt_inclusive_zmm_2018_mvis90to100.root", "datacard_pt_tt_inclusive_zmm_2018_mvis100to120.root", "datacard_pt_tt_inclusive_zmm_2018_mvis120to160.root", "datacard_pt_tt_inclusive_zmm_2018_mvis160to200.root","datacard_pt_tt_inclusive_zmm_2018_mvis200to400.root","datacard_pt_tt_inclusive_zmm_2018_mvis400toinf.root"};
 for(unsigned i=0; i<MC_add_strings.size(); ++i){
     std::string MC_add_string = MC_add_strings[i];
     double tt_scale=1.0;
@@ -143,7 +143,7 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     h_2dweights->SetBinError(h_2dweights->GetNbinsX()+1,h_2dweights->GetNbinsY()+1,h_2dweights->GetBinError(h_2dweights->GetNbinsX(),h_2dweights->GetNbinsY()));
     
     fout->cd();
-    h_2dweights->Wrtie();
+    h_2dweights->Write();
     
     
     //TH1D *h_stat_up;
