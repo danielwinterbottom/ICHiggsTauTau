@@ -636,7 +636,6 @@ namespace ic {
   std::pair<bool,std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<bool,std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   /* std::vector<GenParticle*>> GetTauRhoDaughterFromGenParticles(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id); */
-  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi);
 
   std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
           std::map<std::size_t, ic::PFCandidate*> pfcands);
@@ -650,9 +649,11 @@ namespace ic {
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  ic::Candidate* GetPi0 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, bool leadEtaPhi);
   std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
-  std::vector<ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands); 
+  std::pair<std::vector<ic::PFCandidate*>, ic::PFCandidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
+  std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> HPSGammas (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode);
 
   double boundPhi(double dphi);
 
