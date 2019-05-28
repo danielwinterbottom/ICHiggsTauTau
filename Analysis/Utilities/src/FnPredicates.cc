@@ -2091,12 +2091,12 @@ namespace ic {
     return (i.first->pt() > j.first->pt());
   }
 
-  std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
+  std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> HPSGammas (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
 
     // mode = 0 uses fixed strip sizes set by etaAssociationDistance and phiAssociationDistance
     // mode = 1 uses dynamic strip size
     // mode = 2 uses dynamic strip size but sets maximum sizes of strips by etaAssociationDistance and phiAssociationDistance
-    td::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;   
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;   
     while(!cands.empty()) {
 
       //save the non associated candidates to a different collection
@@ -2240,7 +2240,7 @@ namespace ic {
     }
     std::vector<ic::PFCandidate*> gammas = GetTauIsoGammas(tau, pfcands);
 
-    double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05)*2;
+    double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
     double pt_cut = 0.5;
     double mass = 0.1349;
     ic::PFCandidate *pi0 = new ic::PFCandidate();
@@ -2267,11 +2267,11 @@ namespace ic {
       //pi0->set_vector(pi0_vector);
     ic::erase_if(gammas,!boost::bind(MinPtMaxEta, _1, pt_cut, 9999.));
     std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(gammas, 0, 0, 0, mass, 1); 
-    std::vector<ic::PFCandidate*> strips_incone; 
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips_incone; 
     for(auto s : strip_pairs) {
       if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
     }
-    if(strips_incone.size()>0) pi0 = strips_incone[0];
+    if(strips_incone.size()>0) pi0 = strips_incone[0].first;
     return std::make_pair(hads, pi0);
   }
 
