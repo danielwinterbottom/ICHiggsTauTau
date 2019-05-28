@@ -2086,13 +2086,17 @@ namespace ic {
     }
     return std::make_pair(pi,pi0);
   }
-  
-  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
+
+  bool sortStrips (std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> i,std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> j) {
+    return (i.first->pt() > j.first->pt());
+  }
+
+  std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
 
     // mode = 0 uses fixed strip sizes set by etaAssociationDistance and phiAssociationDistance
     // mode = 1 uses dynamic strip size
     // mode = 2 uses dynamic strip size but sets maximum sizes of strips by etaAssociationDistance and phiAssociationDistance
-    std::vector<ic::PFCandidate*> strips;   
+    td::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;   
     while(!cands.empty()) {
 
       //save the non associated candidates to a different collection
@@ -2163,12 +2167,19 @@ namespace ic {
       //double mass = 0.1349;
       double factor = sqrt(strip.energy()*strip.energy()-mass*mass)/strip.vector().P();
       strip.set_pt(factor*strip.pt());
-      strips.push_back(new ic::PFCandidate(strip));
+      if(strip.pt()>=stripPtThreshold) strips.push_back(std::make_pair(new ic::PFCandidate(strip), Associated));
    
     }
-    std::sort(strips.begin(), strips.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
-    ic::erase_if(strips,!boost::bind(MinPtMaxEta, _1, stripPtThreshold, 9999.)); 
+    std::sort(strips.begin(), strips.end(), sortStrips);
 
+    return strips;
+  }
+
+
+  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(cands, stripPtThreshold, etaAssociationDistance, phiAssociationDistance, mass, mode);
+    std::vector<ic::PFCandidate*> strips;
+    for(auto s : strip_pairs) strips.push_back(s.first);
     return strips;
   }
 
@@ -2229,11 +2240,10 @@ namespace ic {
     }
     std::vector<ic::PFCandidate*> gammas = GetTauIsoGammas(tau, pfcands);
 
-    double cone_size = std::max(std::min(0.1, 0.3/tau->pt()),0.05);
+    double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05)*2;
     double pt_cut = 0.5;
     double mass = 0.1349;
-
-    //ic::PFCandidate *pi0 = new ic::PFCandidate();
+    ic::PFCandidate *pi0 = new ic::PFCandidate();
     //std::vector<ic::PFCandidate*> gammas_incone;
     //for (auto g : gammas) {
     //  if(g->pt()>pt_cut /*&& std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau->vector()))<cone_size*/) gammas_incone.push_back(g);
@@ -2256,12 +2266,13 @@ namespace ic {
       //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
       //pi0->set_vector(pi0_vector);
     ic::erase_if(gammas,!boost::bind(MinPtMaxEta, _1, pt_cut, 9999.));
-    std::vector<ic::PFCandidate*> strips = HPS(gammas, 0, 0, 0, mass, 1); 
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(gammas, 0, 0, 0, mass, 1); 
     std::vector<ic::PFCandidate*> strips_incone; 
-    for(auto s : strips) {
-      if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
+    for(auto s : strip_pairs) {
+      if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
     }
-    return std::make_pair(hads, strips_incone[0]);
+    if(strips_incone.size()>0) pi0 = strips_incone[0];
+    return std::make_pair(hads, pi0);
   }
 
 
