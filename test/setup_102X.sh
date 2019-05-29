@@ -8,13 +8,15 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 
 CORES=`grep -c ^processor /proc/cpuinfo`
 
-scramv1 project CMSSW_10_2_10
-cd CMSSW_10_2_10/src
+scramv1 project CMSSW_10_2_14
+cd CMSSW_10_2_14/src
 eval `scramv1 runtime -sh`
 
 git cms-init
 
 ### Add-packages ###
+
+git cms-addpkg FWCore/Version
 
 ### Merge-topics ###
 
