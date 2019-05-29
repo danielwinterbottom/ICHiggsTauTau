@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Mar25_MC_102X'
+config.General.workArea='May24_MC_102X'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Nov18.py'
 config.JobType.pluginName = 'Analysis'
@@ -19,7 +19,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Mar25_MC_102X/'
+config.Data.outLFNDirBase='/store/user/adow/May24_MC_102X/'
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('DYJetsToLL', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
+    # tasks.append(('DYJetsToLL', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('DYJetsToLL_M-10-50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
@@ -108,10 +108,14 @@ if __name__ == '__main__':
 
     ########
 
-    # tasks.append(('GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    # tasks.append(('GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    # tasks.append(('GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    # tasks.append(('GluGluToHToTauTau_M125_amcatnloFXFX', '/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    # CP in jets 2017 samples
+    tasks.append(('GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('GluGluToHToTauTau_M125_amcatnloFXFX', '/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    # private ones
+    tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
 
     # JHU Gen for VBF, VH
     # tasks.append(('VBFHiggs0PMToTauTau', '/VBFHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
@@ -132,32 +136,32 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         if "DY4JetsToLL-LO" in task[0]:
-          # talk to DBS to get list of files in this dataset
-          from dbs.apis.dbsClient import DbsApi
-          dbs = DbsApi('https://cmsweb.cern.ch/dbs/prod/global/DBSReader')
+            # talk to DBS to get list of files in this dataset
+            from dbs.apis.dbsClient import DbsApi
+            dbs = DbsApi('https://cmsweb.cern.ch/dbs/prod/global/DBSReader')
 
-          dataset = task[1]
-          fileDictList=dbs.listFiles(dataset=dataset)
+            dataset = task[1]
+            fileDictList=dbs.listFiles(dataset=dataset)
 
-          print ("dataset %s has %d files" % (dataset, len(fileDictList)))
+            print ("dataset %s has %d files" % (dataset, len(fileDictList)))
 
-          # DBS client returns a list of dictionaries, but we want a list of Logical File Names
-          lfnList = [ dic['logical_file_name'] for dic in fileDictList ]
-          config.Data.userInputFiles = lfnList
-          config.Data.splitting = 'FileBased'
-          config.Data.unitsPerJob = 1
-          config.Data.inputDataset = None
+            # DBS client returns a list of dictionaries, but we want a list of Logical File Names
+            lfnList = [ dic['logical_file_name'] for dic in fileDictList ]
+            config.Data.userInputFiles = lfnList
+            config.Data.splitting = 'FileBased'
+            config.Data.unitsPerJob = 1
+            config.Data.inputDataset = None
         else:
-          config.Data.inputDataset = task[1]
-          # config.Data.unitsPerJob = 240 # for automatic
-          # config.Data.splitting = 'Automatic'
+            config.Data.inputDataset = task[1]
+            # config.Data.unitsPerJob = 240 # for automatic
+            # config.Data.splitting = 'Automatic'
 
-          config.Data.unitsPerJob = 100000
-          config.Data.splitting = 'EventAwareLumiBased'
+            config.Data.unitsPerJob = 100000
+            config.Data.splitting = 'EventAwareLumiBased'
 
-          # config.Data.splitting = 'FileBased'
-          # config.Data.unitsPerJob = 1
-          config.Data.userInputFiles = None
+            # config.Data.splitting = 'FileBased'
+            # config.Data.unitsPerJob = 1
+            config.Data.userInputFiles = None
 
         if "HToTauTau" in task[0]:
             config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1']
@@ -172,10 +176,6 @@ if __name__ == '__main__':
 
         else:
             config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
-
-        print config.Data.unitsPerJob
-        print config.Data.splitting
-        print(config.JobType.pyCfgParams)
 
         print(config)
         submit(config)

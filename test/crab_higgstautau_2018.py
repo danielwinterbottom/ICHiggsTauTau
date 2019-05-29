@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Mar25_Data_102X'
+config.General.workArea='May23_Data_102X'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Nov18.py'
 config.JobType.pluginName = 'Analysis'
@@ -11,8 +11,7 @@ config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Prompt_v13']#previous v11
 config.JobType.maxMemoryMB = 2500
 # config.JobType.numCores = 4
-# for deep tau need the next line, NOT needed anymore in 10_2_10
-# config.JobType.scriptExe = 'submitCrabDeepTau.sh'
+# config.JobType.scriptExe = 'submitCrabDeepTauV2.sh'
 config.JobType.allowUndistributedCMSSW = True
 
 # config.Data.unitsPerJob = 240
@@ -22,16 +21,16 @@ config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/Mar25_Data_102X/'
+config.Data.outLFNDirBase='/store/user/adow/May23_Data_102X/'
 config.Data.allowNonValidInputDataset = True
 
 config.Site.storageSite = 'T2_UK_London_IC'
 
-config.Debug.extraJDL = [
-    '+DESIRED_Sites="T3_UK_Opportunistic"',
-    '+JOB_CMSSite="T3_UK_Opportunistic"',
-    '+AccountingGroup="highprio.adowot"'
-]
+# config.Debug.extraJDL = [
+#     '+DESIRED_Sites="T3_UK_Opportunistic"',
+#     '+JOB_CMSSite="T3_UK_Opportunistic"',
+#     '+AccountingGroup="highprio.adowot"'
+# ]
 
 if __name__ == '__main__':
 
@@ -80,6 +79,11 @@ if __name__ == '__main__':
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
+
+        if "17Sep2018" in task[1]:
+            config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Sep2018ABC_v2']
+        else:
+            config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Prompt_v13']
 
         print config.Data.unitsPerJob
         print config.Data.splitting
