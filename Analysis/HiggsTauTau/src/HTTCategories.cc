@@ -70,7 +70,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
-
+    rand = new TRandom3(0);
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
@@ -851,6 +851,90 @@ namespace ic {
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
       outtree_->Branch("rho_id_1", &rho_id_1_);
       outtree_->Branch("rho_id_2", &rho_id_2_);
+      outtree_->Branch("mvadm_rho_1", &mvadm_rho_1_);
+      outtree_->Branch("mvadm_a1_1", &mvadm_a1_1_);
+      outtree_->Branch("mvadm_other_1", &mvadm_other_1_);
+      outtree_->Branch("mvadm_pi_1", &mvadm_pi_1_);
+      outtree_->Branch("mvadm_rho_2", &mvadm_rho_2_);
+      outtree_->Branch("mvadm_a1_2", &mvadm_a1_2_);
+      outtree_->Branch("mvadm_other_2", &mvadm_other_2_);
+      outtree_->Branch("mvadm_pi_2", &mvadm_pi_2_);
+
+      outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("aco_angle_2", &aco_angle_2_);
+      outtree_->Branch("aco_angle_3", &aco_angle_3_);
+      outtree_->Branch("aco_angle_4", &aco_angle_4_);
+      outtree_->Branch("strip_pt_2", &strip_pt_2_); 
+      outtree_->Branch("strip_pt_1", &strip_pt_1_); 
+      outtree_->Branch("strip_E_1", strip_E_1_);
+      outtree_->Branch("strip_E_2", &strip_E_2_);
+      outtree_->Branch("gen_pi0_E", &gen_pi0_E_);
+      outtree_->Branch("cp_channel" , &cp_channel_);
+      outtree_->Branch("mass0", &mass0_);
+      outtree_->Branch("mass1", &mass1_);
+      outtree_->Branch("mass2", &mass2_);
+      outtree_->Branch("strip_pt", &strip_pt_);
+      outtree_->Branch("y_1_1", &y_1_1_);
+      outtree_->Branch("y_1_2", &y_1_2_);
+      outtree_->Branch("y_2_2", &y_2_2_);
+      outtree_->Branch("y_3_2", &y_3_2_);
+      outtree_->Branch("y_4_2", &y_4_2_);
+      outtree_->Branch("rand", &rand_);
+      outtree_->Branch("cp_sign_1",     &cp_sign_1_);
+      outtree_->Branch("cp_sign_2",     &cp_sign_2_);
+      outtree_->Branch("cp_sign_3",     &cp_sign_3_);
+      outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+
+      /**********************************************************/
+      // some variables to compare data/MC ageement
+      if(channel_ == channel::mt) {
+        outtree_->Branch("ptgamma1",      &pt_gamma_1_    );
+        outtree_->Branch("ptgamma2",      &pt_gamma_2_    );
+        outtree_->Branch("ptgamma3",      &pt_gamma_3_    );
+        outtree_->Branch("ptgamma4",      &pt_gamma_4_    );
+        outtree_->Branch("Egamma1",       &E_gamma_1_     );
+        outtree_->Branch("Egamma2",       &E_gamma_2_     );
+        outtree_->Branch("Egamma3",       &E_gamma_3_     );
+        outtree_->Branch("Egamma4",       &E_gamma_4_     );
+        outtree_->Branch("Epi",           &E_pi_          );
+        outtree_->Branch("Epi0",          &E_pi0_         );
+        outtree_->Branch("Mrho",          &M_rho_         );
+        outtree_->Branch("Mrho1gamma",    &M_rho_1gamma_  );
+        outtree_->Branch("Mrho2gamma",    &M_rho_2gamma_  );
+        outtree_->Branch("Mrho3gamma",    &M_rho_3gamma_  );
+        outtree_->Branch("Mrhosubgamma",  &M_rho_subgamma_);
+        outtree_->Branch("Mpi0",          &M_pi0_         );
+        outtree_->Branch("Mpi02gamma",    &M_pi0_2gamma_  );
+        outtree_->Branch("Mpi03gamma",    &M_pi0_3gamma_  );
+        outtree_->Branch("Mpi04gamma",    &M_pi0_4gamma_  );
+        outtree_->Branch("gammasdEta",    &gammas_dEta_   );
+        outtree_->Branch("gammasdphi",    &gammas_dphi_   );
+        outtree_->Branch("rhodEta",       &rho_dEta_      );
+        outtree_->Branch("rhodphi",       &rho_dphi_      );
+        outtree_->Branch("DeltaR2WRTtau", &DeltaR2WRTtau_ );
+        outtree_->Branch("E_res_1", &E_res_1_);
+        outtree_->Branch("eta_res_1", &eta_res_1_);
+        outtree_->Branch("phi_res_1", &phi_res_1_);
+        outtree_->Branch("E_res_2", &E_res_2_);
+        outtree_->Branch("eta_res_2", &eta_res_2_);
+        outtree_->Branch("phi_res_2", &phi_res_2_);
+        outtree_->Branch("E_res_3", &E_res_3_);
+        outtree_->Branch("eta_res_3", &eta_res_3_);
+        outtree_->Branch("phi_res_3", &phi_res_3_);
+        outtree_->Branch("E_res_4", &E_res_4_);
+        outtree_->Branch("eta_res_4", &eta_res_4_);
+        outtree_->Branch("phi_res_4", &phi_res_4_);
+
+        outtree_->Branch("E_res_5", &E_res_5_);
+        outtree_->Branch("eta_res_5", &eta_res_5_);
+        outtree_->Branch("phi_res_5", &phi_res_5_);
+        outtree_->Branch("E_res_6", &E_res_6_);
+        outtree_->Branch("eta_res_6", &eta_res_6_);
+        outtree_->Branch("phi_res_6", &phi_res_6_);
+
+ 
+      }
+      /**********************************************************/
 
       outtree_->Branch("primary_vtx_x", & primary_vtx_x_);
       outtree_->Branch("primary_vtx_y", & primary_vtx_y_);
@@ -1390,7 +1474,7 @@ namespace ic {
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
         outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
 */        
-        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_){
+        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_scale_et_0jet"   , &wt_scale_et_0jet_    );
           outtree_->Branch("wt_scale_et_boosted" , &wt_scale_et_boosted_ );
           outtree_->Branch("wt_scale_et_vbf"    , &wt_scale_et_vbf_     );
@@ -1404,7 +1488,7 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
-        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_){
+        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
           outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
         }
@@ -2022,7 +2106,9 @@ namespace ic {
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
-    
+    rand->SetSeed(event_);
+    rand_ = rand->Uniform();
+  
       // fake-factor weights        
       if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){
         if(strategy_ == strategy::mssmsummer16){  
@@ -4281,7 +4367,7 @@ namespace ic {
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
-    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ && !systematic_shift_){
+    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
       if (official_ggH_){
         wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
         wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
@@ -4829,6 +4915,16 @@ namespace ic {
     rho_id_1_ = event->Exists("rho_id_1") ? event->Get<double>("rho_id_1") : 1.0;
     rho_id_2_ = event->Exists("rho_id_2") ? event->Get<double>("rho_id_2") : 1.0;
 
+    mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 1.0;
+    mvadm_a1_1_ = event->Exists("mvadm_a1_1") ? event->Get<float>("mvadm_a1_1") : 1.0;
+    mvadm_other_1_ = event->Exists("mvadm_other_1") ? event->Get<float>("mvadm_other_1") : 1.0;
+    mvadm_pi_1_ = event->Exists("mvadm_pi_1") ? event->Get<float>("mvadm_pi_1") : 1.0;
+
+    mvadm_rho_2_ = event->Exists("mvadm_rho_2") ? event->Get<float>("mvadm_rho_2") : 1.0;
+    mvadm_a1_2_ = event->Exists("mvadm_a1_2") ? event->Get<float>("mvadm_a1_2") : 1.0;
+    mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 1.0;
+    mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 1.0;
+
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
@@ -4838,17 +4934,30 @@ namespace ic {
       ic::Candidate *pi_tau1 = rho1.first;
       ic::Candidate *pi0_tau1 = rho1.second;
 
+      std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands); 
+      std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands);
+
       std::pair<ic::Candidate*, ic::Candidate*> rho2 = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho2.first;
       ic::Candidate *pi0_tau2 = rho2.second;
-      
+
+      if(tau_decay_mode_2_<2 && gammas2.size()>0) {
+        strip_pt_2_= pi0_tau2->pt();
+        strip_E_2_= pi0_tau2->pt();     
+      }
+      if(tau_decay_mode_1_<2 && gammas1.size()>0 ) {
+        strip_pt_1_= pi0_tau1->pt();
+        strip_E_1_= pi0_tau1->pt();
+      }
+
+ 
       TLorentzVector lvec1;
       TLorentzVector lvec2;
       TLorentzVector lvec3;
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
 
-      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
       tau_svx_1_ = tau1->svx();
       tau_svy_1_ = tau1->svy();
@@ -4859,39 +4968,39 @@ namespace ic {
       tau_svz_2_ = tau2->svz();
 
       bool doAnti = false;
-      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
-        cp_channel_=2;
-        lvec1 = ConvertToLorentz(pi0_tau1->vector());
-        /* lvec2 = ConvertToLorentz(tau2->vector()); */
-        pvtosv.SetXYZT(
-                tau2->svx() - vertex_vec[0]->vx(),
-                tau2->svy() - vertex_vec[0]->vy(),
-                tau2->svz() - vertex_vec[0]->vz(),
-                0.);
-        lvec3 = ConvertToLorentz(pi_tau1->vector());
-        lvec4 = ConvertToLorentz(pi_tau2->vector());
+      //if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
+      //  cp_channel_=2;
+      //  lvec1 = ConvertToLorentz(pi0_tau1->vector());
+      //  /* lvec2 = ConvertToLorentz(tau2->vector()); */
+      //  pvtosv.SetXYZT(
+      //          tau2->svx() - vertex_vec[0]->vx(),
+      //          tau2->svy() - vertex_vec[0]->vy(),
+      //          tau2->svz() - vertex_vec[0]->vz(),
+      //          0.);
+      //  lvec3 = ConvertToLorentz(pi_tau1->vector());
+      //  lvec4 = ConvertToLorentz(pi_tau2->vector());
 
-        doAnti = q_2_ > 0 ? true : false;
+      //  doAnti = q_2_ > 0 ? true : false;
 
-        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
-      }
-      else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
-        cp_channel_=2;
-        lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        /* lvec2 = ConvertToLorentz(tau1->vector()); */
-        pvtosv.SetXYZT(
-                tau1->svx() - vertex_vec[0]->vx(),
-                tau1->svy() - vertex_vec[0]->vy(),
-                tau1->svz() - vertex_vec[0]->vz(),
-                0.);
-        lvec3 = ConvertToLorentz(pi_tau2->vector());
-        lvec4 = ConvertToLorentz(pi_tau1->vector());
+      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
+      //}
+      //else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
+      //  cp_channel_=2;
+      //  lvec1 = ConvertToLorentz(pi0_tau2->vector());
+      //  /* lvec2 = ConvertToLorentz(tau1->vector()); */
+      //  pvtosv.SetXYZT(
+      //          tau1->svx() - vertex_vec[0]->vx(),
+      //          tau1->svy() - vertex_vec[0]->vy(),
+      //          tau1->svz() - vertex_vec[0]->vz(),
+      //          0.);
+      //  lvec3 = ConvertToLorentz(pi_tau2->vector());
+      //  lvec4 = ConvertToLorentz(pi_tau1->vector());
 
-        doAnti = q_1_ > 0 ? true : false;
+      //  doAnti = q_1_ > 0 ? true : false;
 
-        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
-      }
-      else if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
+      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
+      //}
+      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==1) || (gammas1.size()>0 && tau_decay_mode_1_==0&&tau_decay_mode_2_==1) || (gammas2.size()>0 && tau_decay_mode_2_==0&&tau_decay_mode_1_==1)){
         cp_channel_=3;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
@@ -4899,6 +5008,72 @@ namespace ic {
         lvec4 = ConvertToLorentz(pi_tau2->vector());
         cp_sign_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3())
             *YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+        y_1_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
+        y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+      }
+      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
+        cp_channel_=4;
+
+        std::vector<ic::PFCandidate*> a1_daughters;
+        std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+        ic::Candidate *pi0;
+        if(tau_decay_mode_1_==10){
+          a1_daughters  = GetA1(tau1, pfcands).first;
+          rho_daughters = GetRho(tau2, pfcands);
+          pi0 = GetA1(tau1, pfcands).second;
+          rho_id_1_ = rho_id_2_;
+        }
+        if(tau_decay_mode_2_==10){
+          a1_daughters  = GetA1(tau2, pfcands).first;
+          pi0 = GetA1(tau2, pfcands).second;
+          rho_daughters = GetRho(tau1, pfcands);
+        }
+
+        mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
+        mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
+        mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
+        strip_pt_ = pi0->pt();
+
+        aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
+        aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})); 
+
+        Candidate* rho_1  = new Candidate();
+        Candidate* rho_2  = new Candidate();
+        rho_1->set_vector(a1_daughters[0]->vector()+a1_daughters[1]->vector());
+        rho_2->set_vector(a1_daughters[0]->vector()+a1_daughters[2]->vector());
+        aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
+        aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]}));
+
+        y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
+
+        y_1_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+        y_3_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[2]}),TVector3());
+        y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
+        y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
+
+        cp_sign_1_ = y_1_1_*y_1_2_;
+        cp_sign_2_ = y_1_1_*y_2_2_;
+        cp_sign_3_ = y_1_1_*y_3_2_;
+        cp_sign_4_ = y_1_1_*y_4_2_;
+
+
+        if (cp_sign_1_<0) {
+          if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+          else                   aco_angle_1_ -= M_PI;
+        }
+        if (cp_sign_2_<0) {
+          if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
+          else                   aco_angle_2_ -= M_PI;
+        }
+        if (cp_sign_3_<0) {
+          if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
+          else                   aco_angle_3_ -= M_PI;
+        }
+        if (cp_sign_4_<0) {
+          if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
+          else                   aco_angle_4_ -= M_PI;
+        }
+
       }
       else {
         cp_channel_ =-1;
@@ -4918,6 +5093,7 @@ namespace ic {
       } else {
         aco_angle_mod_ = aco_angle_;
         }
+        aco_angle_1_ = aco_angle_mod_;
       }
 
     }
@@ -4929,6 +5105,213 @@ namespace ic {
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
+
+      std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands);
+      
+      ic::Candidate *pi0_2gammas = new ic::Candidate();
+      if(gammas2.size()>1) pi0_2gammas->set_vector(gammas2[0]->vector()+gammas2[1]->vector());
+      else if (gammas2.size()>0) pi0_2gammas->set_vector(gammas2[0]->vector());
+
+
+      /********************************/
+      // these lines to get resolutions:
+      E_res_1_ =   -9999;
+      eta_res_1_ = -9999;
+      phi_res_1_ = -9999;
+      E_res_2_ =   -9999;
+      eta_res_2_ = -9999;
+      phi_res_2_ = -9999;
+      E_res_3_ =   -9999;
+      eta_res_3_ = -9999;
+      phi_res_3_ = -9999;
+      E_res_4_ =   -9999;
+      eta_res_4_ = -9999;
+      phi_res_4_ = -9999;
+      E_res_5_ =   -9999;
+      eta_res_5_ = -9999;
+      phi_res_5_ = -9999;
+      E_res_6_ =   -9999;
+      eta_res_6_ = -9999;
+      phi_res_6_ = -9999;
+
+
+      if(gammas2.size()>0 && event->Exists("subleading_gen_tau")){
+        ic::GenJet * gen_tau_jet = event->GetPtr<ic::GenJet>("subleading_gen_tau");
+        std::size_t gen_tau_id = gen_tau_jet->id();
+        std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
+        for(auto p : gen_particles) {
+          if(p->id()==gen_tau_id){
+            std::vector<GenParticle *> daughters = ExtractDaughters(p, gen_particles);
+            for(auto d : daughters) {
+              unsigned pdgId = abs(d->pdgid());
+              if(pdgId == 111) {
+                // compute resolutions here!
+                gen_pi0_E_ = d->energy();
+                E_res_1_ = pi0_tau2->energy()/d->energy();
+                eta_res_1_ = pi0_tau2->eta()/d->eta();
+                phi_res_1_ = pi0_tau2->phi()/d->phi();
+                E_res_2_ = gammas2[0]->energy()/d->energy();
+                eta_res_2_ = gammas2[0]->eta()/d->eta();
+                phi_res_2_ = gammas2[0]->phi()/d->phi();
+                E_res_3_ = pi0_2gammas->energy()/d->energy();
+                eta_res_3_ = pi0_2gammas->eta()/d->eta();
+                phi_res_3_ = pi0_2gammas->phi()/d->phi();
+
+                 
+                double massdiff1 = std::fabs((gammas2[0]->vector()+pi_tau2->vector()).M()-0.7755);              
+                double massdiff2 = std::fabs((pi0_2gammas->vector()+pi_tau2->vector()).M()-0.7755);
+                if(massdiff1<massdiff2) {
+                  pi0_2gammas->set_vector(gammas2[0]->vector());
+                } 
+                E_res_4_ = pi0_2gammas->energy()/d->energy();
+                eta_res_4_ = pi0_2gammas->eta()/d->eta();
+                phi_res_4_ = pi0_2gammas->phi()/d->phi(); 
+
+                //ic::Candidate *pi0_new = new ic::Candidate();
+                double mass = 0.1349;
+                double E=0, phi=0, eta=0;
+                double E1 = pi0_tau2->energy();
+                if(E1<15.) {
+                  E = pi0_2gammas->energy();
+                  if(massdiff1 < massdiff2) {
+                    phi = gammas2[0]->phi();
+                    eta = gammas2[0]->eta();
+                  } else {
+                    phi = pi0_2gammas->phi();
+                    eta = pi0_2gammas->eta();
+                  } 
+                } else {
+                  phi = gammas2[0]->phi();
+                  eta = gammas2[0]->eta();
+                  E = pi0_tau2->energy();  
+                }
+                double p = sqrt(E*E-mass*mass);
+                double theta = atan(exp(-eta))*2;
+                double pt = p*sin(theta);
+                ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+                E_res_5_ = E/d->energy();
+                eta_res_5_ = eta/d->eta();
+                phi_res_5_ = phi/d->phi();
+
+
+                E=0, phi=0, eta=0;
+                if(E1<15.) {
+                  E = pi0_2gammas->energy();
+                  p = sqrt(E*E-mass*mass);
+            
+                  double phi1 = gammas2[0]->phi();
+                  double eta1 = gammas2[0]->eta();
+  
+                  double phi2 = pi0_2gammas->phi();
+                  double eta2 = pi0_2gammas->eta();
+
+                  double theta1 = atan(exp(-eta1))*2;
+                  double pt1 = p*sin(theta1);
+                  ROOT::Math::PtEtaPhiEVector pi0_vector_1(pt1,eta1,phi1,E);
+                  double theta2 = atan(exp(-eta2))*2;
+                  double pt2 = p*sin(theta2);
+                  ROOT::Math::PtEtaPhiEVector pi0_vector_2(pt2,eta2,phi2,E);
+                  massdiff1 = std::fabs((pi0_vector_1+pi_tau2->vector()).M()-0.7755);
+                  massdiff2 = std::fabs((pi0_vector_2+pi_tau2->vector()).M()-0.7755);
+                  if(massdiff1 < massdiff2) {
+                    phi = gammas2[0]->phi();
+                    eta = gammas2[0]->eta();
+                  } else {
+                    phi = pi0_2gammas->phi();
+                    eta = pi0_2gammas->eta();
+                  }
+                } else {
+                  phi = gammas2[0]->phi();
+                  eta = gammas2[0]->eta();
+                  E = pi0_tau2->energy(); 
+                }
+                p = sqrt(E*E-mass*mass);
+                theta = atan(exp(-eta))*2;
+                pt = p*sin(theta);
+                //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+                E_res_6_ = E/d->energy();
+                eta_res_6_ = eta/d->eta();
+                phi_res_6_ = phi/d->phi();
+              }
+            }
+          }
+        }
+      }
+      /********************************/
+
+      /**********************************************************/
+      // some variables to compare data/MC ageement
+      
+
+      pt_gamma_1_ = -1, pt_gamma_2_ = -1, pt_gamma_3_=-1, pt_gamma_4_=-1; 
+      E_gamma_1_ = -1, E_gamma_2_ = -1, E_gamma_3_=-1, E_gamma_4_=-1, E_pi_=-1, E_pi0_=-1;
+
+      E_pi_ = pi_tau2->energy();
+
+      M_rho_ = tau2->M();
+
+      M_rho_1gamma_=-1, M_rho_2gamma_=-1, M_rho_3gamma_=-1, M_rho_subgamma_=-1;
+      M_pi0_=-1, M_pi0_2gamma_=-1, M_pi0_3gamma_=-1, M_pi0_4gamma_=-1;
+
+      gammas_dEta_=-1,gammas_dphi_=-1, rho_dEta_=-1, rho_dphi_=-1;
+
+
+      if(gammas2.size()>0){
+        strip_pt_2_= pi0_tau2->pt();
+        strip_E_2_= pi0_tau2->pt();
+        pt_gamma_1_ = gammas2[0]->pt();
+        E_gamma_1_ = gammas2[0]->energy();
+        E_pi0_ = pi0_tau2->energy();
+        M_rho_1gamma_=(pi_tau2->vector()+gammas2[0]->vector()).M();
+        rho_dEta_ = std::fabs(pi_tau2->eta()-pi0_tau2->eta());
+        rho_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_tau2->vector(),pi0_tau2->vector()));
+      }
+      if(gammas2.size()>1){
+        pt_gamma_2_ = gammas2[1]->pt();
+        E_gamma_2_ = gammas2[1]->energy();
+        M_rho_2gamma_=(pi_tau2->vector()+gammas2[0]->vector()+gammas2[1]->vector()).M();
+        M_rho_subgamma_=(pi_tau2->vector()+gammas2[1]->vector()).M();
+        M_pi0_ = pi0_tau2->M();
+        M_pi0_2gamma_= (gammas2[0]->vector()+gammas2[1]->vector()).M();
+        gammas_dEta_ = std::fabs(gammas2[0]->eta() - gammas2[1]->eta());
+        gammas_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas2[0]->vector(),gammas2[1]->vector()));
+      }
+      if(gammas2.size()>2){
+        pt_gamma_3_ = gammas2[2]->pt();
+        E_gamma_3_ = gammas2[2]->energy();
+        M_rho_3gamma_=(pi_tau2->vector()+gammas2[0]->vector()+gammas2[1]->vector()+gammas2[2]->vector()).M();
+        M_pi0_3gamma_=(gammas2[0]->vector()+gammas2[1]->vector()+gammas2[2]->vector()).M(); 
+      }
+      if(gammas2.size()>3){
+        pt_gamma_4_ = gammas2[3]->pt();
+        E_gamma_4_ = gammas2[3]->energy();
+        M_pi0_4gamma_=(gammas2[0]->vector()+gammas2[1]->vector()+gammas2[2]->vector()+gammas2[3]->vector()).M();
+      }
+
+      double SumPt=0;
+      DeltaR2WRTtau_=-1;
+      DeltaR2WRTtau_=std::pow(ROOT::Math::VectorUtil::DeltaR(pi_tau2->vector(),tau2->vector()),2)*std::pow(pi_tau2->pt(),2);
+      SumPt=std::pow(pi_tau2->pt(),2);
+      for(auto g : gammas2){
+        DeltaR2WRTtau_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector()),2)*std::pow(g->pt(),2);
+        SumPt+=std::pow(g->pt(),2);
+      }
+      DeltaR2WRTtau_/=SumPt;
+      /**********************************************************/  
+
+
+      std::vector<ic::PFCandidate*> a1_daughters;
+      std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+      ic::Candidate *pi0;
+      if(tau_decay_mode_2_==10){
+        a1_daughters  = GetA1(tau2, pfcands).first;
+        pi0 = GetA1(tau2, pfcands).second;
+        mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
+        mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
+        mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
+        strip_pt_ = pi0->pt();
+      }
+
       
       TLorentzVector lvec1;
       TLorentzVector lvec2;
@@ -4970,9 +5353,9 @@ namespace ic {
         if (cp_sign_<0) {
           if (aco_angle_<M_PI) aco_angle_mod_ = aco_angle_+M_PI;
           else                  aco_angle_mod_ = aco_angle_-M_PI;
-      } else {
-        aco_angle_mod_ = aco_angle_;
-        }
+        } else {
+          aco_angle_mod_ = aco_angle_;
+          }
       }
       
     }
@@ -4997,7 +5380,6 @@ namespace ic {
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        /* lvec2 = ConvertToLorentz(tau2->vector()); */
         pvtosv.SetXYZT(
                 ele1->vx() - vertex_vec[0]->vx(),
                 ele1->vy() - vertex_vec[0]->vy(),
@@ -5035,53 +5417,6 @@ namespace ic {
       aco_angle_     = -9999;
       aco_angle_mod_ = -9999;
     }
-
-    // for now try this because don't have the cands() saved yet
-    /*if (channel_ == channel::tt) {
-      Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
-      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-
-      ic::Candidate *pi0_1 = new Candidate();
-      ic::Candidate *pi0_2 = new Candidate();
-      ic::Candidate *pi_1 = new Candidate();
-      ic::Candidate *pi_2 = new Candidate();
-
-      if (tau1->decay_mode() == 1) {
-        pi_1->set_vector({tau1->lead_pt(), tau1->lead_eta(), tau1->lead_phi(), tau1->lead_energy()});
-
-        pi0_1->set_vector(tau1->vector() - pi_1->vector());
-
-        pi0_pt_1_ = pi0_1->vector().Pt();
-        pi0_eta_1_ = pi0_1->vector().Eta();
-        pi0_phi_1_ = pi0_1->vector().Phi();
-        pi0_E_1_ = pi0_1->vector().E();
-      } 
-      else {
-        pi0_pt_1_ = -9999.;
-        pi0_eta_1_ = -9999.;
-        pi0_phi_1_ = -9999.;
-        pi0_E_1_ = -9999.;
-      }
-          
-      if (tau2->decay_mode() == 1) {
-        pi_2->set_vector({tau2->lead_pt(), tau2->lead_eta(), tau2->lead_phi(), tau2->lead_energy()});
-
-        pi0_2->set_vector(tau2->vector() - pi_2->vector());
-
-        pi0_pt_2_ = pi0_2->vector().Pt();
-        pi0_eta_2_ = pi0_2->vector().Eta();
-        pi0_phi_2_ = pi0_2->vector().Phi();
-        pi0_E_2_ = pi0_2->vector().E();
-      }
-      else {
-        pi0_pt_2_ = -9999.;
-        pi0_eta_2_ = -9999.;
-        pi0_phi_2_ = -9999.;
-        pi0_E_2_ = -9999.;
-      }
-
-
-    }*/
       
 
     std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");

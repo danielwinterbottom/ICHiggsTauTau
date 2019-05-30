@@ -221,7 +221,20 @@ namespace ic {
       outtree_->Branch("Ptgamma2_2"      , &Ptgamma2_2_ );
       outtree_->Branch("Ptgamma3_2"      , &Ptgamma3_2_ );
       outtree_->Branch("Ptgamma4_2"      , &Ptgamma4_2_ );
-   }
+
+      outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
+      outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
+      outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
+      outtree_->Branch("strip_pt_2", &strip_pt_2_);
+      outtree_->Branch("strip_pt_1", &strip_pt_1_);
+      outtree_->Branch("strip_pi_mass_1", &strip_pi_mass_1_);
+      outtree_->Branch("strip_pi_mass_2", &strip_pi_mass_2_);
+
+      outtree_->Branch("lead_gamma_pt_1", &lead_gamma_pt_1_);
+      outtree_->Branch("lead_gamma_pt_2", &lead_gamma_pt_2_);
+    
+      outtree_->Branch("event", &event_);
+    }
 
 
 
@@ -257,9 +270,21 @@ namespace ic {
 
   int RhoIDEmbedder::Execute(TreeEvent *event) {
 
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    event_ = eventInfo->event() % 2 == 0; // if even then event_ = 1, odd = 0
+
+
+    wt_cp_sm_=1; wt_cp_ps_=1; wt_cp_mm_=1;
+    if(event->ExistsInTree("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+      wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+      wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
+      wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+    }
+
+
     if (!(channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et)) return 0;
     
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_ = 1;
     wt_ = eventInfo->total_weight();
 
@@ -285,15 +310,28 @@ namespace ic {
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
-      
-      if (tau2->decay_mode()==1) {
+      gammas2 = GetTauGammas(tau2, pfcands);
+      if(gammas2.size()>0) lead_gamma_pt_2_ = gammas2[0]->pt();
+      else lead_gamma_pt_2_ = -1;
+      //if(gammas2.size()>0 && tau_decay_mode_2_==1 && gammas2[0]->pt()<0.50) std::cout << gammas2[0]->pt() << std::endl;
+      std::vector<ic::PFCandidate*> strips = HPS (gammas2, 0, 0, 0, 0.1349, 2);
+      if(strips.size()>0) {
+        strip_pt_2_ = strips[0]->pt();
+        strip_pi_mass_2_ = (strips[0]->vector() + tau2->vector()).M();
+      }
+      else {
+        strip_pi_mass_2_ = -1;
+        strip_pt_2_ = -1;
+      }
+
+      if ( tau2->decay_mode()==1 || true) {
 
     //---initializing some of the variables-----------
     FracPtDepos_dRLessThan0p008_2_=-999; FracPtDepos_dRMoreThan0p008_2_=-999;
     //-----------------------------------------
 
 
-        gammas2 = GetTauGammas(tau2, pfcands);
+
 
         std::pair<ic::Candidate*, ic::Candidate*> rho_2 = GetRho(tau2, pfcands);
 
@@ -345,6 +383,7 @@ namespace ic {
         for (auto g : gammas2) gammas_vector_2+=g->vector();
         Mpi0_2_ = gammas_vector_2.M();
         Mrho_2_ = tau2->M();
+        if(tau2->decay_mode()==0) Mrho_2_ = (pi_2->vector()+pi0_2->vector()).M();
         rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_2->vector(),pi0_2->vector()));
         rho_dEta_2_ = std::fabs(pi_2->eta()-pi0_2->eta());
 
@@ -514,6 +553,7 @@ namespace ic {
         eta_2_         = eta_2_;
 
         double score2 = read_mva_score(inputs2);
+
         event->Add("rho_id_2", score2);
       
       
@@ -525,14 +565,27 @@ namespace ic {
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       tau_decay_mode_1_=tau1->decay_mode();
+
+      gammas1 = GetTauGammas(tau1, pfcands);
+      if(gammas1.size()>0) lead_gamma_pt_1_ = gammas1[0]->pt();
+      else lead_gamma_pt_1_ = -1;
+      std::vector<ic::PFCandidate*> strips = HPS (gammas1, 0, 0, 0, 0.1349, 2);
+      if(strips.size()>0) {
+        strip_pt_1_ = strips[0]->pt();
+        strip_pi_mass_1_ = (strips[0]->vector() + tau1->vector()).M();
+      }
+      else {
+        strip_pi_mass_1_ = -1;
+        strip_pt_1_ = -1;
+      }
+
       
-      if(tau1->decay_mode()==1) {
+      if(tau1->decay_mode()==1 || true) {
         
     //---initializing some of the variables-----------        
     FracPtDepos_dRLessThan0p008_1_=-999; FracPtDepos_dRMoreThan0p008_1_=-999;
     //-------------------------    
         
-        gammas1 = GetTauGammas(tau1, pfcands);
 
         std::pair<ic::Candidate*, ic::Candidate*> rho_1 = GetRho(tau1, pfcands);
 
@@ -584,6 +637,7 @@ namespace ic {
         for (auto g : gammas1) gammas_vector_1+=g->vector();
         Mpi0_1_ = gammas_vector_1.M();
         Mrho_1_ = tau1->M();
+        if(tau1->decay_mode()==0) Mrho_1_ = (pi_1->vector()+pi0_1->vector()).M();
         rho_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_1->vector(),pi0_1->vector()));
         rho_dEta_1_ = std::fabs(pi_1->eta()-pi0_1->eta());
 
@@ -706,9 +760,21 @@ namespace ic {
           }
           DeltaR2WRTpi0_1_/=SumPt_1;
 
-
         }
 
+     //------------------EnergyFraction-------------------- 
+        FracPtDepos_dRLessThan0p008_1_=0; FracPtDepos_dRMoreThan0p008_1_=0;
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.008 )
+          FracPtDepos_dRLessThan0p008_1_+=pi_1->pt()/tau1->pt();
+        
+        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) >= 0.008 )
+          FracPtDepos_dRMoreThan0p008_1_+=pi_1->pt()/tau1->pt();
+        
+                
+        for (auto g: gammas1){
+          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
+            FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
 
          //----------Gamma Pt-------------
         Ptgamma1_1_=-1; Ptgamma2_1_=-1; Ptgamma3_1_=-1; Ptgamma4_1_=-1;
@@ -737,6 +803,7 @@ namespace ic {
         }
 
 
+        std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
 
         std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};

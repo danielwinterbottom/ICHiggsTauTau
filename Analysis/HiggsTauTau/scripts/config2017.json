@@ -5,7 +5,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar11_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","et","em","tt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {  
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "era"           : "data_2017",
     "mc"            : "mc2017",
     "strategy"      : "cpsummer17",
@@ -62,7 +62,7 @@
     // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2017/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec09_genVars/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jan30/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/New2017SF/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/tauola_CPdecay_2017/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",

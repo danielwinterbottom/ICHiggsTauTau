@@ -1959,7 +1959,6 @@ namespace ic {
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
     // modified this to set the jet flavour as a flag indicating the tau decay mode, flag is integer defined as:
-    // 1 = pi + pi0; 2 = pi; 3 = pi + 2*pi0; 4 = 3 pi; 5 = ; 0 = others
     // Warning: returned tau type works for taus decayed by Pythia8 but probably won't work for other generators e.g tauola!
     std::vector<GenJet> taus;
     for (unsigned i = 0; i < parts.size(); ++i) {
@@ -1970,6 +1969,7 @@ namespace ic {
           is_prompt=status_flags[IsPrompt];
         }
       if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
+        std::size_t tau_id = parts[i]->id();
         std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
         bool has_tau_daughter = false;
         bool has_lepton_daughter = false;
@@ -2005,6 +2005,7 @@ namespace ic {
         taus.back().set_vector(vec);
         taus.back().set_constituents(id_vec);
         taus.back().set_flavour(tauFlag);
+        taus.back().set_id(tau_id);
       }
     }
     return taus;
@@ -2017,7 +2018,7 @@ namespace ic {
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          gammas.push_back(p);
+          if(p->pt()>0.5) gammas.push_back(p);
           break;
         }
       }
@@ -2033,7 +2034,7 @@ namespace ic {
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          gammas.push_back(p);
+          if(p->pt()>0.5) gammas.push_back(p);
           break;
         }
       }
@@ -2085,13 +2086,17 @@ namespace ic {
     }
     return std::make_pair(pi,pi0);
   }
-  
-  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
+
+  bool sortStrips (std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> i,std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> j) {
+    return (i.first->pt() > j.first->pt());
+  }
+
+  std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> HPSGammas (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
 
     // mode = 0 uses fixed strip sizes set by etaAssociationDistance and phiAssociationDistance
     // mode = 1 uses dynamic strip size
     // mode = 2 uses dynamic strip size but sets maximum sizes of strips by etaAssociationDistance and phiAssociationDistance
-    std::vector<ic::PFCandidate*> strips;   
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;   
     while(!cands.empty()) {
 
       //save the non associated candidates to a different collection
@@ -2162,23 +2167,114 @@ namespace ic {
       //double mass = 0.1349;
       double factor = sqrt(strip.energy()*strip.energy()-mass*mass)/strip.vector().P();
       strip.set_pt(factor*strip.pt());
-      strips.push_back(new ic::PFCandidate(strip));
+      if(strip.pt()>=stripPtThreshold) strips.push_back(std::make_pair(new ic::PFCandidate(strip), Associated));
    
     }
-    std::sort(strips.begin(), strips.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
-    ic::erase_if(strips,!boost::bind(MinPtMaxEta, _1, stripPtThreshold, 9999.)); 
+    std::sort(strips.begin(), strips.end(), sortStrips);
 
     return strips;
   }
 
 
-  // CP in tau decays functions
-  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi) {
-    ic::Candidate* pi0 = new ic::Candidate();
-    pi0->set_vector(tau->vector()-pi->vector());
-    pi0->set_charge(0);
+  std::vector<ic::PFCandidate*> HPS (std::vector<ic::PFCandidate*> cands, double stripPtThreshold, double etaAssociationDistance, double phiAssociationDistance, double mass, unsigned mode) {
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(cands, stripPtThreshold, etaAssociationDistance, phiAssociationDistance, mass, mode);
+    std::vector<ic::PFCandidate*> strips;
+    for(auto s : strip_pairs) strips.push_back(s.first);
+    return strips;
+  }
+
+  ic::Candidate*  GetPi0 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, bool leadEtaPhi) {
+    ic::Candidate *pi0 = new ic::Candidate;
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands);
+    if(gammas.size()>0) {
+      double E = 0.;
+      double phi = 0.;
+      double eta = 0.;
+      for(auto g: gammas) {
+        E+=g->energy();
+        phi+=g->energy()*g->phi();
+        eta+=g->energy()*g->eta();
+      }
+      eta/=E;
+      phi/=E;
+
+      if(leadEtaPhi){
+        // if true sets the eta and phi of the pi0 to that of the leading gamma - improves resolution
+        eta = gammas[0]->eta();
+        phi = gammas[0]->phi(); 
+      }
+
+      double mass = 0.1349;
+      double p = sqrt(E*E-mass*mass);
+      double theta = atan(exp(-eta))*2;
+      double pt = p*sin(theta);
+      ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      pi0->set_vector(pi0_vector);
+    }
     return pi0;
   }
+
+  std::pair<std::vector<ic::PFCandidate*>, ic::PFCandidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
+    if(hads.size()==3) {
+      // arrange hadrons so the oppositly charged hadron is contained in the first element
+      if(hads[1]->charge()!=hads[0]->charge()&&hads[1]->charge()!=hads[2]->charge()){
+        auto temp = hads[1];
+        hads[1] = hads[0];
+        hads[0] = temp;
+      }
+      else if(hads[2]->charge()!=hads[0]->charge()&&hads[2]->charge()!=hads[1]->charge()){
+        auto temp = hads[2];
+        hads[2] = hads[0];
+        hads[0] = temp;
+      } 
+      // from the two same sign hadrons place the one that gives the mass most similar to the rho meson as the second element
+      double rho_mass = 0.7755;
+      double dM1 = std::fabs((hads[0]->vector()+hads[1]->vector()).M()-rho_mass);
+      double dM2 = std::fabs((hads[0]->vector()+hads[2]->vector()).M()-rho_mass);
+      if(dM2<dM1){
+        auto temp = hads[2];
+        hads[2] = hads[1];
+        hads[1] = temp;
+      }
+    }
+    std::vector<ic::PFCandidate*> gammas = GetTauIsoGammas(tau, pfcands);
+
+    double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
+    double pt_cut = 0.5;
+    double mass = 0.1349;
+    ic::PFCandidate *pi0 = new ic::PFCandidate();
+    //std::vector<ic::PFCandidate*> gammas_incone;
+    //for (auto g : gammas) {
+    //  if(g->pt()>pt_cut /*&& std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau->vector()))<cone_size*/) gammas_incone.push_back(g);
+    //}
+    //// sum together all gammas in signal cone to form the pi0
+    //if(gammas_incone.size()>0) {
+      //double E = 0.;
+      //double phi = 0.;
+      //double eta = 0.;
+      //for(auto g: gammas_incone) {
+      //  E+=g->energy();
+      //  phi+=g->energy()*g->phi();
+      //  eta+=g->energy()*g->eta();
+      //}
+      //eta/=E;
+      //phi/=E;
+      //double p = sqrt(E*E-mass*mass);
+      //double theta = atan(exp(-eta))*2;
+      //double pt = p*sin(theta);
+      //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      //pi0->set_vector(pi0_vector);
+    ic::erase_if(gammas,!boost::bind(MinPtMaxEta, _1, pt_cut, 9999.));
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(gammas, 0, 0, 0, mass, 1); 
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips_incone; 
+    for(auto s : strip_pairs) {
+      if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
+    }
+    if(strips_incone.size()>0) pi0 = strips_incone[0].first;
+    return std::make_pair(hads, pi0);
+  }
+
 
   std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;
