@@ -36,7 +36,10 @@ class RhoIDEmbedder : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
-  
+
+  unsigned event_;
+  double wt_cp_sm_, wt_cp_ps_, wt_cp_mm_;
+  double strip_pt_1_=-1, strip_pt_2_=-1, lead_gamma_pt_1_=-1, lead_gamma_pt_2_=-1, strip_pi_mass_1_=-1,strip_pi_mass_2_=-1; 
 
   float var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13;
 
@@ -244,6 +247,39 @@ class RhoIDEmbedder : public ModuleBase {
   double SumPt_1;
   double SumPt_2;
 
+  double mass0_1_ = -1;
+  double mass1_1_ = -1;
+  double mass2_1_ = -1;
+  double E1_1_ =  -1;
+  double E2_1_ =  -1;
+  double E3_1_ =  -1;
+  double strip_E_1_ = -1;
+  double a1_pi0_dEta_1_ = -1;
+  double a1_pi0_dphi_1_ = -1;
+
+  double mass0_2_ = -1;
+  double mass1_2_ = -1;
+  double mass2_2_ = -1;
+  double E1_2_ =  -1;
+  double E2_2_ =  -1;
+  double E3_2_ =  -1;
+  double strip_E_2_ = -1;
+  double a1_pi0_dEta_2_ = -1;
+  double a1_pi0_dphi_2_ = -1;
+
+  double h1_h2_dphi_1_ = -1;
+  double h1_h3_dphi_1_ = -1;
+  double h2_h3_dphi_1_ = -1;
+  double h1_h2_dEta_1_ = -1;
+  double h1_h3_dEta_1_ = -1;
+  double h2_h3_dEta_1_ = -1;
+
+  double h1_h2_dphi_2_ = -1;
+  double h1_h3_dphi_2_ = -1;
+  double h2_h3_dphi_2_ = -1;
+  double h1_h2_dEta_2_ = -1;
+  double h1_h3_dEta_2_ = -1;
+  double h2_h3_dEta_2_ = -1;
 
 };
 
