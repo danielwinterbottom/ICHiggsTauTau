@@ -37,10 +37,11 @@ namespace ic {
 
         TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_0p5gammas_2fold_applytoeven.xml";
         TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_0p5gammas_2fold_applytoodd.xml";
-        reader_even_->AddVariable( "event", &event_);
+
+        //reader_even_->AddVariable( "event", &event_);
         reader_even_->AddVariable( "Egamma1_tau", &Egamma1_tau_ );
         reader_even_->AddVariable( "Egamma2_tau", &Egamma2_tau_ );
-        reader_even_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
+        //reader_even_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
         reader_even_->AddVariable( "Epi_tau", &Epi_tau_ );
         reader_even_->AddVariable( "rho_dEta_tau", &rho_dEta_tau_ );
         reader_even_->AddVariable( "rho_dphi_tau", &rho_dphi_tau_ );
@@ -59,17 +60,17 @@ namespace ic {
         reader_even_->AddVariable( "Mpi0", &Mpi0_ );
         reader_even_->AddVariable( "DeltaR2WRTtau", &DeltaR2WRTtau_ );
         reader_even_->AddVariable( "Mpi0_TwoHighGammas", &Mpi0_TwoHighGammas_ );
-        reader_even_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
-        reader_even_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
+        //reader_even_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
+        //reader_even_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
         reader_even_->AddVariable( "Mrho_OneHighGammas", &Mrho_OneHighGammas_ );
         reader_even_->AddVariable( "Mrho_TwoHighGammas", &Mrho_TwoHighGammas_ );
-        reader_even_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
+        //reader_even_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
         reader_even_->AddVariable( "Mrho_subleadingGamma", &Mrho_subleadingGamma_ );
 
-        reader_odd_->AddVariable( "event", &event_);
+        //reader_odd_->AddVariable( "event", &event_);
         reader_odd_->AddVariable( "Egamma1_tau", &Egamma1_tau_ );
         reader_odd_->AddVariable( "Egamma2_tau", &Egamma2_tau_ );
-        reader_odd_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
+        //reader_odd_->AddVariable( "Egamma3_tau", &Egamma3_tau_ );
         reader_odd_->AddVariable( "Epi_tau", &Epi_tau_ );
         reader_odd_->AddVariable( "rho_dEta_tau", &rho_dEta_tau_ );
         reader_odd_->AddVariable( "rho_dphi_tau", &rho_dphi_tau_ );
@@ -88,11 +89,11 @@ namespace ic {
         reader_odd_->AddVariable( "Mpi0", &Mpi0_ );
         reader_odd_->AddVariable( "DeltaR2WRTtau", &DeltaR2WRTtau_ );
         reader_odd_->AddVariable( "Mpi0_TwoHighGammas", &Mpi0_TwoHighGammas_ );
-        reader_odd_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
-        reader_odd_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
+        //reader_odd_->AddVariable( "Mpi0_ThreeHighGammas", &Mpi0_ThreeHighGammas_ );
+        //reader_odd_->AddVariable( "Mpi0_FourHighGammas", &Mpi0_FourHighGammas_ );
         reader_odd_->AddVariable( "Mrho_OneHighGammas", &Mrho_OneHighGammas_ );
         reader_odd_->AddVariable( "Mrho_TwoHighGammas", &Mrho_TwoHighGammas_ );
-        reader_odd_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
+        //reader_odd_->AddVariable( "Mrho_ThreeHighGammas", &Mrho_ThreeHighGammas_ );
         reader_odd_->AddVariable( "Mrho_subleadingGamma", &Mrho_subleadingGamma_ );
        
         reader_even_->BookMVA( "BDT method", filename_even );
@@ -117,8 +118,8 @@ namespace ic {
 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>("ditau");
     CompositeCandidate const* ditau = ditau_vec.at(0);
-    Candidate const* lep1 = ditau->GetCandidate("lepton1");
-    Candidate const* lep2 = ditau->GetCandidate("lepton2");
+    Candidate * lep1 = ditau->GetCandidate("lepton1");
+    Candidate * lep2 = ditau->GetCandidate("lepton2");
     
     std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
     std::vector<ic::PFCandidate*> gammas1;
@@ -130,7 +131,7 @@ namespace ic {
 //-------------------------------------subleading tau--------------------
 
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
-      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+      Tau * tau2 = dynamic_cast<Tau *>(lep2);
       tau_decay_mode_=tau2->decay_mode();
       gammas2 = GetTauGammas(tau2, pfcands);
 
@@ -182,7 +183,7 @@ namespace ic {
         if(gammas2.size()>=4) Mpi0_FourHighGammas_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() + gammas2[3]->vector()).M();
         //--------Mrho------
         Mrho_=-1, Mrho_OneHighGammas_=-1; Mrho_TwoHighGammas_=-1; Mrho_ThreeHighGammas_=-1; Mrho_subleadingGamma_=-1;
-        Mrho_ = tau2->M();
+        Mrho_ = (pi_2->vector() + pi0_2->vector()).M();
         if(gammas2.size()>=1) Mrho_OneHighGammas_=( pi_2->vector() + gammas2[0]->vector() ).M();
         if(gammas2.size()>=2) Mrho_TwoHighGammas_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector()  ).M();
         if(gammas2.size()>=3) Mrho_ThreeHighGammas_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() ).M();
@@ -212,7 +213,7 @@ namespace ic {
 //-------------------------------------leading tau--------------------
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
 
-      Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+      Tau * tau1 = dynamic_cast<Tau *>(lep1);
       tau_decay_mode_=tau1->decay_mode();
       gammas1 = GetTauGammas(tau1, pfcands);
 
@@ -265,7 +266,7 @@ namespace ic {
         if(gammas1.size()>=4) Mpi0_FourHighGammas_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() + gammas1[3]->vector()).M();
         //--------Mrho------
         Mrho_=-1, Mrho_OneHighGammas_=-1; Mrho_TwoHighGammas_=-1; Mrho_ThreeHighGammas_=-1; Mrho_subleadingGamma_=-1;
-        Mrho_ = tau1->M();
+        Mrho_ = (pi_1->vector() + pi0_1->vector()).M();
         if(gammas1.size()>=1) Mrho_OneHighGammas_=( pi_1->vector() + gammas1[0]->vector() ).M();
         if(gammas1.size()>=2) Mrho_TwoHighGammas_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector()  ).M();
         if(gammas1.size()>=3) Mrho_ThreeHighGammas_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() ).M();

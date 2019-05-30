@@ -23,18 +23,20 @@ class MVADMEmbedder : public ModuleBase {
   CLASS_MEMBER(MVADMEmbedder, fwlite::TFileService*, fs)
   CLASS_MEMBER(MVADMEmbedder, ic::channel, channel)
   
-  TMVA::Reader *reader_;
+  TMVA::Reader *reader_even_;
+  TMVA::Reader *reader_odd_;
 
  public:
   MVADMEmbedder(std::string const& name);
   virtual ~MVADMEmbedder();
-  virtual std::vector<float> read_mva_scores();
+  virtual std::vector<float> read_mva_scores(unsigned isEven);
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  unsigned event_;
+  unsigned isEven_;
+  float event_;
 
   float Egamma1_tau_; 
   float Egamma2_tau_;
