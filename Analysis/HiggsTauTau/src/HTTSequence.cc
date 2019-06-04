@@ -2615,7 +2615,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 if (strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
-      .set_maketrees(true)
+      .set_maketrees(false)
       .set_channel(channel)
       .set_strategy(strategy_type));
 
