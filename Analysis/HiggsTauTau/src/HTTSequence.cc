@@ -1167,7 +1167,7 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V23_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2018) {
@@ -1357,7 +1357,10 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, true) ||
+      /* return  PileupJetID(jet, pu_id_training, false, true) ||
+         fabs(jet->eta()) > 3.139 ||
+         fabs(jet->eta()) < 2.65 ; */
+      return  jet->pt() > 50 ||
         fabs(jet->eta()) > 3.139 ||
         fabs(jet->eta()) < 2.65 ;
     })
@@ -2470,7 +2473,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
             //httStitching.SetDYInputYields(48632630.0+49069662.0,42299237.0+33643695.0, 88795.0+9691457.0, 5740168.0 + 1446624.0, 4295167.0); // correspond to Params v5
-            httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33259078.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
+            httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33319159.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
           }
        
        BuildModule(httStitching);   

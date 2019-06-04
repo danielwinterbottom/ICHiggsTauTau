@@ -11,10 +11,10 @@ ROOT.TGaxis.SetExponentOffset(-0.06, 0.01, "y")
 c1 = ROOT.TCanvas()
 c1.cd()
 pads=plotting.OnePad()
-lumi = "2017"
+lumi = "2018"
 
 
-file_ = ROOT.TFile("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root", "READ")
+file_ = ROOT.TFile("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root", "READ")
 
 hist = file_.Get("btag_eff_b")
 
@@ -43,9 +43,10 @@ hist.GetXaxis().SetTitle("P_{T} (GeV)")
 hist.GetYaxis().SetTitle("#eta")
 hist.GetZaxis().SetTitle("Efficiency")
 hist.SetMinimum(min_value)
+hist.SetMaximum(1.0)
 
 
-c1.SaveAs("btag_eff_b_deepCSV.pdf")
+c1.SaveAs("btag_eff_b_deepCSV_2018.pdf")
 file_.Close()
 
 
