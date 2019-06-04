@@ -541,25 +541,25 @@ class HTTCategories : public ModuleBase {
   double DeltaR2WRTtau_=-1;
   /**********************************************************/
 
-  double E_res_1_; 
-  double eta_res_1_; 
-  double phi_res_1_; 
-  double E_res_2_; 
-  double eta_res_2_;
-  double phi_res_2_;
-  double E_res_3_; 
-  double eta_res_3_;
-  double phi_res_3_;
-  double E_res_4_;
-  double eta_res_4_;
-  double phi_res_4_;
+  //double E_res_1_; 
+  //double eta_res_1_; 
+  //double phi_res_1_; 
+  //double E_res_2_; 
+  //double eta_res_2_;
+  //double phi_res_2_;
+  //double E_res_3_; 
+  //double eta_res_3_;
+  //double phi_res_3_;
+  //double E_res_4_;
+  //double eta_res_4_;
+  //double phi_res_4_;
 
-  double E_res_5_;
-  double eta_res_5_;
-  double phi_res_5_; 
-  double E_res_6_;
-  double eta_res_6_;
-  double phi_res_6_;
+  //double E_res_5_;
+  //double eta_res_5_;
+  //double phi_res_5_; 
+  //double E_res_6_;
+  //double eta_res_6_;
+  //double phi_res_6_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2

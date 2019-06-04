@@ -912,25 +912,25 @@ namespace ic {
         outtree_->Branch("rhodEta",       &rho_dEta_      );
         outtree_->Branch("rhodphi",       &rho_dphi_      );
         outtree_->Branch("DeltaR2WRTtau", &DeltaR2WRTtau_ );
-        outtree_->Branch("E_res_1", &E_res_1_);
-        outtree_->Branch("eta_res_1", &eta_res_1_);
-        outtree_->Branch("phi_res_1", &phi_res_1_);
-        outtree_->Branch("E_res_2", &E_res_2_);
-        outtree_->Branch("eta_res_2", &eta_res_2_);
-        outtree_->Branch("phi_res_2", &phi_res_2_);
-        outtree_->Branch("E_res_3", &E_res_3_);
-        outtree_->Branch("eta_res_3", &eta_res_3_);
-        outtree_->Branch("phi_res_3", &phi_res_3_);
-        outtree_->Branch("E_res_4", &E_res_4_);
-        outtree_->Branch("eta_res_4", &eta_res_4_);
-        outtree_->Branch("phi_res_4", &phi_res_4_);
+       // outtree_->Branch("E_res_1", &E_res_1_);
+       // outtree_->Branch("eta_res_1", &eta_res_1_);
+       // outtree_->Branch("phi_res_1", &phi_res_1_);
+       // outtree_->Branch("E_res_2", &E_res_2_);
+       // outtree_->Branch("eta_res_2", &eta_res_2_);
+       // outtree_->Branch("phi_res_2", &phi_res_2_);
+       // outtree_->Branch("E_res_3", &E_res_3_);
+       // outtree_->Branch("eta_res_3", &eta_res_3_);
+       // outtree_->Branch("phi_res_3", &phi_res_3_);
+       // outtree_->Branch("E_res_4", &E_res_4_);
+       // outtree_->Branch("eta_res_4", &eta_res_4_);
+       // outtree_->Branch("phi_res_4", &phi_res_4_);
 
-        outtree_->Branch("E_res_5", &E_res_5_);
-        outtree_->Branch("eta_res_5", &eta_res_5_);
-        outtree_->Branch("phi_res_5", &phi_res_5_);
-        outtree_->Branch("E_res_6", &E_res_6_);
-        outtree_->Branch("eta_res_6", &eta_res_6_);
-        outtree_->Branch("phi_res_6", &phi_res_6_);
+       // outtree_->Branch("E_res_5", &E_res_5_);
+       // outtree_->Branch("eta_res_5", &eta_res_5_);
+       // outtree_->Branch("phi_res_5", &phi_res_5_);
+       // outtree_->Branch("E_res_6", &E_res_6_);
+       // outtree_->Branch("eta_res_6", &eta_res_6_);
+       // outtree_->Branch("phi_res_6", &phi_res_6_);
 
  
       }
@@ -5113,131 +5113,131 @@ namespace ic {
       else if (gammas2.size()>0) pi0_2gammas->set_vector(gammas2[0]->vector());
 
 
-      /********************************/
-      // these lines to get resolutions:
-      E_res_1_ =   -9999;
-      eta_res_1_ = -9999;
-      phi_res_1_ = -9999;
-      E_res_2_ =   -9999;
-      eta_res_2_ = -9999;
-      phi_res_2_ = -9999;
-      E_res_3_ =   -9999;
-      eta_res_3_ = -9999;
-      phi_res_3_ = -9999;
-      E_res_4_ =   -9999;
-      eta_res_4_ = -9999;
-      phi_res_4_ = -9999;
-      E_res_5_ =   -9999;
-      eta_res_5_ = -9999;
-      phi_res_5_ = -9999;
-      E_res_6_ =   -9999;
-      eta_res_6_ = -9999;
-      phi_res_6_ = -9999;
+      ///********************************/
+      //// these lines to get resolutions:
+      //E_res_1_ =   -9999;
+      //eta_res_1_ = -9999;
+      //phi_res_1_ = -9999;
+      //E_res_2_ =   -9999;
+      //eta_res_2_ = -9999;
+      //phi_res_2_ = -9999;
+      //E_res_3_ =   -9999;
+      //eta_res_3_ = -9999;
+      //phi_res_3_ = -9999;
+      //E_res_4_ =   -9999;
+      //eta_res_4_ = -9999;
+      //phi_res_4_ = -9999;
+      //E_res_5_ =   -9999;
+      //eta_res_5_ = -9999;
+      //phi_res_5_ = -9999;
+      //E_res_6_ =   -9999;
+      //eta_res_6_ = -9999;
+      //phi_res_6_ = -9999;
 
 
-      if(gammas2.size()>0 && event->Exists("subleading_gen_tau")){
-        ic::GenJet * gen_tau_jet = event->GetPtr<ic::GenJet>("subleading_gen_tau");
-        std::size_t gen_tau_id = gen_tau_jet->id();
-        std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
-        for(auto p : gen_particles) {
-          if(p->id()==gen_tau_id){
-            std::vector<GenParticle *> daughters = ExtractDaughters(p, gen_particles);
-            for(auto d : daughters) {
-              unsigned pdgId = abs(d->pdgid());
-              if(pdgId == 111) {
-                // compute resolutions here!
-                gen_pi0_E_ = d->energy();
-                E_res_1_ = pi0_tau2->energy()/d->energy();
-                eta_res_1_ = pi0_tau2->eta()/d->eta();
-                phi_res_1_ = pi0_tau2->phi()/d->phi();
-                E_res_2_ = gammas2[0]->energy()/d->energy();
-                eta_res_2_ = gammas2[0]->eta()/d->eta();
-                phi_res_2_ = gammas2[0]->phi()/d->phi();
-                E_res_3_ = pi0_2gammas->energy()/d->energy();
-                eta_res_3_ = pi0_2gammas->eta()/d->eta();
-                phi_res_3_ = pi0_2gammas->phi()/d->phi();
+      //if(gammas2.size()>0 && event->Exists("subleading_gen_tau")){
+      //  ic::GenJet * gen_tau_jet = event->GetPtr<ic::GenJet>("subleading_gen_tau");
+      //  std::size_t gen_tau_id = gen_tau_jet->id();
+      //  std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
+      //  for(auto p : gen_particles) {
+      //    if(p->id()==gen_tau_id){
+      //      std::vector<GenParticle *> daughters = ExtractDaughters(p, gen_particles);
+      //      for(auto d : daughters) {
+      //        unsigned pdgId = abs(d->pdgid());
+      //        if(pdgId == 111) {
+      //          // compute resolutions here!
+      //          gen_pi0_E_ = d->energy();
+      //          E_res_1_ = pi0_tau2->energy()/d->energy();
+      //          eta_res_1_ = pi0_tau2->eta()/d->eta();
+      //          phi_res_1_ = pi0_tau2->phi()/d->phi();
+      //          E_res_2_ = gammas2[0]->energy()/d->energy();
+      //          eta_res_2_ = gammas2[0]->eta()/d->eta();
+      //          phi_res_2_ = gammas2[0]->phi()/d->phi();
+      //          E_res_3_ = pi0_2gammas->energy()/d->energy();
+      //          eta_res_3_ = pi0_2gammas->eta()/d->eta();
+      //          phi_res_3_ = pi0_2gammas->phi()/d->phi();
 
-                 
-                double massdiff1 = std::fabs((gammas2[0]->vector()+pi_tau2->vector()).M()-0.7755);              
-                double massdiff2 = std::fabs((pi0_2gammas->vector()+pi_tau2->vector()).M()-0.7755);
-                if(massdiff1<massdiff2) {
-                  pi0_2gammas->set_vector(gammas2[0]->vector());
-                } 
-                E_res_4_ = pi0_2gammas->energy()/d->energy();
-                eta_res_4_ = pi0_2gammas->eta()/d->eta();
-                phi_res_4_ = pi0_2gammas->phi()/d->phi(); 
+      //           
+      //          double massdiff1 = std::fabs((gammas2[0]->vector()+pi_tau2->vector()).M()-0.7755);              
+      //          double massdiff2 = std::fabs((pi0_2gammas->vector()+pi_tau2->vector()).M()-0.7755);
+      //          if(massdiff1<massdiff2) {
+      //            pi0_2gammas->set_vector(gammas2[0]->vector());
+      //          } 
+      //          E_res_4_ = pi0_2gammas->energy()/d->energy();
+      //          eta_res_4_ = pi0_2gammas->eta()/d->eta();
+      //          phi_res_4_ = pi0_2gammas->phi()/d->phi(); 
 
-                //ic::Candidate *pi0_new = new ic::Candidate();
-                double mass = 0.1349;
-                double E=0, phi=0, eta=0;
-                double E1 = pi0_tau2->energy();
-                if(E1<15.) {
-                  E = pi0_2gammas->energy();
-                  if(massdiff1 < massdiff2) {
-                    phi = gammas2[0]->phi();
-                    eta = gammas2[0]->eta();
-                  } else {
-                    phi = pi0_2gammas->phi();
-                    eta = pi0_2gammas->eta();
-                  } 
-                } else {
-                  phi = gammas2[0]->phi();
-                  eta = gammas2[0]->eta();
-                  E = pi0_tau2->energy();  
-                }
-                double p = sqrt(E*E-mass*mass);
-                double theta = atan(exp(-eta))*2;
-                double pt = p*sin(theta);
-                ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
-                E_res_5_ = E/d->energy();
-                eta_res_5_ = eta/d->eta();
-                phi_res_5_ = phi/d->phi();
+      //          //ic::Candidate *pi0_new = new ic::Candidate();
+      //          double mass = 0.1349;
+      //          double E=0, phi=0, eta=0;
+      //          double E1 = pi0_tau2->energy();
+      //          if(E1<15.) {
+      //            E = pi0_2gammas->energy();
+      //            if(massdiff1 < massdiff2) {
+      //              phi = gammas2[0]->phi();
+      //              eta = gammas2[0]->eta();
+      //            } else {
+      //              phi = pi0_2gammas->phi();
+      //              eta = pi0_2gammas->eta();
+      //            } 
+      //          } else {
+      //            phi = gammas2[0]->phi();
+      //            eta = gammas2[0]->eta();
+      //            E = pi0_tau2->energy();  
+      //          }
+      //          double p = sqrt(E*E-mass*mass);
+      //          double theta = atan(exp(-eta))*2;
+      //          double pt = p*sin(theta);
+      //          ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      //          E_res_5_ = E/d->energy();
+      //          eta_res_5_ = eta/d->eta();
+      //          phi_res_5_ = phi/d->phi();
 
 
-                E=0, phi=0, eta=0;
-                if(E1<15.) {
-                  E = pi0_2gammas->energy();
-                  p = sqrt(E*E-mass*mass);
-            
-                  double phi1 = gammas2[0]->phi();
-                  double eta1 = gammas2[0]->eta();
+      //          E=0, phi=0, eta=0;
+      //          if(E1<15.) {
+      //            E = pi0_2gammas->energy();
+      //            p = sqrt(E*E-mass*mass);
+      //      
+      //            double phi1 = gammas2[0]->phi();
+      //            double eta1 = gammas2[0]->eta();
   
-                  double phi2 = pi0_2gammas->phi();
-                  double eta2 = pi0_2gammas->eta();
+      //            double phi2 = pi0_2gammas->phi();
+      //            double eta2 = pi0_2gammas->eta();
 
-                  double theta1 = atan(exp(-eta1))*2;
-                  double pt1 = p*sin(theta1);
-                  ROOT::Math::PtEtaPhiEVector pi0_vector_1(pt1,eta1,phi1,E);
-                  double theta2 = atan(exp(-eta2))*2;
-                  double pt2 = p*sin(theta2);
-                  ROOT::Math::PtEtaPhiEVector pi0_vector_2(pt2,eta2,phi2,E);
-                  massdiff1 = std::fabs((pi0_vector_1+pi_tau2->vector()).M()-0.7755);
-                  massdiff2 = std::fabs((pi0_vector_2+pi_tau2->vector()).M()-0.7755);
-                  if(massdiff1 < massdiff2) {
-                    phi = gammas2[0]->phi();
-                    eta = gammas2[0]->eta();
-                  } else {
-                    phi = pi0_2gammas->phi();
-                    eta = pi0_2gammas->eta();
-                  }
-                } else {
-                  phi = gammas2[0]->phi();
-                  eta = gammas2[0]->eta();
-                  E = pi0_tau2->energy(); 
-                }
-                p = sqrt(E*E-mass*mass);
-                theta = atan(exp(-eta))*2;
-                pt = p*sin(theta);
-                //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
-                E_res_6_ = E/d->energy();
-                eta_res_6_ = eta/d->eta();
-                phi_res_6_ = phi/d->phi();
-              }
-            }
-          }
-        }
-      }
-      /********************************/
+      //            double theta1 = atan(exp(-eta1))*2;
+      //            double pt1 = p*sin(theta1);
+      //            ROOT::Math::PtEtaPhiEVector pi0_vector_1(pt1,eta1,phi1,E);
+      //            double theta2 = atan(exp(-eta2))*2;
+      //            double pt2 = p*sin(theta2);
+      //            ROOT::Math::PtEtaPhiEVector pi0_vector_2(pt2,eta2,phi2,E);
+      //            massdiff1 = std::fabs((pi0_vector_1+pi_tau2->vector()).M()-0.7755);
+      //            massdiff2 = std::fabs((pi0_vector_2+pi_tau2->vector()).M()-0.7755);
+      //            if(massdiff1 < massdiff2) {
+      //              phi = gammas2[0]->phi();
+      //              eta = gammas2[0]->eta();
+      //            } else {
+      //              phi = pi0_2gammas->phi();
+      //              eta = pi0_2gammas->eta();
+      //            }
+      //          } else {
+      //            phi = gammas2[0]->phi();
+      //            eta = gammas2[0]->eta();
+      //            E = pi0_tau2->energy(); 
+      //          }
+      //          p = sqrt(E*E-mass*mass);
+      //          theta = atan(exp(-eta))*2;
+      //          pt = p*sin(theta);
+      //          //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      //          E_res_6_ = E/d->energy();
+      //          eta_res_6_ = eta/d->eta();
+      //          phi_res_6_ = phi/d->phi();
+      //        }
+      //      }
+      //    }
+      //  }
+      //}
+      ///********************************/
 
       /**********************************************************/
       // some variables to compare data/MC ageement
@@ -5418,19 +5418,6 @@ namespace ic {
       aco_angle_mod_ = -9999;
     }
       
-
-    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-    primary_vtx_x_ = vertex_vec[0]->vx();
-    primary_vtx_y_ = vertex_vec[0]->vy();
-    primary_vtx_z_ = vertex_vec[0]->vz();
-    if (!is_data_ && !is_embedded_) {
-      std::vector<ic::Vertex*> & gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
-      if (gen_vertices.size()>0) {
-        gen_pvx_ = gen_vertices[0]->vx();
-        gen_pvy_ = gen_vertices[0]->vy();
-        gen_pvz_ = gen_vertices[0]->vz();
-      }
-    }
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
