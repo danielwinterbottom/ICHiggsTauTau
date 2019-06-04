@@ -1532,6 +1532,7 @@ class HTTCategories : public ModuleBase {
   double tau_svz_2_;
 
 
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();

@@ -4,9 +4,10 @@
 
 namespace ic {
 
-  RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt) {
+  RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt), strategy_(strategy::cpdecays16) {
     fs_ = NULL;
     maketrees_ = false;
+    gammas_pt_cut_ = 0.5;
   }
 
   RhoIDEmbedder::~RhoIDEmbedder() {
@@ -24,6 +25,8 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "RhoIDEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
+
+    if(strategy_==strategy::cpdecays17) gammas_pt_cut_ = 1.0;
 
     if(fs_&&maketrees_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
@@ -257,6 +260,11 @@ namespace ic {
       outtree_->Branch("h1_h2_dEta_1", &h1_h2_dEta_1_);
       outtree_->Branch("h1_h3_dEta_1", &h1_h3_dEta_1_);
       outtree_->Branch("h2_h3_dEta_1", &h2_h3_dEta_1_);
+
+      outtree_->Branch("lead_strip_pt_2", &lead_strip_pt_2_);
+      outtree_->Branch("closest_strip_pt_2", &closest_strip_pt_2_);
+      outtree_->Branch("lead_strip_dR_2", &lead_strip_dR_2_);
+      outtree_->Branch("closest_strip_dR_2", &closest_strip_dR_2_);
     }
 
 
@@ -333,34 +341,68 @@ namespace ic {
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
+      std::cout << "DM = " << tau_decay_mode_2_ << std::endl;
+
+      std::vector<ic::PFCandidate*> gammas_before_2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
 
       std::vector<ic::PFCandidate*> a1_daughters_2 = {};
       ic::Candidate *pi0_2 = new ic::Candidate();
 
-      //if(tau_decay_mode_2_==0 && tauFlag2_==1) std::cout << "---------\n" << GetTauGammas(tau2, pfcands).size() << std::endl;
 
       
-      if(tau_decay_mode_2_==10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands);
-        a1 = GetA1(tau2, pfcands);
+      if(tau_decay_mode_2_>=10){
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_);
         a1_daughters_2  = a1.first;
         pi0_2 = a1.second; 
         
       } else {
-        rho_2 = GetRho(tau2, pfcands);
+        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_);
         pi0_2 = rho_2.second;
       }
 
-      //if(tau_decay_mode_2_==0 && tauFlag2_==1) std::cout << GetTauGammas(tau2, pfcands).size() << std::endl;
 
-      gammas2 = GetTauGammas(tau2, pfcands);
+      gammas2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
 
       if(gammas2.size()>0) lead_gamma_pt_2_ = gammas2[0]->pt();
       else lead_gamma_pt_2_ = -1;
       strip_pt_2_ = -1;
       strip_pt_2_ = pi0_2->pt();
+ 
+      ic::PFCandidate* lead_strip = new ic::PFCandidate();
+      ic::PFCandidate* closest_strip = new ic::PFCandidate(); 
 
-      //if(tau_decay_mode_2_==0) std::cout << gammas2.size() << std::endl;
+      std::vector<ic::PFCandidate*> strips;
+
+      if(tau_decay_mode_2_==0&& strip_pt_2_<=0) {
+        strips = HPS (gammas_before_2, 0, 0, 0, 0.134, 1);
+        if(strips.size()>0) {
+          lead_strip = strips[0];
+          //double cone_size = std::max(std::min(0.1, 3./tau2->pt()),0.05);
+          //std::cout << "--------" << std::endl;
+          //std::cout << "cone size = " << cone_size << std::endl;
+          double min_dR = 0.4;
+          for (auto s : strips) { 
+            double dR = ROOT::Math::VectorUtil::DeltaR(s->vector(),tau2->vector());
+            if(dR<min_dR) {
+              min_dR = dR;
+              closest_strip = s;
+            } 
+            //double mass_diff = (s->vector()+tau2->vector()).M();
+            //std::cout << s->pt() << "    " << dR << "    " << mass_diff << std::endl;
+          }
+        }
+      }
+
+      lead_strip_pt_2_ = -1;
+      closest_strip_pt_2_ = -1;
+      lead_strip_dR_2_ = -1;
+      closest_strip_dR_2_ = -1;
+      if(strips.size()>0) {
+        lead_strip_pt_2_ = lead_strip->pt();
+        closest_strip_pt_2_ = closest_strip->pt();
+        lead_strip_dR_2_ = ROOT::Math::VectorUtil::DeltaR(lead_strip->vector(),tau2->vector()); 
+        closest_strip_dR_2_ = ROOT::Math::VectorUtil::DeltaR(closest_strip->vector(),tau2->vector());
+      } 
 
       mass0_2_ = -1;
       mass1_2_ = -1;
@@ -377,7 +419,8 @@ namespace ic {
       h1_h2_dEta_2_ = -1;
       h1_h3_dEta_2_ = -1;
       h2_h3_dEta_2_ = -1;
-      if(tau_decay_mode_2_==10){
+      if(tau_decay_mode_2_>=10){
+        std::cout << tau_decay_mode_2_ << "    " << a1_daughters_2.size() << std::endl;
         mass0_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector() + a1_daughters_2[2]->vector()).M();
         mass1_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector()).M();
         mass2_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[2]->vector()).M();
@@ -398,7 +441,7 @@ namespace ic {
       }
 
 
-      if(tau2->decay_mode()==1 || true) {
+      if(tau2->decay_mode()>2 || tau2->decay_mode()>9) {
 
         Candidate *pi_2 = rho_2.first;
 
@@ -487,7 +530,7 @@ namespace ic {
     
         std::vector<double> inputs2 = {Egamma1_2_/E_2_, Egamma2_2_/E_2_, Egamma3_2_/E_2_, Egamma4_2_/E_2_, Epi_2_/E_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
 
-        if(tau_decay_mode_2_==10) {
+        if(tau_decay_mode_2_>=10) {
           DeltaR2WRTtau_2_=0;
           SumPt_2=0;
 
@@ -536,17 +579,17 @@ namespace ic {
       std::vector<ic::PFCandidate*> a1_daughters_1 = {};
       ic::Candidate *pi0_1 = new ic::Candidate();
 
-      if(tau_decay_mode_1_==10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands);
+      if(tau_decay_mode_1_>=10){
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_);
         a1_daughters_1  = a1.first;
         pi0_1 = a1.second;
       } else {
-        rho_1 = GetRho(tau1, pfcands);
+        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_);
         pi0_1 = rho_1.second;
       }
 
 
-      gammas1 = GetTauGammas(tau1, pfcands);
+      gammas1 = GetTauGammas(tau1, pfcands, gammas_pt_cut_);
       if(gammas1.size()>0) lead_gamma_pt_1_ = gammas1[0]->pt();
       else lead_gamma_pt_1_ = -1;
       strip_pt_1_ = -1;
@@ -568,7 +611,7 @@ namespace ic {
       h1_h2_dEta_1_ = -1;
       h1_h3_dEta_1_ = -1;
       h2_h3_dEta_1_ = -1;
-      if(tau_decay_mode_1_==10){
+      if(tau_decay_mode_1_>=10){
         mass0_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector() + a1_daughters_1[2]->vector()).M();
         mass1_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector()).M();
         mass2_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[2]->vector()).M();
@@ -589,7 +632,7 @@ namespace ic {
       }
 
       
-      if(tau1->decay_mode()==1 || true) {
+      if(tau1->decay_mode()<2 || tau1->decay_mode() > 9) {
 
         Candidate *pi_1 = rho_1.first;
        
@@ -665,7 +708,7 @@ namespace ic {
 
         }
 
-        if(tau_decay_mode_1_==10) {
+        if(tau_decay_mode_1_>=10) {
           DeltaR2WRTtau_1_=0;
           SumPt_1=0;
 

@@ -2612,11 +2612,12 @@ bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_nam
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
-if (strategy_type == strategy::cpdecays16) {
+if (strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
       .set_maketrees(true)
-      .set_channel(channel));
+      .set_channel(channel)
+      .set_strategy(strategy_type));
 
   BuildModule(MVADMEmbedder("MVADMEmbedder")
       .set_fs(fs.get())
@@ -4226,7 +4227,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -4235,6 +4236,17 @@ if(strategy_type == strategy::paper2013){
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 fabs(t->charge())           == 1          &&
                 t->GetTauID("decayModeFinding") > 0.5;
+
+      }));
+   } else if (strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+  BuildModule(SimpleFilter<Tau>("TauFilter")
+      .set_input_label(js["taus"].asString()).set_min(min_taus)
+      .set_predicate([=](Tau const* t) {
+        return  t->pt()                     >  tau_pt     &&
+                fabs(t->eta())              <  tau_eta    &&
+                fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1          &&
+                t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
    } 

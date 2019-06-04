@@ -2012,13 +2012,34 @@ namespace ic {
   }
 
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+    return GetTauGammas(tau, pfcands, 0.5);
+  }
+
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
     std::vector<ic::PFCandidate*> gammas = {}; 
     std::vector<std::size_t> gammas_ids = tau->sig_gamma_cands();
     for(auto id : gammas_ids){
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          if(p->pt()>0.5) gammas.push_back(p);
+          if(p->pt()>pt_cut) gammas.push_back(p);
+          break;
+        }
+      }
+    }
+    std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    return gammas;
+  }
+
+
+  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
+    std::vector<ic::PFCandidate*> gammas = {};
+    std::vector<std::size_t> gammas_ids = tau->iso_gamma_cands();
+    for(auto id : gammas_ids){
+      for(auto p : pfcands) {
+        std::size_t pfid = p->id();
+        if(pfid == id) {
+          if(p->pt()>pt_cut) gammas.push_back(p);
           break;
         }
       }
@@ -2028,20 +2049,9 @@ namespace ic {
   }
 
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
-    std::vector<ic::PFCandidate*> gammas = {};
-    std::vector<std::size_t> gammas_ids = tau->iso_gamma_cands();
-    for(auto id : gammas_ids){
-      for(auto p : pfcands) {
-        std::size_t pfid = p->id();
-        if(pfid == id) {
-          if(p->pt()>0.5) gammas.push_back(p);
-          break;
-        }
-      }
-    }
-    std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
-    return gammas;
+    return GetTauIsoGammas(tau, pfcands, 0.5);
   }
+
 
   
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
@@ -2060,12 +2070,12 @@ namespace ic {
     return hads;
   }
 
-  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
     ic::Candidate *pi = new ic::Candidate();
     ic::Candidate *pi0 = new ic::Candidate();
     std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
     if(hads.size()>0) pi = (ic::Candidate*)hads[0];
-    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands);
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut);
     // reconstruct strips from "signal" gammas
     double mass = 0.1349;     
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05); 
@@ -2077,23 +2087,37 @@ namespace ic {
     if(tau->decay_mode()==0) {
       std::vector<std::size_t> signal_gammas = {}; 
       if(strips_incone.size()>0) {
-        pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, false);
+        pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
         for (auto s : strips_incone) {
           for (auto g : s.second) signal_gammas.push_back(g->id());
         }
-      } //else if (strip_pairs.size()>0) {
-        
+      } else if(strip_pairs.size()>0) {
+        double min_dR = 0.4;
+        std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
+        for (auto s : strip_pairs) {
+          double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
+          if(dR<min_dR) {
+            min_dR = dR;
+            closest_strip = s;
+          }
+        }
+        pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
+        for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
+      }
 
-      //} 
-
-      //Tau * t = const_cast<Tau*>(tau);
-      //t->set_sig_gamma_cands(signal_gammas);
+      Tau * t = const_cast<Tau*>(tau);
+      t->set_sig_gamma_cands(signal_gammas);
     } else if(tau->decay_mode()==1) {
       pi0 = (ic::Candidate*)GetPi0(gammas, true);
     }
 
     return std::make_pair(pi,pi0);
   }
+
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+    return  GetRho (tau, pfcands, 0.5);
+  }
+ 
 
   bool sortStrips (std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> i,std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> j) {
     return (i.first->pt() > j.first->pt());
@@ -2221,7 +2245,7 @@ namespace ic {
     return pi0;
   }
 
-  std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+  std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
     std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
     if(hads.size()==3) {
       // arrange hadrons so the oppositly charged hadron is contained in the first element
@@ -2245,10 +2269,10 @@ namespace ic {
         hads[1] = temp;
       }
     }
-    std::vector<ic::PFCandidate*> gammas = GetTauIsoGammas(tau, pfcands);
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut);
+    if(gammas.size()==0) gammas = GetTauIsoGammas(tau, pfcands, pt_cut);
 
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
-    double pt_cut = 0.5;
     double mass = 0.1349;
     ic::Candidate *pi0 = new ic::Candidate();
     ic::erase_if(gammas,!boost::bind(MinPtMaxEta, _1, pt_cut, 9999.));
@@ -2257,16 +2281,34 @@ namespace ic {
     for(auto s : strip_pairs) {
       if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
     }
+    std::vector<std::size_t> signal_gammas = {};
     if(strips_incone.size()>0) {
       pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
-      std::vector<std::size_t> signal_gammas = {};
       for (auto s : strips_incone) {
         for (auto g : s.second) signal_gammas.push_back(g->id());
       }
-      Tau * t = const_cast<Tau*>(tau); 
-      t->set_sig_gamma_cands(signal_gammas);
+    } else if(strip_pairs.size()>0) {
+      double min_dR = 0.4;
+      std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
+      for (auto s : strip_pairs) {
+        double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
+        if(dR<min_dR) {
+          min_dR = dR;
+          closest_strip = s;
+        }
+      }
+      pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
+      for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
     }
+
+    Tau * t = const_cast<Tau*>(tau);
+    t->set_sig_gamma_cands(signal_gammas);
+
     return std::make_pair(hads, pi0);
+  }
+
+  std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) { 
+    return  GetA1 (tau, pfcands, 0.5); 
   }
 
 
