@@ -67,15 +67,16 @@ def main(args):
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            # "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm3_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm4_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm5_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm6_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_keras_sm7_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_keras_sm7_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,{})".format(2*np.pi),
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
+            # "aco_angle_1(14,0,{})".format(2*np.pi),
             # "m_1(20,0,2)",
             # "iso_1(20,0,1)",
             # "deep_iso_1(40,-1,1)",
@@ -295,8 +296,8 @@ def main(args):
     elif args.channel in ["zmm","zee"]:
         plot_vars = [
             # "jeta_1,jpt_1[0.,2.65,3.139],[30,40,50,60,70,100]",
-            "jeta_1,jpt_1[0.,3.,3.5],[30,40,50,60,70,100]",
-            "jeta_2,jpt_2[0.,3.,3.5],[30,40,50,60,70,100]",
+            # "jeta_1,jpt_1[0.,3.,3.5],[30,40,50,60,70,100]",
+            # "jeta_2,jpt_2[0.,3.,3.5],[30,40,50,60,70,100]",
             # "jmva_1(40,-1,1)",
             # "jmva_2(40,-1,1)",
             # "pt_tt(40,0,400)",
@@ -305,7 +306,7 @@ def main(args):
             # "pt_2(18,10,100)",
             # "jpt_1(17,30,200)",
             # "n_jets(7,0,7)",
-            # "jeta_1(12,-4.7,4.7)",
+            "jeta_1(12,-4.7,4.7)",
             # "m_sv(20,0,200)",
 
             # "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
@@ -334,7 +335,7 @@ def main(args):
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && (fabs(jeta_1)<2.65 || fabs(jeta_1)>3.139 || jpt_1>50) && (fabs(jeta_2)<2.65 || fabs(jeta_2)>3.139 || jpt_2>50))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && jpt_1>30 && (fabs(jeta_1)<3.0 && fabs(jeta_1)>2.75))" '
-        extras += ' --set_alias "inclusive:(m_vis>50 && n_jets>=1)" '
+        extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2)" '
@@ -413,10 +414,10 @@ def main(args):
         if "sjdphi" in var or "eta" in var or "aco" in var and not "(" in var:
             pad_extra = " --extra_pad 0.55 "
 
-        if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
-        elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+        # if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
+        #     custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
+        # elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
+        #     custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
 
         if args.transferOnly:
             run_command('rsync output/{}_inclusive_zmm_2017.pdf ~/public_html/CP/201904_Apr/01_2017DataZMM/'.format(var.split("(")[0]))

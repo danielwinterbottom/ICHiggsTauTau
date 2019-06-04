@@ -732,6 +732,7 @@ if options.channel in ["mt","et"]:
 
 if options.channel == 'tt':
     cats["inclusive_rho"]         = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+    cats["inclusive_a1rho"]       = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
     # cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
     cats["idg0p5"]                = "(rho_id_1>0.5 && rho_id_2>0.5)"
     cats["idgl0p5"]               = "!(rho_id_1>0.5 && rho_id_2>0.5)" #"((rho_id_1>0.5 && rho_id_2<0.5) || (rho_id_1<0.5 && rho_id_2>0.5))"
@@ -839,19 +840,33 @@ if options.channel == 'tt':
     nn_sm_jetFakes = '(IC_Vienna_fix_max_index==3)'
     nn_sm_misc     = '(IC_Vienna_fix_max_index==4)'
 
-    cats['NN_sm_higgs']    = '(({}||{}) && {})'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_ggh']      = '({} && {})'.format(nn_sm_ggh, cats["inclusive_rho"])
-    cats['NN_sm_qqh']      = '({} && {})'.format(nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_zttEmbed'] = '({} && {})'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
-    cats['NN_sm_jetFakes'] = '({} && {})'.format(nn_sm_jetFakes, cats["inclusive_rho"])
-    cats['NN_sm_misc']     = '({} && {})'.format(nn_sm_misc, cats["inclusive_rho"])
+    cats['NN_sm_higgs_rho']    = '(({}||{}) && {})'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
+    cats['NN_sm_ggh_rho']      = '({} && {})'.format(nn_sm_ggh, cats["inclusive_rho"])
+    cats['NN_sm_qqh_rho']      = '({} && {})'.format(nn_sm_qqh, cats["inclusive_rho"])
+    cats['NN_sm_zttEmbed_rho'] = '({} && {})'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
+    cats['NN_sm_jetFakes_rho'] = '({} && {})'.format(nn_sm_jetFakes, cats["inclusive_rho"])
+    cats['NN_sm_misc_rho']     = '({} && {})'.format(nn_sm_misc, cats["inclusive_rho"])
 
-    cats['NN_sm_higgs_other']    = '(({}||{}) && !{})'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_ggh_other']      = '({} && !{})'.format(nn_sm_ggh, cats["inclusive_rho"])
-    cats['NN_sm_qqh_other']      = '({} && !{})'.format(nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_zttEmbed_other'] = '({} && !{})'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
-    cats['NN_sm_jetFakes_other'] = '({} && !{})'.format(nn_sm_jetFakes, cats["inclusive_rho"])
-    cats['NN_sm_misc_other']     = '({} && !{})'.format(nn_sm_misc, cats["inclusive_rho"])
+    cats['NN_sm_higgs_a1rho']    = '(({}||{}) && {})'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_a1rho"])
+    cats['NN_sm_ggh_a1rho']      = '({} && {})'.format(nn_sm_ggh, cats["inclusive_a1rho"])
+    cats['NN_sm_qqh_a1rho']      = '({} && {})'.format(nn_sm_qqh, cats["inclusive_a1rho"])
+    cats['NN_sm_zttEmbed_a1rho'] = '({} && {})'.format(nn_sm_zttEmbed, cats["inclusive_a1rho"])
+    cats['NN_sm_jetFakes_a1rho'] = '({} && {})'.format(nn_sm_jetFakes, cats["inclusive_a1rho"])
+    cats['NN_sm_misc_a1rho']     = '({} && {})'.format(nn_sm_misc, cats["inclusive_a1rho"])
+
+    # cats['NN_sm_higgs_other']    = '(({}||{}) && !({}||{}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['NN_sm_ggh_other']      = '({} && !({}||{}))'.format(nn_sm_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['NN_sm_qqh_other']      = '({} && !({}||{}))'.format(nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['NN_sm_zttEmbed_other'] = '({} && !({}||{}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['NN_sm_jetFakes_other'] = '({} && !({}||{}))'.format(nn_sm_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['NN_sm_misc_other']     = '({} && !({}||{}))'.format(nn_sm_misc, cats["inclusive_rho"], cats["inclusive_a1rho"])
+
+    cats['NN_sm_higgs_other']    = '(({}||{}) && !({}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
+    cats['NN_sm_ggh_other']      = '({} && !({}))'.format(nn_sm_ggh, cats["inclusive_rho"])
+    cats['NN_sm_qqh_other']      = '({} && !({}))'.format(nn_sm_qqh, cats["inclusive_rho"])
+    cats['NN_sm_zttEmbed_other'] = '({} && !({}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
+    cats['NN_sm_jetFakes_other'] = '({} && !({}))'.format(nn_sm_jetFakes, cats["inclusive_rho"])
+    cats['NN_sm_misc_other']     = '({} && !({}))'.format(nn_sm_misc, cats["inclusive_rho"])
 
     cats['NN_sm_ggh_inclusive']      = '({})'.format(nn_sm_ggh)
     cats['NN_sm_qqh_inclusive']      = '({})'.format(nn_sm_qqh)
@@ -1220,9 +1235,9 @@ if options.era in ['cpdecay16']:
         "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
         "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
-        "WplusH_htt" : "WplusHToTauTau_M-*",
-        "WminusH_htt" : "WminusHToTauTau_M-*",
-        "ZH_htt" : "ZHToTauTau_M-*",
+        # "WplusH_htt" : "WplusHToTauTau_M-*",
+        # "WminusH_htt" : "WminusHToTauTau_M-*",
+        # "ZH_htt" : "ZHToTauTau_M-*",
         
     }
 

@@ -472,6 +472,13 @@ if SCHEME == 'mlcpdecays16_nn_vienna':
     VAR_JETFAKES_TT       = "IC_Vienna_fix_max_score,aco_angle_mod[0.0,0.3,0.4,0.5,0.6,0.7,0.8],(14,0,6.28319)"
     VAR_MISC_TT           = "IC_Vienna_fix_max_score,aco_angle_mod[0.0,0.4,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
+    VAR_H_TT_A1RHO              = "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score,aco_angle_1[0.0,0.4,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_GGH_TT_A1RHO            = "IC_Vienna_fix_max_score,aco_angle_1[0.0,0.3,0.4,0.5,0.6],(14,0,6.28319)"
+    VAR_QQH_TT_A1RHO            = "IC_Vienna_fix_max_score,aco_angle_1[0.0,0.4,0.6],(14,0,6.28319)"
+    VAR_ZTT_A1RHOEMBED_TT_A1RHO = "IC_Vienna_fix_max_score,aco_angle_1[0.0,0.3,0.4,0.5,0.6,0.7],(14,0,6.28319)"
+    VAR_JETFAKES_TT_A1RHO       = "IC_Vienna_fix_max_score,aco_angle_1[0.0,0.3,0.4,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_MISC_TT_A1RHO           = "IC_Vienna_fix_max_score,aco_angle_1[0.0,0.4,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+
     VAR_H_OTHER_TT        = "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.0,0.3,0.6,0.7,0.8,1.0]"
     VAR_GGH_OTHER_TT      = "IC_Vienna_fix_max_score[0.0,0.3,0.4,0.5,0.6,0.7,1.0]"
     VAR_QQH_OTHER_TT      = "IC_Vienna_fix_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]"
@@ -483,19 +490,26 @@ if SCHEME == 'mlcpdecays16_nn_vienna':
     scheme_et = []
     scheme_mt = []
     scheme_tt = [
-        ("17", "NN_sm_higgs",          "higgs",          VAR_H_TT,              ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh",            "ggh",            VAR_GGH_TT,            ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh",            "qqh",            VAR_QQH_TT,            ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed",       "zttEmbed",       VAR_ZTTEMBED_TT,       ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes",       "jetFakes",       VAR_JETFAKES_TT,       ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc",           "misc",           VAR_MISC_TT,           ' --add_wt=wt_prefire '),
+        ("17", "NN_sm_higgs_rho",          "higgs_rho",          VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_ggh_rho",            "ggh_rho",            VAR_GGH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_qqh_rho",            "qqh_rho",            VAR_QQH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_zttEmbed_rho",       "zttEmbed_rho",       VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_jetFakes_rho",       "jetFakes_rho",       VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_misc_rho",           "misc_rho",           VAR_MISC_TT,           ' --ff_ss_closure --add_wt=wt_prefire '),
 
-        ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' --add_wt=wt_prefire '),
+        ("17", "NN_sm_higgs_a1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_ggh_a1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_qqh_a1rho",            "qqh_a1rho",            VAR_QQH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_zttEmbed_a1rho",       "zttEmbed_a1rho",       VAR_ZTT_A1RHOEMBED_TT_A1RHO, ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_jetFakes_a1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_misc_a1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' --ff_ss_closure --add_wt=wt_prefire '),
+
+        ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' --ff_ss_closure --add_wt=wt_prefire '),
     ]
 
     bkg_schemes = {
@@ -2084,11 +2098,11 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s ' % vars()
+                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra)s --log_y  --ratio --ratio_range 0,2 ' % vars())
+                    ' --var="%(var)s" %(extra)s --no_plot' % vars())
 
             else:
                 run_command(qsub_command
