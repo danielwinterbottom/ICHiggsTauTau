@@ -116,8 +116,7 @@ git config --global user.email [Email Address]
 git config --global user.github [GitHub account name]
 #If you are running at IC you also need to do: git config --global http.sslVerify false
 #This extra line is not needed at CERN. Anywhere else if you see a fatal error message relating to SSL certificate problems it may be required
-</pre><dl class="section attention"><dt>Attention</dt><dd>If working from a machine based at IC, the version of git supplied by the operating system may be too old to support some of the commands in these instructions. A more up-to-date version is provided here <code>/home/hep/ajg06/git/</code>, to use this by default add this line to the <code>.bashrc</code> file: <pre class="fragment">export PATH=/home/hep/ajg06/git/bin:$PATH
-</pre></dd></dl>
+
 <p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
 <p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc5_amd64_gcc462
 # Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481,slc6_amd64_gcc491,slc6_amd64_gcc493 (for new 76X samples)
