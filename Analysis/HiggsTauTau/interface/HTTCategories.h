@@ -1467,20 +1467,13 @@ class HTTCategories : public ModuleBase {
   double wt_prefire_up_;
   double wt_prefire_down_;
 
-  // NN tau Ids
-  double dpfTauV0_iso_1_;
-  double dpfTauV0_iso_2_;
-  double dpfTauV1_iso_1_;
-  double dpfTauV1_iso_2_;
+  // deepTau ID
   double deepTauVsJets_iso_1_;
   double deepTauVsJets_iso_2_;
   double deepTauVsEle_iso_1_;
   double deepTauVsEle_iso_2_;
-
-  bool dpfTauV0_tight_1_;
-  bool dpfTauV0_tight_2_;
-  bool dpfTauV1_tight_1_;
-  bool dpfTauV1_tight_2_;
+  double deepTauVsMu_iso_1_;
+  double deepTauVsMu_iso_2_;
 
   bool deepTauVsJets_vvvloose_1_;
   bool deepTauVsJets_vvvloose_2_;
@@ -1515,6 +1508,23 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsEle_vtight_2_;
   bool deepTauVsEle_vvtight_1_;
   bool deepTauVsEle_vvtight_2_;
+
+  bool deepTauVsMu_vvvloose_1_;
+  bool deepTauVsMu_vvvloose_2_;
+  bool deepTauVsMu_vvloose_1_;
+  bool deepTauVsMu_vvloose_2_;
+  bool deepTauVsMu_vloose_1_;
+  bool deepTauVsMu_vloose_2_;
+  bool deepTauVsMu_loose_1_;
+  bool deepTauVsMu_loose_2_;
+  bool deepTauVsMu_medium_1_;
+  bool deepTauVsMu_medium_2_;
+  bool deepTauVsMu_tight_1_;
+  bool deepTauVsMu_tight_2_;
+  bool deepTauVsMu_vtight_1_;
+  bool deepTauVsMu_vtight_2_;
+  bool deepTauVsMu_vvtight_1_;
+  bool deepTauVsMu_vvtight_2_;
   //
 
   double primary_vtx_x_;

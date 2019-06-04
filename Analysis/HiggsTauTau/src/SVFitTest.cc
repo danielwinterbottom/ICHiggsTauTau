@@ -190,6 +190,18 @@ int SVFitTest::Execute(TreeEvent *event) {
   Met met = *(event->GetPtr<Met>(met_label_));
   //std::size_t event_hash = RunLumiEvtHash(eventInfo->run(), eventInfo->lumi_block(), eventInfo->event());
   std::size_t objects_hash = ObjectsHash(&c1, &c2, &met);
+  // add pt_tt and m_vis here to check zpt reweighting with reco variables
+  // need to add these to the event before the HTTWeights
+  CompositeCandidate const* ditau = dilepton.at(0);
+  double pt_tt_ = -9999.;
+  double m_vis_ = -9999.;
+  if(channel_ == channel::zmm) {
+    pt_tt_ = (ditau->vector()).pt(); 
+    m_vis_ = ditau->M(); 
+  }
+  event->Add("pt_tt", pt_tt_);
+  event->Add("m_vis", m_vis_);
+
 
  bool dilepton_veto_ = false;
  bool extraelec_veto_ = false;

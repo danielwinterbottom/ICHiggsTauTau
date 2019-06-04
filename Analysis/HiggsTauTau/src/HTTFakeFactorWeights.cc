@@ -13,7 +13,7 @@
 namespace ic {
 
   HTTFakeFactorWeights::HTTFakeFactorWeights(std::string const& name) : ModuleBase(name),
-    channel_(channel::et), strategy_(strategy::mssmsummer16){ 
+    channel_(channel::et), strategy_(strategy::mssmsummer16), era_(era::data_2012_rereco){ 
     met_label_ = "pfMET";
     jets_label_ = "ak4PFJetsCHS";
     ditau_label_ = "ditau";
@@ -33,12 +33,13 @@ namespace ic {
     std::cout << "HTTFakeFactorWeights" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
-    std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
-    std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
-    std::cout << boost::format(param_fmt()) % "ditau_label"     % ditau_label_;
+    std::cout << boost::format(param_fmt()) % "channel"     % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "era"         % Era2String(era_);
+    std::cout << boost::format(param_fmt()) % "met_label"   % met_label_;
+    std::cout << boost::format(param_fmt()) % "jets_label"  % jets_label_;
+    std::cout << boost::format(param_fmt()) % "ditau_label" % ditau_label_;
     std::cout << boost::format(param_fmt()) % "ff_file"     % ff_file_;
-    std::cout << boost::format(param_fmt()) % "fracs_file"     % fracs_file_;
+    std::cout << boost::format(param_fmt()) % "fracs_file"  % fracs_file_;
      
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
@@ -51,8 +52,11 @@ namespace ic {
       if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
-      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
+      }
+      if(strategy_ == strategy::cpdecays18){
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2018/"+ff_file_;
       }
 
       ff_file_name = baseDir + ff_file_name;
@@ -194,16 +198,40 @@ namespace ic {
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     
-    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp;
+    std::string btag_label       = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    std::string btag_label_extra = "";
+    double btag_wp (1.0);
+    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
+    };
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
-    if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+    // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
+    if (era_ == era::data_2017) {
+      btag_wp          = 0.4941;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+    if (era_ == era::data_2018) {
+      btag_wp          = 0.4184;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
+    if (era_ == era::data_2017 || era_ == era::data_2018) {
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if_not(bjets, filterBTagSumTight);
+      } 
+    } 
+    else{
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    }
     
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);

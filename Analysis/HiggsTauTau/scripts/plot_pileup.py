@@ -21,7 +21,7 @@ file_data_high = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_20
 hist_data_high = file_data_high.Get("pileup")
 hist_data_high.SetLineColor(ROOT.kRed-7)
 
-file_mc = ROOT.TFile.Open(os.path.join("./input/pileup/2018/", "pileup_2018_DYJetsToLL.root"), "READ")
+file_mc = ROOT.TFile.Open(os.path.join("./input/pileup/2018/", "pileup_2018_DYJetsToLL-LO.root"), "READ")
 hist_mc = file_mc.Get("pileup")
 hist_mc.SetLineColor(ROOT.kBlue+2)
 
@@ -118,5 +118,5 @@ txt2.SetTextSize(0.03)
 txt2.SetTextAlign(11)
 txt2.DrawLatexNDC(0.88-c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"58.8 fb^{-1} (13 TeV)")
 
-c1.SaveAs("pileup_2018_fromDY.pdf");
+c1.SaveAs("pileup_2018_fromDYLO.pdf");
 

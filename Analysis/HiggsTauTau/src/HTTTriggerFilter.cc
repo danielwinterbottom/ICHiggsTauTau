@@ -110,7 +110,11 @@ namespace ic {
        if (run >= 250985 && run <= 271035  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos)) path_found = true;
        if (run >= 271036 /*&& run <= 258654*/  && (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v") != name.npos) && do_singlelepton_) path_found = true;
        if (run >= 250985 && run <= 284044  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-       if (run >= 294927 /*&& run <= 258654*/  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+       if (run >= 294927 && run < 314472  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+       if (run >= 314472 && run < 317527  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos //consider adding Ele28 when available in ic miniaod
+                   || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+       if (run >= 317527 /*&& run < xxx*/  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos 
+                   || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
@@ -252,7 +256,7 @@ namespace ic {
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
         }
-        if(run >= 294927){
+        if(run >= 294927 && run < 314472){ //2017
           trig_obj_label = "triggerObjectsEle24Tau30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -263,8 +267,28 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
           high_leg_pt = 28.;
-    
         }
+        if(run >= 314472 && run < 317527){ //2018 pre hps
+          trig_obj_label = "triggerObjectsEle24Tau30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle32";
+          alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
+          extra_filter_2 = "hltEGL1SingleEGOrFilter";
+          high_leg_pt = 28.;
+        }
+        if(run >= 317527){ //2018 post hps
+          trig_obj_label = "triggerObjectsEle24TauHPS30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle32";
+          alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
+          extra_filter_2 = "hltEGL1SingleEGOrFilter";
+          high_leg_pt = 28.;
+        }
+        
 
        // if (run >= 258655 /*&& run <= xxxxxxxx*/){
         /*  trig_obj_label = "triggerObjectsEle22LooseTau20";
@@ -358,7 +382,7 @@ namespace ic {
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";
         }
-        if (run >= 294927 && run < 317527) {
+        if (run >= 294927 && run < 317527) { // 2017 + 2018 pre hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -369,7 +393,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 317527) {
+        if (run >= 317527) { //2018 post hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -500,11 +524,22 @@ namespace ic {
             alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
           }
         }
-        if(run >= 294927 && run < 317527){
+        if(run >= 294927 && run < 314472){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40";
+          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
+          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
+        }
+        if(run >= 314472 && run < 317527){
+          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
+          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
+          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40TightID";
           alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
           alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
           alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
@@ -649,6 +684,18 @@ namespace ic {
           alt_trig_obj_label_2 = "triggerObjectsEle32L1DoubleEG";
           alt_leg1_filter_2 = "hltEle32L1DoubleEGWPTightGsfTrackIsoFilter";
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
+          high_leg_pt = 25.;
+          if(is_embedded_){
+            leg2_filter="hltTauJet5";
+            extra_leg2_filter="";
+          }
+          } else if (mc_ == mc::mc2018){
+          trig_obj_label = "triggerObjectsEle24TauHPS30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle32";
+          alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
           high_leg_pt = 25.;
           if(is_embedded_){
             leg2_filter="hltTauJet5";
@@ -817,7 +864,7 @@ namespace ic {
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-        } else if (mc_ == mc::mc2017){
+        } else if (mc_ == mc::mc2017 || mc_ == mc::mc2018){ //same triggers
             trig_obj_label = "triggerObjectsMu23Ele12DZ";
             leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
             leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
@@ -1081,7 +1128,9 @@ namespace ic {
     }
     event->Add("trg_etaucross", passed_etaucross);
 
-    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X && mc_ != mc::mc2017) {
+    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && 
+      mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X && mc_ != mc::summer16_80X && 
+      mc_ != mc::mc2017 && mc_ != mc::mc2018) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
@@ -1137,7 +1186,7 @@ namespace ic {
       }
     }
    bool passed_dz = true;
-   if (channel_ == channel::em && mc_ == mc::mc2017){
+   if (channel_ == channel::em && (mc_ == mc::mc2017 || mc_ == mc::mc2018)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       // Mu23_Ele12_DZ matching
       for(unsigned i = 0; i < dileptons.size(); ++i){

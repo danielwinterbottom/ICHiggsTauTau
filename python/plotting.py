@@ -89,10 +89,14 @@ def SetAxisTitles(plot, channel):
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events']
+  titles['IC_Vienna_fix_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['IC_keras_sm4_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['IC_keras_sm5_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['IC_keras_sm6_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events']
   if channel == 'tt':
-      titles['tau_decay_mode_1'] = ['lead tau decay mode','Events', 'Events']
-      titles['tau_decay_mode_2'] = ['sub-lead tau decay mode','Events', 'Events']
+      titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']
+      titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events']
 
 
     
@@ -158,10 +162,10 @@ def SetAxisTitles2D(plot, channel):
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
-  titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
+  titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events','']
   if channel == 'tt':
-      titles['tau_decay_mode_1'] = ['lead tau decay mode','Events', 'Events','']
-      titles['tau_decay_mode_2'] = ['sub-lead tau decay mode','Events', 'Events','']
+      titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events','']
+      titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events','']
   
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   titles['D0'] = ['D_{0}','Events', 'dN/dD_{0}','']
@@ -174,10 +178,14 @@ def SetAxisTitles2D(plot, channel):
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['aco_angle_mod'] = ['#Delta#phi^{*}_{CP}','Events', 'dN/d#Delta#phi^{*}_{CP}','']
+  titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events', 'dN/d#phi^{*}_{CP}','']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
+  titles['IC_Vienna_fix_max_score'] = ['NN Score','Events', 'dN/d(NN Score)','']
+  titles['IC_keras_sm4_max_score'] = ['NN Score','Events', 'dN/d(NN Score)','']
+  titles['IC_keras_sm5_max_score'] = ['NN Score','Events', 'dN/d(NN Score)','']
+  titles['IC_keras_sm6_max_score'] = ['NN Score','Events', 'dN/d(NN Score)','']
 
   if xvar not in titles: 
     if not isVarBins: x_titles = [xvar,'Events']
@@ -1118,11 +1126,11 @@ def MakePurityHist(sighist, stack, category):
     for i in xrange(1, total.GetNbinsX()+1):
         total_content = total.GetBinContent(i)
 
-        if category == "higgs":
+        if category == "NN_higgs":
             fraction = sighist.GetBinContent(i)/total_content
-        elif category == "zttEmbed":
+        elif category == "NN_zttEmbed":
             fraction = hist_dict["EmbedZTT"].GetBinContent(i)/total_content
-        elif category == "jetFakes":
+        elif category == "NN_jetFakes":
             fraction = hist_dict["jetFakes"].GetBinContent(i)/total_content
         fraction_hist.SetBinContent(i, fraction)
         fraction_hist.SetBinError(i,np.sqrt(total_content))
@@ -2502,7 +2510,7 @@ def HTTPlot(nodename,
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          band_center = max(bin_up,bin_down) - error          
+          band_center = max(bin_up,bin_down) - error
           if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
@@ -2557,7 +2565,7 @@ def HTTPlot(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
-    if "MVA" in x_title: channel_label += " {}".format(cat)
+    if "MVA" in x_title or "NN" in x_title: channel_label += " {}".format(cat)
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
@@ -2679,11 +2687,15 @@ def HTTPlot(nodename,
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
-        
+
         ## lines below will show seperate lines indicating systematic up and down bands
         if do_custom_uncerts:
-            bkg_uncert_up.SetLineColor(R.TColor.GetColor("#1f78b4"))
-            bkg_uncert_down.SetLineColor(R.TColor.GetColor("#ff7f00"))
+            # bkg_uncert_up.SetLineColor(R.TColor.GetColor("#1f78b4"))
+            # bkg_uncert_down.SetLineColor(R.TColor.GetColor("#ff7f00"))
+            bkg_uncert_up.SetLineColor(CreateTransparentColor(12,0.4))
+            bkg_uncert_down.SetLineColor(CreateTransparentColor(12,0.4))
+            bkg_uncert_up.SetLineWidth(0)
+            bkg_uncert_down.SetLineWidth(0)
             bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
             bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
             bkg_uncert_up.Draw('histsame')
@@ -3554,14 +3566,14 @@ def HTTPlotUnrolled(nodename,
             backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
             backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
             backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
-            backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
+            # backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
             ],
         'tt':[
             backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
             backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
             backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
             backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
-            backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
+            # backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
             ],
         'em':[
             backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),
@@ -3956,16 +3968,16 @@ def HTTPlotUnrolled(nodename,
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
-        if var not in ['MVA Score']:
+        if var not in ['jeta_1','MVA Score','NN Score']:
             if ymax == -1: 
                 y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
             else: 
                 y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
         else: 
             if ymax == -1: 
-                y_bin_label = '%s #geq %.2f %s' % (var,ymin,unit)
+                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
             else: 
-                y_bin_label = '%.2f #leq %s < %.2f %s' % (ymin,var,ymax,unit)
+                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit)
         if "tau_decay_mode" in var and Nybins == 3:
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
