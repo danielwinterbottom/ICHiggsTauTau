@@ -341,7 +341,7 @@ namespace ic {
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
-      std::cout << "DM = " << tau_decay_mode_2_ << std::endl;
+      //std::cout << "DM = " << tau_decay_mode_2_ << std::endl;
 
       std::vector<ic::PFCandidate*> gammas_before_2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
 
@@ -420,7 +420,7 @@ namespace ic {
       h1_h3_dEta_2_ = -1;
       h2_h3_dEta_2_ = -1;
       if(tau_decay_mode_2_>=10){
-        std::cout << tau_decay_mode_2_ << "    " << a1_daughters_2.size() << std::endl;
+        //std::cout << tau_decay_mode_2_ << "    " << a1_daughters_2.size() << std::endl;
         mass0_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector() + a1_daughters_2[2]->vector()).M();
         mass1_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector()).M();
         mass2_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[2]->vector()).M();
