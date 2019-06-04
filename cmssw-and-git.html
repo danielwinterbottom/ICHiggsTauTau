@@ -120,6 +120,8 @@ git config --global user.github [GitHub account name]
 <p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
 <p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc5_amd64_gcc462
 # Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481,slc6_amd64_gcc491,slc6_amd64_gcc493 (for new 76X samples)
+# If you are creating a CMSSW area to run the analyser then it is recomended to use CMSSW_8_0_25 - later versions of CMSSW are currently incompatible with the analyser (it would be useful if someone could fix this) 
+# For using the CMSSW facing part of the code you should use the appropiate CMSSW version 
 scramv1 project CMSSW CMSSW_X_Y_Z
 cd CMSSW_X_Y_Z/src/
 cmsenv
@@ -127,7 +129,7 @@ cmsenv
 # If you are not running on a machine based at CERN, this script will ask if you want to create a new reference repository.
 # You should answer yes to this, and the script will copy the entire cmssw repository to your home folder,
 # which will make setting up subsequent release areas a lot faster.
-</pre><p>This command will have created two remote repositories, <code>official-cmssw</code> and <code>my-cmssw</code>. It will also have created and switched to a new branch, <code>from-CMSSW_X_Y_Z</code>. An additional remote can be added which provides the pre-configured branches shared by the group: </p><pre class="fragment">git remote add ic-cmssw git@github.com:adewit/cmssw.git
+</pre><p>This command will have created two remote repositories, <code>official-cmssw</code> and <code>my-cmssw</code>. It will also have created and switched to a new branch, <code>from-CMSSW_X_Y_Z</code>. An additional remote can be added which provides the pre-configured branches shared by the group: </p><pre class="fragment">git remote add ic-cmssw git@github.com:adow/cmssw.git
 # fetch from the ic-cmssw remote repository and merge the from-CMSSW_X_Y_Z into your own local branch.
 git pull ic-cmssw from-CMSSW_X_Y_Z
 # Check which branch you actually need to merge in here. Descriptive names are useful, e.g. "higgstautau_from-CMSSW_5_3_7"
@@ -145,11 +147,7 @@ git read-tree -mu HEAD
 git-cms-checkdeps -a
 # In principle this should have also been done when using CVS, but is still not essential.
 </pre><p>Next, add the IC analysis code package: </p><pre class="fragment">git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau
-./UserCode/ICHiggsTauTau/init_X_Y_Z.sh  # (if exisits) This script performs a few final tasks in the new cmssw area
-</pre><p>The CMSSW-facing part of the analysis code uses an external package that we need to add for all of the CMSSW configs to run: </p><pre class="fragment">git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer
-cd ICAnalysis/MVAMETPairProducer
-git checkout 7_6_X_common
-cd ../../
+
 </pre><p>At this point everything is ready, and the working area can be compiled in the normal way with <code>scram</code>. New developments that are relevant for everyone can be committed to a branch and pushed to central IC repository (<code>ic-cmssw</code>). If you wish to test some new changes, or just share with specific people, it will be safer to work from a new branch, either based on the CMSSW release tag, or some commit on the <code>from-CMSSW_X_Y_Z</code> branch, e.g. </p><pre class="fragment">git checkout -b my-analysis-from-CMSSW_X_Y_Z CMSSW_X_Y_Z # from the release tag
 git checkout -b my-analysis-from-CMSSW_X_Y_Z from-CMSSW_X_Y_Z # from the pre-configured branch
 ... do some development ...
