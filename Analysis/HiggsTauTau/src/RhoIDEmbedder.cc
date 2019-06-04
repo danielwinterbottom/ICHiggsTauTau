@@ -4,9 +4,10 @@
 
 namespace ic {
 
-  RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt) {
+  RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt), strategy_(strategy::cpdecays16) {
     fs_ = NULL;
     maketrees_ = false;
+    gammas_pt_cut_ = 0.5;
   }
 
   RhoIDEmbedder::~RhoIDEmbedder() {
@@ -24,6 +25,8 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "RhoIDEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
+
+    if(strategy_==strategy::cpdecays17) gammas_pt_cut_ = 1.0;
 
     if(fs_&&maketrees_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");
@@ -189,15 +192,82 @@ namespace ic {
       outtree_->Branch("Phipi_2"              , &Phipi_2_);
 
       outtree_->Branch("FracPtDepos_dRLessThan0p008_2"              , &FracPtDepos_dRLessThan0p008_2_);
-      outtree_->Branch("FracPtDepos_dR0p008To0p04_2"              , &FracPtDepos_dR0p008To0p04_2_);
-      outtree_->Branch("FracPtDepos_dRMoreThan0p04_2"              , &FracPtDepos_dRMoreThan0p04_2_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p008_2"              , &FracPtDepos_dRMoreThan0p008_2_);
 
       outtree_->Branch("FracPtDepos_dRLessThan0p008_1"              , &FracPtDepos_dRLessThan0p008_1_);
-      outtree_->Branch("FracPtDepos_dR0p008To0p04_1"              , &FracPtDepos_dR0p008To0p04_1_);
-      outtree_->Branch("FracPtDepos_dRMoreThan0p04_1"              , &FracPtDepos_dRMoreThan0p04_1_);
+      outtree_->Branch("FracPtDepos_dRMoreThan0p008_1"              , &FracPtDepos_dRMoreThan0p008_1_);
+      
+      outtree_->Branch("Mpi0_TwoHighGammas_2"                       , &Mpi0_TwoHighGammas_2_); 
+      outtree_->Branch("Mpi0_ThreeHighGammas_2"                     , &Mpi0_ThreeHighGammas_2_); 
+      outtree_->Branch("Mpi0_FourHighGammas_2"                      , &Mpi0_FourHighGammas_2_); 
+      
+      outtree_->Branch("Mpi0_TwoHighGammas_1"                       , &Mpi0_TwoHighGammas_1_); 
+      outtree_->Branch("Mpi0_ThreeHighGammas_1"                     , &Mpi0_ThreeHighGammas_1_); 
+      outtree_->Branch("Mpi0_FourHighGammas_1"                      , &Mpi0_FourHighGammas_1_); 
+      
+      outtree_->Branch("Mrho_OneHighGammas_1"                       , &Mrho_OneHighGammas_1_);
+      outtree_->Branch("Mrho_TwoHighGammas_1"                       , &Mrho_TwoHighGammas_1_);
+      outtree_->Branch("Mrho_ThreeHighGammas_1"                     , &Mrho_ThreeHighGammas_1_);
+      outtree_->Branch("Mrho_subleadingGamma_1"                     , &Mrho_subleadingGamma_1_);
 
+      outtree_->Branch("Mrho_OneHighGammas_2"                       , &Mrho_OneHighGammas_2_);
+      outtree_->Branch("Mrho_TwoHighGammas_2"                       , &Mrho_TwoHighGammas_2_);
+      outtree_->Branch("Mrho_ThreeHighGammas_2"                     , &Mrho_ThreeHighGammas_2_);
+      outtree_->Branch("Mrho_subleadingGamma_2"                     , &Mrho_subleadingGamma_2_);
+
+      outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
+      outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
+      outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
+      outtree_->Branch("strip_pt_2", &strip_pt_2_);
+      outtree_->Branch("strip_pt_1", &strip_pt_1_);
+      outtree_->Branch("strip_pi_mass_1", &strip_pi_mass_1_);
+      outtree_->Branch("strip_pi_mass_2", &strip_pi_mass_2_);
+
+      outtree_->Branch("lead_gamma_pt_1", &lead_gamma_pt_1_);
+      outtree_->Branch("lead_gamma_pt_2", &lead_gamma_pt_2_);
     
+      outtree_->Branch("event", &event_);
+
+      outtree_->Branch("mass0_1", &mass0_1_      );
+      outtree_->Branch("mass1_1", &mass1_1_      );
+      outtree_->Branch("mass2_1", &mass2_1_      );
+      outtree_->Branch("E1_1", &E1_1_         );
+      outtree_->Branch("E2_1", &E2_1_         );
+      outtree_->Branch("E3_1", &E3_1_         );
+      outtree_->Branch("strip_E_1", &strip_E_1_    );
+      outtree_->Branch("a1_pi0_dEta_1", &a1_pi0_dEta_1_);
+      outtree_->Branch("a1_pi0_dphi_1", &a1_pi0_dphi_1_);
+
+      outtree_->Branch("mass0_2", &mass0_2_      );
+      outtree_->Branch("mass1_2", &mass1_2_      );
+      outtree_->Branch("mass2_2", &mass2_2_      );
+      outtree_->Branch("E1_2", &E1_2_         );
+      outtree_->Branch("E2_2", &E2_2_         );
+      outtree_->Branch("E3_2", &E3_2_         );
+      outtree_->Branch("strip_E_2", &strip_E_2_    );
+      outtree_->Branch("a1_pi0_dEta_2", &a1_pi0_dEta_2_);
+      outtree_->Branch("a1_pi0_dphi_2", &a1_pi0_dphi_2_);
+
+      outtree_->Branch("h1_h2_dphi_2", &h1_h2_dphi_2_);
+      outtree_->Branch("h1_h3_dphi_2", &h1_h3_dphi_2_);
+      outtree_->Branch("h2_h3_dphi_2", &h2_h3_dphi_2_);
+      outtree_->Branch("h1_h2_dEta_2", &h1_h2_dEta_2_);
+      outtree_->Branch("h1_h3_dEta_2", &h1_h3_dEta_2_);
+      outtree_->Branch("h2_h3_dEta_2", &h2_h3_dEta_2_);
+      outtree_->Branch("h1_h2_dphi_1", &h1_h2_dphi_1_);
+      outtree_->Branch("h1_h3_dphi_1", &h1_h3_dphi_1_);
+      outtree_->Branch("h2_h3_dphi_1", &h2_h3_dphi_1_);
+      outtree_->Branch("h1_h2_dEta_1", &h1_h2_dEta_1_);
+      outtree_->Branch("h1_h3_dEta_1", &h1_h3_dEta_1_);
+      outtree_->Branch("h2_h3_dEta_1", &h2_h3_dEta_1_);
+
+      outtree_->Branch("lead_strip_pt_2", &lead_strip_pt_2_);
+      outtree_->Branch("closest_strip_pt_2", &closest_strip_pt_2_);
+      outtree_->Branch("lead_strip_dR_2", &lead_strip_dR_2_);
+      outtree_->Branch("closest_strip_dR_2", &closest_strip_dR_2_);
     }
+
+
 
     if(ProductExists("MVAreader")){
         reader_ = GetProduct<TMVA::Reader*>("MVAreader");
@@ -231,9 +301,21 @@ namespace ic {
 
   int RhoIDEmbedder::Execute(TreeEvent *event) {
 
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    event_ = eventInfo->event() % 2 == 0; // if even then event_ = 1, odd = 0
+
+
+    wt_cp_sm_=1; wt_cp_ps_=1; wt_cp_mm_=1;
+    if(event->ExistsInTree("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+      wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+      wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
+      wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+    }
+
+
     if (!(channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et)) return 0;
     
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_ = 1;
     wt_ = eventInfo->total_weight();
 
@@ -245,8 +327,8 @@ namespace ic {
     std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
     std::vector<ic::PFCandidate*> gammas1;
     std::vector<ic::PFCandidate*> gammas2;
-    std::pair<ic::Candidate*, ic::Candidate*> rho_1; 
-    std::pair<ic::Candidate*, ic::Candidate*> rho_2;
+    std::pair<ic::Candidate*, ic::Candidate*> rho_1 = std::make_pair(new Candidate(), new Candidate()); 
+    std::pair<ic::Candidate*, ic::Candidate*> rho_2 = std::make_pair(new Candidate(), new Candidate());
 
     if (event->Exists("tauFlag1")) tauFlag1_ = event->Get<int>("tauFlag1");
     if (event->Exists("tauFlag2")) tauFlag2_ = event->Get<int>("tauFlag2");
@@ -259,39 +341,130 @@ namespace ic {
     if ((channel_ == channel::tt||channel_ == channel::mt||channel_ == channel::et) && event->ExistsInTree("pfCandidates")) {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
+      //std::cout << "DM = " << tau_decay_mode_2_ << std::endl;
+
+      std::vector<ic::PFCandidate*> gammas_before_2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
+
+      std::vector<ic::PFCandidate*> a1_daughters_2 = {};
+      ic::Candidate *pi0_2 = new ic::Candidate();
+
+
       
-      if (tau2->decay_mode()==1) {
+      if(tau_decay_mode_2_>=10){
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_);
+        a1_daughters_2  = a1.first;
+        pi0_2 = a1.second; 
+        
+      } else {
+        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_);
+        pi0_2 = rho_2.second;
+      }
 
-    //---initializing some of the variables-----------
-    FracPtDepos_dRLessThan0p008_2_=-999;  FracPtDepos_dR0p008To0p04_2_=-999;   FracPtDepos_dRMoreThan0p04_2_=-999;
-    //-----------------------------------------
+
+      gammas2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
+
+      if(gammas2.size()>0) lead_gamma_pt_2_ = gammas2[0]->pt();
+      else lead_gamma_pt_2_ = -1;
+      strip_pt_2_ = -1;
+      strip_pt_2_ = pi0_2->pt();
+ 
+      ic::PFCandidate* lead_strip = new ic::PFCandidate();
+      ic::PFCandidate* closest_strip = new ic::PFCandidate(); 
+
+      std::vector<ic::PFCandidate*> strips;
+
+      if(tau_decay_mode_2_==0&& strip_pt_2_<=0) {
+        strips = HPS (gammas_before_2, 0, 0, 0, 0.134, 1);
+        if(strips.size()>0) {
+          lead_strip = strips[0];
+          //double cone_size = std::max(std::min(0.1, 3./tau2->pt()),0.05);
+          //std::cout << "--------" << std::endl;
+          //std::cout << "cone size = " << cone_size << std::endl;
+          double min_dR = 0.4;
+          for (auto s : strips) { 
+            double dR = ROOT::Math::VectorUtil::DeltaR(s->vector(),tau2->vector());
+            if(dR<min_dR) {
+              min_dR = dR;
+              closest_strip = s;
+            } 
+            //double mass_diff = (s->vector()+tau2->vector()).M();
+            //std::cout << s->pt() << "    " << dR << "    " << mass_diff << std::endl;
+          }
+        }
+      }
+
+      lead_strip_pt_2_ = -1;
+      closest_strip_pt_2_ = -1;
+      lead_strip_dR_2_ = -1;
+      closest_strip_dR_2_ = -1;
+      if(strips.size()>0) {
+        lead_strip_pt_2_ = lead_strip->pt();
+        closest_strip_pt_2_ = closest_strip->pt();
+        lead_strip_dR_2_ = ROOT::Math::VectorUtil::DeltaR(lead_strip->vector(),tau2->vector()); 
+        closest_strip_dR_2_ = ROOT::Math::VectorUtil::DeltaR(closest_strip->vector(),tau2->vector());
+      } 
+
+      mass0_2_ = -1;
+      mass1_2_ = -1;
+      mass2_2_ = -1;
+      E1_2_ =  -1;
+      E2_2_ =  -1;
+      E3_2_ =  -1;
+      strip_E_2_ = -1;
+      a1_pi0_dEta_2_ = -1;
+      a1_pi0_dphi_2_ = -1;
+      h1_h2_dphi_2_ = -1;
+      h1_h3_dphi_2_ = -1;
+      h2_h3_dphi_2_ = -1;
+      h1_h2_dEta_2_ = -1;
+      h1_h3_dEta_2_ = -1;
+      h2_h3_dEta_2_ = -1;
+      if(tau_decay_mode_2_>=10){
+        //std::cout << tau_decay_mode_2_ << "    " << a1_daughters_2.size() << std::endl;
+        mass0_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector() + a1_daughters_2[2]->vector()).M();
+        mass1_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector()).M();
+        mass2_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[2]->vector()).M();
+        E1_2_ = a1_daughters_2[0]->energy();
+        E2_2_ = a1_daughters_2[1]->energy();
+        E3_2_ = a1_daughters_2[2]->energy();
+        strip_E_2_ = pi0_2->energy();
+        if(strip_pt_2_>0) {
+          a1_pi0_dEta_2_ = std::fabs(pi0_2->eta()-tau2->eta());
+          a1_pi0_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0_2->vector(),tau2->vector()));
+        }
+        h1_h2_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_2[0]->vector(),a1_daughters_2[1]->vector()));
+        h1_h3_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_2[0]->vector(),a1_daughters_2[2]->vector()));
+        h2_h3_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_2[1]->vector(),a1_daughters_2[2]->vector()));
+        h1_h2_dEta_2_ = std::fabs(a1_daughters_2[0]->eta()-a1_daughters_2[1]->eta());
+        h1_h3_dEta_2_ = std::fabs(a1_daughters_2[0]->eta()-a1_daughters_2[2]->eta());
+        h2_h3_dEta_2_ = std::fabs(a1_daughters_2[1]->eta()-a1_daughters_2[2]->eta());
+      }
 
 
-        gammas2 = GetTauGammas(tau2, pfcands);
-
-        std::pair<ic::Candidate*, ic::Candidate*> rho_2 = GetRho(tau2, pfcands);
+      if(tau2->decay_mode()>2 || tau2->decay_mode()>9) {
 
         Candidate *pi_2 = rho_2.first;
-        Candidate *pi0_2 = rho_2.second;
-        
-        //-----------------
-        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1, Egamma4_2_=-1; Egamma5_2_=-1, Egamma6_2_=-1, Egamma7_2_=-1, Egamma8_2_=-1;
-        Egamma9_2_=-1, Egamma10_2_=-1, Egamma11_2_=-1, Egamma12_2_=-1;
+
+        //------------------
+        Egamma1_2_=-1, Egamma2_2_=-1, Egamma3_2_=-1;
+
 
         if(gammas2.size()>=1) Egamma1_2_ = gammas2[0]->energy();
         if(gammas2.size()>=2) Egamma2_2_ = gammas2[1]->energy();
         if(gammas2.size()>=3) Egamma3_2_ = gammas2[2]->energy();
-        if(gammas2.size()>=4) Egamma4_2_ = gammas2[3]->energy();
-        if(gammas2.size()>=5) Egamma5_2_ = gammas2[4]->energy();
-        if(gammas2.size()>=6) Egamma6_2_ = gammas2[5]->energy();
-        if(gammas2.size()>=7) Egamma7_2_ = gammas2[6]->energy();
-        if(gammas2.size()>=8) Egamma8_2_ = gammas2[7]->energy();
-        if(gammas2.size()>=9) Egamma9_2_ = gammas2[8]->energy();
-        if(gammas2.size()>=10) Egamma10_2_ = gammas2[9]->energy();
-        if(gammas2.size()>=11) Egamma11_2_ = gammas2[10]->energy();
-        if(gammas2.size()>=12) Egamma12_2_ = gammas2[11]->energy();
-        //-----------
-
+        //--------Mpi0---
+        Mpi0_TwoHighGammas_2_=-1; Mpi0_ThreeHighGammas_2_=-1; Mpi0_FourHighGammas_2_=-1;
+        if(gammas2.size()>=2) Mpi0_TwoHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector()).M();
+        if(gammas2.size()>=3) Mpi0_ThreeHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector()).M();
+        if(gammas2.size()>=4) Mpi0_FourHighGammas_2_ = (gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() + gammas2[3]->vector()).M();
+        //--------Mrho------
+        Mrho_OneHighGammas_2_=-1; Mrho_TwoHighGammas_2_=-1; Mrho_ThreeHighGammas_2_=-1; Mrho_subleadingGamma_2_=-1;
+        if(gammas2.size()>=1) Mrho_OneHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() ).M();
+        if(gammas2.size()>=2) Mrho_TwoHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector()  ).M();
+        if(gammas2.size()>=3) Mrho_ThreeHighGammas_2_=( pi_2->vector() + gammas2[0]->vector() + gammas2[1]->vector() + gammas2[2]->vector() ).M();
+        if(gammas2.size()>=2) Mrho_subleadingGamma_2_= (pi_2->vector() + gammas2[1]->vector()).M();
+        //------------
+        
         E_2_=-1, Epi_2_=-1, Mpi0_2_=-1, Mrho_2_=-1, rho_dEta_2_=-1, rho_dphi_2_=-1, gammas_dphi_2_ = -1., gammas_dEta_2_ = -1.,  pt_2_=-1, eta_2_=-999;
         Ngammas_2_=-999; phi_2_=-999;
 
@@ -308,36 +481,15 @@ namespace ic {
         for (auto g : gammas2) gammas_vector_2+=g->vector();
         Mpi0_2_ = gammas_vector_2.M();
         Mrho_2_ = tau2->M();
-        rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_2->vector(),pi0_2->vector()));
-        rho_dEta_2_ = std::fabs(pi_2->eta()-pi0_2->eta());
+        Mrho_2_ = (pi_2->vector()+pi0_2->vector()).M();
+        if(Epi0_2_>0) {
+          rho_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_2->vector(),pi0_2->vector()));
+          rho_dEta_2_ = std::fabs(pi_2->eta()-pi0_2->eta());
+        }
 
         pt_2_ = tau2->pt();
         eta_2_ = tau2->eta();
         phi_2_= tau2->phi();
-    //New variables by Mohammad
-        //------charged prong eta & phi-----
-        Etapi_2_=-999; Phipi_2_=-999;
-        Etapi_2_=pi_2->eta(); Phipi_2_=pi_2->phi();
-       
-        //------------gammas/e---
-        Etagamma1_2_=-999; Etagamma2_2_=-999; Etagamma3_2_=-999; Etagamma4_2_=-999; Etagamma5_2_=-999; Etagamma6_2_=-999; Etagamma7_2_=-999; Etagamma8_2_=-999;  
-        Etagamma9_2_=-999; Etagamma10_2_=-999; Etagamma11_2_=-999; Etagamma12_2_=-999;
-
-        Phigamma1_2_=-999; Phigamma2_2_=-999; Phigamma3_2_=-999; Phigamma4_2_=-999; Phigamma5_2_=-999; Phigamma6_2_=-999; Phigamma7_2_=-999; Phigamma8_2_=-999;
-        Phigamma9_2_=-999; Phigamma10_2_=-999; Phigamma11_2_=-999; Phigamma12_2_=-999;
-        
-        if(gammas2.size()>=1) {Etagamma1_2_ = gammas2[0]->eta(); Phigamma1_2_= gammas2[0]->phi();}
-        if(gammas2.size()>=2) {Etagamma2_2_ = gammas2[1]->eta(); Phigamma2_2_= gammas2[1]->phi();}
-        if(gammas2.size()>=3) {Etagamma3_2_ = gammas2[2]->eta(); Phigamma3_2_= gammas2[2]->phi();}
-        if(gammas2.size()>=4) {Etagamma4_2_ = gammas2[3]->eta(); Phigamma4_2_= gammas2[3]->phi();}
-        if(gammas2.size()>=5) {Etagamma5_2_ = gammas2[4]->eta(); Phigamma5_2_= gammas2[4]->phi();}
-        if(gammas2.size()>=6) {Etagamma6_2_ = gammas2[5]->eta(); Phigamma6_2_= gammas2[5]->phi();}
-        if(gammas2.size()>=7) {Etagamma7_2_ = gammas2[6]->eta(); Phigamma7_2_= gammas2[6]->phi();}
-        if(gammas2.size()>=8) {Etagamma8_2_ = gammas2[7]->eta(); Phigamma8_2_= gammas2[7]->phi();}
-        if(gammas2.size()>=9) {Etagamma9_2_ = gammas2[8]->eta(); Phigamma9_2_= gammas2[8]->phi();}
-        if(gammas2.size()>=10) {Etagamma10_2_ = gammas2[9]->eta(); Phigamma10_2_= gammas2[9]->phi();}
-        if(gammas2.size()>=11) {Etagamma11_2_ = gammas2[10]->eta(); Phigamma11_2_= gammas2[10]->phi();}
-        if(gammas2.size()>=12) {Etagamma12_2_ = gammas2[11]->eta(); Phigamma12_2_= gammas2[11]->phi();}
 
         //-----NgammasModif---
         NgammasModif_2_=0;
@@ -349,70 +501,19 @@ namespace ic {
               NgammasModif_2_+=1;
           }
         //------------------
-        CenterEta_2=-1;  CenterPhi_2=-1;//temp variables 
-        ConeRadiusMax_2_=-1; ConeRadiusMedian_2_=-1; ConeRadiusMean_2_=-1; ConeRadiusStdDev_2_=-1;
-        ConeRadiusMaxWRTtau_2_=-1; ConeRadiusMedianWRTtau_2_=-1; ConeRadiusMeanWRTtau_2_=-1; ConeRadiusStdDevWRTtau_2_=-1;
-        ConeRadiusMaxWRTpi0_2_=-1; ConeRadiusMedianWRTpi0_2_=-1; ConeRadiusMeanWRTpi0_2_=-1; ConeRadiusStdDevWRTpi0_2_=-1;
         DeltaR2WRTtau_2_=-999; DeltaR2WRTpi0_2_=-999;
         if(gammas2.size()>=1){
-          
-          CenterEta_2=pi_2->eta();
-          CenterPhi_2=pi_2->phi();
-          for(auto g : gammas2) {
-          CenterEta_2+=g->eta();
-          CenterPhi_2+=g->phi();
-          }
-          CenterEta_2/=(1.0+double(gammas2.size()));
-          CenterPhi_2/=(1.0+double(gammas2.size()));            
-        
-          std::vector<double> DistToCenter2; 
-          DistToCenter2.push_back( sqrt( std::pow(CenterPhi_2-pi_2->phi(),2) + std::pow(CenterEta_2-pi_2->eta(),2) ) );
-          for(auto g : gammas2) DistToCenter2.push_back( sqrt( std::pow(CenterPhi_2-g->phi(),2) + std::pow(CenterEta_2-g->eta(),2) ) );//FYI: DistToCenter2.size()=1+gammas.size()
-          sort( DistToCenter2.begin() , DistToCenter2.end() );
-          ConeRadiusMedian_2_= DistToCenter2[DistToCenter2.size()/2] * 0.5 + DistToCenter2[(DistToCenter2.size()+1)/2-1] * 0.5;
-          ConeRadiusMax_2_=DistToCenter2[DistToCenter2.size()-1];
-          ConeRadiusMean_2_= std::accumulate(DistToCenter2.begin(), DistToCenter2.end(), 0.0)/double(DistToCenter2.size());
-          ConeRadiusStdDev_2_=(std::inner_product(DistToCenter2.begin(), DistToCenter2.end(), DistToCenter2.begin(), 0.0) - DistToCenter2.size()*pow(ConeRadiusMean_2_,2))/(-1+DistToCenter2.size());
-          ConeRadiusStdDev_2_=sqrt(ConeRadiusStdDev_2_);//Variance to StdDeV                    
-        
-
-          //--------------Now calculate the same thing with tau->Eta and tau->phi, instead of unweighted average which are  CenterPhi and CenterEta------
-          std::vector<double> DistTotau2;
-          DistTotau2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi_2->vector(),tau2->vector())));
-          for(auto g : gammas2) DistTotau2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector())));       
-          sort( DistTotau2.begin() , DistTotau2.end() );
-          ConeRadiusMedianWRTtau_2_= DistTotau2[DistTotau2.size()/2] * 0.5 + DistTotau2[(DistTotau2.size()+1)/2-1] * 0.5;
-          ConeRadiusMaxWRTtau_2_=DistTotau2[DistTotau2.size()-1];
-          ConeRadiusMeanWRTtau_2_= std::accumulate(DistTotau2.begin(), DistTotau2.end(), 0.0)/double(DistTotau2.size());
-          ConeRadiusStdDevWRTtau_2_=(std::inner_product(DistTotau2.begin(), DistTotau2.end(), DistTotau2.begin(), 0.0) - DistTotau2.size()*pow(ConeRadiusMeanWRTtau_2_,2))
-                              /(-1+DistTotau2.size());
-          ConeRadiusStdDevWRTtau_2_=sqrt(ConeRadiusStdDevWRTtau_2_);//Variance to StdDeV                    
-       
-
-       //--------------Now calculate the same thing with pi0->Eta and pi0->phi------
-          std::vector<double> DistTopi0_2;
-          for(auto g: gammas2) DistTopi0_2.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi0_2->vector(),g->vector())));
-          sort(DistTopi0_2.begin(),DistTopi0_2.end());
-          ConeRadiusMedianWRTpi0_2_=DistTopi0_2[DistTopi0_2.size()/2] * 0.5 + DistTopi0_2[(DistTopi0_2.size()+1)/2-1] * 0.5;
-          ConeRadiusMaxWRTpi0_2_=DistTopi0_2[DistTopi0_2.size()-1];
-          ConeRadiusMeanWRTpi0_2_=std::accumulate(DistTopi0_2.begin(), DistTopi0_2.end(), 0.0)/double(DistTopi0_2.size());
-          ConeRadiusStdDevWRTpi0_2_=(std::inner_product(DistTopi0_2.begin(), DistTopi0_2.end(), DistTopi0_2.begin(), 0.0) - DistTopi0_2.size()*pow(ConeRadiusMeanWRTpi0_2_,2))
-                                    /(-1+DistTopi0_2.size());
-          ConeRadiusStdDevWRTpi0_2_=sqrt(ConeRadiusStdDevWRTpi0_2_);//Variance to StdDeV
-          
 
           //--------------------------Shape based variables---------------
           //WRT tau
           DeltaR2WRTtau_2_=0;
           SumPt_2=0;
-          DeltaR2WRTtau_2_=std::pow(ROOT::Math::VectorUtil::DeltaR(pi_2->vector(),tau2->vector()),2)*std::pow(pi_2->pt(),2);
           SumPt_2=std::pow(pi_2->pt(),2);
           for(auto g : gammas2){
             DeltaR2WRTtau_2_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector()),2)*std::pow(g->pt(),2);
             SumPt_2+=std::pow(g->pt(),2);
           }
           DeltaR2WRTtau_2_/=SumPt_2;
-          
 
           //WRT pi0 (ignoring prong)
           DeltaR2WRTpi0_2_=0;          
@@ -425,33 +526,24 @@ namespace ic {
 
         } 
 
-
-     //------------------EnergyFraction-------------------- 
-        FracPtDepos_dRLessThan0p008_2_=0;  FracPtDepos_dR0p008To0p04_2_=0;   FracPtDepos_dRMoreThan0p04_2_=0;
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.008 )
-          FracPtDepos_dRLessThan0p008_2_+=pi_2->pt()/tau2->pt();
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) < 0.04)
-          FracPtDepos_dR0p008To0p04_2_+=pi_2->pt()/tau2->pt();
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_2->vector() , tau2->vector() ) > 0.04)
-          FracPtDepos_dRMoreThan0p04_2_+=pi_2->pt()/tau2->pt();
-                
-        for (auto g: gammas2){
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.008)
-            FracPtDepos_dRLessThan0p008_2_+=g->pt()/tau2->pt();
-
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) < 0.04)
-            FracPtDepos_dR0p008To0p04_2_+=g->pt()/tau2->pt();
-
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau2->vector() ) > 0.04)
-            FracPtDepos_dRMoreThan0p04_2_+=g->pt()/tau2->pt();
-        }
-        
         
     
         std::vector<double> inputs2 = {Egamma1_2_/E_2_, Egamma2_2_/E_2_, Egamma3_2_/E_2_, Egamma4_2_/E_2_, Epi_2_/E_2_, Mpi0_2_, Mrho_2_, gammas_dEta_2_, gammas_dphi_2_, rho_dEta_2_, rho_dphi_2_,(double)gammas2.size(), eta_2_, pt_2_};
+
+        if(tau_decay_mode_2_>=10) {
+          DeltaR2WRTtau_2_=0;
+          SumPt_2=0;
+
+          for(auto p : a1_daughters_2) {
+            DeltaR2WRTtau_2_+=std::pow(ROOT::Math::VectorUtil::DeltaR(p->vector(),tau2->vector()),2)*std::pow(p->pt(),2);
+            SumPt_2+=std::pow(p->pt(),2);
+          }
+          for(auto g : gammas2){
+            DeltaR2WRTtau_2_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau2->vector()),2)*std::pow(g->pt(),2);
+            SumPt_2+=std::pow(g->pt(),2);
+          }
+          DeltaR2WRTtau_2_/=SumPt_2;
+        }
 
 
         // variables for subleading tau
@@ -472,9 +564,9 @@ namespace ic {
         eta_2_         = eta_2_;
 
         double score2 = read_mva_score(inputs2);
+
         event->Add("rho_id_2", score2);
-      
-      
+
       
       }
     }
@@ -483,38 +575,86 @@ namespace ic {
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       tau_decay_mode_1_=tau1->decay_mode();
-      
-      if(tau1->decay_mode()==1) {
-        
-    //---initializing some of the variables-----------        
-    FracPtDepos_dRLessThan0p008_1_=-999;  FracPtDepos_dR0p008To0p04_1_=-999;   FracPtDepos_dRMoreThan0p04_1_=-999;
-    //-------------------------    
-        
-        gammas1 = GetTauGammas(tau1, pfcands);
 
-        std::pair<ic::Candidate*, ic::Candidate*> rho_1 = GetRho(tau1, pfcands);
+      std::vector<ic::PFCandidate*> a1_daughters_1 = {};
+      ic::Candidate *pi0_1 = new ic::Candidate();
+
+      if(tau_decay_mode_1_>=10){
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_);
+        a1_daughters_1  = a1.first;
+        pi0_1 = a1.second;
+      } else {
+        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_);
+        pi0_1 = rho_1.second;
+      }
+
+
+      gammas1 = GetTauGammas(tau1, pfcands, gammas_pt_cut_);
+      if(gammas1.size()>0) lead_gamma_pt_1_ = gammas1[0]->pt();
+      else lead_gamma_pt_1_ = -1;
+      strip_pt_1_ = -1;
+      strip_pt_1_ = pi0_1->pt();
+
+
+      mass0_1_ = -1;
+      mass1_1_ = -1;
+      mass2_1_ = -1;
+      E1_1_ =  -1;
+      E2_1_ =  -1;
+      E3_1_ =  -1;
+      strip_E_1_ = -1;
+      a1_pi0_dEta_1_ = -1;
+      a1_pi0_dphi_1_ = -1;
+      h1_h2_dphi_1_ = -1;
+      h1_h3_dphi_1_ = -1;
+      h2_h3_dphi_1_ = -1;
+      h1_h2_dEta_1_ = -1;
+      h1_h3_dEta_1_ = -1;
+      h2_h3_dEta_1_ = -1;
+      if(tau_decay_mode_1_>=10){
+        mass0_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector() + a1_daughters_1[2]->vector()).M();
+        mass1_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector()).M();
+        mass2_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[2]->vector()).M();
+        E1_1_ = a1_daughters_1[0]->energy();
+        E2_1_ = a1_daughters_1[1]->energy();
+        E3_1_ = a1_daughters_1[2]->energy();
+        strip_E_1_ = pi0_1->energy();
+        if(strip_pt_1_>0) {
+          a1_pi0_dEta_1_ = std::fabs(pi0_1->eta()-tau1->eta());
+          a1_pi0_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0_1->vector(),tau1->vector()));
+        }
+        h1_h2_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_1[0]->vector(),a1_daughters_1[1]->vector()));
+        h1_h3_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_1[0]->vector(),a1_daughters_1[2]->vector()));
+        h2_h3_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_1[1]->vector(),a1_daughters_1[2]->vector()));
+        h1_h2_dEta_1_ = std::fabs(a1_daughters_1[0]->eta()-a1_daughters_1[1]->eta());
+        h1_h3_dEta_1_ = std::fabs(a1_daughters_1[0]->eta()-a1_daughters_1[2]->eta());
+        h2_h3_dEta_1_ = std::fabs(a1_daughters_1[1]->eta()-a1_daughters_1[2]->eta()); 
+      }
+
+      
+      if(tau1->decay_mode()<2 || tau1->decay_mode() > 9) {
 
         Candidate *pi_1 = rho_1.first;
-        Candidate *pi0_1 = rho_1.second;
        
         //------------------
-        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1, Egamma4_1_=-1; Egamma5_1_=-1, Egamma6_1_=-1, Egamma7_1_=-1, Egamma8_1_=-1;
-        Egamma9_1_=-1, Egamma10_1_=-1, Egamma11_1_=-1, Egamma12_1_=-1;
+        Egamma1_1_=-1, Egamma2_1_=-1, Egamma3_1_=-1;
 
         if(gammas1.size()>=1) Egamma1_1_ = gammas1[0]->energy();
         if(gammas1.size()>=2) Egamma2_1_ = gammas1[1]->energy();
         if(gammas1.size()>=3) Egamma3_1_ = gammas1[2]->energy();
-        if(gammas1.size()>=4) Egamma4_1_ = gammas1[3]->energy();
-        if(gammas1.size()>=5) Egamma5_1_ = gammas1[4]->energy();
-        if(gammas1.size()>=6) Egamma6_1_ = gammas1[5]->energy();
-        if(gammas1.size()>=7) Egamma7_1_ = gammas1[6]->energy();
-        if(gammas1.size()>=8) Egamma8_1_ = gammas1[7]->energy();
-        if(gammas1.size()>=9) Egamma9_1_ = gammas1[8]->energy();
-        if(gammas1.size()>=10) Egamma10_1_ = gammas1[9]->energy();
-        if(gammas1.size()>=11) Egamma11_1_ = gammas1[10]->energy();
-        if(gammas1.size()>=12) Egamma12_1_ = gammas1[11]->energy();
-        //--------------------
 
+        //--------------------
+        Mpi0_TwoHighGammas_1_=-1; Mpi0_ThreeHighGammas_1_=-1; Mpi0_FourHighGammas_1_=-1;
+        if(gammas1.size()>=2) Mpi0_TwoHighGammas_1_= (gammas1[0]->vector() + gammas1[1]->vector()).M();
+        if(gammas1.size()>=3) Mpi0_ThreeHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector()).M();
+        if(gammas1.size()>=4) Mpi0_FourHighGammas_1_ = (gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() + gammas1[3]->vector()).M();
+        //-----------
+        Mrho_OneHighGammas_1_=-1; Mrho_TwoHighGammas_1_=-1; Mrho_ThreeHighGammas_1_=-1; Mrho_subleadingGamma_1_=-1;
+        if(gammas1.size()>=1) Mrho_OneHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() ).M();
+        if(gammas1.size()>=2) Mrho_TwoHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector()  ).M();
+        if(gammas1.size()>=3) Mrho_ThreeHighGammas_1_=( pi_1->vector() + gammas1[0]->vector() + gammas1[1]->vector() + gammas1[2]->vector() ).M();
+        if(gammas1.size()>=2) Mrho_subleadingGamma_1_= (pi_1->vector() + gammas1[1]->vector()).M();
+        //------------
         E_1_=-1,  Epi_1_=-1, Mpi0_1_=-1, Mrho_1_=-1, rho_dEta_1_=-1, rho_dphi_1_=-1, pt_1_=-1, eta_1_=-999, gammas_dphi_1_ = -1., gammas_dEta_1_ = -1.; 
         Ngammas_1_=-999; phi_1_=-999;
 
@@ -531,106 +671,18 @@ namespace ic {
         ROOT::Math::PtEtaPhiEVector gammas_vector_1;
         for (auto g : gammas1) gammas_vector_1+=g->vector();
         Mpi0_1_ = gammas_vector_1.M();
-        Mrho_1_ = tau1->M();
-        rho_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_1->vector(),pi0_1->vector()));
-        rho_dEta_1_ = std::fabs(pi_1->eta()-pi0_1->eta());
+        Mrho_1_ = (pi_1->vector()+pi0_1->vector()).M();
+        if(Epi0_1_>0) {
+          rho_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi_1->vector(),pi0_1->vector()));
+          rho_dEta_1_ = std::fabs(pi_1->eta()-pi0_1->eta());
+        }
 
         pt_1_ = tau1->pt();
         eta_1_ = tau1->eta();
         phi_1_ = tau1->phi();
 
-    //New variables by Mohammad
-        //------charged prong eta & phi-----
-        Etapi_1_=-999; Phipi_1_=-999;
-        Etapi_1_=pi_1->eta(); Phipi_1_=pi_1->phi();
-
-        //------------gammas/e----
-        Etagamma1_1_=-999; Etagamma2_1_=-999; Etagamma3_1_=-999; Etagamma4_1_=-999; Etagamma5_1_=-999; Etagamma6_1_=-999; Etagamma7_1_=-999; Etagamma8_1_=-999;
-        Etagamma9_1_=-999; Etagamma10_1_=-999; Etagamma11_1_=-999; Etagamma12_1_=-999;
-        
-        Phigamma1_1_=-999; Phigamma2_1_=-999; Phigamma3_1_=-999; Phigamma4_1_=-999; Phigamma5_1_=-999; Phigamma6_1_=-999; Phigamma7_1_=-999; Phigamma8_1_=-999;
-        Phigamma9_1_=-999; Phigamma10_1_=-999; Phigamma11_1_=-999; Phigamma12_1_=-999;
-        
-        if(gammas1.size()>=1) {Etagamma1_1_ = gammas1[0]->eta(); Phigamma1_1_= gammas1[0]->phi();}
-        if(gammas1.size()>=2) {Etagamma2_1_ = gammas1[1]->eta(); Phigamma2_1_= gammas1[1]->phi();}
-        if(gammas1.size()>=3) {Etagamma3_1_ = gammas1[2]->eta(); Phigamma3_1_= gammas1[2]->phi();}
-        if(gammas1.size()>=4) {Etagamma4_1_ = gammas1[3]->eta(); Phigamma4_1_= gammas1[3]->phi();}
-        if(gammas1.size()>=5) {Etagamma5_1_ = gammas1[4]->eta(); Phigamma5_1_= gammas1[4]->phi();}
-        if(gammas1.size()>=6) {Etagamma6_1_ = gammas1[5]->eta(); Phigamma6_1_= gammas1[5]->phi();}
-        if(gammas1.size()>=7) {Etagamma7_1_ = gammas1[6]->eta(); Phigamma7_1_= gammas1[6]->phi();}
-        if(gammas1.size()>=8) {Etagamma8_1_ = gammas1[7]->eta(); Phigamma8_1_= gammas1[7]->phi();}
-        if(gammas1.size()>=9) {Etagamma9_1_ = gammas1[8]->eta(); Phigamma9_1_= gammas1[8]->phi();}
-        if(gammas1.size()>=10) {Etagamma10_1_ = gammas1[9]->eta(); Phigamma10_1_= gammas1[9]->phi();}
-        if(gammas1.size()>=11) {Etagamma11_1_ = gammas1[10]->eta(); Phigamma11_1_= gammas1[10]->phi();}
-        if(gammas1.size()>=12) {Etagamma12_1_ = gammas1[11]->eta(); Phigamma12_1_= gammas1[11]->phi();}
-        
-         //-----NgammasModif---
-        NgammasModif_1_=0;
-        for (auto g : gammas1) 
-          if (g->energy()>1.0){
-            if (g->energy()>10.0)
-              NgammasModif_1_+=2;
-            else
-              NgammasModif_1_+=1;
-          }
-        //------------------
-        CenterEta_1=-1;  CenterPhi_1=-1;//temp variables 
-        ConeRadiusMax_1_=-1; ConeRadiusMedian_1_=-1; ConeRadiusMean_1_=-1; ConeRadiusStdDev_1_=-1;
-        ConeRadiusMaxWRTtau_1_=-1; ConeRadiusMedianWRTtau_1_=-1; ConeRadiusMeanWRTtau_1_=-1; ConeRadiusStdDevWRTtau_1_=-1;
-        ConeRadiusMaxWRTpi0_1_=-1; ConeRadiusMedianWRTpi0_1_=-1; ConeRadiusMeanWRTpi0_1_=-1; ConeRadiusStdDevWRTpi0_1_=-1;
         DeltaR2WRTtau_1_=-999; DeltaR2WRTpi0_1_=-999;
         if(gammas1.size()>=1){
-          
-          CenterEta_1=pi_1->eta();
-          CenterPhi_1=pi_1->phi();
-          for(auto g : gammas1) {
-          CenterEta_1+=g->eta();
-          CenterPhi_1+=g->phi();
-          }
-          CenterEta_1/=(1.0+double(gammas1.size()));
-          CenterPhi_1/=(1.0+double(gammas1.size()));            
-                 
-          std::vector<double> DistToCenter1; 
-          DistToCenter1.push_back( sqrt( std::pow(CenterPhi_1-pi_1->phi(),2) + std::pow(CenterEta_1-pi_1->eta(),2) ) );
-          for(auto g : gammas1) DistToCenter1.push_back( sqrt( std::pow(CenterPhi_1-g->phi(),2) + std::pow(CenterEta_1-g->eta(),2) ) );//FYI: DistToCenter1.size()=1+gammas.size()
-          sort( DistToCenter1.begin() , DistToCenter1.end() );
-          ConeRadiusMedian_1_= DistToCenter1[DistToCenter1.size()/2] * 0.5 + DistToCenter1[(DistToCenter1.size()+1)/2-1] * 0.5;
-          ConeRadiusMax_1_=DistToCenter1[DistToCenter1.size()-1];
-          ConeRadiusMean_1_= std::accumulate(DistToCenter1.begin(), DistToCenter1.end(), 0.0)/double(DistToCenter1.size());
-          
-          ConeRadiusStdDev_1_=(std::inner_product(DistToCenter1.begin(), DistToCenter1.end(), DistToCenter1.begin(), 0.0) - DistToCenter1.size()*pow(ConeRadiusMean_1_,2))
-                              /(-1+DistToCenter1.size());
-          ConeRadiusStdDev_1_=sqrt(ConeRadiusStdDev_1_);//Variance to StdDeV                    
-          //Problem: if Phi=3.1 and another Phi=-3.0 the delta=6.1???? 
-
-
-
-          //--------------Now calculate the same thing with tau->Eta and tau->phi, instead of unweighted average which are  CenterPhi and CenterEta---------
-        
-          std::vector<double> DistTotau1;
-          DistTotau1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi_1->vector(),tau1->vector())));
-          for(auto g : gammas1) DistTotau1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau1->vector())));       
-          sort( DistTotau1.begin() , DistTotau1.end() );
-          ConeRadiusMedianWRTtau_1_= DistTotau1[DistTotau1.size()/2] * 0.5 + DistTotau1[(DistTotau1.size()+1)/2-1] * 0.5;
-          ConeRadiusMaxWRTtau_1_=DistTotau1[DistTotau1.size()-1];
-          ConeRadiusMeanWRTtau_1_= std::accumulate(DistTotau1.begin(), DistTotau1.end(), 0.0)/double(DistTotau1.size());
-          
-          ConeRadiusStdDevWRTtau_1_=(std::inner_product(DistTotau1.begin(), DistTotau1.end(), DistTotau1.begin(), 0.0) - DistTotau1.size()*pow(ConeRadiusMeanWRTtau_1_,2))
-                              /(-1+DistTotau1.size());
-          ConeRadiusStdDevWRTtau_1_=sqrt(ConeRadiusStdDevWRTtau_1_);//Variance to StdDeV                    
-          
-
-       //--------------Now calculate the same thing with pi0->Eta and pi0->phi------
-          std::vector<double> DistTopi0_1;
-          for(auto g: gammas1) DistTopi0_1.push_back(std::fabs(ROOT::Math::VectorUtil::DeltaR(pi0_1->vector(),g->vector())));
-          sort(DistTopi0_1.begin(),DistTopi0_1.end());
-          ConeRadiusMedianWRTpi0_1_=DistTopi0_1[DistTopi0_1.size()/2] * 0.5 + DistTopi0_1[(DistTopi0_1.size()+1)/2-1] * 0.5;
-          ConeRadiusMaxWRTpi0_1_=DistTopi0_1[DistTopi0_1.size()-1];
-          ConeRadiusMeanWRTpi0_1_=std::accumulate(DistTopi0_1.begin(), DistTopi0_1.end(), 0.0)/double(DistTopi0_1.size());
-          ConeRadiusStdDevWRTpi0_1_=(std::inner_product(DistTopi0_1.begin(), DistTopi0_1.end(), DistTopi0_1.begin(), 0.0) - DistTopi0_1.size()*pow(ConeRadiusMeanWRTpi0_1_,2))
-                                    /(-1+DistTopi0_1.size());
-          ConeRadiusStdDevWRTpi0_1_=sqrt(ConeRadiusStdDevWRTpi0_1_);//Variance to StdDeV
-
 
           //--------------------------Shape based variables---------------
           //WRT tau
@@ -654,39 +706,30 @@ namespace ic {
           }
           DeltaR2WRTpi0_1_/=SumPt_1;
 
-
         }
 
+        if(tau_decay_mode_1_>=10) {
+          DeltaR2WRTtau_1_=0;
+          SumPt_1=0;
 
-     //------------------EnergyFraction-------------------- 
-        FracPtDepos_dRLessThan0p008_1_=0;  FracPtDepos_dR0p008To0p04_1_=0;   FracPtDepos_dRMoreThan0p04_1_=0;
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.008 )
-          FracPtDepos_dRLessThan0p008_1_+=pi_1->pt()/tau1->pt();
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) < 0.04)
-          FracPtDepos_dR0p008To0p04_1_+=pi_1->pt()/tau1->pt();
-        
-        if( ROOT::Math::VectorUtil::DeltaR ( pi_1->vector() , tau1->vector() ) > 0.04)
-          FracPtDepos_dRMoreThan0p04_1_+=pi_1->pt()/tau1->pt();
-                
-        for (auto g: gammas1){
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.008)
-            FracPtDepos_dRLessThan0p008_1_+=g->pt()/tau1->pt();
-
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.008 && ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) < 0.04)
-            FracPtDepos_dR0p008To0p04_1_+=g->pt()/tau1->pt();
-
-          if (ROOT::Math::VectorUtil::DeltaR ( g->vector() , tau1->vector() ) > 0.04)
-            FracPtDepos_dRMoreThan0p04_1_+=g->pt()/tau1->pt();
+          for(auto p : a1_daughters_1) {
+            DeltaR2WRTtau_1_+=std::pow(ROOT::Math::VectorUtil::DeltaR(p->vector(),tau1->vector()),2)*std::pow(p->pt(),2);
+            SumPt_1+=std::pow(p->pt(),2);
+          }
+          for(auto g : gammas1){
+            DeltaR2WRTtau_1_+=std::pow(ROOT::Math::VectorUtil::DeltaR(g->vector(),tau1->vector()),2)*std::pow(g->pt(),2);
+            SumPt_1+=std::pow(g->pt(),2);
+          }
+          DeltaR2WRTtau_1_/=SumPt_1;
         }
-
 
 
 
         std::vector<double> inputs1 = {Egamma1_1_/E_1_, Egamma2_1_/E_1_, Egamma3_1_/E_1_, Egamma4_1_/E_1_, Epi_1_/E_1_, Mpi0_1_, Mrho_1_, gammas_dEta_1_, gammas_dphi_1_, rho_dEta_1_, rho_dphi_1_,(double)gammas1.size(), eta_1_, pt_1_};
 
+
         // variables for leading tau
+      
 
         Ngammas_1_     = gammas1.size();       
         Egamma1_1_     = Egamma1_1_;///Etau_1_;  
@@ -707,7 +750,6 @@ namespace ic {
         event->Add("rho_id_1", score1);
       } 
     }
-
     if(fs_&&maketrees_) outtree_->Fill();
 
     return 0;

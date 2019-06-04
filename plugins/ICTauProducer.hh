@@ -139,6 +139,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
     dest.set_energy(src.energy());
     dest.set_charge(src.charge());
     dest.set_decay_mode(src.decayMode());
+   // if(src.decayMode()==2 || true) std::cout << src.decayMode() << std::endl;
 
     if (src.leadPFChargedHadrCand().isNonnull()) {
       dest.set_lead_ecal_energy(src.leadPFChargedHadrCand()->ecalEnergy());
@@ -203,6 +204,7 @@ void ICTauProducer<reco::PFTau>::constructSpecific(
      //reco::PFTau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
     reco::PFTauRef const& ref = taus_handle->refAt(i).castTo<reco::PFTauRef>();
+    if(taus_handle->at(i).decayMode()==1) std::cout << "N pi0s = " << taus_handle->at(i).signalPiZeroCandidates().size() << std::endl;
     for (unsigned j = 0; j < tau_ids_.size(); ++j) {
       dest.SetTauID(tau_ids_[j].first, (*(id_handles[j]))[ref]);
       observed_id_[tau_ids_[j].first] = CityHash64(tau_ids_[j].first);
@@ -241,6 +243,11 @@ void ICTauProducer<pat::Tau>::constructSpecific(
       if(packedCand){
         dest.set_lead_dz_vertex(packedCand->dz());
         dest.set_lead_dxy_vertex(packedCand->dxy());
+        if(packedCand->hasTrackDetails()) {
+          dest.set_lead_dz_vertex_error(packedCand->dzError());
+          dest.set_lead_dxy_vertex_error(packedCand->dxyError());
+          //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
+        }
         dest.set_lead_p(packedCand->p());
       }
     }

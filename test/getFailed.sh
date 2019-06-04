@@ -8,7 +8,10 @@ elif [ $flag == 'COMPLETED' ]; then
   echo Un-completed jobs:
 elif [ $flag == 'ERROR' ]; then
   echo Jobs with errors:
+elif [ $flag == 'SUBMITFAILED' ]; then
+  echo Jobs that failed to be submitted:
 fi
+
 
 if [[ $resubmit == 1 && "$(ls | grep "resubmit.txt" )" == "resubmit.txt" ]]; then
   rm resubmit.txt
@@ -25,10 +28,19 @@ for i in $directory/*; do
     if [[ "$(crab status $i/ | grep FAILED)" != "" || "$(crab status $i/ | grep failed)" != "" ]]; then
       echo $i
       if [ $resubmit == 1 ]; then
-        crab resubmit  -d $i   >> resubmit.txt
+        crab resubmit  -d $i $4   >> resubmit.txt
       fi
     fi
   fi
+  if [ $flag == 'SUBMITFAILED' ]; then
+    if [[ "$(crab status $i/ | grep SUBMITFAILED)" != "" ]]; then
+      echo $i
+      if [ $resubmit == 1 ]; then
+        crab resubmit  -d $i  >> resubmit.txt
+      fi
+    fi
+  fi
+
   
   if [ $flag == 'COMPLETED' ]; then
     if [[ "$(crab status $i/ | grep COMPLETED)" == "" && "$(crab status $i/ | grep completed)" == "" ]]; then

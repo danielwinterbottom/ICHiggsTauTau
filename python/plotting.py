@@ -2117,6 +2117,7 @@ def HTTPlot(nodename,
             split_sm_scheme=False,
             ggh_scheme="powheg",
             cat="",
+            split_taus=False,
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2242,6 +2243,16 @@ def HTTPlot(nodename,
             bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           if chan == 'zee' and bkg['leg_text'] is 'Z#rightarrow ee':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
+
+    #if split_taus:
+    #  ztt_name = 'Z#rightarrow#tau#tau'
+    #  if embedding: ztt_name = '#mu#rightarrow#tau embedding'
+    #  schemes = background_schemes[channel]
+    #  for bkg in schemes:
+    #      if bkg['leg_text'] is ztt_name:
+    #        if not embedding:  bkg['plot_list'] = ["ZTT_rho"]
+    #        else:              bkg['plot_list'] = ["EmbedZTT_rho"]
+    #        bkg['leg_text'] = ztt_name+' (#tau#rightarrow#rho)'
  
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
