@@ -272,6 +272,11 @@ class Tau : public Candidate {
   float lead_phi_;
   float lead_energy_;
 
+  float lead_pt_;
+  float lead_eta_;
+  float lead_phi_;
+  float lead_energy_;
+
   Point ref_point_;
   Point s_ref_point_;
 
