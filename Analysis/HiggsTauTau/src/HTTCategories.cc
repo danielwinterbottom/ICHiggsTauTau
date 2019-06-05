@@ -912,25 +912,25 @@ namespace ic {
         outtree_->Branch("rhodEta",       &rho_dEta_      );
         outtree_->Branch("rhodphi",       &rho_dphi_      );
         outtree_->Branch("DeltaR2WRTtau", &DeltaR2WRTtau_ );
-        outtree_->Branch("E_res_1", &E_res_1_);
-        outtree_->Branch("eta_res_1", &eta_res_1_);
-        outtree_->Branch("phi_res_1", &phi_res_1_);
-        outtree_->Branch("E_res_2", &E_res_2_);
-        outtree_->Branch("eta_res_2", &eta_res_2_);
-        outtree_->Branch("phi_res_2", &phi_res_2_);
-        outtree_->Branch("E_res_3", &E_res_3_);
-        outtree_->Branch("eta_res_3", &eta_res_3_);
-        outtree_->Branch("phi_res_3", &phi_res_3_);
-        outtree_->Branch("E_res_4", &E_res_4_);
-        outtree_->Branch("eta_res_4", &eta_res_4_);
-        outtree_->Branch("phi_res_4", &phi_res_4_);
+       // outtree_->Branch("E_res_1", &E_res_1_);
+       // outtree_->Branch("eta_res_1", &eta_res_1_);
+       // outtree_->Branch("phi_res_1", &phi_res_1_);
+       // outtree_->Branch("E_res_2", &E_res_2_);
+       // outtree_->Branch("eta_res_2", &eta_res_2_);
+       // outtree_->Branch("phi_res_2", &phi_res_2_);
+       // outtree_->Branch("E_res_3", &E_res_3_);
+       // outtree_->Branch("eta_res_3", &eta_res_3_);
+       // outtree_->Branch("phi_res_3", &phi_res_3_);
+       // outtree_->Branch("E_res_4", &E_res_4_);
+       // outtree_->Branch("eta_res_4", &eta_res_4_);
+       // outtree_->Branch("phi_res_4", &phi_res_4_);
 
-        outtree_->Branch("E_res_5", &E_res_5_);
-        outtree_->Branch("eta_res_5", &eta_res_5_);
-        outtree_->Branch("phi_res_5", &phi_res_5_);
-        outtree_->Branch("E_res_6", &E_res_6_);
-        outtree_->Branch("eta_res_6", &eta_res_6_);
-        outtree_->Branch("phi_res_6", &phi_res_6_);
+       // outtree_->Branch("E_res_5", &E_res_5_);
+       // outtree_->Branch("eta_res_5", &eta_res_5_);
+       // outtree_->Branch("phi_res_5", &phi_res_5_);
+       // outtree_->Branch("E_res_6", &E_res_6_);
+       // outtree_->Branch("eta_res_6", &eta_res_6_);
+       // outtree_->Branch("phi_res_6", &phi_res_6_);
 
  
       }
@@ -1014,20 +1014,12 @@ namespace ic {
         outtree_->Branch("mva_newdm_tight_2",&lbyTightIsolationMVArun2DBnewDMwLT_2);
       }
       // NN Tau IDs
-      outtree_->Branch("dpfTauV0_iso_1",           &dpfTauV0_iso_1_);
-      outtree_->Branch("dpfTauV0_iso_2",           &dpfTauV0_iso_2_);
-      outtree_->Branch("dpfTauV1_iso_1",           &dpfTauV1_iso_1_);
-      outtree_->Branch("dpfTauV1_iso_2",           &dpfTauV1_iso_2_);
-
-      outtree_->Branch("dpfTauV0_tight_1",         &dpfTauV0_tight_1_);
-      outtree_->Branch("dpfTauV0_tight_2",         &dpfTauV0_tight_2_);
-      outtree_->Branch("dpfTauV1_tight_1",         &dpfTauV1_tight_1_);
-      outtree_->Branch("dpfTauV1_tight_2",         &dpfTauV1_tight_2_);
-
       outtree_->Branch("deepTauVsJets_iso_1",      &deepTauVsJets_iso_1_);
       outtree_->Branch("deepTauVsJets_iso_2",      &deepTauVsJets_iso_2_);
       outtree_->Branch("deepTauVsEle_iso_1",       &deepTauVsEle_iso_1_);
       outtree_->Branch("deepTauVsEle_iso_2",       &deepTauVsEle_iso_2_);
+      outtree_->Branch("deepTauVsMu_iso_1",        &deepTauVsMu_iso_1_);
+      outtree_->Branch("deepTauVsMu_iso_2",        &deepTauVsMu_iso_2_);
 
       outtree_->Branch("deepTauVsJets_vvvloose_1", &deepTauVsJets_vvvloose_1_);
       outtree_->Branch("deepTauVsJets_vvvloose_2", &deepTauVsJets_vvvloose_2_);
@@ -2900,6 +2892,7 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
+    std::string btag_label_extra ="combinedSecondaryVertexBJetTags";
     double btag_wp =  0.679;
     double loose_btag_wp = 0.244;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
@@ -2908,25 +2901,50 @@ namespace ic {
     if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||
       strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16 || 
-      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || 
-      strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
-    if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || 
       strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || 
       strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) loose_btag_wp = 0.46;
-    if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) loose_btag_wp = 0.5803;
+    if (era_ == era::data_2017) {
+      btag_wp = 0.4941;
+      loose_btag_wp = 0.1522;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+    if (era_ == era::data_2018) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+
+    auto sortRuleBTagSum = [btag_label, btag_label_extra] (PFJet* s1, PFJet* s2) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > 
+        s2->GetBDiscriminator(btag_label) + s2->GetBDiscriminator(btag_label_extra);
+    };
+    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
+    };
+    auto filterBTagSumLoose = [btag_label, btag_label_extra, loose_btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > loose_btag_wp;
+    };
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
-    std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
+    if (era_ != era::data_2018)
+      std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
+    else {
+        std::sort(jets_csv.begin(), jets_csv.end(), sortRuleBTagSum);
+    }
+
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
     //Sort out the loose (em,mt,et) or medium (tt) b-jets
-    if(era_ != era::data_2016 && era_ != era::data_2017){
+    if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
       if(channel_!= channel::tt){
         ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
       } else {
@@ -2951,7 +2969,7 @@ namespace ic {
           ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
         }
       } 
-    } else {
+    } else if (era_ == era::data_2016) {
       ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
       // Instead of changing b-tag value in the promote/demote method we look for a map of bools
       // that say whether a jet should pass the WP or not
@@ -2962,6 +2980,19 @@ namespace ic {
       } else{ 
         ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
         ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    } 
+    else if (era_ == era::data_2017 || era_ == era::data_2018) {
+      ic::erase_if_not(loose_bjets, filterBTagSumLoose);
+      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
+      // that say whether a jet should pass the WP or not
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if_not(bjets, filterBTagSumTight);
+        ic::erase_if_not(bjets_csv, filterBTagSumTight);
       } 
     }
 
@@ -3403,6 +3434,39 @@ namespace ic {
         tau_id_olddm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
+      // add deepTau ID v2
+      // Raw DNN scores
+      deepTauVsJets_iso_2_      = tau->HasTauID("byDeepTau2017v2VSjetraw")      ? tau->GetTauID("byDeepTau2017v2VSjetraw"):      0.;
+      deepTauVsEle_iso_2_       = tau->HasTauID("byDeepTau2017v2VSeraw")        ? tau->GetTauID("byDeepTau2017v2VSeraw"):        0.;
+      deepTauVsMu_iso_2_        = tau->HasTauID("byDeepTau2017v2VSmuraw")       ? tau->GetTauID("byDeepTau2017v2VSmuraw"):        0.;
+
+      // Existing workpoints
+      deepTauVsJets_vvvloose_2_ = tau->HasTauID("byVVVLooseDeepTau2017v2VSjet") ? tau->GetTauID("byVVVLooseDeepTau2017v2VSjet"): 0.;
+      deepTauVsJets_vvloose_2_  = tau->HasTauID("byVVLooseDeepTau2017v2VSjet")  ? tau->GetTauID("byVVLooseDeepTau2017v2VSjet"):  0.;
+      deepTauVsJets_vloose_2_   = tau->HasTauID("byVLooseDeepTau2017v2VSjet")   ? tau->GetTauID("byVLooseDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_loose_2_    = tau->HasTauID("byLooseDeepTau2017v2VSjet")    ? tau->GetTauID("byLooseDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_medium_2_   = tau->HasTauID("byMediumDeepTau2017v2VSjet")   ? tau->GetTauID("byMediumDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_tight_2_    = tau->HasTauID("byTightDeepTau2017v2VSjet")    ? tau->GetTauID("byTightDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_vtight_2_   = tau->HasTauID("byVTightDeepTau2017v2VSjet")   ? tau->GetTauID("byVTightDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_vvtight_2_  = tau->HasTauID("byVVTightDeepTau2017v2VSjet")  ? tau->GetTauID("byVVTightDeepTau2017v2VSjet"):  0.;
+
+      deepTauVsEle_vvvloose_2_  = tau->HasTauID("byVVVLooseDeepTau2017v2VSe")   ? tau->GetTauID("byVVVLooseDeepTau2017v2VSe"):   0.;
+      deepTauVsEle_vvloose_2_   = tau->HasTauID("byVVLooseDeepTau2017v2VSe")    ? tau->GetTauID("byVVLooseDeepTau2017v2VSe"):    0.;
+      deepTauVsEle_vloose_2_    = tau->HasTauID("byVLooseDeepTau2017v2VSe")     ? tau->GetTauID("byVLooseDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_loose_2_     = tau->HasTauID("byLooseDeepTau2017v2VSe")      ? tau->GetTauID("byLooseDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_medium_2_    = tau->HasTauID("byMediumDeepTau2017v2VSe")     ? tau->GetTauID("byMediumDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_tight_2_     = tau->HasTauID("byTightDeepTau2017v2VSe")      ? tau->GetTauID("byTightDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_vtight_2_    = tau->HasTauID("byVTightDeepTau2017v2VSe")     ? tau->GetTauID("byVTightDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_vvtight_2_   = tau->HasTauID("byVVTightDeepTau2017v2VSe")    ? tau->GetTauID("byVVTightDeepTau2017v2VSe"):    0.;
+
+      deepTauVsMu_vvvloose_2_   = tau->HasTauID("byVVVLooseDeepTau2017v2VSmu")  ? tau->GetTauID("byVVVLooseDeepTau2017v2VSmu"):   0.;
+      deepTauVsMu_vvloose_2_    = tau->HasTauID("byVVLooseDeepTau2017v2VSmu")   ? tau->GetTauID("byVVLooseDeepTau2017v2VSmu"):    0.;
+      deepTauVsMu_vloose_2_     = tau->HasTauID("byVLooseDeepTau2017v2VSmu")    ? tau->GetTauID("byVLooseDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_loose_2_      = tau->HasTauID("byLooseDeepTau2017v2VSmu")     ? tau->GetTauID("byLooseDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_medium_2_     = tau->HasTauID("byMediumDeepTau2017v2VSmu")    ? tau->GetTauID("byMediumDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_tight_2_      = tau->HasTauID("byTightDeepTau2017v2VSmu")     ? tau->GetTauID("byTightDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_vtight_2_     = tau->HasTauID("byVTightDeepTau2017v2VSmu")    ? tau->GetTauID("byVTightDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_vvtight_2_    = tau->HasTauID("byVVTightDeepTau2017v2VSmu")   ? tau->GetTauID("byVVTightDeepTau2017v2VSmu"):    0.;
 
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -3642,35 +3706,39 @@ namespace ic {
         tau_id_olddm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vvtight_2_ = tau->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
-      // add NN tau IDs stuff
+      // add deepTau ID v2
       // Raw DNN scores
-      dpfTauV0_iso_2_           = tau->HasTauID("byDpfTau2016v0VSallraw")       ? tau->GetTauID("byDpfTau2016v0VSallraw"):       0.;
-      dpfTauV1_iso_2_           = tau->HasTauID("byDpfTau2016v1VSallraw")       ? tau->GetTauID("byDpfTau2016v1VSallraw"):       0.;
-
-      deepTauVsJets_iso_2_      = tau->HasTauID("byDeepTau2017v1VSjetraw")      ? tau->GetTauID("byDeepTau2017v1VSjetraw"):      0.;
-      deepTauVsEle_iso_2_       = tau->HasTauID("byDeepTau2017v1VSeraw")        ? tau->GetTauID("byDeepTau2017v1VSeraw"):        0.;
+      deepTauVsJets_iso_2_      = tau->HasTauID("byDeepTau2017v2VSjetraw")      ? tau->GetTauID("byDeepTau2017v2VSjetraw"):      0.;
+      deepTauVsEle_iso_2_       = tau->HasTauID("byDeepTau2017v2VSeraw")        ? tau->GetTauID("byDeepTau2017v2VSeraw"):        0.;
+      deepTauVsMu_iso_2_        = tau->HasTauID("byDeepTau2017v2VSmuraw")       ? tau->GetTauID("byDeepTau2017v2VSmuraw"):        0.;
 
       // Existing workpoints
-      dpfTauV0_tight_2_         = tau->HasTauID("byTightDpfTau2016v0VSall")     ? tau->GetTauID("byTightDpfTau2016v0VSall"):     0.;
-      dpfTauV1_tight_2_         = tau->HasTauID("byTightDpfTau2016v1VSall")     ? tau->GetTauID("byTightDpfTau2016v1VSall"):     0.;
-      
-      deepTauVsJets_vvvloose_2_ = tau->HasTauID("byVVVLooseDeepTau2017v1VSjet") ? tau->GetTauID("byVVVLooseDeepTau2017v1VSjet"): 0.;
-      deepTauVsJets_vvloose_2_  = tau->HasTauID("byVVLooseDeepTau2017v1VSjet")  ? tau->GetTauID("byVVLooseDeepTau2017v1VSjet"):  0.;
-      deepTauVsJets_vloose_2_   = tau->HasTauID("byVLooseDeepTau2017v1VSjet")   ? tau->GetTauID("byVLooseDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_loose_2_    = tau->HasTauID("byLooseDeepTau2017v1VSjet")    ? tau->GetTauID("byLooseDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_medium_2_   = tau->HasTauID("byMediumDeepTau2017v1VSjet")   ? tau->GetTauID("byMediumDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_tight_2_    = tau->HasTauID("byTightDeepTau2017v1VSjet")    ? tau->GetTauID("byTightDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_vtight_2_   = tau->HasTauID("byVTightDeepTau2017v1VSjet")   ? tau->GetTauID("byVTightDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_vvtight_2_  = tau->HasTauID("byVVTightDeepTau2017v1VSjet")  ? tau->GetTauID("byVVTightDeepTau2017v1VSjet"):  0.;
+      deepTauVsJets_vvvloose_2_ = tau->HasTauID("byVVVLooseDeepTau2017v2VSjet") ? tau->GetTauID("byVVVLooseDeepTau2017v2VSjet"): 0.;
+      deepTauVsJets_vvloose_2_  = tau->HasTauID("byVVLooseDeepTau2017v2VSjet")  ? tau->GetTauID("byVVLooseDeepTau2017v2VSjet"):  0.;
+      deepTauVsJets_vloose_2_   = tau->HasTauID("byVLooseDeepTau2017v2VSjet")   ? tau->GetTauID("byVLooseDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_loose_2_    = tau->HasTauID("byLooseDeepTau2017v2VSjet")    ? tau->GetTauID("byLooseDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_medium_2_   = tau->HasTauID("byMediumDeepTau2017v2VSjet")   ? tau->GetTauID("byMediumDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_tight_2_    = tau->HasTauID("byTightDeepTau2017v2VSjet")    ? tau->GetTauID("byTightDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_vtight_2_   = tau->HasTauID("byVTightDeepTau2017v2VSjet")   ? tau->GetTauID("byVTightDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_vvtight_2_  = tau->HasTauID("byVVTightDeepTau2017v2VSjet")  ? tau->GetTauID("byVVTightDeepTau2017v2VSjet"):  0.;
 
-      deepTauVsEle_vvvloose_2_  = tau->HasTauID("byVVVLooseDeepTau2017v1VSe")   ? tau->GetTauID("byVVVLooseDeepTau2017v1VSe"):   0.;
-      deepTauVsEle_vvloose_2_   = tau->HasTauID("byVVLooseDeepTau2017v1VSe")    ? tau->GetTauID("byVVLooseDeepTau2017v1VSe"):    0.;
-      deepTauVsEle_vloose_2_    = tau->HasTauID("byVLooseDeepTau2017v1VSe")     ? tau->GetTauID("byVLooseDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_loose_2_     = tau->HasTauID("byLooseDeepTau2017v1VSe")      ? tau->GetTauID("byLooseDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_medium_2_    = tau->HasTauID("byMediumDeepTau2017v1VSe")     ? tau->GetTauID("byMediumDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_tight_2_     = tau->HasTauID("byTightDeepTau2017v1VSe")      ? tau->GetTauID("byTightDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_vtight_2_    = tau->HasTauID("byVTightDeepTau2017v1VSe")     ? tau->GetTauID("byVTightDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_vvtight_2_   = tau->HasTauID("byVVTightDeepTau2017v1VSe")    ? tau->GetTauID("byVVTightDeepTau2017v1VSe"):    0.;
+      deepTauVsEle_vvvloose_2_  = tau->HasTauID("byVVVLooseDeepTau2017v2VSe")   ? tau->GetTauID("byVVVLooseDeepTau2017v2VSe"):   0.;
+      deepTauVsEle_vvloose_2_   = tau->HasTauID("byVVLooseDeepTau2017v2VSe")    ? tau->GetTauID("byVVLooseDeepTau2017v2VSe"):    0.;
+      deepTauVsEle_vloose_2_    = tau->HasTauID("byVLooseDeepTau2017v2VSe")     ? tau->GetTauID("byVLooseDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_loose_2_     = tau->HasTauID("byLooseDeepTau2017v2VSe")      ? tau->GetTauID("byLooseDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_medium_2_    = tau->HasTauID("byMediumDeepTau2017v2VSe")     ? tau->GetTauID("byMediumDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_tight_2_     = tau->HasTauID("byTightDeepTau2017v2VSe")      ? tau->GetTauID("byTightDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_vtight_2_    = tau->HasTauID("byVTightDeepTau2017v2VSe")     ? tau->GetTauID("byVTightDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_vvtight_2_   = tau->HasTauID("byVVTightDeepTau2017v2VSe")    ? tau->GetTauID("byVVTightDeepTau2017v2VSe"):    0.;
+
+      deepTauVsMu_vvvloose_2_   = tau->HasTauID("byVVVLooseDeepTau2017v2VSmu")  ? tau->GetTauID("byVVVLooseDeepTau2017v2VSmu"):   0.;
+      deepTauVsMu_vvloose_2_    = tau->HasTauID("byVVLooseDeepTau2017v2VSmu")   ? tau->GetTauID("byVVLooseDeepTau2017v2VSmu"):    0.;
+      deepTauVsMu_vloose_2_     = tau->HasTauID("byVLooseDeepTau2017v2VSmu")    ? tau->GetTauID("byVLooseDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_loose_2_      = tau->HasTauID("byLooseDeepTau2017v2VSmu")     ? tau->GetTauID("byLooseDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_medium_2_     = tau->HasTauID("byMediumDeepTau2017v2VSmu")    ? tau->GetTauID("byMediumDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_tight_2_      = tau->HasTauID("byTightDeepTau2017v2VSmu")     ? tau->GetTauID("byTightDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_vtight_2_     = tau->HasTauID("byVTightDeepTau2017v2VSmu")    ? tau->GetTauID("byVTightDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_vvtight_2_    = tau->HasTauID("byVVTightDeepTau2017v2VSmu")   ? tau->GetTauID("byVVTightDeepTau2017v2VSmu"):    0.;
     }
     if (channel_ == channel::em) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -4047,59 +4115,69 @@ namespace ic {
         tau_id_olddm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017") : 0.;
         tau_id_newdm_vvtight_2_ = tau2->HasTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") ? tau2->GetTauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017") : 0.;
       }
-      // add NN tau IDs stuff
+      // add deepTau ID v2
       // Raw DNN scores
-      dpfTauV0_iso_1_          = tau1->HasTauID("byDpfTau2016v0VSallraw")       ? tau1->GetTauID("byDpfTau2016v0VSallraw"):       0.;
-      dpfTauV0_iso_2_          = tau2->HasTauID("byDpfTau2016v0VSallraw")       ? tau2->GetTauID("byDpfTau2016v0VSallraw"):       0.;
-      dpfTauV1_iso_1_          = tau1->HasTauID("byDpfTau2016v1VSallraw")       ? tau1->GetTauID("byDpfTau2016v1VSallraw"):       0.;
-      dpfTauV1_iso_2_          = tau2->HasTauID("byDpfTau2016v1VSallraw")       ? tau2->GetTauID("byDpfTau2016v1VSallraw"):       0.;
-
-      deepTauVsJets_iso_1_      = tau1->HasTauID("byDeepTau2017v1VSjetraw")      ? tau1->GetTauID("byDeepTau2017v1VSjetraw"):      0.;
-      deepTauVsJets_iso_2_      = tau2->HasTauID("byDeepTau2017v1VSjetraw")      ? tau2->GetTauID("byDeepTau2017v1VSjetraw"):      0.;
-      deepTauVsEle_iso_1_       = tau1->HasTauID("byDeepTau2017v1VSeraw")        ? tau1->GetTauID("byDeepTau2017v1VSeraw"):        0.;
-      deepTauVsEle_iso_2_       = tau2->HasTauID("byDeepTau2017v1VSeraw")        ? tau2->GetTauID("byDeepTau2017v1VSeraw"):        0.;
+      deepTauVsJets_iso_1_      = tau1->HasTauID("byDeepTau2017v2VSjetraw")      ? tau1->GetTauID("byDeepTau2017v2VSjetraw"):      0.;
+      deepTauVsJets_iso_2_      = tau2->HasTauID("byDeepTau2017v2VSjetraw")      ? tau2->GetTauID("byDeepTau2017v2VSjetraw"):      0.;
+      deepTauVsEle_iso_1_       = tau1->HasTauID("byDeepTau2017v2VSeraw")        ? tau1->GetTauID("byDeepTau2017v2VSeraw"):        0.;
+      deepTauVsEle_iso_2_       = tau2->HasTauID("byDeepTau2017v2VSeraw")        ? tau2->GetTauID("byDeepTau2017v2VSeraw"):        0.;
+      deepTauVsMu_iso_1_       = tau1->HasTauID("byDeepTau2017v2VSmuraw")        ? tau1->GetTauID("byDeepTau2017v2VSmuraw"):        0.;
+      deepTauVsMu_iso_2_       = tau2->HasTauID("byDeepTau2017v2VSmuraw")        ? tau2->GetTauID("byDeepTau2017v2VSmuraw"):        0.;
 
       // Existing workpoints
-      dpfTauV0_tight_1_         = tau1->HasTauID("byTightDpfTau2016v0VSall")     ? tau1->GetTauID("byTightDpfTau2016v0VSall"):     0.;
-      dpfTauV0_tight_2_         = tau2->HasTauID("byTightDpfTau2016v0VSall")     ? tau2->GetTauID("byTightDpfTau2016v0VSall"):     0.;
-      dpfTauV1_tight_1_         = tau1->HasTauID("byTightDpfTau2016v1VSall")     ? tau1->GetTauID("byTightDpfTau2016v1VSall"):     0.;
-      dpfTauV1_tight_2_         = tau2->HasTauID("byTightDpfTau2016v1VSall")     ? tau2->GetTauID("byTightDpfTau2016v1VSall"):     0.;
-      
-      deepTauVsJets_vvvloose_1_ = tau1->HasTauID("byVVVLooseDeepTau2017v1VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v1VSjet"): 0.;
-      deepTauVsJets_vvloose_1_  = tau1->HasTauID("byVVLooseDeepTau2017v1VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v1VSjet"):  0.;
-      deepTauVsJets_vloose_1_   = tau1->HasTauID("byVLooseDeepTau2017v1VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_loose_1_    = tau1->HasTauID("byLooseDeepTau2017v1VSjet")    ? tau1->GetTauID("byLooseDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_medium_1_   = tau1->HasTauID("byMediumDeepTau2017v1VSjet")   ? tau1->GetTauID("byMediumDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_tight_1_    = tau1->HasTauID("byTightDeepTau2017v1VSjet")    ? tau1->GetTauID("byTightDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_vtight_1_   = tau1->HasTauID("byVTightDeepTau2017v1VSjet")   ? tau1->GetTauID("byVTightDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_vvtight_1_  = tau1->HasTauID("byVVTightDeepTau2017v1VSjet")  ? tau1->GetTauID("byVVTightDeepTau2017v1VSjet"):  0.;
+      deepTauVsJets_vvvloose_1_ = tau1->HasTauID("byVVVLooseDeepTau2017v2VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v2VSjet"): 0.;
+      deepTauVsJets_vvloose_1_  = tau1->HasTauID("byVVLooseDeepTau2017v2VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v2VSjet"):  0.;
+      deepTauVsJets_vloose_1_   = tau1->HasTauID("byVLooseDeepTau2017v2VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_loose_1_    = tau1->HasTauID("byLooseDeepTau2017v2VSjet")    ? tau1->GetTauID("byLooseDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_medium_1_   = tau1->HasTauID("byMediumDeepTau2017v2VSjet")   ? tau1->GetTauID("byMediumDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_tight_1_    = tau1->HasTauID("byTightDeepTau2017v2VSjet")    ? tau1->GetTauID("byTightDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_vtight_1_   = tau1->HasTauID("byVTightDeepTau2017v2VSjet")   ? tau1->GetTauID("byVTightDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_vvtight_1_  = tau1->HasTauID("byVVTightDeepTau2017v2VSjet")  ? tau1->GetTauID("byVVTightDeepTau2017v2VSjet"):  0.;
 
-      deepTauVsJets_vvvloose_2_ = tau2->HasTauID("byVVVLooseDeepTau2017v1VSjet") ? tau2->GetTauID("byVVVLooseDeepTau2017v1VSjet"): 0.;
-      deepTauVsJets_vvloose_2_  = tau2->HasTauID("byVVLooseDeepTau2017v1VSjet")  ? tau2->GetTauID("byVVLooseDeepTau2017v1VSjet"):  0.;
-      deepTauVsJets_vloose_2_   = tau2->HasTauID("byVLooseDeepTau2017v1VSjet")   ? tau2->GetTauID("byVLooseDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_loose_2_    = tau2->HasTauID("byLooseDeepTau2017v1VSjet")    ? tau2->GetTauID("byLooseDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_medium_2_   = tau2->HasTauID("byMediumDeepTau2017v1VSjet")   ? tau2->GetTauID("byMediumDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_tight_2_    = tau2->HasTauID("byTightDeepTau2017v1VSjet")    ? tau2->GetTauID("byTightDeepTau2017v1VSjet"):    0.;
-      deepTauVsJets_vtight_2_   = tau2->HasTauID("byVTightDeepTau2017v1VSjet")   ? tau2->GetTauID("byVTightDeepTau2017v1VSjet"):   0.;
-      deepTauVsJets_vvtight_2_  = tau2->HasTauID("byVVTightDeepTau2017v1VSjet")  ? tau2->GetTauID("byVVTightDeepTau2017v1VSjet"):  0.;
+      deepTauVsJets_vvvloose_2_ = tau2->HasTauID("byVVVLooseDeepTau2017v2VSjet") ? tau2->GetTauID("byVVVLooseDeepTau2017v2VSjet"): 0.;
+      deepTauVsJets_vvloose_2_  = tau2->HasTauID("byVVLooseDeepTau2017v2VSjet")  ? tau2->GetTauID("byVVLooseDeepTau2017v2VSjet"):  0.;
+      deepTauVsJets_vloose_2_   = tau2->HasTauID("byVLooseDeepTau2017v2VSjet")   ? tau2->GetTauID("byVLooseDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_loose_2_    = tau2->HasTauID("byLooseDeepTau2017v2VSjet")    ? tau2->GetTauID("byLooseDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_medium_2_   = tau2->HasTauID("byMediumDeepTau2017v2VSjet")   ? tau2->GetTauID("byMediumDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_tight_2_    = tau2->HasTauID("byTightDeepTau2017v2VSjet")    ? tau2->GetTauID("byTightDeepTau2017v2VSjet"):    0.;
+      deepTauVsJets_vtight_2_   = tau2->HasTauID("byVTightDeepTau2017v2VSjet")   ? tau2->GetTauID("byVTightDeepTau2017v2VSjet"):   0.;
+      deepTauVsJets_vvtight_2_  = tau2->HasTauID("byVVTightDeepTau2017v2VSjet")  ? tau2->GetTauID("byVVTightDeepTau2017v2VSjet"):  0.;
 
-      deepTauVsEle_vvvloose_1_  = tau1->HasTauID("byVVVLooseDeepTau2017v1VSe")   ? tau1->GetTauID("byVVVLooseDeepTau2017v1VSe"):   0.;
-      deepTauVsEle_vvloose_1_   = tau1->HasTauID("byVVLooseDeepTau2017v1VSe")    ? tau1->GetTauID("byVVLooseDeepTau2017v1VSe"):    0.;
-      deepTauVsEle_vloose_1_    = tau1->HasTauID("byVLooseDeepTau2017v1VSe")     ? tau1->GetTauID("byVLooseDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_loose_1_     = tau1->HasTauID("byLooseDeepTau2017v1VSe")      ? tau1->GetTauID("byLooseDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_medium_1_    = tau1->HasTauID("byMediumDeepTau2017v1VSe")     ? tau1->GetTauID("byMediumDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_tight_1_     = tau1->HasTauID("byTightDeepTau2017v1VSe")      ? tau1->GetTauID("byTightDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_vtight_1_    = tau1->HasTauID("byVTightDeepTau2017v1VSe")     ? tau1->GetTauID("byVTightDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_vvtight_1_   = tau1->HasTauID("byVVTightDeepTau2017v1VSe")    ? tau1->GetTauID("byVVTightDeepTau2017v1VSe"):    0.;
+      deepTauVsEle_vvvloose_1_  = tau1->HasTauID("byVVVLooseDeepTau2017v2VSe")   ? tau1->GetTauID("byVVVLooseDeepTau2017v2VSe"):   0.;
+      deepTauVsEle_vvloose_1_   = tau1->HasTauID("byVVLooseDeepTau2017v2VSe")    ? tau1->GetTauID("byVVLooseDeepTau2017v2VSe"):    0.;
+      deepTauVsEle_vloose_1_    = tau1->HasTauID("byVLooseDeepTau2017v2VSe")     ? tau1->GetTauID("byVLooseDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_loose_1_     = tau1->HasTauID("byLooseDeepTau2017v2VSe")      ? tau1->GetTauID("byLooseDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_medium_1_    = tau1->HasTauID("byMediumDeepTau2017v2VSe")     ? tau1->GetTauID("byMediumDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_tight_1_     = tau1->HasTauID("byTightDeepTau2017v2VSe")      ? tau1->GetTauID("byTightDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_vtight_1_    = tau1->HasTauID("byVTightDeepTau2017v2VSe")     ? tau1->GetTauID("byVTightDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_vvtight_1_   = tau1->HasTauID("byVVTightDeepTau2017v2VSe")    ? tau1->GetTauID("byVVTightDeepTau2017v2VSe"):    0.;
 
-      deepTauVsEle_vvvloose_2_  = tau2->HasTauID("byVVVLooseDeepTau2017v1VSe")   ? tau2->GetTauID("byVVVLooseDeepTau2017v1VSe"):   0.;
-      deepTauVsEle_vvloose_2_   = tau2->HasTauID("byVVLooseDeepTau2017v1VSe")    ? tau2->GetTauID("byVVLooseDeepTau2017v1VSe"):    0.;
-      deepTauVsEle_vloose_2_    = tau2->HasTauID("byVLooseDeepTau2017v1VSe")     ? tau2->GetTauID("byVLooseDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_loose_2_     = tau2->HasTauID("byLooseDeepTau2017v1VSe")      ? tau2->GetTauID("byLooseDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_medium_2_    = tau2->HasTauID("byMediumDeepTau2017v1VSe")     ? tau2->GetTauID("byMediumDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_tight_2_     = tau2->HasTauID("byTightDeepTau2017v1VSe")      ? tau2->GetTauID("byTightDeepTau2017v1VSe"):      0.;
-      deepTauVsEle_vtight_2_    = tau2->HasTauID("byVTightDeepTau2017v1VSe")     ? tau2->GetTauID("byVTightDeepTau2017v1VSe"):     0.;
-      deepTauVsEle_vvtight_2_   = tau2->HasTauID("byVVTightDeepTau2017v1VSe")    ? tau2->GetTauID("byVVTightDeepTau2017v1VSe"):    0.;
+      deepTauVsEle_vvvloose_2_  = tau2->HasTauID("byVVVLooseDeepTau2017v2VSe")   ? tau2->GetTauID("byVVVLooseDeepTau2017v2VSe"):   0.;
+      deepTauVsEle_vvloose_2_   = tau2->HasTauID("byVVLooseDeepTau2017v2VSe")    ? tau2->GetTauID("byVVLooseDeepTau2017v2VSe"):    0.;
+      deepTauVsEle_vloose_2_    = tau2->HasTauID("byVLooseDeepTau2017v2VSe")     ? tau2->GetTauID("byVLooseDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_loose_2_     = tau2->HasTauID("byLooseDeepTau2017v2VSe")      ? tau2->GetTauID("byLooseDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_medium_2_    = tau2->HasTauID("byMediumDeepTau2017v2VSe")     ? tau2->GetTauID("byMediumDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_tight_2_     = tau2->HasTauID("byTightDeepTau2017v2VSe")      ? tau2->GetTauID("byTightDeepTau2017v2VSe"):      0.;
+      deepTauVsEle_vtight_2_    = tau2->HasTauID("byVTightDeepTau2017v2VSe")     ? tau2->GetTauID("byVTightDeepTau2017v2VSe"):     0.;
+      deepTauVsEle_vvtight_2_   = tau2->HasTauID("byVVTightDeepTau2017v2VSe")    ? tau2->GetTauID("byVVTightDeepTau2017v2VSe"):    0.;
+
+      deepTauVsMu_vvvloose_1_  = tau1->HasTauID("byVVVLooseDeepTau2017v2VSmu")   ? tau1->GetTauID("byVVVLooseDeepTau2017v2VSmu"):   0.;
+      deepTauVsMu_vvloose_1_   = tau1->HasTauID("byVVLooseDeepTau2017v2VSmu")    ? tau1->GetTauID("byVVLooseDeepTau2017v2VSmu"):    0.;
+      deepTauVsMu_vloose_1_    = tau1->HasTauID("byVLooseDeepTau2017v2VSmu")     ? tau1->GetTauID("byVLooseDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_loose_1_     = tau1->HasTauID("byLooseDeepTau2017v2VSmu")      ? tau1->GetTauID("byLooseDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_medium_1_    = tau1->HasTauID("byMediumDeepTau2017v2VSmu")     ? tau1->GetTauID("byMediumDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_tight_1_     = tau1->HasTauID("byTightDeepTau2017v2VSmu")      ? tau1->GetTauID("byTightDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_vtight_1_    = tau1->HasTauID("byVTightDeepTau2017v2VSmu")     ? tau1->GetTauID("byVTightDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_vvtight_1_   = tau1->HasTauID("byVVTightDeepTau2017v2VSmu")    ? tau1->GetTauID("byVVTightDeepTau2017v2VSmu"):    0.;
+
+      deepTauVsMu_vvvloose_2_  = tau2->HasTauID("byVVVLooseDeepTau2017v2VSmu")   ? tau2->GetTauID("byVVVLooseDeepTau2017v2VSmu"):   0.;
+      deepTauVsMu_vvloose_2_   = tau2->HasTauID("byVVLooseDeepTau2017v2VSmu")    ? tau2->GetTauID("byVVLooseDeepTau2017v2VSmu"):    0.;
+      deepTauVsMu_vloose_2_    = tau2->HasTauID("byVLooseDeepTau2017v2VSmu")     ? tau2->GetTauID("byVLooseDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_loose_2_     = tau2->HasTauID("byLooseDeepTau2017v2VSmu")      ? tau2->GetTauID("byLooseDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_medium_2_    = tau2->HasTauID("byMediumDeepTau2017v2VSmu")     ? tau2->GetTauID("byMediumDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_tight_2_     = tau2->HasTauID("byTightDeepTau2017v2VSmu")      ? tau2->GetTauID("byTightDeepTau2017v2VSmu"):      0.;
+      deepTauVsMu_vtight_2_    = tau2->HasTauID("byVTightDeepTau2017v2VSmu")     ? tau2->GetTauID("byVTightDeepTau2017v2VSmu"):     0.;
+      deepTauVsMu_vvtight_2_   = tau2->HasTauID("byVVTightDeepTau2017v2VSmu")    ? tau2->GetTauID("byVVTightDeepTau2017v2VSmu"):    0.;
 
     }
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
@@ -5113,131 +5191,131 @@ namespace ic {
       else if (gammas2.size()>0) pi0_2gammas->set_vector(gammas2[0]->vector());
 
 
-      /********************************/
-      // these lines to get resolutions:
-      E_res_1_ =   -9999;
-      eta_res_1_ = -9999;
-      phi_res_1_ = -9999;
-      E_res_2_ =   -9999;
-      eta_res_2_ = -9999;
-      phi_res_2_ = -9999;
-      E_res_3_ =   -9999;
-      eta_res_3_ = -9999;
-      phi_res_3_ = -9999;
-      E_res_4_ =   -9999;
-      eta_res_4_ = -9999;
-      phi_res_4_ = -9999;
-      E_res_5_ =   -9999;
-      eta_res_5_ = -9999;
-      phi_res_5_ = -9999;
-      E_res_6_ =   -9999;
-      eta_res_6_ = -9999;
-      phi_res_6_ = -9999;
+      ///********************************/
+      //// these lines to get resolutions:
+      //E_res_1_ =   -9999;
+      //eta_res_1_ = -9999;
+      //phi_res_1_ = -9999;
+      //E_res_2_ =   -9999;
+      //eta_res_2_ = -9999;
+      //phi_res_2_ = -9999;
+      //E_res_3_ =   -9999;
+      //eta_res_3_ = -9999;
+      //phi_res_3_ = -9999;
+      //E_res_4_ =   -9999;
+      //eta_res_4_ = -9999;
+      //phi_res_4_ = -9999;
+      //E_res_5_ =   -9999;
+      //eta_res_5_ = -9999;
+      //phi_res_5_ = -9999;
+      //E_res_6_ =   -9999;
+      //eta_res_6_ = -9999;
+      //phi_res_6_ = -9999;
 
 
-      if(gammas2.size()>0 && event->Exists("subleading_gen_tau")){
-        ic::GenJet * gen_tau_jet = event->GetPtr<ic::GenJet>("subleading_gen_tau");
-        std::size_t gen_tau_id = gen_tau_jet->id();
-        std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
-        for(auto p : gen_particles) {
-          if(p->id()==gen_tau_id){
-            std::vector<GenParticle *> daughters = ExtractDaughters(p, gen_particles);
-            for(auto d : daughters) {
-              unsigned pdgId = abs(d->pdgid());
-              if(pdgId == 111) {
-                // compute resolutions here!
-                gen_pi0_E_ = d->energy();
-                E_res_1_ = pi0_tau2->energy()/d->energy();
-                eta_res_1_ = pi0_tau2->eta()/d->eta();
-                phi_res_1_ = pi0_tau2->phi()/d->phi();
-                E_res_2_ = gammas2[0]->energy()/d->energy();
-                eta_res_2_ = gammas2[0]->eta()/d->eta();
-                phi_res_2_ = gammas2[0]->phi()/d->phi();
-                E_res_3_ = pi0_2gammas->energy()/d->energy();
-                eta_res_3_ = pi0_2gammas->eta()/d->eta();
-                phi_res_3_ = pi0_2gammas->phi()/d->phi();
+      //if(gammas2.size()>0 && event->Exists("subleading_gen_tau")){
+      //  ic::GenJet * gen_tau_jet = event->GetPtr<ic::GenJet>("subleading_gen_tau");
+      //  std::size_t gen_tau_id = gen_tau_jet->id();
+      //  std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
+      //  for(auto p : gen_particles) {
+      //    if(p->id()==gen_tau_id){
+      //      std::vector<GenParticle *> daughters = ExtractDaughters(p, gen_particles);
+      //      for(auto d : daughters) {
+      //        unsigned pdgId = abs(d->pdgid());
+      //        if(pdgId == 111) {
+      //          // compute resolutions here!
+      //          gen_pi0_E_ = d->energy();
+      //          E_res_1_ = pi0_tau2->energy()/d->energy();
+      //          eta_res_1_ = pi0_tau2->eta()/d->eta();
+      //          phi_res_1_ = pi0_tau2->phi()/d->phi();
+      //          E_res_2_ = gammas2[0]->energy()/d->energy();
+      //          eta_res_2_ = gammas2[0]->eta()/d->eta();
+      //          phi_res_2_ = gammas2[0]->phi()/d->phi();
+      //          E_res_3_ = pi0_2gammas->energy()/d->energy();
+      //          eta_res_3_ = pi0_2gammas->eta()/d->eta();
+      //          phi_res_3_ = pi0_2gammas->phi()/d->phi();
 
-                 
-                double massdiff1 = std::fabs((gammas2[0]->vector()+pi_tau2->vector()).M()-0.7755);              
-                double massdiff2 = std::fabs((pi0_2gammas->vector()+pi_tau2->vector()).M()-0.7755);
-                if(massdiff1<massdiff2) {
-                  pi0_2gammas->set_vector(gammas2[0]->vector());
-                } 
-                E_res_4_ = pi0_2gammas->energy()/d->energy();
-                eta_res_4_ = pi0_2gammas->eta()/d->eta();
-                phi_res_4_ = pi0_2gammas->phi()/d->phi(); 
+      //           
+      //          double massdiff1 = std::fabs((gammas2[0]->vector()+pi_tau2->vector()).M()-0.7755);              
+      //          double massdiff2 = std::fabs((pi0_2gammas->vector()+pi_tau2->vector()).M()-0.7755);
+      //          if(massdiff1<massdiff2) {
+      //            pi0_2gammas->set_vector(gammas2[0]->vector());
+      //          } 
+      //          E_res_4_ = pi0_2gammas->energy()/d->energy();
+      //          eta_res_4_ = pi0_2gammas->eta()/d->eta();
+      //          phi_res_4_ = pi0_2gammas->phi()/d->phi(); 
 
-                //ic::Candidate *pi0_new = new ic::Candidate();
-                double mass = 0.1349;
-                double E=0, phi=0, eta=0;
-                double E1 = pi0_tau2->energy();
-                if(E1<15.) {
-                  E = pi0_2gammas->energy();
-                  if(massdiff1 < massdiff2) {
-                    phi = gammas2[0]->phi();
-                    eta = gammas2[0]->eta();
-                  } else {
-                    phi = pi0_2gammas->phi();
-                    eta = pi0_2gammas->eta();
-                  } 
-                } else {
-                  phi = gammas2[0]->phi();
-                  eta = gammas2[0]->eta();
-                  E = pi0_tau2->energy();  
-                }
-                double p = sqrt(E*E-mass*mass);
-                double theta = atan(exp(-eta))*2;
-                double pt = p*sin(theta);
-                ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
-                E_res_5_ = E/d->energy();
-                eta_res_5_ = eta/d->eta();
-                phi_res_5_ = phi/d->phi();
+      //          //ic::Candidate *pi0_new = new ic::Candidate();
+      //          double mass = 0.1349;
+      //          double E=0, phi=0, eta=0;
+      //          double E1 = pi0_tau2->energy();
+      //          if(E1<15.) {
+      //            E = pi0_2gammas->energy();
+      //            if(massdiff1 < massdiff2) {
+      //              phi = gammas2[0]->phi();
+      //              eta = gammas2[0]->eta();
+      //            } else {
+      //              phi = pi0_2gammas->phi();
+      //              eta = pi0_2gammas->eta();
+      //            } 
+      //          } else {
+      //            phi = gammas2[0]->phi();
+      //            eta = gammas2[0]->eta();
+      //            E = pi0_tau2->energy();  
+      //          }
+      //          double p = sqrt(E*E-mass*mass);
+      //          double theta = atan(exp(-eta))*2;
+      //          double pt = p*sin(theta);
+      //          ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      //          E_res_5_ = E/d->energy();
+      //          eta_res_5_ = eta/d->eta();
+      //          phi_res_5_ = phi/d->phi();
 
 
-                E=0, phi=0, eta=0;
-                if(E1<15.) {
-                  E = pi0_2gammas->energy();
-                  p = sqrt(E*E-mass*mass);
-            
-                  double phi1 = gammas2[0]->phi();
-                  double eta1 = gammas2[0]->eta();
+      //          E=0, phi=0, eta=0;
+      //          if(E1<15.) {
+      //            E = pi0_2gammas->energy();
+      //            p = sqrt(E*E-mass*mass);
+      //      
+      //            double phi1 = gammas2[0]->phi();
+      //            double eta1 = gammas2[0]->eta();
   
-                  double phi2 = pi0_2gammas->phi();
-                  double eta2 = pi0_2gammas->eta();
+      //            double phi2 = pi0_2gammas->phi();
+      //            double eta2 = pi0_2gammas->eta();
 
-                  double theta1 = atan(exp(-eta1))*2;
-                  double pt1 = p*sin(theta1);
-                  ROOT::Math::PtEtaPhiEVector pi0_vector_1(pt1,eta1,phi1,E);
-                  double theta2 = atan(exp(-eta2))*2;
-                  double pt2 = p*sin(theta2);
-                  ROOT::Math::PtEtaPhiEVector pi0_vector_2(pt2,eta2,phi2,E);
-                  massdiff1 = std::fabs((pi0_vector_1+pi_tau2->vector()).M()-0.7755);
-                  massdiff2 = std::fabs((pi0_vector_2+pi_tau2->vector()).M()-0.7755);
-                  if(massdiff1 < massdiff2) {
-                    phi = gammas2[0]->phi();
-                    eta = gammas2[0]->eta();
-                  } else {
-                    phi = pi0_2gammas->phi();
-                    eta = pi0_2gammas->eta();
-                  }
-                } else {
-                  phi = gammas2[0]->phi();
-                  eta = gammas2[0]->eta();
-                  E = pi0_tau2->energy(); 
-                }
-                p = sqrt(E*E-mass*mass);
-                theta = atan(exp(-eta))*2;
-                pt = p*sin(theta);
-                //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
-                E_res_6_ = E/d->energy();
-                eta_res_6_ = eta/d->eta();
-                phi_res_6_ = phi/d->phi();
-              }
-            }
-          }
-        }
-      }
-      /********************************/
+      //            double theta1 = atan(exp(-eta1))*2;
+      //            double pt1 = p*sin(theta1);
+      //            ROOT::Math::PtEtaPhiEVector pi0_vector_1(pt1,eta1,phi1,E);
+      //            double theta2 = atan(exp(-eta2))*2;
+      //            double pt2 = p*sin(theta2);
+      //            ROOT::Math::PtEtaPhiEVector pi0_vector_2(pt2,eta2,phi2,E);
+      //            massdiff1 = std::fabs((pi0_vector_1+pi_tau2->vector()).M()-0.7755);
+      //            massdiff2 = std::fabs((pi0_vector_2+pi_tau2->vector()).M()-0.7755);
+      //            if(massdiff1 < massdiff2) {
+      //              phi = gammas2[0]->phi();
+      //              eta = gammas2[0]->eta();
+      //            } else {
+      //              phi = pi0_2gammas->phi();
+      //              eta = pi0_2gammas->eta();
+      //            }
+      //          } else {
+      //            phi = gammas2[0]->phi();
+      //            eta = gammas2[0]->eta();
+      //            E = pi0_tau2->energy(); 
+      //          }
+      //          p = sqrt(E*E-mass*mass);
+      //          theta = atan(exp(-eta))*2;
+      //          pt = p*sin(theta);
+      //          //ROOT::Math::PtEtaPhiEVector pi0_vector(pt,eta,phi,E);
+      //          E_res_6_ = E/d->energy();
+      //          eta_res_6_ = eta/d->eta();
+      //          phi_res_6_ = phi/d->phi();
+      //        }
+      //      }
+      //    }
+      //  }
+      //}
+      ///********************************/
 
       /**********************************************************/
       // some variables to compare data/MC ageement
@@ -5418,19 +5496,6 @@ namespace ic {
       aco_angle_mod_ = -9999;
     }
       
-
-    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-    primary_vtx_x_ = vertex_vec[0]->vx();
-    primary_vtx_y_ = vertex_vec[0]->vy();
-    primary_vtx_z_ = vertex_vec[0]->vz();
-    if (!is_data_ && !is_embedded_) {
-      std::vector<ic::Vertex*> & gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
-      if (gen_vertices.size()>0) {
-        gen_pvx_ = gen_vertices[0]->vx();
-        gen_pvy_ = gen_vertices[0]->vy();
-        gen_pvz_ = gen_vertices[0]->vz();
-      }
-    }
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();

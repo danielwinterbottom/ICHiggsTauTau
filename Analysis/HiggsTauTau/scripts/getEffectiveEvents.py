@@ -26,10 +26,5 @@ for f in file_names:
     else:
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])
         tree = input_file.Get("effective")
-        #entries = tree.GetEntries()
         entries = tree.GetEntries('wt>0') - tree.GetEntries('wt<0')
-        #tree.Draw("rand()>>total_hist",'wt',"goff")
-        #tree.Draw("rand()>>total_hist",'',"goff")
-        #total_hist = tree.GetHistogram()
-        #entries = total_hist.Integral(-1,-1)
         print("{}  {}".format(f,entries))

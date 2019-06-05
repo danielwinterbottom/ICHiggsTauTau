@@ -91,6 +91,7 @@ class HTTGenAnalysis : public ModuleBase {
   double wtzpt_;
   double mass_;
   double wt_;
+  double wt_z_pol_;
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
@@ -208,6 +209,11 @@ class HTTGenAnalysis : public ModuleBase {
   double cp_sign_6_;
   double mass1_, mass2_; 
   double a1_mass_;
+
+  double pt_rho_pi_ = -1;
+  double pt_rho_pi0_ = -1;
+  double pt_other_pi0_ =-1;
+
   double E_1_1_;
   double E_2_1_;
   double E_1_2_;
@@ -252,6 +258,10 @@ class HTTGenAnalysis : public ModuleBase {
   double gen_pvx_;
   double gen_pvy_;
   double gen_pvz_;
+
+  double fakea1_dR_ = -1;
+  double rho_dR_ = -1;
+  double tauFlag = -1;
   
  public:
   HTTGenAnalysis(std::string const& name);

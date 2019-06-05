@@ -23,6 +23,7 @@ class RhoIDEmbedder : public ModuleBase {
   CLASS_MEMBER(RhoIDEmbedder, fwlite::TFileService*, fs)
   CLASS_MEMBER(RhoIDEmbedder, ic::channel, channel)
   CLASS_MEMBER(RhoIDEmbedder, bool, maketrees)
+  CLASS_MEMBER(RhoIDEmbedder, ic::strategy, strategy)
   
   TTree *outtree_;
   double wt_;
@@ -280,6 +281,13 @@ class RhoIDEmbedder : public ModuleBase {
   double h1_h2_dEta_2_ = -1;
   double h1_h3_dEta_2_ = -1;
   double h2_h3_dEta_2_ = -1;
+
+  double lead_strip_pt_2_ = -1;
+  double closest_strip_pt_2_ = -1;
+  double lead_strip_dR_2_ = -1;
+  double closest_strip_dR_2_ = -1;
+
+  double gammas_pt_cut_ = -1;
 
 };
 

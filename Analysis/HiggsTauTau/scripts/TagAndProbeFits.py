@@ -28,7 +28,18 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"tpzmm" , "outputfolder":"tagandprobe", "folder":"/vols/cms/dw515/Offline/output/SM/TAPElMuLO2016/" ,"era":"summer17", "embedded":True, "em_iso":False, "aiso1":False, "aiso2":False, "embed_sel":False, "draw_hists":1 }
+defaults = {
+    "channel":"tpzmm" , 
+    "outputfolder":"tagandprobe", 
+    "folder":"/vols/cms/dw515/Offline/output/SM/TAPElMuLO2016/",
+    "era":"summer17", 
+    "embedded":False, 
+    "em_iso":False, 
+    "aiso1":False, 
+    "aiso2":False, 
+    "embed_sel":False, 
+    "draw_hists":1,
+    }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -155,7 +166,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       if options.em_iso: 
           #idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
           trg_pt_bins = '[10,12,14,16,18,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
-          #trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
+          # trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
           
     trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
     trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
@@ -577,7 +588,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['summer17','summer16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
+      if options.era in ['summer18','summer17','summer16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
           if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
@@ -731,19 +742,23 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     
 # Add data sample names
 if options.channel == 'tpzmm': 
-    if options.era == 'summer17': 
-      data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-      data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    if options.era == 'summer17':
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    elif options.era == 'summer18':
+        data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
+
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
-    if options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    if options.era == 'summer18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
+    elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronB']
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
 # Add MC sample names   
 if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
+elif options.era == 'summer18': ztt_samples = ['DYJetsToLL-LO']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
 embed_samples = []
@@ -791,13 +806,13 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
   
-  if options.era == 'summer17':
+  if options.era in ['summer17','summer18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'  
+    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
     if options.aiso1:
       baseline_tag1+='*(iso_2>0.2)'
       baseline_tag2+='*(iso_1>0.2)'
-  else:    
+  else:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
      
@@ -806,7 +821,7 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  if options.era == 'summer17':
+  if options.era in ['summer17','summer18']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
   else: 
@@ -818,7 +833,7 @@ if options.channel == 'tpzee':
   if options.aiso2:
     iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
     iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso or options.era == 'summer17':
+  if options.em_iso or options.era in ['summer17','summer18']:
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -828,7 +843,7 @@ if options.channel == 'tpzee':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  if options.era == 'summer17':
+  if options.era in ['summer17','summer18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
     if options.aiso1:
@@ -862,32 +877,34 @@ if options.embed_dz:
 output_name = options.outputfolder+'/tagandprobe_'+options.channel+'.root'
 
 nodename = options.channel
-if options.draw_hists == 1: 
-  outfile = ROOT.TFile(output_name, 'RECREATE')
-  ana = Analysis()
-  ana.nodes.AddNode(ListNode(nodename))
-  
-  ana.remaps = {}
-  if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.channel == 'tpzee': ana.remaps['SingleElectron'] = 'data_obs'
-  
-  # Add all data files
-  for sample_name in data_samples:
-      ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
-  
-  # Add all MC background files
-  if not options.embed_sel:
-    for sample_name in ztt_samples:
+if options.draw_hists == 1:
+    outfile = ROOT.TFile(output_name, 'RECREATE')
+    ana = Analysis()
+    ana.nodes.AddNode(ListNode(nodename))
+    
+    ana.remaps = {}
+    if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
+    elif options.channel == 'tpzee':
+        if options.era == 'summer18': ana.remaps['EGamma'] = 'data_obs'
+        else: ana.remaps['SingleElectron'] = 'data_obs'
+    
+    # Add all data files
+    for sample_name in data_samples:
         ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
-  
-  if options.embedded:
-    # Add all embedded files
-    for sample_name in embed_samples:
-        ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
-  
-  Produce3DHistograms(ana, 'wt', outfile)
+    
+    # Add all MC background files
+    if not options.embed_sel:
+      for sample_name in ztt_samples:
+          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
+    
+    if options.embedded:
+      # Add all embedded files
+      for sample_name in embed_samples:
+          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'tagandprobe', None, sample_name)
+
+    Produce3DHistograms(ana, 'wt', outfile)
 else:
-  outfile = ROOT.TFile(output_name)
+    outfile = ROOT.TFile(output_name)
   
 wsfilename = output_name.replace('.root','_ws.root')
 wsfile = ROOT.TFile(wsfilename, 'RECREATE')
@@ -920,7 +937,7 @@ for name in wsnames:
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
 
-for i in ['id','iso','trg']:    
+for i in ['id','iso','trg']:
   hist2d = sffile.Get('data_%s_eff' % i)
   for j in range(1,hist2d.GetNbinsY()+1):
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
@@ -946,6 +963,4 @@ for i in ['id','iso','trg']:
 outfile.Close()  
 wsfile.Close()
 sffile.Close()
-  
 
- 

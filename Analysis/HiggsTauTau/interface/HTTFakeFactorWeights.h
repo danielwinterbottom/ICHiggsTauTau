@@ -13,16 +13,17 @@ namespace ic {
 
 class HTTFakeFactorWeights : public ModuleBase {
  private:
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, met_label)
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, jets_label)
-  CLASS_MEMBER(HTTFakeFactorWeights, ic::channel, channel)
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, ditau_label)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  met_label)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  jets_label)
+  CLASS_MEMBER(HTTFakeFactorWeights, ic::channel,  channel)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  ditau_label)
   CLASS_MEMBER(HTTFakeFactorWeights, ic::strategy, strategy)
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, categories)
-  CLASS_MEMBER(HTTFakeFactorWeights, bool, do_systematics)
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, ff_file)
-  CLASS_MEMBER(HTTFakeFactorWeights, std::string, fracs_file)
-  CLASS_MEMBER(HTTFakeFactorWeights, bool, is_embedded)
+  CLASS_MEMBER(HTTFakeFactorWeights, ic::era,      era)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  categories)
+  CLASS_MEMBER(HTTFakeFactorWeights, bool,         do_systematics)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  ff_file)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string,  fracs_file)
+  CLASS_MEMBER(HTTFakeFactorWeights, bool,         is_embedded)
 
  public:
   HTTFakeFactorWeights(std::string const& name);

@@ -5,7 +5,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan31_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zmm"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "cpdecays16",
@@ -63,7 +63,7 @@
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec05_JES_2016/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar14_mixed_reco/",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar22_2016_zmm_gen/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Feb26_2016/",
     // "output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
