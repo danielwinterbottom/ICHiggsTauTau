@@ -870,10 +870,6 @@ namespace ic {
       outtree_->Branch("strip_E_2", &strip_E_2_);
       outtree_->Branch("gen_pi0_E", &gen_pi0_E_);
       outtree_->Branch("cp_channel" , &cp_channel_);
-      outtree_->Branch("mass0", &mass0_);
-      outtree_->Branch("mass1", &mass1_);
-      outtree_->Branch("mass2", &mass2_);
-      outtree_->Branch("strip_pt", &strip_pt_);
       outtree_->Branch("y_1_1", &y_1_1_);
       outtree_->Branch("y_1_2", &y_1_2_);
       outtree_->Branch("y_2_2", &y_2_2_);
@@ -885,7 +881,11 @@ namespace ic {
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
 
-      /**********************************************************/
+      outtree_->Branch("mass0",         &mass0_);
+      outtree_->Branch("mass1",         &mass1_);
+      outtree_->Branch("mass2",         &mass2_);
+      outtree_->Branch("strip_pt",      &strip_pt_);
+      //**********************************************************/
       // some variables to compare data/MC ageement
       if(channel_ == channel::mt) {
         outtree_->Branch("ptgamma1",      &pt_gamma_1_    );
@@ -931,8 +931,19 @@ namespace ic {
        // outtree_->Branch("E_res_6", &E_res_6_);
        // outtree_->Branch("eta_res_6", &eta_res_6_);
        // outtree_->Branch("phi_res_6", &phi_res_6_);
-
- 
+      
+      outtree_->Branch("h1_h2_dphi",    &h1_h2_dphi_);
+      outtree_->Branch("h1_h3_dphi",    &h1_h3_dphi_);
+      outtree_->Branch("h2_h3_dphi",    &h2_h3_dphi_);
+      outtree_->Branch("h1_h2_dEta",    &h1_h2_dEta_);
+      outtree_->Branch("h1_h3_dEta",    &h1_h3_dEta_);
+      outtree_->Branch("h2_h3_dEta",    &h2_h3_dEta_);
+      outtree_->Branch("E1",            &E1_);
+      outtree_->Branch("E2",            &E2_);
+      outtree_->Branch("E3",            &E3_);
+      outtree_->Branch("a1_pi0_dEta",   &a1_pi0_dEta_);
+      outtree_->Branch("a1_pi0_dphi",   &a1_pi0_dphi_);
+      
       }
       /**********************************************************/
 
@@ -5376,7 +5387,21 @@ namespace ic {
       }
       DeltaR2WRTtau_/=SumPt;
       /**********************************************************/  
-
+      mass0_ = -1;
+      mass1_ = -1;
+      mass2_ = -1;
+      E1_ =  -1;
+      E2_ =  -1;
+      E3_ =  -1;
+      strip_pt_ = -1;
+      a1_pi0_dEta_ = -1;
+      a1_pi0_dphi_ = -1;
+      h1_h2_dphi_ = -1;
+      h1_h3_dphi_ = -1;
+      h2_h3_dphi_ = -1;
+      h1_h2_dEta_ = -1;
+      h1_h3_dEta_ = -1;
+      h2_h3_dEta_ = -1;
 
       std::vector<ic::PFCandidate*> a1_daughters;
       std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
@@ -5388,6 +5413,20 @@ namespace ic {
         mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
         mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
         strip_pt_ = pi0->pt();
+        if(strip_pt_>0) {
+            a1_pi0_dEta_ = std::fabs(pi0->eta()-tau2->eta());
+            a1_pi0_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0->vector(),tau2->vector()));
+        } 
+        h1_h2_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[1]->vector()));
+        h1_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[2]->vector()));
+        h2_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[1]->vector(),a1_daughters[2]->vector()));
+        h1_h2_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[1]->eta());
+        h1_h3_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[2]->eta());
+        h2_h3_dEta_ = std::fabs(a1_daughters[1]->eta()-a1_daughters[2]->eta());
+        E1_ = a1_daughters[0]->energy();
+        E2_ = a1_daughters[1]->energy();
+        E3_ = a1_daughters[2]->energy();
+
       }
 
       
