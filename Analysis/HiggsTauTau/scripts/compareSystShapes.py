@@ -52,6 +52,8 @@ for key in infile.GetListOfKeys():
               up = histo_up.Integral(-1,-1)/histo_nom.Integral(-1,-1)
               down = histo_down.Integral(-1,-1)/histo_nom.Integral(-1,-1)
               to_print.append('({\"%s\"}, {%i}, {\"%s\"}, %.3f, %.3f)' % (chan, binnum, proc, down, up))
+              #if down > 1.005 or up <= 0.995: to_print.append('({\"%s\"}, {%i}, {\"%s\"}, %.3f, %.3f)' % (chan, binnum, proc, down, up))
+
          
     directory.Close() 
 

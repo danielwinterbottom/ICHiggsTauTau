@@ -37,6 +37,13 @@ int HTTTauEfficiency::PreAnalysis() {
     outtree_->Branch("dm_finding_new",&dm_finding_new_);
     outtree_->Branch("wt",&wt_);
     outtree_->Branch("gen_match",&gen_match_);
+
+    outtree_->Branch("deepTauVsJets_iso_raw",&deepTauVsJets_iso_raw_);
+    outtree_->Branch("deepTauVsEle_iso_raw",&deepTauVsEle_iso_raw_);
+    outtree_->Branch("deepTauVsMu_iso_raw",&deepTauVsMu_iso_raw_);
+    outtree_->Branch("dpfTauV0_iso_raw",&dpfTauV0_iso_raw_);
+    outtree_->Branch("dpfTauV1_iso_raw",&dpfTauV1_iso_raw_);
+
   }
 
   return 0;
@@ -87,22 +94,27 @@ int HTTTauEfficiency::Execute(TreeEvent* event) {
    int tausize = leading_tau_match.size();
    int hadsize = leading_had_match.size();
 
-
    if(promptsize!=0 && taudecaysize!=0 && tausize == 0){
-     DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) < DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) ? taudecaysize=0 : promptsize = 0;
+     DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) 
+         < DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) ? taudecaysize=0 : promptsize = 0;
    } else if (promptsize!=0 && taudecaysize==0 && tausize != 0){
-     DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : promptsize = 0;
-  } else if (promptsize==0 && taudecaysize!=0 && tausize != 0){
-     DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : taudecaysize = 0;
- } else if(promptsize!=0 && taudecaysize!=0 && tausize!=0){
-   if(DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second)){
-      tausize=0;
-      DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) < DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) ? promptsize=0:taudecaysize=0;
-    } else {
-      taudecaysize = 0;
-      DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) < DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) ? promptsize=0:tausize=0;
-    } 
- }
+       DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) 
+           < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : promptsize = 0;
+   } else if (promptsize==0 && taudecaysize!=0 && tausize != 0){
+      DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) 
+          < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : taudecaysize = 0;
+   } else if(promptsize!=0 && taudecaysize!=0 && tausize!=0){
+     if(DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) 
+             < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second)){
+       tausize=0;
+       DR(leading_tau_decay_match.at(0).first,leading_tau_decay_match.at(0).second) 
+           < DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) ? promptsize=0:taudecaysize=0;
+     } else {
+        taudecaysize = 0;
+        DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) 
+            < DR(leading_prompt_match.at(0).first,leading_prompt_match.at(0).second) ? promptsize=0:tausize=0;
+     } 
+   }
 
    if(promptsize==0 && taudecaysize==0&&tausize==0){
     if(hadsize==0){
@@ -134,6 +146,14 @@ int HTTTauEfficiency::Execute(TreeEvent* event) {
 //  iso_mva_newDMwoLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3newDMwoLTraw");
  // iso_mva_newDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3newDMwLTraw");
  // iso_mva_oldDMwoLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3oldDMwoLTraw");
+ //
+ //added these for testing
+  deepTauVsJets_iso_raw_ = taus.at(i)->GetTauID("byDeepTau2017v1VSjetraw");
+  deepTauVsEle_iso_raw_  = taus.at(i)->GetTauID("byDeepTau2017v1VSeraw");
+  deepTauVsMu_iso_raw_   = taus.at(i)->GetTauID("byDeepTau2017v1VSmuraw");
+  dpfTauV0_iso_raw_      = taus.at(i)->GetTauID("byDpfTau2016v0VSallraw");
+  dpfTauV1_iso_raw_      = taus.at(i)->GetTauID("byDpfTau2016v1VSallraw");
+
   iso_mva_oldDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
   iso_dbetacorr_ = taus.at(i)->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
   against_mu_tight_ = taus.at(i)->GetTauID("againstMuonTight3");

@@ -8,20 +8,20 @@ ROOT.gROOT.SetBatch(True)
 
 plotting.ModTDRStyle()
 
-file_data = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_2017_69p2mb_Cert_294927-306462.root"), "READ")
+file_data = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_2018_69p2mb_Cert_314472-325175_100bins.root"), "READ")
 hist_data = file_data.Get("pileup")
 hist_data.SetLineColor(ROOT.kRed+2)
 
 # +- 4.6% of nominal 69200 mb
-file_data_low = ROOT.TFile.Open(os.path.join("./", "MyDataPileupHistogram_69200_low.root"), "READ")
+file_data_low = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_2018_69p2mb_Cert_314472-325175_100bins_low.root"), "READ")
 hist_data_low = file_data_low.Get("pileup")
 hist_data_low.SetLineColor(ROOT.kRed-7)
 
-file_data_high = ROOT.TFile.Open(os.path.join("./", "MyDataPileupHistogram_69200_high.root"), "READ")
+file_data_high = ROOT.TFile.Open(os.path.join("./input/pileup/", "Data_Pileup_2018_69p2mb_Cert_314472-325175_100bins_upp.root"), "READ")
 hist_data_high = file_data_high.Get("pileup")
 hist_data_high.SetLineColor(ROOT.kRed-7)
 
-file_mc = ROOT.TFile.Open(os.path.join("./input/pileup/", "MC_Winter17_PU25ns_V1.root"), "READ")
+file_mc = ROOT.TFile.Open(os.path.join("./input/pileup/2018/", "pileup_2018_DYJetsToLL-LO.root"), "READ")
 hist_mc = file_mc.Get("pileup")
 hist_mc.SetLineColor(ROOT.kBlue+2)
 
@@ -111,12 +111,12 @@ txt = ROOT.TLatex()
 txt.SetTextFont(42)
 txt.SetTextSize(0.04)
 txt.SetTextAlign(11)
-txt.DrawLatexNDC(c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"#bf{CMS} #it{Internal}")
+txt.DrawLatexNDC(c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"#bf{CMS} #it{Preliminary}")
 txt2 = ROOT.TLatex()
 txt2.SetTextFont(42)
 txt2.SetTextSize(0.03)
 txt2.SetTextAlign(11)
-txt2.DrawLatexNDC(0.88-c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"41.9 fb^{-1} (13 TeV)")
+txt2.DrawLatexNDC(0.88-c1.GetLeftMargin(),1.02-c1.GetTopMargin(),"58.8 fb^{-1} (13 TeV)")
 
-c1.SaveAs("pileup_2017.pdf");
+c1.SaveAs("pileup_2018_fromDYLO.pdf");
 

@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "TRandom3.h"
 
 #include <string>
 
@@ -54,6 +55,8 @@ class HTTCategories : public ModuleBase {
   TTree *outtree_;
   TTree *synctree_;
   TFile *lOFile;
+
+  TRandom3  *rand;
 
   struct branch_var {
       double var_double;  
@@ -245,7 +248,7 @@ class HTTCategories : public ModuleBase {
   double z_1_;
   double z_2_;
   float m_1_;
-  branch_var m_2_;
+  float m_2_;
   branch_var mva_1_;
   branch_var mva_2_;
   branch_var pfmet_;
@@ -482,10 +485,81 @@ class HTTCategories : public ModuleBase {
   double gen_sjdphi_;
   double gen_m_;
   double gen_pt_;
+  int tauFlag_1_;
+  int tauFlag_2_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
   double subleading_lepton_match_DR_;*/
+
+  double aco_angle_;
+  double aco_angle_mod_;
+  int cp_channel_;
+  double cp_sign_;
+
+  double aco_angle_1_;
+  double aco_angle_2_;
+  double aco_angle_3_;
+  double aco_angle_4_;
+  double mass0_=-1, mass1_=-1, mass2_=-1;
+  double strip_pt_=-1;
+  double strip_pt_2_=-1, strip_pt_1_=-1, strip_E_1_=-1, strip_E_2_=-1, gen_pi0_E_=-1;
+  double y_1_1_;
+  double y_1_2_;
+  double y_2_2_;
+  double y_3_2_;
+  double y_4_2_;
+  double rand_;
+  double cp_sign_1_;
+  double cp_sign_2_;
+  double cp_sign_3_;
+  double cp_sign_4_;
+
+  double wt_cp_sm_;
+  double wt_cp_ps_;
+  double wt_cp_mm_;
+
+  double rho_id_1_;
+  double rho_id_2_;
+ 
+  float mvadm_rho_1_;
+  float mvadm_a1_1_;
+  float mvadm_pi_1_;
+  float mvadm_other_1_;
+  float mvadm_rho_2_;
+  float mvadm_a1_2_;
+  float mvadm_pi_2_;
+  float mvadm_other_2_;
+
+  /**********************************************************/
+  // some variables to compare data/MC ageement       
+  double pt_gamma_1_ = -1, pt_gamma_2_ = -1, pt_gamma_3_=-1, pt_gamma_4_=-1;
+  double E_gamma_1_ = -1, E_gamma_2_ = -1, E_gamma_3_=-1, E_gamma_4_=-1, E_pi_=-1, E_pi0_=-1;
+  double M_rho_=-1, M_rho_1gamma_=-1, M_rho_2gamma_=-1, M_rho_3gamma_=-1, M_rho_subgamma_=-1;
+  double M_pi0_=-1, M_pi0_2gamma_=-1, M_pi0_3gamma_=-1, M_pi0_4gamma_=-1;
+  double gammas_dEta_=-1,gammas_dphi_=-1, rho_dEta_=-1, rho_dphi_=-1;
+  double DeltaR2WRTtau_=-1;
+  /**********************************************************/
+
+  //double E_res_1_; 
+  //double eta_res_1_; 
+  //double phi_res_1_; 
+  //double E_res_2_; 
+  //double eta_res_2_;
+  //double phi_res_2_;
+  //double E_res_3_; 
+  //double eta_res_3_;
+  //double phi_res_3_;
+  //double E_res_4_;
+  //double eta_res_4_;
+  //double phi_res_4_;
+
+  //double E_res_5_;
+  //double eta_res_5_;
+  //double phi_res_5_; 
+  //double E_res_6_;
+  //double eta_res_6_;
+  //double phi_res_6_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
@@ -1392,6 +1466,82 @@ class HTTCategories : public ModuleBase {
   double wt_prefire_;
   double wt_prefire_up_;
   double wt_prefire_down_;
+
+  // deepTau ID
+  double deepTauVsJets_iso_1_;
+  double deepTauVsJets_iso_2_;
+  double deepTauVsEle_iso_1_;
+  double deepTauVsEle_iso_2_;
+  double deepTauVsMu_iso_1_;
+  double deepTauVsMu_iso_2_;
+
+  bool deepTauVsJets_vvvloose_1_;
+  bool deepTauVsJets_vvvloose_2_;
+  bool deepTauVsJets_vvloose_1_;
+  bool deepTauVsJets_vvloose_2_;
+  bool deepTauVsJets_vloose_1_;
+  bool deepTauVsJets_vloose_2_;
+  bool deepTauVsJets_loose_1_;
+  bool deepTauVsJets_loose_2_;
+  bool deepTauVsJets_medium_1_;
+  bool deepTauVsJets_medium_2_;
+  bool deepTauVsJets_tight_1_;
+  bool deepTauVsJets_tight_2_;
+  bool deepTauVsJets_vtight_1_;
+  bool deepTauVsJets_vtight_2_;
+  bool deepTauVsJets_vvtight_1_;
+  bool deepTauVsJets_vvtight_2_;
+
+  bool deepTauVsEle_vvvloose_1_;
+  bool deepTauVsEle_vvvloose_2_;
+  bool deepTauVsEle_vvloose_1_;
+  bool deepTauVsEle_vvloose_2_;
+  bool deepTauVsEle_vloose_1_;
+  bool deepTauVsEle_vloose_2_;
+  bool deepTauVsEle_loose_1_;
+  bool deepTauVsEle_loose_2_;
+  bool deepTauVsEle_medium_1_;
+  bool deepTauVsEle_medium_2_;
+  bool deepTauVsEle_tight_1_;
+  bool deepTauVsEle_tight_2_;
+  bool deepTauVsEle_vtight_1_;
+  bool deepTauVsEle_vtight_2_;
+  bool deepTauVsEle_vvtight_1_;
+  bool deepTauVsEle_vvtight_2_;
+
+  bool deepTauVsMu_vvvloose_1_;
+  bool deepTauVsMu_vvvloose_2_;
+  bool deepTauVsMu_vvloose_1_;
+  bool deepTauVsMu_vvloose_2_;
+  bool deepTauVsMu_vloose_1_;
+  bool deepTauVsMu_vloose_2_;
+  bool deepTauVsMu_loose_1_;
+  bool deepTauVsMu_loose_2_;
+  bool deepTauVsMu_medium_1_;
+  bool deepTauVsMu_medium_2_;
+  bool deepTauVsMu_tight_1_;
+  bool deepTauVsMu_tight_2_;
+  bool deepTauVsMu_vtight_1_;
+  bool deepTauVsMu_vtight_2_;
+  bool deepTauVsMu_vvtight_1_;
+  bool deepTauVsMu_vvtight_2_;
+  //
+
+  double primary_vtx_x_;
+  double primary_vtx_y_;
+  double primary_vtx_z_;
+  double gen_pvx_;
+  double gen_pvy_;
+  double gen_pvz_;
+
+  double tau_svx_1_;
+  double tau_svy_1_;
+  double tau_svz_1_;
+  double tau_svx_2_;
+  double tau_svy_2_;
+  double tau_svz_2_;
+
+
 
  public:
   HTTCategories(std::string const& name);

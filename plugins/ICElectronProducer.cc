@@ -63,6 +63,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
       do_pf_iso_04_(config.getParameter<bool>("includePFIso04")),
       // 2017 smear and scale 
+      doSmearAndScale_(config.getParameter<bool>("doSmearAndScale")),
       input_preCorr_(config.getParameter<std::string>("inputPreCorr")),
       input_postCorr_(config.getParameter<std::string>("inputPostCorr")),
       input_errPreCorr_(config.getParameter<std::string>("inputErrPreCorr")),
@@ -261,6 +262,8 @@ void ICElectronProducer::produce(edm::Event& event,
         reco::Vertex const& vtx = vertices_handle->at(0);
         dest.set_dz_vertex(src.gsfTrack()->dz(vtx.position()));
         dest.set_dxy_vertex(src.gsfTrack()->dxy(vtx.position()));
+        dest.set_dz_vertex_error(src.gsfTrack()->dz(vtx.position()));
+        dest.set_dxy_vertex_error(src.gsfTrack()->dxy(vtx.position()));
       }
     }
     if (do_beamspot_ip_) {

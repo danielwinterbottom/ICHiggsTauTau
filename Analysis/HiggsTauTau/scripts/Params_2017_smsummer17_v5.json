@@ -1,27 +1,31 @@
 {
   "DY1JetsToLL-LO": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
+  },
+  "DY1JetsToLL-LO-ext": {
+    "xs": 6225.4,
+    "evt": 97702292.0
   },
   "DY2JetsToLL-LO": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DY2JetsToLL-LO-ext": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DY3JetsToLL-LO": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DY3JetsToLL-LO-ext": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DY4JetsToLL-LO": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DYJetsToLL": {
     "xs": 6225.4,
@@ -29,11 +33,11 @@
   },
   "DYJetsToLL-LO": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DYJetsToLL-LO-ext1": {
     "xs": 6225.4,
-    "evt": 97714787.0
+    "evt": 97702292.0
   },
   "DYJetsToLL-ext": {
     "xs": 6225.4,
@@ -41,11 +45,11 @@
   },
   "DYJetsToLL_M-10-50-LO": {
     "xs": 18610.0,
-    "evt": 53100747.0
+    "evt": 78994955.0
   },
   "DYJetsToLL_M-10-50-LO-ext1": {
     "xs": 18610.0,
-    "evt": 53100747.0
+    "evt": 78994955.0
   },
   "EWKWMinus2Jets": {
     "xs": 20.25,
@@ -105,7 +109,7 @@
   },
   "TTToHadronic": {
     "xs": 377.96,
-    "evt": 42357944.0
+    "evt": 41729120.0
   },
   "TTToSemiLeptonic": {
     "xs": 365.34,

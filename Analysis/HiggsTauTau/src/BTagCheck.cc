@@ -13,6 +13,7 @@ namespace ic {
     do_legacy_ = true;
     dilepton_label_ = "ditau";
     use_deep_csv_ = false;
+    use_deep_jet_ = false;
   }
 
   BTagCheck::~BTagCheck() {
@@ -20,6 +21,14 @@ namespace ic {
   }
 
   int BTagCheck::PreAnalysis() {
+
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "BTagCheck" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;    
+    std::cout << boost::format(param_fmt()) % "era" % Era2String(era_);
+    std::cout << boost::format(param_fmt()) % "strategy" % Strategy2String(strategy_);
+    std::cout << boost::format(param_fmt()) % "use_deep_csv" % use_deep_csv_;
+
     if (fs_ && do_legacy_) {
       hists_ = new Dynamic2DHistoSet(fs_->mkdir("BTagCheck"));
       hists_->Create("csv_orig_embed", 51, -1, 1.04, 51, -1, 1.04);
@@ -52,28 +61,35 @@ namespace ic {
       hists_->Create("NBtag_otherflav_genmatch",19,pt_range,4,eta_range);
       hists_->Create("NTot_otherflav_genmatch",19,pt_range,4,eta_range);
       outtree_ = fs_->make<TTree>("btageff","btageff");
-      outtree_->Branch("wt",&wt); 
-      outtree_->Branch("pt",&pt);
-      outtree_->Branch("eta",&eta);
-      outtree_->Branch("csv_value",&csv);
-      outtree_->Branch("csv_value_deepcsv_b",&csv_b);
-      outtree_->Branch("csv_value_deepcsv_bb",&csv_bb);
-      outtree_->Branch("jet_flavour",&jet_flavour);
-      outtree_->Branch("gen_match",&gen_match);
-      outtree_->Branch("iso_1",&iso_1);
-      outtree_->Branch("iso_2",&iso_2);
-      outtree_->Branch("leptonveto",&leptonveto);
-      outtree_->Branch("os",&os);
-      outtree_->Branch("antiele_pass",&antiele_pass);
-      outtree_->Branch("antimu_pass",&antimu_pass);
-      outtree_->Branch("sf",&sf);
+      outtree_->Branch("wt",                     & wt);
+      outtree_->Branch("pt",                     & pt);
+      outtree_->Branch("eta",                    & eta);
+      outtree_->Branch("csv_value",              & csv);
+      outtree_->Branch("csv_value_deepcsv_b",    & csv_b);
+      outtree_->Branch("csv_value_deepcsv_bb",   & csv_bb);
+      outtree_->Branch("csv_value_deepjet_b",    & csv_b);
+      outtree_->Branch("csv_value_deepjet_bb",   & csv_bb);
+      outtree_->Branch("csv_value_deepjet_lepb", & csv_lepb);
+      outtree_->Branch("jet_flavour",            & jet_flavour);
+      outtree_->Branch("gen_match",              & gen_match);
+      outtree_->Branch("iso_1",                  & iso_1);
+      outtree_->Branch("iso_2",                  & iso_2);
+      outtree_->Branch("leptonveto",             & leptonveto);
+      outtree_->Branch("os",                     & os);
+      outtree_->Branch("antiele_pass",           & antiele_pass);
+      outtree_->Branch("antimu_pass",            & antimu_pass);
+      outtree_->Branch("sf",                     & sf);
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V3_B_F.csv";
-    if(era_ == era::data_2017) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    else if(era_ == era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+    else if(era_ == era::data_2017 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    else if (era_ == era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+    else if (era_ == era::data_2018 && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepJet_102XSF_V1.csv";
     std::cout << "SF: " << csv_file_path << std::endl;
-    calib  = new const BTagCalibration("csvv2",csv_file_path);
+    /* calib  = new const BTagCalibration("csvv2",csv_file_path); */
+    if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
+    else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
@@ -83,11 +99,12 @@ namespace ic {
     reader_mujets->load(*calib, BTagEntry::FLAV_B,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_C,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_UDSG,"mujets");
-    if(era_ == era::data_2016 || era_ == era::data_2017){
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
       reader_comb->load(*calib, BTagEntry::FLAV_B,"comb");
       reader_comb->load(*calib, BTagEntry::FLAV_C,"comb");
       reader_comb->load(*calib, BTagEntry::FLAV_UDSG,"comb");
     }
+
     return 0;
   }
 
@@ -109,13 +126,13 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
-        if(era_ != era::data_2016 && era_ != era::data_2017){
+        if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) { 
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) { 
           iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -128,15 +145,15 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Muon const* muon  = dynamic_cast<Muon const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        if(era_ != era::data_2016 && era_ != era::data_2017){
+        if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_1 = PF03IsolationVal(muon, 0.5, 0);
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) {
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);  
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
@@ -150,22 +167,22 @@ namespace ic {
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
-        if(era_ == era::data_2017) iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
-        if(era_ != era::data_2016 && era_ != era::data_2017){
+        if(era_ == era::data_2017 || era_ == era::data_2018) iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+        if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);
         } else iso_2 = PF04IsolationVal(muon, 0.5, 0);
         if(era_ == era::data_2015 && iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
-        if((era_ == era::data_2016 || era_ == era::data_2017) && iso_1<0.2&&iso_2<0.15&&os>0) pass_presel=true;
+        if((era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) && iso_1<0.2&&iso_2<0.15&&os>0) pass_presel=true;
     }
     if(channel_ == channel::tt) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        if( era_ != era::data_2016 && era_ != era::data_2017){
+        if( era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_1 = tau1->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
           iso_2 = tau2->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT");
-        } else if (strategy_ == strategy::cpsummer17) {
+        } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           iso_1 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");  
           iso_2 = tau2->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
@@ -209,6 +226,11 @@ namespace ic {
           csv_bb = embed_jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
           csv = csv_b + csv_bb;
         }
+        else if (use_deep_jet_) {
+          csv_b    = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+          csv_bb   = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+          csv_lepb = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+        }
         else {
           csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         }
@@ -218,13 +240,16 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) tight_wp = 0.8484;
-        else if(strategy_ == strategy::cpsummer17 && use_deep_csv_) tight_wp = 0.4941;
-        else if(strategy_ == strategy::cpsummer17) tight_wp = 0.8838;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && use_deep_csv_) tight_wp = 0.4941;
+        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && !use_deep_csv_) tight_wp = 0.8838;
+        else if (era_ == era::data_2018 && use_deep_csv_) tight_wp = 0.4184; //medium deepCSV wp
+        else if (era_ == era::data_2018 && use_deep_jet_) tight_wp = 0.2770; //medium deepJet wp
         if(jet_flavour == 5){
-          if(era_!=era::data_2016 && era_ != era::data_2017){
+          if(era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+          std::cout << "sf for b tag jet: " << sf << std::endl;
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
           if(csv>tight_wp){
@@ -233,7 +258,7 @@ namespace ic {
           }
         } else if(jet_flavour == 4){
           hists_->Fill("NTot_cflav",pt,eta,wt);
-          if(era_!=era::data_2016 && era_ != era::data_2017){
+          if(era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);
