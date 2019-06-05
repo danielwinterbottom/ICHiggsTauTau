@@ -3,23 +3,25 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jan31_MC_94X'
+config.General.workArea='Feb26_MC_94X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18_pfCands.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=94X_dataRun2_v11', 'tauSpinner=False']
-config.JobType.maxMemoryMB = 8000
-config.JobType.numCores = 4
+config.JobType.maxMemoryMB = 2500
+# config.JobType.numCores = 4
 config.section_('Data')
-# config.Data.unitsPerJob = 100000
-config.Data.unitsPerJob = 50000 # switch back after!
+config.Data.unitsPerJob = 100000
+# config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
+# config.Data.unitsPerJob = 1
+# config.Data.splitting = 'FileBased'
 # config.Data.unitsPerJob = 720
 # config.Data.splitting = 'Automatic'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/Jan31_MC_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Feb26_MC_94X/'
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 config.section_('User')

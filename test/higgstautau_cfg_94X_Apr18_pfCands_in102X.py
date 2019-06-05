@@ -22,7 +22,7 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
-opts.register('release', '94XMINIAOD', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '102XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
@@ -49,7 +49,7 @@ if not isData:
 else: doHT = 0
 includenpNLO = opts.includenpNLO
 
-if not release in ["94XMINIAOD"]:
+if not release in ["102XMINIAOD"]:
   print 'Release not recognised, exiting!'
   sys.exit(1)
 print 'release     : '+release
@@ -94,6 +94,7 @@ process.GlobalTag.globaltag = cms.string(tag)
 process.options   = cms.untracked.PSet(
     FailPath=cms.untracked.vstring("FileReadError"),
     wantSummary = cms.untracked.bool(True),
+    numberOfThreads = cms.untracked.uint32(4)
 )
 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
@@ -684,9 +685,9 @@ from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD (
         process,
-        isData=(bool(isData) or bool(isEmbed)),
+        isData = (bool(isData) or bool(isEmbed)),
         fixEE2017 = True,
-        fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
 )
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
