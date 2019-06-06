@@ -243,11 +243,13 @@ void ICTauProducer<pat::Tau>::constructSpecific(
       if(packedCand){
         dest.set_lead_dz_vertex(packedCand->dz());
         dest.set_lead_dxy_vertex(packedCand->dxy());
+        #if CMSSW_MAJOR_VERSION >= 9
         if(packedCand->hasTrackDetails()) {
           dest.set_lead_dz_vertex_error(packedCand->dzError());
           dest.set_lead_dxy_vertex_error(packedCand->dxyError());
           //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
         }
+        #endif
         dest.set_lead_p(packedCand->p());
 
         dest.set_lead_pt(packedCand->pt());
