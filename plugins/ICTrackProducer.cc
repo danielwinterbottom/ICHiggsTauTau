@@ -51,7 +51,7 @@ void ICTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     dest.set_algorithm(src.algo());
     dest.set_pt_err(src.ptError());
     dest.set_quality(src.qualityMask());
-#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4
+#if CMSSW_MAJOR_VERSION > 9 || (CMSSW_MAJOR_VERSION == 9 && CMSSW_MINOR_VERSION >= 4)
     dest.set_hits_miss_inner(
         src.hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS));
 #elif CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
