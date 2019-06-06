@@ -5360,7 +5360,11 @@ namespace ic {
         E_gamma_2_ = gammas2[1]->energy();
         M_rho_2gamma_=(pi_tau2->vector()+gammas2[0]->vector()+gammas2[1]->vector()).M();
         M_rho_subgamma_=(pi_tau2->vector()+gammas2[1]->vector()).M();
-        M_pi0_ = pi0_tau2->M();
+        //M_pi0_ = pi0_tau2->M();
+        ROOT::Math::PtEtaPhiEVector gammas_vector_2;
+        for (auto g : gammas2) gammas_vector_2+=g->vector();
+        M_pi0_ = gammas_vector_2.M();
+        
         M_pi0_2gamma_= (gammas2[0]->vector()+gammas2[1]->vector()).M();
         gammas_dEta_ = std::fabs(gammas2[0]->eta() - gammas2[1]->eta());
         gammas_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas2[0]->vector(),gammas2[1]->vector()));
@@ -5426,6 +5430,24 @@ namespace ic {
         E1_ = a1_daughters[0]->energy();
         E2_ = a1_daughters[1]->energy();
         E3_ = a1_daughters[2]->energy();
+
+        M_pi0_=-1, M_pi0_2gamma_=-1, gammas_dEta_=-1, gammas_dphi_=-1, E_gamma_1_ = -1, E_gamma_2_ = -1;
+        
+        if(gammas2.size()>0){
+            E_gamma_1_ = gammas2[0]->energy(); 
+        }
+      
+        if(gammas2.size()>1){    
+            E_gamma_2_ = gammas2[1]->energy();
+           
+            ROOT::Math::PtEtaPhiEVector gammas_vector_2;
+            for (auto g : gammas2) gammas_vector_2+=g->vector();
+            M_pi0_ = gammas_vector_2.M();
+             
+            M_pi0_2gamma_= (gammas2[0]->vector()+gammas2[1]->vector()).M();
+            gammas_dEta_ = std::fabs(gammas2[0]->eta() - gammas2[1]->eta());
+            gammas_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(gammas2[0]->vector(),gammas2[1]->vector()));
+        }
 
       }
 
