@@ -13,7 +13,7 @@
 namespace ic {
 
   HTTFakeFactorWeights::HTTFakeFactorWeights(std::string const& name) : ModuleBase(name),
-    channel_(channel::et), strategy_(strategy::mssmsummer16){ 
+    channel_(channel::et), strategy_(strategy::mssmsummer16), era_(era::data_2012_rereco){ 
     met_label_ = "pfMET";
     jets_label_ = "ak4PFJetsCHS";
     ditau_label_ = "ditau";
@@ -33,26 +33,30 @@ namespace ic {
     std::cout << "HTTFakeFactorWeights" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
-    std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
-    std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
-    std::cout << boost::format(param_fmt()) % "ditau_label"     % ditau_label_;
+    std::cout << boost::format(param_fmt()) % "channel"     % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "era"         % Era2String(era_);
+    std::cout << boost::format(param_fmt()) % "met_label"   % met_label_;
+    std::cout << boost::format(param_fmt()) % "jets_label"  % jets_label_;
+    std::cout << boost::format(param_fmt()) % "ditau_label" % ditau_label_;
     std::cout << boost::format(param_fmt()) % "ff_file"     % ff_file_;
-    std::cout << boost::format(param_fmt()) % "fracs_file"     % fracs_file_;
+    std::cout << boost::format(param_fmt()) % "fracs_file"  % fracs_file_;
      
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) category_names_ = {"inclusive"};
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
-      if(strategy_ == strategy::cpsummer17){
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
+      }
+      if(strategy_ == strategy::cpdecays18){
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2018/"+ff_file_;
       }
 
       ff_file_name = baseDir + ff_file_name;
@@ -194,16 +198,40 @@ namespace ic {
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     
-    std::string btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp;
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16) btag_wp = 0.8484;
-    if(strategy_ == strategy::cpsummer17) btag_wp = 0.8838;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+    std::string btag_label       = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    std::string btag_label_extra = "";
+    double btag_wp (1.0);
+    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
+    };
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
+    // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
+    if (era_ == era::data_2017) {
+      btag_wp          = 0.4941;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+    if (era_ == era::data_2018) {
+      btag_wp          = 0.4184;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
+    if (era_ == era::data_2017 || era_ == era::data_2018) {
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if_not(bjets, filterBTagSumTight);
+      } 
+    } 
+    else{
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } 
+    }
     
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -220,7 +248,8 @@ namespace ic {
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
     } else {
-      m_sv_ = -9999;
+      //m_sv_ = -9999;
+      m_sv_ = m_vis_*1.4; // not intended for use in a propper analysis but quick fix for cases when sv fit mas has not been calculated yet. 1.4 factor is roughly the ratio of m_sv/m_vis for QCD/W jets events
     }
     double pt_tt_ = (ditau->vector() + met->vector()).pt();   
  
@@ -304,11 +333,11 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpsummer17) {
+    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       double real_frac=0;
       double real_frac_2=0;
       inputs.resize(9);
-      if(true||strategy_ == strategy::cpsummer17){
+      if(true||(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18)){
         tt_inputs_1.resize(8);
         tt_inputs_2.resize(8); 
       } else {
@@ -383,7 +412,7 @@ namespace ic {
         w_frac_2 /= tot_frac_2;
         tt_frac_2 /= tot_frac_2;
 
-        if(true || strategy_ == strategy::cpsummer17) {
+        if(true || (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18)) {
           tt_inputs_1[0] = pt_1_; tt_inputs_1[1] = pt_2_; tt_inputs_1[2] = tau_decaymode_1_; tt_inputs_1[3] = n_jets_; tt_inputs_1[4] = m_vis_; tt_inputs_1[5] = qcd_frac_1; tt_inputs_1[6] = w_frac_1+dy_frac_1; tt_inputs_1[7] = tt_frac_1; 
           tt_inputs_2[0] = pt_2_; tt_inputs_2[1] = pt_1_; tt_inputs_2[2] = tau_decaymode_2_; tt_inputs_2[3] = n_jets_; tt_inputs_2[4] = m_vis_; tt_inputs_2[5] = qcd_frac_2; tt_inputs_2[6] = w_frac_2+dy_frac_2; tt_inputs_2[7] = tt_frac_2; 
         } else {
@@ -429,7 +458,7 @@ namespace ic {
         if(do_systematics_){
           std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down"};
          
-          if(strategy_ == strategy::cpsummer17) {
+          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
             systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down","ff_w_frac_syst_up", "ff_w_frac_syst_down", "ff_tt_frac_syst_up", "ff_tt_frac_syst_down"};
           }
  
@@ -444,6 +473,47 @@ namespace ic {
             std::string syst_name = "wt_"+syst;
             event->Add(syst_name+"_1", ff_syst_1);
             event->Add(syst_name+"_2", ff_syst_2);
+
+            if(syst_name.find("_frac_syst_") != std::string::npos) {
+              double w_frac_1 = tt_inputs_1[6], tt_frac_1 = tt_inputs_1[7], qcd_frac_1 = tt_inputs_1[5];
+              double w_frac_2 = tt_inputs_2[6], tt_frac_2 = tt_inputs_2[7], qcd_frac_2 = tt_inputs_2[5];
+              double w_frac_1_up = w_frac_1, tt_frac_1_up = tt_frac_1, qcd_frac_1_up = qcd_frac_1, w_frac_2_up = w_frac_2, tt_frac_2_up = tt_frac_2, qcd_frac_2_up = qcd_frac_2;
+ 
+              if(syst=="ff_w_frac_syst_up") {
+                w_frac_1_up =  (w_frac_1)*1.2;
+                qcd_frac_1_up+=w_frac_1-w_frac_1_up;
+
+                w_frac_2_up =  (w_frac_2)*1.2;
+                qcd_frac_2_up+=w_frac_2-w_frac_2_up;
+              } else if(syst=="ff_w_frac_syst_down") {
+                w_frac_1_up =  (w_frac_1)*0.8;
+                qcd_frac_1_up+=w_frac_1-w_frac_1_up;
+
+                w_frac_2_up =  (w_frac_2)*0.8;
+                qcd_frac_2_up+=w_frac_2-w_frac_2_up;
+              } else if(syst=="ff_tt_frac_syst_up") {
+                tt_frac_1_up =  (tt_frac_1)*1.2;
+                qcd_frac_1_up+=tt_frac_1-tt_frac_1_up;
+
+                tt_frac_2_up =  (tt_frac_2)*1.2;
+                qcd_frac_2_up+=tt_frac_2-tt_frac_2_up;
+
+              } else if(syst=="ff_tt_frac_syst_down") {
+                tt_frac_1_up =  (tt_frac_1)*0.8;
+                qcd_frac_1_up+=tt_frac_1-tt_frac_1_up;
+
+                tt_frac_2_up =  (tt_frac_2)*0.8;
+                qcd_frac_2_up+=tt_frac_2-tt_frac_2_up;
+              } 
+              auto tt_inputs_1_shift = tt_inputs_1;
+              auto tt_inputs_2_shift = tt_inputs_2;
+              tt_inputs_1_shift[5]=qcd_frac_1_up; tt_inputs_1_shift[6] = w_frac_1_up; tt_inputs_1_shift[7] = tt_frac_1_up;
+              tt_inputs_2_shift[5]=qcd_frac_2_up; tt_inputs_2_shift[6] = w_frac_2_up; tt_inputs_2_shift[7] = tt_frac_2_up;
+              double ff_shift_1 = fake_factors_[map_key]->value(tt_inputs_1_shift)*0.5;
+              double ff_shift_2 = fake_factors_[map_key]->value(tt_inputs_2_shift)*0.5;
+              event->Add(syst_name+"_alt_1", ff_shift_1);
+              event->Add(syst_name+"_alt_2", ff_shift_2);
+            }
           } 
         }
       }

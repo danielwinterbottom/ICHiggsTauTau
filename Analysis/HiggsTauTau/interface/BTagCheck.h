@@ -21,6 +21,7 @@ class BTagCheck : public ModuleBase {
   CLASS_MEMBER(BTagCheck,ic::era, era)
   CLASS_MEMBER(BTagCheck, ic::strategy, strategy)
   CLASS_MEMBER(BTagCheck, bool, use_deep_csv)
+  CLASS_MEMBER(BTagCheck, bool, use_deep_jet)
   CLASS_MEMBER(BTagCheck,std::string, dilepton_label)
   Dynamic2DHistoSet * hists_;
   DynamicHistoSet * hists1d_;
@@ -41,6 +42,7 @@ class BTagCheck : public ModuleBase {
   double csv;
   double csv_b;
   double csv_bb;
+  double csv_lepb;
   bool leptonveto;
   double iso_1;
   double iso_2; 

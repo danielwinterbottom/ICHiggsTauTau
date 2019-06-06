@@ -30,6 +30,7 @@ class BTagWeightRun2 : public ModuleBase {
    CLASS_MEMBER(BTagWeightRun2, TH2F*,othbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, bool, do_reshape)
    CLASS_MEMBER(BTagWeightRun2, bool, use_deep_csv)
+   CLASS_MEMBER(BTagWeightRun2, bool, use_deep_jet)
    CLASS_MEMBER(BTagWeightRun2, unsigned, btag_mode) 
    CLASS_MEMBER(BTagWeightRun2, unsigned, bfake_mode)
    CLASS_MEMBER(BTagWeightRun2, std::string, add_name)
@@ -50,6 +51,7 @@ class BTagWeightRun2 : public ModuleBase {
 
   std::map<std::size_t, bool> ReTag(std::vector<PFJet *> const& jets, unsigned btag_mode, unsigned bfake_mode) const;
   double SFCSVShape(std::vector<PFJet *> const& jets, unsigned btag_mode) const;
+  double EventReweighting(std::vector<PFJet *> const& jets, unsigned btag_mode) const;
   double GetEff(unsigned flav, double pt, double eta) const;
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);

@@ -67,12 +67,14 @@ namespace ic {
       fns_["A_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt"))); 
     }
+
       
     rand = new TRandom3(0);
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt_z_pol", &wt_z_pol_);
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
       outtree_->Branch("wt_topmass_2"     , &wt_topmass_2_  );
@@ -85,6 +87,18 @@ namespace ic {
       outtree_->Branch("cand_2"       , &cand_2_       );
       outtree_->Branch("match_1"       , &match_1_       );
       outtree_->Branch("match_2"       , &match_2_       );
+
+      outtree_->Branch("wt_cp_sm"       , &wt_cp_sm_);
+      outtree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
+      outtree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
+
+      outtree_->Branch("Ediff_1"       , &Ediff_1_);
+      outtree_->Branch("Ediff_2"       , &Ediff_2_);
+
+      outtree_->Branch("fakea1_dR", &fakea1_dR_);
+      outtree_->Branch("rho_dR", &rho_dR_);
+      outtree_->Branch("tauFlag", &tauFlag);
+
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -95,109 +109,6 @@ namespace ic {
         outtree_->Branch("wt_mur0p5_muf1",  &scale7_);
         outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
         outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
-       // outtree_->Branch("wt_pdf_1",&wt_pdf_1_);
-       // outtree_->Branch("wt_pdf_2",&wt_pdf_2_);
-       // outtree_->Branch("wt_pdf_3",&wt_pdf_3_);
-       // outtree_->Branch("wt_pdf_4",&wt_pdf_4_);
-       // outtree_->Branch("wt_pdf_5",&wt_pdf_5_);
-       // outtree_->Branch("wt_pdf_6",&wt_pdf_6_);
-       // outtree_->Branch("wt_pdf_7",&wt_pdf_7_);
-       // outtree_->Branch("wt_pdf_8",&wt_pdf_8_);
-       // outtree_->Branch("wt_pdf_9",&wt_pdf_9_);
-       // outtree_->Branch("wt_pdf_10",&wt_pdf_10_);
-       // outtree_->Branch("wt_pdf_11",&wt_pdf_11_);
-       // outtree_->Branch("wt_pdf_12",&wt_pdf_12_);
-       // outtree_->Branch("wt_pdf_13",&wt_pdf_13_);
-       // outtree_->Branch("wt_pdf_14",&wt_pdf_14_);
-       // outtree_->Branch("wt_pdf_15",&wt_pdf_15_);
-       // outtree_->Branch("wt_pdf_16",&wt_pdf_16_);
-       // outtree_->Branch("wt_pdf_17",&wt_pdf_17_);
-       // outtree_->Branch("wt_pdf_18",&wt_pdf_18_);
-       // outtree_->Branch("wt_pdf_19",&wt_pdf_19_);
-       // outtree_->Branch("wt_pdf_20",&wt_pdf_20_);
-       // outtree_->Branch("wt_pdf_21",&wt_pdf_21_);
-       // outtree_->Branch("wt_pdf_22",&wt_pdf_22_);
-       // outtree_->Branch("wt_pdf_23",&wt_pdf_23_);
-       // outtree_->Branch("wt_pdf_24",&wt_pdf_24_);
-       // outtree_->Branch("wt_pdf_25",&wt_pdf_25_);
-       // outtree_->Branch("wt_pdf_26",&wt_pdf_26_);
-       // outtree_->Branch("wt_pdf_27",&wt_pdf_27_);
-       // outtree_->Branch("wt_pdf_28",&wt_pdf_28_);
-       // outtree_->Branch("wt_pdf_29",&wt_pdf_29_);
-       // outtree_->Branch("wt_pdf_30",&wt_pdf_30_);
-       // outtree_->Branch("wt_pdf_31",&wt_pdf_31_);
-       // outtree_->Branch("wt_pdf_32",&wt_pdf_32_);
-       // outtree_->Branch("wt_pdf_33",&wt_pdf_33_);
-       // outtree_->Branch("wt_pdf_34",&wt_pdf_34_);
-       // outtree_->Branch("wt_pdf_35",&wt_pdf_35_);
-       // outtree_->Branch("wt_pdf_36",&wt_pdf_36_);
-       // outtree_->Branch("wt_pdf_37",&wt_pdf_37_);
-       // outtree_->Branch("wt_pdf_38",&wt_pdf_38_);
-       // outtree_->Branch("wt_pdf_39",&wt_pdf_39_);
-       // outtree_->Branch("wt_pdf_40",&wt_pdf_40_);
-       // outtree_->Branch("wt_pdf_41",&wt_pdf_41_);
-       // outtree_->Branch("wt_pdf_42",&wt_pdf_42_);
-       // outtree_->Branch("wt_pdf_43",&wt_pdf_43_);
-       // outtree_->Branch("wt_pdf_44",&wt_pdf_44_);
-       // outtree_->Branch("wt_pdf_45",&wt_pdf_45_);
-       // outtree_->Branch("wt_pdf_46",&wt_pdf_46_);
-       // outtree_->Branch("wt_pdf_47",&wt_pdf_47_);
-       // outtree_->Branch("wt_pdf_48",&wt_pdf_48_);
-       // outtree_->Branch("wt_pdf_49",&wt_pdf_49_);
-       // outtree_->Branch("wt_pdf_50",&wt_pdf_50_);
-       // outtree_->Branch("wt_pdf_51",&wt_pdf_51_);
-       // outtree_->Branch("wt_pdf_52",&wt_pdf_52_);
-       // outtree_->Branch("wt_pdf_53",&wt_pdf_53_);
-       // outtree_->Branch("wt_pdf_54",&wt_pdf_54_);
-       // outtree_->Branch("wt_pdf_55",&wt_pdf_55_);
-       // outtree_->Branch("wt_pdf_56",&wt_pdf_56_);
-       // outtree_->Branch("wt_pdf_57",&wt_pdf_57_);
-       // outtree_->Branch("wt_pdf_58",&wt_pdf_58_);
-       // outtree_->Branch("wt_pdf_59",&wt_pdf_59_);
-       // outtree_->Branch("wt_pdf_60",&wt_pdf_60_);
-       // outtree_->Branch("wt_pdf_61",&wt_pdf_61_);
-       // outtree_->Branch("wt_pdf_62",&wt_pdf_62_);
-       // outtree_->Branch("wt_pdf_63",&wt_pdf_63_);
-       // outtree_->Branch("wt_pdf_64",&wt_pdf_64_);
-       // outtree_->Branch("wt_pdf_65",&wt_pdf_65_);
-       // outtree_->Branch("wt_pdf_66",&wt_pdf_66_);
-       // outtree_->Branch("wt_pdf_67",&wt_pdf_67_);
-       // outtree_->Branch("wt_pdf_68",&wt_pdf_68_);
-       // outtree_->Branch("wt_pdf_69",&wt_pdf_69_);
-       // outtree_->Branch("wt_pdf_70",&wt_pdf_70_);
-       // outtree_->Branch("wt_pdf_71",&wt_pdf_71_);
-       // outtree_->Branch("wt_pdf_72",&wt_pdf_72_);
-       // outtree_->Branch("wt_pdf_73",&wt_pdf_73_);
-       // outtree_->Branch("wt_pdf_74",&wt_pdf_74_);
-       // outtree_->Branch("wt_pdf_75",&wt_pdf_75_);
-       // outtree_->Branch("wt_pdf_76",&wt_pdf_76_);
-       // outtree_->Branch("wt_pdf_77",&wt_pdf_77_);
-       // outtree_->Branch("wt_pdf_78",&wt_pdf_78_);
-       // outtree_->Branch("wt_pdf_79",&wt_pdf_79_);
-       // outtree_->Branch("wt_pdf_80",&wt_pdf_80_);
-       // outtree_->Branch("wt_pdf_81",&wt_pdf_81_);
-       // outtree_->Branch("wt_pdf_82",&wt_pdf_82_);
-       // outtree_->Branch("wt_pdf_83",&wt_pdf_83_);
-       // outtree_->Branch("wt_pdf_84",&wt_pdf_84_);
-       // outtree_->Branch("wt_pdf_85",&wt_pdf_85_);
-       // outtree_->Branch("wt_pdf_86",&wt_pdf_86_);
-       // outtree_->Branch("wt_pdf_87",&wt_pdf_87_);
-       // outtree_->Branch("wt_pdf_88",&wt_pdf_88_);
-       // outtree_->Branch("wt_pdf_89",&wt_pdf_89_);
-       // outtree_->Branch("wt_pdf_90",&wt_pdf_90_);
-       // outtree_->Branch("wt_pdf_91",&wt_pdf_91_);
-       // outtree_->Branch("wt_pdf_92",&wt_pdf_92_);
-       // outtree_->Branch("wt_pdf_93",&wt_pdf_93_);
-       // outtree_->Branch("wt_pdf_94",&wt_pdf_94_);
-       // outtree_->Branch("wt_pdf_95",&wt_pdf_95_);
-       // outtree_->Branch("wt_pdf_96",&wt_pdf_96_);
-       // outtree_->Branch("wt_pdf_97",&wt_pdf_97_);
-       // outtree_->Branch("wt_pdf_98",&wt_pdf_98_);
-       // outtree_->Branch("wt_pdf_99",&wt_pdf_99_);
-       // outtree_->Branch("wt_pdf_100",&wt_pdf_100_);
-       // 
-       // outtree_->Branch("wt_alphasdown",&wt_alphasdown_);
-       // outtree_->Branch("wt_alphasup",&wt_alphasup_);
       }
       outtree_->Branch("passed"       ,&passed_       );
       outtree_->Branch("pt_1"        , &pt_1_        );
@@ -254,12 +165,49 @@ namespace ic {
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
       outtree_->Branch("aco_angle_3", &aco_angle_3_);
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
+      outtree_->Branch("p_aco_angle_1", &p_aco_angle_1_);
+      outtree_->Branch("p_aco_angle_2", &p_aco_angle_2_);
+      outtree_->Branch("p_aco_angle_3", &p_aco_angle_3_);
+      outtree_->Branch("p_aco_angle_4", &p_aco_angle_4_);
+      outtree_->Branch("dR1", &dR1_);
+      outtree_->Branch("dR2", &dR2_); 
+      outtree_->Branch("aco_angle_5", &aco_angle_5_);
+      outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("cp_sign_1",     &cp_sign_1_);
       outtree_->Branch("cp_sign_2",     &cp_sign_2_);
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+      outtree_->Branch("cp_sign_5",     &cp_sign_5_);
+      outtree_->Branch("cp_sign_6",     &cp_sign_6_);
+      outtree_->Branch("rand", &rand_);
+      outtree_->Branch("y_1_1",     &y_1_1_);
+      outtree_->Branch("y_2_1",     &y_3_1_);
+      outtree_->Branch("y_3_1",     &y_4_1_);
+      outtree_->Branch("y_4_1",     &y_4_1_);
+      outtree_->Branch("y_1_2",     &y_1_2_);
+      outtree_->Branch("y_2_2",     &y_3_2_);
+      outtree_->Branch("y_3_2",     &y_4_2_);
+      outtree_->Branch("y_4_2",     &y_4_2_);
+
+      outtree_->Branch("a1_mass", &a1_mass_);
+      outtree_->Branch("E_1_1", &E_1_1_);
+      outtree_->Branch("E_2_1", &E_2_1_);
+      outtree_->Branch("E_2_2", &E_1_2_);
+      outtree_->Branch("E_2_2", &E_2_2_);
+      outtree_->Branch("E_3_2", &E_3_2_);
+
+
       outtree_->Branch("cp_channel",    &cp_channel_);
-      
+      outtree_->Branch("pi0_E_1", &pi0_E_1_);
+      outtree_->Branch("pi0_E_2", &pi0_E_2_);
+      outtree_->Branch("pi_E_1", &pi_E_1_);
+      outtree_->Branch("pi_E_2", &pi_E_2_);
+      outtree_->Branch("mass1", &mass1_);
+      outtree_->Branch("mass2", &mass2_);    
+      outtree_->Branch("pt_rho_pi", &pt_rho_pi_);
+      outtree_->Branch("pt_rho_pi0", &pt_rho_pi0_);
+      outtree_->Branch("pt_other_pi0", &pt_other_pi0_); 
+ 
       outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
       outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
       outtree_->Branch("wt_ggh_i", &wt_ggh_i_);
@@ -271,6 +219,13 @@ namespace ic {
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
       outtree_->Branch("pT_A", &pT_A_);
+
+      outtree_->Branch("reco_pvx", &reco_pvx_);
+      outtree_->Branch("reco_pvy", &reco_pvy_);
+      outtree_->Branch("reco_pvz", &reco_pvz_);
+      outtree_->Branch("gen_pvx",  &gen_pvx_);
+      outtree_->Branch("gen_pvy",  &gen_pvy_);
+      outtree_->Branch("gen_pvz",  &gen_pvz_);
       
     }
     count_ee_ = 0;
@@ -303,8 +258,30 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
-    
+    rand->SetSeed(event_);
+    rand_ = rand->Uniform();   
+ 
     wt_ = eventInfo->total_weight();
+
+
+
+    wt_cp_sm_=0.0; 
+    wt_cp_ps_=0.0; 
+    wt_cp_mm_=0.0; 
+
+    // test tauspinner weights
+    if(event->ExistsInTree("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+
+      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
+
+      if (tauspinner->weight_defined("wt_cp_0")){
+        wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+        wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
+        wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+      }
+
+    }
 
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
@@ -340,133 +317,6 @@ namespace ic {
       //  <weight id="1008"> muR=0.5 muF=2 </weight>
       //  <weight id="1009"> muR=0.5 muF=0.5 </weight>
 
-      //std::cout << eventInfo->weight_defined("1001")    << std::endl;
- 
-      //<weight id="1001"> dyn=  -1 muR=0.10000E+01 muF=0.10000E+01 </weight>
-      //<weight id="1002"> dyn=  -1 muR=0.20000E+01 muF=0.10000E+01 </weight>
-      //<weight id="1003"> dyn=  -1 muR=0.50000E+00 muF=0.10000E+01 </weight>
-      //<weight id="1004"> dyn=  -1 muR=0.10000E+01 muF=0.20000E+01 </weight>
-      //<weight id="1005"> dyn=  -1 muR=0.20000E+01 muF=0.20000E+01 </weight>
-      //<weight id="1006"> dyn=  -1 muR=0.50000E+00 muF=0.20000E+01 </weight>
-      //<weight id="1007"> dyn=  -1 muR=0.10000E+01 muF=0.50000E+00 </weight>
-      //<weight id="1008"> dyn=  -1 muR=0.20000E+01 muF=0.50000E+00 </weight>
-      //<weight id="1009"> dyn=  -1 muR=0.50000E+00 muF=0.50000E+00 </weight>
-
- 
-      //if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
-      //if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
-      //if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
-      //if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
-      //if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
-      //if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
-      //if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
-      //if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
-      //if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
-      //pdf variation weights
-      //if(eventInfo->weight_defined("2001")) wt_pdf_1_ = eventInfo->weight("2001"); else wt_pdf_1_=1.0;
-      //if(eventInfo->weight_defined("2002")) wt_pdf_2_ = eventInfo->weight("2002"); else wt_pdf_2_=1.0;
-      //if(eventInfo->weight_defined("2003")) wt_pdf_3_ = eventInfo->weight("2003"); else wt_pdf_3_=1.0;
-      //if(eventInfo->weight_defined("2004")) wt_pdf_4_ = eventInfo->weight("2004"); else wt_pdf_4_=1.0;
-      //if(eventInfo->weight_defined("2005")) wt_pdf_5_ = eventInfo->weight("2005"); else wt_pdf_5_=1.0;
-      //if(eventInfo->weight_defined("2006")) wt_pdf_6_ = eventInfo->weight("2006"); else wt_pdf_6_=1.0;
-      //if(eventInfo->weight_defined("2007")) wt_pdf_7_ = eventInfo->weight("2007"); else wt_pdf_7_=1.0;
-      //if(eventInfo->weight_defined("2008")) wt_pdf_8_ = eventInfo->weight("2008"); else wt_pdf_8_=1.0;
-      //if(eventInfo->weight_defined("2009")) wt_pdf_9_ = eventInfo->weight("2009"); else wt_pdf_9_=1.0;
-      //if(eventInfo->weight_defined("2010")) wt_pdf_10_ = eventInfo->weight("2010"); else wt_pdf_10_=1.0;
-      //if(eventInfo->weight_defined("2011")) wt_pdf_11_ = eventInfo->weight("2011"); else wt_pdf_11_=1.0;
-      //if(eventInfo->weight_defined("2012")) wt_pdf_12_ = eventInfo->weight("2012"); else wt_pdf_12_=1.0;
-      //if(eventInfo->weight_defined("2013")) wt_pdf_13_ = eventInfo->weight("2013"); else wt_pdf_13_=1.0;
-      //if(eventInfo->weight_defined("2014")) wt_pdf_14_ = eventInfo->weight("2014"); else wt_pdf_14_=1.0;
-      //if(eventInfo->weight_defined("2015")) wt_pdf_15_ = eventInfo->weight("2015"); else wt_pdf_15_=1.0;
-      //if(eventInfo->weight_defined("2016")) wt_pdf_16_ = eventInfo->weight("2016"); else wt_pdf_16_=1.0;
-      //if(eventInfo->weight_defined("2017")) wt_pdf_17_ = eventInfo->weight("2017"); else wt_pdf_17_=1.0;
-      //if(eventInfo->weight_defined("2018")) wt_pdf_18_ = eventInfo->weight("2018"); else wt_pdf_18_=1.0;
-      //if(eventInfo->weight_defined("2019")) wt_pdf_19_ = eventInfo->weight("2019"); else wt_pdf_19_=1.0;
-      //if(eventInfo->weight_defined("2020")) wt_pdf_20_ = eventInfo->weight("2020"); else wt_pdf_20_=1.0;
-      //if(eventInfo->weight_defined("2021")) wt_pdf_21_ = eventInfo->weight("2021"); else wt_pdf_21_=1.0;
-      //if(eventInfo->weight_defined("2022")) wt_pdf_22_ = eventInfo->weight("2022"); else wt_pdf_22_=1.0;
-      //if(eventInfo->weight_defined("2023")) wt_pdf_23_ = eventInfo->weight("2023"); else wt_pdf_23_=1.0;
-      //if(eventInfo->weight_defined("2024")) wt_pdf_24_ = eventInfo->weight("2024"); else wt_pdf_24_=1.0;
-      //if(eventInfo->weight_defined("2025")) wt_pdf_25_ = eventInfo->weight("2025"); else wt_pdf_25_=1.0;
-      //if(eventInfo->weight_defined("2026")) wt_pdf_26_ = eventInfo->weight("2026"); else wt_pdf_26_=1.0;
-      //if(eventInfo->weight_defined("2027")) wt_pdf_27_ = eventInfo->weight("2027"); else wt_pdf_27_=1.0;
-      //if(eventInfo->weight_defined("2028")) wt_pdf_28_ = eventInfo->weight("2028"); else wt_pdf_28_=1.0;
-      //if(eventInfo->weight_defined("2029")) wt_pdf_29_ = eventInfo->weight("2029"); else wt_pdf_29_=1.0;
-      //if(eventInfo->weight_defined("2030")) wt_pdf_30_ = eventInfo->weight("2030"); else wt_pdf_30_=1.0;
-      //if(eventInfo->weight_defined("2031")) wt_pdf_31_ = eventInfo->weight("2031"); else wt_pdf_31_=1.0;
-      //if(eventInfo->weight_defined("2032")) wt_pdf_32_ = eventInfo->weight("2032"); else wt_pdf_32_=1.0;
-      //if(eventInfo->weight_defined("2033")) wt_pdf_33_ = eventInfo->weight("2033"); else wt_pdf_33_=1.0;
-      //if(eventInfo->weight_defined("2034")) wt_pdf_34_ = eventInfo->weight("2034"); else wt_pdf_34_=1.0;
-      //if(eventInfo->weight_defined("2035")) wt_pdf_35_ = eventInfo->weight("2035"); else wt_pdf_35_=1.0;
-      //if(eventInfo->weight_defined("2036")) wt_pdf_36_ = eventInfo->weight("2036"); else wt_pdf_36_=1.0;
-      //if(eventInfo->weight_defined("2037")) wt_pdf_37_ = eventInfo->weight("2037"); else wt_pdf_37_=1.0;
-      //if(eventInfo->weight_defined("2038")) wt_pdf_38_ = eventInfo->weight("2038"); else wt_pdf_38_=1.0;
-      //if(eventInfo->weight_defined("2039")) wt_pdf_39_ = eventInfo->weight("2039"); else wt_pdf_39_=1.0;
-      //if(eventInfo->weight_defined("2040")) wt_pdf_40_ = eventInfo->weight("2040"); else wt_pdf_40_=1.0;
-      //if(eventInfo->weight_defined("2041")) wt_pdf_41_ = eventInfo->weight("2041"); else wt_pdf_41_=1.0;
-      //if(eventInfo->weight_defined("2042")) wt_pdf_42_ = eventInfo->weight("2042"); else wt_pdf_42_=1.0;
-      //if(eventInfo->weight_defined("2043")) wt_pdf_43_ = eventInfo->weight("2043"); else wt_pdf_43_=1.0;
-      //if(eventInfo->weight_defined("2044")) wt_pdf_44_ = eventInfo->weight("2044"); else wt_pdf_44_=1.0;
-      //if(eventInfo->weight_defined("2045")) wt_pdf_45_ = eventInfo->weight("2045"); else wt_pdf_45_=1.0;
-      //if(eventInfo->weight_defined("2046")) wt_pdf_46_ = eventInfo->weight("2046"); else wt_pdf_46_=1.0;
-      //if(eventInfo->weight_defined("2047")) wt_pdf_47_ = eventInfo->weight("2047"); else wt_pdf_47_=1.0;
-      //if(eventInfo->weight_defined("2048")) wt_pdf_48_ = eventInfo->weight("2048"); else wt_pdf_48_=1.0;
-      //if(eventInfo->weight_defined("2049")) wt_pdf_49_ = eventInfo->weight("2049"); else wt_pdf_49_=1.0;
-      //if(eventInfo->weight_defined("2050")) wt_pdf_50_ = eventInfo->weight("2050"); else wt_pdf_50_=1.0;
-      //if(eventInfo->weight_defined("2051")) wt_pdf_51_ = eventInfo->weight("2051"); else wt_pdf_51_=1.0;
-      //if(eventInfo->weight_defined("2052")) wt_pdf_52_ = eventInfo->weight("2052"); else wt_pdf_52_=1.0;
-      //if(eventInfo->weight_defined("2053")) wt_pdf_53_ = eventInfo->weight("2053"); else wt_pdf_53_=1.0;
-      //if(eventInfo->weight_defined("2054")) wt_pdf_54_ = eventInfo->weight("2054"); else wt_pdf_54_=1.0;
-      //if(eventInfo->weight_defined("2055")) wt_pdf_55_ = eventInfo->weight("2055"); else wt_pdf_55_=1.0;
-      //if(eventInfo->weight_defined("2056")) wt_pdf_56_ = eventInfo->weight("2056"); else wt_pdf_56_=1.0;
-      //if(eventInfo->weight_defined("2057")) wt_pdf_57_ = eventInfo->weight("2057"); else wt_pdf_57_=1.0;
-      //if(eventInfo->weight_defined("2058")) wt_pdf_58_ = eventInfo->weight("2058"); else wt_pdf_58_=1.0;
-      //if(eventInfo->weight_defined("2059")) wt_pdf_59_ = eventInfo->weight("2059"); else wt_pdf_59_=1.0;
-      //if(eventInfo->weight_defined("2060")) wt_pdf_60_ = eventInfo->weight("2060"); else wt_pdf_60_=1.0;
-      //if(eventInfo->weight_defined("2061")) wt_pdf_61_ = eventInfo->weight("2061"); else wt_pdf_61_=1.0;
-      //if(eventInfo->weight_defined("2062")) wt_pdf_62_ = eventInfo->weight("2062"); else wt_pdf_62_=1.0;
-      //if(eventInfo->weight_defined("2063")) wt_pdf_63_ = eventInfo->weight("2063"); else wt_pdf_63_=1.0;
-      //if(eventInfo->weight_defined("2064")) wt_pdf_64_ = eventInfo->weight("2064"); else wt_pdf_64_=1.0;
-      //if(eventInfo->weight_defined("2065")) wt_pdf_65_ = eventInfo->weight("2065"); else wt_pdf_65_=1.0;
-      //if(eventInfo->weight_defined("2066")) wt_pdf_66_ = eventInfo->weight("2066"); else wt_pdf_66_=1.0;
-      //if(eventInfo->weight_defined("2067")) wt_pdf_67_ = eventInfo->weight("2067"); else wt_pdf_67_=1.0;
-      //if(eventInfo->weight_defined("2068")) wt_pdf_68_ = eventInfo->weight("2068"); else wt_pdf_68_=1.0;
-      //if(eventInfo->weight_defined("2069")) wt_pdf_69_ = eventInfo->weight("2069"); else wt_pdf_69_=1.0;
-      //if(eventInfo->weight_defined("2070")) wt_pdf_70_ = eventInfo->weight("2070"); else wt_pdf_70_=1.0;
-      //if(eventInfo->weight_defined("2071")) wt_pdf_71_ = eventInfo->weight("2071"); else wt_pdf_71_=1.0;
-      //if(eventInfo->weight_defined("2072")) wt_pdf_72_ = eventInfo->weight("2072"); else wt_pdf_72_=1.0;
-      //if(eventInfo->weight_defined("2073")) wt_pdf_73_ = eventInfo->weight("2073"); else wt_pdf_73_=1.0;
-      //if(eventInfo->weight_defined("2074")) wt_pdf_74_ = eventInfo->weight("2074"); else wt_pdf_74_=1.0;
-      //if(eventInfo->weight_defined("2075")) wt_pdf_75_ = eventInfo->weight("2075"); else wt_pdf_75_=1.0;
-      //if(eventInfo->weight_defined("2076")) wt_pdf_76_ = eventInfo->weight("2076"); else wt_pdf_76_=1.0;
-      //if(eventInfo->weight_defined("2077")) wt_pdf_77_ = eventInfo->weight("2077"); else wt_pdf_77_=1.0;
-      //if(eventInfo->weight_defined("2078")) wt_pdf_78_ = eventInfo->weight("2078"); else wt_pdf_78_=1.0;
-      //if(eventInfo->weight_defined("2079")) wt_pdf_79_ = eventInfo->weight("2079"); else wt_pdf_79_=1.0;
-      //if(eventInfo->weight_defined("2080")) wt_pdf_80_ = eventInfo->weight("2080"); else wt_pdf_80_=1.0;
-      //if(eventInfo->weight_defined("2081")) wt_pdf_81_ = eventInfo->weight("2081"); else wt_pdf_81_=1.0;
-      //if(eventInfo->weight_defined("2082")) wt_pdf_82_ = eventInfo->weight("2082"); else wt_pdf_82_=1.0;
-      //if(eventInfo->weight_defined("2083")) wt_pdf_83_ = eventInfo->weight("2083"); else wt_pdf_83_=1.0;
-      //if(eventInfo->weight_defined("2084")) wt_pdf_84_ = eventInfo->weight("2084"); else wt_pdf_84_=1.0;
-      //if(eventInfo->weight_defined("2085")) wt_pdf_85_ = eventInfo->weight("2085"); else wt_pdf_85_=1.0;
-      //if(eventInfo->weight_defined("2086")) wt_pdf_86_ = eventInfo->weight("2086"); else wt_pdf_86_=1.0;
-      //if(eventInfo->weight_defined("2087")) wt_pdf_87_ = eventInfo->weight("2087"); else wt_pdf_87_=1.0;
-      //if(eventInfo->weight_defined("2088")) wt_pdf_88_ = eventInfo->weight("2088"); else wt_pdf_88_=1.0;
-      //if(eventInfo->weight_defined("2089")) wt_pdf_89_ = eventInfo->weight("2089"); else wt_pdf_89_=1.0;
-      //if(eventInfo->weight_defined("2090")) wt_pdf_90_ = eventInfo->weight("2090"); else wt_pdf_90_=1.0;
-      //if(eventInfo->weight_defined("2091")) wt_pdf_91_ = eventInfo->weight("2091"); else wt_pdf_91_=1.0;
-      //if(eventInfo->weight_defined("2092")) wt_pdf_92_ = eventInfo->weight("2092"); else wt_pdf_92_=1.0;
-      //if(eventInfo->weight_defined("2093")) wt_pdf_93_ = eventInfo->weight("2093"); else wt_pdf_93_=1.0;
-      //if(eventInfo->weight_defined("2094")) wt_pdf_94_ = eventInfo->weight("2094"); else wt_pdf_94_=1.0;
-      //if(eventInfo->weight_defined("2095")) wt_pdf_95_ = eventInfo->weight("2095"); else wt_pdf_95_=1.0;
-      //if(eventInfo->weight_defined("2096")) wt_pdf_96_ = eventInfo->weight("2096"); else wt_pdf_96_=1.0;
-      //if(eventInfo->weight_defined("2097")) wt_pdf_97_ = eventInfo->weight("2097"); else wt_pdf_97_=1.0;
-      //if(eventInfo->weight_defined("2098")) wt_pdf_98_ = eventInfo->weight("2098"); else wt_pdf_98_=1.0;
-      //if(eventInfo->weight_defined("2099")) wt_pdf_99_ = eventInfo->weight("2099"); else wt_pdf_99_=1.0;
-      //if(eventInfo->weight_defined("2100")) wt_pdf_100_ = eventInfo->weight("2100"); else wt_pdf_100_=1.0;
-      //
-      ////alpha_s variation weights
-      //if(eventInfo->weight_defined("2101")) wt_alphasdown_ = eventInfo->weight("2101"); else wt_alphasdown_=1.0; 
-      //if(eventInfo->weight_defined("2102")) wt_alphasup_ = eventInfo->weight("2102"); else wt_alphasup_=1.0;
     }
     
     if (event->Exists("D0")) D0_ = event->Get<float>("D0");
@@ -554,6 +404,8 @@ namespace ic {
       bool status_hard_process = part.statusFlags().at(7);
       
       if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 ) partons_++;
+
+      //if(genID==25 || genID==36 || genID==35 ) std::cout << genID << std::endl;
  
       if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
@@ -741,132 +593,10 @@ namespace ic {
     aco_angle_3_ = 9999.;
     aco_angle_4_ = 9999.;
     cp_channel_=-1;
-
-    std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
-    
-    std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
-    std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
-    std::pair<bool,std::vector<GenParticle*>> a1_1 = std::make_pair(false, std::vector<GenParticle*>());
-    std::pair<bool,GenParticle*> pi_2 = std::make_pair(false, new GenParticle());
-    std::pair<bool,std::vector<GenParticle*>> rho_2 = std::make_pair(false, std::vector<GenParticle*>()); 
-    std::pair<bool,std::vector<GenParticle*>> a1_2 = std::make_pair(false, std::vector<GenParticle*>());
-    
-    if(gen_tau_jets_ptr.size()>=1){
-      pi_1 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents()); 
-      rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
-      a1_1 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
-    } 
-    if(gen_tau_jets_ptr.size()>=2){
-      pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
-      rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
-      a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
-    }
-    /* std::vector<ic::GenParticle> leptons;
-    for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
-    for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
-    TLorentzVector lvec1;
-    TLorentzVector lvec2;
-    TLorentzVector lvec3;
-    TLorentzVector lvec4;
-    if(leptons.size()>=2){
-      cp_channel_=1;
-      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);    
-      lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0);
-      lvec3 = ConvertToLorentz(leptons[0].vector());
-      lvec4 = ConvertToLorentz(leptons[1].vector());
-    } else if(leptons.size()==1){
-      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);
-      lvec3 = ConvertToLorentz(leptons[0].vector());
-      if(pi_1.first) {
-        cp_channel_=1; 
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); 
-        lvec4 = ConvertToLorentz(pi_1.second->vector());
-      }
-      if(pi_2.first) {
-        cp_channel_=1; 
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); 
-        lvec4 = ConvertToLorentz(pi_2.second->vector());
-      }
-      if(rho_1.first) {
-        cp_channel_=2; 
-        lvec2 = ConvertToLorentz(rho_1.second[1]->vector()); 
-        lvec4 = ConvertToLorentz(rho_1.second[0]->vector()); 
-        cp_sign_1_ = YRho(rho_1.second,TVector3());
-      }
-      if(rho_2.first) {
-        cp_channel_=2; 
-        lvec2 = ConvertToLorentz(rho_2.second[1]->vector()); 
-        lvec4 = ConvertToLorentz(rho_2.second[0]->vector()); 
-        cp_sign_1_ = YRho(rho_2.second,TVector3());
-      }
-    } else{
-      if(pi_1.first&&pi_2.first){
-        cp_channel_=1;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
-        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
-        lvec3 = ConvertToLorentz(pi_1.second->vector());
-        lvec4 = ConvertToLorentz(pi_2.second->vector());
-      } else if (pi_1.first&&rho_2.first){
-        cp_channel_=2;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
-        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
-        lvec3 = ConvertToLorentz(pi_1.second->vector());
-        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
-        cp_sign_1_ = YRho(rho_2.second,TVector3());
-      } else if(pi_2.first&&rho_1.first){
-        cp_channel_=2;
-        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
-        lvec2 = ConvertToLorentz(rho_1.second[1]->vector());
-        lvec3 = ConvertToLorentz(pi_2.second->vector());
-        lvec4 = ConvertToLorentz(rho_1.second[0]->vector());
-        cp_sign_1_ = YRho(rho_1.second,TVector3());
-      } else if (rho_1.first&&rho_2.first){
-        cp_channel_=3;  
-        lvec1 = ConvertToLorentz(rho_1.second[1]->vector());   
-        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
-        lvec3 = ConvertToLorentz(rho_1.second[0]->vector());   
-        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
-        cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3());
-      }
-    }
-    
-    if(cp_channel_!=-1){
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
-      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
-    } */
-    
-    /* if(gen_tau_jets_ptr.size()>=2){
-      if(rho_1.first && rho_2.first) { 
-        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
-        aco_angle_2_ = angles[0].first;
-        cp_sign_2_ = angles[0].second;
-      }
-      if(rho_1.first && a1_2.first) {
-        cp_channel_ = 3;
-        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);
-        aco_angle_1_ = angles[0].first;
-        cp_sign_1_ = angles[0].second;
-        aco_angle_2_ = angles[1].first;
-        cp_sign_2_ = angles[1].second;
-        aco_angle_3_ = angles[2].first;
-        cp_sign_3_ = angles[2].second;
-        aco_angle_4_ = angles[3].first;
-        cp_sign_4_ = angles[3].second;
-      }
-      if(a1_1.first && rho_2.first) {
-        cp_channel_ = 3;
-        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_2.second,a1_1.second,true);
-        aco_angle_1_ = angles[0].first;
-        cp_sign_1_ = angles[0].second;
-        aco_angle_2_ = angles[1].first;
-        cp_sign_2_ = angles[1].second;
-        aco_angle_3_ = angles[2].first;
-        cp_sign_3_ = angles[2].second;
-        aco_angle_4_ = angles[3].first;
-        cp_sign_4_ = angles[3].second;
-      }
-
-    } */
+    Ediff_1_ = -9999.;
+    Ediff_2_ = -9999.;  
+    Pfrac_1_=-9999.; 
+    Pfrac_2_=-9999.;
 
     if(passed_){
       pt_1_  = lep1.vector().Pt();
@@ -1080,8 +810,548 @@ namespace ic {
       wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
     }
 
-    if(fs_) outtree_->Fill();
     
+    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
+    std::vector<std::vector<GenParticle*>> a1_daughters;
+    std::vector<std::vector<GenParticle*>> fakea1_daughters;
+    std::vector<std::vector<GenParticle*>> a1_2_daughters;
+    std::vector<Candidate*> tau_rhos;
+    std::vector<GenParticle*> pi_daughters;
+    unsigned count_taus=0;   
+    for (unsigned i = 0; i < gen_particles.size(); ++i) {
+      if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        GenParticle* tau = gen_particles[i];
+        ++count_taus;
+        bool foundRho = false;
+        bool foundPi = false;
+        bool foundLep = false;
+        bool foundA1 = false;
+        bool foundA1_2 = false;
+        bool found3Pi1P0 = false;
+        unsigned count_pi0 = 0;
+        unsigned count_pi = 0;
+        unsigned count_K = 0;
+        unsigned count_hadr = 0;
+        unsigned count_gamma =0;
+        unsigned count_lep=0;
+
+        std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
+        std::pair<GenParticle*,GenParticle*> prho = std::make_pair(new GenParticle(), new GenParticle());
+        std::pair<GenParticle*,GenParticle*> lep = std::make_pair(new GenParticle(), new GenParticle());
+        std::vector<GenParticle*> a1 = {};
+        std::vector<GenParticle*> fakea1 = {};
+        std::vector<GenParticle*> a1_2 = {};
+        GenParticle* pi = new GenParticle();
+        std::vector<int> daughters = gen_particles[i]->daughters();
+
+        for (unsigned d : daughters){
+          unsigned daughter_id = fabs(gen_particles[d]->pdgid());
+          if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
+          ++count_hadr;
+          if(daughter_id == 11 || daughter_id == 13) {
+            ++count_lep;
+            lep.first = gen_particles[d];
+            lep.second = tau;
+            continue;
+          }
+          if (daughter_id == 22) {
+            ++count_gamma;
+            continue;
+          }
+          if (daughter_id == 211) {
+            ++count_pi;
+            /* std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl; */
+            rho.first = gen_particles[d];
+            pi = gen_particles[d];
+            prho.first = pi;
+            prho.second = tau;
+            a1.push_back(gen_particles[d]);
+            fakea1.push_back(gen_particles[d]);
+            a1_2.push_back(gen_particles[d]);
+            continue;
+          }
+          if (daughter_id == 130 || daughter_id == 310 
+                  || daughter_id == 311 || daughter_id == 321) {
+            ++count_K;
+            continue;
+          }
+          if (daughter_id == 111) {
+            ++count_pi0;
+            rho.second = gen_particles[d];
+            a1_2.push_back(gen_particles[d]); 
+            fakea1.push_back(gen_particles[d]);
+            /* std::cout << "pi zero " << gen_particles[d]->vector() << std::endl; */
+            continue;
+          }
+          if (daughter_id == 213) {
+            /* std::cout << "found 213 rho " << daughter_id << std::endl; */
+            count_pi0 = 0;
+            count_pi = 0;
+            count_K = 0;
+            count_hadr=0;
+            count_gamma=0;
+            std::vector<int> gdaughters = gen_particles[d]->daughters(); 
+            for (unsigned g : gdaughters){
+              unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
+              ++count_hadr;
+              if (gdaughter_id == 22) {
+                ++count_gamma;
+                continue;
+              }
+              if (gdaughter_id == 211) {
+                ++count_pi;
+                rho.first = gen_particles[g];
+                continue;
+              }
+              if (gdaughter_id == 111) {
+                ++count_pi0;
+                rho.second = gen_particles[g];
+                continue;
+              }
+            }
+            foundRho = true;
+            break;
+          }
+        }
+        foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1);
+        foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0);
+        foundLep = count_lep==1;
+        foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
+        found3Pi1P0 = found3Pi1P0 || (count_hadr-count_gamma==4 && count_pi==3 && count_pi0==1);
+        foundA1_2 = foundA1_2 || (count_hadr-count_gamma==3 && count_pi==1 && count_pi0==2);
+        if(foundRho) {
+          rho_daughters.push_back(rho);
+          Candidate * tauvis = new Candidate();
+          tauvis->set_vector(rho.first->vector()+rho.second->vector());
+          tau_rhos.push_back(tauvis);
+        }
+        if(foundPi) {
+          prho_daughters.push_back(prho);
+          pi_daughters.push_back(pi);
+        }
+        if(foundLep) {
+          l_daughters.push_back(lep);
+        }
+        if(foundA1){
+          a1_daughters.push_back(a1);
+        }
+        if(found3Pi1P0){
+          fakea1_daughters.push_back(fakea1);
+        }
+
+        if(foundA1_2){
+          a1_2_daughters.push_back(a1_2); 
+        }
+      }
+    }
+
+    fakea1_dR_ = -1;
+    rho_dR_ = -1;
+    tauFlag = -1;
+
+    if(rho_daughters.size()==1) {
+      rho_dR_ = ROOT::Math::VectorUtil::DeltaR(rho_daughters[0].first->vector(),rho_daughters[0].second->vector());
+      tauFlag = 1;
+    }
+
+
+    if(fakea1_daughters.size()==1) {
+      ROOT::Math::PtEtaPhiEVector charged_vec;
+      ROOT::Math::PtEtaPhiEVector neutral_vec;
+      for (auto p : fakea1_daughters[0]) {
+        if (std::fabs(p->pdgid()) == 111) neutral_vec = p->vector();
+        else charged_vec += p->vector();
+      }
+      fakea1_dR_ = ROOT::Math::VectorUtil::DeltaR(neutral_vec,charged_vec);
+      tauFlag = 11;
+    }
+    
+
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+
+    if(a1_2_daughters.size()==1 && rho_daughters.size()==1){
+      cp_channel_=6;
+      if (a1_2_daughters[0][1]->charge()!=0) {
+        auto temp = a1_2_daughters[0][1];
+        a1_2_daughters[0][1] = a1_2_daughters[0][0];
+        a1_2_daughters[0][0] = temp;
+      }
+      if (a1_2_daughters[0][2]->charge()!=0) {
+        auto temp = a1_2_daughters[0][2];
+        a1_2_daughters[0][2] = a1_2_daughters[0][0];
+        a1_2_daughters[0][0] = temp;
+      }
+      mass1_ = (a1_2_daughters[0][0]->vector() + a1_2_daughters[0][1]->vector()).M();
+      mass2_ = (a1_2_daughters[0][0]->vector() + a1_2_daughters[0][2]->vector()).M();
+      if(std::fabs(mass2_-0.775) < std::fabs(mass1_-0.775)) {
+        double temp_mass = mass1_;
+        mass1_ = mass2_;
+        mass2_ = temp_mass;
+        auto temp = a1_2_daughters[0][1];
+        a1_2_daughters[0][1] = a1_2_daughters[0][2];
+        a1_2_daughters[0][2] = temp;
+      }
+
+      std::pair<GenParticle*,GenParticle*> p_rho = std::make_pair(new GenParticle(), new GenParticle());
+      std::pair<GenParticle*,GenParticle*> p_rho_1 = std::make_pair(new GenParticle(), new GenParticle());
+      p_rho_1.first = a1_2_daughters[0][0];
+      p_rho_1.second = a1_2_daughters[0][1];
+      p_rho.first = a1_2_daughters[0][0];
+      p_rho.second = a1_2_daughters[0][1];
+      p_rho.second->set_vector(a1_2_daughters[0][1]->vector()+a1_2_daughters[0][2]->vector());
+
+      pt_rho_pi_ = a1_2_daughters[0][0]->pt();
+      pt_rho_pi0_ = a1_2_daughters[0][1]->pt();
+      pt_other_pi0_ = a1_2_daughters[0][2]->pt();
+
+      GenParticle* rho_1  = new GenParticle();
+      GenParticle* rho_2  = new GenParticle();
+     
+      //rho_1->set_vector(a1_2_daughters[0][0]->vector()+a1_2_daughters[0][1]->vector());
+
+      lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
+      lvec2 = ConvertToLorentz(p_rho_1.second->vector());
+      lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
+      lvec4 = ConvertToLorentz(p_rho_1.first->vector());
+      cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {p_rho_1.first, p_rho_1.second}),TVector3());
+
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+      if (cp_sign_1_<0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }
+
+      lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
+      lvec2 = ConvertToLorentz(p_rho.second->vector());
+      lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
+      lvec4 = ConvertToLorentz(p_rho.first->vector());
+      cp_sign_2_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {p_rho.first, p_rho.second}),TVector3());
+
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+      if (cp_sign_2_<0) {
+        if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
+        else                   aco_angle_2_ -= M_PI;
+      }
+
+
+
+      //aco_angle_2_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_1,a1_2_daughters[0][2]}));
+      //cp_sign_2_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_1, a1_2_daughters[0][2]}),TVector3());
+      ////std::cout << aco_angle_2_ << std::endl;
+
+      //aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_2_daughters[0][0],a1_2_daughters[0][1]}));
+      //aco_angle_3_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_2_daughters[0][0],a1_2_daughters[0][2]}));
+      ////std::cout << a1_2_daughters[0][0]->charge() << "    " << a1_2_daughters[0][1]->charge() << "    " << a1_2_daughters[0][2]->charge() << "    " << aco_angle_1_ << std::endl;
+      //aco_angle_5_ = aco_angle_1_;
+      //aco_angle_6_ = aco_angle_3_;
+
+      //GenParticle* rho_1  = new GenParticle();
+      //GenParticle* rho_2  = new GenParticle();
+      //rho_1->set_vector(a1_2_daughters[0][0]->vector()+a1_2_daughters[0][1]->vector());
+      //rho_2->set_vector(a1_2_daughters[0][0]->vector()+a1_2_daughters[0][2]->vector());
+      //aco_angle_2_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_1,a1_2_daughters[0][2]}));
+      //aco_angle_4_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_2,a1_2_daughters[0][1]}));
+
+
+      //cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_2_daughters[0][0], a1_2_daughters[0][1]}),TVector3());
+      //cp_sign_3_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_2_daughters[0][0], a1_2_daughters[0][2]}),TVector3());
+
+      //cp_sign_2_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_1, a1_2_daughters[0][2]}),TVector3());
+      //cp_sign_4_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_2, a1_2_daughters[0][1]}),TVector3()); 
+
+      //mass1_ = (a1_2_daughters[0][0]->vector() + a1_2_daughters[0][1]->vector()).M();
+      //mass2_ = (a1_2_daughters[0][0]->vector() + a1_2_daughters[0][2]->vector()).M();
+
+
+      if (cp_sign_1_<0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }
+      if (cp_sign_2_<0) {
+        if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
+        else                   aco_angle_2_ -= M_PI;
+      }
+      if (cp_sign_3_<0) {
+        if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
+        else                   aco_angle_3_ -= M_PI;
+      }
+      if (cp_sign_4_<0) {
+        if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
+        else                   aco_angle_4_ -= M_PI;
+      }
+
+    
+      a1_daughters = a1_2_daughters;
+
+      dR1_ = ROOT::Math::VectorUtil::DeltaR(a1_daughters[0][0]->vector(), a1_daughters[0][1]->vector());
+      if(rand_<0.5) dR2_ = ROOT::Math::VectorUtil::DeltaR(a1_daughters[0][0]->vector(), a1_daughters[0][2]->vector());
+      else dR2_ = ROOT::Math::VectorUtil::DeltaR(a1_daughters[0][1]->vector(), a1_daughters[0][2]->vector()); // pick this randomly so that it more closly follows what would happen for 3 prong channel
+
+      // designed to mimic what is one for the 3 prong case where each of neutral particle are assigned a chare at random
+      if(rand_<0.5){
+        a1_daughters[0][0]->set_charge(-1);
+        a1_daughters[0][1]->set_charge(1);
+      } else {
+        a1_daughters[0][0]->set_charge(1);
+        a1_daughters[0][1]->set_charge(-1);
+      }
+      a1_daughters[0] = SortA1Products(a1_daughters[0]);
+
+      //mass1_ = (a1_daughters[0][0]->vector() + a1_daughters[0][1]->vector()).M();
+      //mass2_ = (a1_daughters[0][0]->vector() + a1_daughters[0][2]->vector()).M();
+
+      //std::cout << a1_daughters[0][0]->charge() << "    " << a1_daughters[0][1]->charge() << "    " << a1_daughters[0][2]->charge() << "    " << mass1_ << "    " << mass2_ << std::endl;
+
+      p_aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
+      p_aco_angle_3_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][2]}));
+
+      rho_1  = new GenParticle();
+      rho_2  = new GenParticle();
+      rho_1->set_vector(a1_daughters[0][0]->vector()+a1_daughters[0][1]->vector());
+      rho_2->set_vector(a1_daughters[0][0]->vector()+a1_daughters[0][2]->vector());
+      p_aco_angle_2_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_1,a1_daughters[0][2]}));
+      p_aco_angle_4_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_2,a1_daughters[0][1]}));
+
+      double cp_sign_1 = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][1]}),TVector3());
+      double cp_sign_3 = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][2]}),TVector3());
+
+      double cp_sign_2 = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_1, a1_daughters[0][2]}),TVector3());
+      double cp_sign_4 = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_2, a1_daughters[0][1]}),TVector3());
+
+      if (cp_sign_1<0) {
+        if (p_aco_angle_1_<M_PI) p_aco_angle_1_ += M_PI;
+        else                   p_aco_angle_1_ -= M_PI;
+      }
+      if (cp_sign_2<0) {
+        if (p_aco_angle_2_<M_PI) p_aco_angle_2_ += M_PI;
+        else                   p_aco_angle_2_ -= M_PI;
+      }
+      if (cp_sign_3<0) {
+        if (p_aco_angle_3_<M_PI) p_aco_angle_3_ += M_PI;
+        else                   p_aco_angle_3_ -= M_PI;
+      }
+      if (cp_sign_4<0) {
+        if (p_aco_angle_4_<M_PI) p_aco_angle_4_ += M_PI;
+        else                   p_aco_angle_4_ -= M_PI;
+      }
+
+      a1_daughters = {};
+
+    }
+
+    if(a1_daughters.size()==1 && rho_daughters.size()==1){
+      cp_channel_=4;
+      cp_sign_1_ = 999;
+      cp_sign_2_ = 999;
+      cp_sign_3_ = 999;
+      cp_sign_4_ = 999;
+      aco_angle_1_ = 9999.;
+      aco_angle_2_ = 9999.;
+      aco_angle_3_ = 9999.;
+      aco_angle_4_ = 9999.;
+      a1_daughters[0] = SortA1Products(a1_daughters[0]);
+      mass1_ = (a1_daughters[0][0]->vector() + a1_daughters[0][1]->vector()).M();
+      mass2_ = (a1_daughters[0][0]->vector() + a1_daughters[0][2]->vector()).M();
+
+      aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
+      aco_angle_3_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][2]}));
+      //aco_angle_1_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
+      //aco_angle_3_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][2]}));
+
+
+      GenParticle* rho_1  = new GenParticle();
+      GenParticle* rho_2  = new GenParticle();
+      rho_1->set_vector(a1_daughters[0][0]->vector()+a1_daughters[0][1]->vector());
+      rho_2->set_vector(a1_daughters[0][0]->vector()+a1_daughters[0][2]->vector());
+      aco_angle_2_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_1,a1_daughters[0][2]}));
+      aco_angle_4_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_2,a1_daughters[0][1]}));
+
+      //aco_angle_2_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][2],rho_1}));
+      //aco_angle_4_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][1],rho_1}));
+
+      cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][1]}),TVector3());
+      cp_sign_3_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][2]}),TVector3()); 
+
+      cp_sign_2_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_1, a1_daughters[0][2]}),TVector3());
+      cp_sign_4_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_2, a1_daughters[0][1]}),TVector3());
+
+      //aco_angle_5_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][1],a1_daughters[0][2]}));
+      aco_angle_5_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][1],a1_daughters[0][2]}));
+      cp_sign_5_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YRho(std::vector<GenParticle*>({a1_daughters[0][1], a1_daughters[0][2]}),TVector3());
+      GenParticle* rho_3  = new GenParticle();
+      rho_3->set_vector(a1_daughters[0][1]->vector()+a1_daughters[0][2]->vector());
+      //aco_angle_6_ = AcoplanarityAngle2(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],rho_3}));
+      aco_angle_6_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({rho_3,a1_daughters[0][0]}));
+      cp_sign_6_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3())*YA1(std::vector<GenParticle*>({rho_3, a1_daughters[0][0]}),TVector3());
+   
+      y_1_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+      y_2_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+      y_3_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+      y_4_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+      y_1_2_ = YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][1]}),TVector3());
+      y_2_2_ = YRho(std::vector<GenParticle*>({a1_daughters[0][0], a1_daughters[0][2]}),TVector3());
+      y_3_2_ = YA1(std::vector<GenParticle*>({rho_1, a1_daughters[0][2]}),TVector3());
+      y_4_2_ = YA1(std::vector<GenParticle*>({rho_2, a1_daughters[0][1]}),TVector3());
+
+      a1_mass_ = (a1_daughters[0][0]->vector() + a1_daughters[0][1]->vector()+a1_daughters[0][2]->vector()).M();
+      E_1_1_ = rho_daughters[0].first->energy();
+      E_2_1_ = rho_daughters[0].second->energy();
+      E_1_2_ = a1_daughters[0][0]->energy();
+      E_2_2_ = a1_daughters[0][1]->energy();
+      E_3_2_ = a1_daughters[0][2]->energy();
+
+
+      if (cp_sign_1_<0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      } 
+      if (cp_sign_2_<0) {
+        if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
+        else                   aco_angle_2_ -= M_PI;
+      }
+      if (cp_sign_3_<0) {
+        if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
+        else                   aco_angle_3_ -= M_PI;
+      }
+      if (cp_sign_4_<0) {
+        if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
+        else                   aco_angle_4_ -= M_PI;
+      }
+      if (cp_sign_5_<0) {
+        if (aco_angle_5_<M_PI) aco_angle_5_ += M_PI;
+        else                   aco_angle_5_ -= M_PI;
+      }
+      if (cp_sign_6_<0) {
+        if (aco_angle_6_<M_PI) aco_angle_6_ += M_PI;
+        else                   aco_angle_6_ -= M_PI;
+      }
+  
+    }
+ 
+    if(prho_daughters.size()==1){
+      Pfrac_1_ = prho_daughters[0].first->vector().P()/prho_daughters[0].second->vector().P();
+    }
+    if(prho_daughters.size()==2){
+      Pfrac_2_ = prho_daughters[1].first->vector().P()/prho_daughters[1].second->vector().P();
+    }
+
+    if(prho_daughters.size()==2){
+      cp_channel_=1;
+    }
+
+    if (rho_daughters.size()==1 && pi_daughters.size()==1){
+        cp_channel_=2;
+        /* std::cout << "cp channel: " << cp_channel_ << std::endl; */
+        //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
+        //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
+        //lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
+        //lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+        // test things
+        // charge prong
+        /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        //std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        //for (unsigned i = 0; i < gen_vertices.size(); i++) {
+        //  gen_pvx_ = gen_vertices[0]->vx();
+        //  gen_pvy_ = gen_vertices[0]->vy();
+        //  gen_pvz_ = gen_vertices[0]->vz();
+        //}
+
+        TVector3 IPtest = getIPVector(prho_daughters[0].second);
+
+        TLorentzVector ip_vec(
+                prho_daughters[0].first->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
+                prho_daughters[0].first->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
+                prho_daughters[0].first->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
+                0.);
+
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        lvec2 = ip_vec;
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
+    }
+
+    else if (rho_daughters.size()==1 && l_daughters.size()==1){
+        //cp_channel_=4;
+        TLorentzVector ip_vec(
+                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
+                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
+                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
+                0.);
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
+        lvec2 = ip_vec;
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
+        lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+    }
+
+    if (rho_daughters.size()==2){
+        cp_channel_=3;  
+        // do smearing of pi 0 energy
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());   
+        lvec2 = ConvertToLorentz(rho_daughters[1].second->vector());
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());   
+        lvec4 = ConvertToLorentz(rho_daughters[1].first->vector());
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {rho_daughters[1].first, rho_daughters[1].second}),TVector3());
+        Ediff_1_ = (rho_daughters[0].first->vector().E() - rho_daughters[0].second->vector().E())/
+            (rho_daughters[0].first->vector().E() + rho_daughters[0].second->vector().E());
+        Ediff_2_ = (rho_daughters[1].first->vector().E() - rho_daughters[1].second->vector().E())/
+            (rho_daughters[1].first->vector().E() + rho_daughters[1].second->vector().E());
+    }
+    if(cp_channel_==2){
+      bool doAnti = false;
+      if (cp_channel_ == 2) {
+        doAnti = pi_daughters[0]->pdgid() > 0 ? true : false;
+      }
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false,true,doAnti);    
+      //aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+    }
+
+    if(cp_channel_!=-1 && cp_channel_==3){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      //aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+
+      if (cp_sign_1_<0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }  
+
+      pi_E_1_ = rho_daughters[0].first->vector().E();
+      pi_E_2_ = rho_daughters[1].first->vector().E();
+      pi0_E_1_ = rho_daughters[0].second->vector().E();
+      pi0_E_2_ = rho_daughters[1].second->vector().E();
+
+    }
+
+    if(fs_) outtree_->Fill();
     return 0;
   }
   int HTTGenAnalysis::PostAnalysis() {
@@ -1091,6 +1361,7 @@ namespace ic {
     std::cout << "mm count = " << count_mm_ << std::endl;
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
+
     return 0;
   }
 

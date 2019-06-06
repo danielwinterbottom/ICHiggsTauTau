@@ -46,14 +46,17 @@ struct strategy_def {
 	enum type {
 		paper2013,				// Strategy for the final paper in 2013
 		phys14,				// Strategy for running on phys14 samples
-    spring15,    //Strategy for running on spring15 samples
-    fall15,    //Strategy for running on fall15 samples
-    mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-    smspring16,    //Strategy for running on spring16 samples, SM analysis
-    mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
-    smsummer16,    //Strategy for running on summer16 samples, SM analysis
-    cpsummer16,
-    cpsummer17
+        spring15,    //Strategy for running on spring15 samples
+        fall15,    //Strategy for running on fall15 samples
+        mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
+        smspring16,    //Strategy for running on spring16 samples, SM analysis
+        mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
+        smsummer16,    //Strategy for running on summer16 samples, SM analysis
+        cpsummer16,
+        cpsummer17,
+        cpdecays16,
+        cpdecays17,
+        cpdecays18
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -69,7 +72,10 @@ inline std::string Strategy2String(strategy const& in) {
                 (strategy::mssmsummer16, "mssmsummer16")
                 (strategy::smsummer16, "smsummer16")
                 (strategy::cpsummer16, "cpsummer16")
-                (strategy::cpsummer17, "cpsummer17");
+                (strategy::cpsummer17, "cpsummer17")
+                (strategy::cpdecays16, "cpdecays16")
+                (strategy::cpdecays17, "cpdecays17")
+                (strategy::cpdecays18, "cpdecays18");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -80,8 +86,8 @@ inline std::string Strategy2String(strategy const& in) {
 
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
-	("paper2013", 	strategy::paper2013)
-	("phys14", 	strategy::phys14)
+	    ("paper2013", 	strategy::paper2013)
+	    ("phys14", 	strategy::phys14)
         ("spring15", strategy::spring15)
         ("fall15", strategy::fall15)
         ("mssmspring16", strategy::mssmspring16)
@@ -89,7 +95,11 @@ inline strategy String2Strategy(std::string const& in) {
         ("mssmsummer16", strategy::mssmsummer16)
         ("smsummer16", strategy::smsummer16)
         ("cpsummer16", strategy::cpsummer16)
-        ("cpsummer17", strategy::cpsummer17);
+        ("cpsummer17", strategy::cpsummer17)
+        ("cpdecays16", strategy::cpdecays16)
+        ("cpdecays17", strategy::cpdecays17)
+        ("cpdecays18", strategy::cpdecays18);
+
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -104,18 +114,20 @@ struct era_def {
 		data_2012_rereco,
 		data_2015,
 		data_2016,
-                data_2017
+        data_2017,
+        data_2018
 	};
 };
 typedef safe_enum<era_def> era;
 
 inline std::string Era2String(era const& in) {
 	static std::map<era, std::string> conv = boost::assign::map_list_of
-		(era::data_2011, 					"data_2011")
-		(era::data_2012_rereco, 	"data_2012_rereco")
-		(era::data_2015, 	        "data_2015")
-		(era::data_2016, 	        "data_2016")
-                (era::data_2017,                "data_2017");
+		(era::data_2011,        "data_2011")
+		(era::data_2012_rereco, "data_2012_rereco")
+		(era::data_2015,        "data_2015")
+		(era::data_2016,        "data_2016")
+        (era::data_2017,        "data_2017")
+        (era::data_2018,        "data_2018");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -126,11 +138,12 @@ inline std::string Era2String(era const& in) {
 
 inline era String2Era(std::string const& in) {
 	static std::map<std::string, era> conv = boost::assign::map_list_of
-	("data_2011",					era::data_2011)
-	("data_2012_rereco", 	era::data_2012_rereco)
-	("data_2015", 	era::data_2015)
-	("data_2016", 	era::data_2016)
-        ("data_2017",   era::data_2017);
+	("data_2011",        era::data_2011)
+	("data_2012_rereco", era::data_2012_rereco)
+	("data_2015",        era::data_2015)
+	("data_2016",        era::data_2016)
+    ("data_2017",        era::data_2017)
+    ("data_2018",        era::data_2018);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -144,25 +157,27 @@ struct mc_def {
 		fall11_42X,				// 42X MC
 		summer12_53X,			// 53X MC
 		phys14_72X,			// 72X MC
-                spring15_74X,      //74X MC 
-                fall15_76X,      //76X MC 
-                spring16_80X,     //76X MC
-                summer16_80X,
-                mc2017
+        spring15_74X,      //74X MC 
+        fall15_76X,      //76X MC 
+        spring16_80X,     //76X MC
+        summer16_80X,
+        mc2017,
+        mc2018
 	};
 };
 typedef safe_enum <mc_def> mc;
 
 inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
-		(mc::fall11_42X, "fall11_42X")
+		(mc::fall11_42X,   "fall11_42X")
 		(mc::summer12_53X, "summer12_53X")
-		(mc::phys14_72X, "phys14_72X")
-                (mc::spring15_74X, "spring15_74X")
-                (mc::fall15_76X, "fall15_76X")
-                (mc::spring16_80X, "spring16_80X")
-                (mc::summer16_80X, "summer16_80X")
-                (mc::mc2017, "mc2017");
+		(mc::phys14_72X,   "phys14_72X")
+        (mc::spring15_74X, "spring15_74X")
+        (mc::fall15_76X,   "fall15_76X")
+        (mc::spring16_80X, "spring16_80X")
+        (mc::summer16_80X, "summer16_80X")
+        (mc::mc2017,       "mc2017")
+        (mc::mc2018,       "mc2018");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -173,14 +188,15 @@ inline std::string MC2String(mc const& in) {
 }
 inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
-	("fall11_42X",		mc::fall11_42X)
-	("summer12_53X",	mc::summer12_53X)
-	("phys14_72X",	mc::phys14_72X)
-        ("spring15_74X", mc::spring15_74X)
-        ("fall15_76X", mc::fall15_76X)
-        ("spring16_80X", mc::spring16_80X)
-        ("summer16_80X", mc::summer16_80X)
-        ("mc2017", mc::mc2017);
+	("fall11_42X",   mc::fall11_42X)
+	("summer12_53X", mc::summer12_53X)
+	("phys14_72X",   mc::phys14_72X)
+    ("spring15_74X", mc::spring15_74X)
+    ("fall15_76X",   mc::fall15_76X)
+    ("spring16_80X", mc::spring16_80X)
+    ("summer16_80X", mc::summer16_80X)
+    ("mc2017",       mc::mc2017)
+    ("mc2018",       mc::mc2018);
 
 
 	if (conv.find(in) != conv.end()) {
@@ -199,11 +215,11 @@ struct channel_def {
 		tt,
 		zee,
 		zmm,
-                tpzee,
-                tpzmm,
-                tpmt,
-                tpem,
-                wmnu,
+        tpzee,
+        tpzmm,
+        tpmt,
+        tpem,
+        wmnu,
 		mtmet,
 		etmet
 	};
@@ -220,8 +236,8 @@ inline std::string Channel2String(channel const& in) {
 		(channel::zmm, "zmm")
 		(channel::tpzee, "tpzee")
 		(channel::tpzmm, "tpzmm")
-                (channel::tpmt, "tpmt")
-                (channel::tpem, "tpem")
+        (channel::tpmt, "tpmt")
+        (channel::tpem, "tpem")
 		(channel::wmnu, "wmnu")
 		(channel::etmet, "etmet")
 		(channel::mtmet, "mtmet");
@@ -243,8 +259,8 @@ inline channel String2Channel(std::string const& in) {
 	("zmm", channel::zmm)
 	("tpzee", channel::tpzee)
 	("tpzmm", channel::tpzmm)
-        ("tpmt", channel::tpmt)
-        ("tpem", channel::tpem)
+    ("tpmt", channel::tpmt)
+    ("tpem", channel::tpem)
 	("wmnu", channel::wmnu)
 	("etmet", channel::etmet)
 	("mtmet", channel::mtmet);

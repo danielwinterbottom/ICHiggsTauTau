@@ -1,10 +1,11 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
+    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar11_MC_94X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em","mt","tt","et"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -17,7 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {  
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "era"           : "data_2017",
     "mc"            : "mc2017",
     "strategy"      : "cpsummer17",
@@ -58,8 +59,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2017/",
-    //"output_folder" : "./output/",
+    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2017/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec09_genVars/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jan30/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/tauola_CPdecay_2017/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
@@ -72,7 +75,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -97,8 +100,8 @@
       "mufaketau_0pi_es_shift": 0.999,
       "mufaketau_1pi_es_shift": 1.012,
       "tau_1prong0pi0_es_shift": 1.007,
-      "tau_1prong1pi0_es_shift": 0.997,
-      "tau_3prong0pi0_es_shift": 0.99,
+      "tau_1prong1pi0_es_shift": 0.998,
+      "tau_3prong0pi0_es_shift": 1.001,
       "embedtau_1prong0pi0_es_shift": 1.011,
       "embedtau_1prong1pi0_es_shift": 0.988,
       "elec_es_shift"     : 1.0,
@@ -258,27 +261,27 @@
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.005,
+         "tau_1prong1pi0_es_shift" : 1.006,
          "embedtau_1prong1pi0_es_shift" : 0.996
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 0.989,
+         "tau_1prong1pi0_es_shift" : 0.99,
          "embedtau_1prong1pi0_es_shift" : 0.980 
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 0.999
+         "tau_3prong0pi0_es_shift" : 1.01
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.981
+         "tau_3prong0pi0_es_shift" : 0.992
       }
     },
 

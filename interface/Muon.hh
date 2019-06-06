@@ -157,6 +157,10 @@ class Muon : public Candidate {
   /// Longitudinal impact parameter of the tracker track with primary vertex
   inline double dz_vertex() const { return dz_vertex_; }
 
+  inline double dxy_vertex_error() const { return dxy_vertex_error_; }
+
+  inline double dz_vertex_error() const { return dz_vertex_error_; }
+
   /// Transverse impact parameter of the tracker track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
   /**@}*/
@@ -324,6 +328,13 @@ class Muon : public Candidate {
   /// @copybrief dz_vertex()
   inline void set_dz_vertex(double const& dz_vertex) { dz_vertex_ = dz_vertex; }
 
+  inline void set_dxy_vertex_error(double const& dxy_vertex_error) {
+    dxy_vertex_error_ = dxy_vertex_error;
+  }
+
+  inline void set_dz_vertex_error(double const& dz_vertex_error) { dz_vertex_error_ = dz_vertex_error; }
+
+
   /// @copybrief dxy_beamspot()
   inline void set_dxy_beamspot(double const& dxy_beamspot) {
     dxy_beamspot_ = dxy_beamspot;
@@ -393,6 +404,8 @@ class Muon : public Candidate {
 
   double dxy_vertex_;
   double dz_vertex_;
+  double dxy_vertex_error_;
+  double dz_vertex_error_;
   double dxy_beamspot_;
 
   std::vector<std::size_t> gen_particles_;
@@ -401,7 +414,7 @@ class Muon : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 5);
+  ClassDef(Muon, 6);
  #endif
 };
 
