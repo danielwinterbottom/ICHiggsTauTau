@@ -1362,13 +1362,13 @@ if isEmbed:
     process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
 
 process.selectedPatTrigger = cms.EDFilter(
- 'PATTriggerObjectStandAloneSelector',
-  cut = cms.string('!filterLabels.empty()'),
-  src = cms.InputTag('patTriggerUnpacker')
+    'PATTriggerObjectStandAloneSelector',
+    cut = cms.string('!filterLabels.empty()'),
+    src = cms.InputTag('patTriggerUnpacker')
 )
 process.icTriggerSequence += cms.Sequence(
-  process.patTriggerUnpacker +
-  process.selectedPatTrigger
+    process.patTriggerUnpacker +
+    process.selectedPatTrigger
 )
 
 
@@ -1405,7 +1405,6 @@ process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter("EcalBadCalibFilter",
     taggingMode = cms.bool(True),
     debug = cms.bool(False)
     )
-
 
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
