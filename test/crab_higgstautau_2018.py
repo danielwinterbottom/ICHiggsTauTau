@@ -14,13 +14,9 @@ config.JobType.maxMemoryMB = 2500
 # config.JobType.scriptExe = 'submitCrabDeepTauV2.sh'
 config.JobType.allowUndistributedCMSSW = True
 
-# config.Data.unitsPerJob = 240
-# config.Data.splitting = 'Automatic'
 config.Data.unitsPerJob = 100000
-# config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-#config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/adow/May23_Data_102X/'
 config.Data.allowNonValidInputDataset = True
 
