@@ -276,14 +276,16 @@ void ICElectronProducer::produce(edm::Event& event,
     
     // 2017 smear and scale
 #if CMSSW_MAJOR_VERSION > 9 || (CMSSW_MAJOR_VERSION == 9 && CMSSW_MINOR_VERSION >= 4)
-    dest.set_ecalTrkEnergyPostCorr(src.userFloat(input_postCorr_));
-    dest.set_ecalTrkEnergyPreCorr(src.userFloat(input_preCorr_));
-    dest.set_ecalTrkEnergyErrPostCorr(src.userFloat(input_errPostCorr_));
-    dest.set_ecalTrkEnergyErrPreCorr(src.userFloat(input_errPreCorr_));
-    dest.set_ecalTrkEnergySigmaUp(src.userFloat(input_sigmaUp_));
-    dest.set_ecalTrkEnergySigmaDown(src.userFloat(input_sigmaDown_));
-    dest.set_ecalTrkEnergyScaleUp(src.userFloat(input_scaleUp_));
-    dest.set_ecalTrkEnergyScaleDown(src.userFloat(input_scaleDown_));
+    if(doSmearAndScale_){
+      dest.set_ecalTrkEnergyPostCorr(src.userFloat(input_postCorr_));
+      dest.set_ecalTrkEnergyPreCorr(src.userFloat(input_preCorr_));
+      dest.set_ecalTrkEnergyErrPostCorr(src.userFloat(input_errPostCorr_));
+      dest.set_ecalTrkEnergyErrPreCorr(src.userFloat(input_errPreCorr_));
+      dest.set_ecalTrkEnergySigmaUp(src.userFloat(input_sigmaUp_));
+      dest.set_ecalTrkEnergySigmaDown(src.userFloat(input_sigmaDown_));
+      dest.set_ecalTrkEnergyScaleUp(src.userFloat(input_scaleUp_));
+      dest.set_ecalTrkEnergyScaleDown(src.userFloat(input_scaleDown_));
+    }
 #endif
 
   }
