@@ -229,6 +229,17 @@ class RhoIDEmbedder : public ModuleBase {
   double Mrho_ThreeHighGammas_2_; 
   double Mrho_subleadingGamma_2_;
 
+  double Ptgamma1_1_;
+  double Ptgamma2_1_;
+  double Ptgamma3_1_;
+  double Ptgamma4_1_;
+
+  double Ptgamma1_2_;
+  double Ptgamma2_2_;
+  double Ptgamma3_2_;
+  double Ptgamma4_2_;
+
+
   //temp variables
   double CenterEta_1;
   double CenterPhi_1;

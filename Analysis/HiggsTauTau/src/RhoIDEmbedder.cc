@@ -214,6 +214,16 @@ namespace ic {
       outtree_->Branch("Mrho_TwoHighGammas_2"                       , &Mrho_TwoHighGammas_2_);
       outtree_->Branch("Mrho_ThreeHighGammas_2"                     , &Mrho_ThreeHighGammas_2_);
       outtree_->Branch("Mrho_subleadingGamma_2"                     , &Mrho_subleadingGamma_2_);
+   
+      outtree_->Branch("Ptgamma1_1"      , &Ptgamma1_1_ );
+      outtree_->Branch("Ptgamma2_1"      , &Ptgamma2_1_ );
+      outtree_->Branch("Ptgamma3_1"      , &Ptgamma3_1_ );
+      outtree_->Branch("Ptgamma4_1"      , &Ptgamma4_1_ );
+   
+      outtree_->Branch("Ptgamma1_2"      , &Ptgamma1_2_ );
+      outtree_->Branch("Ptgamma2_2"      , &Ptgamma2_2_ );
+      outtree_->Branch("Ptgamma3_2"      , &Ptgamma3_2_ );
+      outtree_->Branch("Ptgamma4_2"      , &Ptgamma4_2_ );
 
       outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
@@ -523,7 +533,16 @@ namespace ic {
           }
           DeltaR2WRTpi0_2_/=SumPt_2;
 
-        } 
+        }
+
+
+         //----------Gamma Pt-------------
+        Ptgamma1_2_=-1; Ptgamma2_2_=-1; Ptgamma3_2_=-1; Ptgamma4_2_=-1;
+        if(gammas2.size()>=1) Ptgamma1_2_ = gammas2[0]->pt();
+        if(gammas2.size()>=2) Ptgamma2_2_ = gammas2[1]->pt();
+        if(gammas2.size()>=3) Ptgamma3_2_ = gammas2[2]->pt();
+        if(gammas2.size()>=4) Ptgamma4_2_ = gammas2[3]->pt();
+
 
         
     
