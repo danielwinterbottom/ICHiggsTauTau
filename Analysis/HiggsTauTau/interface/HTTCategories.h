@@ -501,8 +501,21 @@ class HTTCategories : public ModuleBase {
   double aco_angle_2_;
   double aco_angle_3_;
   double aco_angle_4_;
+
   double mass0_=-1, mass1_=-1, mass2_=-1;
   double strip_pt_=-1;
+  double h1_h2_dphi_=-1;  
+  double h1_h3_dphi_=-1;
+  double h2_h3_dphi_=-1;
+  double h1_h2_dEta_=-1;
+  double h1_h3_dEta_=-1;
+  double h2_h3_dEta_=-1;
+  double E1_=-1;
+  double E2_=-1;
+  double E3_=-1;
+  double a1_pi0_dEta_=-1;
+  double a1_pi0_dphi_=-1;
+
   double strip_pt_2_=-1, strip_pt_1_=-1, strip_E_1_=-1, strip_E_2_=-1, gen_pi0_E_=-1;
   double y_1_1_;
   double y_1_2_;

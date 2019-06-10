@@ -2269,9 +2269,14 @@ namespace ic {
         hads[1] = temp;
       }
     }
-    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut);
-    if(gammas.size()==0) gammas = GetTauIsoGammas(tau, pfcands, pt_cut);
-
+    std::vector<ic::PFCandidate*> gammas; 
+    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut);
+    else  {
+      gammas = GetTauGammas(tau, pfcands, pt_cut);//signal gammas
+      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, pt_cut);//iso gammas      
+      gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
+      std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    }
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
     double mass = 0.1349;
     ic::Candidate *pi0 = new ic::Candidate();
