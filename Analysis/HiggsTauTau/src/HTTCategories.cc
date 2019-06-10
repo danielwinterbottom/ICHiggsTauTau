@@ -855,10 +855,27 @@ namespace ic {
       outtree_->Branch("mvadm_a1_1", &mvadm_a1_1_);
       outtree_->Branch("mvadm_other_1", &mvadm_other_1_);
       outtree_->Branch("mvadm_pi_1", &mvadm_pi_1_);
+      outtree_->Branch("mvadm_3pipi0_1", &mvadm_3pipi0_1_);
       outtree_->Branch("mvadm_rho_2", &mvadm_rho_2_);
       outtree_->Branch("mvadm_a1_2", &mvadm_a1_2_);
       outtree_->Branch("mvadm_other_2", &mvadm_other_2_);
       outtree_->Branch("mvadm_pi_2", &mvadm_pi_2_);
+      outtree_->Branch("mvadm_3pipi0_2", &mvadm_3pipi0_2_);
+
+      outtree_->Branch("mvadm_pi_new_1", &mvadm_pi_new_1_);
+      outtree_->Branch("mvadm_rho_new_1", &mvadm_rho_new_1_);
+      outtree_->Branch("mvadm_a1_new_1", &mvadm_a1_new_1_);
+      outtree_->Branch("mvadm_3pi_new_1", &mvadm_3pi_new_1_);
+      outtree_->Branch("mvadm_3pipi0_new_1", &mvadm_3pipi0_new_1_);
+
+      outtree_->Branch("mvadm_pi_new_2", &mvadm_pi_new_2_); 
+      outtree_->Branch("mvadm_rho_new_2", &mvadm_rho_new_2_);
+      outtree_->Branch("mvadm_a1_new_2", &mvadm_a1_new_2_); 
+      outtree_->Branch("mvadm_3pi_new_2", &mvadm_3pi_new_2_);
+      outtree_->Branch("mvadm_3pipi0_new_2", &mvadm_3pipi0_new_2_);
+
+      outtree_->Branch("tau_mva_decay_mode_2", &tau_mva_decay_mode_2_);
+      outtree_->Branch("tau_mva_decay_mode_1", &tau_mva_decay_mode_1_);
 
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
@@ -4990,22 +5007,39 @@ namespace ic {
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
     }
-    rho_id_1_ = event->Exists("rho_id_1") ? event->Get<double>("rho_id_1") : 1.0;
-    rho_id_2_ = event->Exists("rho_id_2") ? event->Get<double>("rho_id_2") : 1.0;
+    rho_id_1_ = event->Exists("rho_id_1") ? event->Get<double>("rho_id_1") : 0.0;
+    rho_id_2_ = event->Exists("rho_id_2") ? event->Get<double>("rho_id_2") : 0.0;
 
-    mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 1.0;
-    mvadm_a1_1_ = event->Exists("mvadm_a1_1") ? event->Get<float>("mvadm_a1_1") : 1.0;
-    mvadm_other_1_ = event->Exists("mvadm_other_1") ? event->Get<float>("mvadm_other_1") : 1.0;
-    mvadm_pi_1_ = event->Exists("mvadm_pi_1") ? event->Get<float>("mvadm_pi_1") : 1.0;
+    mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 0.0;
+    mvadm_a1_1_ = event->Exists("mvadm_a1_1") ? event->Get<float>("mvadm_a1_1") : 0.0;
+    mvadm_other_1_ = event->Exists("mvadm_other_1") ? event->Get<float>("mvadm_other_1") : 0.0;
+    mvadm_pi_1_ = event->Exists("mvadm_pi_1") ? event->Get<float>("mvadm_pi_1") : 0.0;
+    mvadm_3pipi0_1_ = event->Exists("mvadm_3pipi0_1") ? event->Get<float>("mvadm_3pipi0_1") : 0.0;
 
-    mvadm_rho_2_ = event->Exists("mvadm_rho_2") ? event->Get<float>("mvadm_rho_2") : 1.0;
-    mvadm_a1_2_ = event->Exists("mvadm_a1_2") ? event->Get<float>("mvadm_a1_2") : 1.0;
-    mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 1.0;
-    mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 1.0;
+    mvadm_rho_2_ = event->Exists("mvadm_rho_2") ? event->Get<float>("mvadm_rho_2") : 0.0;
+    mvadm_a1_2_ = event->Exists("mvadm_a1_2") ? event->Get<float>("mvadm_a1_2") : 0.0;
+    mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 0.0;
+    mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 0.0;
+    mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      mvadm_pi_new_1_ = tau1->HasTauID("MVADM2016v1DM0raw") ? tau1->GetTauID("MVADM2016v1DM0raw") : 0.0;
+      mvadm_rho_new_1_ = tau1->HasTauID("MVADM2016v1DM1raw") ? tau1->GetTauID("MVADM2016v1DM1raw") : 0.0;
+      mvadm_a1_new_1_ = tau1->HasTauID("MVADM2016v1DM2raw") ? tau1->GetTauID("MVADM2016v1DM2raw") : 0.0;
+      mvadm_3pi_new_1_ = tau1->HasTauID("MVADM2016v1DM10raw") ? tau1->GetTauID("MVADM2016v1DM10raw") : 0.0;
+      mvadm_3pipi0_new_1_ = tau1->HasTauID("MVADM2016v1DM11raw") ? tau1->GetTauID("MVADM2016v1DM11raw") : 0.0;
+
+      mvadm_pi_new_2_ = tau2->HasTauID("MVADM2016v1DM0raw") ? tau2->GetTauID("MVADM2016v1DM0raw") : 0.0;
+      mvadm_rho_new_2_ = tau2->HasTauID("MVADM2016v1DM1raw") ? tau2->GetTauID("MVADM2016v1DM1raw") : 0.0;
+      mvadm_a1_new_2_ = tau2->HasTauID("MVADM2016v1DM2raw") ? tau2->GetTauID("MVADM2016v1DM2raw") : 0.0; 
+      mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2016v1DM10raw") ? tau2->GetTauID("MVADM2016v1DM10raw") : 0.0;
+      mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
+     
+      tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2016v1") ? tau1->GetTauID("MVADM2016v1") : 0.0;
+      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
@@ -5178,6 +5212,14 @@ namespace ic {
     else if (channel_ == channel::mt && event->ExistsInTree("pfCandidates")) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      mvadm_pi_new_2_ = tau2->HasTauID("MVADM2016v1DM0raw") ? tau2->GetTauID("MVADM2016v1DM0raw") : 0.0;
+      mvadm_rho_new_2_ = tau2->HasTauID("MVADM2016v1DM1raw") ? tau2->GetTauID("MVADM2016v1DM1raw") : 0.0;
+      mvadm_a1_new_2_ = tau2->HasTauID("MVADM2016v1DM2raw") ? tau2->GetTauID("MVADM2016v1DM2raw") : 0.0;
+      mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2016v1DM10raw") ? tau2->GetTauID("MVADM2016v1DM10raw") : 0.0;
+      mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
+
+      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
@@ -5440,7 +5482,15 @@ namespace ic {
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {
       Electron const* ele1 = dynamic_cast<Electron const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-     
+    
+      mvadm_pi_new_2_ = tau2->HasTauID("MVADM2016v1DM0raw") ? tau2->GetTauID("MVADM2016v1DM0raw") : 0.0;
+      mvadm_rho_new_2_ = tau2->HasTauID("MVADM2016v1DM1raw") ? tau2->GetTauID("MVADM2016v1DM1raw") : 0.0;
+      mvadm_a1_new_2_ = tau2->HasTauID("MVADM2016v1DM2raw") ? tau2->GetTauID("MVADM2016v1DM2raw") : 0.0;
+      mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2016v1DM10raw") ? tau2->GetTauID("MVADM2016v1DM10raw") : 0.0;
+      mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
+
+      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
+ 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;

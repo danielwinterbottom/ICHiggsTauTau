@@ -440,7 +440,7 @@ namespace ic {
       }
 
 
-      if(tau2->decay_mode()>2 || tau2->decay_mode()>9) {
+      if(tau2->decay_mode()<2 || tau2->decay_mode()>9) {
 
         Candidate *pi_2 = rho_2.first;
 

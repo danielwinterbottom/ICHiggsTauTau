@@ -789,13 +789,21 @@ if options.channel == 'tt':
     mva_jetFakes             = '(IC_Feb13_fix1_max_index==1)'
     mva_zttEmbed             = '(IC_Feb13_fix1_max_index==2)'
 
-    cats['higgs']            = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    cats['zttEmbed']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
-    cats['jetFakes']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+    cats['higgs']            = '({})'.format(mva_ggh)
+    cats['zttEmbed']         = '({})'.format(mva_zttEmbed)
+    cats['jetFakes']         = '({})'.format(mva_jetFakes)
 
-    cats['higgs_other']      = '({} && !({}))'.format(mva_ggh, cats["inclusive_rho"])
-    cats['zttEmbed_other']   = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_rho"])
-    cats['jetFakes_other']   = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_rho"])
+    cats['higgs_rhorho']            = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed_rhorho']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_rhorho']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+
+    cats['higgs_a1rho']            = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
+    cats['zttEmbed_a1rho']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"])
+    cats['jetFakes_a1rho']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"])
+
+    cats['higgs_other']      = '({} && !({}) && !({}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['zttEmbed_other']   = '({} && !({}) && !({}))'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['jetFakes_other']   = '({} && !({}) && !({}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # both taus pass ID>0.5
     cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
