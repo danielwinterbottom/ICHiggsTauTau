@@ -397,6 +397,9 @@ class HTTCategories : public ModuleBase {
   int tau_decay_mode_1_;
   int tau_decay_mode_2_;
 
+  int tau_mva_decay_mode_1_;
+  int tau_mva_decay_mode_2_;
+
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
@@ -539,10 +542,24 @@ class HTTCategories : public ModuleBase {
   float mvadm_a1_1_;
   float mvadm_pi_1_;
   float mvadm_other_1_;
+  float mvadm_3pipi0_1_;
   float mvadm_rho_2_;
   float mvadm_a1_2_;
   float mvadm_pi_2_;
   float mvadm_other_2_;
+  float mvadm_3pipi0_2_;
+
+  float mvadm_pi_new_1_; 
+  float mvadm_rho_new_1_;
+  float mvadm_a1_new_1_; 
+  float mvadm_3pi_new_1_;
+  float mvadm_3pipi0_new_1_;
+
+  float mvadm_pi_new_2_; 
+  float mvadm_rho_new_2_;
+  float mvadm_a1_new_2_; 
+  float mvadm_3pi_new_2_;
+  float mvadm_3pipi0_new_2_;
 
   /**********************************************************/
   // some variables to compare data/MC ageement       
