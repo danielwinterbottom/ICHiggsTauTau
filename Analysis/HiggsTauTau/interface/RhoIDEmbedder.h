@@ -44,6 +44,7 @@ class RhoIDEmbedder : public ModuleBase {
 
   float var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13;
 
+
   double tauFlag1_;
   double tauFlag2_;
   double gen_match_1_;
@@ -228,6 +229,17 @@ class RhoIDEmbedder : public ModuleBase {
   double Mrho_TwoHighGammas_2_;
   double Mrho_ThreeHighGammas_2_; 
   double Mrho_subleadingGamma_2_;
+
+  double Ptgamma1_1_;
+  double Ptgamma2_1_;
+  double Ptgamma3_1_;
+  double Ptgamma4_1_;
+
+  double Ptgamma1_2_;
+  double Ptgamma2_2_;
+  double Ptgamma3_2_;
+  double Ptgamma4_2_;
+
 
   //temp variables
   double CenterEta_1;

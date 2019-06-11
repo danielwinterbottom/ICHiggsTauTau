@@ -1358,15 +1358,15 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      /* return  PileupJetID(jet, pu_id_training, false, true) ||
+      return  PileupJetID(jet, pu_id_training, false, true) ||
          fabs(jet->eta()) > 3.139 ||
-         fabs(jet->eta()) < 2.65 ; */
-      return  jet->pt() > 50 ||
+         fabs(jet->eta()) < 2.65 ;
+      /*return  jet->pt() > 50 ||
         fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
+        fabs(jet->eta()) < 2.65 ;*/
     })
   );
-} 
+}
 
 
 if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -1509,8 +1509,8 @@ if(do_met_filters){
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
-      // if (era_type == era::data_2017 || era_type == era::data_2018) 
-      //   {met_filters.push_back("ecalBadCalibReducedMINIAODFilter")};
+      if (era_type == era::data_2017 || era_type == era::data_2018) 
+        met_filters.push_back("ecalBadCalibReducedMINIAODFilter");
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));

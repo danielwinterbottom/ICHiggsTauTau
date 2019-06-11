@@ -60,7 +60,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec01_2017/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/train_ntuple_2017_newstrips/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec09_genVars/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar29_2017/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May17_2017/",

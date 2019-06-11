@@ -3,25 +3,33 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Oct10_MC_94X'
+config.General.workArea='Feb26_MC_94X'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
+config.JobType.psetName = 'higgstautau_cfg_94X_Apr18_pfCands.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=94X_dataRun2_v10']
+config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=94X_dataRun2_v11', 'tauSpinner=False']
+config.JobType.maxMemoryMB = 2500
+# config.JobType.numCores = 4
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 # config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
+# config.Data.unitsPerJob = 1
+# config.Data.splitting = 'FileBased'
+# config.Data.unitsPerJob = 720
+# config.Data.splitting = 'Automatic'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/Oct10_MC_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Feb26_MC_94X/'
+config.Data.allowNonValidInputDataset = True
+config.Data.inputDBS='phys03'
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
-config.Data.allowNonValidInputDataset = True
-config.Data.inputDBS='phys03'
+# for deep tau need the next line
+config.JobType.scriptExe = 'submitCrabDeepTau.sh'
 
 if __name__ == '__main__':
 
@@ -84,6 +92,9 @@ if __name__ == '__main__':
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
+
+        print config.JobType.pyCfgParams
+        print config.Data.unitsPerJob
         
         p = Process(target=submit, args=(config,))
         p.start()

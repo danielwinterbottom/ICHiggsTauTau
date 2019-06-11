@@ -3,24 +3,26 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Oct10_Data_94X'
+config.General.workArea='Jan06_Data_94X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=1','doHT=0', 'globalTag=94X_dataRun2_v10']
+config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=1','doHT=0', 'globalTag=94X_dataRun2_v11']
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 # config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/Oct10_Data_94X/'
+config.Data.outLFNDirBase='/store/user/adow/Jan06_Data_94X/'
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
 config.Data.allowNonValidInputDataset = True
+# for deep tau need the next line
+config.JobType.scriptExe = '../../../submitCrabDeepTau.sh'
 
 if __name__ == '__main__':
 

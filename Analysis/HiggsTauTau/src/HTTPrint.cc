@@ -243,6 +243,9 @@ namespace ic {
       std::cout << "-beta_max: " << jets[i]->beta_max() << std::endl;
       double charged_frac = (jets[i]->charged_em_energy() + jets[i]->charged_had_energy()) / jets[i]->uncorrected_energy();
       std::cout << "-charged_frac: " << charged_frac << std::endl;
+      std::cout << "-Uncorrected energy/energy: " << jets[i]->uncorrected_energy()/jets[i]->energy() << std::endl;
+      std::cout << "-Uncorrected energy: " << jets[i]->uncorrected_energy() << std::endl;
+      std::cout << "-Jet area: " << jets[i]->jet_area() << std::endl;
       std::cout << "-Uncorrected: " << jets[i]->GetJecFactor("Uncorrected") << std::endl;
       std::cout << "-L1FastJet: " << jets[i]->GetJecFactor("L1FastJet") << std::endl;
       std::cout << "-L2Relative: " << jets[i]->GetJecFactor("L2Relative") << std::endl;

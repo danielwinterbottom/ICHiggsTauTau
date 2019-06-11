@@ -2092,6 +2092,7 @@ namespace ic {
           for (auto g : s.second) signal_gammas.push_back(g->id());
         }
       } else if(strip_pairs.size()>0) {
+        // take lead pT strip if there are not stips in signal cone???
         double min_dR = 0.4;
         std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
         for (auto s : strip_pairs) {
@@ -2108,7 +2109,8 @@ namespace ic {
       Tau * t = const_cast<Tau*>(tau);
       t->set_sig_gamma_cands(signal_gammas);
     } else if(tau->decay_mode()==1) {
-      pi0 = (ic::Candidate*)GetPi0(gammas, true);
+      //pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
+      pi0 = (ic::Candidate*)GetPi0(gammas, true); 
     }
 
     return std::make_pair(pi,pi0);
@@ -2269,8 +2271,15 @@ namespace ic {
         hads[1] = temp;
       }
     }
-    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut);
-    if(gammas.size()==0) gammas = GetTauIsoGammas(tau, pfcands, pt_cut);
+    std::vector<ic::PFCandidate*> gammas; 
+    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut);
+    else  {
+      // need to modify isolation collection to exclude these gammas!
+      gammas = GetTauGammas(tau, pfcands, pt_cut);//signal gammasi
+      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, pt_cut);//iso gammas 
+      gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
+      std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    }
 
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
     double mass = 0.1349;
@@ -2303,7 +2312,10 @@ namespace ic {
 
     Tau * t = const_cast<Tau*>(tau);
     t->set_sig_gamma_cands(signal_gammas);
-
+    std::vector<std::size_t> iso_gammas = tau->iso_gamma_cands();
+    std::vector<std::size_t> new_iso_gammas = {};
+    std::set_difference( iso_gammas.begin(), iso_gammas.end(), signal_gammas.begin(), signal_gammas.end(), std::back_inserter( new_iso_gammas ) );
+    t->set_iso_gamma_cands(new_iso_gammas);
     return std::make_pair(hads, pi0);
   }
 

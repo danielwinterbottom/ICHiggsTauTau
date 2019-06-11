@@ -397,6 +397,9 @@ class HTTCategories : public ModuleBase {
   int tau_decay_mode_1_;
   int tau_decay_mode_2_;
 
+  int tau_mva_decay_mode_1_;
+  int tau_mva_decay_mode_2_;
+
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
@@ -501,8 +504,21 @@ class HTTCategories : public ModuleBase {
   double aco_angle_2_;
   double aco_angle_3_;
   double aco_angle_4_;
+
   double mass0_=-1, mass1_=-1, mass2_=-1;
   double strip_pt_=-1;
+  double h1_h2_dphi_=-1;  
+  double h1_h3_dphi_=-1;
+  double h2_h3_dphi_=-1;
+  double h1_h2_dEta_=-1;
+  double h1_h3_dEta_=-1;
+  double h2_h3_dEta_=-1;
+  double E1_=-1;
+  double E2_=-1;
+  double E3_=-1;
+  double a1_pi0_dEta_=-1;
+  double a1_pi0_dphi_=-1;
+
   double strip_pt_2_=-1, strip_pt_1_=-1, strip_E_1_=-1, strip_E_2_=-1, gen_pi0_E_=-1;
   double y_1_1_;
   double y_1_2_;
@@ -526,10 +542,24 @@ class HTTCategories : public ModuleBase {
   float mvadm_a1_1_;
   float mvadm_pi_1_;
   float mvadm_other_1_;
+  float mvadm_3pipi0_1_;
   float mvadm_rho_2_;
   float mvadm_a1_2_;
   float mvadm_pi_2_;
   float mvadm_other_2_;
+  float mvadm_3pipi0_2_;
+
+  float mvadm_pi_new_1_; 
+  float mvadm_rho_new_1_;
+  float mvadm_a1_new_1_; 
+  float mvadm_3pi_new_1_;
+  float mvadm_3pipi0_new_1_;
+
+  float mvadm_pi_new_2_; 
+  float mvadm_rho_new_2_;
+  float mvadm_a1_new_2_; 
+  float mvadm_3pi_new_2_;
+  float mvadm_3pipi0_new_2_;
 
   /**********************************************************/
   // some variables to compare data/MC ageement       
