@@ -2086,11 +2086,15 @@ namespace ic {
     }
     if(tau->decay_mode()==0) {
       std::vector<std::size_t> signal_gammas = {}; 
-      //if(strips_incone.size()>0) {
-      if(strip_pairs.size()>0) {
+      if(strips_incone.size()>0) {
+        pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true); 
+        for (auto g : strips_incone[0].second) signal_gammas.push_back(g->id());
+      } else if(strip_pairs.size()>0) {
         pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
+        for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
+      }
         //for (auto s : strip_pairs) {
-          for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
+        //  for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
         //}
         //pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
         //for (auto s : strips_incone) {
@@ -2108,13 +2112,13 @@ namespace ic {
       //  }
       //  pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
       //  for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
-      }
+      //}
 
       Tau * t = const_cast<Tau*>(tau);
       t->set_sig_gamma_cands(signal_gammas);
     } else if(tau->decay_mode()==1) {
-      //pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
-      pi0 = (ic::Candidate*)GetPi0(gammas, true); 
+      pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
+      //pi0 = (ic::Candidate*)GetPi0(gammas, true); 
     }
 
     return std::make_pair(pi,pi0);
@@ -2295,24 +2299,33 @@ namespace ic {
       if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
     }
     std::vector<std::size_t> signal_gammas = {};
+    //
     if(strips_incone.size()>0) {
       pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
-      for (auto s : strips_incone) {
-        for (auto g : s.second) signal_gammas.push_back(g->id());
-      }
+      for (auto g : strips_incone[0].second) signal_gammas.push_back(g->id());
     } else if(strip_pairs.size()>0) {
-      double min_dR = 0.4;
-      std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
-      for (auto s : strip_pairs) {
-        double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
-        if(dR<min_dR) {
-          min_dR = dR;
-          closest_strip = s;
-        }
-      }
-      pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
-      for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
-    }
+      pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
+      for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
+    } 
+    //
+    //if(strips_incone.size()>0) {
+    //  pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
+    //  for (auto s : strips_incone) {
+    //    for (auto g : s.second) signal_gammas.push_back(g->id());
+    //  }
+    //} else if(strip_pairs.size()>0) {
+    //  double min_dR = 0.4;
+    //  std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
+    //  for (auto s : strip_pairs) {
+    //    double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
+    //    if(dR<min_dR) {
+    //      min_dR = dR;
+    //      closest_strip = s;
+    //    }
+    //  }
+    //  pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
+    //  for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
+    //}
 
     Tau * t = const_cast<Tau*>(tau);
     t->set_sig_gamma_cands(signal_gammas);
