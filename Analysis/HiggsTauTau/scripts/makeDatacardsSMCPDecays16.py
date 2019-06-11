@@ -162,12 +162,12 @@ if options.total_jes:
 
 
 em_shape_systematics=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" '
-# et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
-# mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
+et_shape_systematics=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
+mt_shape_systematics=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 # tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_w_fake_rate="CMS_htt_jetToTauFake_13TeV" '
 tt_shape_systematics=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
-et_shape_systematics=''
-mt_shape_systematics=''
+# et_shape_systematics=''
+# mt_shape_systematics=''
 zmm_shape_systematics=' --folder=/vols/cms/dw515/Offline/output/SM/Apr09/ '
 
 
@@ -360,11 +360,11 @@ if SCHEME == 'mlcpdecays16':
 
 if SCHEME == 'mlcpdecays16_new':
 
-    VAR_H_ET              = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_ET       = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_ET       = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_TT_ET             = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZLL_ET            = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_H_ET              = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_ZTTEMBED_ET       = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_JETFAKES_ET       = "IC_Apr02_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_TT_ET             = "IC_Apr02_max_score,aco_angle_mod[0.0,0.7],(14,0,6.28319)"
+    VAR_ZLL_ET            = "IC_Apr02_max_score,aco_angle_mod[0.0,0.7],(14,0,6.28319)"
 
     VAR_H_OTHER_ET        = "IC_Apr02_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZTTEMBED_OTHER_ET = "IC_Apr02_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
@@ -372,11 +372,11 @@ if SCHEME == 'mlcpdecays16_new':
     VAR_TT_OTHER_ET       = "IC_Apr02_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZLL_OTHER_ET      = "IC_Apr02_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
 
-    VAR_H_MT              = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_MT       = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_MT       = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_TT_MT             = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZLL_MT            = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_H_MT              = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_ZTTEMBED_MT       = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_JETFAKES_MT       = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8,0.9],(14,0,6.28319)"
+    VAR_TT_MT             = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.7],(14,0,6.28319)"
+    VAR_ZLL_MT            = "IC_Mar26_fix2_max_score,aco_angle_mod[0.0,0.7],(14,0,6.28319)"
 
     VAR_H_OTHER_MT        = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZTTEMBED_OTHER_MT = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
@@ -384,9 +384,13 @@ if SCHEME == 'mlcpdecays16_new':
     VAR_TT_OTHER_MT       = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZLL_OTHER_MT      = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
 
-    VAR_H_TT              = "aco_angle_mod(14,0,6.28319)"
+    VAR_H_TT              = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
     VAR_ZTTEMBED_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
     VAR_JETFAKES_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+
+    VAR_H_TT_A1              = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT_A1       = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT_A1       = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
     VAR_H_OTHER_TT        = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZTTEMBED_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
@@ -426,13 +430,17 @@ if SCHEME == 'mlcpdecays16_new':
         ("17", "jetFakes_other",        "jetFakes_other",       VAR_JETFAKES_OTHER_MT, ' --set_alias="sel:mt_1<50" --ff_ss_closure --add_wt=wt_prefire '),
     ]
     scheme_tt = [
-        ("17", "higgs"   ,           "higgs"  ,            VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "zttEmbed",           "zttEmbed",           VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "jetFakes",           "jetFakes",           VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "higgs_rho"   ,           "higgs_rho"  ,            VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "zttEmbed_rho",           "zttEmbed_rho",           VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "jetFakes_rho",           "jetFakes_rho",           VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
 
-        ("17", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "higgs_a1rho"   ,           "higgs_a1rho"  ,            VAR_H_TT_A1,              ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "zttEmbed_a1rho",           "zttEmbed_a1rho",           VAR_ZTTEMBED_TT_A1,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "jetFakes_a1rho",           "jetFakes_a1rho",           VAR_JETFAKES_TT_A1,       ' --ff_ss_closure --add_wt=wt_prefire '),
+
+        # ("17", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
 
         # ("17", "higgs"   ,         "higgs"  ,            VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
         # ("17", "zttEmbed",         "zttEmbed",           VAR_IDG0p5_TT,   ' --ff_ss_closure '),
@@ -490,12 +498,12 @@ if SCHEME == 'mlcpdecays16_nn_vienna':
     scheme_et = []
     scheme_mt = []
     scheme_tt = [
-        ("17", "NN_sm_higgs_rho",          "higgs_rho",          VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_rho",            "ggh_rho",            VAR_GGH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_rho",            "qqh_rho",            VAR_QQH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_rho",       "zttEmbed_rho",       VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_rho",       "jetFakes_rho",       VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_rho",           "misc_rho",           VAR_MISC_TT,           ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_higgs_rho",          "higgs_rho",          VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_ggh_rho",            "ggh_rho",            VAR_GGH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_qqh_rho",            "qqh_rho",            VAR_QQH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_zttEmbed_rho",       "zttEmbed_rho",       VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_jetFakes_rho",       "jetFakes_rho",       VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        # ("17", "NN_sm_misc_rho",           "misc_rho",           VAR_MISC_TT,           ' --ff_ss_closure --add_wt=wt_prefire '),
 
         ("17", "NN_sm_higgs_a1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' --ff_ss_closure --add_wt=wt_prefire '),
         ("17", "NN_sm_ggh_a1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
@@ -504,12 +512,12 @@ if SCHEME == 'mlcpdecays16_nn_vienna':
         ("17", "NN_sm_jetFakes_a1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' --ff_ss_closure --add_wt=wt_prefire '),
         ("17", "NN_sm_misc_a1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' --ff_ss_closure --add_wt=wt_prefire '),
 
-        ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+#         ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' --ff_ss_closure --add_wt=wt_prefire '),
     ]
 
     bkg_schemes = {
@@ -2098,11 +2106,10 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra)s --no_plot' % vars())
+                    ' --var="%(var)s" %(extra)s --ratio --ratio_range 0,2 --log_y ' % vars())
 
             else:
                 run_command(qsub_command

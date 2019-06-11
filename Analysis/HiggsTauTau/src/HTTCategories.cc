@@ -3207,11 +3207,6 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
-
-    // printing event for MET
-    if (event_ == 139707196 && run_ == 297425 && lumi_ == 87) {
-        std::cout << "MET (pt, phi, eta) " << mets->vector().pt() << mets->vector().phi() << mets->vector().eta() << std::endl;
-    }
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);

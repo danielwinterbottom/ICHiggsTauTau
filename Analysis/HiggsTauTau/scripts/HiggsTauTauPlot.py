@@ -403,9 +403,6 @@ if options.analysis == 'sm':
         if options.era in ['smsummer16','cpsummer16','cpdecay16','mvadm2016']: 
           cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
-        if options.era in ['cpdecay16']: 
-          cats['baseline'] = '(iso_1<0.15 &&  antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>40)'
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
@@ -715,18 +712,16 @@ if options.channel in ["mt","et"]:
     cats["boosted_mixed"]               = "(!{} && !({}) && {})".format(cats["0jet"], cats["dijet_mixed"], cats["inclusive_mixed"])
 
     # MVA multiclass categories
+    cut_string = ""
     if options.channel == "et":
-        mva_ggh      = '(IC_Apr02_max_index==0)'
-        mva_jetFakes = '(IC_Apr02_max_index==1)'
-        mva_tt       = '(IC_Apr02_max_index==2)'
-        mva_zll      = '(IC_Apr02_max_index==3)'
-        mva_zttEmbed = '(IC_Apr02_max_index==4)'
+        cut_string = "IC_Apr02"
     elif options.channel == "mt":
-        mva_ggh      = '(IC_Mar26_fix2_max_index==0)'
-        mva_jetFakes = '(IC_Mar26_fix2_max_index==1)'
-        mva_tt       = '(IC_Mar26_fix2_max_index==2)'
-        mva_zll      = '(IC_Mar26_fix2_max_index==3)'
-        mva_zttEmbed = '(IC_Mar26_fix2_max_index==4)'
+        cut_string = "IC_Mar26_fix2"
+    mva_ggh      = '({}_max_index==0)'.format(cut_string)
+    mva_jetFakes = '({}_max_index==1)'.format(cut_string)
+    mva_tt       = '({}_max_index==2)'.format(cut_string)
+    mva_zll      = '({}_max_index==3)'.format(cut_string)
+    mva_zttEmbed = '({}_max_index==4)'.format(cut_string)
 
     cats['higgs']          = '({} && {})'.format(mva_ggh, cats["inclusive_mixed"])
     cats['zttEmbed']       = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mixed"])
@@ -784,38 +779,42 @@ if options.channel == 'tt':
     cats["dijet_rho_idl0p5"]          = "({} && !({}))".format(cats["dijet_rho"], cats["idg0p5"])
     cats["boosted_rho_idl0p5"]        = "({} && !({}))".format(cats["boosted_rho"], cats["idg0p5"])
 
-    # MVA multiclass categories
-    mva_ggh                  = '(IC_Feb13_fix1_max_index==0)'
-    mva_jetFakes             = '(IC_Feb13_fix1_max_index==1)'
-    mva_zttEmbed             = '(IC_Feb13_fix1_max_index==2)'
+    # BDT multiclass categories
+    mva_ggh                = '(IC_Feb13_fix1_max_index==0)'
+    mva_jetFakes           = '(IC_Feb13_fix1_max_index==1)'
+    mva_zttEmbed           = '(IC_Feb13_fix1_max_index==2)'
 
-    cats['higgs']            = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    cats['zttEmbed']         = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
-    cats['jetFakes']         = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
+    cats['higgs_rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['zttEmbed_rho']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_rho']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
 
-    cats['higgs_other']      = '({} && !({}))'.format(mva_ggh, cats["inclusive_rho"])
-    cats['zttEmbed_other']   = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_rho"])
-    cats['jetFakes_other']   = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_rho"])
+    cats['higgs_a1rho']    = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
+    cats['zttEmbed_a1rho'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"])
+    cats['jetFakes_a1rho'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"])
 
-    # both taus pass ID>0.5
-    cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
-    cats['zttEmbed_idg0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
-    cats['jetFakes_idg0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
+    cats['higgs_other']    = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['zttEmbed_other'] = '({} && !({}||{}))'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
-    # one tau passes ID>0.5
-    cats['higgs_idgl0p5']    = '({} && {})'.format(cats["higgs"], cats["idgl0p5"])
-    cats['zttEmbed_idgl0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idgl0p5"])
-    cats['jetFakes_idgl0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idgl0p5"])
+    # # both taus pass ID>0.5
+    # cats['higgs_idg0p5']     = '({} && {})'.format(cats["higgs"], cats["idg0p5"])
+    # cats['zttEmbed_idg0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idg0p5"])
+    # cats['jetFakes_idg0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idg0p5"])
 
-    # both taus fail ID>0.5
-    cats['higgs_idl0p5']     = '({} && {})'.format(cats["higgs"], cats["idl0p5"])
-    cats['zttEmbed_idl0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idl0p5"])
-    cats['jetFakes_idl0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idl0p5"])
+    # # one tau passes ID>0.5
+    # cats['higgs_idgl0p5']    = '({} && {})'.format(cats["higgs"], cats["idgl0p5"])
+    # cats['zttEmbed_idgl0p5'] = '({} && {})'.format(cats["zttEmbed"], cats["idgl0p5"])
+    # cats['jetFakes_idgl0p5'] = '({} && {})'.format(cats["jetFakes"], cats["idgl0p5"])
 
-    # !(both taus pass ID>0.5)
-    cats['higgs_NOTidg0p5']     = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
-    cats['zttEmbed_NOTidg0p5']  = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
-    cats['jetFakes_NOTidg0p5']  = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
+    # # both taus fail ID>0.5
+    # cats['higgs_idl0p5']     = '({} && {})'.format(cats["higgs"], cats["idl0p5"])
+    # cats['zttEmbed_idl0p5']  = '({} && {})'.format(cats["zttEmbed"], cats["idl0p5"])
+    # cats['jetFakes_idl0p5']  = '({} && {})'.format(cats["jetFakes"], cats["idl0p5"])
+
+    # # !(both taus pass ID>0.5)
+    # cats['higgs_NOTidg0p5']     = '({} && !({}))'.format(cats["higgs"], cats["idg0p5"])
+    # cats['zttEmbed_NOTidg0p5']  = '({} && !({}))'.format(cats["zttEmbed"], cats["idg0p5"])
+    # cats['jetFakes_NOTidg0p5']  = '({} && !({}))'.format(cats["jetFakes"], cats["idg0p5"])
 
     
     # MVA multiclass SM keras categories
@@ -864,19 +863,19 @@ if options.channel == 'tt':
     cats['NN_sm_jetFakes_a1rho'] = '({} && {})'.format(nn_sm_jetFakes, cats["inclusive_a1rho"])
     cats['NN_sm_misc_a1rho']     = '({} && {})'.format(nn_sm_misc, cats["inclusive_a1rho"])
 
-    # cats['NN_sm_higgs_other']    = '(({}||{}) && !({}||{}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    # cats['NN_sm_ggh_other']      = '({} && !({}||{}))'.format(nn_sm_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    # cats['NN_sm_qqh_other']      = '({} && !({}||{}))'.format(nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    # cats['NN_sm_zttEmbed_other'] = '({} && !({}||{}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    # cats['NN_sm_jetFakes_other'] = '({} && !({}||{}))'.format(nn_sm_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    # cats['NN_sm_misc_other']     = '({} && !({}||{}))'.format(nn_sm_misc, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_higgs_other']    = '(({}||{}) && !({}||{}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_ggh_other']      = '({} && !({}||{}))'.format(nn_sm_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_qqh_other']      = '({} && !({}||{}))'.format(nn_sm_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_zttEmbed_other'] = '({} && !({}||{}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_jetFakes_other'] = '({} && !({}||{}))'.format(nn_sm_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['NN_sm_misc_other']     = '({} && !({}||{}))'.format(nn_sm_misc, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
-    cats['NN_sm_higgs_other']    = '(({}||{}) && !({}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_ggh_other']      = '({} && !({}))'.format(nn_sm_ggh, cats["inclusive_rho"])
-    cats['NN_sm_qqh_other']      = '({} && !({}))'.format(nn_sm_qqh, cats["inclusive_rho"])
-    cats['NN_sm_zttEmbed_other'] = '({} && !({}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
-    cats['NN_sm_jetFakes_other'] = '({} && !({}))'.format(nn_sm_jetFakes, cats["inclusive_rho"])
-    cats['NN_sm_misc_other']     = '({} && !({}))'.format(nn_sm_misc, cats["inclusive_rho"])
+    # cats['NN_sm_higgs_other']    = '(({}||{}) && !({}))'.format(nn_sm_ggh, nn_sm_qqh, cats["inclusive_rho"])
+    # cats['NN_sm_ggh_other']      = '({} && !({}))'.format(nn_sm_ggh, cats["inclusive_rho"])
+    # cats['NN_sm_qqh_other']      = '({} && !({}))'.format(nn_sm_qqh, cats["inclusive_rho"])
+    # cats['NN_sm_zttEmbed_other'] = '({} && !({}))'.format(nn_sm_zttEmbed, cats["inclusive_rho"])
+    # cats['NN_sm_jetFakes_other'] = '({} && !({}))'.format(nn_sm_jetFakes, cats["inclusive_rho"])
+    # cats['NN_sm_misc_other']     = '({} && !({}))'.format(nn_sm_misc, cats["inclusive_rho"])
 
     cats['NN_sm_ggh_inclusive']      = '({})'.format(nn_sm_ggh)
     cats['NN_sm_qqh_inclusive']      = '({})'.format(nn_sm_qqh)
