@@ -7,7 +7,7 @@ namespace ic {
   RhoIDEmbedder::RhoIDEmbedder(std::string const& name) : ModuleBase(name), channel_(channel::tt), strategy_(strategy::cpdecays16) {
     fs_ = NULL;
     maketrees_ = false;
-    gammas_pt_cut_ = 1.0;
+    gammas_pt_cut_ = 0.5;
   }
 
   RhoIDEmbedder::~RhoIDEmbedder() {
