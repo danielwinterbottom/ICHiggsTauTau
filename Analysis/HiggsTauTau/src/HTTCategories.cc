@@ -1013,8 +1013,8 @@ namespace ic {
         outtree_->Branch("mva_olddm_tight_2",&tau_id_olddm_tight_2_);
         outtree_->Branch("mva_olddm_vtight_1",&tau_id_olddm_vtight_1_);
         outtree_->Branch("mva_olddm_vtight_2",&tau_id_olddm_vtight_2_);
-        outtree_->Branch("mva_newdm_vloose_1",&tau_id_newdm_tight_1_);
-        outtree_->Branch("mva_newdm_vloose_2",&tau_id_newdm_tight_1_);
+        outtree_->Branch("mva_newdm_vloose_1",&tau_id_newdm_vloose_1_);
+        outtree_->Branch("mva_newdm_vloose_2",&tau_id_newdm_vloose_2_);
         outtree_->Branch("mva_newdm_loose_1",&tau_id_newdm_loose_1_);
         outtree_->Branch("mva_newdm_loose_2",&tau_id_newdm_loose_2_);
         outtree_->Branch("mva_newdm_medium_1",&tau_id_newdm_medium_1_);
@@ -5135,50 +5135,52 @@ namespace ic {
         y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
       }
       else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
+      
         cp_channel_=4;
 
         std::vector<ic::PFCandidate*> a1_daughters;
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         ic::Candidate *pi0;
-        if(tau_decay_mode_1_==10){
+        if(tau_decay_mode_1_>9){
           a1_daughters  = GetA1(tau1, pfcands).first;
           rho_daughters = GetRho(tau2, pfcands);
           pi0 = GetA1(tau1, pfcands).second;
           rho_id_1_ = rho_id_2_;
         }
-        if(tau_decay_mode_2_==10){
+        if(tau_decay_mode_2_>9){
           a1_daughters  = GetA1(tau2, pfcands).first;
           pi0 = GetA1(tau2, pfcands).second;
           rho_daughters = GetRho(tau1, pfcands);
         }
 
-        mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
-        mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
-        mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
-        strip_pt_ = pi0->pt();
+        if (a1_daughters.size()>2){
+            mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
+            mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
+            mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
+            strip_pt_ = pi0->pt();
 
-        aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
-        aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})); 
+            aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
+            aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})); 
 
-        Candidate* rho_1  = new Candidate();
-        Candidate* rho_2  = new Candidate();
-        rho_1->set_vector(a1_daughters[0]->vector()+a1_daughters[1]->vector());
-        rho_2->set_vector(a1_daughters[0]->vector()+a1_daughters[2]->vector());
-        aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
-        aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]}));
+            Candidate* rho_1  = new Candidate();
+            Candidate* rho_2  = new Candidate();
+            rho_1->set_vector(a1_daughters[0]->vector()+a1_daughters[1]->vector());
+            rho_2->set_vector(a1_daughters[0]->vector()+a1_daughters[2]->vector());
+            aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
+            aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]}));
 
-        y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
+            y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
 
-        y_1_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
-        y_3_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[2]}),TVector3());
-        y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
-        y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
+            y_1_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+            y_3_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[2]}),TVector3());
+            y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
+            y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
 
-        cp_sign_1_ = y_1_1_*y_1_2_;
-        cp_sign_2_ = y_1_1_*y_2_2_;
-        cp_sign_3_ = y_1_1_*y_3_2_;
-        cp_sign_4_ = y_1_1_*y_4_2_;
-
+            cp_sign_1_ = y_1_1_*y_1_2_;
+            cp_sign_2_ = y_1_1_*y_2_2_;
+            cp_sign_3_ = y_1_1_*y_3_2_;
+            cp_sign_4_ = y_1_1_*y_4_2_;
+        }   
 
         if (cp_sign_1_<0) {
           if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
@@ -5452,27 +5454,28 @@ namespace ic {
       std::vector<ic::PFCandidate*> a1_daughters;
       std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
       ic::Candidate *pi0;
-      if(tau_decay_mode_2_==10){
+      if(tau_decay_mode_2_>=10){
         a1_daughters  = GetA1(tau2, pfcands).first;
         pi0 = GetA1(tau2, pfcands).second;
-        mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
-        mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
-        mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
-        strip_pt_ = pi0->pt();
-        if(strip_pt_>0) {
-            a1_pi0_dEta_ = std::fabs(pi0->eta()-tau2->eta());
-            a1_pi0_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0->vector(),tau2->vector()));
-        } 
-        h1_h2_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[1]->vector()));
-        h1_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[2]->vector()));
-        h2_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[1]->vector(),a1_daughters[2]->vector()));
-        h1_h2_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[1]->eta());
-        h1_h3_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[2]->eta());
-        h2_h3_dEta_ = std::fabs(a1_daughters[1]->eta()-a1_daughters[2]->eta());
-        E1_ = a1_daughters[0]->energy();
-        E2_ = a1_daughters[1]->energy();
-        E3_ = a1_daughters[2]->energy();
-
+        if (a1_daughters.size()>2){
+            mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
+            mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
+            mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
+            strip_pt_ = pi0->pt();
+            if(strip_pt_>0) {
+                a1_pi0_dEta_ = std::fabs(pi0->eta()-tau2->eta());
+                a1_pi0_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0->vector(),tau2->vector()));
+            } 
+            h1_h2_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[1]->vector()));
+            h1_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[0]->vector(),a1_daughters[2]->vector()));
+            h2_h3_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters[1]->vector(),a1_daughters[2]->vector()));
+            h1_h2_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[1]->eta());
+            h1_h3_dEta_ = std::fabs(a1_daughters[0]->eta()-a1_daughters[2]->eta());
+            h2_h3_dEta_ = std::fabs(a1_daughters[1]->eta()-a1_daughters[2]->eta());
+            E1_ = a1_daughters[0]->energy();
+            E2_ = a1_daughters[1]->energy();
+            E3_ = a1_daughters[2]->energy();
+        }
         M_pi0_=-1, M_pi0_2gamma_=-1, gammas_dEta_=-1, gammas_dphi_=-1, E_gamma_1_ = -1, E_gamma_2_ = -1;
         
         if(gammas2.size()>0){
