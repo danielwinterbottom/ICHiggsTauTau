@@ -26,7 +26,9 @@ namespace ic {
     std::cout << "RhoIDEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    if(strategy_==strategy::cpdecays17) gammas_pt_cut_ = 1.0;
+    if(strategy_==strategy::cpdecays17) {
+      gammas_pt_cut_ = 1.0;
+    }
 
     if(fs_&&maketrees_){  
       outtree_ = fs_->make<TTree>("train_ntuple","train_ntuple");

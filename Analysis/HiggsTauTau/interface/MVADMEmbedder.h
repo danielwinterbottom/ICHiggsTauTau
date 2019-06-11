@@ -43,6 +43,7 @@ class MVADMEmbedder : public ModuleBase {
   unsigned long long evt_;
   double gammas_pt_cut_ = 0.5;
 
+
   float Egamma1_tau_1_; 
   float Egamma2_tau_1_;
   float Epi_tau_1_; 

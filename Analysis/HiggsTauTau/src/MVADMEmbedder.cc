@@ -24,7 +24,18 @@ namespace ic {
         if(isEven) scores = reader_even_->EvaluateMulticlass("BDT method"); 
         else       scores = reader_odd_->EvaluateMulticlass("BDT method");
       }
+      //////////////// 
+      std::cout << "-------" << std::endl;
+      std::cout << evt_ << std::endl;
+      for (unsigned i=0; i<vars.size(); ++i) std::cout << i << "    " << vars[i] << std::endl;
+      if(decay_mode==10) {
+      std::cout  << "    " << var0<< "    " << var1<< "    " << var2<< "    " << var3<< "    " << var4<< "    " << var5<< "    " << var6<< "    " << var7<< "    " << var8<< "    " << var9<< "    " << var10<< "    " << var11<< "    " << var12<< "    " << var13<< "    " << var14<< "    " << var15<< "    " << var16<< "    " << var17<< "    " << var18<< "    " << var19<< "    " << var20<< "    " << var21<< "    " << var22<< "    " << var23<< "    " << var24<< "    " << var25<< "    " << var26<< "    " << var27<< "    " << var28<< "    " << var29<< "    " << var30<< "    " << var31<< "    " << var32<< "    " << var33<< "    " << var34<< "    " << var35<< "    " << var36<< "    " << var37<< "    " << var38<< "    " << var39 << std::endl;
 
+      }
+      std::cout << "scores:" << std::endl;
+      for(auto s : scores) std::cout << s << "    ";
+      std::cout << "\n";
+      ////////////////
       return scores;
   }
 
@@ -34,13 +45,21 @@ namespace ic {
     std::cout << "MVADMEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    if(strategy_==strategy::cpdecays17) gammas_pt_cut_ = 1.0;
+    if(strategy_==strategy::cpdecays17) {
+      gammas_pt_cut_ = 1.0;
+    }
 
     reader_even_ = new TMVA::Reader();
     reader_odd_ = new TMVA::Reader();
 
     TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoeven.xml";
     TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd.xml";
+
+    if(strategy_==strategy::cpdecays17) {
+      // make sure you add odd training!
+      filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd_2017v1.xml";
+      filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd_2017v1.xml";
+    }
 
     reader_even_->AddVariable( "Egamma1_tau", &var0 );
     reader_even_->AddVariable( "Egamma2_tau", &var1 );
@@ -97,6 +116,13 @@ namespace ic {
 
     TString filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_applytoeven.xml";
     TString filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_applytoodd.xml";
+
+    if(strategy_==strategy::cpdecays17) {
+      // make sure you add odd training!
+      filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_11_applytoodd_2017v1.xml";
+      filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_11_applytoodd_2017v1.xml";
+    }
+
     reader_dm10_even_ = new TMVA::Reader();
     reader_dm10_odd_ = new TMVA::Reader();    
 

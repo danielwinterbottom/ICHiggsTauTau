@@ -2179,32 +2179,45 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
           shape_node))
         
     else:
-        qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
-        qcd_sdb_cat_data = cats_unmodified[options.cat]+' && '+cats_unmodified['tt_qcd_norm']
-        
-        subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True)        
-        num_selection = BuildCutString(wt, sel, cat_data, '!os')
-        num_node = SubtractNode('ratio_num',
-                     ana.SummedFactory('data', data, plot_unmodified, num_selection),
-                     subtract_node)
-        if options.analysis == 'mssmsummer16': tau_id_wt = 'wt_tau2_id_loose'
-        else: tau_id_wt = '1'
-        subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,False,True)
-        den_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, '!os')
-        den_node = SubtractNode('ratio_den',
-                     ana.SummedFactory('data', data, plot_unmodified, den_selection),
-                     subtract_node)
-        shape_node = None   
-        full_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, OSSS)
-        subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,get_os,True)
-
-        ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
-          ana.SummedFactory('data', data, plot_unmodified, full_selection),
+        if method == 8:
+          qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
+          qcd_sdb_cat_data = cats_unmodified[options.cat]+' && '+cats_unmodified['tt_qcd_norm']
+          
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True)        
+          num_selection = BuildCutString(wt, sel, cat_data, '!os')
+          num_node = SubtractNode('ratio_num',
+                       ana.SummedFactory('data', data, plot_unmodified, num_selection),
+                       subtract_node)
+          if options.analysis == 'mssmsummer16': tau_id_wt = 'wt_tau2_id_loose'
+          else: tau_id_wt = '1'
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,False,True)
+          den_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, '!os')
+          den_node = SubtractNode('ratio_den',
+                       ana.SummedFactory('data', data, plot_unmodified, den_selection),
+                       subtract_node)
+          shape_node = None   
+          full_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, OSSS)
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,get_os,True)
+  
+          ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
+            ana.SummedFactory('data', data, plot_unmodified, full_selection),
+            subtract_node,
+            1,
+            shape_node,
+            num_node,
+            den_node))
+        if method == 9:
+          osss = '(3.68434 -1.8015*dR + 0.488955*dR*dR -0.0489159*dR*dR*dR)'
+          weight = wt
+          if get_os:
+              weight = wt+'*'+osss
+          full_selection = BuildCutString(weight, sel, cat_data, '!os')
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,weight,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True)
+          ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
+          ana.SummedFactory('data_ss', data, plot_unmodified, full_selection),
           subtract_node,
-          1,
-          shape_node,
-          num_node,
-          den_node))
+          1.0,
+          None))
             
         
 def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='', sel='', cat_name='',get_os=True,ff_syst_weight=None):
