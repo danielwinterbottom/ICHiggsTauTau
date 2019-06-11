@@ -2113,8 +2113,8 @@ namespace ic {
       Tau * t = const_cast<Tau*>(tau);
       t->set_sig_gamma_cands(signal_gammas);
     } else if(tau->decay_mode()==1) {
-      //pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
-      pi0 = (ic::Candidate*)GetPi0(gammas, true); 
+      pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
+      //pi0 = (ic::Candidate*)GetPi0(gammas, true); 
     }
 
     return std::make_pair(pi,pi0);
