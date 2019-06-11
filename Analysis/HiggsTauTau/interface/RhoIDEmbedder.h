@@ -290,6 +290,9 @@ class RhoIDEmbedder : public ModuleBase {
 
   double gammas_pt_cut_ = -1;
 
+  double test_dR_lead_strip_2_;
+  double test_pt_lead_strip_2_;
+
 };
 
 }
