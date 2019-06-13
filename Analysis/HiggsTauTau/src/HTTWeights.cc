@@ -3762,85 +3762,85 @@ namespace ic {
        event->Add("idisoweight_2", m_2_idiso);
        event->Add("isoweight_1", double(1.0));
        event->Add("isoweight_2", double(1.0));
-   } else if (channel_ == channel::zee){
-       Electron const* ele_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
-       Electron const* ele_2 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton2"));
-       double e_1_pt = ele_1->pt();
-       double e_1_eta = fabs(ele_1->eta());
-       double e_2_pt = ele_2->pt();
-       double e_2_eta = fabs(ele_2->eta());
-       double e_1_idiso = 1.0;
-       double e_2_idiso = 1.0;
-       double e_1_idiso_mc = 1.0;
-       double e_1_idiso_data = 1.0;
-       double e_2_idiso_mc = 1.0;
-       double e_2_idiso_data = 1.0;
-       double e_2_signed_eta = ele_2->eta();
-       double e_1_signed_eta = ele_1->eta();
-       double e_1_iso = PF03IsolationVal(ele_1,0.5,0);
-       double e_2_iso = PF03IsolationVal(ele_2,0.5,0);
-       if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X){
+     } else if (channel_ == channel::zee){
+         Electron const* ele_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+         Electron const* ele_2 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton2"));
+         double e_1_pt = ele_1->pt();
+         double e_1_eta = fabs(ele_1->eta());
+         double e_2_pt = ele_2->pt();
+         double e_2_eta = fabs(ele_2->eta());
+         double e_1_idiso = 1.0;
+         double e_2_idiso = 1.0;
+         double e_1_idiso_mc = 1.0;
+         double e_1_idiso_data = 1.0;
+         double e_2_idiso_mc = 1.0;
+         double e_2_idiso_data = 1.0;
+         double e_2_signed_eta = ele_2->eta();
+         double e_1_signed_eta = ele_1->eta();
+         double e_1_iso = PF03IsolationVal(ele_1,0.5,0);
+         double e_2_iso = PF03IsolationVal(ele_2,0.5,0);
+         if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X){
 
-         if(e_1_pt<100){
-           e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt));
-           e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt));
-         } else {
-           e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt)-1));
-           e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt)-1));
-         }         
-         if(e_2_pt<100){
-           e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt));
-           e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt));
-         } else {
-           e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt)-1));
-           e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt)-1));
-         }         
+           if(e_1_pt<100){
+             e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt));
+             e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt));
+           } else {
+             e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt)-1));
+             e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt)-1));
+           }         
+           if(e_2_pt<100){
+             e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt));
+             e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt));
+           } else {
+             e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt)-1));
+             e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt)-1));
+           }         
 
-           e_1_idiso = e_1_idiso_data/e_1_idiso_mc;
-           e_2_idiso = e_2_idiso_data/e_2_idiso_mc;
-       } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
-          auto args1_1 = std::vector<double>{e_1_pt,e_1_signed_eta};
-          auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_iso};
-          auto args2_1 = std::vector<double>{e_2_pt,e_2_signed_eta};
-          auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_iso};
-          if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
-          e_1_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args1_1.data()); 
-          e_2_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args2_1.data()); 
-          if(e_1_iso>0.1) e_1_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args1_1.data());
-          if(e_2_iso>0.1) e_2_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args2_1.data());
-          } else {
-            e_1_idiso = fns_["e_id_ratio"]->eval(args1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args1_2.data()) ;
-            e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ;
-          }
-       } else if (mc_==mc::mc2017 || mc_ == mc::mc2018){
-         e_1_iso = PF03EAIsolationVal(ele_1, eventInfo->jet_rho());
-         e_2_iso = PF03EAIsolationVal(ele_2, eventInfo->jet_rho());
-         double e_1_sceta = ele_1->sc_eta();   
-         double e_2_sceta = ele_2->sc_eta();
-         auto args1_1 = std::vector<double>{e_1_pt,e_1_sceta};
-         auto args2_1 = std::vector<double>{e_2_pt,e_2_sceta};  
-         auto args1_2 = std::vector<double>{e_1_pt,e_1_sceta,e_1_iso};
-         auto args2_2 = std::vector<double>{e_2_pt,e_2_sceta,e_2_iso};
+             e_1_idiso = e_1_idiso_data/e_1_idiso_mc;
+             e_2_idiso = e_2_idiso_data/e_2_idiso_mc;
+         } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+            auto args1_1 = std::vector<double>{e_1_pt,e_1_signed_eta};
+            auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_iso};
+            auto args2_1 = std::vector<double>{e_2_pt,e_2_signed_eta};
+            auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_iso};
+            if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+            e_1_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args1_1.data()); 
+            e_2_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args2_1.data()); 
+            if(e_1_iso>0.1) e_1_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args1_1.data());
+            if(e_2_iso>0.1) e_2_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args2_1.data());
+            } else {
+              e_1_idiso = fns_["e_id_ratio"]->eval(args1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args1_2.data()) ;
+              e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) * fns_["e_iso_binned_ratio"]->eval(args2_2.data()) ;
+            }
+         } else if (mc_==mc::mc2017 || mc_ == mc::mc2018){
+           e_1_iso = PF03EAIsolationVal(ele_1, eventInfo->jet_rho());
+           e_2_iso = PF03EAIsolationVal(ele_2, eventInfo->jet_rho());
+           double e_1_sceta = ele_1->sc_eta();   
+           double e_2_sceta = ele_2->sc_eta();
+           auto args1_1 = std::vector<double>{e_1_pt,e_1_sceta};
+           auto args2_1 = std::vector<double>{e_2_pt,e_2_sceta};  
+           auto args1_2 = std::vector<double>{e_1_pt,e_1_sceta,e_1_iso};
+           auto args2_2 = std::vector<double>{e_2_pt,e_2_sceta,e_2_iso};
 
-         if(is_embedded_){
-           e_1_idiso = fns_["e_id_embed_ratio"]->eval(args1_1.data()) 
-               * fns_["e_iso_binned_embed_ratio"]->eval(args1_2.data());
-           e_2_idiso = fns_["e_id_embed_ratio"]->eval(args2_1.data()) 
-               * fns_["e_iso_binned_embed_ratio"]->eval(args2_2.data());
-         } else {
-           e_1_idiso = fns_["e_id_ratio"]->eval(args1_1.data()) 
-               * fns_["e_iso_binned_ratio"]->eval(args1_2.data());
-           e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) 
-               * fns_["e_iso_binned_ratio"]->eval(args2_2.data());
-         }
-       } 
+           if(is_embedded_){
+             e_1_idiso = fns_["e_id_embed_ratio"]->eval(args1_1.data()) 
+                 * fns_["e_iso_binned_embed_ratio"]->eval(args1_2.data());
+             e_2_idiso = fns_["e_id_embed_ratio"]->eval(args2_1.data()) 
+                 * fns_["e_iso_binned_embed_ratio"]->eval(args2_2.data());
+           } else {
+             e_1_idiso = fns_["e_id_ratio"]->eval(args1_1.data()) 
+                 * fns_["e_iso_binned_ratio"]->eval(args1_2.data());
+             e_2_idiso = fns_["e_id_ratio"]->eval(args2_1.data()) 
+                 * fns_["e_iso_binned_ratio"]->eval(args2_2.data());
+           }
+         } 
 
-       weight *= (e_1_idiso * e_2_idiso);
-       event->Add("idisoweight_1", e_1_idiso);
-       event->Add("idisoweight_2", e_2_idiso);
-       event->Add("isoweight_1", double(1.0));
-       event->Add("isoweight_2", double(1.0));
-      }
+         weight *= (e_1_idiso * e_2_idiso);
+         event->Add("idisoweight_1", e_1_idiso);
+         event->Add("idisoweight_2", e_2_idiso);
+         event->Add("isoweight_1", double(1.0));
+         event->Add("isoweight_2", double(1.0));
+        }
    }
    eventInfo->set_weight("lepton", weight);
 
