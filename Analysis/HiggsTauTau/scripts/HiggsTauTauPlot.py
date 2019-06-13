@@ -2284,7 +2284,8 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
             num_node,
             den_node))
         if method == 9:
-          osss = '(3.68434 -1.8015*dR + 0.488955*dR*dR -0.0489159*dR*dR*dR)'
+          #osss = '(3.68434 -1.8015*dR + 0.488955*dR*dR -0.0489159*dR*dR*dR)' # this line to be inclusive by decay mode
+          osss = '((tau_decay_mode_1<2&&tau_decay_mode_2<2)*(3.555-1.689*dR+0.4741*dR*dR-0.04973*dR*dR*dR) + ((tau_decay_mode_1<2&&tau_decay_mode_2>9)||(tau_decay_mode_1>9&&tau_decay_mode_2<2))*(2.851-1.008*dR+0.2374*dR*dR-0.02331*dR*dR*dR) + (tau_decay_mode_1>9&&tau_decay_mode_2>9)*(3.391-2.21*dR+0.7623*dR*dR-0.08775*dR*dR*dR))'
           weight = wt
           if get_os:
               weight = wt+'*'+osss
