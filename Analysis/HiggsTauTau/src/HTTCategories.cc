@@ -815,6 +815,7 @@ namespace ic {
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
       outtree_->Branch("dijetpt",           &dijetpt_);
+      outtree_->Branch("centrality",        &centrality_);
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         outtree_->Branch("sjdphi",             &sjdphi_);
         outtree_->Branch("D0", &D0_);
@@ -4350,6 +4351,10 @@ namespace ic {
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
+      // add centrality variable to test - could be useful for VBF vs ggH
+      //zfeld = float(getattr(tree,"eta_h")) - (float(getattr(tree,"jeta_1"))+float(getattr(tree,"jeta_2")))/
+      float zfeld = eta_h_ - (lowpt_jets[0]->eta()+lowpt_jets[1]->eta())/2;
+      centrality_ = std::exp(-4*std::pow((zfeld/std::fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta())),2));
 
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
@@ -4427,6 +4432,7 @@ namespace ic {
       jdeta_ = -9999;
       jdphi_ = -9999;
       dijetpt_ = -9999;
+      centrality_ = -9999;
       jrawf_2_ = -9999;
       jptunc_2_ = -9999;
       jmva_2_ = -9999;

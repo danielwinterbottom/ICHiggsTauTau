@@ -63,20 +63,27 @@ def main(args):
         
     extras = ""
     if args.channel == "tt":
+
         plot_vars = [
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            "dR(30,0.5,5.0)"
+            # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Vienna_fix_check1_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm3_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm4_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm5_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm6_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm7_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,{})".format(2*np.pi),
+            # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,{})".format(2*np.pi),
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
             # "aco_angle_1(14,0,{})".format(2*np.pi),
+            # "aco_angle_2(14,0,{})".format(2*np.pi),
+            # "aco_angle_3(14,0,{})".format(2*np.pi),
+            # "aco_angle_4(14,0,{})".format(2*np.pi),
             # "m_1(20,0,2)",
             # "iso_1(20,0,1)",
             # "deep_iso_1(40,-1,1)",
@@ -152,20 +159,25 @@ def main(args):
             # "jeta_1(12,-4.7,4.7)",
             # "jeta_2(12,-4.7,4.7)",
             # "jpt_1(17,30,200)","jpt_2(17,40,200)",
-
+            # "mvadm_rho_1(20,0.,1.)",
             ]
+        # for ind in ["1","2"]:
+        #     for catg in ["rho","a1","pi","other"]:
+        #         plot_vars.append("mvadm_{}_{}(20,0.,1.)".format(catg,ind))
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
         extras += " --split_sm_scheme  "
-        extras += " --add_wt wt_prefire "
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1)" '
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1 && mvadm_rho_2>mvadm_a1_2 && mvadm_rho_2>mvadm_pi_2 && mvadm_rho_2>mvadm_other_2) " '
+        # extras += " --add_wt wt_prefire "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        extras += '  --ff_ss_closure  '
+        # extras += '  --ff_ss_closure  '
         # extras += " --threePads "
         # extras += " --extra_pad 0.55 "
 
@@ -180,11 +192,12 @@ def main(args):
             # "IC_Mar26_fix2_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
             # "IC_Apr02_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
 
-            # "pt_1(20,20,120)","pt_2(14,30,100)",
+            "pt_1(20,20,120)",
+            # "pt_2(14,30,100)",
             # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)",
             # "m_sv(30,0,300)",
-            "aco_angle_mod(14,0,{})".format(2*np.pi),
+            # "aco_angle_mod(14,0,{})".format(2*np.pi),
 
             # "m_1(20,0,2)",
             # "deepTauVsJets_iso_2(20,0,1)",
@@ -227,9 +240,10 @@ def main(args):
             ]
         method = "12" if args.ff == False else "17"
         extras += ' --set_alias "sel:mt_1<50" '
-        extras += ' --ff_ss_closure '
+        # extras += ' --ff_ss_closure '
         # extras += ' --set_alias "inclusive:n_bjets==0" '
         # extras += ' --ratio_range 0.3,1.7 '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
         # extras += ' --set_alias "inclusive:(mjj>500 && n_jets>1 && n_bjets==0)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --set_alias "inclusive:(wt<10) " '
@@ -427,7 +441,7 @@ def main(args):
             run_command(' python scripts/HiggsTauTauPlot.py '
                     + ' --cfg {} --ratio '.format(config)
                     + ' --var "{}" --channel {} '.format(var,args.channel)
-                    + ' --method {}  {} {} {} '.format(method,extras,custom_extras,pad_extra))
+                    + ' --method {} --norm_bins {} {} {} '.format(method,extras,custom_extras,pad_extra))
 
 if __name__ == "__main__":
     args = parse_arguments()

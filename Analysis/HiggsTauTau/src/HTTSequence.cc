@@ -2619,7 +2619,7 @@ bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_nam
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
-if (strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17) {
+if (strategy_type == strategy::cpdecays16) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
       .set_maketrees(false)
