@@ -413,6 +413,7 @@ class HTTCategories : public ModuleBase {
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
   float dijetpt_;
+  float centrality_;
   float jptraw_1_; 
   float jrawf_1_;
   float jptraw_2_; 

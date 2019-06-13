@@ -85,7 +85,7 @@ def SetAxisTitles(plot, channel):
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events / '+bin_width, 'dN/d#phi^{*}_{CP}']
+  titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
@@ -178,7 +178,7 @@ def SetAxisTitles2D(plot, channel):
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events', 'dN/d#phi^{*}_{CP}','']
+  titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events', 'dN/d#phi#mbox{*}_{CP}','']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
@@ -3044,8 +3044,8 @@ def CompareHists(hists=[],
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    # DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    # DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()

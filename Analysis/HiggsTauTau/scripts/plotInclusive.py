@@ -63,11 +63,15 @@ def main(args):
         
     extras = ""
     if args.channel == "tt":
+
         plot_vars = [
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            "dR(30,0.5,5.0)"
+            # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Vienna_fix_check1_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm3_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm4_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
@@ -77,6 +81,9 @@ def main(args):
             # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,{})".format(2*np.pi),
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
             # "aco_angle_1(14,0,{})".format(2*np.pi),
+            # "aco_angle_2(14,0,{})".format(2*np.pi),
+            # "aco_angle_3(14,0,{})".format(2*np.pi),
+            # "aco_angle_4(14,0,{})".format(2*np.pi),
             # "m_1(20,0,2)",
             # "iso_1(20,0,1)",
             # "deep_iso_1(40,-1,1)",
@@ -152,21 +159,27 @@ def main(args):
             # "jeta_1(12,-4.7,4.7)",
             # "jeta_2(12,-4.7,4.7)",
             # "jpt_1(17,30,200)","jpt_2(17,40,200)",
-
+            # "mvadm_rho_1(20,0.,1.)",
             ]
+        # for ind in ["1","2"]:
+        #     for catg in ["rho","a1","pi","other"]:
+        #         plot_vars.append("mvadm_{}_{}(20,0.,1.)".format(catg,ind))
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --cat {}_highMjj ".format(args.cat)
         extras += " --split_sm_scheme  "
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1)" '
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1 && mvadm_rho_2>mvadm_a1_2 && mvadm_rho_2>mvadm_pi_2 && mvadm_rho_2>mvadm_other_2) " '
+        # extras += " --add_wt wt_prefire "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        extras += '  --ff_ss_closure  '
+        # extras += '  --ff_ss_closure  '
         # extras += " --threePads "
-        extras += " --extra_pad 0.55 "
+        # extras += " --extra_pad 0.55 "
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
@@ -179,7 +192,8 @@ def main(args):
             # "IC_Mar26_fix2_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
             # "IC_Apr02_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
 
-            # "pt_1(20,20,120)","pt_2(14,30,100)",
+            "pt_1(20,20,120)",
+            # "pt_2(14,30,100)",
             # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)",
             # "m_sv(30,0,300)",
@@ -229,15 +243,16 @@ def main(args):
         # extras += ' --ff_ss_closure '
         # extras += ' --set_alias "inclusive:n_bjets==0" '
         # extras += ' --ratio_range 0.3,1.7 '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
         # extras += ' --set_alias "inclusive:(mjj>500 && n_jets>1 && n_bjets==0)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --set_alias "inclusive:(wt<10) " '
 
-        # extras += " --cat {} ".format(args.cat)
+        extras += " --cat {} ".format(args.cat)
         # extras += " --extra_pad 0.55 "
         # extras += " --cat {}_highMjj ".format(args.cat)
         # extras += ' --ratio_range 0,2 '
-        # extras += " --split_sm_scheme "
+        extras += " --split_sm_scheme "
         # extras += ' --add_wt single_l_sf '
 
     elif args.channel == "em":
@@ -306,7 +321,7 @@ def main(args):
             # "pt_2(18,10,100)",
             # "jpt_1(17,30,200)",
             # "n_jets(7,0,7)",
-            "jeta_1(12,-4.7,4.7)",
+            # "jeta_1(12,-4.7,4.7)",
             # "m_sv(20,0,200)",
 
             # "mjj[0,50,100,150,200,250,300,400,500,600,700,800,1000]",
@@ -320,6 +335,7 @@ def main(args):
             # "pt_vis(30,0,300)",
 
             # "jrawf_1(20,0,2)",
+            "jrawf_1*jpt_1(17,30,200)",
             # "jrawf_2(20,0,2)",
             # "jarea_1(8,0.3,0.7)",
             # "jchm_1(20,0,20)",
@@ -335,7 +351,7 @@ def main(args):
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && (fabs(jeta_1)<2.65 || fabs(jeta_1)>3.139 || jpt_1>50) && (fabs(jeta_2)<2.65 || fabs(jeta_2)>3.139 || jpt_2>50))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && jpt_1>30 && (fabs(jeta_1)<3.0 && fabs(jeta_1)>2.75))" '
-        extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets>=1)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2)" '
@@ -403,7 +419,7 @@ def main(args):
     elif args.era == "2017":
         config = " scripts/plot_cpdecays_2017.cfg "
     elif args.era == "2016":
-        config = " scripts/plot_cpdecays_2016_copy.cfg "
+        config = " scripts/plot_cpdecays_2016.cfg "
     elif args.era == "2016_sm":
         config = " scripts/new_plot_sm_2016_NewPlotting.cfg "
 
@@ -414,10 +430,10 @@ def main(args):
         if "sjdphi" in var or "eta" in var or "aco" in var and not "(" in var:
             pad_extra = " --extra_pad 0.55 "
 
-        # if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
-        #     custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
-        # elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
-        #     custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+        if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
+            custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
+        elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
+            custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
 
         if args.transferOnly:
             run_command('rsync output/{}_inclusive_zmm_2017.pdf ~/public_html/CP/201904_Apr/01_2017DataZMM/'.format(var.split("(")[0]))
