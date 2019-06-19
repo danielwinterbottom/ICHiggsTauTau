@@ -550,6 +550,11 @@ class HTTCategories : public ModuleBase {
   float mvadm_other_2_;
   float mvadm_3pipi0_2_;
 
+  float mvadm_max_score_1_;
+  float mvadm_max_index_1_;
+  float mvadm_max_score_2_;
+  float mvadm_max_index_2_;
+
   float mvadm_pi_new_1_; 
   float mvadm_rho_new_1_;
   float mvadm_a1_new_1_; 

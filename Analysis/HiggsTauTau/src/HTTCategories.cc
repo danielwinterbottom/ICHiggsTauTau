@@ -863,6 +863,11 @@ namespace ic {
       outtree_->Branch("mvadm_pi_2", &mvadm_pi_2_);
       outtree_->Branch("mvadm_3pipi0_2", &mvadm_3pipi0_2_);
 
+      outtree_->Branch("mvadm_max_score_1", &mvadm_max_score_1_);
+      outtree_->Branch("mvadm_max_index_1", &mvadm_max_index_1_);
+      outtree_->Branch("mvadm_max_score_2", &mvadm_max_score_2_);
+      outtree_->Branch("mvadm_max_index_2", &mvadm_max_index_2_);
+
       outtree_->Branch("mvadm_pi_new_1", &mvadm_pi_new_1_);
       outtree_->Branch("mvadm_rho_new_1", &mvadm_rho_new_1_);
       outtree_->Branch("mvadm_a1_new_1", &mvadm_a1_new_1_);
@@ -5033,6 +5038,11 @@ namespace ic {
     mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 0.0;
     mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 0.0;
     mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
+
+    mvadm_max_score_1_ = event->Exists("mvadm_max_score_1") ? event->Get<float>("mvadm_max_score_1") : 0.0;
+    mvadm_max_index_1_ = event->Exists("mvadm_max_index_1") ? event->Get<float>("mvadm_max_index_1") : 0.0;
+    mvadm_max_score_2_ = event->Exists("mvadm_max_score_2") ? event->Get<float>("mvadm_max_score_2") : 0.0;
+    mvadm_max_index_2_ = event->Exists("mvadm_max_index_2") ? event->Get<float>("mvadm_max_index_2") : 0.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
