@@ -50,18 +50,30 @@ def main(args):
     # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Mar14_mixed_reco/GluGluToHToTauTau_M125_nospinner-2017_mt_2017.root", "READ")
     # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Mar14_mixed_reco/VBFHToTauTau_M125_nospinner-2017_tt_2017.root", "READ")
 
-    # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/GluGluToHToTauTau_M-125-nospinner-filter_tt_2016.root", "READ")
-    file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/VBFHToTauTau_M-125-nospinner-filter_tt_2016.root", "READ")
-    # file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/GluGluToHToTauTau_M-125_tt_2016.root", "READ")
-    file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/VBFHToTauTau_M-125_tt_2016.root", "READ")
+    file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/GluGluToHToTauTau_M-125-nospinner-filter_tt_2016.root", "READ")
+    # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/VBFHToTauTau_M-125-nospinner-filter_tt_2016.root", "READ")
+    file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/GluGluToHToTauTau_M-125_tt_2016.root", "READ")
+    # file2_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun07_2016/VBFHToTauTau_M-125_tt_2016.root", "READ")
 
-    # tree_ = file_.Get("gen_ntuple")
+    # file1_ = ROOT.TFile.Open("/vols/cms/akd116/Offline/output/SM/2019/Jun17_2016_gen/GluGluToHToTauTau_M-125-nospinner-filter_tt_2016.root", "READ")
+
+    # tree1_ = file1_.Get("gen_ntuple")
     tree1_ = file1_.Get("ntuple")
     # tree2_ = file2_.Get("gen_ntuple")
     tree2_ = file2_.Get("ntuple")
 
-    sel_sm = ROOT.TCut('wt*wt_cp_sm*(tau_decay_mode_1==1 && tau_decay_mode_2==1 && pt_1>40 && pt_2>40)')
-    sel_ps = ROOT.TCut('wt*wt_cp_ps*(tau_decay_mode_1==1 && tau_decay_mode_2==1 && pt_1>40 && pt_2>40)')
+    sel_sm_rho = ROOT.TCut('wt*wt_cp_sm*(tau_decay_mode_1==1 && tau_decay_mode_2==1 && pt_1>40 && pt_2>40)')
+    sel_ps_rho = ROOT.TCut('wt*wt_cp_ps*(tau_decay_mode_1==1 && tau_decay_mode_2==1 && pt_1>40 && pt_2>40)')
+
+    sel_sm_a1rho = ROOT.TCut('wt*wt_cp_sm*(((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))  && pt_2>40)')
+    sel_ps_a1rho = ROOT.TCut('wt*wt_cp_ps*(((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))  && pt_2>40)')
+
+    sel_sm_mixed = ROOT.TCut('wt*wt_cp_sm*(cp_channel==2 && pt_2>40)')
+    sel_ps_mixed = ROOT.TCut('wt*wt_cp_ps*(cp_channel==2 && pt_2>40)')
+
+    sel_sm_mixedlep = ROOT.TCut('wt*wt_cp_sm*(cp_channel==5 && pt_1>20 && pt_2>40)')
+    sel_ps_mixedlep = ROOT.TCut('wt*wt_cp_ps*(cp_channel==5 && pt_1>20 && pt_2>40)')
+
     sel_mm = ROOT.TCut('wt*wt_cp_mm*(tau_decay_mode_1==1 && tau_decay_mode_2==1 && pt_1>40 && pt_2>40)')
 
     # if args.sign == "pos":
@@ -95,15 +107,51 @@ def main(args):
 
     hists = []
     legends = []
+
     h1 = ROOT.TH1D("h1","h1",20,0,2*np.pi)
-    tree1_.Draw("aco_angle_mod>>h1", sel_sm)
+    tree1_.Draw("aco_angle_mod>>h1", sel_sm_rho)
     hists.append(h1)
-    legends.append("VBF SM (tauspinner)")
+    legends.append("ggH SM Tauspinner")
 
     h2 = ROOT.TH1D("h2","h2",20,0,2*np.pi)
-    tree1_.Draw("aco_angle_mod>>h2", sel_sm)
+    tree1_.Draw("aco_angle_mod>>h2", sel_sm_rho)
     hists.append(h2)
-    legends.append("VBF SM (Pythia)")
+    legends.append("ggH SM PYTHIA")
+
+    # h4 = ROOT.TH1D("h4","h4",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_mod>>h4", sel_ps_rho)
+    # hists.append(h4)
+    # legends.append("ggH PS #rho#rho")
+
+    # h1 = ROOT.TH1D("h1","h1",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h1", sel_sm_a1rho)
+    # hists.append(h1)
+    # legends.append("ggH SM a_{1}#rho")
+
+    # h2 = ROOT.TH1D("h2","h2",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h2", sel_ps_a1rho)
+    # hists.append(h2)
+    # legends.append("ggH PS a_{1}#rho")
+
+    # h1 = ROOT.TH1D("h1","h1",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h1", sel_sm_mixed)
+    # hists.append(h1)
+    # legends.append("ggH SM #pi#rho")
+
+    # h2 = ROOT.TH1D("h2","h2",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h2", sel_ps_mixed)
+    # hists.append(h2)
+    # legends.append("ggH PS #pi#rho")
+
+    # h1 = ROOT.TH1D("h1","h1",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h1", sel_sm_mixedlep)
+    # hists.append(h1)
+    # legends.append("ggH SM l#rho")
+
+    # h2 = ROOT.TH1D("h2","h2",20,0,2*np.pi)
+    # tree1_.Draw("aco_angle_1>>h2", sel_ps_mixedlep)
+    # hists.append(h2)
+    # legends.append("ggH PS l#rho")
 
     # h2 = ROOT.TH1D("h2","h2",20,0,2*np.pi)
     # tree1_.Draw("aco_angle_mod>>h2", sel_ps)
@@ -122,7 +170,7 @@ def main(args):
 
     # plotname = "ggH17_reco_mixed_CP_{}_lep_anglemod".format(args.channel)
     # plotname = "ggH17_reco_mixed_CP{}_{}_lep_anglemod".format(args.sign, args.channel)
-    plotname = "VBF16_reco_CP_{}_compareTauspinnerPythia".format(args.channel)
+    plotname = "ggH16_reco_CP_{}_tauspinnercheck".format(args.channel)
     # if args.checkSpinner:
     #     plotname = "ggH_gen_CP{}_tauspinner_check".format(args.sign)
     #     h2 = ROOT.TH1D("h2","h2",10,0,6.3)
@@ -246,6 +294,7 @@ def main(args):
             legends,
             ratio=True,
             # ratio_range="0.4,1.6",
+            ratio_range="0,2",
             extra_pad=0.3,
             norm_hists=True,
             norm_bins=False,
@@ -255,8 +304,8 @@ def main(args):
             plot_name=plotname,
             # plot_name="VBFH_gen_CP{}".format(args.sign),
             custom_y_range=True,
-            y_axis_min=0.02,
-            y_axis_max=0.095,
+            y_axis_min=0.01,
+            y_axis_max=0.12,
             )
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@
 #include <boost/functional/hash.hpp>
 #include "TVector3.h"
 
-
 namespace ic {
 
   HTTPrint::HTTPrint(std::string const& name) : ModuleBase(name) {
@@ -48,7 +47,7 @@ namespace ic {
 
     if (events_.find(eventInfo->event()) != events_.end()) {
       std::vector<Muon*> const& muons = event->GetPtrVec<Muon>(muon_label_);
-      std::cout << "-----------------------------------------" << std::endl;
+      std::cout << "\n -----------------------------------------" << std::endl;
     std::cout << "event: " <<  eventInfo->event() << " lumi: " << eventInfo->lumi_block() << " run: " << eventInfo->run() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
@@ -233,24 +232,37 @@ namespace ic {
         std::cout << i << "  " << particles[i]->status() << "  " << particles[i]->pdgid() << "  " << particles[i]->vector() << std::endl;
       }
     }
+    bool inNoiseEE = false; //use for 2017 jets
     for (unsigned i = 0; i < jets.size(); ++i) {
       std::cout << "Jet " << i << ": " << jets[i]->vector() << std::endl;
       std::cout << "-pileup id mva: " << jets[i]->pu_id_mva_value()  << std::endl;
+      if (std::fabs(jets[i]->eta())<3.139 && std::fabs(jets[i]->eta())>2.65) 
+        inNoiseEE = true;
+      std::cout << "Is jet in noise EE region (2017): " << inNoiseEE << std::endl;
+      std::cout << "-pileup id loose (2017): " << PileupJetID(jets[i], 4, false, true)  << std::endl;
+      std::cout << "-pileup id medium (2017): " << PileupJetID(jets[i], 4, false, false)  << std::endl;
       std::cout << "-pileup id loose (2012): " << PUJetID(jets[i], true)  << std::endl;
       std::cout << "-pileup id loose (2011): " << PUJetID(jets[i], false)  << std::endl;
+      std::cout << "-PF ID 2017: " << PFJetID2017(jets[i]) << std::endl;
       std::cout << "-PF ID: " << PFJetID(jets[i]) << std::endl;
       std::cout << "-beta: " << jets[i]->beta() << std::endl;
       std::cout << "-beta_max: " << jets[i]->beta_max() << std::endl;
       double charged_frac = (jets[i]->charged_em_energy() + jets[i]->charged_had_energy()) / jets[i]->uncorrected_energy();
       std::cout << "-charged_frac: " << charged_frac << std::endl;
       std::cout << "-Uncorrected energy/energy: " << jets[i]->uncorrected_energy()/jets[i]->energy() << std::endl;
-      std::cout << "-Uncorrected energy: " << jets[i]->uncorrected_energy() << std::endl;
+      std::cout << "-Uncorrected p4: (" 
+          << jets[i]->pt()*jets[i]->uncorrected_energy()/jets[i]->energy() 
+          << ", " << jets[i]->eta() << ", " << jets[i]->phi() << ", "
+          << jets[i]->uncorrected_energy() << ")" << std::endl;
       std::cout << "-Jet area: " << jets[i]->jet_area() << std::endl;
       std::cout << "-Uncorrected: " << jets[i]->GetJecFactor("Uncorrected") << std::endl;
       std::cout << "-L1FastJet: " << jets[i]->GetJecFactor("L1FastJet") << std::endl;
       std::cout << "-L2Relative: " << jets[i]->GetJecFactor("L2Relative") << std::endl;
       std::cout << "-L3Absolute: " << jets[i]->GetJecFactor("L3Absolute") << std::endl;
       std::cout << "-L2L3Residual: " << jets[i]->GetJecFactor("L2L3Residual") << std::endl;
+      float deepcsv_btag = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") + 
+          jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
+      std::cout << "-deepCSV: " << deepcsv_btag << std::endl;
       std::cout << "-CSV: " << jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags") << std::endl;
 
       std::vector<PFJet*>::const_iterator it = std::find(matched_jets.begin(),matched_jets.end(), jets[i]);
@@ -261,6 +273,7 @@ namespace ic {
         }
         std::cout << "-has matched genjet: " << matched_genjet->vector() << std::endl;
       }
+      std::cout << "\n";
     }
     if (eventInfo->is_data()) {
       auto const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");

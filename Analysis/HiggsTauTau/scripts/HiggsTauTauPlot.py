@@ -798,33 +798,54 @@ if options.channel == 'tt':
 
     # BDT multiclass categories 
     # old is Feb13_fix1
-    mva_ggh                = '(IC_Jun13_max_index==0)'
-    mva_jetFakes           = '(IC_Jun13_max_index==1)'
-    mva_zttEmbed           = '(IC_Jun13_max_index==2)'
+    # mva_ggh                = '(IC_Jun13_dR_tauspinner_split_max_index==0)'
+    # mva_jetFakes           = '(IC_Jun13_dR_tauspinner_split_max_index==1)'
+    mva_qqh                = '(IC_Jun13_dR_tauspinner_split_max_index==2)'
+    # mva_zttEmbed           = '(IC_Jun13_dR_tauspinner_split_max_index==3)'
+
+    mva_ggh                = '(IC_Feb13_fix1_max_index==0)'
+    mva_jetFakes           = '(IC_Feb13_fix1_max_index==1)'
+    mva_zttEmbed           = '(IC_Feb13_fix1_max_index==2)'
 
     cats['higgs_rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['ggh_rho']        = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    cats['qqh_rho']        = '({} && {})'.format(mva_qqh, cats["inclusive_rho"])
     cats['zttEmbed_rho']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
     cats['jetFakes_rho']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
 
     cats['higgs_a1rho']    = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
+    cats['ggh_a1rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
+    cats['qqh_a1rho']      = '({} && {})'.format(mva_qqh, cats["inclusive_a1rho"])
     cats['zttEmbed_a1rho'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"])
     cats['jetFakes_a1rho'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"])
 
     cats['higgs_other']    = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['ggh_other']      = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    cats['qqh_other']      = '({} && !({}||{}))'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
     cats['zttEmbed_other'] = '({} && !({}||{}))'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
     cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
     cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
 
     cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaa1rho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['jetFakes_mvaa1rho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
 
     cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}))'\
             .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
+                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
+            .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
+                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    cats['qqh_mvaother']    = '({} && !({}||{}||{}||{}))'\
+            .format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
                     cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaother'] = '({} && !({}||{}||{}||{}))'\
             .format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"], 

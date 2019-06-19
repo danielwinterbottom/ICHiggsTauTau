@@ -389,9 +389,9 @@ if SCHEME == 'mlcpdecays16_new':
     VAR_ZTTEMBED_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
     VAR_JETFAKES_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-    VAR_H_TT_A1              = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_TT_A1       = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_TT_A1       = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_H_TT_A1           = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
     VAR_H_OTHER_TT        = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZTTEMBED_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
@@ -404,7 +404,8 @@ if SCHEME == 'mlcpdecays16_new':
     VAR_H_IDG0p5_TT       = VAR_H_TT
 
     addString_LT = ' --set_alias="sel:mt_1<50" --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
-    addString_TT = ' --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
+    # addString_TT = ' --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
+    addString_TT = ' --add_wt=wt_prefire '
 
     scheme_em = []
     scheme_et = [
@@ -434,29 +435,29 @@ if SCHEME == 'mlcpdecays16_new':
         ("17", "jetFakes_other",        "jetFakes_other",       VAR_JETFAKES_OTHER_MT, ' {} '.format(addString_LT)),
     ]
     scheme_tt = [
-        # ("17", "higgs_rho"   ,           "higgs_rho"  ,            VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "zttEmbed_rho",           "zttEmbed_rho",           VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "jetFakes_rho",           "jetFakes_rho",           VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("8", "higgs_rho"   ,           "higgs_rho"  ,            VAR_H_TT,                    ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_rho",           "zttEmbed_rho",           VAR_ZTTEMBED_TT,             ' {} '.format(addString_TT)),
+        ("8", "jetFakes_rho",           "jetFakes_rho",           VAR_JETFAKES_TT,             ' {} '.format(addString_TT)),
 
-        # ("17", "higgs_a1rho"   ,           "higgs_a1rho"  ,            VAR_H_TT_A1,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "zttEmbed_a1rho",           "zttEmbed_a1rho",           VAR_ZTTEMBED_TT_A1,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "jetFakes_a1rho",           "jetFakes_a1rho",           VAR_JETFAKES_TT_A1,       ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("8", "higgs_a1rho"   ,           "higgs_a1rho"  ,            VAR_H_TT_A1,             ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_a1rho",           "zttEmbed_a1rho",           VAR_ZTTEMBED_TT_A1,      ' {} '.format(addString_TT)),
+        ("8", "jetFakes_a1rho",           "jetFakes_a1rho",           VAR_JETFAKES_TT_A1,      ' {} '.format(addString_TT)),
 
-        # ("17", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("8", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,                      ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT,               ' {} '.format(addString_TT)),
+        ("8", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT,               ' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvarho"   ,           "higgs_mvarho"  ,            VAR_H_TT_MVADM,        ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_mvarho",           "zttEmbed_mvarho",           VAR_ZTTEMBED_TT,       ' {} '.format(addString_TT)),
-        ("17", "jetFakes_mvarho",           "jetFakes_mvarho",           VAR_JETFAKES_TT,       ' {} '.format(addString_TT)),
+        ("8", "higgs_mvarho"   ,           "higgs_mvarho"  ,            VAR_H_TT_MVADM,        ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_mvarho",           "zttEmbed_mvarho",           VAR_ZTTEMBED_TT,       ' {} '.format(addString_TT)),
+        ("8", "jetFakes_mvarho",           "jetFakes_mvarho",           VAR_JETFAKES_TT,       ' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvaa1rho"   ,           "higgs_mvaa1rho"  ,            VAR_H_TT_A1,       ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_mvaa1rho",           "zttEmbed_mvaa1rho",           VAR_ZTTEMBED_TT_A1,' {} '.format(addString_TT)),
-        ("17", "jetFakes_mvaa1rho",           "jetFakes_mvaa1rho",           VAR_JETFAKES_TT_A1,' {} '.format(addString_TT)),
+        ("8", "higgs_mvaa1rho"   ,           "higgs_mvaa1rho"  ,            VAR_H_TT_A1,       ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_mvaa1rho",           "zttEmbed_mvaa1rho",           VAR_ZTTEMBED_TT_A1,' {} '.format(addString_TT)),
+        ("8", "jetFakes_mvaa1rho",           "jetFakes_mvaa1rho",           VAR_JETFAKES_TT_A1,' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvaother",        "higgs_mvaother"  ,      VAR_H_OTHER_TT,                ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_mvaother",     "zttEmbed_mvaother",     VAR_ZTTEMBED_OTHER_TT,         ' {} '.format(addString_TT)),
-        ("17", "jetFakes_mvaother",     "jetFakes_mvaother",     VAR_JETFAKES_OTHER_TT,         ' {} '.format(addString_TT)),
+        ("8", "higgs_mvaother",        "higgs_mvaother"  ,      VAR_H_OTHER_TT,                ' {} '.format(addString_TT)),
+        ("8", "zttEmbed_mvaother",     "zttEmbed_mvaother",     VAR_ZTTEMBED_OTHER_TT,         ' {} '.format(addString_TT)),
+        ("8", "jetFakes_mvaother",     "jetFakes_mvaother",     VAR_JETFAKES_OTHER_TT,         ' {} '.format(addString_TT)),
 
         # ("17", "higgs"   ,         "higgs"  ,            VAR_H_IDG0p5_TT, ' --ff_ss_closure '),
         # ("17", "zttEmbed",         "zttEmbed",           VAR_IDG0p5_TT,   ' --ff_ss_closure '),
@@ -510,52 +511,55 @@ if SCHEME == 'mlcpdecays16_nn_vienna':
     VAR_JETFAKES_OTHER_TT = "IC_Vienna_fix_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]"
     VAR_MISC_OTHER_TT     = "IC_Vienna_fix_max_score[0.0,0.3,0.4,0.5,0.6,0.7,0.8,1.0]"
 
+    addString_LT = ' --set_alias="sel:mt_1<50" --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
+    addString_TT = ' --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
+
     scheme_em = []
     scheme_et = []
     scheme_mt = []
-    scheme_tt = [
-        # ("17", "NN_sm_higgs_rho",          "higgs_rho",          VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_ggh_rho",            "ggh_rho",            VAR_GGH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_qqh_rho",            "qqh_rho",            VAR_QQH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_zttEmbed_rho",       "zttEmbed_rho",       VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_jetFakes_rho",       "jetFakes_rho",       VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_misc_rho",           "misc_rho",           VAR_MISC_TT,           ' --ff_ss_closure --add_wt=wt_prefire '),
+    # scheme_tt = [
+    #     ("17", "NN_sm_higgs_rho",          "higgs_rho",          VAR_H_TT,              ' {} '.format(addString_TT)),
+    #     ("17", "NN_sm_ggh_rho",            "ggh_rho",            VAR_GGH_TT,            ' {} '.format(addString_TT)),
+    #     ("17", "NN_sm_qqh_rho",            "qqh_rho",            VAR_QQH_TT,            ' {} '.format(addString_TT)),
+    #     ("17", "NN_sm_zttEmbed_rho",       "zttEmbed_rho",       VAR_ZTTEMBED_TT,       ' {} '.format(addString_TT)),
+    #     ("17", "NN_sm_jetFakes_rho",       "jetFakes_rho",       VAR_JETFAKES_TT,       ' {} '.format(addString_TT)),
+    #     ("17", "NN_sm_misc_rho",           "misc_rho",           VAR_MISC_TT,           ' {} '.format(addString_TT)),
 
-        # ("17", "NN_sm_higgs_a1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_ggh_a1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_qqh_a1rho",            "qqh_a1rho",            VAR_QQH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_zttEmbed_a1rho",       "zttEmbed_a1rho",       VAR_ZTT_A1RHOEMBED_TT_A1RHO, ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_jetFakes_a1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_misc_a1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' --ff_ss_closure --add_wt=wt_prefire '),
+    #     ("17", "NN_sm_higgs_a1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' {} '),
+    #     ("17", "NN_sm_ggh_a1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' {} '),
+    #     ("17", "NN_sm_qqh_a1rho",            "qqh_a1rho",            VAR_QQH_TT_A1RHO,            ' {} '),
+    #     ("17", "NN_sm_zttEmbed_a1rho",       "zttEmbed_a1rho",       VAR_ZTT_A1RHOEMBED_TT_A1RHO, ' {} '),
+    #     ("17", "NN_sm_jetFakes_a1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' {} '),
+    #     ("17", "NN_sm_misc_a1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' {} '),
 
-        # ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        # ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' --ff_ss_closure --add_wt=wt_prefire '),
+    #     ("17", "NN_sm_higgs_other",    "higgs_other",    VAR_H_OTHER_TT,        ' {} '),
+    #     ("17", "NN_sm_ggh_other",      "ggh_other",      VAR_GGH_OTHER_TT,      ' {} '),
+    #     ("17", "NN_sm_qqh_other",      "qqh_other",      VAR_QQH_OTHER_TT,      ' {} '),
+    #     ("17", "NN_sm_zttEmbed_other", "zttEmbed_other", VAR_ZTTEMBED_OTHER_TT, ' {} '),
+    #     ("17", "NN_sm_jetFakes_other", "jetFakes_other", VAR_JETFAKES_OTHER_TT, ' {} '),
+    #     ("17", "NN_sm_misc_other",     "misc_other",     VAR_MISC_OTHER_TT,     ' {} '),
 
 
-        ("17", "NN_sm_higgs_mvarho",          "higgs_mvarho",          VAR_H_TT,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_mvarho",            "ggh_mvarho",            VAR_GGH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_mvarho",            "qqh_mvarho",            VAR_QQH_TT,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_mvarho",       "zttEmbed_mvarho",       VAR_ZTTEMBED_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_mvarho",       "jetFakes_mvarho",       VAR_JETFAKES_TT,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_mvarho",           "misc_mvarho",           VAR_MISC_TT,           ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_higgs_mvarho",          "higgs_mvarho",          VAR_H_TT,                     ' {} '.format(addString_TT)),
+        ("17", "NN_sm_ggh_mvarho",            "ggh_mvarho",            VAR_GGH_TT,                   ' {} '.format(addString_TT)),
+        ("17", "NN_sm_qqh_mvarho",            "qqh_mvarho",            VAR_QQH_TT,                   ' {} '.format(addString_TT)),
+        ("17", "NN_sm_zttEmbed_mvarho",       "zttEmbed_mvarho",       VAR_ZTTEMBED_TT,              ' {} '.format(addString_TT)),
+        ("17", "NN_sm_jetFakes_mvarho",       "jetFakes_mvarho",       VAR_JETFAKES_TT,              ' {} '.format(addString_TT)),
+        ("17", "NN_sm_misc_mvarho",           "misc_mvarho",           VAR_MISC_TT,                  ' {} '.format(addString_TT)),
 
-        ("17", "NN_sm_higgs_mvaa1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_mvaa1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_mvaa1rho",            "qqh_a1rho",            VAR_QQH_TT_A1RHO,            ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_mvaa1rho",       "zttEmbed_a1rho",       VAR_ZTT_A1RHOEMBED_TT_A1RHO, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_mvaa1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_mvaa1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_higgs_mvaa1rho",          "higgs_a1rho",          VAR_H_TT_A1RHO,              ' {} '.format(addString_TT)),
+        ("17", "NN_sm_ggh_mvaa1rho",            "ggh_a1rho",            VAR_GGH_TT_A1RHO,            ' {} '.format(addString_TT)),
+        ("17", "NN_sm_qqh_mvaa1rho",            "qqh_a1rho",            VAR_QQH_TT_A1RHO,            ' {} '.format(addString_TT)),
+        ("17", "NN_sm_zttEmbed_mvaa1rho",       "zttEmbed_a1rho",       VAR_ZTT_A1RHOEMBED_TT_A1RHO, ' {} '.format(addString_TT)),
+        ("17", "NN_sm_jetFakes_mvaa1rho",       "jetFakes_a1rho",       VAR_JETFAKES_TT_A1RHO,       ' {} '.format(addString_TT)),
+        ("17", "NN_sm_misc_mvaa1rho",           "misc_a1rho",           VAR_MISC_TT_A1RHO,           ' {} '.format(addString_TT)),
 
-        ("17", "NN_sm_higgs_mvaother",    "higgs_mvaother",    VAR_H_OTHER_TT,        ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_ggh_mvaother",      "ggh_mvaother",      VAR_GGH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_qqh_mvaother",      "qqh_mvaother",      VAR_QQH_OTHER_TT,      ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_zttEmbed_mvaother", "zttEmbed_mvaother", VAR_ZTTEMBED_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_jetFakes_mvaother", "jetFakes_mvaother", VAR_JETFAKES_OTHER_TT, ' --ff_ss_closure --add_wt=wt_prefire '),
-        ("17", "NN_sm_misc_mvaother",     "misc_mvaother",     VAR_MISC_OTHER_TT,     ' --ff_ss_closure --add_wt=wt_prefire '),
+        ("17", "NN_sm_higgs_mvaother",    "higgs_mvaother",    VAR_H_OTHER_TT,                       ' {} '.format(addString_TT)),
+        ("17", "NN_sm_ggh_mvaother",      "ggh_mvaother",      VAR_GGH_OTHER_TT,                     ' {} '.format(addString_TT)),
+        ("17", "NN_sm_qqh_mvaother",      "qqh_mvaother",      VAR_QQH_OTHER_TT,                     ' {} '.format(addString_TT)),
+        ("17", "NN_sm_zttEmbed_mvaother", "zttEmbed_mvaother", VAR_ZTTEMBED_OTHER_TT,                ' {} '.format(addString_TT)),
+        ("17", "NN_sm_jetFakes_mvaother", "jetFakes_mvaother", VAR_JETFAKES_OTHER_TT,                ' {} '.format(addString_TT)),
+        ("17", "NN_sm_misc_mvaother",     "misc_mvaother",     VAR_MISC_OTHER_TT,                    ' {} '.format(addString_TT)),
     ]
 
     bkg_schemes = {
@@ -598,10 +602,12 @@ if SCHEME == 'mlcpdecays16_nn':
     ANA = 'sm'
 
 if SCHEME == 'control_plots':
+    addString_TT = ' --do_ff_systs --add_wt=wt_prefire '
     scheme_mt=[]
     scheme_et=scheme_mt
     scheme_tt=[
-      ("17",   "inclusive",    "dR",  'dR(30,0.5,5.)', ' --do_ff_systs --add_wt=wt_prefire '),
+      # ("17", "inclusive", "dR", 'dR(30,0.5,5.)', '{}'.format(addString_TT)),
+      ("17", "inclusive", "n_jets", 'n_jets(10,0.,10.)', '{}'.format(addString_TT)),
 
     ]
     scheme_em=[]

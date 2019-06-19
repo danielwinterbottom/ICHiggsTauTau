@@ -18,7 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "cpdecays16",
@@ -64,7 +64,8 @@
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar14_mixed_reco/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Feb26_2016/",
-    "output_folder" : "output/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jun17_2016_gen/",
+    // "output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
