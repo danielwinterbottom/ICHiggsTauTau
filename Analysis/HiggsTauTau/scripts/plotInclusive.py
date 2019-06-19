@@ -65,12 +65,16 @@ def main(args):
     if args.channel == "tt":
 
         plot_vars = [
+            # "aco_angle_mod(14,0,{})".format(2*np.pi),
+
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "dR(30,0.5,5.0)"
             # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            # "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Jun13_dR_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Jun13_dR_tauspinner_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Jun13_dR_tauspinner_split_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_check1_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm3_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
@@ -79,7 +83,6 @@ def main(args):
             # "IC_keras_sm6_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm7_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,{})".format(2*np.pi),
-            # "aco_angle_mod(14,0,{})".format(2*np.pi),
             # "aco_angle_1(14,0,{})".format(2*np.pi),
             # "aco_angle_2(14,0,{})".format(2*np.pi),
             # "aco_angle_3(14,0,{})".format(2*np.pi),
@@ -123,6 +126,7 @@ def main(args):
             # "jpt_2(15,0,300)",
             # "mjj(15,0,1500)",
             # "n_jets(7,0,7)",
+            # "n_bjets(5,0,5)",
             # "jeta_1(12,-4.7,4.7)",
             # "jeta_2(12,-4.7,4.7)",
 
@@ -160,6 +164,15 @@ def main(args):
             # "jeta_2(12,-4.7,4.7)",
             # "jpt_1(17,30,200)","jpt_2(17,40,200)",
             # "mvadm_rho_1(20,0.,1.)",
+            
+            # NN plots
+            # "bpt_1(17,30,200)",
+            # "pt_vis(30,0,300)",
+            # "jdeta(25,0,5)",
+            # "dijetpt(30,40,500)",
+            # "met(20,0,200)",
+            # "m_sv(30,0,300)",
+            # "dR(30,0.5,5.0)"
             ]
         # for ind in ["1","2"]:
         #     for catg in ["rho","a1","pi","other"]:
@@ -177,7 +190,7 @@ def main(args):
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        # extras += '  --ff_ss_closure  '
+        extras += '  --ff_ss_closure  '
         # extras += " --threePads "
         # extras += " --extra_pad 0.55 "
 
@@ -192,9 +205,10 @@ def main(args):
             # "IC_Mar26_fix2_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
             # "IC_Apr02_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
 
+            # "dR(30,0.5,5.0)"
             "pt_1(20,20,120)",
-            # "pt_2(14,30,100)",
-            # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
+            "pt_2(14,30,100)",
+            "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)",
             # "m_sv(30,0,300)",
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
@@ -215,15 +229,16 @@ def main(args):
             # "sjdphi(12,-3.2,3.2)",
 
             # btag variables
-            # "n_bjets(5,0,5)",
-            # "bpt_1(17,30,200)",
-            # "bpt_2(17,30,200)",
-            # "beta_1(12,-4.7,4.7)","beta_2(12,-4.7,4.7)",
+            "n_bjets(5,0,5)",
+            "bpt_1(17,30,200)",
+            "bpt_2(17,30,200)",
+            "beta_1(12,-4.7,4.7)",
+            "beta_2(12,-4.7,4.7)",
             # "bcsv_1(10,0,1)",
             # "bcsv_2(10,0,1)",
 
-            # "m_vis(20,20,200)",
-            # "m_sv(30,0,300)",
+            "m_vis(20,20,200)",
+            "m_sv(30,0,300)",
 
             # "pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]",
             # "pt_tt(30,0,200)",
@@ -231,12 +246,14 @@ def main(args):
             # "m_vis[0,1000]",
             # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_binary_Oct11_score(20,0.,1.)",
-            # "met(20,0,200)",
-            # "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)",
-            # "mjj(16,0,800)",
-            # "sjdphi(12,-3.2,3.2)",
-            # "jpt_1(17,30,200)","jpt_2(17,40,200)",
-            # "n_jets(5,0,5)"
+            "met(20,0,200)",
+            "jeta_1(12,-4.7,4.7)",
+            "jeta_2(12,-4.7,4.7)",
+            "mjj(16,0,800)",
+            "sjdphi(12,-3.2,3.2)",
+            "jpt_1(17,30,200)",
+            "jpt_2(17,40,200)",
+            "n_jets(5,0,5)"
             ]
         method = "12" if args.ff == False else "17"
         extras += ' --set_alias "sel:mt_1<50" '
@@ -316,9 +333,9 @@ def main(args):
             # "jmva_1(40,-1,1)",
             # "jmva_2(40,-1,1)",
             # "pt_tt(40,0,400)",
-            # "m_vis(50,70,120)",
-            # "pt_1(18,10,100)",
-            # "pt_2(18,10,100)",
+            "m_vis(50,70,120)",
+            "pt_1(18,10,100)",
+            "pt_2(18,10,100)",
             # "jpt_1(17,30,200)",
             # "n_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
@@ -335,7 +352,7 @@ def main(args):
             # "pt_vis(30,0,300)",
 
             # "jrawf_1(20,0,2)",
-            "jrawf_1*jpt_1(17,30,200)",
+            # "jrawf_1*jpt_1(17,30,200)",
             # "jrawf_2(20,0,2)",
             # "jarea_1(8,0.3,0.7)",
             # "jchm_1(20,0,20)",
@@ -347,11 +364,12 @@ def main(args):
 
             ]
         # extras += ' --ratio_range 0,2.5 '
-        extras += ' --ratio_range 0,2 '
+        # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && (fabs(jeta_1)<2.65 || fabs(jeta_1)>3.139 || jpt_1>50) && (fabs(jeta_2)<2.65 || fabs(jeta_2)>3.139 || jpt_2>50))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && jpt_1>30 && (fabs(jeta_1)<3.0 && fabs(jeta_1)>2.75))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets>=1)" '
+        extras += ' --set_alias "inclusive:(m_vis>50)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2)" '
@@ -436,7 +454,8 @@ def main(args):
             custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
 
         if args.transferOnly:
-            run_command('rsync output/{}_inclusive_zmm_2017.pdf ~/public_html/CP/201904_Apr/01_2017DataZMM/'.format(var.split("(")[0]))
+            run_command('rsync output/{}_inclusive_{}_{}.pdf /home/hep/akd116/public_html/CP/201906_Jun/19_2017MT_mediumPUJID/'\
+                    .format(var.split("(")[0], args.channel, args.era,))
         else:
             run_command(' python scripts/HiggsTauTauPlot.py '
                     + ' --cfg {} --ratio '.format(config)

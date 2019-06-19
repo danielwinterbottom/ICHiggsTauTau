@@ -724,7 +724,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2017) 
       data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
   else if (era_type == era::data_2018)
-      data_json= "input/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt";
+      data_json= "input/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -1358,7 +1358,7 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  PileupJetID(jet, pu_id_training, false, true) ||
+      return  PileupJetID(jet, pu_id_training, false, false) ||
          fabs(jet->eta()) > 3.139 ||
          fabs(jet->eta()) < 2.65 ;
       /*return  jet->pt() > 50 ||
@@ -3038,7 +3038,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
@@ -3536,7 +3536,7 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );

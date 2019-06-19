@@ -1266,45 +1266,56 @@ namespace ic {
         // charge prong
         /* std::cout << "4 vector: " << prho_daughters[0].first->vector() << std::endl; */
         std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        //std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
         for (unsigned i = 0; i < vertex_vec.size(); i++) {
           reco_pvx_ = vertex_vec[0]->vx();
           reco_pvy_ = vertex_vec[0]->vy();
           reco_pvz_ = vertex_vec[0]->vz();
         }
-        //for (unsigned i = 0; i < gen_vertices.size(); i++) {
-        //  gen_pvx_ = gen_vertices[0]->vx();
-        //  gen_pvy_ = gen_vertices[0]->vy();
-        //  gen_pvz_ = gen_vertices[0]->vz();
-        //}
-
-        TVector3 IPtest = getIPVector(prho_daughters[0].second);
-
-        TLorentzVector ip_vec(
-                prho_daughters[0].first->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
-                prho_daughters[0].first->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
-                prho_daughters[0].first->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+        TLorentzVector pvtosv(
+                pi_daughters[0]->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
+                pi_daughters[0]->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
+                pi_daughters[0]->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
                 0.);
 
-
         lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
-        lvec2 = ip_vec;
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
         lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip, 0.);
     }
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
-        //cp_channel_=4;
-        TLorentzVector ip_vec(
+        cp_channel_=5;
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+        TLorentzVector pvtosv(
                 l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
                 l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
                 l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
                 0.);
 
         lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
-        lvec2 = ip_vec;
         lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
         lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
+        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip, 0.);
         cp_sign_1_ = YRho(std::vector<GenParticle*>(
                     {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
     }
@@ -1326,20 +1337,24 @@ namespace ic {
         Ediff_2_ = (rho_daughters[1].first->vector().E() - rho_daughters[1].second->vector().E())/
             (rho_daughters[1].first->vector().E() + rho_daughters[1].second->vector().E());
     }
-    if(cp_channel_==2){
+    if(cp_channel_==2 || cp_channel_==5){
       bool doAnti = false;
-      if (cp_channel_ == 2) {
-        doAnti = pi_daughters[0]->pdgid() > 0 ? true : false;
-      }
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false,true,doAnti);    
+      /* if (cp_channel_ == 2) */
+      /*   doAnti = pi_daughters[0]->pdgid() > 0 ? true : false; */
+      //aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false,true,doAnti);    
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false, false, doAnti);    
       //aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+      if (cp_sign_1_>0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }  
     }
 
     if(cp_channel_!=-1 && cp_channel_==3){
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
       //aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
 
-      if (cp_sign_1_<0) {
+      if (cp_sign_1_>0) {
         if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
         else                   aco_angle_1_ -= M_PI;
       }  

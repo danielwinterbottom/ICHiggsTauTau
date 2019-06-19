@@ -206,8 +206,8 @@ if options.cp_decay:
   # 'GluGluToHToTauTau_M-125-nospinner',
   # 'VBFHToTauTau_M-125-nospinner',
   'GluGluToHToTauTau_M-125-nospinner-filter',
-  'VBFHToTauTau_M-125-nospinner-filter',
-  'VBFHToTauTau_M-125-nospinner-filter-ext' 
+  # 'VBFHToTauTau_M-125-nospinner-filter',
+  # 'VBFHToTauTau_M-125-nospinner-filter-ext' 
   ]
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
