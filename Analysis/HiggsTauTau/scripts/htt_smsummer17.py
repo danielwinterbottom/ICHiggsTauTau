@@ -13,6 +13,16 @@ if "JOBSUBMIT"  in os.environ:      JOBSUBMIT       = os.environ["JOBSUBMIT"]
 print "Using job-wrapper:    " + JOBWRAPPER
 print "Using job-submission: " + JOBSUBMIT
 
+CONDOR_TEMPLATE = """executable = ./jobs/%(EXE)s
+Proxy_path =/afs/cern.ch/user/a/adow/private/x509up
+arguments = $(Proxy_path)
+output                = /dev/null
+error                 = /dev/null
+log                   = ./jobs/%(TASK)s.$(ClusterId).log
+requirements = (OpSysAndVer =?= "SLCern6")
++JobFlavour     = "longlunch"
+queue
+"""
 
 def split_callback(option, opt, value, parser):
   setattr(parser.values, option.dest, value.split(','))
@@ -59,10 +69,13 @@ parser.add_option("--config", dest="config", type='string', default='',
                   help="Config file")
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
+parser.add_option("--condor", action='store_true', default=False,
+                  help="Submit jobs to condor (for lxplus)")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
+if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 def getParaJobSubmit(N):
   if not options.submit: return 'true'
@@ -252,7 +265,20 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+          if not parajobs and not options.condor:
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+          elif not parajobs and options.condor:
+              outscriptname = '{}-{}.sh'.format(JOB, i)
+              subfilename = '{}_{}.sub'.format(JOB, i)
+              subfile = open("jobs/{}".format(subfilename), "w")
+              condor_settings = CONDOR_TEMPLATE % {
+                'EXE': outscriptname,
+                'TASK': "{}-{}".format(JOB, i)
+              }
+              subfile.write(condor_settings)
+              subfile.close()
+              os.system('condor_submit jobs/{}'.format(subfilename))
+              # print('condor_submit jobs/{}'.format(subfilename))
         if parajobs: 
           os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
           PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
@@ -298,7 +324,20 @@ if options.proc_embed or options.proc_all:
       nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
-        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+        if not parajobs and not options.condor:
+            os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+        elif not parajobs and options.condor:
+            outscriptname = '{}-{}.sh'.format(JOB, job_num)
+            subfilename = '{}_{}.sub'.format(JOB, job_num)
+            subfile = open("jobs/{}".format(subfilename), "w")
+            condor_settings = CONDOR_TEMPLATE % {
+              'EXE': outscriptname,
+              'TASK': "{}-{}".format(JOB, job_num)
+            }
+            subfile.write(condor_settings)
+            subfile.close()
+            os.system('condor_submit jobs/{}'.format(subfilename))
+            # print('condor_submit jobs/{}'.format(subfilename))
         job_num+=1
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       if parajobs: 
@@ -392,7 +431,20 @@ if options.proc_bkg or options.proc_all:
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
-          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          if not parajobs and not options.condor:
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          elif not parajobs and options.condor:
+              outscriptname = '{}-{}.sh'.format(JOB, job_num)
+              subfilename = '{}_{}.sub'.format(JOB, job_num)
+              subfile = open("jobs/{}".format(subfilename), "w")
+              condor_settings = CONDOR_TEMPLATE % {
+                'EXE': outscriptname,
+                'TASK': "{}-{}".format(JOB, job_num)
+              }
+              subfile.write(condor_settings)
+              subfile.close()
+              os.system('condor_submit jobs/{}'.format(subfilename))
+              # print('condor_submit jobs/{}'.format(subfilename))
           job_num+=1
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       if parajobs: 
@@ -437,7 +489,7 @@ if options.mg_signal or options.proc_sm:
       SIG_FILELIST = FILELIST
       SIG_DIR = SIG_FILELIST.split('/')[1]
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
     if "nospinner" in sa and "GluGlu" in sa:
         JSONPATCH = JSONPATCH.replace(r"pileup_2017_%(sa)s"%vars(),r"pileup_2017_GluGluHToTauTau_M-125")
     if "nospinner" in sa and "VBF" in sa:
@@ -453,7 +505,20 @@ if options.mg_signal or options.proc_sm:
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
-          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          if not parajobs and not options.condor:
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          elif not parajobs and options.condor:
+              outscriptname = '{}-{}.sh'.format(JOB, job_num)
+              subfilename = '{}_{}.sub'.format(JOB, job_num)
+              subfile = open("jobs/{}".format(subfilename), "w")
+              condor_settings = CONDOR_TEMPLATE % {
+                'EXE': outscriptname,
+                'TASK': "{}-{}".format(JOB, job_num)
+              }
+              subfile.write(condor_settings)
+              subfile.close()
+              os.system('condor_submit jobs/{}'.format(subfilename))
+              # print('condor_submit jobs/{}'.format(subfilename))
           job_num+=1 
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
     if parajobs: 
