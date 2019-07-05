@@ -1701,7 +1701,8 @@ if(channel != channel::wmnu) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
-    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
+    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool() || era_type == era::data_2016
+             || era_type == era::data_2017 || era_type == era::data_2018);
  if(era_type == era::data_2015 || era_type == era::data_2016 
          || era_type == era::data_2017 || era_type == era::data_2018){
    svFitTest.set_legacy_svfit(false);
@@ -2622,10 +2623,11 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 if (strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
-      .set_maketrees(false)
+      .set_maketrees(true)
       .set_channel(channel)
       .set_strategy(strategy_type));
-
+}
+if (strategy_type == strategy::cpdecays16){
   BuildModule(MVADMEmbedder("MVADMEmbedder")
       .set_fs(fs.get())
       .set_channel(channel));
@@ -4259,7 +4261,7 @@ if(strategy_type == strategy::paper2013){
 
       }));
    } 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+  if (strategy_type == strategy::cpsummer17){
     BuildModule(SimpleFilter<Tau>("TauIsoFilter")
       .set_input_label(js["taus"].asString()).set_min(0)
       .set_predicate([=](Tau const* t) {

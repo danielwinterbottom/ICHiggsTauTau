@@ -1849,6 +1849,7 @@ namespace ic {
 
           double single_e_sf = ele_trg_mc > 0 ? ele_trg / ele_trg_mc : 0;
           double t_dm = tau->decay_mode();
+          if(t_dm==11 || t_dm==5 || t_dm==6) t_dm=10; 
           auto args_2 = std::vector<double>{e_pt,e_signed_eta};  
           auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
           auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta,t_dm};
@@ -2283,6 +2284,7 @@ namespace ic {
 
              double single_m_sf = mu_trg / mu_trg_mc;
              double t_dm = tau->decay_mode();
+             if(t_dm==11 || t_dm==5 || t_dm==6) t_dm=10; 
              auto args_2 = std::vector<double>{pt,m_signed_eta};  
              auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
              auto args_3_nophi = std::vector<double>{t_pt,t_signed_eta,t_dm};
@@ -2821,6 +2823,8 @@ namespace ic {
            double phi_2 = tau2->phi();
            double dm_1 = tau1->decay_mode();
            double dm_2 = tau2->decay_mode();
+           if(dm_1==11 || dm_1==5 || dm_1==6) dm_1=10;
+           if(dm_2==11 || dm_2==5 || dm_2==6) dm_2=10;
            auto args_1 = std::vector<double>{pt_1,eta_1,phi_1,dm_1};  
            auto args_2 = std::vector<double>{pt_2,eta_2,phi_2,dm_2}; 
            tau1_trg = fns_["t_trg_tight_ditau_data"]->eval(args_1.data());
