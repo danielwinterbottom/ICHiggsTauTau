@@ -85,7 +85,7 @@ def SetAxisTitles(plot, channel):
   titles['jpt_2'] = ['P_{T}^{j_{2}} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{j_{2}} (1/GeV)']
   titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
-  titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events / '+bin_width, 'dN/d#phi^{*}_{CP}']
+  titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
@@ -178,7 +178,7 @@ def SetAxisTitles2D(plot, channel):
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
-  titles['aco_angle_mod'] = ['#phi^{*}_{CP}','Events', 'dN/d#phi^{*}_{CP}','']
+  titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events', 'dN/d#phi#mbox{*}_{CP}','']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
@@ -2140,6 +2140,7 @@ def HTTPlot(nodename,
 
     sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False )
     sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False )
+    sig_schemes["sm_cp_decays_mm"] = ( str(int(signal_scale))+"#times MM H#rightarrow#tau#tau", ["ggH_mm_htt", "qqH_mm_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2437,6 +2438,8 @@ def HTTPlot(nodename,
         if ggh_scheme == 'powheg':
             # signal_split_schemes = ['sm_ggH','sm_qqH']
             signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
+        elif ggh_scheme == "tauspinner":
+            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2460,7 +2463,7 @@ def HTTPlot(nodename,
                     sighists[split_scheme].SetLineColor(R.kBlue)
                 elif split_scheme in ['sm_ps','sm_cp_decays_ps']:
                     sighists[split_scheme].SetLineColor(R.kGreen+3)
-                elif split_scheme == 'sm_mm':
+                elif split_scheme in ['sm_mm','sm_cp_decays_mm']:
                     sighists[split_scheme].SetLineColor(R.kOrange-5)
 
                 sighists[split_scheme].SetLineWidth(3)
@@ -3044,8 +3047,8 @@ def CompareHists(hists=[],
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    # DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    # DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()

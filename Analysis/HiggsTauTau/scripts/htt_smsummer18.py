@@ -131,7 +131,8 @@ for i in range(0,scale):
     temp='job:sequences:all:'+temp
     flatjsons.append(temp)
 
-FILELIST='filelists/Mar25_MC_102X'
+# FILELIST='filelists/Mar25_MC_102X'
+FILELIST='filelists/May24_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -335,12 +336,19 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        FILELIST = './filelists/Mar25_MC_102X'
-        if sa == "DYJetsToLL":
-            FILELIST = "./filelists/May23_MC_102X"
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/May23_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-        else:
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        # FILELIST = "./filelists/May24_MC_102X"
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        # if sa == "T-t":
+        #     FILELIST = './filelists/Mar25_MC_102X'
+        #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Mar25_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        # else:
+        #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+
+        # if sa == "DYJetsToLL":
+        #     FILELIST = "./filelists/May23_MC_102X"
+        #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/May23_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        # else:
+            # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         # if 'JetsToLL-LO' in sa or 'JetsToLNu-LO' in sa \
         #         or sa in ['EWKZ2Jets','WWTo4Q','WWTo2L2Nu','WWToLNuQQ','WZTo3LNu']:
         #     FILELIST = './filelists/Mar19_MC_102X'

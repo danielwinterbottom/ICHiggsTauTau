@@ -2186,29 +2186,31 @@ namespace ic {
       ic::PFCandidate strip;
       strip.set_vector(stripVector);
 
-      double tot_pt = 0;
-      double eta = 0;
-      double phi = 0;
-      double E = 0;
-      for(auto s : Associated) {
-        double pt = s->pt();
-        eta+=pt*s->eta();
-        phi+=pt*s->phi();
-        tot_pt+=pt;
-        E+=s->energy();
-      }
-      eta/=tot_pt;
-      phi/=tot_pt;
-      strip.set_energy(E);
-      strip.set_phi(phi);
-      strip.set_eta(eta);
-      double theta = atan(exp(-eta))*2;
-      double pt = E*sin(theta);
-      strip.set_pt(pt);
+      strip.set_vector(GetPi0(Associated, false)->vector());
+      if(mass) {;}
+      //double tot_pt = 0;
+      //double eta = 0;
+      //double phi = 0;
+      //double E = 0;
+      //for(auto s : Associated) {
+      //  double pt = s->pt();
+      //  eta+=pt*s->eta();
+      //  phi+=pt*s->phi();
+      //  tot_pt+=pt;
+      //  E+=s->energy();
+      //}
+      //eta/=tot_pt;
+      //phi/=tot_pt;
+      //strip.set_energy(E);
+      //strip.set_phi(phi);
+      //strip.set_eta(eta);
+      //double theta = atan(exp(-eta))*2;
+      //double pt = E*sin(theta);
+      //strip.set_pt(pt);
 
       //double mass = 0.1349;
-      double factor = sqrt(strip.energy()*strip.energy()-mass*mass)/strip.vector().P();
-      strip.set_pt(factor*strip.pt());
+      //double factor = sqrt(strip.energy()*strip.energy()-mass*mass)/strip.vector().P();
+      //strip.set_pt(factor*strip.pt());
       if(strip.pt()>=stripPtThreshold) strips.push_back(std::make_pair(new ic::PFCandidate(strip), Associated));
    
     }

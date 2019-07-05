@@ -724,7 +724,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2017) 
       data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
   else if (era_type == era::data_2018)
-      data_json= "input/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt";
+      data_json= "input/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -1358,15 +1358,15 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      /* return  PileupJetID(jet, pu_id_training, false, true) ||
+      return  PileupJetID(jet, pu_id_training, false, false) ||
          fabs(jet->eta()) > 3.139 ||
-         fabs(jet->eta()) < 2.65 ; */
-      return  jet->pt() > 50 ||
+         fabs(jet->eta()) < 2.65 ;
+      /*return  jet->pt() > 50 ||
         fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
+        fabs(jet->eta()) < 2.65 ;*/
     })
   );
-} 
+}
 
 
 if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -1509,8 +1509,8 @@ if(do_met_filters){
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
-      // if (era_type == era::data_2017 || era_type == era::data_2018) 
-      //   {met_filters.push_back("ecalBadCalibReducedMINIAODFilter")};
+      if (era_type == era::data_2017 || era_type == era::data_2018) 
+        met_filters.push_back("ecalBadCalibReducedMINIAODFilter");
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -2620,7 +2620,7 @@ bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_nam
 bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
-if (strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17) {
+if (strategy_type == strategy::cpdecays16) {
   BuildModule(RhoIDEmbedder("RhoIDEmbedder")
       .set_fs(fs.get())
       .set_maketrees(true)
@@ -3040,7 +3040,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
@@ -3538,7 +3538,7 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );

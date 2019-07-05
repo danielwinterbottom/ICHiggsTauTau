@@ -155,18 +155,18 @@ if options.proc_sm or options.proc_all:
          'GluGluToHToTauTau_M125_nospinner-2017',
          'VBFHToTauTau_M125_nospinner-2017',
 
-         'GluGluHToTauTau_M-125',
+         # 'GluGluHToTauTau_M-125',
          #'GluGluHToPseudoscalarTauTau_GEN',
          #'GluGluHToMaxmixTauTau_GEN',
 
          'GluGluHToTauTau_M-125-ext',
-         #'GluGluHToTauTau_M-125',
+         'GluGluHToTauTau_M-125',
          #'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         #'GluGluToHToTauTau_M125_amcatnloFXFX',
+         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
          #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         #'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+         # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
          #'VBFHToTauTau_M-125',
          #'WminusHToTauTau_M-125',
          #'WplusHToTauTau_M-125',
@@ -359,7 +359,10 @@ if options.proc_bkg or options.proc_all:
       JOB='%s_2017' % (sa)
       FILELIST='filelists/Mar11_MC_94X'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
-      if "LO" in sa and ("JetsToLL-" in sa or "JetsToLNu-" in sa):
+      # if "LO" in sa and "JetsToLL-" in sa:
+      #     FILELIST='filelists/Jun06_MC_94X'
+      #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Jun06_MC_94X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+      if "LO" in sa and "JetsToLL-" in sa or "JetsToLNu-" in sa:
           FILELIST='filelists/Mar29_MC_94X'
           JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Mar29_MC_94X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
 
@@ -421,6 +424,10 @@ if options.mg_signal or options.proc_sm:
     #   user='adow'
     #   SIG_FILELIST = 'filelists/Jan11_MC_94X'
     #   SIG_DIR = SIG_FILELIST.split('/')[1]
+    elif 'VBFH' in sa and not 'nospinner' in sa:
+      user='adow'
+      SIG_FILELIST = 'filelists/Jun06_MC_94X'
+      SIG_DIR = SIG_FILELIST.split('/')[1]
     elif 'nospinner' in sa:
       user='adow'
       SIG_FILELIST = 'filelists/Jan31_MC_94X'

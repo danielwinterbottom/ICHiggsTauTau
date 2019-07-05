@@ -413,6 +413,7 @@ class HTTCategories : public ModuleBase {
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
   float dijetpt_;
+  float centrality_;
   float jptraw_1_; 
   float jrawf_1_;
   float jptraw_2_; 
@@ -548,6 +549,11 @@ class HTTCategories : public ModuleBase {
   float mvadm_pi_2_;
   float mvadm_other_2_;
   float mvadm_3pipi0_2_;
+
+  float mvadm_max_score_1_;
+  float mvadm_max_index_1_;
+  float mvadm_max_score_2_;
+  float mvadm_max_index_2_;
 
   float mvadm_pi_new_1_; 
   float mvadm_rho_new_1_;

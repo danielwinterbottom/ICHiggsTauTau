@@ -815,6 +815,7 @@ namespace ic {
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
       outtree_->Branch("dijetpt",           &dijetpt_);
+      outtree_->Branch("centrality",        &centrality_);
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         outtree_->Branch("sjdphi",             &sjdphi_);
         outtree_->Branch("D0", &D0_);
@@ -861,6 +862,11 @@ namespace ic {
       outtree_->Branch("mvadm_other_2", &mvadm_other_2_);
       outtree_->Branch("mvadm_pi_2", &mvadm_pi_2_);
       outtree_->Branch("mvadm_3pipi0_2", &mvadm_3pipi0_2_);
+
+      outtree_->Branch("mvadm_max_score_1", &mvadm_max_score_1_);
+      outtree_->Branch("mvadm_max_index_1", &mvadm_max_index_1_);
+      outtree_->Branch("mvadm_max_score_2", &mvadm_max_score_2_);
+      outtree_->Branch("mvadm_max_index_2", &mvadm_max_index_2_);
 
       outtree_->Branch("mvadm_pi_new_1", &mvadm_pi_new_1_);
       outtree_->Branch("mvadm_rho_new_1", &mvadm_rho_new_1_);
@@ -3235,11 +3241,6 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
-
-    // printing event for MET
-    if (event_ == 139707196 && run_ == 297425 && lumi_ == 87) {
-        std::cout << "MET (pt, phi, eta) " << mets->vector().pt() << mets->vector().phi() << mets->vector().eta() << std::endl;
-    }
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -4211,7 +4212,7 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) {
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
@@ -4355,6 +4356,10 @@ namespace ic {
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       dijetpt_ =  (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
+      // add centrality variable to test - could be useful for VBF vs ggH
+      //zfeld = float(getattr(tree,"eta_h")) - (float(getattr(tree,"jeta_1"))+float(getattr(tree,"jeta_2")))/
+      float zfeld = eta_h_ - (lowpt_jets[0]->eta()+lowpt_jets[1]->eta())/2;
+      centrality_ = std::exp(-4*std::pow((zfeld/std::fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta())),2));
 
       if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
@@ -4432,6 +4437,7 @@ namespace ic {
       jdeta_ = -9999;
       jdphi_ = -9999;
       dijetpt_ = -9999;
+      centrality_ = -9999;
       jrawf_2_ = -9999;
       jptunc_2_ = -9999;
       jmva_2_ = -9999;
@@ -5032,6 +5038,11 @@ namespace ic {
     mvadm_other_2_ = event->Exists("mvadm_other_2") ? event->Get<float>("mvadm_other_2") : 0.0;
     mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 0.0;
     mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
+
+    mvadm_max_score_1_ = event->Exists("mvadm_max_score_1") ? event->Get<float>("mvadm_max_score_1") : 0.0;
+    mvadm_max_index_1_ = event->Exists("mvadm_max_index_1") ? event->Get<float>("mvadm_max_index_1") : 0.0;
+    mvadm_max_score_2_ = event->Exists("mvadm_max_score_2") ? event->Get<float>("mvadm_max_score_2") : 0.0;
+    mvadm_max_index_2_ = event->Exists("mvadm_max_index_2") ? event->Get<float>("mvadm_max_index_2") : 0.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);

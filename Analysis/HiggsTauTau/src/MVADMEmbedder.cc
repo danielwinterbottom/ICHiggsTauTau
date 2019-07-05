@@ -1,6 +1,22 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/MVADMEmbedder.h"
 
- 
+// Add this function to take the maximum score and corresponding index
+// from the vector of scores
+std::pair<float, float> getMaxScoreWithIndex(std::vector<float> vec) {
+  if (vec.empty()) return std::make_pair(0., 0.);
+  float max_score = vec[0];
+  float max_index = 0.;
+  unsigned ind = 0;
+  for (auto s : vec) {
+    if (s > max_score) {
+      max_score = s;
+      max_index = ind;
+    }
+    ++ind;
+  }
+  std::pair<float, float> out_pair = std::make_pair(max_score, max_index);
+  return out_pair;
+}
 
 namespace ic {
 
@@ -469,11 +485,20 @@ namespace ic {
           event->Add("mvadm_rho_2", scores2[1]);
           event->Add("mvadm_pi_2", scores2[2]);
           event->Add("mvadm_a1_2", scores2[3]); 
+
+          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores2);
+          event->Add("mvadm_max_score_2", max_pair.first); 
+          event->Add("mvadm_max_index_2", max_pair.second);
+         
         } else if (tau_decay_mode_2_>9){
           std::vector<float> scores2 = read_mva_scores(isEven_,inputs2,tau2->decay_mode());
           event->Add("mvadm_other_2", scores2[0]);
           event->Add("mvadm_a1_2", scores2[1]);
           event->Add("mvadm_3pipi0_2", scores2[2]);
+
+          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores2);
+          event->Add("mvadm_max_score_2", max_pair.first); 
+          event->Add("mvadm_max_index_2", max_pair.second);
         }
       }
     }
@@ -711,11 +736,19 @@ namespace ic {
           event->Add("mvadm_rho_1", scores1[1]);
           event->Add("mvadm_pi_1", scores1[2]);
           event->Add("mvadm_a1_1", scores1[3]); 
+
+          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores1);
+          event->Add("mvadm_max_score_1", max_pair.first); 
+          event->Add("mvadm_max_index_1", max_pair.second);
         } else if (tau_decay_mode_1_>9){
           std::vector<float> scores1 = read_mva_scores(isEven_,inputs1,tau1->decay_mode());
           event->Add("mvadm_other_1", scores1[0]);
           event->Add("mvadm_a1_1", scores1[1]);
           event->Add("mvadm_3pipi0_1", scores1[2]);
+
+          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores1);
+          event->Add("mvadm_max_score_1", max_pair.first); 
+          event->Add("mvadm_max_index_1", max_pair.second);
         }
 
  
