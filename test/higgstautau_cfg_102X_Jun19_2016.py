@@ -1542,6 +1542,10 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
 
+data_type = ""
+if isData or isEmbed: data_type = "RECO"
+else: data_type = "PAT"
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
@@ -1556,7 +1560,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
   includeFiltersFromTrig = cms.bool(True),
-  inputfiltersfromtrig = cms.InputTag("TriggerResults","","PAT"),
+  inputfiltersfromtrig = cms.InputTag("TriggerResults","",data_type),
   filters             = cms.PSet(
    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
    badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
@@ -1573,10 +1577,6 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 if isEmbed:
   process.icEventInfoProducer.includeEmbeddingWeights = cms.bool(True)
   process.icEventInfoProducer.inputfiltersfromtrig = cms.InputTag("TriggerResults","","MERGE")
-
-if isData:
-  process.icEventInfoProducer.filtersfromtrig = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter")
-
 
 process.icEventInfoSequence = cms.Sequence(
   process.BadPFMuonFilter+
