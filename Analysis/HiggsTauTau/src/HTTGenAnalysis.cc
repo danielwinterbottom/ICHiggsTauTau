@@ -138,6 +138,7 @@ namespace ic {
       outtree_->Branch("jphi_1"      , &jphi_1_      );
       outtree_->Branch("jphi_2"      , &jphi_2_      );
       outtree_->Branch("mjj"         , &mjj_         );
+      outtree_->Branch("largest_gen_mjj",   &largest_gen_mjj_);
       outtree_->Branch("jdeta"       , &jdeta_       );
       outtree_->Branch("higgsDecay"  , &decayType    );
       outtree_->Branch("genpt_1"     , &genpt_1_        );
@@ -707,6 +708,27 @@ namespace ic {
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
+
+    for(unsigned i=0; i<gen_jets.size(); ++i){
+      ic::GenJet jet = *(gen_jets[i]);
+      bool MatchedToPrompt = false;
+      for(unsigned j=0; j<higgs_products.size(); ++j){
+        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+      }
+      //remove jets that are matched to Higgs decay products
+            if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
+    }
+
+    largest_gen_mjj_=-9999;
+    if(gen_jets.size()>1){
+      for(unsigned i=0; i<gen_jets.size()-1;++i){
+        for(unsigned j=i+1; j<gen_jets.size();++j){
+          double mass = (gen_jets[i]->vector()+gen_jets[j]->vector()).M();
+         if(mass>largest_gen_mjj_) largest_gen_mjj_ = mass;
+         }
+      }
+    }
+
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;
     jeta_1_      = -9999;
