@@ -160,7 +160,8 @@ namespace ic {
       outtree_->Branch("ysep"     , &ysep_);
       outtree_->Branch("n_pjets"     , &n_pjets_);
       outtree_->Branch("n_pu",      &n_pu_);
-
+      outtree_->Branch("lead_b_pt", &lead_b_pt_);
+      outtree_->Branch("lead_b_eta", &lead_b_eta_); 
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
       outtree_->Branch("aco_angle_3", &aco_angle_3_);
@@ -348,9 +349,16 @@ namespace ic {
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
       std::vector<GenParticle*> outparts;
+      double largest_b_pt=-1;
+      double lead_b_eta=-9999;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
            if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
+
+           if(id==5 && lhe_parts[i]->pt()>largest_b_pt) {
+             largest_b_pt = lhe_parts[i]->pt();
+             lead_b_eta=lhe_parts[i]->eta();
+           }
            if(id==25) parton_HpT_ = lhe_parts[i]->pt();
            if ((id >= 1 && id <=6) || id == 21){ 
              outparts.push_back(lhe_parts[i]);
@@ -359,6 +367,8 @@ namespace ic {
              if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
+      lead_b_pt_ = largest_b_pt;
+      lead_b_eta_ = lead_b_eta;
       std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
       if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
       else parton_mjj_ = -9999;

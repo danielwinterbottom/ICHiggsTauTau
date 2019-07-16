@@ -2626,9 +2626,10 @@ if (strategy_type == strategy::cpdecays16) {
       .set_channel(channel)
       .set_strategy(strategy_type));
 
-  BuildModule(MVADMEmbedder("MVADMEmbedder")
-      .set_fs(fs.get())
-      .set_channel(channel));
+  //BuildModule(MVADMEmbedder("MVADMEmbedder")
+  //    .set_fs(fs.get())
+  //    .set_channel(channel)
+  //    .set_strategy(strategy_type));
 }
 do_sm_scale_wts = true; // set this to false after!
 BuildModule(HTTCategories("HTTCategories")
@@ -4259,13 +4260,13 @@ if(strategy_type == strategy::paper2013){
 
       }));
    } 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-    BuildModule(SimpleFilter<Tau>("TauIsoFilter")
-      .set_input_label(js["taus"].asString()).set_min(0)
-      .set_predicate([=](Tau const* t) {
-        return t->GetTauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017") > 0.5;
-      }));
-   }
+  //if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+  //  BuildModule(SimpleFilter<Tau>("TauIsoFilter")
+  //    .set_input_label(js["taus"].asString()).set_min(0)
+  //    .set_predicate([=](Tau const* t) {
+  //      return t->GetTauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017") > 0.5;
+  //    }));
+  // }
   //if (strategy_type == strategy::smsummer16 && channel_type == channel::tt){
   //BuildModule(SimpleFilter<Tau>("LeadTauFilter")
   //    .set_input_label(js["taus"].asString()).set_min(lead_min_taus)

@@ -51,10 +51,10 @@ def SetAxisTitles(plot, channel):
     lep2_label = '#mu_{2}'
   
   bin_width=''
-  if not isVarBins:
-      binning = plot.split('(')[1].split(')')[0].split(',')
-      binning = map(float,binning)
-      bin_width = str(round((binning[2]-binning[1])/binning[0],1))
+  #if not isVarBins:
+  #    binning = plot.split('(')[1].split(')')[0].split(',')
+  #    binning = map(float,binning)
+  #    bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
   titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
@@ -3028,9 +3028,9 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.3,0.2,3,0.01)
+    legend = PositionedLegend(0.4,0.1,3,0.01)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.020)
+    legend.SetTextSize(0.040)
     legend.SetFillColor(0)
     
 

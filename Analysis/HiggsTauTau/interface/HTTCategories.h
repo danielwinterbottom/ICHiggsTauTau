@@ -487,6 +487,8 @@ class HTTCategories : public ModuleBase {
   double gen_match_1_pt_;
   double gen_match_2_pt_;
   double gen_sjdphi_;
+  double gen_mjj_;
+  double largest_gen_mjj_;
   double gen_m_;
   double gen_pt_;
   int tauFlag_1_;
@@ -505,6 +507,12 @@ class HTTCategories : public ModuleBase {
   double aco_angle_2_;
   double aco_angle_3_;
   double aco_angle_4_;
+
+  double aco_sign_1_;
+  double aco_sign_2_;
+  double aco_sign_3_;
+  double aco_sign_4_;
+
 
   double mass0_=-1, mass1_=-1, mass2_=-1;
   double strip_pt_=-1;
@@ -551,9 +559,9 @@ class HTTCategories : public ModuleBase {
   float mvadm_3pipi0_2_;
 
   float mvadm_max_score_1_;
-  float mvadm_max_index_1_;
+  int mvadm_max_index_1_;
   float mvadm_max_score_2_;
-  float mvadm_max_index_2_;
+  int mvadm_max_index_2_;
 
   float mvadm_pi_new_1_; 
   float mvadm_rho_new_1_;
@@ -566,6 +574,8 @@ class HTTCategories : public ModuleBase {
   float mvadm_a1_new_2_; 
   float mvadm_3pi_new_2_;
   float mvadm_3pipi0_new_2_;
+
+  int mva_dm_1_, mva_dm_2_;
 
   /**********************************************************/
   // some variables to compare data/MC ageement       
