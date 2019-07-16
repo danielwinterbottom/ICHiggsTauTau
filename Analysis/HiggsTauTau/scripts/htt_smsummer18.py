@@ -252,7 +252,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 40
             if "TauC" in sa: nperjob = 42
-            elif "TauD" in sa: nperjob = 6
+            elif "TauD" in sa: nperjob = 45
             
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
