@@ -13,6 +13,16 @@ if "JOBSUBMIT"  in os.environ:      JOBSUBMIT       = os.environ["JOBSUBMIT"]
 print "Using job-wrapper:    " + JOBWRAPPER
 print "Using job-submission: " + JOBSUBMIT
 
+CONDOR_TEMPLATE = """executable = ./jobs/%(EXE)s
+Proxy_path =/afs/cern.ch/user/a/adow/private/x509up
+arguments = $(ProcId) $(Proxy_path)
+output                = ./jobs/%(TASK)s.$(ClusterId).$(ProcId).out
+error                 = ./jobs/%(TASK)s.$(ClusterId).$(ProcId).err
+log                   = ./jobs/%(TASK)s.$(ClusterId).log
+requirements = (OpSysAndVer =?= "SLCern6")
++JobFlavour     = "espresso"
+queue
+"""
 
 def split_callback(option, opt, value, parser):
     setattr(parser.values, option.dest, value.split(','))
@@ -60,10 +70,13 @@ parser.add_option("--config", dest="config", type='string', default='',
                   help="Config file")
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
+parser.add_option("--condor", action='store_true', default=False,
+                  help="Submit jobs to condor (for lxplus)")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
+if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 def getParaJobSubmit(N):
     if not options.submit: return 'true'
@@ -84,19 +97,19 @@ flatjsonlist = []
 flatjsonlistdysig = []
 flatjsonlist.append("job:sequences:all:")
 n_scales=0
-for scale in scale_list: 
+for scale in scale_list:
     n_scales+=1
     if scale == "default":
         flatjsonlist.append("^%(scale)s"%vars())
         flatjsonlistdysig.append("^%(scale)s"%vars())
     else:
         n_scales+=1
-        flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
+        flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars())
         flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars())
- 
+
 CONFIG='scripts/config2018.json'
 if options.config != '': CONFIG = options.config
- 
+
 n_channels=1
 with open(CONFIG,"r") as input:
     with open ("config_for_python_channels.json","w") as output:
@@ -109,7 +122,7 @@ with open(CONFIG,"r") as input:
 with open("config_for_python_channels.json") as config_file:
     cfg = json.load(config_file)
     n_channels=len(cfg["job"]["channels"])
-  
+
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
 
@@ -126,7 +139,7 @@ for i in flatjsonlistdysig:
 for i in range(0,scale):
     first = i*int(math.ceil(total/scale))
     last = (i+1)*int(math.ceil(total/scale))
-    temp=''.join(flatjsonlistdysig[first:last]) 
+    temp=''.join(flatjsonlistdysig[first:last])
     if temp == '': continue
     temp='job:sequences:all:'+temp
     flatjsons.append(temp)
@@ -135,7 +148,7 @@ for i in range(0,scale):
 FILELIST='filelists/May24_MC_102X'
 
 signal_mc = [ ]
-signal_vh = [ ] 
+signal_vh = [ ]
 signal_mc_ww = [ ]
 
 if os.path.isfile("./jobs/files_per_sample.txt"):
@@ -147,7 +160,7 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
         'VBFHToTauTau_M-125-ext1',
-        'GluGluHToTauTau_M-125',
+        # 'GluGluHToTauTau_M-125',
 
         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         'GluGluToHToTauTau_M125_amcatnloFXFX',
@@ -175,7 +188,7 @@ if options.proc_sm or options.proc_all:
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown'
-   # ] 
+   # ]
 
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -223,7 +236,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             elif "TauD" in sa: nperjob = 271
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))):
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-                if not parajobs: 
+                if not parajobs:
                     os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
             if parajobs:
                 os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
@@ -243,16 +256,16 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-                if not parajobs: 
+                if not parajobs:
                     os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-            if parajobs: 
+            if parajobs:
                 os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
                 PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
-                os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
+                os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
             file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-        
-if options.proc_embed or options.proc_all:        
-        
+
+if options.proc_embed or options.proc_all:
+
     embed_samples = []
     data_eras = ['B','C','D','E','F']
     for chn in channels:
@@ -273,14 +286,14 @@ if options.proc_embed or options.proc_all:
     EMBEDFILELIST="./filelists/Oct10_MC_94X"
 
     for sa in embed_samples:
-        job_num=0  
+        job_num=0
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct10_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
-        for FLATJSONPATCH in flatjsons: 
+        for FLATJSONPATCH in flatjsons:
             nperjob = 10
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
 
-            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')  
+            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')
             if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
             if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
             if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
@@ -292,10 +305,10 @@ if options.proc_embed or options.proc_all:
                 if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
                 job_num+=1
             file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-            if parajobs: 
+            if parajobs:
                 os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
                 PARAJOBSUBMIT = getParaJobSubmit(job_num)
-                os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+                os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
 
 if options.proc_bkg or options.proc_all:
@@ -381,7 +394,7 @@ if options.proc_bkg or options.proc_all:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
             if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
                 FLATJSONPATCH = FLATJSONPATCH.replace('scale_met_hi^scale_met_lo','').replace('res_met_hi^res_met_lo','').replace('scale_met_njets0_hi^scale_met_njets0_lo','').replace('res_met_njets0_hi^res_met_njets0_lo','').replace('scale_met_njets1_hi^scale_met_njets1_lo','').replace('res_met_njets1_hi^res_met_njets1_lo','').replace('scale_met_njets2_hi^scale_met_njets2_lo','').replace('res_met_njets2_hi^res_met_njets2_lo','')
-            else: 
+            else:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
             nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
@@ -394,7 +407,7 @@ if options.proc_bkg or options.proc_all:
         if parajobs:
             os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
             PARAJOBSUBMIT = getParaJobSubmit(job_num)
-            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
 if options.mg_signal or options.proc_sm:
     SIG_FILELIST = FILELIST
@@ -417,11 +430,24 @@ if options.mg_signal or options.proc_sm:
                 if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                     os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
-                    if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
-                    job_num+=1 
+                    if not parajobs and not options.condor:
+                        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+                    elif not parajobs and options.condor:
+                        outscriptname = '{}-{}.sh'.format(JOB, job_num)
+                        subfilename = '{}_{}.sub'.format(JOB, job_num)
+                        subfile = open("jobs/{}".format(subfilename), "w")
+                        condor_settings = CONDOR_TEMPLATE % {
+                          'EXE': outscriptname,
+                          'TASK': "{}-{}".format(JOB, job_num)
+                        }
+                        subfile.write(condor_settings)
+                        subfile.close()
+                        os.system('condor_submit jobs/{}'.format(subfilename))
+                        # print('condor_submit jobs/{}'.format(subfilename))
+                    job_num+=1
                 file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
         if parajobs:
             os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
             PARAJOBSUBMIT = getParaJobSubmit(job_num)
-            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
