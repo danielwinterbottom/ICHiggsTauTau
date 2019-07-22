@@ -841,8 +841,12 @@ namespace ic {
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
+      outtree_->Branch("gen_mjj", &gen_mjj_);
+      outtree_->Branch("largest_gen_mjj", &largest_gen_mjj_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
+      outtree_->Branch("m_1", &m_1_, "m_1/F");
+      outtree_->Branch("m_2", &m_2_, "m_2/F");
 
       outtree_->Branch("aco_angle", &aco_angle_);
       outtree_->Branch("aco_angle_mod", &aco_angle_mod_);
@@ -883,10 +887,18 @@ namespace ic {
       outtree_->Branch("tau_mva_decay_mode_2", &tau_mva_decay_mode_2_);
       outtree_->Branch("tau_mva_decay_mode_1", &tau_mva_decay_mode_1_);
 
+      outtree_->Branch("mva_dm_1", &mva_dm_1_);
+      outtree_->Branch("mva_dm_2", &mva_dm_2_);
+
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
       outtree_->Branch("aco_angle_3", &aco_angle_3_);
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
+
+      outtree_->Branch("aco_sign_1", &aco_sign_1_);
+      outtree_->Branch("aco_sign_2", &aco_sign_2_);
+      outtree_->Branch("aco_sign_3", &aco_sign_3_);
+      outtree_->Branch("aco_sign_4", &aco_sign_4_);
       outtree_->Branch("strip_pt_2", &strip_pt_2_); 
       outtree_->Branch("strip_pt_1", &strip_pt_1_); 
       outtree_->Branch("strip_E_1", strip_E_1_);
@@ -2788,7 +2800,8 @@ namespace ic {
     if(event->Exists("subleading_lepton_match_DR")) subleading_lepton_match_DR_ = event->Get<double>("subleading_lepton_match_DR");*/
 
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
-
+    if(event->Exists("gen_mjj")) gen_mjj_ = event->Get<double>("gen_mjj");
+    if(event->Exists("largest_gen_mjj")) largest_gen_mjj_ = event->Get<double>("largest_gen_mjj");
     if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
     if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
    
@@ -5040,9 +5053,9 @@ namespace ic {
     mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
 
     mvadm_max_score_1_ = event->Exists("mvadm_max_score_1") ? event->Get<float>("mvadm_max_score_1") : 0.0;
-    mvadm_max_index_1_ = event->Exists("mvadm_max_index_1") ? event->Get<float>("mvadm_max_index_1") : 0.0;
+    mvadm_max_index_1_ = event->Exists("mvadm_max_index_1") ? event->Get<int>("mvadm_max_index_1") : 0.0;
     mvadm_max_score_2_ = event->Exists("mvadm_max_score_2") ? event->Get<float>("mvadm_max_score_2") : 0.0;
-    mvadm_max_index_2_ = event->Exists("mvadm_max_index_2") ? event->Get<float>("mvadm_max_index_2") : 0.0;
+    mvadm_max_index_2_ = event->Exists("mvadm_max_index_2") ? event->Get<int>("mvadm_max_index_2") : 0.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -5062,6 +5075,32 @@ namespace ic {
      
       tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2016v1") ? tau1->GetTauID("MVADM2016v1") : 0.0;
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
+
+      mva_dm_1_=-1;
+      if(event->Exists("mvadm_max_index_1")) {
+        int max_index = event->Get<int>("mvadm_max_index_1");
+        if(tau_decay_mode_1_<2){
+          if(max_index==1) mva_dm_1_= 1;
+          if(max_index==2) mva_dm_1_= 0;
+          if(max_index==3) mva_dm_1_= 2;
+        } else {
+          if(max_index==1) mva_dm_1_= 10;
+          if(max_index==2) mva_dm_1_= 11;
+        }
+      }
+      mva_dm_2_=-1;
+      if(event->Exists("mvadm_max_index_2")) {
+        int max_index = event->Get<int>("mvadm_max_index_2");
+        if(tau_decay_mode_2_<2){
+          if(max_index==1) mva_dm_2_= 1;
+          if(max_index==2) mva_dm_2_= 0;
+          if(max_index==3) mva_dm_2_= 2;
+        } else {
+          if(max_index==1) mva_dm_2_= 10;
+          if(max_index==2) mva_dm_2_= 11;
+        }
+      }
+
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
@@ -5144,6 +5183,14 @@ namespace ic {
             *YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
         y_1_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
         y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
+
+        aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({pi_tau1,pi0_tau1}), std::vector<Candidate*> ({pi_tau2,pi0_tau2}));
+        aco_sign_1_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho1.first,rho1.second}), std::vector<Candidate*> ({rho2.first,rho2.second})).second;
+
+        if (cp_sign_<0) {
+          if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+          else                   aco_angle_1_ -= M_PI;
+        }  
       }
       else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
       
@@ -5187,6 +5234,12 @@ namespace ic {
             y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
             y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
 
+            aco_sign_1_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]})).second;
+            aco_sign_3_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})).second;
+            aco_sign_2_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]})).second;
+            aco_sign_4_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]})).second;
+
+
             cp_sign_1_ = y_1_1_*y_1_2_;
             cp_sign_2_ = y_1_1_*y_2_2_;
             cp_sign_3_ = y_1_1_*y_3_2_;
@@ -5229,7 +5282,7 @@ namespace ic {
       } else {
         aco_angle_mod_ = aco_angle_;
         }
-        aco_angle_1_ = aco_angle_mod_;
+        //aco_angle_1_ = aco_angle_mod_;
       }
 
     }
@@ -5237,13 +5290,35 @@ namespace ic {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
-      mvadm_pi_new_2_ = tau2->HasTauID("MVADM2016v1DM0raw") ? tau2->GetTauID("MVADM2016v1DM0raw") : 0.0;
-      mvadm_rho_new_2_ = tau2->HasTauID("MVADM2016v1DM1raw") ? tau2->GetTauID("MVADM2016v1DM1raw") : 0.0;
-      mvadm_a1_new_2_ = tau2->HasTauID("MVADM2016v1DM2raw") ? tau2->GetTauID("MVADM2016v1DM2raw") : 0.0;
-      mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2016v1DM10raw") ? tau2->GetTauID("MVADM2016v1DM10raw") : 0.0;
-      mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
+      if(era_ == era::data_2016) {
+        mvadm_pi_new_2_ = tau2->HasTauID("MVADM2016v1DM0raw") ? tau2->GetTauID("MVADM2016v1DM0raw") : 0.0;
+        mvadm_rho_new_2_ = tau2->HasTauID("MVADM2016v1DM1raw") ? tau2->GetTauID("MVADM2016v1DM1raw") : 0.0;
+        mvadm_a1_new_2_ = tau2->HasTauID("MVADM2016v1DM2raw") ? tau2->GetTauID("MVADM2016v1DM2raw") : 0.0;
+        mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2016v1DM10raw") ? tau2->GetTauID("MVADM2016v1DM10raw") : 0.0;
+        mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
+        tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
+      } else {
+        mvadm_pi_new_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
+        mvadm_rho_new_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
+        mvadm_a1_new_2_ = tau2->HasTauID("MVADM2017v1DM2raw") ? tau2->GetTauID("MVADM2017v1DM2raw") : 0.0;
+        mvadm_3pi_new_2_ = tau2->HasTauID("MVADM2017v1DM10raw") ? tau2->GetTauID("MVADM2017v1DM10raw") : 0.0;
+        mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2017v1DM11raw") ? tau2->GetTauID("MVADM2017v1DM11raw") : 0.0;
+        tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
+      }
 
-      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
+      mva_dm_2_=-1;
+      if(event->Exists("mvadm_max_index_2")) {
+        int max_index = event->Get<int>("mvadm_max_index_2");
+        if(tau_decay_mode_2_<2){
+          if(max_index==1) mva_dm_2_= 1;
+          if(max_index==2) mva_dm_2_= 0;
+          if(max_index==3) mva_dm_2_= 2;
+        } else {
+          if(max_index==1) mva_dm_2_= 10;
+          if(max_index==2) mva_dm_2_= 11;
+        }
+      }
+
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
@@ -5251,7 +5326,7 @@ namespace ic {
       ic::Candidate *pi0_tau2 = rho.second;
 
       std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands);
-      
+ 
       ic::Candidate *pi0_2gammas = new ic::Candidate();
       if(gammas2.size()>1) pi0_2gammas->set_vector(gammas2[0]->vector()+gammas2[1]->vector());
       else if (gammas2.size()>0) pi0_2gammas->set_vector(gammas2[0]->vector());
@@ -5565,6 +5640,20 @@ namespace ic {
       mvadm_3pipi0_new_2_ = tau2->HasTauID("MVADM2016v1DM11raw") ? tau2->GetTauID("MVADM2016v1DM11raw") : 0.0;
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2016v1") ? tau2->GetTauID("MVADM2016v1") : 0.0;
+
+      mva_dm_2_=-1;
+      if(event->Exists("mvadm_max_index_2")) {
+        int max_index = event->Get<int>("mvadm_max_index_2");
+        if(tau_decay_mode_2_<2){
+          if(max_index==1) mva_dm_2_= 1;
+          if(max_index==2) mva_dm_2_= 0;
+          if(max_index==3) mva_dm_2_= 2;
+        } else {
+          if(max_index==1) mva_dm_2_= 10;
+          if(max_index==2) mva_dm_2_= 11;
+        }
+      }
+
  
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);

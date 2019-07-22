@@ -17,6 +17,8 @@
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
+#include "TMVA/Reader.h"
+
 
 namespace ic {
 
@@ -243,6 +245,30 @@ namespace ic {
     for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);    
     for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
     return angle;
+  }
+
+  template<class T, class U>
+  std::pair<double, double> AcoplanarityAngleWithSign(std::vector<T> const& p1, std::vector<U> const& p2) {
+    // get boost vector to boost to COM frame
+    if (p1.size()!=2 && p2.size()!=2) std::make_pair(-9999,-9999);
+
+    TLorentzVector ltotal(0,0,0,0);
+    for(unsigned i=0; i<p1.size(); ++i) ltotal += ConvertToLorentz(p1[i]->vector());
+    for(unsigned i=0; i<p2.size(); ++i) ltotal += ConvertToLorentz(p2[i]->vector());
+    TVector3 boost = ltotal.BoostVector();
+    // boost to rest frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],-boost);
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],-boost);
+    //get 3 vectors of normal to decay planes
+    TVector3 plane1 = ConvertToTVector3(p1[0]->vector()).Cross(ConvertToTVector3(p1[1]->vector()));
+    TVector3 plane2 = ConvertToTVector3(p2[0]->vector()).Cross(ConvertToTVector3(p2[1]->vector()));
+    double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
+    double sign = plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector()));///fabs(plane1.Cross(plane2).Dot(ConvertToTVector3(p1[0]->vector()+p1[1]->vector())));
+    if (sign<0) angle = 2*M_PI - angle;
+    // boost back to origional frame
+    for(unsigned i=0; i<p1.size(); ++i) BoostVec(p1[i],boost);
+    for(unsigned i=0; i<p2.size(); ++i) BoostVec(p2[i],boost);
+    return std::make_pair(angle,sign);
   }
   
   template<class T, class U>

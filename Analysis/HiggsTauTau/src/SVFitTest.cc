@@ -237,7 +237,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
-          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         }
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
@@ -246,7 +246,7 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = iso_2_ < 10;
         }
         if(do_vloose_preselection_) {
-          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         }
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
@@ -285,7 +285,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
@@ -293,7 +293,7 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = iso_2_ < 10;
         }
         if(do_vloose_preselection_) {
-          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         }
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
@@ -338,13 +338,13 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");  
-          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau1->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");  
+          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau2->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         }
         if(do_vloose_preselection_){
           if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");  
-            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau1->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");;  
+            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau2->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           }
           else {
             iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");

@@ -2,10 +2,10 @@
 
 // Add this function to take the maximum score and corresponding index
 // from the vector of scores
-std::pair<float, float> getMaxScoreWithIndex(std::vector<float> vec) {
-  if (vec.empty()) return std::make_pair(0., 0.);
+std::pair<float, int> getMaxScoreWithIndex(std::vector<float> vec) {
+  if (vec.empty()) return std::make_pair(0., 0);
   float max_score = vec[0];
-  float max_index = 0.;
+  int max_index = 0;
   unsigned ind = 0;
   for (auto s : vec) {
     if (s > max_score) {
@@ -14,7 +14,7 @@ std::pair<float, float> getMaxScoreWithIndex(std::vector<float> vec) {
     }
     ++ind;
   }
-  std::pair<float, float> out_pair = std::make_pair(max_score, max_index);
+  std::pair<float, int> out_pair = std::make_pair(max_score, max_index);
   return out_pair;
 }
 
@@ -40,18 +40,22 @@ namespace ic {
         if(isEven) scores = reader_even_->EvaluateMulticlass("BDT method"); 
         else       scores = reader_odd_->EvaluateMulticlass("BDT method");
       }
-      //////////////// 
-      std::cout << "-------" << std::endl;
-      std::cout << evt_ << std::endl;
-      for (unsigned i=0; i<vars.size(); ++i) std::cout << i << "    " << vars[i] << std::endl;
-      if(decay_mode==10) {
-      std::cout  << "    " << var0<< "    " << var1<< "    " << var2<< "    " << var3<< "    " << var4<< "    " << var5<< "    " << var6<< "    " << var7<< "    " << var8<< "    " << var9<< "    " << var10<< "    " << var11<< "    " << var12<< "    " << var13<< "    " << var14<< "    " << var15<< "    " << var16<< "    " << var17<< "    " << var18<< "    " << var19<< "    " << var20<< "    " << var21<< "    " << var22<< "    " << var23<< "    " << var24<< "    " << var25<< "    " << var26<< "    " << var27<< "    " << var28<< "    " << var29<< "    " << var30<< "    " << var31<< "    " << var32<< "    " << var33<< "    " << var34<< "    " << var35<< "    " << var36<< "    " << var37<< "    " << var38<< "    " << var39 << std::endl;
+      ////////////// 
+      //std::cout << "-------" << std::endl;
+      //std::cout << evt_ << std::endl;
+      //std::cout << "pt = ";
+      //if(decay_mode<2) std::cout << var10 << std::endl;
+      //else std::cout << var26 << std::endl;
+      //for (unsigned i=0; i<vars.size(); ++i) std::cout << i << "    " << vars[i] << std::endl;
+      //if(decay_mode==10) {
+      //std::cout  << "    " << var0<< "    " << var1<< "    " << var2<< "    " << var3<< "    " << var4<< "    " << var5<< "    " << var6<< "    " << var7<< "    " << var8<< "    " << var9<< "    " << var10<< "    " << var11<< "    " << var12<< "    " << var13<< "    " << var14<< "    " << var15<< "    " << var16<< "    " << var17<< "    " << var18<< "    " << var19<< "    " << var20<< "    " << var21<< "    " << var22<< "    " << var23<< "    " << var24<< "    " << var25<< "    " << var26<< "    " << var27<< "    " << var28<< "    " << var29<< "    " << var30<< "    " << var31<< "    " << var32<< "    " << var33<< "    " << var34<< "    " << var35<< "    " << var36<< "    " << var37<< "    " << var38<< "    " << var39 << std::endl;
 
-      }
-      std::cout << "scores:" << std::endl;
-      for(auto s : scores) std::cout << s << "    ";
-      std::cout << "\n";
-      ////////////////
+      //}
+      //std::cout << "scores:" << std::endl;
+      //for(auto s : scores) std::cout << s << "    ";
+      //std::cout << "\n";
+      ////////////
+
       return scores;
   }
 
@@ -68,13 +72,13 @@ namespace ic {
     reader_even_ = new TMVA::Reader();
     reader_odd_ = new TMVA::Reader();
 
-    TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoeven.xml";
-    TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd.xml";
+    TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2016_dm0_dm1.xml"; //add apply to even here
+    TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2016_dm0_dm1.xml";
 
     if(strategy_==strategy::cpdecays17) {
       // make sure you add odd training!
-      filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd_2017v1.xml";
-      filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_0_1_applytoodd_2017v1.xml";
+      filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2017_dm0_dm1.xml";
+      filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2017_dm0_dm1.xml";
     }
 
     reader_even_->AddVariable( "Egamma1_tau", &var0 );
@@ -130,13 +134,13 @@ namespace ic {
     reader_even_->BookMVA( "BDT method", filename_even );
     reader_odd_->BookMVA( "BDT method", filename_odd );
 
-    TString filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_applytoeven.xml";
-    TString filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_applytoodd.xml";
+    TString filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2016_dm10.xml";
+    TString filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2016_dm10.xml";
 
     if(strategy_==strategy::cpdecays17) {
       // make sure you add odd training!
-      filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_11_applytoodd_2017v1.xml";
-      filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_dm_10_11_applytoodd_2017v1.xml";
+      filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2017_dm10.xml";
+      filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2017_dm10.xml";
     }
 
     reader_dm10_even_ = new TMVA::Reader();
@@ -258,8 +262,6 @@ namespace ic {
       Tau * tau2 = dynamic_cast<Tau *>(lep2);
       tau_decay_mode_2_=tau2->decay_mode();
 
-      //std::cout << tau2->GetTauID("MVADM2016v1DM0raw") << "    " << tau2->GetTauID("MVADM2016v1DM1raw") << "    " << tau2->GetTauID("MVADM2016v1DM2raw") << "    " << tau2->GetTauID("MVADM2016v1DM10raw") << "    " << tau2->GetTauID("MVADM2016v1DM11raw") << std::endl;
-
       std::vector<ic::PFCandidate*> a1_daughters_2 = {};
       std::pair<ic::Candidate*, ic::Candidate*> rho_2 = std::make_pair(new Candidate(), new Candidate());
  
@@ -295,7 +297,7 @@ namespace ic {
       mass2_2_=-1;
       strip_E_2_=-1;
 
-      if(tau_decay_mode_2_==10){
+      if(tau_decay_mode_2_==10 && a1_daughters_2.size()>2){
         strip_E_2_ = pi0_2->energy();
         mass0_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector() + a1_daughters_2[2]->vector()).M();
         mass1_2_ = (a1_daughters_2[0]->vector() + a1_daughters_2[1]->vector()).M();
@@ -304,22 +306,10 @@ namespace ic {
         E2_2_ = a1_daughters_2[1]->energy();
         E3_2_ = a1_daughters_2[2]->energy();
 
-        double Ea1 = E1_2_+E2_2_+E3_2_;
-        E1_overEa1_2_ = E1_2_/Ea1;
-        E2_overEa1_2_ = E2_2_/Ea1;
-        E3_overEa1_2_ = E3_2_/Ea1;
-        double Etau = Ea1+strip_E_2_;
-        E1_overEtau_2_ = E1_2_/Etau;
-        E2_overEtau_2_ = E2_2_/Etau;
-        E3_overEtau_2_ = E3_2_/Etau;
-
         if(strip_pt_2_>0) {
           a1_pi0_dEta_2_ = std::fabs(pi0_2->eta()-tau2->eta());
           a1_pi0_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0_2->vector(),tau2->vector()));
         }
-
-        a1_pi0_dEta_timesEtau_2_=a1_pi0_dEta_2_*Etau;
-        a1_pi0_dphi_timesEtau_2_=a1_pi0_dphi_2_*Etau;
 
         h1_h2_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_2[0]->vector(),a1_daughters_2[1]->vector()));
         h1_h3_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_2[0]->vector(),a1_daughters_2[2]->vector()));
@@ -328,14 +318,26 @@ namespace ic {
         h1_h3_dEta_2_ = std::fabs(a1_daughters_2[0]->eta()-a1_daughters_2[2]->eta());
         h2_h3_dEta_2_ = std::fabs(a1_daughters_2[1]->eta()-a1_daughters_2[2]->eta());
 
-        h1_h2_dphi_timesE12_2_=h1_h2_dphi_2_*(E1_2_+E2_2_);
-        h1_h3_dphi_timesE13_2_=h1_h3_dphi_2_*(E1_2_+E3_2_);
-        h2_h3_dphi_timesE23_2_=h2_h3_dphi_2_*(E2_2_+E3_2_);
-        h1_h2_dEta_timesE12_2_=h1_h2_dEta_2_*(E1_2_+E2_2_);
-        h1_h3_dEta_timesE13_2_=h1_h3_dEta_2_*(E1_2_+E3_2_);
-        h2_h3_dEta_timesE23_2_=h2_h3_dEta_2_*(E2_2_+E3_2_);
-
       }
+
+      double Ea1 = E1_2_+E2_2_+E3_2_;
+      E1_overEa1_2_ = E1_2_/Ea1;
+      E2_overEa1_2_ = E2_2_/Ea1;
+      E3_overEa1_2_ = E3_2_/Ea1;
+      double Etau = Ea1+strip_E_2_;
+      E1_overEtau_2_ = E1_2_/Etau;
+      E2_overEtau_2_ = E2_2_/Etau;
+      E3_overEtau_2_ = E3_2_/Etau;
+
+      a1_pi0_dEta_timesEtau_2_=a1_pi0_dEta_2_*Etau;
+      a1_pi0_dphi_timesEtau_2_=a1_pi0_dphi_2_*Etau;
+
+      h1_h2_dphi_timesE12_2_=h1_h2_dphi_2_*(E1_2_+E2_2_);
+      h1_h3_dphi_timesE13_2_=h1_h3_dphi_2_*(E1_2_+E3_2_);
+      h2_h3_dphi_timesE23_2_=h2_h3_dphi_2_*(E2_2_+E3_2_);
+      h1_h2_dEta_timesE12_2_=h1_h2_dEta_2_*(E1_2_+E2_2_);
+      h1_h3_dEta_timesE13_2_=h1_h3_dEta_2_*(E1_2_+E3_2_);
+      h2_h3_dEta_timesE23_2_=h2_h3_dEta_2_*(E2_2_+E3_2_);
 
       if (tau_decay_mode_2_<12) {
 
@@ -486,7 +488,7 @@ namespace ic {
           event->Add("mvadm_pi_2", scores2[2]);
           event->Add("mvadm_a1_2", scores2[3]); 
 
-          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores2);
+          std::pair<float, int> max_pair = getMaxScoreWithIndex(scores2);
           event->Add("mvadm_max_score_2", max_pair.first); 
           event->Add("mvadm_max_index_2", max_pair.second);
          
@@ -496,7 +498,7 @@ namespace ic {
           event->Add("mvadm_a1_2", scores2[1]);
           event->Add("mvadm_3pipi0_2", scores2[2]);
 
-          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores2);
+          std::pair<float, int> max_pair = getMaxScoreWithIndex(scores2);
           event->Add("mvadm_max_score_2", max_pair.first); 
           event->Add("mvadm_max_index_2", max_pair.second);
         }
@@ -545,7 +547,7 @@ namespace ic {
       strip_E_1_=-1;
 
 
-      if(tau_decay_mode_1_==10){
+      if(tau_decay_mode_1_==10 && a1_daughters_1.size()>2){
         strip_E_1_ = pi0_1->energy();
         mass0_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector() + a1_daughters_1[2]->vector()).M();
         mass1_1_ = (a1_daughters_1[0]->vector() + a1_daughters_1[1]->vector()).M();
@@ -554,22 +556,10 @@ namespace ic {
         E2_1_ = a1_daughters_1[1]->energy();
         E3_1_ = a1_daughters_1[2]->energy();
 
-        double Ea1 = E1_1_+E2_1_+E3_1_;
-        E1_overEa1_1_ = E1_1_/Ea1;
-        E2_overEa1_1_ = E2_1_/Ea1;
-        E3_overEa1_1_ = E3_1_/Ea1;
-        double Etau = Ea1+strip_E_1_;
-        E1_overEtau_1_ = E1_1_/Etau;
-        E2_overEtau_1_ = E2_1_/Etau;
-        E3_overEtau_1_ = E3_1_/Etau;
-
         if(strip_pt_1_>0) {
           a1_pi0_dEta_1_ = std::fabs(pi0_1->eta()-tau1->eta());
           a1_pi0_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(pi0_1->vector(),tau1->vector()));
         }
-
-        a1_pi0_dEta_timesEtau_1_=a1_pi0_dEta_1_*Etau;
-        a1_pi0_dphi_timesEtau_1_=a1_pi0_dphi_1_*Etau;
 
         h1_h2_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_1[0]->vector(),a1_daughters_1[1]->vector()));
         h1_h3_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(a1_daughters_1[0]->vector(),a1_daughters_1[2]->vector()));
@@ -578,14 +568,26 @@ namespace ic {
         h1_h3_dEta_1_ = std::fabs(a1_daughters_1[0]->eta()-a1_daughters_1[2]->eta());
         h2_h3_dEta_1_ = std::fabs(a1_daughters_1[1]->eta()-a1_daughters_1[2]->eta());
 
-        h1_h2_dphi_timesE12_1_=h1_h2_dphi_1_*(E1_1_+E2_1_);
-        h1_h3_dphi_timesE13_1_=h1_h3_dphi_1_*(E1_1_+E3_1_);
-        h2_h3_dphi_timesE23_1_=h2_h3_dphi_1_*(E2_1_+E3_1_);
-        h1_h2_dEta_timesE12_1_=h1_h2_dEta_1_*(E1_1_+E2_1_);
-        h1_h3_dEta_timesE13_1_=h1_h3_dEta_1_*(E1_1_+E3_1_);
-        h2_h3_dEta_timesE23_1_=h2_h3_dEta_1_*(E2_1_+E3_1_);
-
       }
+
+      double Ea1 = E1_1_+E2_1_+E3_1_;
+      E1_overEa1_1_ = E1_1_/Ea1;
+      E2_overEa1_1_ = E2_1_/Ea1;
+      E3_overEa1_1_ = E3_1_/Ea1;
+      double Etau = Ea1+strip_E_1_;
+      E1_overEtau_1_ = E1_1_/Etau;
+      E2_overEtau_1_ = E2_1_/Etau;
+      E3_overEtau_1_ = E3_1_/Etau;
+
+      a1_pi0_dEta_timesEtau_1_=a1_pi0_dEta_1_*Etau;
+      a1_pi0_dphi_timesEtau_1_=a1_pi0_dphi_1_*Etau;
+
+      h1_h2_dphi_timesE12_1_=h1_h2_dphi_1_*(E1_1_+E2_1_);
+      h1_h3_dphi_timesE13_1_=h1_h3_dphi_1_*(E1_1_+E3_1_);
+      h2_h3_dphi_timesE23_1_=h2_h3_dphi_1_*(E2_1_+E3_1_);
+      h1_h2_dEta_timesE12_1_=h1_h2_dEta_1_*(E1_1_+E2_1_);
+      h1_h3_dEta_timesE13_1_=h1_h3_dEta_1_*(E1_1_+E3_1_);
+      h2_h3_dEta_timesE23_1_=h2_h3_dEta_1_*(E2_1_+E3_1_);
 
 
       if (tau_decay_mode_1_<12) {
@@ -737,7 +739,7 @@ namespace ic {
           event->Add("mvadm_pi_1", scores1[2]);
           event->Add("mvadm_a1_1", scores1[3]); 
 
-          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores1);
+          std::pair<float, int> max_pair = getMaxScoreWithIndex(scores1);
           event->Add("mvadm_max_score_1", max_pair.first); 
           event->Add("mvadm_max_index_1", max_pair.second);
         } else if (tau_decay_mode_1_>9){
@@ -746,7 +748,7 @@ namespace ic {
           event->Add("mvadm_a1_1", scores1[1]);
           event->Add("mvadm_3pipi0_1", scores1[2]);
 
-          std::pair<float, float> max_pair = getMaxScoreWithIndex(scores1);
+          std::pair<float, int> max_pair = getMaxScoreWithIndex(scores1);
           event->Add("mvadm_max_score_1", max_pair.first); 
           event->Add("mvadm_max_index_1", max_pair.second);
         }
