@@ -3,9 +3,9 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Dec03_SUSYMC_94X'
+config.General.workArea='test_submission'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cfg_94X_Apr18.py'
+config.JobType.psetName = 'higgstautau_cfg_94X_Apr18_pfCands.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.allowUndistributedCMSSW = True
@@ -14,7 +14,7 @@ config.section_('Data')
 config.Data.unitsPerJob = 100
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Dec03_SUSYMC_94X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/spinner_check/'
 config.Data.allowNonValidInputDataset = True
 config.section_('User')
 config.section_('Site')

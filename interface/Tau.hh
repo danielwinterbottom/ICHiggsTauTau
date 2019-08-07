@@ -18,6 +18,7 @@ class Tau : public Candidate {
  private:
   typedef std::map<std::size_t, float> UFmap;
   typedef ROOT::Math::XYZPoint Point;
+  typedef double Matrix[3][3];
 
  public:
   Tau();
@@ -116,6 +117,14 @@ class Tau : public Candidate {
   inline std::vector<std::size_t> const& sig_neutral_cands() const {
     return sig_neutral_cands_;
   }
+
+  /// The vtx covariance matrix
+  inline Matrix* vtx_covariance() { return &(vtx_covariance_); }
+
+  inline bool hasSV() const { return hasSV_; }
+
+  inline Matrix* s_vtx_covariance() { return &(s_vtx_covariance_); }
+
   /**@}*/
 
   /// @name Setters
@@ -226,6 +235,38 @@ class Tau : public Candidate {
       std::vector<std::size_t> const& sig_neutral_cands) {
     sig_neutral_cands_ = sig_neutral_cands;
   }
+
+  inline void set_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
+    //covij where i=row and j=column
+    vtx_covariance_[0][0] = cov00;
+    vtx_covariance_[0][1] = cov01;
+    vtx_covariance_[0][2] = cov02;
+    vtx_covariance_[1][0] = cov10;
+    vtx_covariance_[1][1] = cov11;
+    vtx_covariance_[1][2] = cov12;
+    vtx_covariance_[2][0] = cov20;
+    vtx_covariance_[2][1] = cov21;
+    vtx_covariance_[2][2] = cov22;
+  }
+
+  inline void set_hasSV(bool const&  hasSV){
+    hasSV_ = hasSV;
+  }
+
+
+  inline void set_s_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
+    //covij where i=row and j=column
+    s_vtx_covariance_[0][0] = cov00;
+    s_vtx_covariance_[0][1] = cov01;
+    s_vtx_covariance_[0][2] = cov02;
+    s_vtx_covariance_[1][0] = cov10;
+    s_vtx_covariance_[1][1] = cov11;
+    s_vtx_covariance_[1][2] = cov12;
+    s_vtx_covariance_[2][0] = cov20;
+    s_vtx_covariance_[2][1] = cov21;
+    s_vtx_covariance_[2][2] = cov22;
+  }
+
   /**@}*/
 
   /**
@@ -275,6 +316,12 @@ class Tau : public Candidate {
   Point ref_point_;
   Point s_ref_point_;
 
+  Matrix vtx_covariance_;
+
+  bool hasSV_;
+
+  Matrix s_vtx_covariance_;
+
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;
   std::vector<std::size_t> iso_charged_cands_;
@@ -284,7 +331,7 @@ class Tau : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Tau, 4);
+  ClassDef(Tau, 5);
  #endif
 };
 

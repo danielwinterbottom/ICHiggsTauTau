@@ -8,6 +8,7 @@
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 #include "Rtypes.h"
+#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
 namespace ic {
 
@@ -62,6 +63,13 @@ class SuperCluster {
 
   /// Unique identifier
   inline std::size_t id() const { return id_; }
+
+  inline double const& etaWidth() const { return etaWidth_; }
+  inline double const& phiWidth() const { return phiWidth_; }
+
+  inline ic::Candidate const& seed_cluster() const { return seed_cluster_; }
+  inline std::vector<ic::Candidate> const& clusters() const { return clusters_; }
+
   /**@}*/
 
   /// @name Setters
@@ -92,6 +100,24 @@ class SuperCluster {
 
   /// @copybrief is_barrel()
   inline void set_is_barrel(bool const& is_barrel) { is_barrel_ = is_barrel; }
+
+  inline void set_phiWidth(double const& phiWidth) {
+    phiWidth_ = phiWidth;
+  }
+
+  inline void set_etaWidth(double const& etaWidth) {
+    etaWidth_ = etaWidth;
+  }
+
+  inline void set_seed_cluster(ic::Candidate const& seed_cluster) {
+    seed_cluster_ = seed_cluster;
+  }
+
+  inline void set_clusters(std::vector<ic::Candidate> const& clusters) {
+    clusters_ = clusters;
+  }
+
+
   /**@}*/
 
  private:
@@ -100,10 +126,14 @@ class SuperCluster {
   double energy_;
   double raw_energy_;
   bool is_barrel_;
+  double etaWidth_;
+  double phiWidth_;
+  std::vector<ic::Candidate> clusters_;
+  ic::Candidate seed_cluster_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(SuperCluster, 2);
+  ClassDef(SuperCluster, 3);
  #endif
 };
 

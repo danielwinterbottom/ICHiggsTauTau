@@ -10,9 +10,9 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
+ 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
-'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '102X_dataRun2_v8', parser.VarParsing.multiplicity.singleton,
@@ -72,7 +72,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000) #20000
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -116,7 +116,8 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = [
                             "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
-                            "deepTau2017v2",
+                            #"deepTau2017v2",
+                            "MVADM_2016_v1","MVADM_2017_v1", 
                                ])
 tauIdEmbedder.runTauID()
 
@@ -213,11 +214,37 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
     input = cms.InputTag("prunedGenParticles")
 )
 
+### refit PV excluding tau decay products tracks
+
+import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
+process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
+
+process.refitOfflineSlimmedPrimaryVerticesBS = vertexrefit.AdvancedRefitVertexBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVerticesBS.storeAsMap = cms.bool(True)
+
+process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVertices"),
+  input = "refitOfflineSlimmedPrimaryVertices",
+  firstVertexOnly = cms.bool(False)
+)
+
+process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVerticesBS"),
+  input = "refitOfflineSlimmedPrimaryVerticesBS",
+  firstVertexOnly = cms.bool(False)
+)
 
 process.icVertexSequence = cms.Sequence(
-    process.icVertexProducer+
-    process.icGenVertexProducer
+  process.icVertexProducer+
+  process.icGenVertexProducer+
+  process.refitOfflineSlimmedPrimaryVertices+
+  process.refitOfflineSlimmedPrimaryVerticesBS+
+  process.icRefitVertexProducer+
+  process.icRefitVertexProducerBS
 )
+
+
 
 if isData :
     process.icVertexSequence.remove(process.icGenVertexProducer)

@@ -120,7 +120,9 @@ updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Id
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
-                    toKeep = [ "2017v2", "newDM2017v2","2016v1", "newDM2016v1","deepTau2017v2"  ])
+                    toKeep = ["2017v2", "newDM2017v2", "2016v1", "newDM2016v1",
+                            #"deepTau2017v2",
+                            "MVADM_2016_v1","MVADM_2017_v1"])
 tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -219,14 +221,41 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 )
 
 
+### refit PV excluding tau decay products tracks
+
+import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
+process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
+process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+
+process.refitOfflineSlimmedPrimaryVerticesBS = vertexrefit.AdvancedRefitVertexBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVerticesBS.storeAsMap = cms.bool(True)
+process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+
+
+process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVertices"),
+  input = "refitOfflineSlimmedPrimaryVertices",
+  firstVertexOnly = cms.bool(False)
+)
+
+process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVerticesBS"),
+  input = "refitOfflineSlimmedPrimaryVerticesBS",
+  firstVertexOnly = cms.bool(False)
+)
+
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
-  process.icGenVertexProducer
+  process.icGenVertexProducer+
+  process.refitOfflineSlimmedPrimaryVertices+
+  process.refitOfflineSlimmedPrimaryVerticesBS+
+  process.icRefitVertexProducer+
+  process.icRefitVertexProducerBS
 )
 
 if isData or isEmbed:
   process.icVertexSequence.remove(process.icGenVertexProducer)
-
 
 ################################################################
 # PFCandidates
@@ -543,6 +572,19 @@ process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
 
 process.icTauSequence = cms.Sequence(
   process.icTauProducer
+)
+
+################################################################
+# photons, clusters, and superclusters
+################################################################
+
+process.icPi0SuperClusterProducer = cms.EDProducer('ICPi0SuperClusterProducer',
+  branch  = cms.string("superClusters"),
+  input   = cms.InputTag("reducedEgamma", "reducedSuperClusters"),
+)
+
+process.icPhotonSequence = cms.Sequence(
+  process.icPi0SuperClusterProducer
 )
 
 # ################################################################
@@ -1622,6 +1664,7 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
+  process.icPhotonSequence+
   process.icPFJetSequence+
   process.icPFSequence+
   process.icPfMetSequence+
