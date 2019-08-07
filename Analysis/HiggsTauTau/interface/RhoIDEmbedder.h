@@ -292,6 +292,10 @@ class RhoIDEmbedder : public ModuleBase {
 
   double test_dR_lead_strip_2_;
   double test_pt_lead_strip_2_;
+  
+  double rho_;
+  double n_vtx_;
+
 
 };
 

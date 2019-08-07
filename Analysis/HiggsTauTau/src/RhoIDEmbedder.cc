@@ -279,7 +279,9 @@ namespace ic {
       outtree_->Branch("closest_strip_dR_2", &closest_strip_dR_2_);
       outtree_->Branch("test_dR_lead_strip_2", &test_dR_lead_strip_2_);
       outtree_->Branch("test_pt_lead_strip_2", &test_pt_lead_strip_2_);
- 
+      outtree_->Branch("n_vtx"           , &n_vtx_);
+      outtree_->Branch("rho"             , &rho_);
+
     }
 
 
@@ -333,6 +335,12 @@ namespace ic {
     
     wt_ = 1;
     wt_ = eventInfo->total_weight();
+
+    rho_ = -999;
+    rho_ = eventInfo->jet_rho();
+
+    n_vtx_ = -999;
+    n_vtx_ = eventInfo->good_vertices();
 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>("ditau");
     CompositeCandidate const* ditau = ditau_vec.at(0);

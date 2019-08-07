@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan31_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["mt"],
+    "channels":      ["mt", "tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Validation_July2_LeadStripSignalThenIsoCone",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/trainNtuple_Aug6_Signal_NewVars_2016data",
     //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
