@@ -63,6 +63,9 @@ class Photon : public Candidate {
 
   /// True if photon passes the electron veto
   inline bool pass_electron_veto() const { return pass_electron_veto_; }
+
+  inline std::size_t supercluster() const { return supercluster_; }
+
   /**@}*/
 
   /// @name Setters
@@ -131,6 +134,13 @@ class Photon : public Candidate {
   inline void set_pass_electron_veto(bool const& pass_electron_veto) {
     pass_electron_veto_ = pass_electron_veto;
   }
+
+  inline void set_supercluster(std::size_t const& supercluster) {
+    supercluster_ = supercluster;
+  }
+
+
+//supercluster_
   /**@}*/
 
  private:
@@ -149,10 +159,11 @@ class Photon : public Candidate {
   float sigma_IetaIeta_;
 
   bool pass_electron_veto_;
+  std::size_t supercluster_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Photon, 2);
+  ClassDef(Photon, 3);
  #endif
 };
 

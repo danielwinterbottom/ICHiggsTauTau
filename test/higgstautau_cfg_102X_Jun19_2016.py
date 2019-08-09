@@ -122,7 +122,8 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = ["2017v2", "newDM2017v2", "2016v1", "newDM2016v1",
                             #"deepTau2017v2",
-                            "MVADM_2016_v1","MVADM_2017_v1"])
+                            #"MVADM_2016_v1","MVADM_2017_v1"
+                              ])
 tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -581,9 +582,29 @@ process.icTauSequence = cms.Sequence(
 process.icPi0SuperClusterProducer = cms.EDProducer('ICPi0SuperClusterProducer',
   branch  = cms.string("superClusters"),
   input   = cms.InputTag("reducedEgamma", "reducedSuperClusters"),
+  input_EERecHits = cms.InputTag("reducedEgamma", "reducedEERecHits"),
+  input_EBRecHits = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
+  input_taus = cms.InputTag("slimmedTaus")
 )
 
+process.icPhotonProducer = producers.icPhotonProducer.clone(
+    branch                  = cms.string("photons"),
+    input                   = cms.InputTag("slimmedPhotons"),
+    includeHadTowOverEm     = cms.bool(True),
+    includePFIso03           = cms.bool(True),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll03PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged03PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral03PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma03PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU03PFIso")
+    ),
+    includeIsoFromPat = cms.bool(True)
+)
+
+
 process.icPhotonSequence = cms.Sequence(
+  process.icPhotonProducer+
   process.icPi0SuperClusterProducer
 )
 

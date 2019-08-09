@@ -55,6 +55,8 @@ class ICPhotonProducer : public edm::EDProducer {
   bool do_pf_iso_03_;
   bool do_pf_iso_04_;
   bool do_iso_from_pat_;
+
+  boost::hash<reco::SuperCluster const*> sc_hasher_;
 };
 
 #endif
