@@ -250,6 +250,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
         }
         #endif
+
+        //get track 
+        auto track = packedCand->bestTrack();
+
         dest.set_lead_p(packedCand->p());
 
         dest.set_lead_pt(packedCand->pt());
@@ -257,6 +261,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_eta(packedCand->eta());
         dest.set_lead_phi(packedCand->phi());
 
+        // this is the same as the reference point on the track
         dest.set_svx(packedCand->vx());
         dest.set_svy(packedCand->vy());
         dest.set_svz(packedCand->vz());
