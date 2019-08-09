@@ -119,7 +119,26 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
         cand_vec.push_back(new_cand);
       }
     }
-    dest.set_clusters(cand_vec);   
+    dest.set_clusters(cand_vec);  
+
+    std::vector<ic::Candidate> ps_cand_vec;
+
+    reco::CaloClusterPtrVector ps_clusters = src.preshowerClusters();
+    if(ps_clusters.isAvailable()) {
+      for(auto c : ps_clusters) {
+        double E = c->energy();
+        double theta = atan(exp(-c->eta()))*2;
+        double pt = E*sin(theta);
+        ic::Candidate new_cand;
+        new_cand.set_pt(pt);
+        new_cand.set_eta(c->eta());
+        new_cand.set_phi(c->phi());
+        new_cand.set_energy(E);
+        ps_cand_vec.push_back(new_cand);
+      }
+    }
+    dest.set_ps_clusters(ps_cand_vec);
+ 
     ic::Candidate seed_cand;
     double E = src.seed()->correctedEnergy();
     double theta = atan(exp(-src.seed()->eta()))*2;

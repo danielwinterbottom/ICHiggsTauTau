@@ -587,7 +587,24 @@ process.icPi0SuperClusterProducer = cms.EDProducer('ICPi0SuperClusterProducer',
   input_taus = cms.InputTag("slimmedTaus")
 )
 
+process.icPhotonProducer = producers.icPhotonProducer.clone(
+    branch                  = cms.string("photons"),
+    input                   = cms.InputTag("slimmedPhotons"),
+    includeHadTowOverEm     = cms.bool(True),
+    includePFIso03           = cms.bool(True),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll03PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged03PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral03PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma03PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU03PFIso")
+    ),
+    includeIsoFromPat = cms.bool(True)
+)
+
+
 process.icPhotonSequence = cms.Sequence(
+  process.icPhotonProducer+
   process.icPi0SuperClusterProducer
 )
 

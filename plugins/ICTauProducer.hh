@@ -252,7 +252,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         #endif
 
         //get track 
-        auto track = packedCand->bestTrack();
+        //auto track = packedCand->bestTrack();
 
         dest.set_lead_p(packedCand->p());
 

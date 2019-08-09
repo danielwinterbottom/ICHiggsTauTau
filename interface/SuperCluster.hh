@@ -69,6 +69,7 @@ class SuperCluster {
 
   inline ic::Candidate const& seed_cluster() const { return seed_cluster_; }
   inline std::vector<ic::Candidate> const& clusters() const { return clusters_; }
+  inline std::vector<ic::Candidate> const& ps_clusters() const { return ps_clusters_; }
 
   inline float const& r9() const { return r9_; }
   inline float const& r9_full5x5() const { return r9_full5x5_; }
@@ -123,6 +124,11 @@ class SuperCluster {
     clusters_ = clusters;
   }
 
+  inline void set_ps_clusters(std::vector<ic::Candidate> const& ps_clusters) {
+    ps_clusters_ = ps_clusters;
+  }
+
+
   inline void set_r9(float const& r9) {
     r9_ = r9;
   }
@@ -154,6 +160,7 @@ class SuperCluster {
   double etaWidth_;
   double phiWidth_;
   std::vector<ic::Candidate> clusters_;
+  std::vector<ic::Candidate> ps_clusters_;
   ic::Candidate seed_cluster_;
   float r9_;
   float r9_full5x5_;
