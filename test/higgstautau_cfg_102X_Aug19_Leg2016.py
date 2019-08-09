@@ -279,14 +279,6 @@ electronLabel = cms.InputTag("slimmedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 
-# electron smear and scale
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       runEnergyCorrections=False, #corrections by default are fine so no need to re-run
-                       era='2016-Legacy')  
-process.icElectronSequence += cms.Sequence(
-    process.egammaPostRecoSeq
-    )
 
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
     input       = electronLabel,
@@ -416,7 +408,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   inputVertices             = vtxLabel,
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
-  doSmearAndScale           = cms.bool(False),
+  doSmearAndScale           = cms.bool(True),
   includeFloats = cms.PSet(
      generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values")
   ),
@@ -1688,8 +1680,8 @@ process.p = cms.Path(
   process.icMiniAODSequence+
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
-  process.icVertexSequence+
   process.icElectronSequence+
+  process.icVertexSequence+
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
