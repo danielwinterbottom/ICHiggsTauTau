@@ -17,7 +17,7 @@ config.Data.unitsPerJob = 100000
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.ignoreLocality= True
+config.Data.ignoreLocality= False
 config.Data.outLFNDirBase='/store/user/mhassans/Aug07_MC_102X/'
 config.section_('User')
 config.section_('Site')
