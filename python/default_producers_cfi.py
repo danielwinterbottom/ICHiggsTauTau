@@ -443,6 +443,14 @@ icVertexProducer = cms.EDProducer('ICVertexProducer',
   trackPtThreshold = cms.double(0.0),
   requestTracks = cms.bool(False)
 )
+icRefitVertexProducer = cms.EDProducer('ICRefitVertexProducer',
+  branch  = cms.string("refittedVertices"),
+  input   = cms.InputTag("refitOfflineSlimmedPrimaryVertices"),
+  firstVertexOnly = cms.bool(False),
+  trackPtThreshold = cms.double(0.0),
+  requestTracks = cms.bool(False)
+)
+
 ## [Vertex]
 
 ## [SecondaryVertex]

@@ -3,12 +3,12 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jan31_MC_94X'
+config.General.workArea='spinner_check'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_94X_Apr18_pfCands.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.maxMemoryMB = 3000
+#config.JobType.maxMemoryMB = 3000
 CfgParams = ['release=94XMINIAOD','isData=0', 'globalTag=94X_mc2017_realistic_v17']
 config.section_('Data')
 config.Data.unitsPerJob = 720 # for automatic splitting
@@ -16,7 +16,7 @@ config.Data.splitting = 'Automatic'
 # config.Data.unitsPerJob = 100000
 # config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/Jan31_MC_94X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/spinner_check/'
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS = 'phys03'
 config.section_('User')
@@ -51,49 +51,19 @@ if __name__ == '__main__':
     # tasks.append(('SUSYGluGluToHToTauTau_M-120', '/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
 
     # CP private production
-    tasks.append(('GluGluToHToTauTau_M125_nospinner-2017', '/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-GluGluToHToTauTauNoSpin_M125_13TeV_pythia8_2017-MINIAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
-    tasks.append(('VBFHToTauTau_M125_nospinner-2017', '/VBFHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-VBFHToTauTauNoSpin_M125_13TeV_pythia8_2017-MINIAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    #tasks.append(('GluGluToHToTauTau_M125_nospinner', '/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-GluGluToHToTauTauNoSpin_M125_13TeV_pythia8_2017-MINIAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    #tasks.append(('GluGluToHToTauTau_M125_nospinner-filter', ' 	/GluGluHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2/dwinterb-GluGluHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    #tasks.append(('VBFHToTauTau_M125_nospinner-2017', '/VBFHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-VBFHToTauTauNoSpin_M125_13TeV_pythia8_2017-MINIAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    tasks.append(('VBFHToTauTau_M125_nospinner','/VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2/dwinterb-VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    tasks.append(('VBFHToTauTau_M125_PS','/VBFHToTauTau_M125_13TeV_powheg_pythia8_PS-filter-v3/dwinterb-VBFHToTauTau_M125_13TeV_powheg_pythia8_PS-filter-v3-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+    tasks.append(('VBFHToTauTau_M125_SM','/VBFHToTauTau_M125_13TeV_powheg_pythia8_SM-filter-v2/dwinterb-VBFHToTauTau_M125_13TeV_powheg_pythia8_SM-filter-v2-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
 
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
  
-        if "DY4JetsToLL-LO" in task[0]:
-          # talk to DBS to get list of files in this dataset
-          from dbs.apis.dbsClient import DbsApi
-          dbs = DbsApi('https://cmsweb.cern.ch/dbs/prod/global/DBSReader')
-
-          dataset = task[1]
-          fileDictList=dbs.listFiles(dataset=dataset)
-
-          print ("dataset %s has %d files" % (dataset, len(fileDictList)))
-
-          # DBS client returns a list of dictionaries, but we want a list of Logical File Names
-          lfnList = [ dic['logical_file_name'] for dic in fileDictList ]
-          config.Data.userInputFiles = lfnList
-          config.Data.splitting = 'FileBased'
-          # config.Data.unitsPerJob = 1
-          config.Data.inputDataset = None
-        else:
-          config.Data.inputDataset = task[1]
-          # config.Data.unitsPerJob = 100000
-          # config.Data.splitting = 'EventAwareLumiBased'
-          config.Data.unitsPerJob = 720
-          config.Data.userInputFiles = None
-            
-        if "HToTauTau" in task[0]:
-            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1']
-            if 'amcatnloFXFX' in task[0]: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','includenpNLO=True','doHT=1']
-        else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
-            
-        if ("DY" in task[0] and "JetsToLL-LO" in task[0]) or ("W" in task[0] and "JetsToLNu-LO" in task[0]):
-            config.JobType.pyCfgParams = CfgParams + ['doHT=1']
-
-        if "nospinner" in task[0]:
-            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1' ,'tauSpinner=True']
-        else:
-            config.JobType.pyCfgParams = CfgParams
+        config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True','doHT=1' ,'tauSpinner=True']
         print config.Data.unitsPerJob
         print config.Data.splitting
 

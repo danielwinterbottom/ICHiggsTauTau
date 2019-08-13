@@ -139,7 +139,6 @@ void ICTauProducer<T>::produce(edm::Event& event,
     dest.set_energy(src.energy());
     dest.set_charge(src.charge());
     dest.set_decay_mode(src.decayMode());
-   // if(src.decayMode()==2 || true) std::cout << src.decayMode() << std::endl;
 
     if (src.leadPFChargedHadrCand().isNonnull()) {
       dest.set_lead_ecal_energy(src.leadPFChargedHadrCand()->ecalEnergy());
@@ -176,6 +175,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
     dest.set_vx(src.vx());
     dest.set_vy(src.vy());
     dest.set_vz(src.vz());
+
   }
   constructSpecific(taus_handle, event, setup);
   if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
@@ -250,6 +250,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
         }
         #endif
+
+        //get track 
+        //auto track = packedCand->bestTrack();
+
         dest.set_lead_p(packedCand->p());
 
         dest.set_lead_pt(packedCand->pt());
@@ -257,6 +261,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_eta(packedCand->eta());
         dest.set_lead_phi(packedCand->phi());
 
+        // this is the same as the reference point on the track
         dest.set_svx(packedCand->vx());
         dest.set_svy(packedCand->vy());
         dest.set_svz(packedCand->vz());
@@ -321,6 +326,19 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         }
         dest.set_sig_neutral_cands(ids);
       }
+
+      dest.set_hasSV(src.hasSecondaryVertex());
+
+      //if(src.hasSecondaryVertex()) {
+      //  //auto covariance = src.secondaryVertexCov();
+      //  auto covariance = src.secondaryVertex()[0].covariance();
+      //  dest.set_s_vtx_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+      //  std::cout << covariance(0, 0) << "    " << covariance(0, 1) << "    " << covariance(0, 2) << "    " << covariance(1, 0) << "    " << covariance(1, 1) << "    " <<  covariance(1, 2) << "    " << covariance(2, 0) << "    " <<  covariance(2, 1) << "    " << covariance(2, 2) << std::endl;
+      //  //auto sv src.secondaryVertex();
+      //  //std::cout << sv.
+      //  //std::cout << src.decayMode() << std::endl; 
+      //}
+
     }
 #endif
   }

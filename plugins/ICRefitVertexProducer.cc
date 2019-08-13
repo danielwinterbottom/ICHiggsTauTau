@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/plugins/ICVertexProducer.hh"
+#include "UserCode/ICHiggsTauTau/plugins/ICRefitVertexProducer.hh"
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,13 +19,13 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
-ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
+ICRefitVertexProducer::ICRefitVertexProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       first_only_(config.getParameter<bool>("firstVertexOnly")),
       track_pt_threshold_(config.getParameter<double>("trackPtThreshold")),
       request_trks_(config.getParameter<bool>("requestTracks")) {
-  consumes<edm::View<reco::Vertex>>(input_);
+  consumes<std::map<unsigned long,reco::Vertex>>(input_);
   vertices_ = new std::vector<ic::Vertex>();
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");
@@ -35,15 +35,14 @@ ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
   PrintOptional(1, request_trks_, "requestTracks");
 }
 
-ICVertexProducer::~ICVertexProducer() { delete vertices_; }
+ICRefitVertexProducer::~ICRefitVertexProducer() { delete vertices_; }
 
-void ICVertexProducer::produce(edm::Event& event,
+void ICRefitVertexProducer::produce(edm::Event& event,
                                const edm::EventSetup& setup) {
-  edm::Handle<edm::View<reco::Vertex> > vtxs_handle;
+
+  edm::Handle<std::map<std::size_t, reco::Vertex>> vtxs_handle; 
   event.getByLabel(input_, vtxs_handle);
-
   std::unique_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
-
   vertices_->clear();
   if (!first_only_) {
     vertices_->resize(vtxs_handle->size());
@@ -51,16 +50,17 @@ void ICVertexProducer::produce(edm::Event& event,
     vertices_->resize(vtxs_handle->size() > 0 ? 1 : 0);
   }
 
-  for (unsigned i = 0; i < vtxs_handle->size(); ++i) {
-    reco::Vertex const& src = vtxs_handle->at(i);
-    ic::Vertex & dest = vertices_->at(i);
-    dest.set_id(vertex_hasher_(&src));
+  int count=0; 
+  for ( auto it = vtxs_handle->begin(); it != vtxs_handle->end(); it++ ){
+    reco::Vertex const& src = it->second;
+    ic::Vertex & dest = vertices_->at(count);
+    dest.set_id(it->first);
     dest.set_vx(src.x());
     dest.set_vy(src.y());
     dest.set_vz(src.z());
     dest.set_chi2(src.chi2());
     dest.set_ndof(src.ndof());
-
+    
     auto covariance = src.covariance();
     dest.set_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
 
@@ -74,16 +74,17 @@ void ICVertexProducer::produce(edm::Event& event,
         trk_requests->push_back(trk_ref);
       }
     }
+    count++;
     if (first_only_) break;
   }
   if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
 }
 
-void ICVertexProducer::beginJob() {
+void ICRefitVertexProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &vertices_);
 }
 
-void ICVertexProducer::endJob() {}
+void ICRefitVertexProducer::endJob() {}
 
 // define this as a plug-in
-DEFINE_FWK_MODULE(ICVertexProducer);
+DEFINE_FWK_MODULE(ICRefitVertexProducer);

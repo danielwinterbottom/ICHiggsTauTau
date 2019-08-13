@@ -23,6 +23,7 @@ class Muon : public Candidate {
  private:
   typedef ROOT::Math::XYZPoint Point;
   typedef std::map<std::size_t, float> UFmap;
+  typedef double Matrix[3][3];
 
  public:
   Muon();
@@ -320,6 +321,9 @@ class Muon : public Candidate {
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
 
+  /// The vtx covariance matrix
+  inline Matrix* vtx_covariance() { return &(vtx_covariance_); }
+
   /// @copybrief dxy_vertex()
   inline void set_dxy_vertex(double const& dxy_vertex) {
     dxy_vertex_ = dxy_vertex;
@@ -339,6 +343,20 @@ class Muon : public Candidate {
   inline void set_dxy_beamspot(double const& dxy_beamspot) {
     dxy_beamspot_ = dxy_beamspot;
   }
+
+  inline void set_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
+    //covij where i=row and j=column
+    vtx_covariance_[0][0] = cov00;
+    vtx_covariance_[0][1] = cov01;
+    vtx_covariance_[0][2] = cov02;
+    vtx_covariance_[1][0] = cov10;
+    vtx_covariance_[1][1] = cov11;
+    vtx_covariance_[1][2] = cov12;
+    vtx_covariance_[2][0] = cov20;
+    vtx_covariance_[2][1] = cov21;
+    vtx_covariance_[2][2] = cov22;
+  }
+
   /**@}*/
 
   /**
@@ -408,13 +426,15 @@ class Muon : public Candidate {
   double dz_vertex_error_;
   double dxy_beamspot_;
 
+  Matrix vtx_covariance_;
+
   std::vector<std::size_t> gen_particles_;
 
   UFmap muon_idiso_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 6);
+  ClassDef(Muon, 7);
  #endif
 };
 
