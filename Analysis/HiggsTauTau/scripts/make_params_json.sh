@@ -38,6 +38,9 @@ while read i; do
     sample_name=$(echo $i | cut -d" " -f1)
     xs=$(echo $i | cut -d" " -f2)
     loop=1
+    if [[ "$sample_name" == "-ext"* ]]; then
+      sample_name=$(echo $sample_name | rev | cut -d"-" -f2- | rev )
+    fi
     if [[ "$sample_name" == "DY"*"JetsToLL-LO"* ]]; then 
       xs=$dy_xs
       evt=$dy_evt
