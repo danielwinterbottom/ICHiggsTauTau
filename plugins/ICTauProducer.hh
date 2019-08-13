@@ -252,7 +252,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         #endif
 
         //get track 
-        //auto track = packedCand->bestTrack();
+        auto track = packedCand->bestTrack();
+        dest.set_track_params(track->qoverp(), track->lambda(), track->phi());
+        auto covariance = track->covariance();
+        dest.set_track_params_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
 
         dest.set_lead_p(packedCand->p());
 

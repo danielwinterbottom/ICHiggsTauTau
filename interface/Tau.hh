@@ -19,6 +19,7 @@ class Tau : public Candidate {
   typedef std::map<std::size_t, float> UFmap;
   typedef ROOT::Math::XYZPoint Point;
   typedef double Matrix[3][3];
+  typedef double Vec[3];
 
  public:
   Tau();
@@ -124,6 +125,10 @@ class Tau : public Candidate {
   inline bool hasSV() const { return hasSV_; }
 
   inline Matrix* s_vtx_covariance() { return &(s_vtx_covariance_); }
+
+  inline Vec* track_params() { return &(track_params_); }
+
+  inline Matrix* track_params_covariance() { return &(track_params_covariance_); }
 
   /**@}*/
 
@@ -267,6 +272,25 @@ class Tau : public Candidate {
     s_vtx_covariance_[2][2] = cov22;
   }
 
+  inline void set_track_params(double p1, double p2, double p3) {
+    track_params_[0] = p1;
+    track_params_[1] = p2;
+    track_params_[2] = p3;  
+  }
+
+  inline void set_track_params_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
+    //covij where i=row and j=column
+    track_params_covariance_[0][0] = cov00;
+    track_params_covariance_[0][1] = cov01;
+    track_params_covariance_[0][2] = cov02;
+    track_params_covariance_[1][0] = cov10;
+    track_params_covariance_[1][1] = cov11;
+    track_params_covariance_[1][2] = cov12;
+    track_params_covariance_[2][0] = cov20;
+    track_params_covariance_[2][1] = cov21;
+    track_params_covariance_[2][2] = cov22;
+  }
+
   /**@}*/
 
   /**
@@ -321,6 +345,9 @@ class Tau : public Candidate {
   bool hasSV_;
 
   Matrix s_vtx_covariance_;
+
+  Vec track_params_;
+  Matrix track_params_covariance_;
 
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;
