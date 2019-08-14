@@ -11,6 +11,7 @@
 <use name="MagneticField/Engine"/>
 <use name="DataFormats/L1Trigger"/>
 <use name="L1Trigger/L1TNtuples"/>
+<use name="RecoVertex/AdaptiveVertexFit"/>
 <use name=""/>
 <use name="root"/>
 <use name="clhep"/>

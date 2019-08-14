@@ -89,6 +89,8 @@ class Tau : public Candidate {
   /// The z-coordinate of the leading track PCA
   inline double svz() const { return s_ref_point_.z(); }
 
+  inline Point secondary_vertex() const { return secondary_vertex_; }
+
   /// A vector referring to the constituent track ic::Track::id()
   inline std::vector<std::size_t> const& constituent_tracks() const {
     return constituent_tracks_;
@@ -205,6 +207,12 @@ class Tau : public Candidate {
   
   /// @copybrief svz()
   inline void set_svz(double const& z) { s_ref_point_.SetZ(z); }
+
+  inline void set_secondary_vertex(double const& x, double const& y, double const& z) { 
+    secondary_vertex_.SetX(x);
+    secondary_vertex_.SetY(y);
+    secondary_vertex_.SetZ(z); 
+  }
 
   /// @copybrief constituent_tracks()
   inline void set_constituent_tracks(
@@ -339,6 +347,7 @@ class Tau : public Candidate {
 
   Point ref_point_;
   Point s_ref_point_;
+  Point secondary_vertex_;
 
   Matrix vtx_covariance_;
 
