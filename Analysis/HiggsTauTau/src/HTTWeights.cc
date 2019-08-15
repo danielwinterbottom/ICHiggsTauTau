@@ -405,12 +405,15 @@ namespace ic {
                 w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
             fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
                 w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
-            fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
-               w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
-            fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
-               w_->function("m_idiso0p20_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
-            fns_["m_idiso_aiso0p15to0p3_desy_ratio"] = std::shared_ptr<RooFunctor>(
-               w_->function("m_idiso_aiso0p15to0p3_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+            if (strategy_ != strategy::legacy16){
+                fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+                    w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+                fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
+                    w_->function("m_idiso0p20_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+                fns_["m_idiso_aiso0p15to0p3_desy_ratio"] = std::shared_ptr<RooFunctor>(
+                    w_->function("m_idiso_aiso0p15to0p3_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+            }
+            
             if(mc_ != mc::summer16_80X){
               fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
                  w_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(w_->argSet("m_pt,m_eta")));
@@ -3233,11 +3236,11 @@ namespace ic {
           if(e_iso < 0.1){
             ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
           } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
-       } else if (mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 &&  strategy_ != strategy::legacy16 &&  strategy_ != strategy::cpdecays16 && !is_embedded_){
+       } else if (mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 &&   strategy_ != strategy::cpdecays16 && !is_embedded_){
           auto args_1 = std::vector<double>{pt,e_signed_eta};
           auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
           ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
-       } else if (mc_ == mc::summer16_80X && (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16) && !is_embedded_){
+       } else if (mc_ == mc::summer16_80X && (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16  ||  strategy_ == strategy::cpdecays16) && !is_embedded_){
           auto args_1 = std::vector<double>{pt,e_signed_eta};
           ele_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args_1.data());
           if(e_iso>0.1) ele_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args_1.data());
@@ -3277,7 +3280,7 @@ namespace ic {
            /* ele_id = fns_["e_id_ratio"]->eval(args_2.data()); */
          }
          /* ele_idiso = ele_iso*ele_id; */
-       }
+       } 
        if(mc_==mc::mc2017){
          weight *= (ele_id * ele_iso); //ele_idiso //(ele_id * ele_iso)
          event->Add("idweight_1", ele_id);
@@ -3365,10 +3368,14 @@ namespace ic {
           double mu_iso = 1.0;
           mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2.data());
           mu_idiso*=mu_iso;
-       } else if(mc_ == mc::summer16_80X && (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) && !is_embedded_){
+       } else if(mc_ == mc::summer16_80X && (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && !is_embedded_){
           auto args_1 = std::vector<double>{pt,m_signed_eta};
           mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
           if(m_iso>0.15) mu_idiso = fns_["m_idiso_aiso0p15to0p3_desy_ratio"]->eval(args_1.data());
+       } else if (strategy_ == strategy::legacy16){ 
+           mu_id = fns_["m_id_ratio"]->eval(args_1.data());
+           mu_iso = fns_["m_iso_binned_ratio"]->eval(args_2.data());
+           mu_idiso = mu_id * mu_iso;         
        } else if (mc_==mc::mc2017 || mc_ == mc::mc2018){
          auto args_1 = std::vector<double>{pt,m_signed_eta};
          auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};  
@@ -3696,7 +3703,7 @@ namespace ic {
           auto args2_1 = std::vector<double>{m_2_pt,m_2_signed_eta};
           auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
           
-          if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+          if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
             if(is_embedded_){  
               m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data())*fns_["m_iso_binned_ratio"]->eval(args1_2.data());
               m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data())*fns_["m_iso_binned_ratio"]->eval(args2_2.data());
@@ -3803,7 +3810,7 @@ namespace ic {
             auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_iso};
             auto args2_1 = std::vector<double>{e_2_pt,e_2_signed_eta};
             auto args2_2 = std::vector<double>{e_2_pt,e_2_signed_eta,e_2_iso};
-            if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+            if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
             e_1_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args1_1.data()); 
             e_2_idiso = fns_["e_idiso0p1_desy_ratio"]->eval(args2_1.data()); 
             if(e_1_iso>0.1) e_1_idiso = fns_["e_idiso_aiso0p1to0p3_desy_ratio"]->eval(args1_1.data());
