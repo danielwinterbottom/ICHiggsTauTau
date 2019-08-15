@@ -197,7 +197,10 @@ void ICPhotonProducer::produce(edm::Event& event,
 #endif
     }
 
-    
+#if CMSSW_MAJOR_VERSION >= 8 && CMSSW_MINOR_VERSION >= 0
+    pat::Photon const& patsrc = pat_photons_handle->at(i);
+    if(patsrc.superCluster().isAvailable()) dest.set_supercluster(sc_hasher_(&(*(patsrc.superCluster()))));
+#endif
 
   // #ifndef CMSSW_4_2_8_patch7
   //     pho.set_had_tower_over_em(iter->hadTowOverEm());

@@ -1,4 +1,4 @@
-input_xs=$1
+=$1
 input_evt=$2
 lumi=$3
 
@@ -76,3 +76,4 @@ echo "    \"lumi\": "$lumi
 echo "  }"
 
 echo "}"
+

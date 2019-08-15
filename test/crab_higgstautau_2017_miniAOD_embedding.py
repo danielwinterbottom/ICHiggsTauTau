@@ -3,27 +3,21 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Feb26_MC_94X'
+config.General.workArea='Aug14_MC_102X_2017'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=94X_dataRun2_v11']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v8']
 config.JobType.maxMemoryMB = 2500
-# config.JobType.numCores = 4
 config.section_('Data')
 config.Data.unitsPerJob = 100000
-# config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
-# config.Data.unitsPerJob = 1
-# config.Data.splitting = 'FileBased'
-# config.Data.unitsPerJob = 720
-# config.Data.splitting = 'Automatic'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/Feb26_MC_94X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Aug14_MC_102X_2017/'
 config.Data.allowNonValidInputDataset = True
-config.Data.inputDBS='phys03'
+#config.Data.inputDBS='phys03'
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'

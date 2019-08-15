@@ -23,6 +23,11 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
+//includes for vertex refit
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+#include "RecoVertex/AdaptiveVertexFit/interface/AdaptiveVertexFitter.h"
 
 /**
  * @brief See documentation [here](\ref objs-tau)
@@ -56,6 +61,7 @@ class ICTauProducer : public edm::EDProducer {
   std::string total_charged_label_;
   bool request_cands_;
   edm::InputTag input_cands_;
+  bool do_sv_refit_;
   bool is_slimmed_;
 };
 
@@ -73,6 +79,7 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
       total_charged_label_(config.getParameter<std::string>("totalChargedLabel")),
       request_cands_(config.getParameter<bool>("requestPFCandidates")),
       input_cands_(config.getParameter<edm::InputTag>("inputPFCandidates")),
+      do_sv_refit_(config.getParameter<bool>("doSVRefit")),
       is_slimmed_(config.getParameter<bool>("isSlimmed")) {
   consumes<edm::View<T>>(input_);
   consumes<edm::View<reco::Vertex>>(input_vertices_);
@@ -250,6 +257,15 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
         }
         #endif
+
+        //get track 
+        if(packedCand->hasTrackDetails()) {
+          auto track = packedCand->bestTrack();
+          dest.set_track_params(track->qoverp(), track->lambda(), track->phi());
+          auto covariance = track->covariance();
+          dest.set_track_params_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+        }
+
         dest.set_lead_p(packedCand->p());
 
         dest.set_lead_pt(packedCand->pt());
@@ -257,6 +273,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_eta(packedCand->eta());
         dest.set_lead_phi(packedCand->phi());
 
+        // this is the same as the reference point on the track
         dest.set_svx(packedCand->vx());
         dest.set_svy(packedCand->vy());
         dest.set_svz(packedCand->vz());
@@ -322,18 +339,46 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_sig_neutral_cands(ids);
       }
 
-      dest.set_hasSV(src.hasSecondaryVertex());
+      bool hasSV = false;
+      if(do_sv_refit_ && src.decayMode()>9) {
+        TransientVertex transSV;
+        reco::TrackCollection svTracks;
+        auto cands = src.signalChargedHadrCands();
+        for (unsigned c = 0; c < cands.size(); ++c) {
+           auto chHadr = cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>();
+           if( chHadr->hasTrackDetails() ) svTracks.push_back(*(chHadr->bestTrack()));
+        }
+        ///Built transient tracks from tracks
+        edm::ESHandle<TransientTrackBuilder> transTrackBuilder;
+        setup.get<TransientTrackRecord>().get("TransientTrackBuilder",transTrackBuilder);
+        std::vector<reco::TransientTrack> transTracks;
+        for(auto & trk: svTracks)
+        transTracks.push_back(transTrackBuilder->build(trk));
+        bool fitOk = false;
+        if(transTracks.size() >= 2) {
+            AdaptiveVertexFitter avf;
+            avf.setWeightThreshold(0.1); //weight per track. allow almost every fit, else --> exception
+            try {
+              transSV = avf.vertex(transTracks);
+              fitOk = true;
+            } catch (...) {
+              fitOk = false;
+              std::cout<<"SV fit failed!"<<std::endl;
+            }
+        }
+        reco::Vertex SV;
+        if(fitOk && transSV.isValid()) {
+            SV = transSV;
+            hasSV = true; 
+        }
+        if(hasSV) {
+          dest.set_secondary_vertex(SV.x(),SV.y(),SV.z());
 
-      //if(src.hasSecondaryVertex()) {
-      //  //auto covariance = src.secondaryVertexCov();
-      //  auto covariance = src.secondaryVertex()[0].covariance();
-      //  dest.set_s_vtx_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
-      //  std::cout << covariance(0, 0) << "    " << covariance(0, 1) << "    " << covariance(0, 2) << "    " << covariance(1, 0) << "    " << covariance(1, 1) << "    " <<  covariance(1, 2) << "    " << covariance(2, 0) << "    " <<  covariance(2, 1) << "    " << covariance(2, 2) << std::endl;
-      //  //auto sv src.secondaryVertex();
-      //  //std::cout << sv.
-      //  //std::cout << src.decayMode() << std::endl; 
-      //}
-
+          auto covariance = SV.covariance();
+          dest.set_s_vtx_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+        }
+      }
+      dest.set_hasSV(hasSV);
     }
 #endif
   }

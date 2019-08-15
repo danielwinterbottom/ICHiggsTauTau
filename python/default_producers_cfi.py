@@ -181,7 +181,8 @@ icTauProducer = cms.EDProducer("ICPFTauProducer",
   ),
   requestPFCandidates   = cms.bool(False),
   inputPFCandidates     = cms.InputTag("pfCandidates"),
-  isSlimmed             = cms.bool(False)
+  isSlimmed             = cms.bool(False),
+  doSVRefit             = cms.bool(False)
 )
 
 icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
@@ -195,7 +196,8 @@ icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
   tauIDs = cms.PSet(),
   requestPFCandidates   = cms.bool(False),
   inputPFCandidates     = cms.InputTag("packedPFCandidates"),
-  isSlimmed             = cms.bool(True)
+  isSlimmed             = cms.bool(True),
+  doSVRefit             = cms.bool(False)
 )
 ## [Tau]
 

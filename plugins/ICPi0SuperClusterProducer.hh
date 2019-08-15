@@ -14,6 +14,8 @@
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Geometry/CaloTopology/interface/CaloTopology.h"
+#include "Geometry/Records/interface/CaloTopologyRecord.h"
 
 /**
  * @brief Produces an ic::SuperCluster collection from the separate barrel and endcap collections, which must be compatible with
@@ -34,7 +36,13 @@ class ICPi0SuperClusterProducer : public edm::EDProducer {
 
   std::vector<ic::SuperCluster>* scs_;
   edm::InputTag input_;
+  edm::InputTag input_EERecHits_;
+  edm::InputTag input_EBRecHits_;
+  edm::InputTag input_taus_;
   std::string branch_;
+
+  edm::ESHandle<CaloTopology> theCaloTopo_;
+
 
   boost::hash<reco::SuperCluster const*> sc_hasher_;
 };
