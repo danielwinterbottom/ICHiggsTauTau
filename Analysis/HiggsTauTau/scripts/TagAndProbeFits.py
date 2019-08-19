@@ -803,8 +803,8 @@ if options.channel == 'tpzmm':
     iso_cut_1='iso_1<0.2'    
     iso_cut_2='iso_2<0.2'
     if options.aiso1:
-      iso_cut_1='iso_1<0.5'  
-      iso_cut_2='iso_2<0.5'
+      iso_cut_1='iso_1>0.2&&iso_1<0.5'  
+      iso_cut_2='iso_2>0.2&&iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
@@ -840,8 +840,8 @@ if options.channel == 'tpzee':
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
-      iso_cut_1='iso_1<0.5'  
-      iso_cut_2='iso_2<0.5'
+      iso_cut_1='iso_1>0.15&&iso_1<0.5'  
+      iso_cut_2='iso_2>0.15&&iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
