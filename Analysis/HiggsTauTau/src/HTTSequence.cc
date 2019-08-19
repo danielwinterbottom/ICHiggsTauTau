@@ -1445,18 +1445,18 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017 || era_type == era::data_2018))){
-           BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-               .set_channel(channel)
-               .set_mc(mc_type)
-               .set_era(era_type)
-               .set_strategy(strategy_type)
-               .set_is_data(is_data)
-               .set_is_embedded(is_embedded)
-               .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-               .set_do_singlelepton(js["do_singlelepton"].asBool())
-               .set_do_singletau(js["do_singletau"].asBool())
-               .set_do_filter(false)
-               .set_pair_label("ditau"));
+        //   BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+        //       .set_channel(channel)
+        //       .set_mc(mc_type)
+        //       .set_era(era_type)
+        //       .set_strategy(strategy_type)
+        //       .set_is_data(is_data)
+        //       .set_is_embedded(is_embedded)
+        //       .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+        //       .set_do_singlelepton(js["do_singlelepton"].asBool())
+        //       .set_do_singletau(js["do_singletau"].asBool())
+        //       .set_do_filter(false)
+        //       .set_pair_label("ditau"));
        }
      }
    }
@@ -2357,7 +2357,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 
   
 
-    BuildModule(httWeights);
+    //BuildModule(httWeights);
     if(  (strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16) && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
 
       HTTStitching httStitching = HTTStitching("HTTStitching")  
@@ -2776,19 +2776,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
           // for single muon trigger:
-          .set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-          .set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+          //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
           // for muon leg of mu+tau cross trigger:
           //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
           //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
           // for mu8 leg of EMu cross-trigger
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
           //.set_do_dzmass(true)
-          //.set_extra_hlt_probe_pt(8.)
-          //.set_extra_l1_probe_pt(5.)
-          //.set_tag_add_trg_objects("triggerObjectsMu17Mu8")
-          //.set_tag_add_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4") // need these lines to make sure the other leg was fired
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
           // for mu23 leg of EMu cross-trigger - need to apply additional HLT and L1 pT cuts
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
           //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
@@ -2865,8 +2863,6 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_objects("triggerObjectsEle23Ele12")
           .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
           .set_extra_l1_probe_pt(10.)
-          //.set_tag_add_trg_objects("triggerObjectsEle23Ele12")
-          //.set_tag_add_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter") // need these lines to make sure the high pT leg was fired
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_probe_id)
           // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 

@@ -362,7 +362,8 @@ namespace ic {
           high_leg_pt = 19.;
         }
         if (run >= 271036 && run <= 284044 ) {
-          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          if(strategy_ == strategy::legacy16) alt_trig_obj_label = "triggerObjectsIsoMu22Eta2p1";
+          else alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
           alt_trk_leg1_filter =  "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
@@ -755,7 +756,8 @@ namespace ic {
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           extra_leg2_filter = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20";
-          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          if(strategy_ == strategy::legacy16) alt_trig_obj_label = "triggerObjectsIsoMu22Eta2p1"; 
+          else alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
           alt_trk_leg1_filter =  "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
