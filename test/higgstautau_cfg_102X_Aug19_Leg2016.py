@@ -558,7 +558,8 @@ process.icTauProducer = producers.icTauProducer.clone(
   inputVertices           = vtxLabel,
   includeVertexIP         = cms.bool(True),
   requestTracks           = cms.bool(True),
-  tauIDs = tauIDs.dynamicStripIds
+  tauIDs = tauIDs.dynamicStripIds,
+  doSVRefit             = cms.bool(True)
 )
 
 process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
@@ -572,7 +573,8 @@ process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
   requestPFCandidates     = cms.bool(True),
   inputPFCandidates       = cms.InputTag("packedPFCandidates"),
   isSlimmed               = cms.bool(True),
-  tauIDs = cms.PSet()
+  tauIDs = cms.PSet(),
+  doSVRefit             = cms.bool(True)
 )
 
 
