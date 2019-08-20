@@ -144,7 +144,6 @@ for i in range(0,scale):
     temp='job:sequences:all:'+temp
     flatjsons.append(temp)
 
-# FILELIST='filelists/Mar25_MC_102X'
 FILELIST='filelists/May24_MC_102X'
 
 signal_mc = [ ]
@@ -267,7 +266,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['B','C','D','E','F']
+    data_eras = ['A','B','C','D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -283,12 +282,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Oct10_MC_94X"
+    EMBEDFILELIST="./filelists/Aug14_MC_102X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct10_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Aug14_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 10
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
@@ -314,50 +313,50 @@ if options.proc_embed or options.proc_all:
 if options.proc_bkg or options.proc_all:
     central_samples = [
         # 'DYJetsToLL-2017',
-        'DYJetsToLL',
-        'DY1JetsToLL-LO',
-        'DY2JetsToLL-LO',
-        'DY3JetsToLL-LO',
-        'DY4JetsToLL-LO',
+        #'DYJetsToLL',
+        #'DY1JetsToLL-LO',
+        #'DY2JetsToLL-LO',
+        #'DY3JetsToLL-LO',
+        #'DY4JetsToLL-LO',
         'DYJetsToLL-LO',
-        'DYJetsToLL_M-10-50-LO',
-        'EWKWMinus2Jets',
-        'EWKWPlus2Jets',
-        'EWKZ2Jets',
-        'T-t',
-        'T-tW-ext1',
-        'TTTo2L2Nu',
-        'TTToHadronic',
-        'TTToSemiLeptonic',
-        'Tbar-t',
-        'Tbar-tW-ext1',
-        'W1JetsToLNu-LO',
-        'W2JetsToLNu-LO',
-        'W3JetsToLNu-LO',
-        'W4JetsToLNu-LO',
-        'WGToLNuG',
-        # 'WGToLNuG_01J_5f-ext1',
-        'WJetsToLNu-LO',
-        'WWTo1L1Nu2Q',
-        'WWTo2L2Nu',
-        # # 'WWTo4Q',
-        # 'WWToLNuQQ',
-        'WZTo1L3Nu',
-        'WZTo2L2Q',
-        'WZTo3LNu',
-        'WZTo3LNu-ext1',
-        'ZZTo2L2Nu-ext1',
-        'ZZTo2L2Nu-ext2',
-        'ZZTo2L2Q',
-        'ZZTo4L',
-        'ZZTo4L-ext',
+        #'DYJetsToLL_M-10-50-LO',
+        #'EWKWMinus2Jets',
+        #'EWKWPlus2Jets',
+        #'EWKZ2Jets',
+        #'T-t',
+        #'T-tW-ext1',
+        #'TTTo2L2Nu',
+        #'TTToHadronic',
+        #'TTToSemiLeptonic',
+        #'Tbar-t',
+        #'Tbar-tW-ext1',
+        #'W1JetsToLNu-LO',
+        #'W2JetsToLNu-LO',
+        #'W3JetsToLNu-LO',
+        #'W4JetsToLNu-LO',
+        #'WGToLNuG',
+        ## 'WGToLNuG_01J_5f-ext1',
+        #'WJetsToLNu-LO',
+        #'WWTo1L1Nu2Q',
+        #'WWTo2L2Nu',
+        ## # 'WWTo4Q',
+        ## 'WWToLNuQQ',
+        #'WZTo1L3Nu',
+        #'WZTo2L2Q',
+        #'WZTo3LNu',
+        #'WZTo3LNu-ext1',
+        #'ZZTo2L2Nu-ext1',
+        #'ZZTo2L2Nu-ext2',
+        #'ZZTo2L2Q',
+        #'ZZTo4L',
+        #'ZZTo4L-ext',
     ]
 
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
         # FILELIST = "./filelists/May24_MC_102X"
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/May24_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         # if sa == "T-t":
         #     FILELIST = './filelists/Mar25_MC_102X'
         #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Mar25_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

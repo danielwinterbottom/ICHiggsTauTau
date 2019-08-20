@@ -4,8 +4,10 @@ export resubmit=$3
 
 if [ $flag == 'FAILED' ]; then
   echo Failed jobs: 
-elif [ $flag == 'COMPLETED' ]; then
+elif [ $flag == 'UNCOMPLETED' ]; then
   echo Un-completed jobs:
+elif [ $flag == 'COMPLETED' ]; then
+  echo Completed jobs:
 elif [ $flag == 'ERROR' ]; then
   echo Jobs with errors:
 elif [ $flag == 'SUBMITFAILED' ]; then
@@ -42,7 +44,7 @@ for i in $directory/*; do
   fi
 
   
-  if [ $flag == 'COMPLETED' ]; then
+  if [ $flag == 'UNCOMPLETED' ]; then
     if [[ "$(crab status $i/ | grep COMPLETED)" == "" && "$(crab status $i/ | grep completed)" == "" ]]; then
       echo $i
       if [ $resubmit == 2 ]; then
@@ -58,4 +60,15 @@ for i in $directory/*; do
       fi
     fi
   fi
+
+  if [ $flag == 'COMPLETED' ]; then
+    if [[ "$(crab status $i/ | grep COMPLETED)" != "" ]]; then
+      echo $i
+      if [ $resubmit == 2 ]; then
+        crab kill $i
+        crab report $i
+      fi
+    fi
+  fi
+
 done

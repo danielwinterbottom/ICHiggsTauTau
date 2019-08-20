@@ -62,6 +62,7 @@
 #include "HiggsTauTau/interface/HTTPreFireWeight.h"
 #include "HiggsTauTau/interface/RhoIDEmbedder.h"
 #include "HiggsTauTau/interface/MVADMEmbedder.h"
+#include "HiggsTauTau/interface/Pi0MVA.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -2599,6 +2600,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
+if (strategy_type == strategy::cpdecays16) {
+ // BuildModule(MVADMEmbedder("MVADMEmbedder")
+ //     .set_fs(fs.get())
+ //     .set_channel(channel)
+ //     .set_strategy(strategy_type));
+}
+
+
 if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
@@ -2621,11 +2630,18 @@ bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
 if (strategy_type == strategy::cpdecays16) {
-  BuildModule(RhoIDEmbedder("RhoIDEmbedder")
+  //BuildModule(RhoIDEmbedder("RhoIDEmbedder")
+   //   .set_fs(fs.get())
+   //   .set_maketrees(false)
+   //   .set_channel(channel)
+   //   .set_strategy(strategy_type));
+
+  BuildModule(Pi0MVA("Pi0MVA")
       .set_fs(fs.get())
-      .set_maketrees(false)
+      .set_maketrees(true)
       .set_channel(channel)
       .set_strategy(strategy_type));
+
 
   //BuildModule(MVADMEmbedder("MVADMEmbedder")
   //    .set_fs(fs.get())
@@ -2712,17 +2728,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
 
 
-          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
           //.set_probe_id(muon_probe_id)
           //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
           //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
-          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          // .set_extra_hlt_probe_pt(8.)
-          // .set_extra_l1_probe_pt(5.)
+           .set_probe_trg_objects("triggerObjectsMu17Mu8")
+           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+           .set_extra_hlt_probe_pt(8.)
+           .set_extra_l1_probe_pt(5.)
           // to measure em muon trg SF for 23 GeV leg
           // .set_probe_trg_objects("triggerObjectsMu17Mu8")
           // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
@@ -2816,30 +2832,32 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for single with extra trigger (for nano)
           //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32,triggerObjectsEle35")
           //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
-          .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+          //.set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+          //.set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
           
  
           // these lines to measure elec24 from double electron trigger (doesnt work for runB)
           //.set_probe_trg_objects("triggerObjectsDoubleEl24") 
           //.set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
           
-          // these lines to measure elec24 from e+tau cross trigger - use for runB
-          //.set_probe_trg_objects("triggerObjectsEle24Tau30")
-          //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau")
+          // these lines to measure elec24 from e+tau cross trigger 
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30") // for 2017
+          //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau") // for 2017
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30,triggerObjectsEle24TauHPS30") // for 2018
+          //.set_probe_trg_filters("hltEle24erWPTightClusterShapeFilterForTau,hltEle24erWPTightClusterShapeFilterForTau") // for 2018 
           //.set_do_extra(true)
 
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // to measure em electron 12 GeV leg
-          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          // .set_extra_l1_probe_pt(10.)
+           //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+           //.set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
-          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          // .set_extra_l1_probe_pt(23.)
-          // .set_extra_l1_iso_probe_pt(20.)
+           .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+           .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+           .set_extra_l1_probe_pt(23.)
+           .set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {

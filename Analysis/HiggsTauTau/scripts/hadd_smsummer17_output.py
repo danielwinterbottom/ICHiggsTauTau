@@ -163,6 +163,11 @@ sample_list = [
     'GluGluToHToTauTau_M125_amcatnloFXFX-UEDown',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSUp',
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown',
+
+    'VBFHToTauTau_M125_MM',
+    'VBFHToTauTau_M125_nospinner',
+    'VBFHToTauTau_M125_PS',
+    'VBFHToTauTau_M125_SM',
 	]
 
 
