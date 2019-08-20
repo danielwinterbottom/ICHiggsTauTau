@@ -2458,52 +2458,29 @@ namespace ic {
     return out_vec;
   }
 
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed, bool anti){
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
-    //
-    TVector3 boost, n1, n2;
-    if (doMixed) {
-      TVector3 k = (p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
-      TLorentzVector ip(k, 0.);
-      if(ZMF) boost = (p1+ip+p3+p4).BoostVector();
-      else boost = (p3+p4).BoostVector();
-      p1.Boost(-boost);
-      ip.Boost(-boost);
-      p2.Boost(-boost);
-      p3.Boost(-boost);
-      p4.Boost(-boost);
-      n1 = (p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit()).Unit();
-      n2 = (ip.Vect() - ip.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
-    }
-    else {
-      if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
-      else boost = (p3+p4).BoostVector();
-      p1.Boost(-boost);
-      p2.Boost(-boost);
-      p3.Boost(-boost);
-      p4.Boost(-boost);
-      
-      n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
-      n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
 
-      n1 = n1.Unit();
-      n2 = n2.Unit();
-    }
-    /* std::cout << "n1 unit: " << n1.Px() << n1.Py() << n1.Pz() << std::endl; */
-    /* std::cout << "n2 unit: " << n2.Px() << n2.Py() << n2.Pz() << std::endl; */
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+    
+    n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
+    n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
     
     double angle = acos(n1.Dot(n2));
     double sign;
 
-    if (doMixed)
-      sign = p4.Vect().Unit().Dot(n1.Cross(n2));
-    else
-      sign = p2.Vect().Unit().Dot(n1.Cross(n2));
-    if (anti) sign = -sign;
-
-    /* std::cout << "angle: " << angle << std::endl; */
-    /* std::cout << "sign : " << sign << std::endl; */
-    
+    //sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    sign = p4.Vect().Unit().Dot(n1.Cross(n2));   
+ 
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
   }

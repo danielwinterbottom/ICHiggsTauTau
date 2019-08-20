@@ -579,6 +579,9 @@ namespace ic {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
           if(channel_ == channel::tt){
             outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
+            outtree_->Branch("wt_ff_1"  , &wt_ff_1_);
+            outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
+            outtree_->Branch("wt_ff_qcd_2"  , &wt_ff_qcd_2_); 
           }
             if(do_ff_systematics_){
                 outtree_->Branch("wt_ff_qcd_syst_up_1"            , &wt_ff_qcd_syst_up_1_             );
@@ -2570,7 +2573,10 @@ namespace ic {
       } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
-        
+       
+        if(event->Exists("wt_ff_qcd_1")) wt_ff_qcd_1_ = event->Get<double>("wt_ff_qcd_1"); 
+        if(event->Exists("wt_ff_qcd_2")) wt_ff_qcd_2_ = event->Get<double>("wt_ff_qcd_2");
+ 
         if(do_ff_systematics_){
           
           if(event->Exists("wt_ff_qcd_syst_up_1"            )) wt_ff_qcd_syst_up_1_               = event->Get<double>("wt_ff_qcd_syst_up_1"            );
@@ -5130,7 +5136,14 @@ namespace ic {
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
 
-      //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
+      //}
+
 
       tau_svx_1_ = tau1->svx();
       tau_svy_1_ = tau1->svy();
@@ -5140,40 +5153,101 @@ namespace ic {
       tau_svy_2_ = tau2->svy();
       tau_svz_2_ = tau2->svz();
 
-      bool doAnti = false;
-      //if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
-      //  cp_channel_=2;
-      //  lvec1 = ConvertToLorentz(pi0_tau1->vector());
-      //  /* lvec2 = ConvertToLorentz(tau2->vector()); */
-      //  pvtosv.SetXYZT(
-      //          tau2->svx() - vertex_vec[0]->vx(),
-      //          tau2->svy() - vertex_vec[0]->vy(),
-      //          tau2->svz() - vertex_vec[0]->vz(),
-      //          0.);
-      //  lvec3 = ConvertToLorentz(pi_tau1->vector());
-      //  lvec4 = ConvertToLorentz(pi_tau2->vector());
+      auto primary_vtx = refit_vertex;
 
-      //  doAnti = q_2_ > 0 ? true : false;
+      if(tau_decay_mode_1_==0&&tau_decay_mode_2_==0) {
+        cp_channel_=1;
 
-      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
-      //}
-      //else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
-      //  cp_channel_=2;
-      //  lvec1 = ConvertToLorentz(pi0_tau2->vector());
-      //  /* lvec2 = ConvertToLorentz(tau1->vector()); */
-      //  pvtosv.SetXYZT(
-      //          tau1->svx() - vertex_vec[0]->vx(),
-      //          tau1->svy() - vertex_vec[0]->vy(),
-      //          tau1->svz() - vertex_vec[0]->vz(),
-      //          0.);
-      //  lvec3 = ConvertToLorentz(pi_tau2->vector());
-      //  lvec4 = ConvertToLorentz(pi_tau1->vector());
+        TLorentzVector pvtosv1(
+                tau1->svx() - primary_vtx->vx(),
+                tau1->svy() - primary_vtx->vy(),
+                tau1->svz() - primary_vtx->vz(),
+                0.);
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
 
-      //  doAnti = q_1_ > 0 ? true : false;
+        lvec3 = ConvertToLorentz(tau1->vector()); 
+        lvec4 = ConvertToLorentz(tau2->vector()); 
 
-      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
-      //}
-      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==1) || (gammas1.size()>0 && tau_decay_mode_1_==0&&tau_decay_mode_2_==1) || (gammas2.size()>0 && tau_decay_mode_2_==0&&tau_decay_mode_1_==1)){
+        TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        lvec1 = TLorentzVector(ip1, 0.);
+        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip2, 0.);
+
+        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+      }
+
+      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==0) || (tau_decay_mode_1_==0&&tau_decay_mode_2_==1)) {
+        cp_channel_=2;
+        ic::Candidate *pi;
+        ic::Candidate *pi0;
+        ic::Tau const *tau;
+
+        if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
+          pi = pi_tau1;
+          pi0 = pi0_tau1;
+          tau = tau2;
+        } else {
+          pi = pi_tau2;
+          pi0 = pi0_tau2;
+          tau = tau1;
+        }
+        cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        TLorentzVector pvtosv1(
+                tau->svx() - primary_vtx->vx(),
+                tau->svy() - primary_vtx->vy(),
+                tau->svz() - primary_vtx->vz(),
+                0.);
+        lvec1 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+        lvec3 = ConvertToLorentz(pi->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(tau->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip, 0.);
+
+        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_1_<M_PI)  aco_angle_1_ = aco_angle_1_+M_PI;
+          else                    aco_angle_1_ = aco_angle_1_-M_PI;
+        }
+      }
+
+//      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
+//        cp_channel_=2;
+//        lvec1 = ConvertToLorentz(pi0_tau1->vector());
+//        pvtosv.SetXYZT(
+//                tau2->svx() - vertex_vec[0]->vx(),
+//                tau2->svy() - vertex_vec[0]->vy(),
+//                tau2->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec3 = ConvertToLorentz(pi_tau1->vector());
+//        lvec4 = ConvertToLorentz(pi_tau2->vector());
+//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
+//      }
+//      else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
+//        cp_channel_=2;
+//        lvec1 = ConvertToLorentz(pi0_tau2->vector());
+//        /* lvec2 = ConvertToLorentz(tau1->vector()); */
+//        pvtosv.SetXYZT(
+//                tau1->svx() - vertex_vec[0]->vx(),
+//                tau1->svy() - vertex_vec[0]->vy(),
+//                tau1->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec3 = ConvertToLorentz(pi_tau2->vector());
+//        lvec4 = ConvertToLorentz(pi_tau1->vector());
+//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
+//      }
+      //if((tau_decay_mode_1_==1&&tau_decay_mode_2_==1) || (gammas1.size()>0 && tau_decay_mode_1_==0&&tau_decay_mode_2_==1) || (gammas2.size()>0 && tau_decay_mode_2_==0&&tau_decay_mode_1_==1)){
+      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
         cp_channel_=3;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
@@ -5270,10 +5344,7 @@ namespace ic {
       }
 
       if(cp_channel_!=-1){
-        if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
-        else
-          aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }
       if(cp_channel_==3 || cp_channel_==2) {
         if (cp_sign_<0) {
@@ -5591,7 +5662,35 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
-      bool doAnti = false;
+//      if(tau_decay_mode_2_==1) {
+//        cp_channel_=2;
+//        ic::Candidate *pi;
+//        ic::Candidate *pi0;
+//        ic::Tau const *tau;
+//
+//        if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
+//          pi = pi_tau1;
+//          pi0 = pi0_tau1;
+//          tau = tau2;
+//        } else {
+//          pi = pi_tau2;
+//          pi0 = pi0_tau2;
+//          tau = tau1;
+//        }
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
+//        TLorentzVector pvtosv1(
+//                tau->svx() - vertex_vec[0]->vx(),
+//                tau->svy() - vertex_vec[0]->vy(),
+//                tau->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec1 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+//        lvec3 = ConvertToLorentz(pi->vector()); //pi charge from rho
+//        lvec4 = ConvertToLorentz(tau->vector()); //pi charge from tau
+//
+//        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//      }
+
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
@@ -5604,7 +5703,6 @@ namespace ic {
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(muon1->vector());
 
-        doAnti = q_1_ > 0 ? true : false;
 
         cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
       }
@@ -5615,7 +5713,7 @@ namespace ic {
 
       if(cp_channel_!=-1){
         if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false);
         else
           aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }
@@ -5668,7 +5766,6 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
-      bool doAnti = false;
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
@@ -5680,7 +5777,6 @@ namespace ic {
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(ele1->vector());
 
-        doAnti = q_1_ > 0 ? true : false;
 
         cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
       }
@@ -5691,7 +5787,7 @@ namespace ic {
 
       if(cp_channel_!=-1){
         if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false);
         else
           aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }

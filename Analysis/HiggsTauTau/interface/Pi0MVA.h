@@ -17,6 +17,112 @@
 #include "TMVA/Reader.h"
 
 namespace ic {
+
+  template<class T>
+  std::vector<std::pair<T*,std::vector<T*>>> ClusterGammas(std::vector<T*> gammas, int p) {
+    //cluster gammas into 2 objects where distance measure is annalogous to jet algorithms anti-KT: p=-1, KT p=+1, C/A: p=0. 
+    //The eta and phi of a clustered object is set as the energy weighted average   
+    std::vector<std::pair<T*,std::vector<T*>>> clusters;
+
+    // to start each gamma gives one cluster 
+    for (auto g : gammas) {
+      std::vector<T*> g_vec = {g};
+      clusters.push_back(std::make_pair(g,g_vec));
+    }
+    while(clusters.size()>2) {
+      int min_i=-1, min_j=-1;
+      double min_d=0;
+      for(unsigned i=0; i<clusters.size()-1;++i) {
+        for(unsigned j=i+1; j<clusters.size();++j) {
+          double d = pow(ROOT::Math::VectorUtil::DeltaR(clusters[i].first->vector(),clusters[j].first->vector()),2)*std::min(pow(clusters[i].first->pt(),2*p),pow(clusters[j].first->pt(),2*p));
+          if(min_i==-1 || d< min_d) {
+            min_d = d;
+            min_i=i;
+            min_j=j;
+          }
+        }
+      }
+      // merge pair with smallest d, remove old elements from vector and start again
+      std::vector<T*> new_vec = clusters[min_i].second;
+      new_vec.insert(new_vec.end(), clusters[min_j].second.begin(), clusters[min_j].second.end());
+      double E=clusters[min_i].first->energy() + clusters[min_j].first->energy();
+      double phi = (clusters[min_i].first->energy()*clusters[min_i].first->phi() + clusters[min_j].first->energy()*clusters[min_j].first->phi())/E;
+      double eta = (clusters[min_i].first->energy()*clusters[min_i].first->eta() + clusters[min_j].first->energy()*clusters[min_j].first->eta())/E;
+      double theta = atan(exp(-eta))*2;
+      double pt = E*sin(theta);
+      T* new_cluster = new T();
+      ROOT::Math::PtEtaPhiEVector vec = ROOT::Math::PtEtaPhiEVector(pt, eta, phi, E);
+      new_cluster->set_vector(vec);
+      clusters.erase(clusters.begin()+std::max(min_j,min_i));
+      clusters.erase(clusters.begin()+std::min(min_j,min_i));
+      std::sort(new_vec.begin(), new_vec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      clusters.push_back(std::make_pair(new_cluster,new_vec));
+    }
+    if(clusters.size()==2) {
+      if(clusters[0].first->pt() < clusters[1].first->pt()) {
+        auto temp = clusters[0];
+        clusters[0] = clusters[1];
+        clusters[1] = temp; 
+      }
+    } 
+    return clusters;
+  }
+
+  template<class T>
+  std::vector<std::pair<T*,std::vector<T*>>> ClusterGammasNew(std::vector<T*> gammas, int p) {
+    //cluster gammas into 2 objects where distance measure is annalogous to jet algorithms anti-KT: p=-1, KT p=+1, C/A: p=0. 
+    //The eta and phi of a clustered object is set as the energy weighted average   
+    std::vector<std::pair<T*,std::vector<T*>>> clusters;
+
+    // to start each gamma gives one cluster 
+    for (auto g : gammas) {
+      std::vector<T*> g_vec = {g};
+      clusters.push_back(std::make_pair(g,g_vec));
+    }
+    while(clusters.size()>2) {
+      int min_i=-1, min_j=-1;
+      double min_d=0;
+      for(unsigned i=0; i<clusters.size()-1;++i) {
+        for(unsigned j=i+1; j<clusters.size();++j) {
+          double etaAssociationDistance = std::max(std::min(0.20*pow(clusters[i].first->pt(),-0.66) + 0.20*pow(clusters[j].first->pt(),-0.66),0.15),0.05);
+          double phiAssociationDistance = std::max(std::min(0.35*pow(clusters[i].first->pt(),-0.71) + 0.35*pow(clusters[j].first->pt(),-0.71),0.30),0.05);
+
+          double d = (pow(ROOT::Math::VectorUtil::DeltaPhi(clusters[i].first->vector(),clusters[j].first->vector())/phiAssociationDistance,2) + pow((clusters[i].first->eta()-clusters[j].first->eta())/etaAssociationDistance,2))*std::min(pow(clusters[i].first->pt(),2*p),pow(clusters[j].first->pt(),2*p));
+ 
+          //double d = pow(ROOT::Math::VectorUtil::DeltaR(clusters[i].first->vector(),clusters[j].first->vector()),2)*std::min(pow(clusters[i].first->pt(),2*p),pow(clusters[j].first->pt(),2*p));
+          if(min_i==-1 || d< min_d) {
+            min_d = d;
+            min_i=i;
+            min_j=j;
+          }
+        }
+      }
+      // merge pair with smallest d, remove old elements from vector and start again
+      std::vector<T*> new_vec = clusters[min_i].second;
+      new_vec.insert(new_vec.end(), clusters[min_j].second.begin(), clusters[min_j].second.end());
+      double E=clusters[min_i].first->energy() + clusters[min_j].first->energy();
+      double phi = (clusters[min_i].first->energy()*clusters[min_i].first->phi() + clusters[min_j].first->energy()*clusters[min_j].first->phi())/E;
+      double eta = (clusters[min_i].first->energy()*clusters[min_i].first->eta() + clusters[min_j].first->energy()*clusters[min_j].first->eta())/E;
+      double theta = atan(exp(-eta))*2;
+      double pt = E*sin(theta);
+      T* new_cluster = new T();
+      ROOT::Math::PtEtaPhiEVector vec = ROOT::Math::PtEtaPhiEVector(pt, eta, phi, E);
+      new_cluster->set_vector(vec);
+      clusters.erase(clusters.begin()+std::max(min_j,min_i));
+      clusters.erase(clusters.begin()+std::min(min_j,min_i));
+      std::sort(new_vec.begin(), new_vec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      clusters.push_back(std::make_pair(new_cluster,new_vec));
+    }
+    if(clusters.size()==2) {
+      if(clusters[0].first->pt() < clusters[1].first->pt()) {
+        auto temp = clusters[0];
+        clusters[0] = clusters[1];
+        clusters[1] = temp;
+      }
+    }
+    return clusters;
+  }
+
   
 class Pi0MVA : public ModuleBase {
  private:
@@ -55,7 +161,7 @@ class Pi0MVA : public ModuleBase {
   double gen_match_2_;
   double tau_decay_mode_1_;
   double tau_decay_mode_2_;
-  unsigned Ngammas_1_, NgammaspT1_1_;
+  unsigned Ngammas_1_, NgammaspT1_1_, NelecspT1_1_;
   float n_vtx_, rho_;
   float Egentau_1_, Phigentau_1_, Etagentau_1_, Mgentau_1_, Pxgentau_1_, Pygentau_1_, Pzgentau_1_;
   float Egenpi0_1_, Phigenpi0_1_, Etagenpi0_1_, Mgenpi0_1_, Pxgenpi0_1_, Pygenpi0_1_, Pzgenpi0_1_;
@@ -77,13 +183,37 @@ class Pi0MVA : public ModuleBase {
   float new_phi_1_, new_phi_2_, new_phi_3_, new_phi_4_;
   float mod_M_;
   unsigned Nseeds_;
+  unsigned Ngams_;
 
   float Egenpi0_1_1_, Egenpi0_1_2_;
   float Egengamma_1_, Egengamma_2_;
   float max_gengamma_dR_;
+  float gengamma_dR_;
   float gen_tau_pt_; 
   float a1_rho_mass_1_, a1_rho_mass_2_;
+  float pi0_pt_;
 
+  float new_pi0_pt_1_, new_pi0_pt_2_, new_pi0_pt_3_, new_pi0_pt_4_;
+
+  float new_pi0_phi_1_, new_pi0_phi_2_, new_pi0_phi_3_, new_pi0_phi_4_;
+  float new_pi0_eta_1_, new_pi0_eta_2_, new_pi0_eta_3_, new_pi0_eta_4_;
+  float genpi0_dR_;
+  float dR_match_gamma1_, dR_match_gamma2_, dR_match_pi01_, dR_match_pi02_, dR_match_gamma1_wrong_, dR_match_gamma2_wrong_, dR_match_pi01_wrong_, dR_match_pi02_wrong_;
+  unsigned Nstrips_, Nstrips_inciso_;
+  float lead_strip_pt_, sublead_strip_pt_,  lead_strip_dR_, closest_strip_pt_, closest_strip_dR_, lead_strip_pt_inciso_, lead_strip_dR_inciso_, closest_strip_pt_inciso_, closest_strip_dR_inciso_;
+  unsigned Nstrips_dm0_; 
+  float new_strips_lead_gamma_pt_, new_strips_pt_, new_tau_pt_;
+  float pt_genpi0_1_, pt_genpi0_2_, pt_gengammas_1_, pt_gengammas_2_;
+
+  float lead_cluster_pt_, sublead_cluster_pt_;
+  float lead_cluster_E_, sublead_cluster_E_;
+
+  float lead_cluster_pt_new_, sublead_cluster_pt_new_;
+  float lead_cluster_E_new_, sublead_cluster_E_new_;
+
+  float genpi0_deta_, genpi0_dphi_,gengamma_deta_, gengamma_dphi_;
+
+  float new_pi0_phi_, new_pi0_eta_, new_pi0_pt_, new_pi0_E_;
 };
 
 }

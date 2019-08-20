@@ -1336,13 +1336,13 @@ if options.era in ['cpdecay16','mvadm2016']:
         # 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
         # 'qqH_htt' : 'VBFHToTauTau_M-*',
 
-        # "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
-        # "ggH_ps_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
-        # "ggH_mm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+        #"ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+        #"ggH_ps_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+        #"ggH_mm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
 
-        # "qqH_sm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
-        # "qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
-        # "qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
+        #"qqH_sm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
+        #"qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
+        #"qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
 
         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
@@ -1352,35 +1352,38 @@ if options.era in ['cpdecay16','mvadm2016']:
         "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
         "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
-        # "WplusH_htt" : "WplusHToTauTau_M-*",
-        # "WminusH_htt" : "WminusHToTauTau_M-*",
-        # "ZH_htt" : "ZHToTauTau_M-*",
+         "WplusH_htt" : "WplusHToTauTau_M-*",
+         "WminusH_htt" : "WminusHToTauTau_M-*",
+         "ZH_htt" : "ZHToTauTau_M-*",
         
     }
 
 
 if options.era in ['cpsummer17']: 
     sm_samples = { 
-            'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
-            'qqH_htt': 'VBFHToTauTau_M-*', 
-            'WplusH_htt': 'WplusHToTauTau_M-*', 
-            'WminusH_htt': 'WminusHToTauTau_M-*', 
-            'ZH_htt': 'ZHToTauTau_M-*', 
-            'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-            'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-            'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-            'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ZHps_htt' : 'ZHiggs0MToTauTau',  
-            'ZHsm_htt' : 'ZHiggs0PMToTauTau',
-            'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
-            'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
-            'qqHps_htt' :'VBFHiggs0MToTauTau',
-            'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
-            'WHps_htt' :'WHiggs0MToTauTau',
-            'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
-            'WHsm_htt' : 'WHiggs0PMToTauTau',
+            "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+            "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+
+            #'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
+            #'qqH_htt': 'VBFHToTauTau_M-*', 
+            #'WplusH_htt': 'WplusHToTauTau_M-*', 
+            #'WminusH_htt': 'WminusHToTauTau_M-*', 
+            #'ZH_htt': 'ZHToTauTau_M-*', 
+            #'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
+            #'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            #'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
+            #'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            #'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
+            #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            #'ZHps_htt' : 'ZHiggs0MToTauTau',  
+            #'ZHsm_htt' : 'ZHiggs0PMToTauTau',
+            #'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
+            #'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
+            #'qqHps_htt' :'VBFHiggs0MToTauTau',
+            #'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
+            #'WHps_htt' :'WHiggs0MToTauTau',
+            #'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
+            #'WHsm_htt' : 'WHiggs0PMToTauTau',
             }
 
 if options.era in ['cp18']:
@@ -2383,8 +2386,12 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             fake_factor_wt_string_2 = ff_syst_weight+'_2'
         else:
           if options.era in ["smsummer16","cpsummer16","cpdecay16","cpsummer17","mvadm2016","cp18"]:
-            fake_factor_wt_string_1 = "wt_ff_1"
-            fake_factor_wt_string_2 = "wt_ff_2"
+            fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0)*(4.444479*TMath::Landau(pt_1,51.494790,32.749550)+-0.215944)+(mva_dm_1==1)*(70.545917*TMath::Landau(pt_1,-54.785895,6.068179)+0.177529)+(mva_dm_1==2)*(17.661518*TMath::Landau(pt_1,-43.223059,9.302515)+-0.034767+0.001608*pt_1)+(mva_dm_1==10)*(1.481512*TMath::Landau(pt_1,74.964367,26.796380)+0.168427)) + (n_jets>0)*((mva_dm_1==0)*(2.441112*TMath::Landau(pt_1,55.728659,12.846223)+0.134422)+(mva_dm_1==1)*(1.261452*TMath::Landau(pt_1,43.979670,6.546802)+0.254587)+(mva_dm_1==2)*(1.110900*TMath::Landau(pt_1,36.123332,4.842789)+0.092702+0.001146*pt_1)+(mva_dm_1==10)*(0.381222*TMath::Landau(pt_1,58.049491,9.076412)+0.313377)))*0.5'
+
+            #fake_factor_wt_string_1='0'
+            fake_factor_wt_string_2='((n_jets==0)*((mva_dm_2==0)*(3.492791*TMath::Landau(pt_2,40.999687,16.160943)+-0.027717)+(mva_dm_2==1)*(28.594413*TMath::Landau(pt_2,-26.828122,7.062170)+0.151835)+(mva_dm_2==2)*(29.313199*TMath::Landau(pt_2,-61.327683,49.463679)+-3.385814+0.016282*pt_2)+(mva_dm_2==10)*(1.802895*TMath::Landau(pt_2,74.319504,60.414368)+0.035008)) + (n_jets>0)*((mva_dm_2==0)*(4.126101*TMath::Landau(pt_2,53.546501,13.608678)+-0.155279)+(mva_dm_2==1)*(2.047715*TMath::Landau(pt_2,40.998899,10.055478)+0.124696)+(mva_dm_2==2)*(0.499933*TMath::Landau(pt_2,43.905851,1.112093)+0.257121+-0.000836*pt_2)+(mva_dm_2==10)*(0.917044*TMath::Landau(pt_2,50.898695,7.337126)+0.214615)))*0.5'
+            #fake_factor_wt_string_1 = "wt_ff_1"#"2*wt_ff_1*(1.10065-0.00210518*pt_2)"#"2*wt_ff_1*(7.82879e+00*TMath::Landau(iso_2,1.57926e+00,2.35066e-01)+9.76185e-01)"#*((2.94541e+01*TMath::Landau(pt_2,-1.00667e+02,2.37101e+01)+1.88446e-01))"#*(1.30264-0.0102982*pt_2+4.91373e-05*pt_2*pt_2)"#"0"#"wt_ff_1"#*0.5"
+            #fake_factor_wt_string_2 = "wt_ff_2"#"2*wt_ff_2"#*(1.06899-0.00146972*pt_1)"#(7.82879e+00*TMath::Landau(iso_1,1.57926e+00,2.35066e-01)+9.76185e-01)"#(2.85759e+00*TMath::Landau(pt_1,4.22883e+01,1.53660e+01) + 5.26593e-01)"#"wt_ff_2*(1.30264-0.0102982*pt_1+4.91373e-05*pt_1*pt_1)"#*0.5"
           else:    
             fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
             fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
@@ -3048,7 +3055,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           OSSS = '!os'
         else:
             OSSS = 'os'
-        full_selection = BuildCutString('wt', sel, cat_data, OSSS)
+        weight='wt'
+        if options.add_wt : weight+='*'+options.add_wt
+        full_selection = BuildCutString(weight, sel, cat_data, OSSS)
         ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
     
     # produce templates for backgrounds
@@ -3448,7 +3457,7 @@ while len(systematics) > 0:
               
       #Run default plot 
       if options.scheme == 'signal': 
-          samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL'])
+          samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL','EWKZ','ggH_hww'])
           do_data = False
       if options.scheme == "noTT":
           samples_to_skip.extend(["TTT","TTJ"])

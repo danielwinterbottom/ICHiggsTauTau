@@ -175,7 +175,7 @@ namespace ic {
     ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
     p->set_vector(out_vec);
   }
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed=false, bool anti=false);
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
 
   template <class T>
   TVector3 getIPVector(T *tau/*, Vertex *vtx*/){
@@ -188,6 +188,48 @@ namespace ic {
     else IP.SetXYZ(-999, -999, -999); 
      return IP;
   }
+
+//  template<class T> 
+//  std::vector<std::pair<T,std::vector<T>>> ClusterGammas(std::vector<T> gammas, int p) {
+//    //cluster gammas into 2 objects where distance measure is annalogous to jet algorithms anti-KT: p=-1, KT p=+1, C/A: p=0. 
+//    //The eta and phi of a clustered object is set as the energy weighted average   
+//    std::vector<std::pair<T,std::vector<T>>> clusters;
+//
+//    // to start each gamma gives one cluster 
+//    for (auto g : gammas) {
+//      std::vector<T> g_vec = {g};
+//      clusters.push_back(std::make_pair(g,g_vec));
+//    }
+//    while(clusters.size()>2) {
+//      int min_i=-1, min_j=-1;
+//      double min_d=0;
+//      for(unsigned i=0; i<clusters.size()-1;++i) {
+//        for(unsigned j=i+1; j<clusters.size();++j) {
+//          double d = pow(ROOT::Math::VectorUtil::DeltaR(clusters[i].first->vector(),clusters[j].first->vector()),2)*std::min(pow(clusters[i].first->pt(),2*p),pow(clusters[j].first->pt(),2*p)); 
+//          if(min_i==-1 || d< min_d) {
+//            min_d = d;
+//            min_i=i;
+//            min_j=j;
+//          }
+//        }
+//      }
+//      // merge pair with smallest d, remove old elements from vector and start again
+//      std::cout << min_i << "    " << min_j << std::endl;
+//      std::vector<T> new_vec = clusters[min_i].second;
+//      new_vec.insert(new_vec.end(), clusters[min_j].second.begin(), clusters[min_j].second.end());
+//      double E=clusters[min_i].first->energy() + clusters[min_j].first->energy();
+//      double phi = (clusters[min_i].first->energy()*clusters[min_i].first->phi() + clusters[min_j].first->energy()*clusters[min_j].first->phi())/E;
+//      double eta = (clusters[min_i].first->energy()*clusters[min_i].first->eta() + clusters[min_j].first->energy()*clusters[min_j].first->eta())/E;
+//      double theta = atan(exp(-eta))*2;
+//      double pt = E*sin(theta);
+//      T new_cluster;
+//      new_cluster->set_vector(ROOT::Math::PtEtaPhiEVector(pt, eta, phi, E));
+//      clusters.erase(clusters.begin()+std::max(min_j,min_i));
+//      clusters.erase(clusters.begin()+std::min(min_j,min_i));
+//      clusters.push_back(std::make_pair(new_cluster,new_vec));
+//    }
+//    return clusters;
+//  }
 
   template<class T>
   std::vector<T> SortA1Products (std::vector<T> const& a1) {
@@ -677,6 +719,7 @@ namespace ic {
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut);
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut);
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   ic::Candidate* GetPi0 (std::vector<ic::PFCandidate*> gammas, bool leadEtaPhi);
   std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut);

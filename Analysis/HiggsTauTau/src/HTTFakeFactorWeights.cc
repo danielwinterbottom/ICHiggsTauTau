@@ -44,6 +44,16 @@ namespace ic {
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
+
+    if(strategy_ == strategy::cpdecays16 && channel_==channel::tt &&true) {
+      TFile f("input/fake_factors/ff_2016_v1.root");
+      ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f.Close();
+      fns_["ff_tt"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_tt")->functor(ff_ws_->argSet("t_pt,mvadm,njets,mvis,t_pt_2,ss")));
+      fns_["ff_tt_qcd"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_tt_qcd")->functor(ff_ws_->argSet("t_pt,mvadm,njets")));
+    }
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
@@ -442,6 +452,56 @@ namespace ic {
           } 
         }
       } else if(channel_ == channel::tt){
+
+        if(true) {
+
+          Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+          Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+          int tau_decaymode_1 = tau1->decay_mode();
+          int tau_decaymode_2 = tau2->decay_mode();
+
+          double mva_dm_1=-1;
+          if(event->Exists("mvadm_max_index_1")) {
+            int max_index = event->Get<int>("mvadm_max_index_1");
+            if(tau_decaymode_1<2){
+              if(max_index==1) mva_dm_1= 1;
+              if(max_index==2) mva_dm_1= 0;
+              if(max_index==3) mva_dm_1= 2;
+            } else {
+              if(max_index==1) mva_dm_1= 10;
+              if(max_index==2) mva_dm_1= 11;
+            }
+          }
+
+          double mva_dm_2=-1;
+          if(event->Exists("mvadm_max_index_2")) {
+            int max_index = event->Get<int>("mvadm_max_index_2");
+            if(tau_decaymode_2<2){
+              if(max_index==1) mva_dm_2= 1;
+              if(max_index==2) mva_dm_2= 0;
+              if(max_index==3) mva_dm_2= 2;
+            } else {
+              if(max_index==1) mva_dm_2= 10;
+              if(max_index==2) mva_dm_2= 11;
+            }
+          }
+          double ss = !PairOppSign(ditau);
+          auto args1 = std::vector<double>{pt_1_,mva_dm_1,n_jets_,m_vis_,pt_2_,ss};
+          //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << n_jets_ << "    " << m_vis_ << "    " << pt_2_ << "    " <<ss << std::endl;
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2,n_jets_,m_vis_,pt_1_,ss};
+          auto args1_qcd = std::vector<double>{pt_1_,mva_dm_1,n_jets_};
+          auto args2_qcd = std::vector<double>{pt_2_,mva_dm_2,n_jets_};
+          double ff_nom_1 = fns_["ff_tt"]->eval(args1.data())*0.5;  
+          double ff_nom_2 = fns_["ff_tt"]->eval(args2.data())*0.5;
+          double ff_qcd_1 = fns_["ff_tt_qcd"]->eval(args1.data())*0.5;
+          double ff_qcd_2 = fns_["ff_tt_qcd"]->eval(args2.data())*0.5;
+          event->Add("wt_ff_1",  ff_nom_1);
+          event->Add("wt_ff_2",  ff_nom_2);
+          event->Add("wt_ff_qcd_1",  ff_qcd_1);
+          event->Add("wt_ff_qcd_2",  ff_qcd_2);
+          //std::cout << ff_nom_1 << std::endl;
+          return 0;
+        }
         double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
         double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
         event->Add("wt_ff_1",  ff_nom_1);
