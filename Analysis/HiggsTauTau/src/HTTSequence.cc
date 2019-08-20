@@ -1445,18 +1445,18 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
    if(channel != channel::tpzmm &&channel !=channel::tpzee && channel != channel::tpmt && channel != channel::tpem && !js["qcd_study"].asBool()){  
      if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco) || (is_embedded && (era_type == era::data_2016 || era_type == era::data_2017 || era_type == era::data_2018))){
-        //   BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-        //       .set_channel(channel)
-        //       .set_mc(mc_type)
-        //       .set_era(era_type)
-        //       .set_strategy(strategy_type)
-        //       .set_is_data(is_data)
-        //       .set_is_embedded(is_embedded)
-        //       .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-        //       .set_do_singlelepton(js["do_singlelepton"].asBool())
-        //       .set_do_singletau(js["do_singletau"].asBool())
-        //       .set_do_filter(false)
-        //       .set_pair_label("ditau"));
+           BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+               .set_channel(channel)
+               .set_mc(mc_type)
+               .set_era(era_type)
+               .set_strategy(strategy_type)
+               .set_is_data(is_data)
+               .set_is_embedded(is_embedded)
+               .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+               .set_do_singlelepton(js["do_singlelepton"].asBool())
+               .set_do_singletau(js["do_singletau"].asBool())
+               .set_do_filter(false)
+               .set_pair_label("ditau"));
        }
      }
    }
@@ -2357,7 +2357,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 
   
 
-    //BuildModule(httWeights);
+    if(channel!=channel::tpzee&&channel!=channel::tpzmm) BuildModule(httWeights);
     if(  (strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16) && channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
 
       HTTStitching httStitching = HTTStitching("HTTStitching")  
