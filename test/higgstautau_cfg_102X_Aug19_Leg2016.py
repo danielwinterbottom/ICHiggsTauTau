@@ -410,7 +410,11 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   doSmearAndScale           = cms.bool(True),
   includeFloats = cms.PSet(
-     generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values")
+     generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+     mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+     mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+     mvaRun2Fall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2RawValues"), # need raw values for v2
+     mvaRun2IsoFall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2RawValues"),
   ),
   includeClusterIso        = cms.bool(True),
   includePFIso03           = cms.bool(True),
@@ -554,7 +558,8 @@ process.icTauProducer = producers.icTauProducer.clone(
   inputVertices           = vtxLabel,
   includeVertexIP         = cms.bool(True),
   requestTracks           = cms.bool(True),
-  tauIDs = tauIDs.dynamicStripIds
+  tauIDs = tauIDs.dynamicStripIds,
+  doSVRefit             = cms.bool(True)
 )
 
 process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
@@ -568,7 +573,8 @@ process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
   requestPFCandidates     = cms.bool(True),
   inputPFCandidates       = cms.InputTag("packedPFCandidates"),
   isSlimmed               = cms.bool(True),
-  tauIDs = cms.PSet()
+  tauIDs = cms.PSet(),
+  doSVRefit             = cms.bool(True)
 )
 
 

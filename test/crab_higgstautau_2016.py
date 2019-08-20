@@ -8,7 +8,7 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=globalTag=80X_dataRun2_2016SeptRepro_v7']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=80X_dataRun2_2016SeptRepro_v7']
 config.section_('Data')
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
@@ -83,9 +83,9 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
         
         if "Run2016H" in task[1]:
-            config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=globalTag=globalTag=80X_dataRun2_Prompt_v16']
+            config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=globalTag=80X_dataRun2_Prompt_v16']
         else:
-            config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=globalTag=80X_dataRun2_2016SeptRepro_v7']
+            config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','globalTag=80X_dataRun2_2016SeptRepro_v7']
         #submit(config)
         p = Process(target=submit, args=(config,))
         p.start()

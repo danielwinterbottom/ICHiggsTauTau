@@ -17,7 +17,7 @@ config.Data.publication = False
 #config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/dwinterb/Aug14_MC_102X_2017/'
 config.Data.allowNonValidInputDataset = True
-#config.Data.inputDBS='phys03'
+config.Data.inputDBS='phys03'
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
