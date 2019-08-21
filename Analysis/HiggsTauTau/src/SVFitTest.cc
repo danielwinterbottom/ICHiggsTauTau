@@ -226,7 +226,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
@@ -322,7 +325,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
@@ -393,8 +399,14 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
         Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if(strategy_ == strategy::legacy16){
+            iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+            iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+        }
+        else{
+            iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+            iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        }
         if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
           iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 

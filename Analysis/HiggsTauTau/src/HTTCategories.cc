@@ -3414,7 +3414,10 @@ namespace ic {
         antimu_2_ = lagainstMuonLoose3_2;
       }
       if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
         lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
@@ -3824,7 +3827,10 @@ namespace ic {
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
       if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
@@ -4232,8 +4238,14 @@ namespace ic {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) {
-        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if (strategy_ == strategy::legacy16){
+            iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+            iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+        }
+        else{
+            iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+            iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //should be lepton_rho
           iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 

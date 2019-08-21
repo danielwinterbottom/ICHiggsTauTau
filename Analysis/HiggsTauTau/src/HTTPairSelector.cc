@@ -449,7 +449,7 @@ namespace ic {
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
     double e_iso1;
     double e_iso2;
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){ 
+    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18 || strategy==strategy::legacy16){ 
       e_iso1 = PF03EAIsolationVal(e1, eventInfo->jet_rho()); //lepton_rho
       e_iso2 = PF03EAIsolationVal(e2, eventInfo->jet_rho());    
     }
@@ -522,7 +522,7 @@ namespace ic {
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
     double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
     double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
-    if(strategy == strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
+    if(strategy == strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18 || strategy==strategy::legacy16){
       e_iso1 = PF03EAIsolationVal(e1, eventInfo->jet_rho()); //lepton_rho
       e_iso2 = PF03EAIsolationVal(e2, eventInfo->jet_rho());
     } else {
