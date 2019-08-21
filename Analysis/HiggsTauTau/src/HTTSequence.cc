@@ -2423,8 +2423,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_quarkmass_higgspt(do_ggH_stitch)
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
-     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2017_v4.root");
-     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v17_7.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
@@ -2502,8 +2501,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_quarkmass_higgspt(do_ggH_stitch)
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
-     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_2018_v1.root");
-     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v17_3_embedded.root");
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v18_3.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
