@@ -125,7 +125,10 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        if(strategy_ == strategy::legacy16)
+            iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) { 
@@ -166,7 +169,10 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
-        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        if(strategy_ == strategy::legacy16)
+            iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ == era::data_2017 || era_ == era::data_2018) iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);

@@ -266,7 +266,12 @@ namespace ic {
     double iso_1_ = 0;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::legacy16){
+        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      }
+      else
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
     } else if (channel_ == channel::mt){
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
