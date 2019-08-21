@@ -6,7 +6,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/May24_MC_102X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt"],
+    "channels":     ["mt","tt","et","em","zee","zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -107,10 +107,10 @@
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 1.0,
-      "efaketau_1pi_es_shift": 1.095,
+      "efaketau_0pi_es_shift": 0.968,
+      "efaketau_1pi_es_shift": 1.026,
       "mufaketau_0pi_es_shift": 0.998,
-      "mufaketau_1pi_es_shift": 1.015,
+      "mufaketau_1pi_es_shift": 0.99,
       "tau_1prong0pi0_es_shift": 0.987,
       "tau_1prong1pi0_es_shift": 0.995,
       "tau_3prong0pi0_es_shift": 0.988,

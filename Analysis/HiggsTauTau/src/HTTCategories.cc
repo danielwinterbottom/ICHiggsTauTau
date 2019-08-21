@@ -106,6 +106,7 @@ namespace ic {
       outtree_->Branch("npNLO", &npNLO_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
+      outtree_->Branch("deeptau_sf", &deeptau_sf_);
       //end of temp gen stuff
       if(do_sm_ps_wts_ && !systematic_shift_){
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
@@ -2142,7 +2143,10 @@ namespace ic {
       wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
       wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
     }
-
+    
+    // save scale factor for deep tau ID to allow easy switching between the two
+    deeptau_sf_ = event->Exists("deeptau_sf_2") ? event->Get<double>("deeptau_sf_2") : 1.0;
+    if(event->Exists("deeptau_sf_1")) deeptau_sf_*=event->Get<double>("deeptau_sf_1");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
