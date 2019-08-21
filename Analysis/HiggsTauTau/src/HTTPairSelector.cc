@@ -366,7 +366,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16 && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::cpsummer17 && strategy_ != strategy::cpdecays17 && strategy_ != strategy::cpdecays18) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16 && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 &&  strategy_ != strategy::legacy16 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::cpsummer17 && strategy_ != strategy::cpdecays17 && strategy_ != strategy::cpdecays18) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
@@ -449,7 +449,7 @@ namespace ic {
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
     double e_iso1;
     double e_iso2;
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){ 
+    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18 || strategy==strategy::legacy16){ 
       e_iso1 = PF03EAIsolationVal(e1, eventInfo->jet_rho()); //lepton_rho
       e_iso2 = PF03EAIsolationVal(e2, eventInfo->jet_rho());    
     }
@@ -522,7 +522,7 @@ namespace ic {
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
     double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
     double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
-    if(strategy == strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
+    if(strategy == strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18 || strategy==strategy::legacy16){
       e_iso1 = PF03EAIsolationVal(e1, eventInfo->jet_rho()); //lepton_rho
       e_iso2 = PF03EAIsolationVal(e2, eventInfo->jet_rho());
     } else {

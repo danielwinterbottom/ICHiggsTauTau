@@ -318,7 +318,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
   if(channel_ == channel::tpzmm){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
       iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
@@ -402,10 +402,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     
   }
   if(channel_ == channel::tpzee){
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
-      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
       } else {
@@ -495,7 +495,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(channel_ == channel::tpmt){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon = dynamic_cast<T>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -557,15 +557,21 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   if(channel_ == channel::tpem){
     // add extra lepton veto!  
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);
-      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::legacy16)
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      else
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);      
       iso_2_ = PF04IsolationVal(muon, 0.5, 0);
       id_tag_1_ = 0;
       id_tag_2_ = tag_id_(muon);
-      id_probe_1_ = ElectronHTTIdSpring16(elec, false);
+      if(strategy_ == strategy::legacy16)
+        id_probe_1_ = ElectronHTTIdFall17V2(elec, true);
+      else
+        id_probe_1_ = ElectronHTTIdSpring16(elec, false);
       id_probe_2_ = 0;
     }
 

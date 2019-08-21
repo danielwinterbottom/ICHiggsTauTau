@@ -43,7 +43,7 @@ namespace ic {
      
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
 
     if(strategy_ == strategy::cpdecays16 && channel_==channel::tt &&true) {
       TFile f("input/fake_factors/ff_2016_v1.root");
@@ -59,7 +59,7 @@ namespace ic {
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
@@ -214,7 +214,7 @@ namespace ic {
     auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
     };
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
     if (era_ == era::data_2017) {
       btag_wp          = 0.4941;
@@ -266,7 +266,12 @@ namespace ic {
     double iso_1_ = 0;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::legacy16){
+        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      }
+      else
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
     } else if (channel_ == channel::mt){
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -343,7 +348,7 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       double real_frac=0;
       double real_frac_2=0;
       inputs.resize(9);
