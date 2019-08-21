@@ -1575,6 +1575,8 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vvtight_2_;
   //
 
+  double deeptau_sf_;
+
   double primary_vtx_x_;
   double primary_vtx_y_;
   double primary_vtx_z_;

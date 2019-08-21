@@ -107,7 +107,7 @@ for scale in scale_list:
         flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars())
         flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars())
 
-CONFIG='scripts/config2018.json'
+CONFIG='scripts/config2018cpdecay.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
@@ -312,7 +312,7 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        'DYJetsToLL-2017',
+        #'DYJetsToLL-2017',
         'DYJetsToLL',
         'DY1JetsToLL-LO',
         'DY2JetsToLL-LO',
