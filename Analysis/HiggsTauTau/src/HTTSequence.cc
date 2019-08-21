@@ -3058,7 +3058,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
@@ -3341,7 +3341,7 @@ void HTTSequence::BuildEMPairs() {
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
@@ -3556,7 +3556,7 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) {
+  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
     );
