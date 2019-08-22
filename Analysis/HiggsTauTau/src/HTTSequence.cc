@@ -2861,11 +2861,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     } else {
         
       std::function<bool(Electron const*)> elec_probe_id;  
-      if (strategy_type == strategy::legacy16)
+      std::function<bool(Electron const*)> elec_tag_id;  
+      if (strategy_type == strategy::legacy16){
           elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
-      else
+          elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
+      }
+      else{
           elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
-      
+          elec_tag_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+      }
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2884,9 +2888,9 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for Ele12 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          .set_extra_l1_probe_pt(10.)
+          //.set_extra_l1_probe_pt(10.)
           .set_probe_id(elec_probe_id)
-          .set_tag_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
           // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
       );  
     }
