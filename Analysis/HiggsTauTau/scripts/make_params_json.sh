@@ -1,4 +1,4 @@
-=$1
+input_xs=$1
 input_evt=$2
 lumi=$3
 
