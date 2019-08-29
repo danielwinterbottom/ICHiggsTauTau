@@ -799,12 +799,18 @@ void HTTSequence::BuildSequence(){
            output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
         httStitching.set_do_w_soup(true);
         httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-        httStitching.SetWInputYields(57026058,45367044,29878415,19798117,18751462);
+        if(strategy_type == strategy::legacy16)
+            httStitching.SetWInputYields(86916455,45283121,60302324,55331737,29841588);
+        else
+            httStitching.SetWInputYields(57026058,45367044,29878415,19798117,18751462);
        }
        if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
          httStitching.set_do_dy_soup(true);
          httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-         httStitching.SetDYInputYields(96658943,62627174, 19970551, 5856110, 4197868);
+         if(strategy_type == strategy::legacy16)
+            httStitching.SetDYInputYields(145989977, 63730337, 19879279, 5857441, 4099165);
+         else
+            httStitching.SetDYInputYields(96658943,62627174, 19970551, 5856110, 4197868);
        }
    
        BuildModule(httStitching); 
@@ -2792,8 +2798,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
           //
           // for muon leg of mu+tau cross trigger:
-          //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
-          //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
+          .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
+          .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
           //
           // for mu8 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -2802,10 +2808,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_extra_hlt_probe_pt(8.)
           //.set_extra_l1_probe_pt(5.)
           // for mu23 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-          .set_extra_hlt_probe_pt(23.)
-          .set_extra_l1_probe_pt(20.)
+          //.set_probe_trg_objects("triggerObjectsMu17Mu8")
+          //.set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          //.set_extra_hlt_probe_pt(23.)
+          //.set_extra_l1_probe_pt(20.)
 
           //.set_probe_id(muon_probe_id)
           //.set_tag_id(muon_probe_id)
@@ -2859,11 +2865,15 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     } else {
         
       std::function<bool(Electron const*)> elec_probe_id;  
-      if (strategy_type == strategy::legacy16)
+      std::function<bool(Electron const*)> elec_tag_id;  
+      if (strategy_type == strategy::legacy16){
           elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
-      else
+          elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
+      }
+      else{
           elec_probe_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
-      
+          elec_tag_id = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
+      }
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -2875,16 +2885,16 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           //// for Ele23 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsEle23Ele12")
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-          .set_extra_l1_probe_pt(20.)
-          .set_extra_l1_iso_probe_pt(18.)
-          // for Ele12 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
-          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          //.set_extra_l1_probe_pt(20.)
+          //.set_extra_l1_iso_probe_pt(18.)
+          // for Ele12 leg of EMu cross-trigger
+          .set_probe_trg_objects("triggerObjectsEle23Ele12")
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
           .set_extra_l1_probe_pt(10.)
           .set_probe_id(elec_probe_id)
-          .set_tag_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
           // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
       );  
     }
