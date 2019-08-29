@@ -1126,7 +1126,7 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
     .set_jet_label(jets_label));
 }
 
-if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_embedded && !is_data) {
+if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) && !is_embedded && !is_data) {
   TH2F prefire_hist; 
   if(strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
   else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
@@ -1691,6 +1691,7 @@ if(channel != channel::wmnu) {
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_strategy(strategy_type)
+    .set_mc(mc_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ((js["baseline"]["split_by_source"].asBool() && !js["baseline"]["split_by_region"].asBool()) || do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
     .set_fail_mode(0)
@@ -2406,7 +2407,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
   }
 
   if((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) && channel!=channel::wmnu){
-    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/dy_weights_2017.root","/","zptmass_histo");
+    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2017new.root","/","zptmass_histo");
   
     HTTWeights httWeights = HTTWeights("HTTWeights")   
      .set_channel(channel)
@@ -2484,7 +2485,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
 // adding 2018 stitching
 //
   if((strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
-    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2018.root","/","zptmass_histo");
+    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2018new.root","/","zptmass_histo");
   
     HTTWeights httWeights = HTTWeights("HTTWeights")   
      .set_channel(channel)
@@ -2538,14 +2539,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_w_soup(true);
             // W numbers need updating
             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-            httStitching.SetWInputYields(66386958.0,51047866.0,23272818.0,14492897.0,10062333.0); // correspond to params Mar18
+            httStitching.SetWInputYields(70966439,51047866,23272818,14492897.0,10062333.0); // correspond to params Mar18
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
               && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(100114403.0,68852433.0,20441071.0,5646595.0,2812482.0); // correspond to params Mar18
+            httStitching.SetDYInputYields(100114403.0,68852433.0,20441071.0,5646299.0,2812482.0); // correspond to params Mar18
           }
        
        BuildModule(httStitching);   
@@ -2624,7 +2625,6 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
 if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
 bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
-bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
 bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
 if (strategy_type == strategy::cpdecays16) {
@@ -2634,17 +2634,18 @@ if (strategy_type == strategy::cpdecays16) {
    //   .set_channel(channel)
    //   .set_strategy(strategy_type));
 
-  BuildModule(Pi0MVA("Pi0MVA")
-      .set_fs(fs.get())
-      .set_maketrees(true)
-      .set_channel(channel)
-      .set_strategy(strategy_type));
+//  BuildModule(Pi0MVA("Pi0MVA")
+//      .set_fs(fs.get())
+//      .set_maketrees(true)
+//      .set_channel(channel)
+//      .set_strategy(strategy_type));
 
 
   //BuildModule(MVADMEmbedder("MVADMEmbedder")
   //    .set_fs(fs.get())
   //    .set_channel(channel)
   //    .set_strategy(strategy_type));
+  ;
 }
 do_sm_scale_wts = true; // set this to false after!
 BuildModule(HTTCategories("HTTCategories")
@@ -2659,7 +2660,6 @@ BuildModule(HTTCategories("HTTCategories")
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-    .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
     .set_optimisation_study(js["optimisation_study"].asBool())
@@ -2676,11 +2676,9 @@ BuildModule(HTTCategories("HTTCategories")
     .set_ff_categories(js["baseline"]["ff_categories"].asString())
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
     .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-    .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts) 
     .set_do_sm_ps_wts(do_sm_scale_wts)
-    .set_do_jes_vars(do_jes_vars)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
     .set_official_ggH(official_ggH));
@@ -3159,7 +3157,7 @@ if( strategy_type == strategy::paper2013) {
 void HTTSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
- if (mu_scale_mode > 0 && is_embedded){
+ if (mu_scale_mode > 0 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_shift_label("muon_scales")
@@ -3280,7 +3278,7 @@ void HTTSequence::BuildEMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
  
- if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded){
+ if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_shift_label("muon_scales")
@@ -3652,7 +3650,7 @@ void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
  
- if (tau_scale_mode > 0 && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)){
+ if (tau_scale_mode > 0 && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && muon_shift!=1.0){
  BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
     .set_input_label("muons")
     .set_shift(muon_shift));

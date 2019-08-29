@@ -12,7 +12,7 @@
 
 namespace ic {
 
-  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15) {
+  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15), mc_(mc::summer12_53X) {
   
     out_file_ = NULL;
     out_tree_ = NULL;
@@ -271,6 +271,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = strategy_==strategy::spring15 ? lagainstElectronTightMVA5_2 : lagainstElectronTightMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
         if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
+        if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau->GetTauID("byVVVLooseDeepTau2017v2VSe") && tau->GetTauID("byVVVLooseDeepTau2017v2VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2VSjet") && iso_1_<0.5); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
     }
     if(channel_ == channel::mt && do_preselection_) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -299,6 +300,8 @@ int SVFitTest::Execute(TreeEvent *event) {
           if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        
+
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
         lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -318,7 +321,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonTight3_2;
         if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
-
+         if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau->GetTauID("byVVVLooseDeepTau2017v2VSe") && tau->GetTauID("byVVVLooseDeepTau2017v2VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2VSjet") && iso_1_<0.5); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
     }
     if(channel_ == channel::em && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -384,6 +387,9 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
         if(iso_discr_1_>0 && iso_discr_2_>0 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
+        if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau1->GetTauID("byVVVLooseDeepTau2017v2VSe") && tau1->GetTauID("byVVVLooseDeepTau2017v2VSmu") && tau1->GetTauID("byVVVLooseDeepTau2017v2VSjet") && tau2->GetTauID("byVVVLooseDeepTau2017v2VSe") && tau2->GetTauID("byVVVLooseDeepTau2017v2VSmu") && tau2->GetTauID("byVVVLooseDeepTau2017v2VSjet")); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
+
     }
     if((channel_ == channel::zmm || channel_ == channel::tpzmm) && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");

@@ -165,7 +165,8 @@ struct mc_def {
         spring16_80X,     //76X MC
         summer16_80X,
         mc2017,
-        mc2018
+        mc2018,
+        mcleg2016
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -180,7 +181,8 @@ inline std::string MC2String(mc const& in) {
         (mc::spring16_80X, "spring16_80X")
         (mc::summer16_80X, "summer16_80X")
         (mc::mc2017,       "mc2017")
-        (mc::mc2018,       "mc2018");
+        (mc::mc2018,       "mc2018")
+        (mc::mcleg2016,       "mcleg2016"); 
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -199,7 +201,8 @@ inline mc String2MC(std::string const& in) {
     ("spring16_80X", mc::spring16_80X)
     ("summer16_80X", mc::summer16_80X)
     ("mc2017",       mc::mc2017)
-    ("mc2018",       mc::mc2018);
+    ("mc2018",       mc::mc2018)
+    ("mcleg2016",       mc::mcleg2016);
 
 
 	if (conv.find(in) != conv.end()) {
