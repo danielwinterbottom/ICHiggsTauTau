@@ -107,7 +107,7 @@ for scale in scale_list:
         flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars())
         flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars())
 
-CONFIG='scripts/config2018.json'
+CONFIG='scripts/config2018cpdecay.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
@@ -144,7 +144,6 @@ for i in range(0,scale):
     temp='job:sequences:all:'+temp
     flatjsons.append(temp)
 
-# FILELIST='filelists/Mar25_MC_102X'
 FILELIST='filelists/May24_MC_102X'
 
 signal_mc = [ ]
@@ -267,7 +266,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['B','C','D','E','F']
+    data_eras = ['A','B','C','D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -283,12 +282,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Oct10_MC_94X"
+    EMBEDFILELIST="./filelists/Aug14_MC_102X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Oct10_MC_94X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Aug14_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 10
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
@@ -313,7 +312,7 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        # 'DYJetsToLL-2017',
+        #'DYJetsToLL-2017',
         'DYJetsToLL',
         'DY1JetsToLL-LO',
         'DY2JetsToLL-LO',
@@ -357,7 +356,7 @@ if options.proc_bkg or options.proc_all:
     for sa in central_samples:
         JOB='%s_2018' % (sa)
         # FILELIST = "./filelists/May24_MC_102X"
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/May24_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         # if sa == "T-t":
         #     FILELIST = './filelists/Mar25_MC_102X'
         #     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/Mar25_MC_102X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

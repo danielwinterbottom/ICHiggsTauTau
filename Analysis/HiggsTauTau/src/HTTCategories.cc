@@ -106,6 +106,7 @@ namespace ic {
       outtree_->Branch("npNLO", &npNLO_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
+      outtree_->Branch("deeptau_sf", &deeptau_sf_);
       //end of temp gen stuff
       if(do_sm_ps_wts_ && !systematic_shift_){
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
@@ -114,13 +115,13 @@ namespace ic {
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
       }
      
-      if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+      if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
         outtree_->Branch("wt_prefire", &wt_prefire_);
         outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
         outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
       }
   
-      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
+      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -575,10 +576,13 @@ namespace ic {
           
             }
           } 
-        } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+        } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
           if(channel_ == channel::tt){
             outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
+            outtree_->Branch("wt_ff_1"  , &wt_ff_1_);
+            outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
+            outtree_->Branch("wt_ff_qcd_2"  , &wt_ff_qcd_2_); 
           }
             if(do_ff_systematics_){
                 outtree_->Branch("wt_ff_qcd_syst_up_1"            , &wt_ff_qcd_syst_up_1_             );
@@ -816,7 +820,7 @@ namespace ic {
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
       outtree_->Branch("dijetpt",           &dijetpt_);
       outtree_->Branch("centrality",        &centrality_);
-      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         outtree_->Branch("sjdphi",             &sjdphi_);
         outtree_->Branch("D0", &D0_);
         outtree_->Branch("DCP", &DCP_);
@@ -1394,7 +1398,7 @@ namespace ic {
         outtree_->Branch("mjj_26",      &mjj_26_     );
         outtree_->Branch("mjj_27",      &mjj_27_     );
         outtree_->Branch("mjj_28",      &mjj_28_     );
-        if( strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+        if( strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
           outtree_->Branch("sjdphi_1",     &sjdphi_1_    );
           outtree_->Branch("sjdphi_2",     &sjdphi_2_    );
           outtree_->Branch("sjdphi_3",     &sjdphi_3_    );
@@ -1512,7 +1516,7 @@ namespace ic {
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
         outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
 */        
-        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ ){
+        if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_scale_et_0jet"   , &wt_scale_et_0jet_    );
           outtree_->Branch("wt_scale_et_boosted" , &wt_scale_et_boosted_ );
           outtree_->Branch("wt_scale_et_vbf"    , &wt_scale_et_vbf_     );
@@ -1526,7 +1530,7 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
-        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
+        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
           outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
           outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
         }
@@ -1535,7 +1539,7 @@ namespace ic {
           outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
           outtree_->Branch("wt_z_mjj_down",    &wt_z_mjj_down_);    
         }
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
           outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
           outtree_->Branch("wt_tau_id_dm0_down" ,    &wt_tau_id_dm0_down_); 
           outtree_->Branch("wt_tau_id_dm1_up"   ,    &wt_tau_id_dm1_up_);   
@@ -1826,7 +1830,7 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
@@ -2134,12 +2138,15 @@ namespace ic {
         wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
     }
 
-    if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+    if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
       wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
       wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
     }
-
+    
+    // save scale factor for deep tau ID to allow easy switching between the two
+    deeptau_sf_ = event->Exists("deeptau_sf_2") ? event->Get<double>("deeptau_sf_2") : 1.0;
+    if(event->Exists("deeptau_sf_1")) deeptau_sf_*=event->Get<double>("deeptau_sf_1");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -2567,10 +2574,13 @@ namespace ic {
             if(event->Exists("wt_btag_ff_dy_frac_syst_down_2"               )) wt_btag_ff_dy_frac_syst_down_2               = event->Get<double>("wt_btag_ff_dy_frac_syst_down_2");
           }
         }
-      } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
-        
+       
+        if(event->Exists("wt_ff_qcd_1")) wt_ff_qcd_1_ = event->Get<double>("wt_ff_qcd_1"); 
+        if(event->Exists("wt_ff_qcd_2")) wt_ff_qcd_2_ = event->Get<double>("wt_ff_qcd_2");
+ 
         if(do_ff_systematics_){
           
           if(event->Exists("wt_ff_qcd_syst_up_1"            )) wt_ff_qcd_syst_up_1_               = event->Get<double>("wt_ff_qcd_syst_up_1"            );
@@ -2781,7 +2791,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !is_data_ && !is_embedded_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !is_data_ && !is_embedded_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -2948,12 +2958,12 @@ namespace ic {
     if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||
       strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16 || 
-      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16|| strategy_ == strategy::cpdecays16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || 
       strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || 
-      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) loose_btag_wp = 0.46;
+      strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) loose_btag_wp = 0.46;
     if (era_ == era::data_2017) {
       btag_wp = 0.4941;
       loose_btag_wp = 0.1522;
@@ -3088,7 +3098,7 @@ namespace ic {
 
     }
     if(channel_ == channel::tt) {
-        if(strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+        if(strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           if(event->Exists("dimuon_veto")) dilep_veto_ = event->Get<bool>("dimuon_veto");
           if(event->Exists("dielec_veto")) dilep_veto_ = dilep_veto_ || event->Get<bool>("dielec_veto");
         }
@@ -3100,7 +3110,7 @@ namespace ic {
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
     
-    if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !make_sync_ntuple_) dilepton_veto_ = dilep_veto_ || dilepton_veto_;
+    if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !make_sync_ntuple_) dilepton_veto_ = dilep_veto_ || dilepton_veto_;
 
     n_vtx_ = eventInfo->good_vertices();
     /*trigger_object_pt_1 = 0;
@@ -3149,7 +3159,7 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
-    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) pfmet = event->GetPtr<Met>("pfMET");
+    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) pfmet = event->GetPtr<Met>("pfMET");
 
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
     //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
@@ -3407,8 +3417,11 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
         lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
@@ -3652,7 +3665,7 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
-       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
@@ -3817,8 +3830,11 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("generalPurposeMVASpring16");
       }
@@ -4016,7 +4032,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
         iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -4225,9 +4241,15 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) {
-        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) {
+        if (strategy_ == strategy::legacy16){
+            iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+            iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+        }
+        else{
+            iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+            iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //should be lepton_rho
           iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
@@ -4251,7 +4273,7 @@ namespace ic {
         mva_1_ = MuonMedium(muon1);
         mva_2_ = MuonMedium(muon2);
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
         mva_1_ = MuonMediumHIPsafe(muon1);
@@ -4374,7 +4396,7 @@ namespace ic {
       float zfeld = eta_h_ - (lowpt_jets[0]->eta()+lowpt_jets[1]->eta())/2;
       centrality_ = std::exp(-4*std::pow((zfeld/std::fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta())),2));
 
-      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
         if (event->Exists("D0")) D0_ = event->Get<float>("D0");
         else D0_ = -9999;
         if (event->Exists("DCP")) DCP_ = event->Get<float>("DCP");
@@ -4477,7 +4499,7 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
     
-    if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ && !systematic_shift_){
+    if((strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16) && do_sm_scale_wts_ && !systematic_shift_){
       // weights needed for SM scale uncertainties are computer here rather than in HTTWeights - since these are parametarized as a function of the offline mjj and pt_tt which are computer in HTTCategories anyway
       wt_scale_et_0jet_  = 0.973 + 0.0003405 * pt_2_.var_double;
       wt_scale_et_boosted_ = 0.986 - 0.0000278 *pt_tt_.var_double;
@@ -4492,7 +4514,7 @@ namespace ic {
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
-    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
+    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
       if (official_ggH_){
         wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
         wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
@@ -4513,7 +4535,7 @@ namespace ic {
       wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
       wt_z_mjj_down_ = event->Exists("wt_z_mjj_down") ? event->Get<double>("wt_z_mjj_down") : 1.0;   
     }
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16){
       wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
       wt_tau_id_dm0_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
       wt_tau_id_dm1_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
@@ -5130,7 +5152,14 @@ namespace ic {
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
 
-      //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
+      //}
+
 
       tau_svx_1_ = tau1->svx();
       tau_svy_1_ = tau1->svy();
@@ -5140,40 +5169,101 @@ namespace ic {
       tau_svy_2_ = tau2->svy();
       tau_svz_2_ = tau2->svz();
 
-      bool doAnti = false;
-      //if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
-      //  cp_channel_=2;
-      //  lvec1 = ConvertToLorentz(pi0_tau1->vector());
-      //  /* lvec2 = ConvertToLorentz(tau2->vector()); */
-      //  pvtosv.SetXYZT(
-      //          tau2->svx() - vertex_vec[0]->vx(),
-      //          tau2->svy() - vertex_vec[0]->vy(),
-      //          tau2->svz() - vertex_vec[0]->vz(),
-      //          0.);
-      //  lvec3 = ConvertToLorentz(pi_tau1->vector());
-      //  lvec4 = ConvertToLorentz(pi_tau2->vector());
+      auto primary_vtx = refit_vertex;
 
-      //  doAnti = q_2_ > 0 ? true : false;
+      if(tau_decay_mode_1_==0&&tau_decay_mode_2_==0) {
+        cp_channel_=1;
 
-      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
-      //}
-      //else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
-      //  cp_channel_=2;
-      //  lvec1 = ConvertToLorentz(pi0_tau2->vector());
-      //  /* lvec2 = ConvertToLorentz(tau1->vector()); */
-      //  pvtosv.SetXYZT(
-      //          tau1->svx() - vertex_vec[0]->vx(),
-      //          tau1->svy() - vertex_vec[0]->vy(),
-      //          tau1->svz() - vertex_vec[0]->vz(),
-      //          0.);
-      //  lvec3 = ConvertToLorentz(pi_tau2->vector());
-      //  lvec4 = ConvertToLorentz(pi_tau1->vector());
+        TLorentzVector pvtosv1(
+                tau1->svx() - primary_vtx->vx(),
+                tau1->svy() - primary_vtx->vy(),
+                tau1->svz() - primary_vtx->vz(),
+                0.);
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
 
-      //  doAnti = q_1_ > 0 ? true : false;
+        lvec3 = ConvertToLorentz(tau1->vector()); 
+        lvec4 = ConvertToLorentz(tau2->vector()); 
 
-      //  cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
-      //}
-      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==1) || (gammas1.size()>0 && tau_decay_mode_1_==0&&tau_decay_mode_2_==1) || (gammas2.size()>0 && tau_decay_mode_2_==0&&tau_decay_mode_1_==1)){
+        TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        lvec1 = TLorentzVector(ip1, 0.);
+        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip2, 0.);
+
+        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+      }
+
+      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==0) || (tau_decay_mode_1_==0&&tau_decay_mode_2_==1)) {
+        cp_channel_=2;
+        ic::Candidate *pi;
+        ic::Candidate *pi0;
+        ic::Tau const *tau;
+
+        if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
+          pi = pi_tau1;
+          pi0 = pi0_tau1;
+          tau = tau2;
+        } else {
+          pi = pi_tau2;
+          pi0 = pi0_tau2;
+          tau = tau1;
+        }
+        cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        TLorentzVector pvtosv1(
+                tau->svx() - primary_vtx->vx(),
+                tau->svy() - primary_vtx->vy(),
+                tau->svz() - primary_vtx->vz(),
+                0.);
+        lvec1 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+        lvec3 = ConvertToLorentz(pi->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(tau->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip, 0.);
+
+        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_1_<M_PI)  aco_angle_1_ = aco_angle_1_+M_PI;
+          else                    aco_angle_1_ = aco_angle_1_-M_PI;
+        }
+      }
+
+//      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0){
+//        cp_channel_=2;
+//        lvec1 = ConvertToLorentz(pi0_tau1->vector());
+//        pvtosv.SetXYZT(
+//                tau2->svx() - vertex_vec[0]->vx(),
+//                tau2->svy() - vertex_vec[0]->vy(),
+//                tau2->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec3 = ConvertToLorentz(pi_tau1->vector());
+//        lvec4 = ConvertToLorentz(pi_tau2->vector());
+//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
+//      }
+//      else if(tau_decay_mode_1_==0&&tau_decay_mode_2_==1){
+//        cp_channel_=2;
+//        lvec1 = ConvertToLorentz(pi0_tau2->vector());
+//        /* lvec2 = ConvertToLorentz(tau1->vector()); */
+//        pvtosv.SetXYZT(
+//                tau1->svx() - vertex_vec[0]->vx(),
+//                tau1->svy() - vertex_vec[0]->vy(),
+//                tau1->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec3 = ConvertToLorentz(pi_tau2->vector());
+//        lvec4 = ConvertToLorentz(pi_tau1->vector());
+//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
+//      }
+      //if((tau_decay_mode_1_==1&&tau_decay_mode_2_==1) || (gammas1.size()>0 && tau_decay_mode_1_==0&&tau_decay_mode_2_==1) || (gammas2.size()>0 && tau_decay_mode_2_==0&&tau_decay_mode_1_==1)){
+      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
         cp_channel_=3;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
@@ -5270,10 +5360,7 @@ namespace ic {
       }
 
       if(cp_channel_!=-1){
-        if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
-        else
-          aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }
       if(cp_channel_==3 || cp_channel_==2) {
         if (cp_sign_<0) {
@@ -5591,7 +5678,35 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
-      bool doAnti = false;
+//      if(tau_decay_mode_2_==1) {
+//        cp_channel_=2;
+//        ic::Candidate *pi;
+//        ic::Candidate *pi0;
+//        ic::Tau const *tau;
+//
+//        if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
+//          pi = pi_tau1;
+//          pi0 = pi0_tau1;
+//          tau = tau2;
+//        } else {
+//          pi = pi_tau2;
+//          pi0 = pi0_tau2;
+//          tau = tau1;
+//        }
+//        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau1, pi0_tau1}),TVector3());
+//        TLorentzVector pvtosv1(
+//                tau->svx() - vertex_vec[0]->vx(),
+//                tau->svy() - vertex_vec[0]->vy(),
+//                tau->svz() - vertex_vec[0]->vz(),
+//                0.);
+//        lvec1 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+//        lvec3 = ConvertToLorentz(pi->vector()); //pi charge from rho
+//        lvec4 = ConvertToLorentz(tau->vector()); //pi charge from tau
+//
+//        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        lvec2 = TLorentzVector(ip, 0.);
+//      }
+
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
@@ -5604,7 +5719,6 @@ namespace ic {
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(muon1->vector());
 
-        doAnti = q_1_ > 0 ? true : false;
 
         cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
       }
@@ -5615,7 +5729,7 @@ namespace ic {
 
       if(cp_channel_!=-1){
         if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false);
         else
           aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }
@@ -5668,7 +5782,6 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
-      bool doAnti = false;
       if(tau_decay_mode_2_==1){
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
@@ -5680,7 +5793,6 @@ namespace ic {
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(ele1->vector());
 
-        doAnti = q_1_ > 0 ? true : false;
 
         cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
       }
@@ -5691,7 +5803,7 @@ namespace ic {
 
       if(cp_channel_!=-1){
         if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false,true,doAnti);
+          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false);
         else
           aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
       }

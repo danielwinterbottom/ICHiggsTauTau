@@ -1,12 +1,10 @@
 {
   "job": {
-    "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar25_MC_102X/",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/May24_MC_102X/",
+    "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Aug07_MC_102X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt","et","em","zee","zmm"],
+    "channels":      ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -20,9 +18,9 @@
   },
   "sequence": {
     "do_gen_analysis" : false,
-    "mc"            : "mc2018",
-    "era"           : "data_2018",
-    "strategy"      : "cpdecays18",
+    "mc"            : "summer16_80X",
+    "era"           : "data_2016",
+    "strategy"      : "legacy16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
@@ -32,13 +30,13 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : false,
-    "do_btag_eff": false,
+    "get_effective" : true,
+    "do_btag_eff":false,
     "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
-    "do_singletau"    : false,
+    "do_singletau"    :true,
     "store_trigobjpt" :true,
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
@@ -60,32 +58,18 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-     "output_folder" : "/vols/cms/dw515/Offline/output/SM/doubletau_trg_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec05_JES_2016/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr12_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr12_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Ele_TnP_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr30_2018_effective/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jun11_2018_effective/",
-    //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jun11_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr30_2018_pu/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May14_2018_noBTagSF/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr24_2018_emTrgHighMuLeg/",
-     "output_folder" : "output/",
-    //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
-    //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
-//    "output_name"   : "VBF_HToTauTau_M-125",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/GetEffectiveNumber_Aug13",
+    //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
+    //"svfit_folder" : "svfit/", 
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
     "njets_mode" : 0,
     //"event_check_file":"checkfile.dat",
-    "pu_id_training": 4,
+    "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
@@ -95,27 +79,28 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2018_69p2mb_Cert_314472-325175_100bins.root",
-    "mc_pu_file"    : "input/pileup/2018/pileup_2018_DYJetsToLL-LO.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_80bins.root",
+    "mc_pu_file"    : "input/pileup/MC_Moriond17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
-      "use_deep_csv"      : true,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 0.968,
-      "efaketau_1pi_es_shift": 1.026,
-      "mufaketau_0pi_es_shift": 0.998,
-      "mufaketau_1pi_es_shift": 0.99,
-      "tau_1prong0pi0_es_shift": 0.987,
-      "tau_1prong1pi0_es_shift": 0.995,
-      "tau_3prong0pi0_es_shift": 0.988,
+      "efaketau_0pi_es_shift": 0.995,
+      "efaketau_1pi_es_shift": 1.060,
+      "mufaketau_0pi_es_shift": 1.0,
+      "mufaketau_1pi_es_shift": 0.995,
+      "tau_1prong0pi0_es_shift": 0.995,
+      "tau_1prong1pi0_es_shift": 1.011,
+      "tau_3prong0pi0_es_shift": 1.006,
+      "embedtau_1prong0pi0_es_shift": 0.995,
       "embedtau_1prong1pi0_es_shift": 1.011, 
       "embedtau_1prong0pi0_es_shift": 0.997,
+      "embedtau_1prong1pi0_es_shift": 1.002,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -151,10 +136,10 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : false, 
-        "do_ff_systematics": true,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "et_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "NewETFix/tight/et/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
           }
     },
  "tt": {
@@ -168,10 +153,10 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : false,
-        "do_ff_systematics": true,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "tt_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "NewETFix/tight/tt/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
       }
     },
 
@@ -187,10 +172,10 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : false,
-        "do_ff_systematics": true,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
-        "ff_file" : "mt_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "NewETFix/tight/mt/fakeFactors_tight.root",
+        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
       }
     },
     "em": {
@@ -247,41 +232,41 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : 0.998,
+         "tau_1prong0pi0_es_shift" : 1.007,
          "embedtau_1prong0pi0_es_shift": 1.009
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : 0.976,
+         "tau_1prong0pi0_es_shift" : 0.983,
          "embedtau_1prong0pi0_es_shift": 0.985
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.004,
+         "tau_1prong1pi0_es_shift" : 1.023,
          "embedtau_1prong1pi0_es_shift" : 1.014
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 0.986,
+         "tau_1prong1pi0_es_shift" : 0.999,
          "embedtau_1prong1pi0_es_shift" : 0.990
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 0.996
+         "tau_3prong0pi0_es_shift" : 1.018
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.980
+         "tau_3prong0pi0_es_shift" : 0.994
       }
     },
 
@@ -354,14 +339,14 @@
       "baseline": {
         "addit_output_folder" : "MUSCALE_DOWN",
         "mu_scale_mode": true,
-        "muon_es_shift": 0.998
+        "muon_es_shift": 0.99
       }
     },
     "scale_mu_hi": {
       "baseline": {
         "addit_output_folder" : "MUSCALE_UP",
         "mu_scale_mode": true,
-        "muon_es_shift": 1.002
+        "muon_es_shift": 1.01
       }
     },
     "scale_j_lo": {
@@ -602,6 +587,122 @@
         "split_by_source" : false,
         "split_by_region" : true,
         "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_j_EE2_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 1
+     }
+    },
+    "scale_j_EE2_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 2
+      }
+    },
+    "scale_j_EE2_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_EE2_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_EE2_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_j_EE2_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 4,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_j_BBEE1_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
+        "jes_mode" : 1
+     }
+    },
+    "scale_j_BBEE1_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
+        "jes_mode" : 2
+      }
+    },
+    "scale_j_BBEE1_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_BBEE1_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_BBEE1_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_j_BBEE1_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEE1_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 3,
         "jes_mode" : 2,
         "jes_corr_mode" : 2
       }

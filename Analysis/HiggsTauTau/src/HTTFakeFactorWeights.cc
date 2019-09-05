@@ -43,13 +43,23 @@ namespace ic {
      
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
+    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
+
+    if(strategy_ == strategy::cpdecays16 && channel_==channel::tt &&true) {
+      TFile f("input/fake_factors/ff_2016_v1.root");
+      ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f.Close();
+      fns_["ff_tt"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_tt")->functor(ff_ws_->argSet("t_pt,mvadm,njets,mvis,t_pt_2,ss")));
+      fns_["ff_tt_qcd"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_tt_qcd")->functor(ff_ws_->argSet("t_pt,mvadm,njets")));
+    }
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
@@ -204,7 +214,7 @@ namespace ic {
     auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
     };
-    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
     if (era_ == era::data_2017) {
       btag_wp          = 0.4941;
@@ -256,7 +266,12 @@ namespace ic {
     double iso_1_ = 0;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      if(strategy_ == strategy::legacy16){
+        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      }
+      else
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
     } else if (channel_ == channel::mt){
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -333,7 +348,7 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       double real_frac=0;
       double real_frac_2=0;
       inputs.resize(9);
@@ -442,6 +457,56 @@ namespace ic {
           } 
         }
       } else if(channel_ == channel::tt){
+
+        if(true) {
+
+          Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+          Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+          int tau_decaymode_1 = tau1->decay_mode();
+          int tau_decaymode_2 = tau2->decay_mode();
+
+          double mva_dm_1=-1;
+          if(event->Exists("mvadm_max_index_1")) {
+            int max_index = event->Get<int>("mvadm_max_index_1");
+            if(tau_decaymode_1<2){
+              if(max_index==1) mva_dm_1= 1;
+              if(max_index==2) mva_dm_1= 0;
+              if(max_index==3) mva_dm_1= 2;
+            } else {
+              if(max_index==1) mva_dm_1= 10;
+              if(max_index==2) mva_dm_1= 11;
+            }
+          }
+
+          double mva_dm_2=-1;
+          if(event->Exists("mvadm_max_index_2")) {
+            int max_index = event->Get<int>("mvadm_max_index_2");
+            if(tau_decaymode_2<2){
+              if(max_index==1) mva_dm_2= 1;
+              if(max_index==2) mva_dm_2= 0;
+              if(max_index==3) mva_dm_2= 2;
+            } else {
+              if(max_index==1) mva_dm_2= 10;
+              if(max_index==2) mva_dm_2= 11;
+            }
+          }
+          double ss = !PairOppSign(ditau);
+          auto args1 = std::vector<double>{pt_1_,mva_dm_1,n_jets_,m_vis_,pt_2_,ss};
+          //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << n_jets_ << "    " << m_vis_ << "    " << pt_2_ << "    " <<ss << std::endl;
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2,n_jets_,m_vis_,pt_1_,ss};
+          auto args1_qcd = std::vector<double>{pt_1_,mva_dm_1,n_jets_};
+          auto args2_qcd = std::vector<double>{pt_2_,mva_dm_2,n_jets_};
+          double ff_nom_1 = fns_["ff_tt"]->eval(args1.data())*0.5;  
+          double ff_nom_2 = fns_["ff_tt"]->eval(args2.data())*0.5;
+          double ff_qcd_1 = fns_["ff_tt_qcd"]->eval(args1.data())*0.5;
+          double ff_qcd_2 = fns_["ff_tt_qcd"]->eval(args2.data())*0.5;
+          event->Add("wt_ff_1",  ff_nom_1);
+          event->Add("wt_ff_2",  ff_nom_2);
+          event->Add("wt_ff_qcd_1",  ff_qcd_1);
+          event->Add("wt_ff_qcd_2",  ff_qcd_2);
+          //std::cout << ff_nom_1 << std::endl;
+          return 0;
+        }
         double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
         double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
         event->Add("wt_ff_1",  ff_nom_1);

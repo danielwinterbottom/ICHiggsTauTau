@@ -204,11 +204,11 @@ if options.mg_signal:
 
 if options.cp_decay:
   signal_mc += [
-  # 'GluGluToHToTauTau_M-125-nospinner',
-  # 'VBFHToTauTau_M-125-nospinner',
-  'GluGluToHToTauTau_M-125-nospinner-filter',
-  # 'VBFHToTauTau_M-125-nospinner-filter',
-  # 'VBFHToTauTau_M-125-nospinner-filter-ext' 
+   'GluGluToHToTauTau_M-125-nospinner',
+   'VBFHToTauTau_M-125-nospinner',
+   'GluGluToHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter-ext' 
   ]
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
