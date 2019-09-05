@@ -3,13 +3,13 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Aug14_Data_102X_2018'
+config.General.workArea='Sep05_Data_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v13']
-config.JobType.maxMemoryMB = 2500
+#config.JobType.maxMemoryMB = 2000
 # config.JobType.numCores = 4
 config.JobType.allowUndistributedCMSSW = True
 
@@ -19,6 +19,8 @@ config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
+config.Site.whitelist   = ['T2_*','T1_*','T3_*']
+config.Data.ignoreLocality= True
 config.Site.storageSite = 'T2_UK_London_IC'
 
 if __name__ == '__main__':
