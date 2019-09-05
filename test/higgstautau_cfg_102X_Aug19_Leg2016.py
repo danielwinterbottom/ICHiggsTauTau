@@ -121,7 +121,7 @@ import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = ["2017v2", "newDM2017v2", "2016v1", "newDM2016v1",
-                            "deepTau2017v2",
+                            "deepTau2017v2p1",
                             "MVADM_2016_v1","MVADM_2017_v1"
                             ])
 tauIdEmbedder.runTauID()
@@ -224,14 +224,18 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 
 ### refit PV excluding tau decay products tracks
 
+process.filteredTaus = cms.EDFilter("PATTauSelector",
+                            src = cms.InputTag(updatedTauName),
+                            cut = cms.string("(decayMode != 5 && decayMode != 6 && (tauID('byVLooseIsolationMVArun2017v2DBnewDMwLT2017') > 0.5 && tauID('againstElectronVLooseMVA6') > 0.5 && tauID('againstMuonLoose3') > 0.5) || (tauID('byVVVLooseDeepTau2017v2p1VSjet') > 0.5 && tauID('byVVVLooseDeepTau2017v2p1VSe') > 0.5 && tauID('byVLooseDeepTau2017v2p1VSmu') > 0.5))"))
+
 import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
 process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
-process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", "filteredTaus")
 
 process.refitOfflineSlimmedPrimaryVerticesBS = vertexrefit.AdvancedRefitVertexBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVerticesBS.storeAsMap = cms.bool(True)
-process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", "filteredTaus")
 
 
 process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
@@ -249,6 +253,7 @@ process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
   process.icGenVertexProducer+
+  process.filteredTaus+
   process.refitOfflineSlimmedPrimaryVertices+
   process.refitOfflineSlimmedPrimaryVerticesBS+
   process.icRefitVertexProducer+
