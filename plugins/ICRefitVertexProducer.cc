@@ -62,7 +62,7 @@ void ICRefitVertexProducer::produce(edm::Event& event,
     dest.set_ndof(src.ndof());
     
     auto covariance = src.covariance();
-    dest.set_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+    dest.set_covariance(covariance);
 
     if (request_trks_) {
       for (reco::Vertex::trackRef_iterator trk_iter = src.tracks_begin();

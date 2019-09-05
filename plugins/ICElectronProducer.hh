@@ -13,6 +13,9 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
 
 /**
  * @brief See documentation [here](\ref objs-electron)
