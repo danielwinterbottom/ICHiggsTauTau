@@ -71,15 +71,16 @@ njets_bins = {
               'njets0':'n_jets==0',
               'njets1':'n_jets>0'
 }
-mva_dm_bins = {
+dm_bins = {
               'inclusive': '(1)',
-              'mvadm0':'(mva_dm_X==0)',
-              'mvadm1':'(mva_dm_X==1)',
-              'mvadm2':'(mva_dm_X==2)',
-              'mvadm10':'(mva_dm_X==10)',
-              'mvadm11':'(mva_dm_X==11)'
+              #'mvadm0':'(mva_dm_X==0)',
+              #'mvadm1':'(mva_dm_X==1)',
+              #'mvadm2':'(mva_dm_X==2)',
+              #'mvadm10':'(mva_dm_X==10)',
+              #'mvadm11':'(mva_dm_X==11)'
 }
 
+def DrawHists:
 
 def FitFakeFactors(h,usePol1=False):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
@@ -131,3 +132,14 @@ baseline_antiiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 
 
 var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
 var2='pt_1[40,45,50,55,60,65,70,80,90,100,120,140]'
+
+for njetbin in njets_bins:
+  for dmbin in dm_bins:
+    name= dmbin+'_'+njetbin
+    cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
+    cut_iso = 'wt*(%(baseline_bothiso)s)*(%(cuts)s)' % vars()
+    cut_aiso1 = re.sub('X', '1','wt*(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
+    cut_aiso2 = re.sub('X', '2','wt*(%(baseline_aiso2)s)*(%(cuts)s)' % vars())
+
+
+
