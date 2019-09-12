@@ -3,14 +3,68 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 import re
 import os
 import time
+import json
 
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
 # set some of these under option eventually
 wp = 'tight'
+file_ext='_tt_2018.root'
+output_folder='mvadm_ff_deeptau_2018'
+params_file='scripts/params_2018_new.json'
+draw=True
+fit=True
+###########################################
 
-output_folder='mvadm_ff_deeptau_2018_'
-config='scripts/plot_cpdecays_2018.cfg'
+
+data_files = [
+  'TauA',
+  'TauB',
+  'TauC',
+  'TauD'
+]
+
+ttbar_files = [
+  'TTTo2L2Nu',
+  'TTToHadronic',
+  'TTToSemiLeptonic'
+]
+
+wjets_files = [
+  'W1JetsToLNu-LO',
+  'W2JetsToLNu-LO',
+  'W3JetsToLNu-LO',
+  'W4JetsToLNu-LO',
+  'WJetsToLNu-LO',
+  'EWKWMinus2Jets',
+  'EWKWPlus2Jets'
+]
+
+other_files = [
+  'EWKZ2Jets',
+  'T-tW-ext1',
+  'T-t_tt',
+  'DY1JetsToLL-LO',
+  'DY2JetsToLL-LO',
+  'DY3JetsToLL-LO',
+  'DY4JetsToLL-LO',
+  'DYJetsToLL-LO',
+  'DYJetsToLL_M-10-50-LO',
+  'Tbar-tW-ext1',
+  'Tbar-t',
+  'WWTo1L1Nu2Q',
+  'WWTo2L2Nu',
+  'WZTo1L3Nu',
+  'WZTo2L2Q',
+  'WZTo3LNu-ext1',
+  'WZTo3LNu',
+  'ZZTo2L2Nu-ext1',
+  'ZZTo2L2Nu-ext2',
+  'ZZTo2L2Q',
+  'ZZTo4L-ext',
+  'ZZTo4L'
+]
+
 
 njets_bins = { 
               'inclusive': '(1)',
@@ -68,17 +122,12 @@ def PlotFakeFactor(f, h, name, output_folder):
   c1.Print(output_folder+'/'+i[0]+'_'+i[1]+'_fit.pdf')
   time.sleep(2)
 
-
-##########################################################################################
-
-# first run all the plotting we need to compute the uncorrected fake factors
-
 draw_list=[]
 
 # tt plots
 baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-
-baseline_antiiso = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+baseline_antiiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+baseline_antiiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_%(wp)s_1>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
 var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
 var2='pt_1[40,45,50,55,60,65,70,80,90,100,120,140]'
