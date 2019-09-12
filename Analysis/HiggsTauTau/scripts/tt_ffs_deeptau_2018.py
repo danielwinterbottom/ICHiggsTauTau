@@ -1,0 +1,84 @@
+import ROOT
+import UserCode.ICHiggsTauTau.plotting as plotting
+import re
+import os
+import time
+
+ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
+
+# set some of these under option eventually
+wp = 'tight'
+
+output_folder='mvadm_ff_deeptau_2018_'
+config='scripts/plot_cpdecays_2018.cfg'
+
+njets_bins = { 
+              'inclusive': '(1)',
+              'njets0':'n_jets==0',
+              'njets1':'n_jets>0'
+}
+mva_dm_bins = {
+              'inclusive': '(1)',
+              'mvadm0':'(mva_dm_X==0)',
+              'mvadm1':'(mva_dm_X==1)',
+              'mvadm2':'(mva_dm_X==2)',
+              'mvadm10':'(mva_dm_X==10)',
+              'mvadm11':'(mva_dm_X==11)'
+}
+
+
+def FitFakeFactors(h,usePol1=False):
+  h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+  f1 = ROOT.TF1("f1","landau")
+  f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]")
+  if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x")
+  # fit first with landau to get initial values for parameters - pol values set to 0 initially
+  h.Fit("f1",'I')
+  f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
+  if usePol1: f2.SetParameter(4,0)
+  # now fit with the full functions
+  # repeat fit up to 100 times until the fit converges properly
+  rep = True
+  count = 0
+  while rep:
+    fitresult = f.Fit("f2",'SI')
+    rep = int(fitresult) != 0
+    if not rep or count>100: 
+      ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
+      fit = f2
+      break
+    count+=1
+  fit.SetName(h.GetName()+'_fit')
+  return fit, h_uncert
+
+def PlotFakeFactor(f, h, name, output_folder):
+  c1 = ROOT.TCanvas() 
+  f.SetMinimum(0)
+  if f.GetMaximum() > 0.5: f.SetMaximum(0.5)
+  f.SetStats(0)
+  f.GetXaxis().SetTitle('p_{T} (GeV)')
+  f.GetYaxis().SetTitle('FF')
+  f.SetTitle(name)
+  f.SetLineColor(ROOT.kBlack)
+  f.Draw()
+  h.SetStats(0)
+  h.SetFillColor(ROOT.kBlue-10)
+  h.Draw("e3 same")
+  f.Draw("a sames")
+  c1.Print(output_folder+'/'+i[0]+'_'+i[1]+'_fit.pdf')
+  time.sleep(2)
+
+
+##########################################################################################
+
+# first run all the plotting we need to compute the uncorrected fake factors
+
+draw_list=[]
+
+# tt plots
+baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+
+baseline_antiiso = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+
+var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
+var2='pt_1[40,45,50,55,60,65,70,80,90,100,120,140]'
