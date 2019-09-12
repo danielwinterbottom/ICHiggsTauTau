@@ -4,6 +4,7 @@ import re
 import os
 import time
 import json
+from array import array
 
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
@@ -12,10 +13,16 @@ wp = 'tight'
 file_ext='_tt_2018.root'
 output_folder='mvadm_ff_deeptau_2018'
 params_file='scripts/params_2018_new.json'
+input_folder='/vols/cms/dw515/Offline/output/SM/new_2018/'
 draw=True
 fit=True
+lumi=58826.8469
 ###########################################
 
+# read params from json
+
+with open(params_file) as jsonfile:
+  params = json.load(jsonfile)
 
 data_files = [
   'TauA',
@@ -43,7 +50,7 @@ wjets_files = [
 other_files = [
   'EWKZ2Jets',
   'T-tW-ext1',
-  'T-t_tt',
+  'T-t',
   'DY1JetsToLL-LO',
   'DY2JetsToLL-LO',
   'DY3JetsToLL-LO',
@@ -68,8 +75,8 @@ other_files = [
 
 njets_bins = { 
               'inclusive': '(1)',
-              'njets0':'n_jets==0',
-              'njets1':'n_jets>0'
+              #'njets0':'n_jets==0',
+              #'njets1':'n_jets>0'
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -80,7 +87,74 @@ dm_bins = {
               #'mvadm11':'(mva_dm_X==11)'
 }
 
-def DrawHists:
+def DrawHists(var_input, cuts, name, input_folder, file_ext):
+  var = var_input.split('[')[0]
+  bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
+  hout = ROOT.TH1D('hout','',len(bins)-1, bins)
+  gen_extra='(gen_match_1==6)'
+  if var == 'pt_2': gen_extra='(gen_match_2==6)'
+
+  data = hout.Clone()
+  data.SetName(name+'_qcd')
+  wjets = hout.Clone()
+  wjets.SetName(name+'_wjets')
+  ttbar = hout.Clone()
+  ttbar.SetName(name+'_ttbar')
+  bkgs = hout.Clone()
+  bkgs.SetName(name+'_bkgs')
+
+  c1 = ROOT.TCanvas()
+
+  # draw data
+  for i in data_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple') 
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    h = t.GetHistogram()
+    data.Add(h)
+
+  # draw wjets when tau candidate is a jet fake
+  for i in wjets_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    wjets.Add(h)
+
+  # draw ttbar when tau candidate is a jet fake 
+  for i in ttbar_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    ttbar.Add(h)
+
+  # draw all backgrounds to be subtracted from data for QCD estimation
+  for i in other_files+wjets_files+ttbar_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    bkgs.Add(h)
+
+  data.Add(bkgs,-1)
+  
+  return (data, wjets, ttbar)
+
 
 def FitFakeFactors(h,usePol1=False):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
@@ -127,11 +201,13 @@ draw_list=[]
 
 # tt plots
 baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-baseline_antiiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-baseline_antiiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_%(wp)s_1>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+baseline_aiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_%(wp)s_1>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
 var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
-var2='pt_1[40,45,50,55,60,65,70,80,90,100,120,140]'
+var2='pt_2[40,45,50,55,60,65,70,80,90,100,120,140]'
+
+ff_list = {}
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
@@ -140,6 +216,9 @@ for njetbin in njets_bins:
     cut_iso = 'wt*(%(baseline_bothiso)s)*(%(cuts)s)' % vars()
     cut_aiso1 = re.sub('X', '1','wt*(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
     cut_aiso2 = re.sub('X', '2','wt*(%(baseline_aiso2)s)*(%(cuts)s)' % vars())
+    ff_list[name+'_pt_1'] = (var1, cut_iso, cut_aiso1)
+    ff_list[name+'_pt_2'] = (var2, cut_iso, cut_aiso2)
 
 
+DrawHists(ff_list['inclusive_inclusive_pt_1'][0], ff_list['inclusive_inclusive_pt_1'][1], 'inclusive_inclusive_pt_1_iso',input_folder,file_ext)
 
