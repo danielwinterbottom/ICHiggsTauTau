@@ -26,7 +26,7 @@ input_folder=args.input_folder
 draw= args.draw > 0
 lumi=58826.8469
 
-out_file = '%(output_folder)s/fakefactor_fits_tt_2018.root' % vars()
+out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
 # read params from json
 
@@ -112,8 +112,6 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
   bkgs = hout.Clone()
   bkgs.SetName(name+'_bkgs')
 
-  c1 = ROOT.TCanvas()
-
   # draw data
   for i in data_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
@@ -163,6 +161,90 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
   data.Add(bkgs,-1)
   
   return (data, wjets, ttbar)
+
+def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
+  var = var_input.split('[')[0]
+  bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
+  hout = ROOT.TH1D('hout','',len(bins)-1, bins)
+  gen_extra='(gen_match_1==6 || gen_match_2==6)'
+
+  data = hout.Clone()
+  data.SetName(name+'_qcd')
+  wjets = hout.Clone()
+  wjets.SetName(name+'_wjets_mc')
+  ttbar = hout.Clone()
+  ttbar.SetName(name+'_ttbar_mc')
+  bkgs = hout.Clone()
+  bkgs.SetName(name+'_bkgs')
+
+  # draw data
+  for i in data_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*)' % vars(),'goff')
+    h = t.GetHistogram()
+    data.Add(h)
+
+  # draw wjets when one of tau candidates is a jet fake - this includes VV and DY events also
+  for i in wjets_files+other_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    wjets.Add(h)
+
+  # draw ttbar when one of tau candidates is a jet fake 
+  for i in ttbar_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    ttbar.Add(h)
+
+  # draw all backgrounds with no jet fakes
+  for i in other_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    bkgs.Add(h)
+  # need to add also the ttbar and W+jet events without any fakes
+  for i in wjets_files+ttbar_files:
+    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+    t = f.Get('ntuple')
+    h = hout.Clone()
+    h.SetName('h')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((%(gen_extra)s)==0)' % vars(),'goff')
+    h = t.GetHistogram()
+    scale = lumi*params[i]['xs']/params[i]['evt']
+    h.Scale(scale)
+    bkgs.Add(h)
+
+  # subtract other processes to get QCD
+  data.Add(bkgs,-1); data.Add(wjets,-1); data.Add(ttbar,-1)
+
+  # fix any negative bins to 0 
+  for i in range(1,data.GetNbinsX()+1): 
+    if data.GetBinContent() < 0: qcd.SetBinContent(0)
+    if ttbar.GetBinContent() < 0: ttbar.SetBinContent(0)
+    if wjets.GetBinContent() < 0: wjets.SetBinContent(0)
+ 
+  return (data, wjets, ttbar)
+
 
 def CalculateFakeFactors(num,denum):
   name = num.GetName().replace('_iso','_ff')
@@ -284,6 +366,125 @@ for ff in ff_list:
     PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)
 
 
+## fractions
+#
+
+baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+
+#
+#cmd_0jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets0 --set_alias="inclusive:(n_jets==0)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s ' % vars()
+#cmd_1jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets1 --set_alias="inclusive:(n_jets==1)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --outputfolder=%(output_folder)s ' % vars()
+#cmd_2jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets2 --set_alias="inclusive:(n_jets>=2)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s ' % vars()
+#
+#os.system(cmd_0jet)
+#os.system(cmd_1jet)
+#os.system(cmd_2jet)
+#
+#
+#for njets in [0,1,2]:
+#  f0 = ROOT.TFile('%(output_folder)s/datacard_m_vis_njets%(njets)i_tt_2018.root' % vars())
+# 
+#  w = f0.Get('tt_njets%i/W' % njets)
+#  vvj = f0.Get('tt_njets%i/VVJ' % njets)
+#  zj = f0.Get('tt_njets%i/ZJ' % njets)
+#  ttj = f0.Get('tt_njets%i/TTJ' % njets)
+#  ztt = f0.Get('tt_njets%i/ZTT' % njets)
+#  zl = f0.Get('tt_njets%i/ZL' % njets)
+#  ttt = f0.Get('tt_njets%i/TTT' % njets) 
+#  vvt = f0.Get('tt_njets%i/VVT' % njets)
+#  qcd = f0.Get('tt_njets%i/data_obs' % njets)
+#
+#  real = ztt
+#  real.Add(vvt)
+#  real.Add(ttt)
+#  real.Add(zl)
+#  w.Add(zj)
+#  w.Add(vvj)
+#
+#
+#  qcd.Add(w,-1)
+#  qcd.Add(ttj,-1)
+#  qcd.Add(real,-1)
+#
+#  total_fake = qcd.Clone()
+#  total_fake.Add(w)
+#  total_fake.Add(ttj)
+#
+#  for i in range(1,total_fake.GetNbinsX()+2):
+#    tot = total_fake.GetBinContent(i)
+#    if tot==0: 
+#      qcd.SetBinContent(i,1)
+#      w.SetBinContent(i,0)
+#      ttj.SetBinContent(i,0)
+#    else:
+#      qcd.SetBinContent(i,qcd.GetBinContent(i)/tot)
+#      w.SetBinContent(i,w.GetBinContent(i)/tot)
+#      ttj.SetBinContent(i,ttj.GetBinContent(i)/tot)
+#
+#  fout.cd()
+#
+#  qcd.Write('ff_fracs_qcd_njets%i' % njets)
+#  w.Write('ff_fracs_w_njets%i' % njets)
+#  ttj.Write('ff_fracs_ttj_njets%i' % njets)
+#
+## same sign fractions
+#
+#cmd_0jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets0_ss --set_alias="inclusive:(n_jets==0)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --do_ss ' % vars()
+#cmd_1jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets1_ss --set_alias="inclusive:(n_jets==1)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --outputfolder=%(output_folder)s --do_ss ' % vars()
+#cmd_2jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets2_ss --set_alias="inclusive:(n_jets>=2)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --do_ss ' % vars()
+#
+#os.system(cmd_0jet)
+#os.system(cmd_1jet)
+#os.system(cmd_2jet)
+#
+#for njets in [0,1,2]:
+#  f0 = ROOT.TFile('%(output_folder)s/datacard_m_vis_njets%(njets)i_ss_tt_2018.root' % vars())
+#
+#  w = f0.Get('tt_njets%i_ss/W' % njets)
+#  vvj = f0.Get('tt_njets%i_ss/VVJ' % njets)
+#  zj = f0.Get('tt_njets%i_ss/ZJ' % njets)
+#  ttj = f0.Get('tt_njets%i_ss/TTJ' % njets)
+#  ztt = f0.Get('tt_njets%i_ss/ZTT' % njets)
+#  zl = f0.Get('tt_njets%i_ss/ZL' % njets)
+#  ttt = f0.Get('tt_njets%i_ss/TTT' % njets)
+#  vvt = f0.Get('tt_njets%i_ss/VVT' % njets)
+#  qcd = f0.Get('tt_njets%i_ss/data_obs' % njets)
+#
+#  real = ztt
+#  real.Add(vvt)
+#  real.Add(ttt)
+#  real.Add(zl)
+#  w.Add(zj)
+#  w.Add(vvj)
+#
+#
+#  qcd.Add(w,-1)
+#  qcd.Add(ttj,-1)
+#  qcd.Add(real,-1)
+#
+#  total_fake = qcd.Clone()
+#  total_fake.Add(w)
+#  total_fake.Add(ttj)
+#
+#  for i in range(1,total_fake.GetNbinsX()+2):
+#    tot = total_fake.GetBinContent(i)
+#    if tot==0:
+#      qcd.SetBinContent(i,1)
+#      w.SetBinContent(i,0)
+#      ttj.SetBinContent(i,0)
+#    else:
+#      qcd.SetBinContent(i,qcd.GetBinContent(i)/tot)
+#      w.SetBinContent(i,w.GetBinContent(i)/tot)
+#      ttj.SetBinContent(i,ttj.GetBinContent(i)/tot)
+#
+#  fout.cd()
+#
+#  qcd.Write('ff_fracs_qcd_njets%i_ss' % njets)
+#  w.Write('ff_fracs_w_njets%i_ss' % njets)
+#  ttj.Write('ff_fracs_ttj_njets%i_ss' % njets
+
+
+# write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
 for i in to_write: i.Write()
 fout.Close()
