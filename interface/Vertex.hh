@@ -5,6 +5,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -16,7 +17,6 @@ class Vertex {
  private:
   typedef ROOT::Math::XYZPoint Point;
   typedef std::pair<std::size_t, float> TrkPair;
-  typedef double Matrix[3][3];
 
  public:
   Vertex();
@@ -54,7 +54,7 @@ class Vertex {
 
  
   /// The covariance matrix
-  inline Matrix* covariance() { return &(covariance_); }
+  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance() { return covariance_; }
 
   /**@{*/
 
@@ -93,17 +93,8 @@ class Vertex {
     tracks_.push_back(std::make_pair(id, weight));
   }
   
-  inline void set_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) { 
-    //covij where i=row and j=column
-    covariance_[0][0] = cov00; 
-    covariance_[0][1] = cov01;
-    covariance_[0][2] = cov02;
-    covariance_[1][0] = cov10;
-    covariance_[1][1] = cov11;
-    covariance_[1][2] = cov12;
-    covariance_[2][0] = cov20;
-    covariance_[2][1] = cov21;
-    covariance_[2][2] = cov22;
+  inline void set_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance) { 
+    covariance_ = covariance;
   }
  
   /**@}*/
@@ -114,7 +105,7 @@ class Vertex {
   float ndof_;
   std::vector<TrkPair> tracks_;
   std::size_t id_;
-  Matrix covariance_;
+  ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance_;
 
  #ifndef SKIP_CINT_DICT
  public:

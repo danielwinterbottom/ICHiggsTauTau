@@ -8,6 +8,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -23,7 +24,6 @@ class Muon : public Candidate {
  private:
   typedef ROOT::Math::XYZPoint Point;
   typedef std::map<std::size_t, float> UFmap;
-  typedef double Matrix[3][3];
 
  public:
   Muon();
@@ -164,6 +164,14 @@ class Muon : public Candidate {
 
   /// Transverse impact parameter of the tracker track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
+
+  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+
+  double bfield() { return bfield_; }
+
+
   /**@}*/
 
   /// @name Setters
@@ -321,9 +329,6 @@ class Muon : public Candidate {
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
 
-  /// The vtx covariance matrix
-  inline Matrix* vtx_covariance() { return &(vtx_covariance_); }
-
   /// @copybrief dxy_vertex()
   inline void set_dxy_vertex(double const& dxy_vertex) {
     dxy_vertex_ = dxy_vertex;
@@ -344,18 +349,18 @@ class Muon : public Candidate {
     dxy_beamspot_ = dxy_beamspot;
   }
 
-  inline void set_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
-    //covij where i=row and j=column
-    vtx_covariance_[0][0] = cov00;
-    vtx_covariance_[0][1] = cov01;
-    vtx_covariance_[0][2] = cov02;
-    vtx_covariance_[1][0] = cov10;
-    vtx_covariance_[1][1] = cov11;
-    vtx_covariance_[1][2] = cov12;
-    vtx_covariance_[2][0] = cov20;
-    vtx_covariance_[2][1] = cov21;
-    vtx_covariance_[2][2] = cov22;
+  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+    track_params_ = track_params;
   }
+
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+    track_params_covariance_ = track_params_covariance;
+  }
+
+  inline void set_bfield(double bfield) {
+    bfield_ = bfield;
+  }
+
 
   /**@}*/
 
@@ -426,7 +431,10 @@ class Muon : public Candidate {
   double dz_vertex_error_;
   double dxy_beamspot_;
 
-  Matrix vtx_covariance_;
+  double bfield_;
+
+  ROOT::Math::SVector<double, 5> track_params_;
+  ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance_;
 
   std::vector<std::size_t> gen_particles_;
 

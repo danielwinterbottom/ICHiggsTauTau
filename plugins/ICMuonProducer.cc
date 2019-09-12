@@ -22,7 +22,6 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
-
 ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
       charged(pset.getParameter<edm::InputTag>("charged")),
@@ -215,9 +214,9 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
     dest.set_segment_compatibility(muon::segmentCompatibility(src));
     
-    dest.set_vx(src.vx());
-    dest.set_vy(src.vy());
-    dest.set_vz(src.vz());
+    //dest.set_vx(src.vx());
+    //dest.set_vy(src.vy());
+    //dest.set_vz(src.vz());
 
     for (unsigned v = 0; v < float_handles.size(); ++v) {
       if (is_pf_) {
@@ -283,6 +282,24 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     if (do_beamspot_ip_&& src.muonBestTrack().isNonnull()) {
       dest.set_dxy_beamspot(src.muonBestTrack()->dxy(*beamspot_handle));
     }
+
+    //get track 
+    //if(src.muonBestTrack().isNonnull()) {
+    if(src.track().isNonnull()) {
+      //auto track = src.muonBestTrack();
+      auto track = src.track();
+      dest.set_track_params(track->parameters());
+      auto covariance = track->covariance();
+      dest.set_track_params_covariance(covariance);
+      dest.set_vx(track->vx());
+      dest.set_vy(track->vy());
+      dest.set_vz(track->vz());
+      edm::ESHandle<TransientTrackBuilder> trackBuilder;
+      setup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
+      double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+      dest.set_bfield(magneticField);
+    }
+
   }
 }
 

@@ -3,17 +3,17 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Aug14_MC_102X_2017'
+config.General.workArea='Aug22_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.maxMemoryMB = 2500
+#config.JobType.maxMemoryMB = 2500
 cfgParams = ['release=102XMINIAOD','isData=0', 'globalTag=102X_mc2017_realistic_v6','doHT=1']
 config.JobType.allowUndistributedCMSSW = True
 
-config.Data.unitsPerJob = 100000
-config.Data.splitting = 'EventAwareLumiBased'
+#config.Data.unitsPerJob = 100000
+#config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     tasks.append(('DYJetsToLL_M-10-50-LO-ext1', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v2/MINIAODSIM'))
 
     tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+   
     tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     tasks.append(('DYJetsToLL-LO-ext1', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'))
     tasks.append(('EWKZ2Jets', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
@@ -120,10 +120,10 @@ if __name__ == '__main__':
     tasks.append(('VBFHToTauTau_M-125', '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM')) # new pmx
     tasks.append(('GluGluHToTauTau_M-125', '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
 
-    tasks.append(('VBFHToTauTau_M-125-nospinner','/VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner_filter_miniAOD-v1/USER'))
+    tasks.append(('VBFHToTauTau_M-125-nospinner','/VBFHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-StoreResults_VBFHToTauTauNoSpin_M125_13TeV_pythia8_2017_MINIAOD-v1/USER'))
     tasks.append(('GluGluToHToTauTau_M-125-nospinner','/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-StoreResults_GluGluToHToTauTauNoSpin_M125_13TeV_pythia8_2017_MINIAOD-v1/USER'))
     tasks.append(('GluGluToHToTauTau_M-125-nospinner-filter','/GluGluHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2/dwinterb-StoreResults_GluGluHToTauTau_M125_13TeV_powheg_pythia8_nospinner_filter_v2_miniA-v1/USER'))
-    tasks.append(('VBFHToTauTau_M-125-nospinner-filter','/VBFHToMaxmixTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST07Jan19/adow-StoreResults_VBFHToTauTauNoSpin_M125_13TeV_pythia8_2017_MINIAOD-v1/USER'))
+    tasks.append(('VBFHToTauTau_M-125-nospinner-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_nospinner_filter_v2_miniAOD-v1/USER'))
     tasks.append(('VBFHToTauTau_M-125-PS-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_PS-filter-v3/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_PS_filter_v3_miniAOD-v1/USER'))
     tasks.append(('VBFHToTauTau_M-125-SM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_SM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_SM_filter_v2_miniAOD-v1/USER'))
 
@@ -131,7 +131,6 @@ if __name__ == '__main__':
     tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
     tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
     tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
-
 
     for task in tasks:
         print task[0]
@@ -156,8 +155,10 @@ if __name__ == '__main__':
           config.Data.inputDataset = None
         else:
           config.Data.inputDataset = task[1]
-          config.Data.unitsPerJob = 100000
-          config.Data.splitting = 'EventAwareLumiBased'
+          #config.Data.unitsPerJob = 100000
+          #config.Data.splitting = 'EventAwareLumiBased'
+          config.Data.splitting = 'FileBased'
+          config.Data.unitsPerJob = 1
           config.Data.userInputFiles = None
 
         if "HToTauTau" in task[0]:
@@ -172,7 +173,7 @@ if __name__ == '__main__':
           config.Data.ignoreLocality= True
           config.Data.inputDBS = 'phys03'
         else:
-          config.Data.ignoreLocality = False
+          config.Data.ignoreLocality = True
           config.Data.inputDBS = 'global'
 
         print config.Data.unitsPerJob
