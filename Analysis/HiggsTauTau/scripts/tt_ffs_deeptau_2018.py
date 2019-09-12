@@ -15,9 +15,10 @@ output_folder='mvadm_ff_deeptau_2018'
 params_file='scripts/params_2018_new.json'
 input_folder='/vols/cms/dw515/Offline/output/SM/new_2018/'
 draw=True
-fit=True
 lumi=58826.8469
 ###########################################
+
+out_file = '%(output_folder)s/fakefactor_fits_tt_2018.root' % vars()
 
 # read params from json
 
@@ -97,9 +98,9 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
   data = hout.Clone()
   data.SetName(name+'_qcd')
   wjets = hout.Clone()
-  wjets.SetName(name+'_wjets')
+  wjets.SetName(name+'_wjets_mc')
   ttbar = hout.Clone()
-  ttbar.SetName(name+'_ttbar')
+  ttbar.SetName(name+'_ttbar_mc')
   bkgs = hout.Clone()
   bkgs.SetName(name+'_bkgs')
 
@@ -155,6 +156,12 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
   
   return (data, wjets, ttbar)
 
+def CalculateFakeFactors(num,denum):
+  name = num.GetName().replace('_iso','_ff')
+  ff = num.Clone()
+  ff.SetName(name)
+  ff.Divide(denum)
+  return ff
 
 def FitFakeFactors(h,usePol1=False):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
@@ -170,7 +177,7 @@ def FitFakeFactors(h,usePol1=False):
   rep = True
   count = 0
   while rep:
-    fitresult = f.Fit("f2",'SI')
+    fitresult = h.Fit("f2",'SI')
     rep = int(fitresult) != 0
     if not rep or count>100: 
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -194,7 +201,7 @@ def PlotFakeFactor(f, h, name, output_folder):
   h.SetFillColor(ROOT.kBlue-10)
   h.Draw("e3 same")
   f.Draw("a sames")
-  c1.Print(output_folder+'/'+i[0]+'_'+i[1]+'_fit.pdf')
+  c1.Print(output_folder+'/'+name+'_fit.pdf')
   time.sleep(2)
 
 draw_list=[]
@@ -208,6 +215,7 @@ var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
 var2='pt_2[40,45,50,55,60,65,70,80,90,100,120,140]'
 
 ff_list = {}
+to_write = []
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
@@ -219,6 +227,54 @@ for njetbin in njets_bins:
     ff_list[name+'_pt_1'] = (var1, cut_iso, cut_aiso1)
     ff_list[name+'_pt_2'] = (var2, cut_iso, cut_aiso2)
 
+for ff in ff_list:
+  wjets_ff=None
+  ttbar_ff=None
+  if draw:
+    (qcd_iso, wjets_iso, ttbar_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext)
+    (qcd_aiso, wjets_aiso, ttbar_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext)
 
-DrawHists(ff_list['inclusive_inclusive_pt_1'][0], ff_list['inclusive_inclusive_pt_1'][1], 'inclusive_inclusive_pt_1_iso',input_folder,file_ext)
+    qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
+    to_write.append(qcd_ff)
 
+    if 'inclusive_inclusive' in ff:
+      wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
+      ttbar_ff = CalculateFakeFactors(ttbar_iso, ttbar_aiso)
+      to_write.append(wjets_ff)
+      to_write.append(ttbar_ff)
+  else:
+    # if not drawing histogram then retrieve them from the old output folder
+    fin = ROOT.TFile(out_file)
+    qcd_ff = fin.Get(ff+'_ff_qcd')
+    qcd_ff.SetDirectory(0)
+    to_write.append(qcd_ff)
+    if 'inclusive_inclusive' in ff:
+      wjets_ff = fin.Get(ff+'_ff_wjets_mc')
+      wjets_ff.SetDirectory(0)
+      ttbar_ff = fin.Get(ff+'_ff_ttbar_mc')
+      ttbar_ff.SetDirectory(0)
+      to_write.append(wjets_ff)
+      to_write.append(ttbar_ff)
+    fin.Close()
+
+  # do fitting
+  (qcd_fit, qcd_uncert) = FitFakeFactors(qcd_ff)
+  to_write.append(qcd_fit)
+  to_write.append(qcd_uncert)
+  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder)
+
+  if wjets_ff:
+    (wjets_fit, wjets_uncert) = FitFakeFactors(wjets_ff)
+    to_write.append(wjets_fit)
+    to_write.append(wjets_uncert)
+    PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder)
+  if ttbar_ff:
+    (ttbar_fit, ttbar_uncert) = FitFakeFactors(ttbar_ff)
+    to_write.append(ttbar_fit)
+    to_write.append(ttbar_uncert)
+    PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder)
+
+
+fout = ROOT.TFile(out_file, 'RECREATE')
+for i in to_write: i.Write()
+fout.Close()
