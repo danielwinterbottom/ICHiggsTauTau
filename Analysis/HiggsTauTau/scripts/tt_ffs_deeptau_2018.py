@@ -5,18 +5,26 @@ import os
 import time
 import json
 from array import array
+import argparse
 
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
-# set some of these under option eventually
-wp = 'tight'
-file_ext='_tt_2018.root'
-output_folder='mvadm_ff_deeptau_2018'
-params_file='scripts/params_2018_new.json'
-input_folder='/vols/cms/dw515/Offline/output/SM/new_2018/'
-draw=True
+parser = argparse.ArgumentParser()
+parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
+parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptau_2018')
+parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018_new.json')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/new_2018/')
+parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
+args = parser.parse_args()
+
+wp = args.wp 
+file_ext = args.file_ext
+output_folder=args.output_folder
+params_file=args.params
+input_folder=args.input_folder
+draw= args.draw > 0
 lumi=58826.8469
-###########################################
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_2018.root' % vars()
 
@@ -187,7 +195,7 @@ def FitFakeFactors(h,usePol1=False):
   fit.SetName(h.GetName()+'_fit')
   return fit, h_uncert
 
-def PlotFakeFactor(f, h, name, output_folder):
+def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas() 
   f.SetMinimum(0)
   if f.GetMaximum() > 0.5: f.SetMaximum(0.5)
@@ -201,7 +209,7 @@ def PlotFakeFactor(f, h, name, output_folder):
   h.SetFillColor(ROOT.kBlue-10)
   h.Draw("e3 same")
   f.Draw("a sames")
-  c1.Print(output_folder+'/'+name+'_fit.pdf')
+  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
   time.sleep(2)
 
 draw_list=[]
@@ -249,6 +257,7 @@ for ff in ff_list:
     qcd_ff.SetDirectory(0)
     to_write.append(qcd_ff)
     if 'inclusive_inclusive' in ff:
+      print ff+'_ff_wjets_mc'
       wjets_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_ff.SetDirectory(0)
       ttbar_ff = fin.Get(ff+'_ff_ttbar_mc')
@@ -261,18 +270,18 @@ for ff in ff_list:
   (qcd_fit, qcd_uncert) = FitFakeFactors(qcd_ff)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
-  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder)
+  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
   if wjets_ff:
     (wjets_fit, wjets_uncert) = FitFakeFactors(wjets_ff)
     to_write.append(wjets_fit)
     to_write.append(wjets_uncert)
-    PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder)
+    PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
   if ttbar_ff:
     (ttbar_fit, ttbar_uncert) = FitFakeFactors(ttbar_ff)
     to_write.append(ttbar_fit)
     to_write.append(ttbar_uncert)
-    PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder)
+    PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)
 
 
 fout = ROOT.TFile(out_file, 'RECREATE')
