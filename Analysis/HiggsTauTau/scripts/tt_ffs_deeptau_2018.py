@@ -12,9 +12,9 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptau_2018')
-parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018_new.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/new_2018/')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018')
+parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/sep05_2018/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -89,11 +89,15 @@ njets_bins = {
 }
 dm_bins = {
               'inclusive': '(1)',
-              #'mvadm0':'(mva_dm_X==0)',
-              #'mvadm1':'(mva_dm_X==1)',
-              #'mvadm2':'(mva_dm_X==2)',
-              #'mvadm10':'(mva_dm_X==10)',
-              #'mvadm11':'(mva_dm_X==11)'
+              'dm0':'(tau_decay_mode_X==0)',
+              'dm1':'(tau_decay_mode_X==1)',
+              'dm10':'(tau_decay_mode_X==10)',
+              'dm11':'(tau_decay_mode_X==11)',
+              'mvadm0':'(mva_dm_X==0)',
+              'mvadm1':'(mva_dm_X==1)',
+              'mvadm2':'(mva_dm_X==2)',
+              'mvadm10':'(mva_dm_X==10)',
+              'mvadm11':'(mva_dm_X==11)'
 }
 
 def DrawHists(var_input, cuts, name, input_folder, file_ext):
@@ -291,7 +295,75 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   h.Draw("e3 same")
   f.Draw("a sames")
   c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
-  time.sleep(2)
+  #time.sleep(2)
+
+def WriteFunctionMVADM(fout, subtau=False):
+  # this function loops over all njets and dm bins and write the FFs as a function
+  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
+  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_params = {}
+  for njetbin in [0,1]:
+    for mvadmbin in [0,1,2,10,11]:
+      fout.cd()
+      if subtau: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
+      else: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
+      p = f.GetParameters()
+      if f.GetNpar() > 4:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+      else:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+  ff_eqn_tot = '(n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'])
+
+  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
+
+  return ff_eqn_tot
+
+def WriteFunctionDM(fout, subtau=False):
+  # this function loops over all njets and dm bins and write the FFs as a function
+  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
+  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_params = {}
+  for njetbin in [0,1]:
+    for dmbin in [0,1,10,11]:
+      fout.cd()
+      if subtau: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
+      else: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
+      p = f.GetParameters()
+      if f.GetNpar() > 4:
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+      else:
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+  ff_eqn_tot = '(n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'])
+
+  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
+
+  return ff_eqn_tot
+
+def WriteFunction(fout, subtau=False):
+  # this function loops over all njets and dm bins and write the FFs as a function
+  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
+  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_params = {}
+  for njetbin in [0,1]:
+    fout.cd()
+    if subtau: f = fout.Get('inclusive_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
+    else: f = fout.Get('inclusive_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
+    p = f.GetParameters()
+    if f.GetNpar() > 4:
+      ff_params['njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+    else:
+      ff_params['njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+  ff_eqn_tot = '((n_jets==0)*(%s) + (n_jets>0)*(%s))' % (ff_params['njets0'],ff_params['njets1'])
+
+  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
+
+  return ff_eqn_tot
 
 draw_list=[]
 
@@ -310,11 +382,12 @@ for njetbin in njets_bins:
   for dmbin in dm_bins:
     name= dmbin+'_'+njetbin
     cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
-    cut_iso = 'wt*(%(baseline_bothiso)s)*(%(cuts)s)' % vars()
+    cut_iso1 = re.sub('X', '1', 'wt*(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
+    cut_iso2 = re.sub('X', '2', 'wt*(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
     cut_aiso1 = re.sub('X', '1','wt*(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
     cut_aiso2 = re.sub('X', '2','wt*(%(baseline_aiso2)s)*(%(cuts)s)' % vars())
-    ff_list[name+'_pt_1'] = (var1, cut_iso, cut_aiso1)
-    ff_list[name+'_pt_2'] = (var2, cut_iso, cut_aiso2)
+    ff_list[name+'_pt_1'] = (var1, cut_iso1, cut_aiso1)
+    ff_list[name+'_pt_2'] = (var2, cut_iso2, cut_aiso2)
 
 for ff in ff_list:
   wjets_ff=None
@@ -364,7 +437,7 @@ for ff in ff_list:
     PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)
 
 
-## fractions
+## make fractions
 
 baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
 
@@ -392,4 +465,30 @@ for njets in [0,1,2]:
 fout = ROOT.TFile(out_file, 'RECREATE')
 
 for i in to_write: i.Write()
+
+# write strings needed for closure tests
+tau1_string = WriteFunction(fout, subtau=False)
+tau2_string = WriteFunction(fout, subtau=True)
+tau1_dm_string = WriteFunctionDM(fout, subtau=False)
+tau2_dm_string = WriteFunctionDM(fout, subtau=True)
+tau1_mvadm_string = WriteFunctionMVADM(fout, subtau=False)
+tau2_mvadm_string = WriteFunctionMVADM(fout, subtau=True)
+
+print tau1_string
+print '\n'
+print tau2_string
+
+print '\n'
+print tau1_dm_string
+print '\n'
+print tau2_dm_string
+
+print '\n'
+print tau1_mvadm_string
+print '\n'
+print tau2_mvadm_string
+
+
+
+
 fout.Close()
