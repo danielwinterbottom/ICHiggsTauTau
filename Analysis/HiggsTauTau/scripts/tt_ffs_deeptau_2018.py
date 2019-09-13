@@ -84,8 +84,8 @@ other_files = [
 
 njets_bins = { 
               'inclusive': '(1)',
-              #'njets0':'n_jets==0',
-              #'njets1':'n_jets>0'
+              'njets0':'n_jets==0',
+              'njets1':'n_jets>0'
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -167,13 +167,12 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
   hout = ROOT.TH1D('hout','',len(bins)-1, bins)
   gen_extra='(gen_match_1==6 || gen_match_2==6)'
-
   data = hout.Clone()
   data.SetName(name+'_qcd')
   wjets = hout.Clone()
-  wjets.SetName(name+'_wjets_mc')
+  wjets.SetName(name+'_wjets')
   ttbar = hout.Clone()
-  ttbar.SetName(name+'_ttbar_mc')
+  ttbar.SetName(name+'_ttbar')
   bkgs = hout.Clone()
   bkgs.SetName(name+'_bkgs')
 
@@ -183,7 +182,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)' % vars(),'goff')
     h = t.GetHistogram()
     data.Add(h)
 
@@ -228,7 +227,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((%(gen_extra)s)==0)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*((%(gen_extra)s)==0)' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -239,9 +238,9 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
 
   # fix any negative bins to 0 
   for i in range(1,data.GetNbinsX()+1): 
-    if data.GetBinContent() < 0: qcd.SetBinContent(0)
-    if ttbar.GetBinContent() < 0: ttbar.SetBinContent(0)
-    if wjets.GetBinContent() < 0: wjets.SetBinContent(0)
+    if data.GetBinContent(i) < 0: qcd.SetBinContent(i,0.)
+    if ttbar.GetBinContent(i) < 0: ttbar.SetBinContent(i,0.)
+    if wjets.GetBinContent(i) < 0: wjets.SetBinContent(i,0.)
  
   return (data, wjets, ttbar)
 
@@ -339,7 +338,6 @@ for ff in ff_list:
     qcd_ff.SetDirectory(0)
     to_write.append(qcd_ff)
     if 'inclusive_inclusive' in ff:
-      print ff+'_ff_wjets_mc'
       wjets_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_ff.SetDirectory(0)
       ttbar_ff = fin.Get(ff+'_ff_ttbar_mc')
@@ -367,124 +365,31 @@ for ff in ff_list:
 
 
 ## fractions
-#
 
 baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
 
-#
-#cmd_0jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets0 --set_alias="inclusive:(n_jets==0)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s ' % vars()
-#cmd_1jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets1 --set_alias="inclusive:(n_jets==1)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --outputfolder=%(output_folder)s ' % vars()
-#cmd_2jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets2 --set_alias="inclusive:(n_jets>=2)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s ' % vars()
-#
-#os.system(cmd_0jet)
-#os.system(cmd_1jet)
-#os.system(cmd_2jet)
-#
-#
-#for njets in [0,1,2]:
-#  f0 = ROOT.TFile('%(output_folder)s/datacard_m_vis_njets%(njets)i_tt_2018.root' % vars())
-# 
-#  w = f0.Get('tt_njets%i/W' % njets)
-#  vvj = f0.Get('tt_njets%i/VVJ' % njets)
-#  zj = f0.Get('tt_njets%i/ZJ' % njets)
-#  ttj = f0.Get('tt_njets%i/TTJ' % njets)
-#  ztt = f0.Get('tt_njets%i/ZTT' % njets)
-#  zl = f0.Get('tt_njets%i/ZL' % njets)
-#  ttt = f0.Get('tt_njets%i/TTT' % njets) 
-#  vvt = f0.Get('tt_njets%i/VVT' % njets)
-#  qcd = f0.Get('tt_njets%i/data_obs' % njets)
-#
-#  real = ztt
-#  real.Add(vvt)
-#  real.Add(ttt)
-#  real.Add(zl)
-#  w.Add(zj)
-#  w.Add(vvj)
-#
-#
-#  qcd.Add(w,-1)
-#  qcd.Add(ttj,-1)
-#  qcd.Add(real,-1)
-#
-#  total_fake = qcd.Clone()
-#  total_fake.Add(w)
-#  total_fake.Add(ttj)
-#
-#  for i in range(1,total_fake.GetNbinsX()+2):
-#    tot = total_fake.GetBinContent(i)
-#    if tot==0: 
-#      qcd.SetBinContent(i,1)
-#      w.SetBinContent(i,0)
-#      ttj.SetBinContent(i,0)
-#    else:
-#      qcd.SetBinContent(i,qcd.GetBinContent(i)/tot)
-#      w.SetBinContent(i,w.GetBinContent(i)/tot)
-#      ttj.SetBinContent(i,ttj.GetBinContent(i)/tot)
-#
-#  fout.cd()
-#
-#  qcd.Write('ff_fracs_qcd_njets%i' % njets)
-#  w.Write('ff_fracs_w_njets%i' % njets)
-#  ttj.Write('ff_fracs_ttj_njets%i' % njets)
-#
-## same sign fractions
-#
-#cmd_0jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets0_ss --set_alias="inclusive:(n_jets==0)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --do_ss ' % vars()
-#cmd_1jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets1_ss --set_alias="inclusive:(n_jets==1)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --outputfolder=%(output_folder)s --do_ss ' % vars()
-#cmd_2jet='python scripts/HiggsTauTauPlot.py --channel=tt --method=0 --cfg=%(config)s  --var="m_vis(15,0,300)"  --ratio --cat=inclusive --datacard=njets2_ss --set_alias="inclusive:(n_jets>=2)" --set_alias="baseline:(%(anti_iso_either)s)" --outputfolder=%(output_folder)s --do_ss ' % vars()
-#
-#os.system(cmd_0jet)
-#os.system(cmd_1jet)
-#os.system(cmd_2jet)
-#
-#for njets in [0,1,2]:
-#  f0 = ROOT.TFile('%(output_folder)s/datacard_m_vis_njets%(njets)i_ss_tt_2018.root' % vars())
-#
-#  w = f0.Get('tt_njets%i_ss/W' % njets)
-#  vvj = f0.Get('tt_njets%i_ss/VVJ' % njets)
-#  zj = f0.Get('tt_njets%i_ss/ZJ' % njets)
-#  ttj = f0.Get('tt_njets%i_ss/TTJ' % njets)
-#  ztt = f0.Get('tt_njets%i_ss/ZTT' % njets)
-#  zl = f0.Get('tt_njets%i_ss/ZL' % njets)
-#  ttt = f0.Get('tt_njets%i_ss/TTT' % njets)
-#  vvt = f0.Get('tt_njets%i_ss/VVT' % njets)
-#  qcd = f0.Get('tt_njets%i_ss/data_obs' % njets)
-#
-#  real = ztt
-#  real.Add(vvt)
-#  real.Add(ttt)
-#  real.Add(zl)
-#  w.Add(zj)
-#  w.Add(vvj)
-#
-#
-#  qcd.Add(w,-1)
-#  qcd.Add(ttj,-1)
-#  qcd.Add(real,-1)
-#
-#  total_fake = qcd.Clone()
-#  total_fake.Add(w)
-#  total_fake.Add(ttj)
-#
-#  for i in range(1,total_fake.GetNbinsX()+2):
-#    tot = total_fake.GetBinContent(i)
-#    if tot==0:
-#      qcd.SetBinContent(i,1)
-#      w.SetBinContent(i,0)
-#      ttj.SetBinContent(i,0)
-#    else:
-#      qcd.SetBinContent(i,qcd.GetBinContent(i)/tot)
-#      w.SetBinContent(i,w.GetBinContent(i)/tot)
-#      ttj.SetBinContent(i,ttj.GetBinContent(i)/tot)
-#
-#  fout.cd()
-#
-#  qcd.Write('ff_fracs_qcd_njets%i_ss' % njets)
-#  w.Write('ff_fracs_w_njets%i_ss' % njets)
-#  ttj.Write('ff_fracs_ttj_njets%i_ss' % njets
+njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
 
+for njets in [0,1,2]:
+  njets_cut = njets_cuts[njets]
+  var= 'm_vis[0,40,60,80,100,120,140,160,180,200,220,240,260,280,300]'
+  cuts = '(%(baseline_eitheraiso)s)*(%(njets_cut)s)' % vars()
+  name = 'tt_fracs_njets%(njets)s' % vars()
+  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+  qcd_os.Divide(total_os)
+  wjets_os.Divide(total_os)
+  ttbar_os.Divide(total_os)
+  qcd_ss.Divide(total_ss)
+  wjets_ss.Divide(total_ss)
+  ttbar_ss.Divide(total_ss)
+  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
 # write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
+
 for i in to_write: i.Write()
 fout.Close()
