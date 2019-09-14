@@ -12,7 +12,7 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_pluscorr')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/sep05_2018/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
@@ -23,7 +23,7 @@ file_ext = args.file_ext
 output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
-draw= args.draw > 0
+draw = int(args.draw) > 0
 lumi=58826.8469
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
@@ -85,7 +85,9 @@ other_files = [
 njets_bins = { 
               'inclusive': '(1)',
               'njets0':'n_jets==0',
-              'njets1':'n_jets>0'
+              'njets1':'n_jets==1',
+              'njets2':'n_jets>1',
+
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -100,7 +102,7 @@ dm_bins = {
               'mvadm11':'(mva_dm_X==11)'
 }
 
-def DrawHists(var_input, cuts, name, input_folder, file_ext):
+def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False):
   var = var_input.split('[')[0]
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
   hout = ROOT.TH1D('hout','',len(bins)-1, bins)
@@ -122,7 +124,8 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple') 
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    if not doOS: t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    else: t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==1)))' % vars(),'goff')
     h = t.GetHistogram()
     data.Add(h)
 
@@ -156,7 +159,8 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    if not doOS: t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==0)))' % vars(),'goff')
+    else: t.Draw('%(var)s>>h' % vars(),'(%(cuts)s*((os==1)))' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -320,6 +324,29 @@ def WriteFunctionMVADM(fout, subtau=False):
 
   return ff_eqn_tot
 
+def WriteFunctionMVADM2Jets(fout, subtau=False):
+  # this function loops over all njets and dm bins and write the FFs as a function
+  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
+  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_params = {}
+  for njetbin in [0,1,2]:
+    for mvadmbin in [0,1,2,10,11]:
+      fout.cd()
+      if subtau: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
+      else: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
+      p = f.GetParameters()
+      if f.GetNpar() > 4:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+      else:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+  ff_eqn_tot = '(n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
+
+  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
+
+  return ff_eqn_tot
+
 def WriteFunctionDM(fout, subtau=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
@@ -337,6 +364,29 @@ def WriteFunctionDM(fout, subtau=False):
         ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '(n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'])
+
+  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
+
+  return ff_eqn_tot
+
+def WriteFunctionDM2Jets(fout, subtau=False):
+  # this function loops over all njets and dm bins and write the FFs as a function
+  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
+  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_params = {}
+  for njetbin in [0,1,2]:
+    for dmbin in [0,1,10,11]:
+      fout.cd()
+      if subtau: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
+      else: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
+      p = f.GetParameters()
+      if f.GetNpar() > 4:
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+      else:
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+  ff_eqn_tot = '(n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets==1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'], ff_params['dm0_njets2'], ff_params['dm1_njets2'], ff_params['dm10_njets2'], ff_params['dm11_njets2'])
 
   if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
   else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
@@ -389,12 +439,21 @@ for njetbin in njets_bins:
     ff_list[name+'_pt_1'] = (var1, cut_iso1, cut_aiso1)
     ff_list[name+'_pt_2'] = (var2, cut_iso2, cut_aiso2)
 
+# get inclusive measurments in tau2 anti iso region to define uncertainty
+baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+
+cut_iso1 = re.sub('X', '1', 'wt*(%(baseline_aiso2_iso)s)' % vars())
+cut_aiso1 = re.sub('X', '1','wt*(%(baseline_aiso2_aiso1)s)' % vars())
+ff_list[name+'_aiso2_ss_pt_1'] = (var1, cut_iso1, cut_aiso1)
+ff_list[name+'_aiso2_os_pt_1'] = (var1, cut_iso1, cut_aiso1)
+
 for ff in ff_list:
   wjets_ff=None
   ttbar_ff=None
   if draw:
-    (qcd_iso, wjets_iso, ttbar_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext)
-    (qcd_aiso, wjets_aiso, ttbar_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext)
+    (qcd_iso, wjets_iso, ttbar_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff))
+    (qcd_aiso, wjets_aiso, ttbar_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff))
 
     qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
     to_write.append(qcd_ff)
@@ -439,27 +498,43 @@ for ff in ff_list:
 
 ## make fractions
 
-baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+if draw:
+  baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+  
+  njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
+  
+  for njets in [0,1,2]:
+    njets_cut = njets_cuts[njets]
+    var= 'm_vis[0,40,60,80,100,120,140,160,180,200,220,240,260,280,300]'
+    cuts = '(%(baseline_eitheraiso)s)*(%(njets_cut)s)' % vars()
+    name = 'tt_fracs_njets%(njets)s' % vars()
+    qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+    qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+    total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+    total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+    qcd_os.Divide(total_os)
+    wjets_os.Divide(total_os)
+    ttbar_os.Divide(total_os)
+    qcd_ss.Divide(total_ss)
+    wjets_ss.Divide(total_ss)
+    ttbar_ss.Divide(total_ss)
+    to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+    to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+else:
+  fout = ROOT.TFile(out_file) 
+  njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
 
-njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
+  for njets in [0,1,2]:
+    njets_cut = njets_cuts[njets]
+    qcd_os = fout.Get('tt_fracs_njets%(njets)s_os_qcd' % vars())
+    wjets_os = fout.Get('tt_fracs_njets%(njets)s_os_wjets' % vars())
+    ttbar_os = fout.Get('tt_fracs_njets%(njets)s_os_ttbar' % vars())
+    qcd_ss = fout.Get('tt_fracs_njets%(njets)s_ss_qcd' % vars())
+    wjets_ss = fout.Get('tt_fracs_njets%(njets)s_ss_wjets' % vars())
+    ttbar_ss = fout.Get('tt_fracs_njets%(njets)s_ss_ttbar' % vars())
+    to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+    to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
-for njets in [0,1,2]:
-  njets_cut = njets_cuts[njets]
-  var= 'm_vis[0,40,60,80,100,120,140,160,180,200,220,240,260,280,300]'
-  cuts = '(%(baseline_eitheraiso)s)*(%(njets_cut)s)' % vars()
-  name = 'tt_fracs_njets%(njets)s' % vars()
-  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
-  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
-  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
-  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
-  qcd_os.Divide(total_os)
-  wjets_os.Divide(total_os)
-  ttbar_os.Divide(total_os)
-  qcd_ss.Divide(total_ss)
-  wjets_ss.Divide(total_ss)
-  ttbar_ss.Divide(total_ss)
-  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
-  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
 # write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
@@ -467,16 +542,10 @@ fout = ROOT.TFile(out_file, 'RECREATE')
 for i in to_write: i.Write()
 
 # write strings needed for closure tests
-tau1_string = WriteFunction(fout, subtau=False)
-tau2_string = WriteFunction(fout, subtau=True)
-tau1_dm_string = WriteFunctionDM(fout, subtau=False)
-tau2_dm_string = WriteFunctionDM(fout, subtau=True)
-tau1_mvadm_string = WriteFunctionMVADM(fout, subtau=False)
-tau2_mvadm_string = WriteFunctionMVADM(fout, subtau=True)
-
-print tau1_string
-print '\n'
-print tau2_string
+tau1_dm_string = WriteFunctionDM2Jets(fout, subtau=False)
+tau2_dm_string = WriteFunctionDM2Jets(fout, subtau=True)
+tau1_mvadm_string = WriteFunctionMVADM2Jets(fout, subtau=False)
+tau2_mvadm_string = WriteFunctionMVADM2Jets(fout, subtau=True)
 
 print '\n'
 print tau1_dm_string
