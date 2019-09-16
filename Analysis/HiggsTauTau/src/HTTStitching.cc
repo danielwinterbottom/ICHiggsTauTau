@@ -199,11 +199,11 @@ namespace ic {
     if (do_w_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015 && era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
+      if(era_ != era::data_2015 && era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){ 
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-        bool count_jets = false;
+        bool count_jets = true;
         for (unsigned i = 0; i < parts.size(); ++i) {
-          if (parts[i]->status() != 3) continue;
+          if (!(parts[i]->statusFlags()[FromHardProcessBeforeFSR] && parts[parts[i]->mothers()[0]]->pdgid() != 2212)) continue;
           unsigned id = abs(parts[i]->pdgid());
           if (count_jets) { 
             if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
@@ -242,18 +242,21 @@ namespace ic {
     if (do_dy_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
+      if(era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){ 
+        
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-        bool count_jets = false;
+        bool count_jets = true;
       
         for (unsigned i = 0; i < parts.size(); ++i) {
-          // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
-          if (parts[i]->status() != 3) continue;
+          if (!(parts[i]->statusFlags()[IsHardProcess])) continue;
+          if(parts[parts[i]->mothers()[0]]->pdgid() == 2212) continue;
           unsigned id = abs(parts[i]->pdgid());
           if (count_jets) { 
-            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) {
+              partons++;
+            }
           }
-          if (id == 23) count_jets = true; 
+          if (id == 23) count_jets = true;
         }
       } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2017 ||  era_ == era::data_2018){ 
         t_ht_=0;

@@ -28,6 +28,7 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
 #include "RecoVertex/AdaptiveVertexFit/interface/AdaptiveVertexFitter.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
 
 /**
  * @brief See documentation [here](\ref objs-tau)
@@ -261,9 +262,14 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         //get track 
         if(packedCand->hasTrackDetails()) {
           auto track = packedCand->bestTrack();
-          dest.set_track_params(track->qoverp(), track->lambda(), track->phi());
+          dest.set_track_params(track->parameters());
           auto covariance = track->covariance();
-          dest.set_track_params_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+          dest.set_track_params_covariance(covariance);
+
+          edm::ESHandle<TransientTrackBuilder> trackBuilder;
+          setup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
+          double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+          dest.set_bfield(magneticField);
         }
 
         dest.set_lead_p(packedCand->p());
@@ -375,7 +381,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           dest.set_secondary_vertex(SV.x(),SV.y(),SV.z());
 
           auto covariance = SV.covariance();
-          dest.set_s_vtx_covariance(covariance(0, 0), covariance(0, 1), covariance(0, 2), covariance(1, 0), covariance(1, 1), covariance(1, 2), covariance(2, 0), covariance(2, 1), covariance(2, 2));
+          dest.set_s_vtx_covariance(covariance);
         }
       }
       dest.set_hasSV(hasSV);

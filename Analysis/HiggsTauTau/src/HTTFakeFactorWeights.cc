@@ -458,7 +458,7 @@ namespace ic {
         }
       } else if(channel_ == channel::tt){
 
-        if(true) {
+        if(false) {
 
           Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
           Tau const* tau2 = dynamic_cast<Tau const*>(lep2);

@@ -288,6 +288,22 @@ void ICElectronProducer::produce(edm::Event& event,
     }
 #endif
 
+    //get track 
+    if(src.gsfTrack().isNonnull()) {
+      auto track = src.gsfTrack();
+      dest.set_track_params(track->parameters());
+      auto covariance = track->covariance();
+      dest.set_track_params_covariance(covariance);
+      dest.set_vx(track->vx());
+      dest.set_vy(track->vy());
+      dest.set_vz(track->vz());
+
+      edm::ESHandle<TransientTrackBuilder> trackBuilder;
+      setup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
+      double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+      dest.set_bfield(magneticField);
+    }
+
   }
 }
 

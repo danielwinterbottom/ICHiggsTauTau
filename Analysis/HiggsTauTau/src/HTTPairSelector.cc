@@ -9,7 +9,7 @@
 
 namespace ic {
 
-  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013) {
+  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013),mc_(mc::summer12_53X) {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
@@ -73,6 +73,10 @@ namespace ic {
       }
     }
 
+    tau_idiso_name_ = "byIsolationMVArun2v1DBoldDMwLTraw";
+    if(strategy_==strategy::cpsummer17) tau_idiso_name_ = "byIsolationMVArun2017v2DBoldDMwLTraw2017";
+    if (strategy_==strategy::cpdecays16 || strategy_==strategy::cpdecays17 || strategy_==strategy::cpdecays18) tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
+
     return 0;
   }
 
@@ -108,20 +112,20 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_) {
         if(channel_ ==  channel::et) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_,tau_idiso_name_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
         if(channel_ ==  channel::em) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::tt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,tau_idiso_name_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,tau_idiso_name_)) ;
         }
       }
       if (os_dilepton.size() > 0) { // Take OS in preference to SS
@@ -164,16 +168,16 @@ namespace ic {
       // Or alternatively sort by isolation
       if (use_most_isolated_ ) {
         if(channel_ ==  channel::et) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoET,_1,_2,strategy_,eventInfo,tau_idiso_name_)); 
         }
         if(channel_ ==  channel::mt || channel_ == channel::tpmt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
         if(channel_ ==  channel::em) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_,eventInfo)) ;
         }
         if(channel_ ==  channel::tt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,strategy_)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoTT,_1,_2,tau_idiso_name_)) ;
         }
       }
       if (nosign_dilepton.size() > 0) { // No preference for OS over SS
@@ -228,6 +232,7 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+    if(mc_ == mc::mcleg2016 || mc_ == mc::mc2018) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
     Met *pfmet = pfMet_vec.at(0);
     // shift MET for systematic shifts
     if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
@@ -443,7 +448,7 @@ namespace ic {
     return ScalarPtSum(c1->AsVector()) > ScalarPtSum(c2->AsVector());
   }
 
-  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo) {
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo, std::string tau_idiso_name) {
     // First we sort the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
@@ -466,18 +471,14 @@ namespace ic {
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
     /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
-      t_iso1 = t1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-      t_iso2 = t2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-    }
+    double t_iso1 = t1->GetTauID(tau_idiso_name);
+    double t_iso2 = t2->GetTauID(tau_idiso_name);
     //if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name) {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
@@ -494,12 +495,8 @@ namespace ic {
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
     /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
-      t_iso1 = t1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-      t_iso2 = t2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-    }
+    double t_iso1 = t1->GetTauID(tau_idiso_name);
+    double t_iso2 = t2->GetTauID(tau_idiso_name);
    // if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
@@ -533,18 +530,14 @@ namespace ic {
     return e1->pt() > e2->pt();
   }
 
-  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, std::string tau_idiso_name) {
     // First we sort the electrons
     Tau const* t1_1 = static_cast<Tau const*>(c1->At(0));
     Tau const* t1_2 = static_cast<Tau const*>(c2->At(0));
     /*double t1_iso1 = t1_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
-      t1_iso1 = t1_1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-      t1_iso2 = t1_2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-    }
+    double t1_iso1 = t1_1->GetTauID(tau_idiso_name);
+    double t1_iso2 = t1_2->GetTauID(tau_idiso_name);
     // If the iso is different we just use this
     //if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
     if (t1_iso1 != t1_iso2) return t1_iso1 > t1_iso2;
@@ -555,12 +548,8 @@ namespace ic {
     Tau const* t2_2 = static_cast<Tau const*>(c2->At(1));
     /*double t2_iso1 = t2_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    if(strategy==strategy::cpsummer17 || strategy==strategy::cpdecays17 || strategy==strategy::cpdecays18){
-      t2_iso1 = t2_1->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-      t2_iso2 = t2_2->GetTauID("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-    }
+    double t2_iso1 = t2_1->GetTauID(tau_idiso_name);
+    double t2_iso2 = t2_2->GetTauID(tau_idiso_name);
     // If the iso is different we just use this
     //if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
     if (t2_iso1 != t2_iso2) return t2_iso1 > t2_iso2;

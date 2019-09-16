@@ -7,6 +7,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -18,8 +19,6 @@ class Tau : public Candidate {
  private:
   typedef std::map<std::size_t, float> UFmap;
   typedef ROOT::Math::XYZPoint Point;
-  typedef double Matrix[3][3];
-  typedef double Vec[3];
 
  public:
   Tau();
@@ -121,16 +120,16 @@ class Tau : public Candidate {
     return sig_neutral_cands_;
   }
 
-  /// The vtx covariance matrix
-  inline Matrix* vtx_covariance() { return &(vtx_covariance_); }
 
   inline bool hasSV() const { return hasSV_; }
 
-  inline Matrix* s_vtx_covariance() { return &(s_vtx_covariance_); }
+  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> >  s_vtx_covariance() { return s_vtx_covariance_; }
 
-  inline Vec* track_params() { return &(track_params_); }
+  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
 
-  inline Matrix* track_params_covariance() { return &(track_params_covariance_); }
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+
+  double bfield() { return bfield_; }
 
   /**@}*/
 
@@ -249,55 +248,27 @@ class Tau : public Candidate {
     sig_neutral_cands_ = sig_neutral_cands;
   }
 
-  inline void set_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
-    //covij where i=row and j=column
-    vtx_covariance_[0][0] = cov00;
-    vtx_covariance_[0][1] = cov01;
-    vtx_covariance_[0][2] = cov02;
-    vtx_covariance_[1][0] = cov10;
-    vtx_covariance_[1][1] = cov11;
-    vtx_covariance_[1][2] = cov12;
-    vtx_covariance_[2][0] = cov20;
-    vtx_covariance_[2][1] = cov21;
-    vtx_covariance_[2][2] = cov22;
-  }
-
   inline void set_hasSV(bool const&  hasSV){
     hasSV_ = hasSV;
   }
 
 
-  inline void set_s_vtx_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
-    //covij where i=row and j=column
-    s_vtx_covariance_[0][0] = cov00;
-    s_vtx_covariance_[0][1] = cov01;
-    s_vtx_covariance_[0][2] = cov02;
-    s_vtx_covariance_[1][0] = cov10;
-    s_vtx_covariance_[1][1] = cov11;
-    s_vtx_covariance_[1][2] = cov12;
-    s_vtx_covariance_[2][0] = cov20;
-    s_vtx_covariance_[2][1] = cov21;
-    s_vtx_covariance_[2][2] = cov22;
+  inline void set_s_vtx_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > s_vtx_covariance) {
+    s_vtx_covariance_ = s_vtx_covariance;
   }
 
-  inline void set_track_params(double p1, double p2, double p3) {
-    track_params_[0] = p1;
-    track_params_[1] = p2;
-    track_params_[2] = p3;  
+  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+    track_params_ = track_params;
   }
 
-  inline void set_track_params_covariance(double cov00, double cov01, double cov02, double cov10, double cov11, double cov12, double cov20, double cov21, double cov22) {
-    //covij where i=row and j=column
-    track_params_covariance_[0][0] = cov00;
-    track_params_covariance_[0][1] = cov01;
-    track_params_covariance_[0][2] = cov02;
-    track_params_covariance_[1][0] = cov10;
-    track_params_covariance_[1][1] = cov11;
-    track_params_covariance_[1][2] = cov12;
-    track_params_covariance_[2][0] = cov20;
-    track_params_covariance_[2][1] = cov21;
-    track_params_covariance_[2][2] = cov22;
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+    track_params_covariance_ = track_params_covariance;
   }
+
+  inline void set_bfield(double bfield) {
+    bfield_ = bfield;
+  }
+
 
   /**@}*/
 
@@ -349,14 +320,13 @@ class Tau : public Candidate {
   Point s_ref_point_;
   Point secondary_vertex_;
 
-  Matrix vtx_covariance_;
-
   bool hasSV_;
 
-  Matrix s_vtx_covariance_;
+  ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > s_vtx_covariance_;
 
-  Vec track_params_;
-  Matrix track_params_covariance_;
+  ROOT::Math::SVector<double, 5> track_params_;
+  ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance_;
+  double bfield_;
 
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;
