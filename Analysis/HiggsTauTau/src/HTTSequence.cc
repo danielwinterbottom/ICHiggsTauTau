@@ -1419,6 +1419,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        .set_faked_tau_selector(faked_tau_selector)
        .set_hadronic_tau_selector(hadronic_tau_selector)
        .set_ztt_mode(ztautau_mode)
+       .set_mc(mc_type)
        .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
        .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
        .set_tau_scale(tau_shift)
@@ -2545,14 +2546,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_w_soup(true);
             // W numbers need updating
             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-            httStitching.SetWInputYields(70966439,51047866,23272818,14492897.0,10062333.0); // correspond to params Mar18
+            httStitching.SetWInputYields(70822367,50895660,23173972,14492897,10062333); // correspond to params Mar18
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
               && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(100114403.0,68852433.0,20441071.0,5646299.0,2812482.0); // correspond to params Mar18
+            httStitching.SetDYInputYields(99983988,68466334,20276098,5646595,2795435); // correspond to params Mar18
           }
        
        BuildModule(httStitching);   
@@ -3517,10 +3518,10 @@ if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smsprin
                   fabs(t->eta())              <  2.3        &&
                   fabs(t->lead_dz_vertex())   <  0.2        &&
                   fabs(t->charge())           == 1          &&
-                  t->GetTauID("decayModeFinding") > 0.5;
+                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
     
         }));  
-    BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
+    BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauElMuOverlapFilter")
       .set_input_label(js["taus"].asString())
       .set_reference_label("ditau")
       .set_min_dr(0.5));
@@ -3721,7 +3722,7 @@ void HTTSequence::BuildZMMPairs() {
                   fabs(t->eta())              <  2.3        &&
                   fabs(t->lead_dz_vertex())   <  0.2        &&
                   fabs(t->charge())           == 1          &&
-                  t->GetTauID("decayModeFinding") > 0.5;
+                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
     
         }));  
     BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
@@ -4264,7 +4265,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -4275,17 +4276,18 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
-   } else if (strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-  BuildModule(SimpleFilter<Tau>("TauFilter")
-      .set_input_label(js["taus"].asString()).set_min(min_taus)
-      .set_predicate([=](Tau const* t) {
-        return  t->pt()                     >  tau_pt     &&
-                fabs(t->eta())              <  tau_eta    &&
-                fabs(t->lead_dz_vertex())   <  tau_dz     &&
-                fabs(t->charge())           == 1          &&
-                t->GetTauID("decayModeFindingNewDMs") > 0.5;
+   } 
+   if (strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::legacy16){
+     BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
+        .set_input_label(js["taus"].asString()).set_min(min_taus)
+        .set_predicate([=](Tau const* t) {
+          return  t->pt()                     >  tau_pt     &&
+                  fabs(t->eta())              <  tau_eta    &&
+                  fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                  fabs(t->charge())           == 1          &&
+                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
 
-      }));
+        }));
    } 
   //if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
   //  BuildModule(SimpleFilter<Tau>("TauIsoFilter")

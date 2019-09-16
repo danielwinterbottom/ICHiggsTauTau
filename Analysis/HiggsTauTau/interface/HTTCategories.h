@@ -1218,6 +1218,7 @@ class HTTCategories : public ModuleBase {
   //
 
   double deeptau_sf_;
+  double mt_1_nomu_, mu_pt_;
 
  public:
   HTTCategories(std::string const& name);

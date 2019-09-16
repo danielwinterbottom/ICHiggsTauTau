@@ -6,15 +6,16 @@ import time
 import json
 from array import array
 import argparse
+ROOT.gROOT.SetBatch(1)
 
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_pluscorr')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/sep05_2018/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/sep05_2018_new/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -86,8 +87,7 @@ njets_bins = {
               'inclusive': '(1)',
               'njets0':'n_jets==0',
               'njets1':'n_jets==1',
-              'njets2':'n_jets>1',
-
+              'njets2':'n_jets>1'
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -445,8 +445,8 @@ baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0
 
 cut_iso1 = re.sub('X', '1', 'wt*(%(baseline_aiso2_iso)s)' % vars())
 cut_aiso1 = re.sub('X', '1','wt*(%(baseline_aiso2_aiso1)s)' % vars())
-ff_list[name+'_aiso2_ss_pt_1'] = (var1, cut_iso1, cut_aiso1)
-ff_list[name+'_aiso2_os_pt_1'] = (var1, cut_iso1, cut_aiso1)
+ff_list['inclusive_inclusive_aiso2_ss_pt_1'] = (var1, cut_iso1, cut_aiso1)
+ff_list['inclusive_inclusive_aiso2_os_pt_1'] = (var1, cut_iso1, cut_aiso1)
 
 for ff in ff_list:
   wjets_ff=None
@@ -499,14 +499,15 @@ for ff in ff_list:
 ## make fractions
 
 if draw:
-  baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-  
+  #baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+  # fractions are currently been produced assuming only lead tau will be anti isolated 
+ 
   njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
   
   for njets in [0,1,2]:
     njets_cut = njets_cuts[njets]
     var= 'm_vis[0,40,60,80,100,120,140,160,180,200,220,240,260,280,300]'
-    cuts = '(%(baseline_eitheraiso)s)*(%(njets_cut)s)' % vars()
+    cuts = '(%(baseline_aiso1)s)*(%(njets_cut)s)' % vars()
     name = 'tt_fracs_njets%(njets)s' % vars()
     qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
     qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, 'wt*%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
@@ -556,8 +557,5 @@ print '\n'
 print tau1_mvadm_string
 print '\n'
 print tau2_mvadm_string
-
-
-
 
 fout.Close()
