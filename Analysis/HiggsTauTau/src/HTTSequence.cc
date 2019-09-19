@@ -2333,7 +2333,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_ps_weights(do_ggH_stitch);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
-    if (strategy_type == strategy::legacy16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_v16_2.root");
+    if (strategy_type == strategy::legacy16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2016.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
     httWeights.set_is_embedded(is_embedded);
     httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
@@ -2378,12 +2378,12 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
              output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
           httStitching.set_do_w_soup(true);
           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-          httStitching.SetWInputYields(57026058 + 29705748,45345007,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
+          httStitching.SetWInputYields(56457288 + 29514020 , 44762109 , 29976502 + 29473030 , 19653091 + 38357553 , 9073814 + 2073275 + 17974984);
          }
          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
            httStitching.set_do_dy_soup(true);
            httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-           httStitching.SetDYInputYields(95857236 + 49144274,62620979, 19970551, 5856110, 4197868);
+           httStitching.SetDYInputYields(94284439 + 48429964 ,62787365 , 18621394 ,5712316 , 4197868);
          }
       
       BuildModule(httStitching);   
