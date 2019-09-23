@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff' --regional_jes --embedding --total_jes
+#./scripts/makeDatacardsSMCP16.py --cfg=scripts/new_plot_sm_2016_NewPlotting.cfg -c 'em,et,mt,tt' scripts/Params_2016_smsummer16.json -s 'cpsummer16_ff_newbins' --regional_jes --embedding --total_jes
 
 import sys
 from optparse import OptionParser
@@ -635,12 +635,12 @@ if SCHEME == 'cpsummer16_ff_newbins':
     ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire ')
   ]
   scheme_mt = [
-    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
-    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50" --do_ff_systs --add_wt=wt_prefire ')
+    ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
+    ("17",   "boosted",    "2016_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_lowboost",    "2016_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
+    ("17",   "dijet_loosemjj_boosted",     "2016_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_lowboost",    "2016_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
+    ("17",   "dijet_tightmjj_boosted",     "2016_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire ')
 
   ]
   scheme_tt = [

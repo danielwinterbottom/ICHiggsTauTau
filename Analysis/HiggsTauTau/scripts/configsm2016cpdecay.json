@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan31_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Jan31_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":      ["tt"],
@@ -58,6 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+    //"output_folder" : "output/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep23_2016_EEnoiseCheck/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Pi0MVA/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/signal_reco_filtercheck_2/",
     "output_folder" : "/vols/cms/dw515/Offline/output/SM/spinner_check_reco_2016/",
@@ -66,7 +68,8 @@
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
+    // "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/CPdecay_SVFit/",
     //"svfit_folder" : "svfit/", 
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",

@@ -105,6 +105,9 @@ namespace ic {
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
       outtree_->Branch("deeptau_sf", &deeptau_sf_);
       //end of temp gen stuff
+      // add temporary tau trg effs
+      outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
+      outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
       if(do_sm_ps_wts_ && !systematic_shift_){
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
@@ -932,6 +935,23 @@ namespace ic {
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
       outtree_->Branch("jmva_1",             &jmva_1_);
       outtree_->Branch("jmva_2",             &jmva_2_);
+      outtree_->Branch("jchm_1"  , &jchm_1_);
+      outtree_->Branch("jnm_1"   , &jnm_1_);
+      outtree_->Branch("jpm_1"   , &jpm_1_);
+      outtree_->Branch("jchemf_1", &jchemf_1_);
+      outtree_->Branch("jnemf_1" , &jnemf_1_);
+      outtree_->Branch("jchhf_1", &jchhf_1_);
+      outtree_->Branch("jnhf_1" , &jnhf_1_);
+      outtree_->Branch("jchm_2"  , &jchm_2_);
+      outtree_->Branch("jnm_2"   , &jnm_2_);
+      outtree_->Branch("jpm_2"   , &jpm_2_);
+      outtree_->Branch("jchemf_2", &jchemf_2_);
+      outtree_->Branch("jnemf_2" , &jnemf_2_);
+      outtree_->Branch("jchhf_2", &jchhf_2_);
+      outtree_->Branch("jnhf_2" , &jnhf_2_);
+
+      outtree_->Branch("jlrm_1",             &jlrm_1_);
+      outtree_->Branch("jlrm_2",             &jlrm_2_);
 
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -2414,6 +2434,10 @@ namespace ic {
   if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
   if (eventInfo->weight_defined("tau_fake_weight")) fakeweight_ = eventInfo->weight("tau_fake_weight"); else fakeweight_ = 0.0;
   if (eventInfo->weight_defined("tau_mode_scale")) effweight_ *= eventInfo->weight("tau_mode_scale") ;
+
+  // temporary tau trg effs
+  if (event->Exists("tau1_trgeff_mc")) tau1_trgeff_mc_ = event->Get<double>("tau1_trgeff_mc"); else tau1_trgeff_mc_ = 1.0;
+  if (event->Exists("tau2_trgeff_mc")) tau2_trgeff_mc_ = event->Get<double>("tau2_trgeff_mc"); else tau2_trgeff_mc_ = 1.0;
    
   if (eventInfo->weight_defined("tauspinner")) {
     embeddedweight_ = eventInfo->weight("tauspinner") *
@@ -3750,6 +3774,15 @@ namespace ic {
       jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/lowpt_jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
+      // vars for noise jet study
+      jchm_1_   = lowpt_jets[0]->charged_multiplicity();
+      jnm_1_    = lowpt_jets[0]->neutral_multiplicity();
+      jpm_1_    = lowpt_jets[0]->photon_multiplicity();
+      jchemf_1_ = lowpt_jets[0]->charged_em_energy_frac();
+      jnemf_1_  = lowpt_jets[0]->neutral_em_energy_frac();
+      jchhf_1_  = lowpt_jets[0]->charged_had_energy_frac();
+      jnhf_1_   = lowpt_jets[0]->neutral_had_energy_frac();
+      //
       jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
       jctm_1_ = lowpt_jets[0]->charged_multiplicity_nopu();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
@@ -3771,6 +3804,13 @@ namespace ic {
       jlrm_1_ = -9999;
       jctm_1_ = -9999;
       dphi_jtt_ = -9999.;
+      jchm_1_   = -9999.;
+      jnm_1_    = -9999.;
+      jpm_1_    = -9999.;
+      jchemf_1_ = -9999.;
+      jnemf_1_  = -9999.;
+      jchhf_1_ = -9999.;
+      jnhf_1_  = -9999.;
     }
 
     if (n_lowpt_jets_ >= 2) {
@@ -3780,6 +3820,15 @@ namespace ic {
       jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/lowpt_jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
       jptunc_2_ = 0.0;
       jmva_2_ = lowpt_jets[1]->pu_id_mva_value();
+      // vars for noise jet study
+      jchm_2_   = lowpt_jets[1]->charged_multiplicity();
+      jnm_2_    = lowpt_jets[1]->neutral_multiplicity();
+      jpm_2_    = lowpt_jets[1]->photon_multiplicity();
+      jchemf_2_ = lowpt_jets[1]->charged_em_energy_frac();
+      jnemf_2_  = lowpt_jets[1]->neutral_em_energy_frac();
+      jchhf_2_  = lowpt_jets[1]->charged_had_energy_frac();
+      jnhf_2_   = lowpt_jets[1]->neutral_had_energy_frac();
+      //
       jlrm_2_ = lowpt_jets[1]->linear_radial_moment();
       jctm_2_ = lowpt_jets[1]->charged_multiplicity_nopu();
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
@@ -3875,6 +3924,13 @@ namespace ic {
       jctm_2_ = -9999;
       n_jetsingap_ = 9999;
       n_jetsingap20_ = 9999;
+      jchm_2_   = -9999.;
+      jnm_2_    = -9999.;
+      jpm_2_    = -9999.;
+      jchemf_2_ = -9999.;
+      jnemf_2_  = -9999.;
+      jchhf_2_  = -9999.;
+      jnhf_2_   = -9999.;
     }
 
     if (n_lowpt_jets_ >= 2) {
