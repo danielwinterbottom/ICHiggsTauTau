@@ -63,20 +63,33 @@
     "output_folder" : "/vols/cms/dw515/Offline/output/SM/RhoID2017/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec09_genVars/",
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar29_2017/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May17_2017/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul14_2017_ptNEMFcut/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul30_2017_noisejetIDcut/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Aug29_2017_PUIDandNEMFcut/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_PUIDandNEMFcut/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_ptNEMFcut/",
+    //
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep11_2017_PUIDandNEMFcut/",
+    //
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_allJets/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_jetveto/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May29_2017/",
      //"output_folder" : "./output/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
+    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_SVFit/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -340,7 +353,8 @@
         "addit_output_folder" : "ESCALE_DOWN",
         "e_scale_mode": true,
         "elec_es_shift_barrel": 0.99,
-        "elec_es_shift_endcap": 0.975
+        "elec_es_shift_endcap": 0.975,
+        "e_unc_mode": 1
       }
     },
     "scale_e_hi": {
@@ -348,21 +362,30 @@
         "addit_output_folder" : "ESCALE_UP",
         "e_scale_mode": true,
         "elec_es_shift_barrel": 1.01,
-        "elec_es_shift_endcap": 1.025
+        "elec_es_shift_endcap": 1.025,
+        "e_unc_mode": 2
       }
     },
     "scale_mu_lo": {
       "baseline": {
         "addit_output_folder" : "MUSCALE_DOWN",
         "mu_scale_mode": true,
-        "muon_es_shift": 0.99
+        "muon_es_shift": 0.99,
+        "muon_es_shift_barrel": 0.996,
+        "muon_es_shift_negfarendcap": 0.973,
+        "muon_es_shift_nearendcap": 0.991,
+        "muon_es_shift_posfarendcap": 0.983
       }
     },
     "scale_mu_hi": {
       "baseline": {
         "addit_output_folder" : "MUSCALE_UP",
         "mu_scale_mode": true,
-        "muon_es_shift": 1.01
+        "muon_es_shift": 1.01,
+        "muon_es_shift_barrel": 1.004,
+        "muon_es_shift_negfarendcap": 1.027,
+        "muon_es_shift_nearendcap": 1.009,
+        "muon_es_shift_posfarendcap": 1.017
       }
     },
     "scale_j_lo": {

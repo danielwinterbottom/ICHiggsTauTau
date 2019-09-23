@@ -23,7 +23,6 @@ class MEtSys {
            float visVPx,
            float visVPy,
            int njets,
-           int bkgdType,
            int sysType,
            int shiftType,
            float & metShiftPx,
@@ -36,7 +35,6 @@ class MEtSys {
         float visVPx,
         float visVPy,
         int njets,
-        int bkgdType,
         int sysType,
         float sysShift,
         float & metShiftPx,
@@ -49,7 +47,6 @@ class MEtSys {
             float visVPx,
             float visVPy,
             int njets,
-            int bkgdType,
             float sysShift,
             float & metShiftPx,
             float & metShiftPy);
@@ -62,7 +59,6 @@ class MEtSys {
               float visVPx,
               float visVPy,
               int njets,
-              int bkgdType,
               float sysShift,
               float & metShiftPx,
               float & metShiftPy);
@@ -93,12 +89,11 @@ class MEtSys {
                    float & metY);
   
   
-  int nBkgdTypes;
   int nJetBins;
-  TH1D * responseHist[3][5];
-  float sysUnc[3][2][3]; // first  index : bkgd type 
-  // second index : type of uncertainty 0=response, 1=resolution
-  // third index  : jet multiplicity bin (0,1,2);
+  TH1D * responseHist[3];
+  float sysUnc[2][3];
+  // first index : type of uncertainty 0=response, 1=resolution
+  // second index  : jet multiplicity bin (0,1,2);
 
 };
 
