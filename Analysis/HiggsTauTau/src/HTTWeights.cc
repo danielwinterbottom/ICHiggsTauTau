@@ -235,14 +235,14 @@ namespace ic {
            w_->function("m_trg_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg_binned_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_emb"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_emb")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_crosstrg_data"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg_MuTau_Mu20Leg_kit_data")->functor(w_->argSet("m_pt,m_eta")));
+           w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
         fns_["m_crosstrg_mc"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg_MuTau_Mu20Leg_kit_mc")->functor(w_->argSet("m_pt,m_eta")));
+           w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
         fns_["m_crosstrg_embed"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg_MuTau_Mu20Leg_kit_embed")->functor(w_->argSet("m_pt,m_eta")));
+           w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
       }
 
 
