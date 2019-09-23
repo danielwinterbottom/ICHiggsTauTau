@@ -422,6 +422,20 @@ class HTTCategories : public ModuleBase {
   float jptunc_2_; 
   float jmva_1_; 
   float jmva_2_; 
+  float jchm_1_  ;
+  float jnm_1_   ;
+  float jpm_1_   ;
+  float jchemf_1_;
+  float jnemf_1_ ;
+  float jchhf_1_;
+  float jnhf_1_ ;
+  float jchm_2_  ;
+  float jnm_2_   ;
+  float jpm_2_   ;
+  float jchemf_2_;
+  float jnemf_2_ ;
+  float jchhf_2_;
+  float jnhf_2_ ;
   float jlrm_1_; 
   float jlrm_2_; 
   float jctm_1_; 
@@ -1473,6 +1487,9 @@ class HTTCategories : public ModuleBase {
   unsigned tau_vloose_1_;
   unsigned tau_vloose_2_;
   double wt_dysoup_;
+
+  double tau1_trgeff_mc_;
+  double tau2_trgeff_mc_;
 
   bool tau_id_olddm_vloose_1_ ; 
   bool tau_id_newdm_vloose_1_ ;

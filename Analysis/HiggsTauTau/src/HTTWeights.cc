@@ -2891,6 +2891,10 @@ namespace ic {
        event->Add("trigweight_up_2", tau2_trg_up);
        event->Add("trigweight_down_1", tau1_trg_down);
        event->Add("trigweight_down_2", tau2_trg_down);
+
+       // check the trigger factorisation
+       event->Add("tau1_trgeff_mc", tau1_trg_mc);
+       event->Add("tau2_trgeff_mc", tau2_trg_mc);
      } else if (channel_ == channel::mtmet) {
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        double pt = muon->pt();

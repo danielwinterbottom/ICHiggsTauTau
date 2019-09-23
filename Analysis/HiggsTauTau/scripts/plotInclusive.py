@@ -65,6 +65,7 @@ def main(args):
     if args.channel == "tt":
 
         plot_vars = [
+            # "m_vis(25,20,250)",
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
 
             # "rho_id_1(10,0,1)",
@@ -74,7 +75,7 @@ def main(args):
             # "IC_Jun13_dR_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_tauspinner_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_tauspinner_split_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Vienna_fix_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_check1_max_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Vienna_fix_ggh_score+IC_Vienna_fix_qqh_score[0.,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_keras_sm3_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
@@ -120,8 +121,7 @@ def main(args):
             # "deep_antie_1(20,0,1)",
             # "((Epi_1-Epi0_1)/(Epi_1+Epi0_1)),aco_angle_mod[0,1.0],(18,0,6.3)",
 
-            # "tau_decay_mode_1(11,0,11)",
-            # "tau_decay_mode_2(11,0,11)",
+
             # "jpt_1(16,0,400)",
             # "jpt_2(15,0,300)",
             # "mjj(15,0,1500)",
@@ -146,7 +146,7 @@ def main(args):
             # "m_vis(25,20,250)","pt_1(20,40,140)","pt_2(12,40,100)",
             # "jpt_1(17,30,200)","jpt_2(17,40,200)",
             # "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)",
-            # "met(20,0,200)",
+            # "sjdphi(12,-3.2,3.2)",
             # "n_jets(5,0,5)",
 
 
@@ -154,8 +154,13 @@ def main(args):
 
             # "m_vis(25,20,250)",
             # "m_sv(30,0,300)",
-            # "pt_tt(60,0,300)",
-            # "pt_1(20,40,140)","pt_2(12,40,100)",
+            # "pt_tt(30,0,300)",
+            "pt_1(20,40,140)",
+            # "pt_2(12,40,100)",
+            # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
+            # "tau_decay_mode_1,pt_1(11,0,11),[40,60,80,100]",
+            # "tau_decay_mode_1,pt_2(11,0,11),[40,60,80,100]",
+            # "tau_decay_mode_2(11,0,11)",
             # "met(20,0,200)",
 
             # "n_jets(5,0,5)",
@@ -173,6 +178,7 @@ def main(args):
             # "met(20,0,200)",
             # "m_sv(30,0,300)",
             # "dR(30,0.5,5.0)"
+            # "dR(40,0.5,3.5)"
             ]
         # for ind in ["1","2"]:
         #     for catg in ["rho","a1","pi","other"]:
@@ -186,11 +192,15 @@ def main(args):
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1 && mvadm_rho_2>mvadm_a1_2 && mvadm_rho_2>mvadm_pi_2 && mvadm_rho_2>mvadm_other_2) " '
         # extras += " --add_wt wt_prefire "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
+        extras += ' --set_alias "inclusive:(m_vis<90)" '
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==10 &&  tau_decay_mode_2==10)" '
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==0 &&  tau_decay_mode_2==0)" '
         # extras += ' --ratio_range 0,2 '
+        # extras += ' --do_ss '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        extras += '  --ff_ss_closure  '
+        # extras += '  --ff_ss_closure  '
         # extras += " --threePads "
         # extras += " --extra_pad 0.55 "
 
@@ -206,9 +216,9 @@ def main(args):
             # "IC_Apr02_max_score[0.,0.5,0.6,0.7,0.8,1.0]",
 
             # "dR(30,0.5,5.0)"
-            "pt_1(20,20,120)",
-            "pt_2(14,30,100)",
-            "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
+            # "pt_1(20,20,120)",
+            # "pt_2(14,30,100)",
+            # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "m_sv,aco_angle_mod[0,90,110,130,150],(14,0,6.3)",
             # "m_sv(30,0,300)",
             # "aco_angle_mod(14,0,{})".format(2*np.pi),
@@ -229,16 +239,16 @@ def main(args):
             # "sjdphi(12,-3.2,3.2)",
 
             # btag variables
-            "n_bjets(5,0,5)",
-            "bpt_1(17,30,200)",
-            "bpt_2(17,30,200)",
-            "beta_1(12,-4.7,4.7)",
-            "beta_2(12,-4.7,4.7)",
+            # "n_bjets(5,0,5)",
+            # "bpt_1(17,30,200)",
+            # "bpt_2(17,30,200)",
+            # "beta_1(12,-4.7,4.7)",
+            # "beta_2(12,-4.7,4.7)",
             # "bcsv_1(10,0,1)",
             # "bcsv_2(10,0,1)",
 
             "m_vis(20,20,200)",
-            "m_sv(30,0,300)",
+            # "m_sv(30,0,300)",
 
             # "pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]",
             # "pt_tt(30,0,200)",
@@ -246,14 +256,14 @@ def main(args):
             # "m_vis[0,1000]",
             # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_binary_Oct11_score(20,0.,1.)",
-            "met(20,0,200)",
-            "jeta_1(12,-4.7,4.7)",
-            "jeta_2(12,-4.7,4.7)",
-            "mjj(16,0,800)",
-            "sjdphi(12,-3.2,3.2)",
-            "jpt_1(17,30,200)",
-            "jpt_2(17,40,200)",
-            "n_jets(5,0,5)"
+            # "met(20,0,200)",
+            # "jeta_1(12,-4.7,4.7)",
+            # "jeta_2(12,-4.7,4.7)",
+            # "mjj(16,0,800)",
+            # "sjdphi(12,-3.2,3.2)",
+            # "jpt_1(17,30,200)",
+            # "jpt_2(17,40,200)",
+            # "n_jets(5,0,5)"
             ]
         method = "12" if args.ff == False else "17"
         extras += ' --set_alias "sel:mt_1<50" '
@@ -261,15 +271,16 @@ def main(args):
         # extras += ' --set_alias "inclusive:n_bjets==0" '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
-        # extras += ' --set_alias "inclusive:(mjj>500 && n_jets>1 && n_bjets==0)" '
-        # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
+        # extras += ' --set_alias "inclusive:(m_vis<80)" '
+        # extras += ' --set_alias "inclusive:(mjj>300 && n_jets>1 && n_bjets==0)" '
+        # extras += ' --set_alias "inclusive:(n_jets>=1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
         # extras += ' --set_alias "inclusive:(wt<10) " '
 
         extras += " --cat {} ".format(args.cat)
         # extras += " --extra_pad 0.55 "
         # extras += " --cat {}_highMjj ".format(args.cat)
         # extras += ' --ratio_range 0,2 '
-        extras += " --split_sm_scheme "
+        # extras += " --split_sm_scheme "
         # extras += ' --add_wt single_l_sf '
 
     elif args.channel == "em":
@@ -279,18 +290,18 @@ def main(args):
         #         "jeta_1(12,-4.7,4.7)","jeta_2(12,-4.7,4.7)","mjj(40,0,800)",
         #         "met(20,0,200)","n_jets(5,0,5)"]
         plot_vars = [
-            "n_bjets(5,0,5)",
-            "bpt_1(17,30,200)",
-            "bpt_2(17,30,200)",
-            "beta_1(12,-4.7,4.7)","beta_2(12,-4.7,4.7)",
-            "bcsv_1(10,0,1)","bcsv_2(10,0,1)",
+            # "n_bjets(5,0,5)",
+            # "bpt_1(17,30,200)",
+            # "bpt_2(17,30,200)",
+            # "beta_1(12,-4.7,4.7)","beta_2(12,-4.7,4.7)",
+            # "bcsv_1(10,0,1)","bcsv_2(10,0,1)",
             # "pt_1(18,10,100)","pt_2(18,10,100)",
             # "eta_1(12,-2.5,2.5)","eta_2(12,-2.5,2.5)",
             # "m_vis(40,0,400)",
             # "pt_tt(30,0,300)",
             # "n_jets(5,0,5)",
             # "jdeta(25,0,5)",
-            # "sjdphi(12,-3.2,3.2)",
+            "sjdphi(12,-3.2,3.2)",
             # "met(40,0,400)",
             # "mjj(16,0,800)",
             # "pt_vis(30,0,300)",
@@ -328,15 +339,18 @@ def main(args):
     elif args.channel in ["zmm","zee"]:
         plot_vars = [
             # "jeta_1,jpt_1[0.,2.65,3.139],[30,40,50,60,70,100]",
+            # "jpt_1,jnemf_1[30,35,40,45,50,75],(20,0,0.95)",
+            # "jpt_1,jlrm_1[30,40,50,75,100],(20,-1,1)",
             # "jeta_1,jpt_1[0.,3.,3.5],[30,40,50,60,70,100]",
             # "jeta_2,jpt_2[0.,3.,3.5],[30,40,50,60,70,100]",
             # "jmva_1(40,-1,1)",
             # "jmva_2(40,-1,1)",
             # "pt_tt(40,0,400)",
-            "m_vis(50,70,120)",
-            "pt_1(18,10,100)",
-            "pt_2(18,10,100)",
-            # "jpt_1(17,30,200)",
+            # "m_vis(50,70,120)",
+            # "pt_1(18,10,100)",
+            # "pt_2(18,10,100)",
+            "jpt_1(14,30,100)",
+            # "jlrm_1(20,-1,1)",
             # "n_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
             # "m_sv(20,0,200)",
@@ -355,6 +369,8 @@ def main(args):
             # "jrawf_1*jpt_1(17,30,200)",
             # "jrawf_2(20,0,2)",
             # "jarea_1(8,0.3,0.7)",
+
+            # "IC_noisejet_Jul17_1_score(10,0,1)",
             # "jchm_1(20,0,20)",
             # "jnm_1(20,0,20)",
             # "jchemf_1(20,0,1)",
@@ -363,15 +379,30 @@ def main(args):
             # "jnhf_1(20,0,1)",
 
             ]
-        # extras += ' --ratio_range 0,2.5 '
-        # extras += ' --ratio_range 0,2 '
+        # extras += ' --ratio_range 0.01,2.99 '
+        extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && (fabs(jeta_1)<2.65 || fabs(jeta_1)>3.139 || jpt_1>50) && (fabs(jeta_2)<2.65 || fabs(jeta_2)>3.139 || jpt_2>50))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && jpt_1>30 && (fabs(jeta_1)<3.0 && fabs(jeta_1)>2.75))" '
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets>=1)" '
-        extras += ' --set_alias "inclusive:(m_vis>50)" '
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && pt_1>30)" '
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==2 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
+        # extras += ' --set_alias "inclusive:(m_vis>50)" '
+        extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>30 && jpt_1<40 && jnemf_1<(0.668493+0.856164*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>30 && jpt_1<40 && jnemf_1<(0.27+1.11*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>40 && jpt_1<50 && jnemf_1<(0.76+0.73*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>40 && jpt_1<50 && jnemf_1<(0.39+0.6*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>50 && jpt_1<60 && jnemf_1<(0.7+0.61*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>60 && jpt_1<80 && jnemf_1<(0.92+0.46*jmva_1))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>60 && jpt_1<80 && jnemf_1<(0.99+0.94*jmva_1))" '
+
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>30 && jpt_1<40 && ((jnemf_1>0 && jnemf_1<0.4 && jmva_1>-0.4) || (jnemf_1>0.4 && jnemf_1<0.6 && jmva_1>-0.1) || (jnemf_1>0.6 && jnemf_1<0.8 && jmva_1>0.) || (jnemf_1>0.8 && jmva_1>0.2) ))" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>40 && jpt_1<50 && ((jnemf_1>0 && jnemf_1<0.3 && jmva_1>-0.6) || (jnemf_1>0.3 && jnemf_1<0.5 && jmva_1>-0.4) || (jnemf_1>0.5 && jmva_1>-0.2) ))" '
+
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(dphi_jtt)>2.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(dphi_jtt)<1.5 && (jpt_1/pt_vis)>0.5 && (jpt_1/pt_vis)<1.5 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
         # extras += ' --set_alias "inclusive:(n_jets>=2)" '
         # extras += " add_wt=wt_zpt_down "
         method = "8"
@@ -395,8 +426,10 @@ def main(args):
         extras += " --add_wt {} ".format(args.add_wt)
 
     if args.add_syst:
-        extras += ' --syst_mu_scale="CMS_scale_m_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_m_13TeVUp" '
-        extras += ' --custom_uncerts_down_name "total_bkg_CMS_scale_m_13TeVDown" --do_custom_uncerts --add_stat_to_syst '
+        # extras += ' --syst_mu_scale="CMS_scale_m_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_m_13TeVUp" '
+        # extras += ' --custom_uncerts_down_name "total_bkg_CMS_scale_m_13TeVDown" --do_custom_uncerts --add_stat_to_syst '
+        extras += ' --syst_e_scale="CMS_scale_e_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_e_13TeVUp" '
+        extras += ' --custom_uncerts_down_name "total_bkg_CMS_scale_e_13TeVDown" --do_custom_uncerts --add_stat_to_syst '
 
     if args.add_jes:
         extras += ' --syst_scale_j="CMS_scale_j_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_j_13TeVUp" '
@@ -438,7 +471,7 @@ def main(args):
         config = " scripts/plot_cpdecays_2017.cfg "
     elif args.era == "2016":
         config = " scripts/plot_cpdecays_2016.cfg "
-    elif args.era == "2016_sm":
+    elif args.era == "2016_jets":
         config = " scripts/new_plot_sm_2016_NewPlotting.cfg "
 
     for var in plot_vars:
@@ -448,19 +481,21 @@ def main(args):
         if "sjdphi" in var or "eta" in var or "aco" in var and not "(" in var:
             pad_extra = " --extra_pad 0.55 "
 
-        if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
-        elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+        # if var.split("(")[0] in ["jeta_1","jpt_1","jrawf_1"]:
+        #     custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
+        # elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","jrawf_2"]:
+        #     custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+        elif var.split("(")[0] in ["pt_tt",]:
+            custom_extras = ' --log_y '
 
         if args.transferOnly:
-            run_command('rsync output/{}_inclusive_{}_{}.pdf /home/hep/akd116/public_html/CP/201906_Jun/19_2017MT_mediumPUJID/'\
+            run_command('rsync output/{0}_inclusive_{1}_{2}.pdf /home/hep/akd116/public_html/CP/201907_Jul/17_2018ZMM/{0}_inclusive_{1}_{2}_genuinejet.pdf'\
                     .format(var.split("(")[0], args.channel, args.era,))
         else:
             run_command(' python scripts/HiggsTauTauPlot.py '
                     + ' --cfg {} --ratio '.format(config)
                     + ' --var "{}" --channel {} '.format(var,args.channel)
-                    + ' --method {} --norm_bins {} {} {} '.format(method,extras,custom_extras,pad_extra))
+                    + ' --method {}  {} {} {} '.format(method,extras,custom_extras,pad_extra))
 
 if __name__ == "__main__":
     args = parse_arguments()

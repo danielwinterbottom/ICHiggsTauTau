@@ -56,7 +56,7 @@ namespace ic {
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
       }
       if(strategy_ == strategy::cpdecays18){
-        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2018/"+ff_file_;
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2018New/"+ff_file_;
       }
 
       ff_file_name = baseDir + ff_file_name;

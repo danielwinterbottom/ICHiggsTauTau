@@ -1,6 +1,7 @@
 import shlex
 from subprocess import Popen, PIPE
 import os 
+import sys
 
 def run_command(command):
     p = Popen(shlex.split(command), stdout=PIPE, stderr=PIPE)
@@ -11,7 +12,7 @@ def run_command(command):
 path = "./jobs"
 files = [f for f in os.listdir(path) \
             if os.path.isfile(os.path.join(path, f)) \
-            and f.endswith(".log")]
+            and f.endswith(".log") and "{}".format(sys.argv[1]) in f]
 
 counter = 0
 for file_ in files:

@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTLegacyRun2RecoilCorrector.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
@@ -8,7 +8,7 @@
 
 namespace ic {
 
-  HTTRun2RecoilCorrector::HTTRun2RecoilCorrector(std::string const& name) : ModuleBase(name), 
+  HTTLegacyRun2RecoilCorrector::HTTLegacyRun2RecoilCorrector(std::string const& name) : ModuleBase(name), 
     channel_(channel::et),
     strategy_(strategy::paper2013),
     mc_(mc::summer12_53X),
@@ -27,13 +27,13 @@ namespace ic {
     do_recoil_=true;
   }
 
-  HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
+  HTTLegacyRun2RecoilCorrector::~HTTLegacyRun2RecoilCorrector() {
     ;
   }
 
-  int HTTRun2RecoilCorrector::PreAnalysis() {
+  int HTTLegacyRun2RecoilCorrector::PreAnalysis() {
     std::cout << "-------------------------------------" << std::endl;
-    std::cout << "HTTRun2RecoilCorrector" << std::endl;
+    std::cout << "HTTLegacyRun2RecoilCorrector" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
     std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
@@ -54,12 +54,29 @@ namespace ic {
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
+      if (met_label_ == "puppiMet") {
+        process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2016.root";
+        syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2016.root";
+      }
     } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) {
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PFMET_2017.root";
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root";
+      if(met_label_ == "pfMET"){
+        process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PFMET_2017.root";
+        syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root";
+      } 
+      else if (met_label_ == "puppiMet"){
+        process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2017.root";
+        syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2017.root";
+      }
+
     } else if (strategy_ == strategy::cpdecays18) {
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2018.root";
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root"; // update when available
+      if(met_label_ == "pfMET"){
+        process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2018.root";
+        syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMETSys_2018.root"; 
+      }
+      else if (met_label_ == "puppiMet"){
+        process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2018.root";
+        syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2018.root";
+      }
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -88,7 +105,7 @@ namespace ic {
       return 0;
     } else {
      if(!disable_recoil_corrs){
-       corrector_ = new RecoilCorrectorRun2(process_file);
+       corrector_ = new RecoilCorrectorLegacyRun2(process_file);
     }
      if(!disable_met_sys){
        metSys_ = new MEtSys(syst_file);
@@ -98,7 +115,7 @@ namespace ic {
     return 0;
   }
 
-  int HTTRun2RecoilCorrector::Execute(TreeEvent *event) {
+  int HTTLegacyRun2RecoilCorrector::Execute(TreeEvent *event) {
 
 
     // Get the stuff we need from the event
@@ -169,7 +186,7 @@ namespace ic {
     if(!use_quantile_map_){
       corrector_->CorrectByMeanResolution(Metx,Mety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     } else {
-      corrector_->Correct(Metx,Mety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+      corrector_->CorrectWithHist(Metx,Mety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     }
     //Now stick this back into our met object:
     met->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
@@ -186,7 +203,7 @@ namespace ic {
     float met_Shift_x, met_Shift_y;
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
-    // MEtSys::ProcessType processType;
+    // MEtSys::ProcessType processType; NOT NEEDED
     // if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("EWKZ")!=sample_.npos  || sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos ){
     //     processType = MEtSys::ProcessType::BOSON;
     // } else if (sample_.find("TT")!=sample_.npos){
@@ -217,7 +234,7 @@ namespace ic {
         float(genpX),float(genpY), // (float) transverse momentum of the full leptonic system
         float(vispX),float(vispY), // (float) transverse momentum of the visible leptonic system
         njets, // (int) number of jets : pT > 30 GeV, eta<4.7, loose PF JetID
-        // processType, // (int) type of process 
+        // processType, // (int) type of process / NOT REQUIRED WITH LEGACY RUN2 Corrector
         sysType, // (int) type of systematic uncertainty
         sysShift, // (int) direction of systematic shift
         met_Shift_x,met_Shift_y // (float) shifted value of the mva met
@@ -231,12 +248,12 @@ namespace ic {
 
     return 0;
   }
-  int HTTRun2RecoilCorrector::PostAnalysis() {
+  int HTTLegacyRun2RecoilCorrector::PostAnalysis() {
 
     return 0;
   }
 
-  void HTTRun2RecoilCorrector::PrintInfo() {
+  void HTTLegacyRun2RecoilCorrector::PrintInfo() {
     ;
   }
 }

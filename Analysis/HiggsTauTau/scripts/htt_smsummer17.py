@@ -160,13 +160,14 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
          'VBFHToTauTau_M-125',
+
          #'VBFHToPseudoscalarTauTau_GEN',
          #'VBFHToMaxmixTauTau_GEN',
          #'SUSYGluGluToHToTauTau_M-120',
          #'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
-         'GluGluToHToTauTau_M125_nospinner-2017',
-         'VBFHToTauTau_M125_nospinner-2017',
+         # 'GluGluToHToTauTau_M125_nospinner-2017',
+         # 'VBFHToTauTau_M125_nospinner-2017',
 
          # 'GluGluHToTauTau_M-125',
          #'GluGluHToPseudoscalarTauTau_GEN',

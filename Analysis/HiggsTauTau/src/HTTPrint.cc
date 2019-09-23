@@ -232,8 +232,8 @@ namespace ic {
         std::cout << i << "  " << particles[i]->status() << "  " << particles[i]->pdgid() << "  " << particles[i]->vector() << std::endl;
       }
     }
-    bool inNoiseEE = false; //use for 2017 jets
     for (unsigned i = 0; i < jets.size(); ++i) {
+      bool inNoiseEE = false; //use for 2017 jets
       std::cout << "Jet " << i << ": " << jets[i]->vector() << std::endl;
       std::cout << "-pileup id mva: " << jets[i]->pu_id_mva_value()  << std::endl;
       if (std::fabs(jets[i]->eta())<3.139 && std::fabs(jets[i]->eta())>2.65) 
