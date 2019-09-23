@@ -53,6 +53,7 @@ struct strategy_def {
         mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
         smsummer16,    //Strategy for running on summer16 samples, SM analysis
         cpsummer16,
+        legacy16,
         cpsummer17,
         cpdecays16,
         cpdecays17,
@@ -72,6 +73,7 @@ inline std::string Strategy2String(strategy const& in) {
                 (strategy::mssmsummer16, "mssmsummer16")
                 (strategy::smsummer16, "smsummer16")
                 (strategy::cpsummer16, "cpsummer16")
+                (strategy::legacy16,   "legacy16")
                 (strategy::cpsummer17, "cpsummer17")
                 (strategy::cpdecays16, "cpdecays16")
                 (strategy::cpdecays17, "cpdecays17")
@@ -95,6 +97,7 @@ inline strategy String2Strategy(std::string const& in) {
         ("mssmsummer16", strategy::mssmsummer16)
         ("smsummer16", strategy::smsummer16)
         ("cpsummer16", strategy::cpsummer16)
+        ("legacy16",   strategy::legacy16)
         ("cpsummer17", strategy::cpsummer17)
         ("cpdecays16", strategy::cpdecays16)
         ("cpdecays17", strategy::cpdecays17)
@@ -162,7 +165,8 @@ struct mc_def {
         spring16_80X,     //76X MC
         summer16_80X,
         mc2017,
-        mc2018
+        mc2018,
+        mcleg2016
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -177,7 +181,8 @@ inline std::string MC2String(mc const& in) {
         (mc::spring16_80X, "spring16_80X")
         (mc::summer16_80X, "summer16_80X")
         (mc::mc2017,       "mc2017")
-        (mc::mc2018,       "mc2018");
+        (mc::mc2018,       "mc2018")
+        (mc::mcleg2016,       "mcleg2016"); 
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -196,7 +201,8 @@ inline mc String2MC(std::string const& in) {
     ("spring16_80X", mc::spring16_80X)
     ("summer16_80X", mc::summer16_80X)
     ("mc2017",       mc::mc2017)
-    ("mc2018",       mc::mc2018);
+    ("mc2018",       mc::mc2018)
+    ("mcleg2016",       mc::mcleg2016);
 
 
 	if (conv.find(in) != conv.end()) {

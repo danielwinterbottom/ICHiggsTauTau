@@ -3,34 +3,25 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May23_Data_102X'
+config.General.workArea='Sep05_Data_102X_2018'
 
-config.JobType.psetName = 'higgstautau_cfg_102X_Nov18.py'
+config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Prompt_v13']#previous v11
-config.JobType.maxMemoryMB = 2500
+config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v13']
+#config.JobType.maxMemoryMB = 2000
 # config.JobType.numCores = 4
-# config.JobType.scriptExe = 'submitCrabDeepTauV2.sh'
 config.JobType.allowUndistributedCMSSW = True
 
-# config.Data.unitsPerJob = 240
-# config.Data.splitting = 'Automatic'
 config.Data.unitsPerJob = 100000
-# config.Data.unitsPerJob = 50000 # switch back after!
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-#config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/May23_Data_102X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
+config.Site.whitelist   = ['T2_*','T1_*','T3_*']
+config.Data.ignoreLocality= True
 config.Site.storageSite = 'T2_UK_London_IC'
-
-# config.Debug.extraJDL = [
-#     '+DESIRED_Sites="T3_UK_Opportunistic"',
-#     '+JOB_CMSSite="T3_UK_Opportunistic"',
-#     '+AccountingGroup="highprio.adowot"'
-# ]
 
 if __name__ == '__main__':
 
@@ -81,12 +72,12 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         if "17Sep2018" in task[1]:
-            config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Sep2018ABC_v2']
+            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Sep2018ABC_v2']
         else:
-            config.JobType.pyCfgParams = ['isData=1','doHT=0', 'globalTag=102X_dataRun2_Prompt_v13']
+            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v13']
 
-        print config.Data.unitsPerJob
-        print config.Data.splitting
+
+        #config.Data.lumiMask = "May23_Data_102X/crab_{}/results/notFinishedLumis.json".format(task[0])
 
         print(config)
         submit(config)

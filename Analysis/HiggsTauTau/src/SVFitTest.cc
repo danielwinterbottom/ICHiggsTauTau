@@ -12,7 +12,7 @@
 
 namespace ic {
 
-  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15) {
+  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15), mc_(mc::summer12_53X) {
   
     out_file_ = NULL;
     out_tree_ = NULL;
@@ -227,18 +227,21 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16  || tau_optimisation_){
+        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16  || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
-          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         }
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
@@ -247,7 +250,7 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = iso_2_ < 10;
         }
         if(do_vloose_preselection_) {
-          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         }
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
@@ -269,6 +272,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = strategy_==strategy::spring15 ? lagainstElectronTightMVA5_2 : lagainstElectronTightMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
         if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
+        if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2VSjet") && iso_1_<0.5); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
     }
     if(channel_ == channel::mt && do_preselection_) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -276,17 +280,17 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Muon const* muon  = dynamic_cast<Muon const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         else iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || tau_optimisation_){
+        if(strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+        if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
@@ -294,9 +298,11 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = iso_2_ < 10;
         }
         if(do_vloose_preselection_) {
-          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           else iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        
+
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
         lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -316,17 +322,20 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonTight3_2;
         if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
-
+         if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2VSjet") && iso_1_<0.5); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
     }
     if(channel_ == channel::em && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if (strategy_ == strategy::legacy16)
+            iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
-        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_2_<0.5 && iso_1_<0.5) pass_presel = true;
     } 
     if(channel_ == channel::tt && do_preselection_) {
@@ -334,18 +343,18 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16){
+        if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16){
           iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");  
-          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau1->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");  
+          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau2->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         }
         if(do_vloose_preselection_){
           if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");  
-            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+            iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau1->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");;  
+            iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau2->GetTauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
           }
           else {
             iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
@@ -379,6 +388,9 @@ int SVFitTest::Execute(TreeEvent *event) {
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
         if(iso_discr_1_>0 && iso_discr_2_>0 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
+        if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = pass_presel || (tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau1->GetTauID("byVLooseDeepTau2017v2VSmu") && tau1->GetTauID("byVVVLooseDeepTau2017v2VSjet") && tau2->GetTauID("byVVVLooseDeepTau2017v2VSe") && tau2->GetTauID("byVLooseDeepTau2017v2VSmu") && tau2->GetTauID("byVVVLooseDeepTau2017v2VSjet")); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
+
     }
     if((channel_ == channel::zmm || channel_ == channel::tpzmm) && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -394,8 +406,14 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
         Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if(strategy_ == strategy::legacy16){
+            iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+            iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+        }
+        else{
+            iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+            iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        }
         if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
           iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
           iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 

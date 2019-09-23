@@ -12,23 +12,24 @@ opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
 # 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
-'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
+# 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
 # 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root'
+'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_upgrade2018_realistic_v18', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_dataRun2_Prompt_v13', parser.VarParsing.multiplicity.singleton,
 #102X_upgrade2018_realistic_v18
 #102X_dataRun2_Sep2018ABC_v2
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
-opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('isEmbed', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
-opts.register('doHT', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
@@ -1362,13 +1363,13 @@ if isEmbed:
     process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
 
 process.selectedPatTrigger = cms.EDFilter(
- 'PATTriggerObjectStandAloneSelector',
-  cut = cms.string('!filterLabels.empty()'),
-  src = cms.InputTag('patTriggerUnpacker')
+    'PATTriggerObjectStandAloneSelector',
+    cut = cms.string('!filterLabels.empty()'),
+    src = cms.InputTag('patTriggerUnpacker')
 )
 process.icTriggerSequence += cms.Sequence(
-  process.patTriggerUnpacker +
-  process.selectedPatTrigger
+    process.patTriggerUnpacker +
+    process.selectedPatTrigger
 )
 
 
@@ -1406,12 +1407,12 @@ process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter("EcalBadCalibFilter",
     debug = cms.bool(False)
     )
 
-
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
 
 data_type = ""
-if isData or isEmbed: data_type = "RECO"
+if isData: data_type = "RECO"
+elif isEmbed: data_type = "SIMembedding"
 else: data_type = "PAT"
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(

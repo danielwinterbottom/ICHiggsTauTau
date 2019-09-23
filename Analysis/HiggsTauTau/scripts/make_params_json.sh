@@ -6,8 +6,8 @@ lumi=$3
 # Input evt file should have format: Sample_name evt
 
 # set the inclusive sample names for DY and W - the event numbers and xs for the N jets samples will be set to the values for these samples
-DY_inclusive_name_1="DYJetsToLL-LO"
-DY_inclusive_name_2="DYJetsToLL-LO-ext1"
+DY_inclusive_name_1="DYJetsToLL-LO-ext1"
+DY_inclusive_name_2="DYJetsToLL-LO-ext2"
 W_inclusive_name_1="WJetsToLNu-LO"
 W_inclusive_name_2="WJetsToLNu-LO-ext"
 
@@ -76,3 +76,4 @@ echo "    \"lumi\": "$lumi
 echo "  }"
 
 echo "}"
+

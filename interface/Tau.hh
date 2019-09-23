@@ -7,6 +7,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -87,6 +88,8 @@ class Tau : public Candidate {
   /// The z-coordinate of the leading track PCA
   inline double svz() const { return s_ref_point_.z(); }
 
+  inline Point secondary_vertex() const { return secondary_vertex_; }
+
   /// A vector referring to the constituent track ic::Track::id()
   inline std::vector<std::size_t> const& constituent_tracks() const {
     return constituent_tracks_;
@@ -116,6 +119,18 @@ class Tau : public Candidate {
   inline std::vector<std::size_t> const& sig_neutral_cands() const {
     return sig_neutral_cands_;
   }
+
+
+  inline bool hasSV() const { return hasSV_; }
+
+  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> >  s_vtx_covariance() { return s_vtx_covariance_; }
+
+  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+
+  double bfield() { return bfield_; }
+
   /**@}*/
 
   /// @name Setters
@@ -192,6 +207,12 @@ class Tau : public Candidate {
   /// @copybrief svz()
   inline void set_svz(double const& z) { s_ref_point_.SetZ(z); }
 
+  inline void set_secondary_vertex(double const& x, double const& y, double const& z) { 
+    secondary_vertex_.SetX(x);
+    secondary_vertex_.SetY(y);
+    secondary_vertex_.SetZ(z); 
+  }
+
   /// @copybrief constituent_tracks()
   inline void set_constituent_tracks(
       std::vector<std::size_t> const& constituent_tracks) {
@@ -226,6 +247,29 @@ class Tau : public Candidate {
       std::vector<std::size_t> const& sig_neutral_cands) {
     sig_neutral_cands_ = sig_neutral_cands;
   }
+
+  inline void set_hasSV(bool const&  hasSV){
+    hasSV_ = hasSV;
+  }
+
+
+  inline void set_s_vtx_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > s_vtx_covariance) {
+    s_vtx_covariance_ = s_vtx_covariance;
+  }
+
+  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+    track_params_ = track_params;
+  }
+
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+    track_params_covariance_ = track_params_covariance;
+  }
+
+  inline void set_bfield(double bfield) {
+    bfield_ = bfield;
+  }
+
+
   /**@}*/
 
   /**
@@ -274,6 +318,15 @@ class Tau : public Candidate {
 
   Point ref_point_;
   Point s_ref_point_;
+  Point secondary_vertex_;
+
+  bool hasSV_;
+
+  ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > s_vtx_covariance_;
+
+  ROOT::Math::SVector<double, 5> track_params_;
+  ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance_;
+  double bfield_;
 
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;
@@ -284,7 +337,7 @@ class Tau : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Tau, 4);
+  ClassDef(Tau, 5);
  #endif
 };
 

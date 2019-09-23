@@ -202,6 +202,9 @@ void ICPFCandidateProducer<pat::PackedCandidate>::constructSpecific(
     // method, so let's just save this here. For details see:
     // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD
     dest.set_flags(src.status());
+
+    dest.set_puppiWeight(src.puppiWeight());
+
     std::vector<std::size_t> trk_ids;
     if (request_trks_ && src.charge() != 0) {
       reco::Track pseudo = src.pseudoTrack();

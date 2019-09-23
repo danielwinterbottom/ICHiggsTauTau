@@ -125,14 +125,17 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        if(strategy_ == strategy::legacy16)
+            iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) { 
           iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else{
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16  ||  strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
@@ -153,7 +156,7 @@ namespace ic {
           iso_2 = tau->GetTauID("byTightIsolationMVArun2017v2DBoldDMwLT2017");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
@@ -166,7 +169,10 @@ namespace ic {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
-        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        if(strategy_ == strategy::legacy16)
+            iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+        else
+            iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ == era::data_2017 || era_ == era::data_2018) iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
         if(era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);
@@ -240,7 +246,7 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
         else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && use_deep_csv_) tight_wp = 0.4941;
         else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && !use_deep_csv_) tight_wp = 0.8838;
         else if (era_ == era::data_2018 && use_deep_csv_) tight_wp = 0.4184; //medium deepCSV wp

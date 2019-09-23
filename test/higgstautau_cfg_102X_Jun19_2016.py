@@ -120,7 +120,10 @@ updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Id
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
-                    toKeep = [ "2017v2", "newDM2017v2","2016v1", "newDM2016v1","deepTau2017v2"  ])
+                    toKeep = ["2017v2", "newDM2017v2", "2016v1", "newDM2016v1",
+                            "deepTau2017v2",
+                            "MVADM_2016_v1","MVADM_2017_v1"
+                              ])
 tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -219,14 +222,41 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 )
 
 
+### refit PV excluding tau decay products tracks
+
+import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
+process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
+process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+
+process.refitOfflineSlimmedPrimaryVerticesBS = vertexrefit.AdvancedRefitVertexBSProducer.clone()
+process.refitOfflineSlimmedPrimaryVerticesBS.storeAsMap = cms.bool(True)
+process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
+
+
+process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVertices"),
+  input = "refitOfflineSlimmedPrimaryVertices",
+  firstVertexOnly = cms.bool(False)
+)
+
+process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
+  branch  = cms.string("refittedVerticesBS"),
+  input = "refitOfflineSlimmedPrimaryVerticesBS",
+  firstVertexOnly = cms.bool(False)
+)
+
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
-  process.icGenVertexProducer
+  process.icGenVertexProducer+
+  process.refitOfflineSlimmedPrimaryVertices+
+  process.refitOfflineSlimmedPrimaryVerticesBS+
+  process.icRefitVertexProducer+
+  process.icRefitVertexProducerBS
 )
 
 if isData or isEmbed:
   process.icVertexSequence.remove(process.icGenVertexProducer)
-
 
 ################################################################
 # PFCandidates
@@ -283,23 +313,23 @@ process.elPFIsoDepositChargedAll.src  = electronLabel
 process.elPFIsoValueCharged03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("charged_iso") 
-)    
+  iso_type = cms.string("charged_iso")
+)
 process.elPFIsoValueGamma03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("photon_iso") 
-)    
+  iso_type = cms.string("photon_iso")
+)
 process.elPFIsoValueNeutral03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("neutral_iso") 
-)    
+  iso_type = cms.string("neutral_iso")
+)
 process.elPFIsoValuePU03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("pu_iso") 
-)    
+  iso_type = cms.string("pu_iso")
+)
 
 process.electronPFIsolationValuesSequence = cms.Sequence(
       process.elPFIsoValueCharged03PFIdPFIso+
@@ -320,33 +350,33 @@ process.elPFIsoValueChargedAll03PFIdPFIso.deposits[0].vetos = (
 process.elPFIsoValueCharged04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("charged_iso") 
-)    
+  iso_type = cms.string("charged_iso")
+)
 process.elPFIsoValueGamma04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("photon_iso") 
-)    
+  iso_type = cms.string("photon_iso")
+)
 process.elPFIsoValueNeutral04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("neutral_iso") 
-)    
+  iso_type = cms.string("neutral_iso")
+)
 process.elPFIsoValuePU04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("pu_iso") 
-)    
+  iso_type = cms.string("pu_iso")
+)
 
 process.elEcalPFClusterIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
-  deltaR       = cms.double(0.3), 
+  deltaR       = cms.double(0.3),
   iso_type     = cms.string("ecal_pf_cluster_iso")
 )
 
 process.elHcalPFClusterIso = cms.EDProducer('ICElectronIsolation',
   input        = electronLabel,
-  deltaR       = cms.double(0.3), 
+  deltaR       = cms.double(0.3),
   iso_type     = cms.string("hcal_pf_cluster_iso")
 )
 
@@ -377,7 +407,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   inputVertices             = vtxLabel,
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
-  doSmearAndScale           = cms.bool(False), 
+  doSmearAndScale           = cms.bool(False),
   includeFloats = cms.PSet(
      generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values")
   ),
@@ -415,26 +445,26 @@ process.muPFIsoValueGamma03PFWeights = process.muPFIsoValueGamma03.clone()
 process.muPFIsoValueCharged03PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("charged_iso") 
-)    
+  iso_type = cms.string("charged_iso")
+)
 process.muPFIsoValueGamma03PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("photon_iso") 
-)    
+  iso_type = cms.string("photon_iso")
+)
 process.muPFIsoValueNeutral03PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("neutral_iso") 
-)    
+  iso_type = cms.string("neutral_iso")
+)
 process.muPFIsoValuePU03PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.3),
-  iso_type = cms.string("pu_iso") 
-)    
+  iso_type = cms.string("pu_iso")
+)
 
 process.muonPFIsolationValuesSequence = cms.Sequence(
-   
+
    process.muPFIsoValueCharged03PFIso+
    process.muPFIsoValueChargedAll03PFIso+
    process.muPFIsoValueGamma03PFIso+
@@ -453,23 +483,23 @@ process.muonPFIsolationValuesSequence = cms.Sequence(
 process.muPFIsoValueCharged04PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("charged_iso") 
-)    
+  iso_type = cms.string("charged_iso")
+)
 process.muPFIsoValueGamma04PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("photon_iso") 
-)    
+  iso_type = cms.string("photon_iso")
+)
 process.muPFIsoValueNeutral04PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("neutral_iso") 
-)    
+  iso_type = cms.string("neutral_iso")
+)
 process.muPFIsoValuePU04PFIso = cms.EDProducer('ICMuonIsolation',
   input        = muons,
   deltaR       = cms.double(0.4),
-  iso_type = cms.string("pu_iso") 
-)    
+  iso_type = cms.string("pu_iso")
+)
 process.muPFIsoValueChargedAll04PFIso = process.muPFIsoValueChargedAll04.clone()
 process.muonPFIsolationValuesSequence +=cms.Sequence(
   process.muPFIsoValueCharged04PFIso+
@@ -542,7 +572,40 @@ process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
 
 
 process.icTauSequence = cms.Sequence(
-  process.icTauProducer 
+  process.icTauProducer
+)
+
+################################################################
+# photons, clusters, and superclusters
+################################################################
+
+process.icPi0SuperClusterProducer = cms.EDProducer('ICPi0SuperClusterProducer',
+  branch  = cms.string("superClusters"),
+  input   = cms.InputTag("reducedEgamma", "reducedSuperClusters"),
+  input_EERecHits = cms.InputTag("reducedEgamma", "reducedEERecHits"),
+  input_EBRecHits = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
+  input_taus = cms.InputTag("slimmedTaus")
+)
+
+process.icPhotonProducer = producers.icPhotonProducer.clone(
+    branch                  = cms.string("photons"),
+    input                   = cms.InputTag("slimmedPhotons"),
+    includeHadTowOverEm     = cms.bool(True),
+    includePFIso03           = cms.bool(True),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll03PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged03PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral03PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma03PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU03PFIso")
+    ),
+    includeIsoFromPat = cms.bool(True)
+)
+
+
+process.icPhotonSequence = cms.Sequence(
+  process.icPhotonProducer+
+  process.icPi0SuperClusterProducer
 )
 
 # ################################################################
@@ -553,7 +616,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
   #rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
-  
+
 #Reapply JECs:
 if not (isData or isEmbed):
   updateJetCollection(
@@ -730,22 +793,22 @@ process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
 # keep heavy flavour quarks for parton-based jet flavour
 	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
 # keep light-flavour quarks and gluons for parton-based jet flavour
-	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5", 
+	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5",
 # keep b and c hadrons for hadron-based jet flavour
 	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
 # additional c hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", 
+	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433",
 # additional b hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543", 
+	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543",
 #keep SUSY particles
 	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
-# keep protons 
+# keep protons
         "keep pdgId = 2212",
         "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
         "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
     )
 )
- 
+
 
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
@@ -793,7 +856,7 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
 process.icGenJetProducer.branch = cms.string("genJetsReclustered")
 if isEmbed:
   process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","MERGE")
-else: 
+else:
   process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","PAT")
 process.icGenJetProducer.isSlimmed  = cms.bool(True)
 process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
@@ -802,7 +865,7 @@ process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   inputGenParticles=cms.InputTag("genParticles"),
   requestGenParticles = cms.bool(False),
   isSlimmed = cms.bool(True)
-) 
+)
 
 process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
@@ -827,7 +890,7 @@ if not isData:
       process.icGenParticleProducerFromLHEParticles
     )
   if isEmbed:
-    process.icGenSequence.remove(process.icPileupInfoProducer) 
+    process.icGenSequence.remove(process.icPileupInfoProducer)
 
 
 # ################################################################
@@ -865,7 +928,7 @@ if isEmbed:
   process.icL1EGammaProducer.input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding")
   process.icL1TauProducer.input = cms.InputTag("caloStage2Digis","Tau","SIMembedding")
   process.icL1MuonProducer.input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding")
- 
+
 
 process.patTriggerPath = cms.Path()
 switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
@@ -908,7 +971,7 @@ process.icEle23Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
-  
+
 process.icEle17Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle17Mu8"),
@@ -965,7 +1028,7 @@ process.icEle22LooseTau20SingleL1ObjectProducer = producers.icTriggerObjectProdu
 
 
 
-  
+
 process.icEle27Eta2p1LooseGsfObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle27GsfLooseEta2p1"),
@@ -1011,8 +1074,8 @@ process.icEle32TightGsfObjectProducer = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
       )
 
-  
-  
+
+
 process.icEle24GsfObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle24Gsf"),
@@ -1087,7 +1150,7 @@ process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
     )
 
 
-  
+
 process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("patTriggerEvent"),
     branch = cms.string("triggerObjectsIsoMu22"),
@@ -1171,7 +1234,7 @@ process.icIsoTkMu24Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clon
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icIsoMu21MediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone(    
+process.icIsoMu21MediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone(
     input = cms.InputTag("patTriggerEvent"),
     branch = cms.string("triggerObjectsIsoMu21MediumTau32"),
     hltPath           = cms.string("HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v"),
@@ -1179,13 +1242,13 @@ process.icIsoMu21MediumTau32ObjectProducer = producers.icTriggerObjectProducer.c
     storeOnlyIfFired  = cms.bool(False)
     )
 
-process.icIsoMu19MediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone( 
+process.icIsoMu19MediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone(
     input = cms.InputTag("patTriggerEvent"),
     branch = cms.string("triggerObjectsIsoMu19MediumTau32"),
     hltPath           = cms.string("HLT_IsoMu19_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v"),
     inputIsStandAlone = cms.bool(False),
     storeOnlyIfFired  = cms.bool(False)
-    ) 
+    )
 
 process.icDoubleMediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone(
    input = cms.InputTag("patTriggerEvent"),
@@ -1430,7 +1493,7 @@ process.icMu8ObjectProducer = producers.icTriggerObjectProducer.clone(
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
- 
+
 process.icMu17ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsMu17"),
@@ -1439,7 +1502,7 @@ process.icMu17ObjectProducer = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
       )
 
- 
+
 process.icTriggerObjectSequence += cms.Sequence(
       process.icMu8ObjectProducer+
       process.icMu17ObjectProducer+
@@ -1464,10 +1527,10 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle25TightGsfObjectProducer +
       process.icEle25TightEta2p1GsfObjectProducer +
       process.icEle25LooseEta2p1GsfObjectProducer +
-      process.icEle27LooseGsfObjectProducer + 
-      process.icEle27TightGsfObjectProducer + 
-      process.icEle27Eta2p1LooseGsfObjectProducer + 
-      process.icEle27Eta2p1TightGsfObjectProducer + 
+      process.icEle27LooseGsfObjectProducer +
+      process.icEle27TightGsfObjectProducer +
+      process.icEle27Eta2p1LooseGsfObjectProducer +
+      process.icEle27Eta2p1TightGsfObjectProducer +
       process.icEle32TightGsfObjectProducer +
       process.icIsoMu19LooseTau20ObjectProducer +
       process.icIsoMu19LooseTau20SingleL1ObjectProducer +
@@ -1482,19 +1545,19 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoTkMu22ObjectProducer+
       process.icIsoTkMu24ObjectProducer+
       process.icIsoTkMu27ObjectProducer+
-      
+
       process.icIsoTkMu22Eta2p1ObjectProducer+
       process.icIsoTkMu24Eta2p1ObjectProducer+
-      
+
       process.icDoubleMediumTau40ObjectProducer +
       process.icDoubleMediumTau35ObjectProducer +
       process.icDoubleMediumTau32ObjectProducer +
       process.icSingleTau140ObjectProducer+
       process.icSingleTau120ObjectProducer+
-      
-      process.icIsoMu19MediumTau32ObjectProducer+ 
+
+      process.icIsoMu19MediumTau32ObjectProducer+
       process.icIsoMu21MediumTau32ObjectProducer+
-      
+
       process.icEle20LooseTau28ObjectProducer+
       process.icEle22LooseTau29ObjectProducer+
       process.icEle24LooseTau30ObjectProducer+
@@ -1513,13 +1576,13 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icDoubleMediumCombinedIsoTau40ObjectProducer
       )
 
-  
+
 for name in process.icTriggerObjectSequence.moduleNames():
   mod = getattr(process, name)
   mod.inputIsStandAlone = cms.bool(True)
-  mod.input = cms.InputTag("selectedPatTrigger") 
+  mod.input = cms.InputTag("selectedPatTrigger")
   if isEmbed:
-    mod.inputTriggerResults = cms.InputTag("TriggerResults","","SIMembedding") 
+    mod.inputTriggerResults = cms.InputTag("TriggerResults","","SIMembedding")
   elif isReHLT and not isEmbed:
     mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
 
@@ -1542,6 +1605,10 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
 
+data_type = ""
+if isData or isEmbed: data_type = "RECO"
+else: data_type = "PAT"
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
@@ -1556,33 +1623,33 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
   includeFiltersFromTrig = cms.bool(True),
-  inputfiltersfromtrig = cms.InputTag("TriggerResults","","PAT"), 
+  inputfiltersfromtrig = cms.InputTag("TriggerResults","",data_type),
   filters             = cms.PSet(
    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
    badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
    Flag_badMuons      = cms.InputTag("badGlobalMuonTaggerMAOD", "notBadEvent"),
    Flag_duplicateMuons      = cms.InputTag("cloneGlobalMuonTaggerMAOD", "notBadEvent")
   ),
-  filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
+  filtersfromtrig     = cms.vstring(
+      "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter",
+      "Flag_EcalDeadCellTriggerPrimitiveFilter",
+      "Flag_goodVertices","Flag_eeBadScFilter",
+      "Flag_globalTightHalo2016Filter","Flag_globalSuperTightHalo2016Filter",)
 )
 
 if isEmbed:
   process.icEventInfoProducer.includeEmbeddingWeights = cms.bool(True)
-  process.icEventInfoProducer.inputfiltersfromtrig = cms.InputTag("TriggerResults","","MERGE") 
-
-if isData:
-  process.icEventInfoProducer.filtersfromtrig = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
-
+  process.icEventInfoProducer.inputfiltersfromtrig = cms.InputTag("TriggerResults","","MERGE")
 
 process.icEventInfoSequence = cms.Sequence(
   process.BadPFMuonFilter+
-  process.BadChargedCandidateFilter+ 
+  process.BadChargedCandidateFilter+
   process.badGlobalMuonTaggerMAOD+
   process.cloneGlobalMuonTaggerMAOD+
   process.icEventInfoProducer
 )
 
-  
+
 ################################################################
 # TauSpinner
 ################################################################
@@ -1599,7 +1666,7 @@ if opts.tauSpinner or opts.isEmbed:
     process.icTauSpinnerProducer
   )
 else: process.icTauSpinnerSequence = cms.Sequence()
-  
+
 
 ################################################################
 # Event
@@ -1618,6 +1685,7 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
+  process.icPhotonSequence+
   process.icPFJetSequence+
   process.icPFSequence+
   process.icPfMetSequence+

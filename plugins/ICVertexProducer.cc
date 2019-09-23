@@ -60,6 +60,10 @@ void ICVertexProducer::produce(edm::Event& event,
     dest.set_vz(src.z());
     dest.set_chi2(src.chi2());
     dest.set_ndof(src.ndof());
+
+    auto covariance = src.covariance();
+    dest.set_covariance(covariance);
+
     if (request_trks_) {
       for (reco::Vertex::trackRef_iterator trk_iter = src.tracks_begin();
            trk_iter != src.tracks_end(); ++trk_iter) {

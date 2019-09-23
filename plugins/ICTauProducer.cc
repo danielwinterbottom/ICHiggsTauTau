@@ -7,6 +7,7 @@
 #include "CommonTools/UtilAlgos/interface/SingleObjectSelector.h"
 #include "CommonTools/UtilAlgos/interface/StringCutObjectSelector.h"
 
+
 typedef SingleObjectSelector<reco::PFTauCollection,
                              StringCutObjectSelector<reco::PFTau>,
                              reco::PFTauRefVector> PFTauRefSelector;

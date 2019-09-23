@@ -262,6 +262,10 @@ class HTTGenAnalysis : public ModuleBase {
   double fakea1_dR_ = -1;
   double rho_dR_ = -1;
   double tauFlag = -1;
+
+  double largest_gen_mjj_=-9999;
+
+  double lead_b_eta_=-9999, lead_b_pt_=-9999;
   
  public:
   HTTGenAnalysis(std::string const& name);

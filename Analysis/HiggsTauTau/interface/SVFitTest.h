@@ -99,6 +99,7 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, bool, tau_optimisation)
   CLASS_MEMBER(SVFitTest, bool, do_vloose_preselection)
   CLASS_MEMBER(SVFitTest, bool, verbose)
+  CLASS_MEMBER(SVFitTest, ic::mc, mc)
 
   unsigned file_counter_;
   unsigned event_counter_;

@@ -49,6 +49,9 @@ class PFCandidate : public Candidate {
   /// PDG number to identify the PF candidate type
   inline int pdgid() const { return pdgid_; }
 
+  /// puppi weight
+  inline float puppiWeight() const  {return puppiWeight_;}
+  
   /// PF flags
   inline unsigned flags() const { return flags_; }
 
@@ -98,6 +101,9 @@ class PFCandidate : public Candidate {
   /// @copybrief pdgid()
   inline void set_pdgid(int const& pdgid) { pdgid_ = pdgid; }
 
+  ///
+  inline void set_puppiWeight(double const& puppiWeight) {puppiWeight_ = puppiWeight;}
+
   /// @copybrief flags()
   inline void set_flags(unsigned const& flags) { flags_ = flags; }
 
@@ -115,6 +121,7 @@ class PFCandidate : public Candidate {
 
  private:
   int pdgid_;
+  float puppiWeight_;
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> constituent_gsf_tracks_;
   unsigned flags_;
@@ -122,7 +129,7 @@ class PFCandidate : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(PFCandidate, 3);
+  ClassDef(PFCandidate, 4);
  #endif
 };
 

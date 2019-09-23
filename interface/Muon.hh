@@ -8,6 +8,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -163,6 +164,14 @@ class Muon : public Candidate {
 
   /// Transverse impact parameter of the tracker track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
+
+  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+
+  double bfield() { return bfield_; }
+
+
   /**@}*/
 
   /// @name Setters
@@ -339,6 +348,20 @@ class Muon : public Candidate {
   inline void set_dxy_beamspot(double const& dxy_beamspot) {
     dxy_beamspot_ = dxy_beamspot;
   }
+
+  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+    track_params_ = track_params;
+  }
+
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+    track_params_covariance_ = track_params_covariance;
+  }
+
+  inline void set_bfield(double bfield) {
+    bfield_ = bfield;
+  }
+
+
   /**@}*/
 
   /**
@@ -408,13 +431,18 @@ class Muon : public Candidate {
   double dz_vertex_error_;
   double dxy_beamspot_;
 
+  double bfield_;
+
+  ROOT::Math::SVector<double, 5> track_params_;
+  ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance_;
+
   std::vector<std::size_t> gen_particles_;
 
   UFmap muon_idiso_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 6);
+  ClassDef(Muon, 7);
  #endif
 };
 

@@ -5,6 +5,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -50,7 +51,12 @@ class Vertex {
   inline std::vector<std::pair<std::size_t, float> > const& tracks() const {
     return tracks_;
   }
-  /**@}*/
+
+ 
+  /// The covariance matrix
+  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance() { return covariance_; }
+
+  /**@{*/
 
   /// @name Setters
   /**@{*/
@@ -86,6 +92,11 @@ class Vertex {
   inline void AddTrack(std::size_t id, float weight) {
     tracks_.push_back(std::make_pair(id, weight));
   }
+  
+  inline void set_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance) { 
+    covariance_ = covariance;
+  }
+ 
   /**@}*/
 
  private:
@@ -94,10 +105,11 @@ class Vertex {
   float ndof_;
   std::vector<TrkPair> tracks_;
   std::size_t id_;
+  ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Vertex, 2);
+  ClassDef(Vertex, 3);
  #endif
 };
 

@@ -588,7 +588,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['summer18','summer17','summer16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
+      if options.era in ['summer18','summer17','summer16','legacy16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
           if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
@@ -746,12 +746,14 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'summer18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-
+    elif options.era == 'legacy16':
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     if options.era == 'summer18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronB']
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
@@ -759,6 +761,7 @@ if  options.channel == 'tpzee':
 # Add MC sample names   
 if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era == 'summer18': ztt_samples = ['DYJetsToLL-LO']
+elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
 embed_samples = []
@@ -769,6 +772,11 @@ if options.era == 'summer17':
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB']
+elif options.era == 'summer18':
+  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauA']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElA']
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuA']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElA']
 else:
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
@@ -800,8 +808,8 @@ if options.channel == 'tpzmm':
     iso_cut_1='iso_1<0.2'    
     iso_cut_2='iso_2<0.2'
     if options.aiso1:
-      iso_cut_1='iso_1<0.5'  
-      iso_cut_2='iso_2<0.5'
+      iso_cut_1='iso_1>0.2&&iso_1<0.5'  
+      iso_cut_2='iso_2>0.2&&iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
@@ -837,8 +845,8 @@ if options.channel == 'tpzee':
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
-      iso_cut_1='iso_1<0.5'  
-      iso_cut_2='iso_2<0.5'
+      iso_cut_1='iso_1>0.15&&iso_1<0.5'  
+      iso_cut_2='iso_2>0.15&&iso_2<0.5'
     if options.aiso2:
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  

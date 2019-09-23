@@ -110,6 +110,7 @@ def getParaJobSubmit(N):
   sub_opts=JOBSUBMIT.split(' ',1)[1]
   if '\"' in sub_opts: sub_opts = sub_opts.replace('\"','')
   sub_opts = '%s \"%s -t 1-%i:1\"' %(JOBSUBMIT.split(' ',1)[0], sub_opts, N)
+  print sub_opts
   return sub_opts
 
 BACKUPNAME = options.slbackupname
@@ -203,11 +204,11 @@ if options.mg_signal:
 
 if options.cp_decay:
   signal_mc += [
-  # 'GluGluToHToTauTau_M-125-nospinner',
-  # 'VBFHToTauTau_M-125-nospinner',
-  'GluGluToHToTauTau_M-125-nospinner-filter',
-  # 'VBFHToTauTau_M-125-nospinner-filter',
-  # 'VBFHToTauTau_M-125-nospinner-filter-ext' 
+   'GluGluToHToTauTau_M-125-nospinner',
+   'VBFHToTauTau_M-125-nospinner',
+   'GluGluToHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter',
+   'VBFHToTauTau_M-125-nospinner-filter-ext' 
   ]
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
@@ -408,7 +409,7 @@ if options.proc_embed or options.proc_all:
     if 'EmbeddingMuMu' in sa:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Jan31_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
-      nperjob = 10
+      nperjob = 4
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
 
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')  
@@ -595,6 +596,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 5
+        if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())

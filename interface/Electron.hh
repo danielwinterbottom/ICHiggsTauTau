@@ -8,6 +8,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "Math/SMatrix.h"
 
 namespace ic {
 
@@ -27,6 +28,7 @@ class Electron : public Candidate {
  private:
   typedef ROOT::Math::XYZPoint Point;
   typedef std::map<std::size_t, float> UFmap;
+  typedef double Matrix[3][3];
 
  public:
   Electron();
@@ -202,6 +204,13 @@ class Electron : public Candidate {
 
   /// Transverse impact parameter of the GSF track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
+
+  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+
+  double bfield() { return bfield_; }
+
   /**@}*/
 
   /// @name Setters
@@ -405,6 +414,7 @@ class Electron : public Candidate {
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
 
+
   /// @copybrief dxy_vertex()
   inline void set_dxy_vertex(double const& dxy_vertex) {
     dxy_vertex_ = dxy_vertex;
@@ -423,6 +433,20 @@ class Electron : public Candidate {
   inline void set_dxy_beamspot(double const& dxy_beamspot) {
     dxy_beamspot_ = dxy_beamspot;
   }
+
+  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+    track_params_ = track_params;
+  }
+
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+    track_params_covariance_ = track_params_covariance;
+  }
+
+  inline void set_bfield(double bfield) {
+    bfield_ = bfield;
+  }
+
+
   /**@}*/
 
   /**
@@ -514,13 +538,18 @@ class Electron : public Candidate {
   double dz_vertex_error_;
   double dxy_beamspot_;
 
+  double bfield_;
+
+  ROOT::Math::SVector<double, 5> track_params_;
+  ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance_;
+
   std::vector<std::size_t> gen_particles_;
 
   UFmap elec_idiso_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 7);
+  ClassDef(Electron, 8);
  #endif
 };
 

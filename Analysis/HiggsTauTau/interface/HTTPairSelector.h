@@ -13,10 +13,10 @@
 namespace ic {
   
   bool SortBySumPt(CompositeCandidate const* c1, CompositeCandidate const* c2);
-  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo);
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo, std::string tau_idiso_name);
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name);
   bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo);
-  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
+  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, std::string tau_idiso_name);
 
 
 class HTTPairSelector : public ModuleBase {
@@ -40,6 +40,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, unsigned, metcl_mode)
   CLASS_MEMBER(HTTPairSelector, unsigned, metuncl_mode)
   CLASS_MEMBER(HTTPairSelector, bool, shift_jes)
+  CLASS_MEMBER(HTTPairSelector, ic::mc, mc)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
 
@@ -52,6 +53,8 @@ class HTTPairSelector : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+
+  std::string tau_idiso_name_;
   
 
 };

@@ -5,10 +5,10 @@ config.section_('General')
 config.General.transferOutputs = True
 config.General.workArea='Feb26_MC_94X'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cfg_94X_Apr18_pfCands.py'
+config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=94XMINIAOD','isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=94X_dataRun2_v11', 'tauSpinner=False']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=94X_dataRun2_v11']
 config.JobType.maxMemoryMB = 2500
 # config.JobType.numCores = 4
 config.section_('Data')
@@ -21,15 +21,13 @@ config.Data.splitting = 'EventAwareLumiBased'
 # config.Data.splitting = 'Automatic'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/Feb26_MC_94X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Feb26_MC_94X/'
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
-# for deep tau need the next line
-config.JobType.scriptExe = 'submitCrabDeepTau.sh'
 
 if __name__ == '__main__':
 

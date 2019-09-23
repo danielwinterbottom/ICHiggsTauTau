@@ -2093,27 +2093,6 @@ namespace ic {
         pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
         for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
       }
-        //for (auto s : strip_pairs) {
-        //  for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
-        //}
-        //pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
-        //for (auto s : strips_incone) {
-        //  for (auto g : s.second) signal_gammas.push_back(g->id());
-        //}
-      //} else if(strip_pairs.size()>0) {
-      //  double min_dR = 0.4;
-      //  std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
-      //  for (auto s : strip_pairs) {
-      //    double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
-      //    if(dR<min_dR) {
-      //      min_dR = dR;
-      //      closest_strip = s;
-      //    }
-      //  }
-      //  pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
-      //  for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
-      //}
-
       Tau * t = const_cast<Tau*>(tau);
       t->set_sig_gamma_cands(signal_gammas);
     } else if(tau->decay_mode()==1) {
@@ -2138,9 +2117,8 @@ namespace ic {
     // mode = 0 uses fixed strip sizes set by etaAssociationDistance and phiAssociationDistance
     // mode = 1 uses dynamic strip size
     // mode = 2 uses dynamic strip size but sets maximum sizes of strips by etaAssociationDistance and phiAssociationDistance
-    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;   
+    std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strips;  
     while(!cands.empty()) {
-
       //save the non associated candidates to a different collection
       std::vector<ic::PFCandidate*> Associated = {};
       std::vector<ic::PFCandidate*> notAssociated = {};
@@ -2148,12 +2126,13 @@ namespace ic {
       //Create a cluster from the Seed Photon
       ROOT::Math::PtEtaPhiEVector stripVector(0,0,0,0);
       stripVector=cands.at(0)->vector();
-      Associated.push_back(cands.at(0)); 
+      Associated.push_back(cands.at(0));
       //Loop and associate
       bool repeat = true;
+      unsigned int mini=1;
       while (repeat) {
         repeat = false;
-        for(unsigned int i=1;i<cands.size();++i) {
+        for(unsigned int i=mini;i<cands.size();++i) {
           if(mode==1) {
             etaAssociationDistance = 0.20*pow(cands[i]->pt(),-0.66) + 0.20*pow(stripVector.Pt(),-0.66);
             phiAssociationDistance = 0.35*pow(cands[i]->pt(),-0.71) + 0.35*pow(stripVector.Pt(),-0.71);
@@ -2179,8 +2158,9 @@ namespace ic {
         }
         //Swap the candidate vector with the non associated vector
         cands.swap(notAssociated);
-        //Clear 
+        //Clear
         notAssociated.clear(); 
+        mini=0;
       }
       //Save the strip 
       ic::PFCandidate strip;
@@ -2188,34 +2168,9 @@ namespace ic {
 
       strip.set_vector(GetPi0(Associated, false)->vector());
       if(mass) {;}
-      //double tot_pt = 0;
-      //double eta = 0;
-      //double phi = 0;
-      //double E = 0;
-      //for(auto s : Associated) {
-      //  double pt = s->pt();
-      //  eta+=pt*s->eta();
-      //  phi+=pt*s->phi();
-      //  tot_pt+=pt;
-      //  E+=s->energy();
-      //}
-      //eta/=tot_pt;
-      //phi/=tot_pt;
-      //strip.set_energy(E);
-      //strip.set_phi(phi);
-      //strip.set_eta(eta);
-      //double theta = atan(exp(-eta))*2;
-      //double pt = E*sin(theta);
-      //strip.set_pt(pt);
-
-      //double mass = 0.1349;
-      //double factor = sqrt(strip.energy()*strip.energy()-mass*mass)/strip.vector().P();
-      //strip.set_pt(factor*strip.pt());
       if(strip.pt()>=stripPtThreshold) strips.push_back(std::make_pair(new ic::PFCandidate(strip), Associated));
-   
     }
     std::sort(strips.begin(), strips.end(), sortStrips);
-
     return strips;
   }
 
@@ -2281,7 +2236,7 @@ namespace ic {
         hads[1] = temp;
       }
     }
-    std::vector<ic::PFCandidate*> gammas; 
+    std::vector<ic::PFCandidate*> gammas;
     if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut);
     else  {
       // need to modify isolation collection to exclude these gammas!
@@ -2290,7 +2245,6 @@ namespace ic {
       gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
       std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
     }
-
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05);
     double mass = 0.1349;
     ic::Candidate *pi0 = new ic::Candidate();
@@ -2301,7 +2255,6 @@ namespace ic {
       if(std::fabs(ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector()))<cone_size) strips_incone.push_back(s);
     }
     std::vector<std::size_t> signal_gammas = {};
-    //
     if(strips_incone.size()>0) {
       pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
       for (auto g : strips_incone[0].second) signal_gammas.push_back(g->id());
@@ -2309,31 +2262,14 @@ namespace ic {
       pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
       for (auto g : strip_pairs[0].second) signal_gammas.push_back(g->id());
     } 
-    //
-    //if(strips_incone.size()>0) {
-    //  pi0 = (ic::Candidate*)GetPi0(strips_incone[0].second, true);
-    //  for (auto s : strips_incone) {
-    //    for (auto g : s.second) signal_gammas.push_back(g->id());
-    //  }
-    //} else if(strip_pairs.size()>0) {
-    //  double min_dR = 0.4;
-    //  std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>> closest_strip;
-    //  for (auto s : strip_pairs) {
-    //    double dR = ROOT::Math::VectorUtil::DeltaR(s.first->vector(),tau->vector());
-    //    if(dR<min_dR) {
-    //      min_dR = dR;
-    //      closest_strip = s;
-    //    }
-    //  }
-    //  pi0 = (ic::Candidate*)GetPi0(closest_strip.second, true);
-    //  for (auto g : closest_strip.second) signal_gammas.push_back(g->id());
-    //}
 
     Tau * t = const_cast<Tau*>(tau);
     t->set_sig_gamma_cands(signal_gammas);
     std::vector<std::size_t> iso_gammas = tau->iso_gamma_cands();
     std::vector<std::size_t> new_iso_gammas = {};
-    std::set_difference( iso_gammas.begin(), iso_gammas.end(), signal_gammas.begin(), signal_gammas.end(), std::back_inserter( new_iso_gammas ) );
+    for(auto g : iso_gammas) {
+      if(std::find(signal_gammas.begin(), signal_gammas.end(), g) == signal_gammas.end()) new_iso_gammas.push_back(g);  
+    }
     t->set_iso_gamma_cands(new_iso_gammas);
     return std::make_pair(hads, pi0);
   }
@@ -2522,52 +2458,29 @@ namespace ic {
     return out_vec;
   }
 
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF, bool doMixed, bool anti){
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
-    //
-    TVector3 boost, n1, n2;
-    if (doMixed) {
-      TVector3 k = (p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
-      TLorentzVector ip(k, 0.);
-      if(ZMF) boost = (p1+ip+p3+p4).BoostVector();
-      else boost = (p3+p4).BoostVector();
-      p1.Boost(-boost);
-      ip.Boost(-boost);
-      p2.Boost(-boost);
-      p3.Boost(-boost);
-      p4.Boost(-boost);
-      n1 = (p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit()).Unit();
-      n2 = (ip.Vect() - ip.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit()).Unit();
-    }
-    else {
-      if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
-      else boost = (p3+p4).BoostVector();
-      p1.Boost(-boost);
-      p2.Boost(-boost);
-      p3.Boost(-boost);
-      p4.Boost(-boost);
-      
-      n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
-      n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
 
-      n1 = n1.Unit();
-      n2 = n2.Unit();
-    }
-    /* std::cout << "n1 unit: " << n1.Px() << n1.Py() << n1.Pz() << std::endl; */
-    /* std::cout << "n2 unit: " << n2.Px() << n2.Py() << n2.Pz() << std::endl; */
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+    
+    n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();    
+    n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
     
     double angle = acos(n1.Dot(n2));
     double sign;
 
-    if (doMixed)
-      sign = p4.Vect().Unit().Dot(n1.Cross(n2));
-    else
-      sign = p2.Vect().Unit().Dot(n1.Cross(n2));
-    if (anti) sign = -sign;
-
-    /* std::cout << "angle: " << angle << std::endl; */
-    /* std::cout << "sign : " << sign << std::endl; */
-    
+    //sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    sign = p4.Vect().Unit().Dot(n1.Cross(n2));   
+ 
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
   }

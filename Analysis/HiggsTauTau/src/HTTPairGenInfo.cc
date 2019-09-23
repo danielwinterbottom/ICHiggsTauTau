@@ -197,7 +197,7 @@ namespace ic {
     if(ngenjets_){
       //Get gen-jets collection, filter Higgs decay products and add Njets variable to event
       std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      //ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       for(unsigned i=0; i<gen_jets.size(); ++i){
         ic::GenJet *genjet = gen_jets[i];
         bool MatchedToPrompt = false;
@@ -210,9 +210,20 @@ namespace ic {
         //remove jets that are matched to Higgs decay products
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
       }
+
+      double largest_gen_mjj=-9999;
+      for(unsigned i=0; i<gen_jets.size()-1;++i){
+        for(unsigned j=i+1; j<gen_jets.size();++j){
+          double mass = (gen_jets[i]->vector()+gen_jets[j]->vector()).M();
+          if(mass>largest_gen_mjj) largest_gen_mjj = mass;
+        }
+      }
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned ngenjets = gen_jets.size();
-      double gen_sjdphi_ = -999;
+      double gen_sjdphi_ = -999; 
+      double gen_mjj_=-9999;
       if (ngenjets >= 2) {
+        gen_mjj_ = (gen_jets[0]->vector()+gen_jets[1]->vector()).M();
         if(gen_jets[0]->eta() > gen_jets[1]->eta())
           gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[0]->vector(), gen_jets[1]->vector());
         
@@ -222,6 +233,8 @@ namespace ic {
       }
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
+      event->Add("gen_mjj", gen_mjj_);
+      event->Add("largest_gen_mjj", largest_gen_mjj);
     }
 
     return 0;
