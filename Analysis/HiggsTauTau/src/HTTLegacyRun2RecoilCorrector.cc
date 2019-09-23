@@ -14,6 +14,7 @@ namespace ic {
     mc_(mc::summer12_53X),
     era_(era::data_2012_rereco) {
     met_label_ = "pfMVAMet";
+    use_puppimet_ = false;
     jets_label_ = "pfJetsPFlow";
     sample_ = "";
     use_quantile_map_ = false;
@@ -41,6 +42,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
+    std::cout << boost::format(param_fmt()) % "use_puppimet"    % use_puppimet_;
     std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
 
     std::string process_file;
@@ -54,7 +56,7 @@ namespace ic {
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
-      if (met_label_ == "puppiMet") {
+      if (use_puppimet_) {
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2016.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2016.root";
       }
@@ -63,7 +65,7 @@ namespace ic {
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PFMET_2017.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root";
       } 
-      else if (met_label_ == "puppiMet"){
+      if (use_puppimet_){
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2017.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2017.root";
       }
@@ -73,7 +75,7 @@ namespace ic {
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2018.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMETSys_2018.root"; 
       }
-      else if (met_label_ == "puppiMet"){
+      if (use_puppimet_){
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PuppiMET_2018.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PuppiMETSys_2018.root";
       }

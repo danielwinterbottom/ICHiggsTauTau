@@ -1828,10 +1828,11 @@ if(channel != channel::wmnu) {
      .set_sample(output_name)
      .set_channel(channel)
      .set_mc(mc_type)
-     .set_met_label("puppiMet")
+     .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
      .set_use_quantile_map(true) // use quantile mapping now
+     .set_use_puppimet(true) 
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool())

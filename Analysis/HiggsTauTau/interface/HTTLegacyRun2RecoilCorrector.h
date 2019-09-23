@@ -25,6 +25,7 @@ class HTTLegacyRun2RecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, ic::strategy, strategy)
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, ic::mc, mc)
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, ic::era, era)
+  CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, bool, use_puppimet)
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, bool, use_quantile_map)
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, bool, store_boson_pt)
   CLASS_MEMBER(HTTLegacyRun2RecoilCorrector, int, met_scale_mode)
