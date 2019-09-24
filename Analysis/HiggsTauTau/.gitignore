@@ -2,8 +2,8 @@ collected
 output
 filelists
 docs
-.txt
-.log
-.json
-.xml
-.dat
+*.txt
+*.log
+*.json
+*.xml
+*.dat
