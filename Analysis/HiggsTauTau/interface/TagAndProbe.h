@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 
 #include <string>
 
@@ -88,7 +89,12 @@ class TagAndProbe : public ModuleBase {
   bool trg_probe_2_2_;
   bool trg_probe_2_3_;
   
-  std::vector<std::string> SplitString(std::string instring){
+  bool pass_FSR_condition_;
+  double m_gamma_muons_;
+  double dR_gamma_muon_1_;
+  double dR_gamma_muon_2_;
+
+    std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
     std::stringstream ss(instring);   
     std::string splitstring;  
@@ -165,6 +171,10 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
+    outtree_->Branch("m_gamma_muons", &m_gamma_muons_);
+    outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
+
+
     if(channel_ == channel::tpmt){
       outtree_->Branch("iso_vloose" , &iso_vloose_);
       outtree_->Branch("iso_loose"  , &iso_loose_ );
@@ -316,7 +326,17 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     if(i==2 && trg_probe_temp_2) trg_probe_2_3_ = true; 
 
   }
-  
+ //Add photons to check Final State Radiation in zmm channel in isolation eff.
+    std::vector<Photon*> gammas = event->GetPtrVec<Photon>("Photon");
+    std::sort(gammas.begin(), gammas.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    dR_gamma_muon_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(), gammas[0]->vector()));
+    dR_gamma_muon_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(), gammas[0]->vector()));
+    pass_FSR_condition_ = false;
+    if(gammas[0]->pt()>10 && ( dR_gamma_muon_1_<0.2 || dR_gamma_muon_2_<0.2 ))
+        pass_FSR_condition_=true;        
+    m_gamma_muons_ = (lep1->vector()+lep2->vector()+gammas[0]->vector()).M();    
+
+
   if(channel_ == channel::tpzmm){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
