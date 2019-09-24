@@ -119,6 +119,7 @@ namespace ic {
         std::string::size_type yearpos = outputadd_.npos;
         if (outputadd_.find("2016") != outputadd_.npos) yearpos = outputadd_.find("2016");
         if (outputadd_.find("2017") != outputadd_.npos) yearpos = outputadd_.find("2017");
+        if (outputadd_.find("2018") != outputadd_.npos) yearpos = outputadd_.find("2018");
         if(yearpos != std::string::npos) outputadd_noyearorchan_.erase(outputadd_noyearorchan_.begin() + yearpos,outputadd_noyearorchan_.end());
       }
       boost::filesystem::path nofolder("");

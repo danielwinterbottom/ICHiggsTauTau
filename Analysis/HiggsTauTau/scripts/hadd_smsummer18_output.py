@@ -39,6 +39,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+    # 'DYJetsToLL-2017',
     'SingleMuonA',
     'SingleMuonB',
     'SingleMuonC',
@@ -96,6 +97,12 @@ sample_list = [
     'GluGluHToTauTau_M-125',
     'WminusHToTauTau_M-125',
     'WplusHToTauTau_M-125',
+    'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'GluGluToHToTauTau_M125_amcatnloFXFX',
+    'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+    'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
     'EmbeddingElElB',
     'EmbeddingElElC',
     'EmbeddingElElD',

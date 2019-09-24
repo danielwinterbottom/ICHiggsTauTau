@@ -14,6 +14,7 @@ class HTTSmearScale : public ModuleBase {
   CLASS_MEMBER(HTTSmearScale, ic::channel, channel)
   CLASS_MEMBER(HTTSmearScale, ic::strategy, strategy)
   CLASS_MEMBER(HTTSmearScale, std::string, input_label)
+  CLASS_MEMBER(HTTSmearScale, unsigned, e_unc_mode)
 
  public:
   HTTSmearScale(std::string const& name);

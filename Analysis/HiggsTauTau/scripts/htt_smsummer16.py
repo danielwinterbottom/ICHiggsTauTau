@@ -192,11 +192,11 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.mg_signal:
   signal_mc += [
-  # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-  # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-  # 'GluGluToHToTauTau_M125_amcatnloFXFX',
-  # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-  # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+  'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+  'GluGluToHToTauTau_M125_amcatnloFXFX',
+  'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+  'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
   'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
 
   ]
@@ -208,11 +208,11 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      # 'GluGluToHToTauTau_M-'+mass,
-      # 'VBFHToTauTau_M-'+mass,
-      # 'ZHToTauTau_M-'+mass,
-      # 'WplusHToTauTau_M-'+mass,
-      # 'WminusHToTauTau_M-'+mass#,
+      'GluGluToHToTauTau_M-'+mass,
+      'VBFHToTauTau_M-'+mass,
+      'ZHToTauTau_M-'+mass,
+      'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass#,
     ]
   if options.proc_sm:  
     signal_mc += [
@@ -222,20 +222,20 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   # add cp samples
   if options.cp_signal:
     signal_mc += [
-        'GluGluToHToTauTau_M-125-nospinner',
+        # 'GluGluToHToTauTau_M-125-nospinner',
         # 'VBFHToTauTau_M-125-nospinner',
-        #'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
-        #'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
-        #'GluGluH2JetsToTauTau_M125_CPmixing_sm',
-        #'VBFHiggs0M_M-125',
-        #'VBFHiggs0Mf05ph0_M-125',
-        #'VBFHiggs0PM_M-125',
-        #'ZHiggs0M_M-125',
-        #'ZHiggs0Mf05ph0_M-125',
-        #'ZHiggs0PM_M-125',
-        #'WHiggs0M_M-125',
-        #'WHiggs0Mf05ph0_M-125',
-        #'WHiggs0PM_M-125'
+        'GluGluH2JetsToTauTau_M125_CPmixing_pseudoscalar',
+        'GluGluH2JetsToTauTau_M125_CPmixing_maxmix',
+        'GluGluH2JetsToTauTau_M125_CPmixing_sm',
+        'VBFHiggs0M_M-125',
+        'VBFHiggs0Mf05ph0_M-125',
+        'VBFHiggs0PM_M-125',
+        'ZHiggs0M_M-125',
+        'ZHiggs0Mf05ph0_M-125',
+        'ZHiggs0PM_M-125',
+        'WHiggs0M_M-125',
+        'WHiggs0Mf05ph0_M-125',
+        'WHiggs0PM_M-125'
         ##'GluGluToHToTauTau_amcNLO_M-125',
         ##'VBFHToTauTau_amcNLO_M-125'
     ]  

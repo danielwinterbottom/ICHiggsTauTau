@@ -216,18 +216,35 @@ namespace ic {
           w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
 
       // triggers for muon legs in mt and zmm channels
-      fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg24_27_binned_kit_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg24_27_binned_kit_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg24_27_binned_kit_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_crosstrg_data"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg_MuTau_Mu20Leg_kit_data")->functor(w_->argSet("m_pt,m_eta")));
-      fns_["m_crosstrg_mc"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg_MuTau_Mu20Leg_kit_mc")->functor(w_->argSet("m_pt,m_eta")));
-      fns_["m_crosstrg_embed"] = std::shared_ptr<RooFunctor>(
-         w_->function("m_trg_MuTau_Mu20Leg_kit_embed")->functor(w_->argSet("m_pt,m_eta")));
+      if(mc_ == mc::mc2018) {
+        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg24_27_binned_kit_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg24_27_binned_kit_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg24_27_binned_kit_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_crosstrg_data"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_MuTau_Mu20Leg_kit_data")->functor(w_->argSet("m_pt,m_eta")));
+        fns_["m_crosstrg_mc"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_MuTau_Mu20Leg_kit_mc")->functor(w_->argSet("m_pt,m_eta")));
+        fns_["m_crosstrg_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_MuTau_Mu20Leg_kit_embed")->functor(w_->argSet("m_pt,m_eta")));
+      }
+      else if(mc_ == mc::mcleg2016) {
+        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_emb"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_emb")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_crosstrg_data"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+        fns_["m_crosstrg_mc"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+        fns_["m_crosstrg_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+      }
+
 
       // triggers for electron legs in et and zee channels
       if(mc_ == mc::mc2018) {
@@ -3058,6 +3075,10 @@ namespace ic {
        event->Add("trigweight_up_2", tau2_trg_up);
        event->Add("trigweight_down_1", tau1_trg_down);
        event->Add("trigweight_down_2", tau2_trg_down);
+
+       // check the trigger factorisation
+       event->Add("tau1_trgeff_mc", tau1_trg_mc);
+       event->Add("tau2_trgeff_mc", tau2_trg_mc);
      } else if (channel_ == channel::mtmet) {
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        double pt = muon->pt();

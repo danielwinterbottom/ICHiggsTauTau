@@ -385,7 +385,7 @@ namespace ic {
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";
         }
-        if (run >= 294927 && run < 317527) { // 2017 + 2018 pre hps
+        if (run >= 294927 && run < 315974) { // 2017 + 2018 pre hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -393,6 +393,17 @@ namespace ic {
           high_leg_pt = 21.;
           trig_obj_label = "triggerObjectsIsoMu20Tau27";
           leg1_filter = "hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+          leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+          extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+        }
+        if (run >= 315974 && run < 317527) { // 2018 pre hps with new filter
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
+          alt_trk_leg1_filter =  "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07";
+          high_leg_pt = 21.;
+          trig_obj_label = "triggerObjectsIsoMu20Tau27";
+          leg1_filter = "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07";
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }

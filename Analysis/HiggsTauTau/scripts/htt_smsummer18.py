@@ -159,7 +159,7 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
         'VBFHToTauTau_M-125-ext1',
-        # 'GluGluHToTauTau_M-125',
+        'GluGluHToTauTau_M-125',
 
         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
         'GluGluToHToTauTau_M125_amcatnloFXFX',
