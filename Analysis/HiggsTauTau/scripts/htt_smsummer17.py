@@ -165,7 +165,7 @@ if options.proc_sm or options.proc_all:
          #'SUSYGluGluToHToTauTau_M-120',
          #'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
-         'GluGluToHToTauTau_M125_nospinner-2017',
+         #'GluGluToHToTauTau_M125_nospinner-2017',
          #'VBFHToTauTau_M125_nospinner-2017',
 
          # 'GluGluHToTauTau_M-125',
@@ -175,7 +175,7 @@ if options.proc_sm or options.proc_all:
          #'GluGluHToTauTau_M-125-ext',
          #'GluGluHToTauTau_M-125',
          #'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         #'GluGluToHToTauTau_M125_amcatnloFXFX',
+         'GluGluToHToTauTau_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
          #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
