@@ -257,7 +257,6 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           dest.set_lead_dxy_vertex_error(packedCand->dxyError());
           //std::cout << packedCand->dxyError() << "    " << src.dxy_error() << std::endl;
         }
-        #endif
 
         //get track 
         if(packedCand->hasTrackDetails()) {
@@ -271,6 +270,7 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
           dest.set_bfield(magneticField);
         }
+        #endif
 
         dest.set_lead_p(packedCand->p());
 
@@ -352,7 +352,9 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         auto cands = src.signalChargedHadrCands();
         for (unsigned c = 0; c < cands.size(); ++c) {
            auto chHadr = cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>();
+           #if CMSSW_MAJOR_VERSION >= 9
            if( chHadr->hasTrackDetails() ) svTracks.push_back(*(chHadr->bestTrack()));
+           #endif
         }
         ///Built transient tracks from tracks
         edm::ESHandle<TransientTrackBuilder> transTrackBuilder;

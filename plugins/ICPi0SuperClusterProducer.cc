@@ -42,6 +42,7 @@ ICPi0SuperClusterProducer::~ICPi0SuperClusterProducer() { delete scs_; }
 
 void ICPi0SuperClusterProducer::produce(edm::Event& event,
                                      const edm::EventSetup& setup) {
+#if CMSSW_MAJOR_VERSION >= 9
   edm::Handle<edm::View<reco::SuperCluster> > sc_handle;
   edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >> eehits_handle;
   edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >> ebhits_handle;
@@ -54,7 +55,6 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
 
   scs_->clear();
   //scs_->resize(sc_handle->size());
-
   setup.get<CaloTopologyRecord>().get(theCaloTopo_);
   const CaloTopology* topology = theCaloTopo_.product();
 
@@ -152,7 +152,7 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
 
     scs_->push_back(dest);
   }
-
+#endif
 }
 
 void ICPi0SuperClusterProducer::beginJob() {
