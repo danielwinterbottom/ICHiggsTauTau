@@ -205,11 +205,11 @@ class Electron : public Candidate {
   /// Transverse impact parameter of the GSF track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
 
-  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+  inline ROOT::Math::SVector<double, 5> track_params() const& { return track_params_; }
 
-  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() const& {return track_params_covariance_;}
 
-  double bfield() { return bfield_; }
+  double bfield() const { return bfield_; }
 
   /**@}*/
 
@@ -434,15 +434,15 @@ class Electron : public Candidate {
     dxy_beamspot_ = dxy_beamspot;
   }
 
-  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+  inline void set_track_params(ROOT::Math::SVector<double, 5> const& track_params) {
     track_params_ = track_params;
   }
 
-  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > const& track_params_covariance){
     track_params_covariance_ = track_params_covariance;
   }
 
-  inline void set_bfield(double bfield) {
+  inline void set_bfield(double const bfield) {
     bfield_ = bfield;
   }
 

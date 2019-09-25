@@ -123,13 +123,13 @@ class Tau : public Candidate {
 
   inline bool hasSV() const { return hasSV_; }
 
-  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> >  s_vtx_covariance() { return s_vtx_covariance_; }
+  inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> >  const& s_vtx_covariance() const& { return s_vtx_covariance_; }
 
-  inline ROOT::Math::SVector<double, 5> track_params() { return track_params_; }
+  inline ROOT::Math::SVector<double, 5> const& track_params() const& { return track_params_; }
 
-  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance() {return track_params_covariance_;}
+  inline ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > const& track_params_covariance() const& {return track_params_covariance_;}
 
-  double bfield() { return bfield_; }
+  double bfield() const { return bfield_; }
 
   /**@}*/
 
@@ -253,19 +253,19 @@ class Tau : public Candidate {
   }
 
 
-  inline void set_s_vtx_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > s_vtx_covariance) {
+  inline void set_s_vtx_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > const& s_vtx_covariance) {
     s_vtx_covariance_ = s_vtx_covariance;
   }
 
-  inline void set_track_params(ROOT::Math::SVector<double, 5> track_params) {
+  inline void set_track_params(ROOT::Math::SVector<double, 5> const& track_params) {
     track_params_ = track_params;
   }
 
-  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > track_params_covariance){
+  inline void set_track_params_covariance(ROOT::Math::SMatrix<double, 5, 5, ROOT::Math::MatRepSym<double, 5> > const& track_params_covariance){
     track_params_covariance_ = track_params_covariance;
   }
 
-  inline void set_bfield(double bfield) {
+  inline void set_bfield(double const bfield) {
     bfield_ = bfield;
   }
 
