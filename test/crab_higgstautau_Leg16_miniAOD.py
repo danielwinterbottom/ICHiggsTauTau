@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Aug07_MC_102X'
+config.General.workArea='Sep05_MC_102X_2016'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
@@ -12,10 +12,12 @@ config.JobType.maxMemoryMB = 2500
 cfgParams = ['release=102XMINIAOD','isData=0' ,'doHT=1' , 'globalTag=94X_mcRun2_asymptotic_v3']
 config.JobType.allowUndistributedCMSSW = True
 
-config.Data.unitsPerJob = 100000
-config.Data.splitting = 'EventAwareLumiBased'
+#config.Data.unitsPerJob = 100000
+#config.Data.splitting = 'EventAwareLumiBased'
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 1
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 
@@ -79,7 +81,7 @@ if __name__ == '__main__':
     tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1/MINIAODSIM'))
     tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1/MINIAODSIM'))
     tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
-    tasks.append(('T-t', '/ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
+    tasks.append(('T-t', '/ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
     tasks.append(('TT', '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
     tasks.append(('WJetsToLNu', '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
     tasks.append(('WJetsToLNu-ext', '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v1/MINIAODSIM'))
