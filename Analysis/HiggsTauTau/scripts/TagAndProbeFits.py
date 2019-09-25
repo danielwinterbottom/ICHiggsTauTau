@@ -459,7 +459,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
                   "CBShape::CBPass(m_vis, mean[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
                   "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
-                  "CBShape::CBFail(m_vis, meanf[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail(m_vis, mean[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
                   "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
               ]
           )            
@@ -493,7 +493,25 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
           )             
-  
+ 
+
+  elif sig_model == 'BWDoubleCBConvCorr_TwoPeaks':
+      nparams = 15
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[4,4,10], alphap[1,-50,50], np[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf[75,70,80], sigmaf[8,4,15], alphaf[1,-50,50], nf[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )             
+
+
   elif sig_model == 'BWCBGausConvCorr':
       nparams = 11
       pdf_args.extend(
@@ -936,16 +954,19 @@ for name in wsnames:
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
-  sig_model = 'DoubleVUncorr'
+  #sig_model = 'DoubleVUncorr'
+  if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
+  else: sig_model = 'BWDoubleCBConvCorr'
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
-  if not options.embed_dz or 'trg' in name:
+  if (not options.embed_dz or 'trg' in name) and 'trg' in name:
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
 
-for i in ['id','iso','trg']:
+#for i in ['id','iso','trg']:
+for i in ['trg']:
   hist2d = sffile.Get('data_%s_eff' % i)
   for j in range(1,hist2d.GetNbinsY()+1):
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    

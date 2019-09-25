@@ -186,14 +186,14 @@ namespace ic {
     float met_Shift_x, met_Shift_y;
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
-    MEtSys::ProcessType processType;
-    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("EWKZ")!=sample_.npos  || sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos ){
-        processType = MEtSys::ProcessType::BOSON;
-    } else if (sample_.find("TT")!=sample_.npos){
-       processType = MEtSys::ProcessType::TOP;
-    } else {
-       processType = MEtSys::ProcessType::EWK;
-    }
+    // MEtSys::ProcessType processType;
+    // if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("EWKZ")!=sample_.npos  || sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos ){
+    //     processType = MEtSys::ProcessType::BOSON;
+    // } else if (sample_.find("TT")!=sample_.npos){
+    //    processType = MEtSys::ProcessType::TOP;
+    // } else {
+    //    processType = MEtSys::ProcessType::EWK;
+    // }
     
     if(met_scale_mode_ == 1) {
         sysType = MEtSys::SysType::Resolution;
@@ -217,7 +217,7 @@ namespace ic {
         float(genpX),float(genpY), // (float) transverse momentum of the full leptonic system
         float(vispX),float(vispY), // (float) transverse momentum of the visible leptonic system
         njets, // (int) number of jets : pT > 30 GeV, eta<4.7, loose PF JetID
-        processType, // (int) type of process 
+        // processType, // (int) type of process 
         sysType, // (int) type of systematic uncertainty
         sysShift, // (int) direction of systematic shift
         met_Shift_x,met_Shift_y // (float) shifted value of the mva met

@@ -18,6 +18,7 @@
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "TMVA/Reader.h"
+#include "TH1D.h"
 
 
 namespace ic {
@@ -1025,6 +1026,8 @@ namespace ic {
   };
   
   std::set<int16_t> GetTriggerTypes(TriggerObject* obj);
+
+  double quantile_mapping(double value, TH1D *input_cdf, TH1D *output_cdf);
   
 } // namepsace
 #endif
