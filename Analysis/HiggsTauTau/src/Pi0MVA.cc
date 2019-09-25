@@ -132,6 +132,11 @@ namespace ic {
       outtree_->Branch("Etapi0_1"      , &Etapi0_1_ );
       outtree_->Branch("Mpi0_1"      , &Mpi0_1_ );
 
+      outtree_->Branch("rho_dphi"      , &rho_dphi_ );
+      outtree_->Branch("gen_rho_dphi"      , &gen_rho_dphi_ );
+      outtree_->Branch("corr_rho_dphi"      , &corr_rho_dphi_ );
+      outtree_->Branch("corr_Phigammas_1"      , &corr_Phigammas_1_ );
+
       outtree_->Branch("Egammas_1"      , &Egammas_1_ );
       outtree_->Branch("Phigammas_1"      , &Phigammas_1_ );
       outtree_->Branch("Etagammas_1"      , &Etagammas_1_ );
@@ -242,6 +247,13 @@ namespace ic {
       outtree_->Branch("sublead_cluster_pt_new", &sublead_cluster_pt_new_);
       outtree_->Branch("lead_cluster_E_new", &lead_cluster_E_new_);
       outtree_->Branch("sublead_cluster_E_new", &sublead_cluster_E_new_);
+
+      //TFile *fout = new TFile("phi_cdf_2018.root");
+      input_cdf_ = new TH1D(GetFromTFile<TH1D>("phi_cdf_2018.root","/","mc_cdf"));
+      output_cdf_ = new TH1D(GetFromTFile<TH1D>("phi_cdf_2018.root","/","data_cdf"));
+      //output_cdf_ = (TH1D*)fout->Get("data_cdf")->Clone();
+
+      //fout->Close();
 
     }
 
@@ -832,6 +844,20 @@ namespace ic {
 
       if(Ngammas_1_>=1) {Egammas_1_=gammas1[0]->energy(); Phigammas_1_=gammas1[0]->phi(); Etagammas_1_=gammas1[0]->eta(); Mgammas_1_=gammas1[0]->M(); Pxgammas_1_=gammas1[0]->vector().Px(); Pygammas_1_=gammas1[0]->vector().Py(); Pzgammas_1_=gammas1[0]->vector().Pz();}
       else {Egammas_1_=0.; Phigammas_1_=0.; Etagammas_1_=0.; Mgammas_1_=0.; Pxgammas_1_=0.; Pygammas_1_=0.; Pzgammas_1_=0.;}
+
+      std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau1, pfcands);
+      ic::Candidate *pi_tau2 = rho.first;
+      ic::Candidate *pi0_tau2 = rho.second;
+      rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(pi0_tau2->vector(),pi_tau2->vector());
+      corr_rho_dphi_ = (fabs(rho_dphi_)<0.1) ? quantile_mapping(rho_dphi_, input_cdf_, output_cdf_) : rho_dphi_;
+      if (rho_dphi_<-0.15) corr_rho_dphi_ =-0.15; 
+      if (rho_dphi_>0.15) corr_rho_dphi_ =0.15;
+      corr_Phigammas_1_ = Phigammas_1_+(corr_rho_dphi_-rho_dphi_);
+      gen_rho_dphi_=-9999;
+      if(genpi0s.size()==1) {
+        gen_rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(genpi0s[0]->vector(),pi_tau2->vector());
+      }
+
       if(Ngammas_1_>=2) {Egammas_2_=gammas1[1]->energy(); Phigammas_2_=gammas1[1]->phi(); Etagammas_2_=gammas1[1]->eta(); Mgammas_2_=gammas1[1]->M(); Pxgammas_2_=gammas1[1]->vector().Px(); Pygammas_2_=gammas1[1]->vector().Py(); Pzgammas_2_=gammas1[1]->vector().Pz();}
       else {Egammas_2_=0.; Phigammas_2_=0.; Etagammas_2_=0.; Mgammas_2_=0.; Pxgammas_2_=0.; Pygammas_2_=0.; Pzgammas_2_=0.;}
       if(Ngammas_1_>=3) {Egammas_3_=gammas1[2]->energy(); Phigammas_3_=gammas1[2]->phi(); Etagammas_3_=gammas1[2]->eta(); Mgammas_3_=gammas1[2]->M(); Pxgammas_3_=gammas1[2]->vector().Px(); Pygammas_3_=gammas1[2]->vector().Py(); Pzgammas_3_=gammas1[2]->vector().Pz();}
