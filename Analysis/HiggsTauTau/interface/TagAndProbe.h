@@ -12,6 +12,7 @@
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
+#include "Utilities/interface/FnPairs.h"
 
 #include <string>
 
@@ -326,16 +327,28 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     if(i==2 && trg_probe_temp_2) trg_probe_2_3_ = true; 
 
   }
+  
  //Add photons to check Final State Radiation in zmm channel in isolation eff.
     std::vector<Photon*> gammas = event->GetPtrVec<Photon>("Photon");
-    std::sort(gammas.begin(), gammas.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    dR_gamma_muon_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(), gammas[0]->vector()));
-    dR_gamma_muon_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(), gammas[0]->vector()));
-    pass_FSR_condition_ = false;
-    if(gammas[0]->pt()>10 && ( dR_gamma_muon_1_<0.2 || dR_gamma_muon_2_<0.2 ))
-        pass_FSR_condition_=true;        
-    m_gamma_muons_ = (lep1->vector()+lep2->vector()+gammas[0]->vector()).M();    
+    ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
+    std::vector<Candidate const*> muon_vec_1 = {lep1};
+    std::vector<Candidate const*> muon_vec_2 = {lep2};
+    std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, muon_vec_1, 0.4, false, false);   
+    std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
+    std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+    std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
 
+    pass_FSR_condition_ = false;
+    auto sum_vec = lep1->vector() + lep2->vector();
+    if (input1.size()>0){
+        sum_vec +=  input1[0].first->vector();
+        pass_FSR_condition_=true;
+    }
+    if (input2.size()>0){
+        sum_vec += input2[0].first->vector();
+        pass_FSR_condition_=true;
+    }
+    m_gamma_muons_= sum_vec.M();
 
   if(channel_ == channel::tpzmm){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
