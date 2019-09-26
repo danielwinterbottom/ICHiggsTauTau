@@ -391,7 +391,7 @@ namespace ic {
     else parton_pt_3_ = -9999;
 
     npNLO_ = eventInfo->npNLO();
-    if(npNLO_<0) npNLO_ = 2; 
+    //if(npNLO_<0) npNLO_ = 2; 
     double n_inc_ = 3089015.;
     double n2_    = 14254055;
     double f2_   = 0.279662;

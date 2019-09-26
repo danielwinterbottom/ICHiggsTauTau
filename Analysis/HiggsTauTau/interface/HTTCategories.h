@@ -1236,6 +1236,9 @@ class HTTCategories : public ModuleBase {
 
   double deeptau_sf_;
   double mt_1_nomu_, mu_pt_;
+  double rho_dphi_, rho_deta_;
+
+  unsigned ngenjets_;
 
  public:
   HTTCategories(std::string const& name);

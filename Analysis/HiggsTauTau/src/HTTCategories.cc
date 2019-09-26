@@ -744,6 +744,7 @@ namespace ic {
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("gen_mjj", &gen_mjj_);
       outtree_->Branch("largest_gen_mjj", &largest_gen_mjj_);
+      outtree_->Branch("ngenjets" , &ngenjets_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
       outtree_->Branch("m_1", &m_1_, "m_1/F");
@@ -779,6 +780,8 @@ namespace ic {
       outtree_->Branch("aco_sign_2", &aco_sign_2_);
       outtree_->Branch("aco_sign_3", &aco_sign_3_);
       outtree_->Branch("aco_sign_4", &aco_sign_4_);
+      outtree_->Branch("rho_dphi", &rho_dphi_);
+      outtree_->Branch("rho_deta", &rho_deta_);
       outtree_->Branch("mass0",         &mass0_);
       outtree_->Branch("mass1",         &mass1_);
       outtree_->Branch("mass2",         &mass2_);
@@ -2332,6 +2335,7 @@ namespace ic {
     if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
     if(event->Exists("subleading_lepton_match_DR")) subleading_lepton_match_DR_ = event->Get<double>("subleading_lepton_match_DR");*/
 
+    if(event->Exists("ngenjets")) ngenjets_ = event->Get<unsigned>("ngenjets");
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
     if(event->Exists("gen_mjj")) gen_mjj_ = event->Get<double>("gen_mjj");
     if(event->Exists("largest_gen_mjj")) largest_gen_mjj_ = event->Get<double>("largest_gen_mjj");
@@ -4514,6 +4518,8 @@ namespace ic {
       }
 
       if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
+        rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(pi0_tau1->vector(),pi_tau1->vector());
+        rho_deta_ = pi0_tau1->eta()-pi_tau1->eta();
         cp_channel_=3;
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
@@ -4641,8 +4647,10 @@ namespace ic {
       TLorentzVector pvtosv;
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-
+      rho_dphi_=-9999; rho_deta_=-9999;
       if(tau_decay_mode_2_==1){
+        rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(pi0_tau2->vector(),pi_tau2->vector());
+        rho_deta_ = pi0_tau2->eta()-pi_tau2->eta();
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
         pvtosv.SetXYZT(
@@ -4718,6 +4726,8 @@ namespace ic {
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
 
       if(tau_decay_mode_2_==1){
+
+
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
         pvtosv.SetXYZT(
