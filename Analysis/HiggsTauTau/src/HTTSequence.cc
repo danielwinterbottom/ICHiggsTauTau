@@ -2587,7 +2587,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_quarkmass_higgspt(do_ggH_stitch)
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
-     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v17_7.root");
+     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root"); //htt_scalefactors_v17_7
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
@@ -2629,16 +2629,16 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           //httStitching.SetWInputYields(33043732.0+44587448.0,54106926.0,6570442.0,19669693.0,11303425.0); // correspond to Params v5
-           httStitching.SetWInputYields(33043732.0+44586629.0,54106926.0,6570442.0,19669693.0,11273215.0); 
+           // httStitching.SetWInputYields(33043732.0+44586629.0,54106926.0,6570442.0,19669693.0,11273215.0); 
+           httStitching.SetWInputYields(74828211.0,53699173.0,6404085.0,18438870.0,11028984.0); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            //httStitching.SetDYInputYields(48632630.0+49069662.0,42299237.0+33643695.0, 88795.0+9691457.0, 5740168.0 + 1446624.0, 4295167.0); // correspond to Params v5
-            httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33319159.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
+            // httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33319159.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
+            httStitching.SetDYInputYields(97220464.0, 40502369.0+32563784.0, 88795.0+9894402.0,1138820.0, 4104551.0); //missed DY3(no ext) here, to be added
           }
        
        BuildModule(httStitching);   
