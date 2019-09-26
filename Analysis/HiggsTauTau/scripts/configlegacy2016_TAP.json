@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Aug07_MC_102X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep05_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tpzee"],
+    "channels":      ["tpzmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,8 +58,13 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+<<<<<<< HEAD
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/TAP_Sep05_2016legacy/mt_Sep05",
+    //"output_folder" : "output/",
+=======
     //"output_folder" : "/vols/cms/mhh18/Offline/output/SM/TAP_Aug16_2016legacy/test",
     "output_folder" : "output/",
+>>>>>>> 6389e1fa54149caefa13270e7f8e38edb3580378
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",

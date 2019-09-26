@@ -3330,6 +3330,7 @@ if( strategy_type == strategy::paper2013) {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
 
  /*if (mu_scale_mode > 0 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
@@ -3459,8 +3460,9 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
 // --------------------------------------------------------------------------
 void HTTSequence::BuildEMPairs() {
 
- ic::strategy strategy_type  = String2Strategy(strategy_str);
- 
+ ic::strategy strategy_type  = String2Strategy(strategy_str); 
+ ic::mc mc_type = String2MC(mc_str);
+
  if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
@@ -3833,6 +3835,7 @@ void HTTSequence::BuildTPZEEPairs() {
 void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
  
  if (tau_scale_mode > 0 && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && muon_shift!=1.0){
  BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
@@ -3921,6 +3924,7 @@ void HTTSequence::BuildZMMPairs() {
 void HTTSequence::BuildTPZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -3971,6 +3975,7 @@ void HTTSequence::BuildTPZMMPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildTPMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
  
  BuildModule(CopyCollection<Muon>("CopyToLooseMuons",
       js["muons"].asString(),"loose_muons"));
@@ -4167,6 +4172,7 @@ void HTTSequence::BuildTPMTPairs() {
 
 void HTTSequence::BuildTPEMPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -4250,6 +4256,7 @@ void HTTSequence::BuildTPEMPairs() {
 void HTTSequence::BuildWMuNu() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ ic::mc mc_type = String2MC(mc_str);
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -4813,6 +4820,7 @@ BuildModule(extraElecFilter);
 
 void HTTSequence::BuildExtraMuonVeto(){
   ic::strategy strategy_type  = String2Strategy(strategy_str);
+  ic::mc mc_type = String2MC(mc_str);
 
   BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
       js["muons"].asString(), "extra_muons"));
