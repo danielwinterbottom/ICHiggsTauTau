@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Aug07_MC_102X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep05_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["mt"],
+    "channels":      ["mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,7 @@
   },
   "sequence": {
     "do_gen_analysis" : false,
-    "mc"            : "summer16_80X",
+    "mc"            : "mcleg2016",
     "era"           : "data_2016",
     "strategy"      : "legacy16",
     "is_data"       : false,
@@ -30,7 +30,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : true,
+    "get_effective" : false,
     "do_btag_eff":false,
     "trg_in_mc" : true,
     "filter_trg" : false,
@@ -58,7 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/GetEffectiveNumber_Aug13",
+    // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/GetEffectiveNumber_Sep05",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

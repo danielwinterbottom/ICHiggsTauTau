@@ -16,8 +16,8 @@ source /vols/grid/cms/setup.sh' $job
     fi
     echo $job
     (( COUNT++ ))
-    qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
-    #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
+    #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
+   # qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
   fi; 
 done
 echo $COUNT jobs out of $TOTAL failed
