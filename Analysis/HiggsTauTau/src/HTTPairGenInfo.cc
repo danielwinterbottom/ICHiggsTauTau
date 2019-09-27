@@ -218,7 +218,8 @@ namespace ic {
           if(mass>largest_gen_mjj) largest_gen_mjj = mass;
         }
       }
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+//      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 25.0, 4.7)); //change back after!
       unsigned ngenjets = gen_jets.size();
       double gen_sjdphi_ = -999; 
       double gen_mjj_=-9999;
