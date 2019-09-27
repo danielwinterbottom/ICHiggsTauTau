@@ -241,7 +241,6 @@ process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
   process.icGenVertexProducer+
-  process.filteredTaus+
   process.refitOfflineSlimmedPrimaryVertices+
   process.refitOfflineSlimmedPrimaryVerticesBS+
   process.icRefitVertexProducer+
