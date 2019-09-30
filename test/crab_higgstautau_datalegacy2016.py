@@ -3,7 +3,7 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Sep05_Data_102X_2016'
+config.General.workArea='Sep27_Data_102X_2016'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
@@ -17,7 +17,7 @@ config.Data.unitsPerJob = 100000
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.ignoreLocality= False
+#config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.section_('User')
 config.section_('Site')
@@ -26,6 +26,7 @@ config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
 config.Data.allowNonValidInputDataset = True
+config.Site.whitelist   = ['T2_*','T1_*','T3_*']
 
 if __name__ == '__main__':
 
