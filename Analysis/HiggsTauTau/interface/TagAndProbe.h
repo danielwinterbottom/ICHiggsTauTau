@@ -327,8 +327,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
   
  //Add photons to check Final State Radiation in zmm channel in isolation eff.
-    if(event->ExistsInTree("Photon")){
-        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("Photon");
+    if(event->ExistsInTree("photons")){
+        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
         ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
         std::vector<Candidate const*> muon_vec_1 = {lep1};
         std::vector<Candidate const*> muon_vec_2 = {lep2};
@@ -336,7 +336,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
         std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
         std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-    
+        
+        m_gamma_muons_=-999.0;
         pass_FSR_condition_ = false;
         auto sum_vec = lep1->vector() + lep2->vector();
         if (input1.size()>0){
