@@ -214,6 +214,13 @@ class Pi0MVA : public ModuleBase {
   float genpi0_deta_, genpi0_dphi_,gengamma_deta_, gengamma_dphi_;
 
   float new_pi0_phi_, new_pi0_eta_, new_pi0_pt_, new_pi0_E_;
+
+  TH1D* input_cdf_;
+  TH1D* output_cdf_;
+
+  double corr_Phigammas_1_;
+
+  double rho_dphi_, corr_rho_dphi_, gen_rho_dphi_;
 };
 
 }

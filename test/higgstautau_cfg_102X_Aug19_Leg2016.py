@@ -70,7 +70,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(5000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -224,18 +224,14 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 
 ### refit PV excluding tau decay products tracks
 
-process.filteredTaus = cms.EDFilter("PATTauSelector",
-                            src = cms.InputTag(updatedTauName),
-                            cut = cms.string("(decayMode != 5 && decayMode != 6 && (tauID('byVLooseIsolationMVArun2017v2DBnewDMwLT2017') > 0.5 && tauID('againstElectronVLooseMVA6') > 0.5 && tauID('againstMuonLoose3') > 0.5) || (tauID('byVVVLooseDeepTau2017v2p1VSjet') > 0.5 && tauID('byVVVLooseDeepTau2017v2p1VSe') > 0.5 && tauID('byVLooseDeepTau2017v2p1VSmu') > 0.5))"))
-
 import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
 process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
-process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", "filteredTaus")
+process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
 
 process.refitOfflineSlimmedPrimaryVerticesBS = vertexrefit.AdvancedRefitVertexBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVerticesBS.storeAsMap = cms.bool(True)
-process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", "filteredTaus")
+process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
 
 
 process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
@@ -253,7 +249,6 @@ process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
   process.icGenVertexProducer+
-  process.filteredTaus+
   process.refitOfflineSlimmedPrimaryVertices+
   process.refitOfflineSlimmedPrimaryVerticesBS+
   process.icRefitVertexProducer+
@@ -904,6 +899,7 @@ if not isData:
     )
   if isEmbed:
     process.icGenSequence.remove(process.icPileupInfoProducer)
+    process.icGenSequence.remove(process.icGenJetProducerFromSlimmed)
 
 
 # ################################################################
@@ -1403,7 +1399,7 @@ process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
   theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
 )
 
-if opts.tauSpinner or opts.isEmbed:
+if opts.tauSpinner:
   process.icTauSpinnerSequence = cms.Sequence(
     process.icTauSpinnerProducer
   )

@@ -41,8 +41,9 @@ class ICPi0SuperClusterProducer : public edm::EDProducer {
   edm::InputTag input_taus_;
   std::string branch_;
 
+  #if CMSSW_MAJOR_VERSION >= 9
   edm::ESHandle<CaloTopology> theCaloTopo_;
-
+  #endif
 
   boost::hash<reco::SuperCluster const*> sc_hasher_;
 };

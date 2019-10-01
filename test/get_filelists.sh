@@ -8,7 +8,7 @@ for i in "${targets[@]}"; do
   for j in "${names[@]}"; do
     name=$(echo $j | cut -d"/" -f6-| cut -d"_" -f2-)
     type="MC"
-    if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* ]]; then
+    if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* || "$name" == "EGamma"* ]]; then
       type="Data"
     fi
     if [ "$samples" ]; then 
