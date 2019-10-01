@@ -91,7 +91,7 @@ class TagAndProbe : public ModuleBase {
   bool trg_probe_2_3_;
   
   bool pass_FSR_condition_;
-  double m_gamma_muons_;
+  double m_gamma_leptons_;
 
     std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -170,7 +170,7 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
-    outtree_->Branch("m_gamma_muons", &m_gamma_muons_);
+    outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
 
 
@@ -326,30 +326,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
 
   }
   
- //Add photons to check Final State Radiation in zmm channel in isolation eff.
-    if(event->ExistsInTree("photons")){
-        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
-        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
-        std::vector<Candidate const*> muon_vec_1 = {lep1};
-        std::vector<Candidate const*> muon_vec_2 = {lep2};
-        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, muon_vec_1, 0.4, false, false);   
-        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
-        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-        
-        m_gamma_muons_=-999.0;
-        pass_FSR_condition_ = false;
-        auto sum_vec = lep1->vector() + lep2->vector();
-        if (input1.size()>0){
-            sum_vec +=  input1[0].first->vector();
-            pass_FSR_condition_=true;
-        }
-        if (input2.size()>0){
-            sum_vec += input2[0].first->vector();
-            pass_FSR_condition_=true;
-        }
-        m_gamma_muons_= sum_vec.M();
-    }
   if(channel_ == channel::tpzmm){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
@@ -433,6 +409,30 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
 
     }
     
+ //Add photons to veto Final State Radiation for isolation SF(zmm).
+    if(event->ExistsInTree("photons")){
+        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
+        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
+        std::vector<Candidate const*> muon_vec_1 = {lep1};
+        std::vector<Candidate const*> muon_vec_2 = {lep2};
+        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, muon_vec_1, 0.4, false, false);   
+        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
+        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        
+        m_gamma_leptons_=-999.0;
+        pass_FSR_condition_ = false;
+        auto sum_vec = lep1->vector() + lep2->vector();
+        if (input1.size()>0){
+            sum_vec +=  input1[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        if (input2.size()>0){
+            sum_vec += input2[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        m_gamma_leptons_= sum_vec.M();
+    }
   }
   if(channel_ == channel::tpzee){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
@@ -524,6 +524,37 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
       trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
     }
+  
+ //Add photons to veto Final State Radiation for isolation SF (zee).
+    if(event->ExistsInTree("photons")){
+        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
+        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
+        std::vector<Candidate const*> elec_vec_1 = {lep1};
+        std::vector<Candidate const*> elec_vec_2 = {lep2};
+        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, elec_vec_1, 0.3, false, false);   
+        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, elec_vec_2, 0.3, false, false);    
+        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        
+        m_gamma_leptons_=-999.0;
+        pass_FSR_condition_ = false;
+        auto sum_vec = lep1->vector() + lep2->vector();
+        if (input1.size()>0){
+            sum_vec +=  input1[0].first->vector();
+            pass_FSR_condition_=true;
+            std::cout<<"--------------------"<<std::endl;
+            std::cout<<"e_pt  = "<<lep1->pt()<<"   ,    e_E ="<<lep1->energy()<<std::endl; 
+            std::cout<<"g1_pt = "<<input1[0].first->pt()<<"   ,    g1_E = "<<input1[0].first->energy()<<std::endl;
+            std::cout<<"g2_pt = "<<input2[0].first->pt()<<"   ,    g2_E = "<<input2[0].first->energy()<<std::endl;
+            std::cout<<"--------------------"<<std::endl;
+        }
+        if (input2.size()>0){
+            sum_vec += input2[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        m_gamma_leptons_= sum_vec.M();
+    }
+  
   }
   
   if(channel_ == channel::tpmt){
