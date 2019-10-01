@@ -39,6 +39,7 @@ defaults = {
     "aiso2":False, 
     "embed_sel":False, 
     "draw_hists":1,
+    "veto_FSR":False,
     }
 
 if options.cfg:
@@ -72,6 +73,8 @@ parser.add_argument("--embed_dz", dest="embed_dz", action='store_true',
     help="Measure DZ filter efficiency for di-muon trigger")
 parser.add_argument("--draw_hists", dest="draw_hists", type=int,
     help="If set to 0 then will not re-make the 3D histograms instead will use the histograms on the existing root file")
+parser.add_argument("--veto_FSR", dest='veto_FSR', action='store_true', 
+    help="If true, the zmm events with FSR are vetoed (only applied to isolation)")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -88,6 +91,7 @@ print 'aiso2             =', options.aiso2
 print 'draw_hists        =', options.draw_hists
 print 'embed_sel         =', options.embed_sel
 print 'embed_dz          =', options.embed_dz
+print 'veto_FSR          =', options.veto_FSR
 print '###############################################'
 print ''
 
@@ -505,7 +509,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
                   "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
-                  "CBShape::CBFail2(m_vis, meanf[75,70,80], sigmaf[8,4,15], alphaf[1,-50,50], nf[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf[80,75,90], sigmaf[8,1,15], alphaf[1,-50,50], nf[1,0,50])",
                   "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
@@ -891,6 +895,9 @@ idiso_tag_1 = baseline_tag1
 idiso_tag_2 = baseline_tag2 
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
+if (options.veto_FSR==True):
+    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
@@ -959,14 +966,14 @@ for name in wsnames:
   else: sig_model = 'BWDoubleCBConvCorr'
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
-  if (not options.embed_dz or 'trg' in name) and 'trg' in name:
+  if (not options.embed_dz or 'trg' in name):
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
 
 if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
 if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
 
-#for i in ['id','iso','trg']:
-for i in ['trg']:
+for i in ['id','iso','trg']:
+#for i in ['iso']:
   hist2d = sffile.Get('data_%s_eff' % i)
   for j in range(1,hist2d.GetNbinsY()+1):
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
