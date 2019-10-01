@@ -1344,7 +1344,8 @@ if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
 
 data_type = ""
-if isData or isEmbed: data_type = "RECO"
+if isData: data_type = "RECO"
+elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
