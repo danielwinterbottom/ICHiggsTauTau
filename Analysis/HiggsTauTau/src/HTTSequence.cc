@@ -2957,12 +2957,12 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
           // for single muon trigger:
-          //.set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
-          //.set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
+          .set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
+          .set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
           //
           // for muon leg of mu+tau cross trigger:
-          .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
+          //.set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
+          //.set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
           //
           // for mu8 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -3045,17 +3045,19 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           // for single electron trigger
-          //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
-          //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+          .set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           //// for Ele23 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
           //.set_extra_l1_probe_pt(20.)
           //.set_extra_l1_iso_probe_pt(18.)
           // for Ele12 leg of EMu cross-trigger
-          .set_probe_trg_objects("triggerObjectsEle23Ele12")
-          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
-          .set_extra_l1_probe_pt(10.)
+          //.set_probe_trg_objects("triggerObjectsEle23Ele12")
+          //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          //.set_extra_l1_probe_pt(10.)
+          //
+          //
           .set_probe_id(elec_probe_id)
           .set_tag_id(elec_tag_id)
           // em filters hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter -> electron 
