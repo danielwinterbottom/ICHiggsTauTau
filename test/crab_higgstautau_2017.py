@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Aug14_Data_102X_2017'
+config.General.workArea='Sep05_Data_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -19,6 +19,9 @@ config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workA
 config.Data.allowNonValidInputDataset = True
 
 config.Site.storageSite = 'T2_UK_London_IC'
+config.Data.ignoreLocality = True
+config.Site.whitelist   = ['T2_*','T1_*','T3_*']
+
 
 if __name__ == '__main__':
 
