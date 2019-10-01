@@ -2230,9 +2230,9 @@ def HTTPlot(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
 
-    if vbf_background:
-        for key in background_schemes: 
-            background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    # if vbf_background:
+    #     for key in background_schemes: 
+    #         background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm','zee']:

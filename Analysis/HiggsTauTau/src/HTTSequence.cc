@@ -1374,7 +1374,7 @@ BuildModule(jetIDFilter);
     );*/
 
 
-if (era_type == era::data_2017) {
+if (era_type == era::data_2016 || era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
@@ -1672,7 +1672,7 @@ if(do_met_filters){
 }
 
 
-if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16){
+/*if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16){
   BuildModule(GenericModule("BadMuonFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -1684,7 +1684,7 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
        if(do_ggH_stitch && (strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) ) return pass_filters; //annoyingly the official ggH samples are 'backwards'
        else return !pass_filters;
     }));
-};
+};*/
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -2584,8 +2584,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-     .set_do_quarkmass_higgspt(do_ggH_stitch)
-     .set_do_ps_weights(do_ggH_stitch);
+     .set_do_quarkmass_higgspt(false)
+     .set_do_ps_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root"); //htt_scalefactors_v17_7
      httWeights.set_is_embedded(is_embedded);

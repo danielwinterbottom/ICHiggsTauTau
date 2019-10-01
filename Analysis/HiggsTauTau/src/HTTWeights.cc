@@ -397,8 +397,14 @@ namespace ic {
       if (mc_ == mc::mc2018 || mc_ == mc::mc2017) { 
         fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_idiso_binned_embed_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
-            w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+        if (mc_ == mc::mc2017) {
+          fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_idiso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+        }
+        else {
+          fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+        }
         fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_id_kit_ratio")->functor(w_->argSet("m_pt,m_eta")));
         fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(

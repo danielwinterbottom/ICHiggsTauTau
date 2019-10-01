@@ -1205,7 +1205,8 @@ qqhww_samples = []
 if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16','tauid2016','mvadm2016']:
     # Add data sample names
     if options.channel in ['mt','zmm','mj']: 
-        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
+        # data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
     if options.channel == 'et' or options.channel == 'zee': 
@@ -1216,7 +1217,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16','tauid20
     # Add MC sample names   
     ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wgam_samples = ['WGToLNuG','WGToLNuG-ext','WGstarToLNuEE','WGstarToLNuMuMu']
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
@@ -1229,17 +1230,26 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16','tauid20
     if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
     
 if options.era in ["smsummer16",'cpsummer16','cpdecay16','tauid2016','mvadm2016']:
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    # vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
-    ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
+    # ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
+    ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
     gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
+
+# if options.era in ["legacy16"]:
+#     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    # wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
+    # ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
+#     gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
+#     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
     
     
 if options.era in ['cpsummer17','tauid2017']:
-    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
-    #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
-    #ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
+    # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    # ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
     #vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
@@ -1312,15 +1322,16 @@ if options.era in ['cpsummer16']:
          # 'WplusH_htt' : 'WplusHToTauTau_M-*', 
          # 'WminusH_htt' : 'WminusHToTauTau_M-*', 
          # 'ZH_htt' : 'ZHToTauTau_M-*', 
-         'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
-         'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
-         'qqHps_htt' : 'VBFHiggs0M_M-*', 
-         'ZHsm_htt' : 'ZHiggs0PM_M-*',
-         'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
-         'ZHps_htt' : 'ZHiggs0M_M-*',
-         'WHsm_htt' : 'WHiggs0PM_M-*',
-         'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
-         'WHps_htt' : 'WHiggs0M_M-*',
+
+         # 'qqHsm_htt' : 'VBFHiggs0PM_M-*', 
+         # 'qqHmm_htt' : 'VBFHiggs0Mf05ph0_M-*', 
+         # 'qqHps_htt' : 'VBFHiggs0M_M-*', 
+         # 'ZHsm_htt' : 'ZHiggs0PM_M-*',
+         # 'ZHmm_htt' : 'ZHiggs0Mf05ph0_M-*',
+         # 'ZHps_htt' : 'ZHiggs0M_M-*',
+         # 'WHsm_htt' : 'WHiggs0PM_M-*',
+         # 'WHmm_htt' : 'WHiggs0Mf05ph0_M-*',
+         # 'WHps_htt' : 'WHiggs0M_M-*',
          'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] , 
          'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'], 
          'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
@@ -1345,17 +1356,17 @@ if options.era in ['cpdecay16','mvadm2016']:
         #"qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
         #"qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
 
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
 
-        "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
-         "WplusH_htt" : "WplusHToTauTau_M-*",
-         "WminusH_htt" : "WminusHToTauTau_M-*",
-         "ZH_htt" : "ZHToTauTau_M-*",
+        #  "WplusH_htt" : "WplusHToTauTau_M-*",
+        #  "WminusH_htt" : "WminusHToTauTau_M-*",
+        #  "ZH_htt" : "ZHToTauTau_M-*",
         
     }
 
