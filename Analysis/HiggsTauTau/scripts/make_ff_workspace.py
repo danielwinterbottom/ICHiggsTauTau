@@ -183,8 +183,6 @@ for wp in wps:
     # add statistical uncertainties 1 per njets/dm bin
     for njet in [0,1,2]:
       for dm in dm_bins:
-        print '!!!!!!!!!!!!!!!!!!'
-        print 'expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_up("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_up,ff_tt_%(wp)s_%(dmtype)s)' % vars()
         w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_up("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_up,ff_tt_%(wp)s_%(dmtype)s)' % vars())
         w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_down("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_down,ff_tt_%(wp)s_%(dmtype)s)' % vars())
   

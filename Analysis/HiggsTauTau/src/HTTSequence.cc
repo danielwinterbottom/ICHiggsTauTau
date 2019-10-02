@@ -2794,7 +2794,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 //      .set_maketrees(true)
 //      .set_channel(channel)
 //      .set_strategy(strategy_type));
-//
+
 
 if (strategy_type == strategy::cpdecays16) {
   //BuildModule(RhoIDEmbedder("RhoIDEmbedder")
@@ -2802,13 +2802,6 @@ if (strategy_type == strategy::cpdecays16) {
    //   .set_maketrees(false)
    //   .set_channel(channel)
    //   .set_strategy(strategy_type));
-
-//  BuildModule(Pi0MVA("Pi0MVA")
-//      .set_fs(fs.get())
-//      .set_maketrees(true)
-//      .set_channel(channel)
-//      .set_strategy(strategy_type));
-
 
   //BuildModule(MVADMEmbedder("MVADMEmbedder")
   //    .set_fs(fs.get())

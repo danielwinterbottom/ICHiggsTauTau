@@ -19,7 +19,7 @@
 #include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "TMVA/Reader.h"
 #include "TH1D.h"
-
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/ImpactParameter.h"
 
 namespace ic {
 
@@ -717,8 +717,8 @@ namespace ic {
   ic::Candidate* GetPi0FromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
   ic::Candidate* GetPiFromCands(ic::Tau const* tau, std::map<std::size_t, ic::PFCandidate*> pfcands);
 
-  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut);
-  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift);
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands,int gammas_shift);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut);
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
@@ -1028,6 +1028,7 @@ namespace ic {
   std::set<int16_t> GetTriggerTypes(TriggerObject* obj);
 
   double quantile_mapping(double value, TH1D *input_cdf, TH1D *output_cdf);
+  std::pair<TVector3,double> IPAndSignificance(ic::Tau const *intau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands);
   
 } // namepsace
 #endif

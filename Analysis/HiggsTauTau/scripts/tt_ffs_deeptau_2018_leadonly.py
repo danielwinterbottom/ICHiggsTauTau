@@ -273,11 +273,21 @@ def CalculateFakeFactors(num,denum):
 
 def FitFakeFactors(h,usePol1=False):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
-  f1 = ROOT.TF1("f1","landau")
-  f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]")
-  if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x")
+  f1 = ROOT.TF1("f1","landau",40,200)
+  f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",40,200)
+  if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",40,200)
+  # clone histogram and set all bins with >0 content
+  h_clone = h.Clone()
+  h_clone.Reset()
+  for i in range(1,h.GetNbinsX()+1): 
+    content = h.GetBinContent(i)
+    error = h.GetBinError(i)
+    if content>0: 
+      h_clone.SetBinContent(i,content)
+      h_clone.SetBinError(i,error)
+  h = h_clone         
   # fit first with landau to get initial values for parameters - pol values set to 0 initially
-  h.Fit("f1",'I')
+  h.Fit("f1",'IR')
   f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
   if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
@@ -285,7 +295,7 @@ def FitFakeFactors(h,usePol1=False):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'SI')
+    fitresult = h.Fit("f2",'SIR')
     rep = int(fitresult) != 0
     if not rep or count>100: 
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -293,7 +303,7 @@ def FitFakeFactors(h,usePol1=False):
       break
     count+=1
   fit.SetName(h.GetName()+'_fit')
-  return fit, h_uncert
+  return fit, h_uncert, h
 
 def FitCorrection(h):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
@@ -318,7 +328,7 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas() 
   f.SetMinimum(0)
   if f.GetMaximum() > 0.5 and 'sig' not in name: f.SetMaximum(0.5)
-  elif f.GetMaximum() > 1.2 and 'sig' in name: f.SetMaximum(1.2)
+  elif f.GetMaximum() > 1.2: f.SetMaximum(1.2)
   f.SetStats(0)
   f.GetXaxis().SetTitle('p_{T} (GeV)')
   f.GetYaxis().SetTitle('FF')
@@ -566,18 +576,18 @@ for ff in ff_list:
     fin.Close()
 
   # do fitting
-  (qcd_fit, qcd_uncert) = FitFakeFactors(qcd_ff)
+  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
   PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
   if wjets_ff:
-    (wjets_fit, wjets_uncert) = FitFakeFactors(wjets_ff)
+    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
     to_write.append(wjets_fit)
     to_write.append(wjets_uncert)
     PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
   if ttbar_ff:
-    (ttbar_fit, ttbar_uncert) = FitFakeFactors(ttbar_ff)
+    (ttbar_fit, ttbar_uncert, ttbar_ff) = FitFakeFactors(ttbar_ff)
     to_write.append(ttbar_fit)
     to_write.append(ttbar_uncert)
     PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)

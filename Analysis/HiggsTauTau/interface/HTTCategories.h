@@ -625,7 +625,9 @@ class HTTCategories : public ModuleBase {
   double wt_ff_tt_frac_syst_down_2_;
   double wt_ff_dy_frac_syst_up_2_  ;
   double wt_ff_dy_frac_syst_down_2_;
-  
+ 
+  // ff uncertainties for cp in decay analysis
+  double wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet0_mvadm1_up_1_, wt_ff_qcd_stat_njet0_mvadm1_down_1_, wt_ff_qcd_stat_njet0_mvadm2_up_1_, wt_ff_qcd_stat_njet0_mvadm2_down_1_, wt_ff_qcd_stat_njet0_mvadm10_up_1_, wt_ff_qcd_stat_njet0_mvadm10_down_1_, wt_ff_qcd_stat_njet0_mvadm11_up_1_, wt_ff_qcd_stat_njet0_mvadm11_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet1_mvadm1_up_1_, wt_ff_qcd_stat_njet1_mvadm1_down_1_, wt_ff_qcd_stat_njet1_mvadm2_up_1_, wt_ff_qcd_stat_njet1_mvadm2_down_1_, wt_ff_qcd_stat_njet1_mvadm10_up_1_, wt_ff_qcd_stat_njet1_mvadm10_down_1_, wt_ff_qcd_stat_njet1_mvadm11_up_1_, wt_ff_qcd_stat_njet1_mvadm11_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet2_mvadm1_up_1_, wt_ff_qcd_stat_njet2_mvadm1_down_1_, wt_ff_qcd_stat_njet2_mvadm2_up_1_, wt_ff_qcd_stat_njet2_mvadm2_down_1_, wt_ff_qcd_stat_njet2_mvadm10_up_1_, wt_ff_qcd_stat_njet2_mvadm10_down_1_, wt_ff_qcd_stat_njet2_mvadm11_up_1_, wt_ff_qcd_stat_njet2_mvadm11_down_1_; 
   
   double ff_weight_inclusive_;
   double ff_weight_inclusive_2_;
@@ -1239,6 +1241,8 @@ class HTTCategories : public ModuleBase {
   double rho_dphi_, rho_deta_;
 
   unsigned ngenjets_;
+  double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
+  double q_tot_1_, q_tot_2_;
 
  public:
   HTTCategories(std::string const& name);

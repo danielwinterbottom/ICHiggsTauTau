@@ -104,6 +104,14 @@ namespace ic {
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
       outtree_->Branch("deeptau_sf", &deeptau_sf_);
+
+      outtree_->Branch("ip_mag_1", &ip_mag_1_);
+      outtree_->Branch("ip_mag_2", &ip_mag_2_);
+      outtree_->Branch("ip_sig_1", &ip_sig_1_);
+      outtree_->Branch("ip_sig_2", &ip_sig_2_);
+
+      outtree_->Branch("q_tot_1", &q_tot_1_);
+      outtree_->Branch("q_tot_2", &q_tot_2_);
       //end of temp gen stuff
       // add temporary tau trg effs
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
@@ -578,7 +586,7 @@ namespace ic {
           } 
         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_);    
-          if(channel_ == channel::tt){
+          if(channel_ == channel::tt && strategy_ != strategy::cpdecays18){
             outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
             outtree_->Branch("wt_ff_1"  , &wt_ff_1_);
             outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
@@ -587,20 +595,60 @@ namespace ic {
             if(do_ff_systematics_){
                 outtree_->Branch("wt_ff_qcd_syst_up_1"            , &wt_ff_qcd_syst_up_1_             );
                 outtree_->Branch("wt_ff_qcd_syst_down_1"          , &wt_ff_qcd_syst_down_1_           );
-                outtree_->Branch("wt_ff_qcd_dm0_njet0_stat_up_1"  , &wt_ff_qcd_dm0_njet0_stat_up_1_   );
-                outtree_->Branch("wt_ff_qcd_dm0_njet0_stat_down_1", &wt_ff_qcd_dm0_njet0_stat_down_1_ );
-                outtree_->Branch("wt_ff_qcd_dm0_njet1_stat_up_1"  , &wt_ff_qcd_dm0_njet1_stat_up_1_   );
-                outtree_->Branch("wt_ff_qcd_dm0_njet1_stat_down_1", &wt_ff_qcd_dm0_njet1_stat_down_1_ );
-                outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_up_1"  , &wt_ff_qcd_dm1_njet0_stat_up_1_   );
-                outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_down_1", &wt_ff_qcd_dm1_njet0_stat_down_1_ );
-                outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_up_1"  , &wt_ff_qcd_dm1_njet1_stat_up_1_   );
-                outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_down_1", &wt_ff_qcd_dm1_njet1_stat_down_1_ );
-                outtree_->Branch("wt_ff_realtau_up_1"              , &wt_ff_realtau_up_1_               );
-                outtree_->Branch("wt_ff_realtau_down_1"              , &wt_ff_realtau_down_1_               );
                 outtree_->Branch("wt_ff_w_syst_up_1"              , &wt_ff_w_syst_up_1_               );
                 outtree_->Branch("wt_ff_w_syst_down_1"            , &wt_ff_w_syst_down_1_             );
                 outtree_->Branch("wt_ff_tt_syst_up_1"             , &wt_ff_tt_syst_up_1_              );
                 outtree_->Branch("wt_ff_tt_syst_down_1"           , &wt_ff_tt_syst_down_1_            );
+
+                if(strategy_ != strategy::cpdecays18) {
+                  outtree_->Branch("wt_ff_qcd_dm0_njet0_stat_up_1"  , &wt_ff_qcd_dm0_njet0_stat_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_dm0_njet0_stat_down_1", &wt_ff_qcd_dm0_njet0_stat_down_1_ );
+                  outtree_->Branch("wt_ff_qcd_dm0_njet1_stat_up_1"  , &wt_ff_qcd_dm0_njet1_stat_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_dm0_njet1_stat_down_1", &wt_ff_qcd_dm0_njet1_stat_down_1_ );
+                  outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_up_1"  , &wt_ff_qcd_dm1_njet0_stat_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_dm1_njet0_stat_down_1", &wt_ff_qcd_dm1_njet0_stat_down_1_ );
+                  outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_up_1"  , &wt_ff_qcd_dm1_njet1_stat_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_dm1_njet1_stat_down_1", &wt_ff_qcd_dm1_njet1_stat_down_1_ );
+                  outtree_->Branch("wt_ff_realtau_up_1"              , &wt_ff_realtau_up_1_               );
+                  outtree_->Branch("wt_ff_realtau_down_1"              , &wt_ff_realtau_down_1_               );
+                } else {
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1"  , &wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1"  , &wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1"  , &wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1"  , &wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm1_up_1"  , &wt_ff_qcd_stat_njet0_mvadm1_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm1_down_1"  , &wt_ff_qcd_stat_njet0_mvadm1_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm2_up_1"  , &wt_ff_qcd_stat_njet0_mvadm2_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm2_down_1"  , &wt_ff_qcd_stat_njet0_mvadm2_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm10_up_1"  , &wt_ff_qcd_stat_njet0_mvadm10_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm10_down_1"  , &wt_ff_qcd_stat_njet0_mvadm10_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm11_up_1"  , &wt_ff_qcd_stat_njet0_mvadm11_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet0_mvadm11_down_1"  , &wt_ff_qcd_stat_njet0_mvadm11_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1"  , &wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1"  , &wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1"  , &wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1"  , &wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm1_up_1"  , &wt_ff_qcd_stat_njet1_mvadm1_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm1_down_1"  , &wt_ff_qcd_stat_njet1_mvadm1_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm2_up_1"  , &wt_ff_qcd_stat_njet1_mvadm2_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm2_down_1"  , &wt_ff_qcd_stat_njet1_mvadm2_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm10_up_1"  , &wt_ff_qcd_stat_njet1_mvadm10_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm10_down_1"  , &wt_ff_qcd_stat_njet1_mvadm10_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm11_up_1"  , &wt_ff_qcd_stat_njet1_mvadm11_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet1_mvadm11_down_1"  , &wt_ff_qcd_stat_njet1_mvadm11_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1"  , &wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1"  , &wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1"  , &wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1"  , &wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm1_up_1"  , &wt_ff_qcd_stat_njet2_mvadm1_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm1_down_1"  , &wt_ff_qcd_stat_njet2_mvadm1_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm2_up_1"  , &wt_ff_qcd_stat_njet2_mvadm2_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm2_down_1"  , &wt_ff_qcd_stat_njet2_mvadm2_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm10_up_1"  , &wt_ff_qcd_stat_njet2_mvadm10_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm10_down_1"  , &wt_ff_qcd_stat_njet2_mvadm10_down_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm11_up_1"  , &wt_ff_qcd_stat_njet2_mvadm11_up_1_   );
+                  outtree_->Branch("wt_ff_qcd_stat_njet2_mvadm11_down_1"  , &wt_ff_qcd_stat_njet2_mvadm11_down_1_   );
+                }
                 
                 if(channel_ == channel::et || channel_ == channel::mt){
                   outtree_->Branch("wt_ff_w_dm0_njet0_stat_up_1"    , &wt_ff_w_dm0_njet0_stat_up_1_     );
@@ -621,7 +669,7 @@ namespace ic {
                   outtree_->Branch("wt_ff_tt_dm1_njet1_stat_down_1" , &wt_ff_tt_dm1_njet1_stat_down_1_  );
                 }
                 
-                if(channel_ == channel::tt){
+                if(channel_ == channel::tt && strategy_ != strategy::cpdecays18){
                   outtree_->Branch("wt_ff_qcd_syst_up_2"            , &wt_ff_qcd_syst_up_2_             );
                   outtree_->Branch("wt_ff_qcd_syst_down_2"          , &wt_ff_qcd_syst_down_2_           );
                   outtree_->Branch("wt_ff_qcd_dm0_njet0_stat_up_2"  , &wt_ff_qcd_dm0_njet0_stat_up_2_   );
@@ -2207,7 +2255,54 @@ namespace ic {
             if(event->Exists("wt_btag_ff_dy_frac_syst_down_2"               )) wt_btag_ff_dy_frac_syst_down_2               = event->Get<double>("wt_btag_ff_dy_frac_syst_down_2");
           }
         }
-      } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
+      } else if (strategy_ == strategy::cpdecays18) {
+        if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");
+        if(do_ff_systematics_){
+          if(event->Exists("wt_ff_qcd_syst_up_1"            )) wt_ff_qcd_syst_up_1_               = event->Get<double>("wt_ff_qcd_syst_up_1");
+          if(event->Exists("wt_ff_qcd_syst_down_1"          )) wt_ff_qcd_syst_down_1_             = event->Get<double>("wt_ff_qcd_syst_down_1");
+          if(event->Exists("wt_ff_wjets_syst_up_1"              )) wt_ff_w_syst_up_1_                 = event->Get<double>("wt_ff_wjets_syst_up_1");
+          if(event->Exists("wt_ff_wjets_syst_down_1"            )) wt_ff_w_syst_down_1_               = event->Get<double>("wt_ff_wjets_syst_down_1");
+          if(event->Exists("wt_ff_ttbar_syst_up_1"             )) wt_ff_tt_syst_up_1_                = event->Get<double>("wt_ff_ttbar_syst_up_1");
+          if(event->Exists("wt_ff_ttbar_syst_down_1"           )) wt_ff_tt_syst_down_1_              = event->Get<double>("wt_ff_ttbar_syst_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1")) wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1")) wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1")) wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1")) wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm1_up_1")) wt_ff_qcd_stat_njet0_mvadm1_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm1_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm1_down_1")) wt_ff_qcd_stat_njet0_mvadm1_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm1_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm2_up_1")) wt_ff_qcd_stat_njet0_mvadm2_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm2_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm2_down_1")) wt_ff_qcd_stat_njet0_mvadm2_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm2_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm10_up_1")) wt_ff_qcd_stat_njet0_mvadm10_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm10_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm10_down_1")) wt_ff_qcd_stat_njet0_mvadm10_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm10_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm11_up_1")) wt_ff_qcd_stat_njet0_mvadm11_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm11_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet0_mvadm11_down_1")) wt_ff_qcd_stat_njet0_mvadm11_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet0_mvadm11_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1")) wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1")) wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1")) wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1")) wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm1_up_1")) wt_ff_qcd_stat_njet1_mvadm1_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm1_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm1_down_1")) wt_ff_qcd_stat_njet1_mvadm1_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm1_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm2_up_1")) wt_ff_qcd_stat_njet1_mvadm2_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm2_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm2_down_1")) wt_ff_qcd_stat_njet1_mvadm2_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm2_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm10_up_1")) wt_ff_qcd_stat_njet1_mvadm10_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm10_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm10_down_1")) wt_ff_qcd_stat_njet1_mvadm10_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm10_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm11_up_1")) wt_ff_qcd_stat_njet1_mvadm11_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm11_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet1_mvadm11_down_1")) wt_ff_qcd_stat_njet1_mvadm11_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet1_mvadm11_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1")) wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1")) wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1")) wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1")) wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm1_up_1")) wt_ff_qcd_stat_njet2_mvadm1_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm1_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm1_down_1")) wt_ff_qcd_stat_njet2_mvadm1_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm1_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm2_up_1")) wt_ff_qcd_stat_njet2_mvadm2_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm2_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm2_down_1")) wt_ff_qcd_stat_njet2_mvadm2_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm2_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm10_up_1")) wt_ff_qcd_stat_njet2_mvadm10_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm10_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm10_down_1")) wt_ff_qcd_stat_njet2_mvadm10_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm10_down_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm11_up_1")) wt_ff_qcd_stat_njet2_mvadm11_up_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm11_up_1");
+          if(event->Exists("wt_ff_qcd_stat_njet2_mvadm11_down_1")) wt_ff_qcd_stat_njet2_mvadm11_down_1_ = event->Get<double>("wt_ff_qcd_stat_njet2_mvadm11_down_1");
+        }
+
+      } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");    
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
        
@@ -4444,16 +4539,28 @@ namespace ic {
       TLorentzVector lvec3;
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
-
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
       //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
-      //for(auto v : refit_vertex_vec) {
-      //  if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
-      //}
+      for(auto v : refit_vertex_vec) {
+        //if(v->id() == tau1->id()+tau2->id()){ refit_vertex = v; std::cout << "found match!" << std::endl; std::cout << v->vx() << "    " << vertex_vec[0]->vx() << "    " << tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")*tau2->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") << std::endl; }
+        if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
+      }
 
+      std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(tau1, refit_vertex, pfcands);
+      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
+      ip_mag_1_ = ipandsig_1.first.Mag();
+      ip_sig_1_ = ipandsig_1.second;
+      ip_mag_2_ = ipandsig_2.first.Mag();
+      ip_sig_2_ = ipandsig_2.second;
 
+      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands);
+      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands);
+      q_tot_1_=0., q_tot_2_=0.;
+
+      for(auto c : charged_cands_1) q_tot_1_+=c->charge();
+      for(auto c : charged_cands_2) q_tot_2_+=c->charge();
 
       auto primary_vtx = refit_vertex;
 
@@ -4646,7 +4753,19 @@ namespace ic {
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
 
+
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_vec) {
+        if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
+      }
+
+      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
+      ip_mag_2_ = ipandsig_2.first.Mag();
+      ip_sig_2_ = ipandsig_2.second;
+
       rho_dphi_=-9999; rho_deta_=-9999;
       if(tau_decay_mode_2_==1){
         rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(pi0_tau2->vector(),pi_tau2->vector());
@@ -4724,6 +4843,16 @@ namespace ic {
       TLorentzVector pvtosv;
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_vec) {
+        if(v->id() == ele1->id()+tau2->id()) refit_vertex = v; 
+      }
+
+      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
+      ip_mag_2_ = ipandsig_2.first.Mag();
+      ip_sig_2_ = ipandsig_2.second;
 
       if(tau_decay_mode_2_==1){
 
