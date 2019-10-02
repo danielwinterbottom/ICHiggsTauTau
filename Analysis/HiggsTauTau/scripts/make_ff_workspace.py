@@ -29,6 +29,7 @@ w = ROOT.RooWorkspace('w')
 ### tt channel ####
 ################################################
 
+ip_sig_cut = '3'
 wps = ['tight']
 
 for wp in wps:
@@ -82,6 +83,27 @@ for wp in wps:
               'mvadm11'
   ]
 
+  cutsmap_njets = {
+                  0: '@0==0',
+                  1: '@0==1',
+                  2: '@0>1'
+  }
+
+  cutsmap_dm = {
+              'dm0':'@1==0',
+              'dm1':'@1==1',
+              'dm10':'@1==10',
+              'dm11':'@1==11',
+              'mvadm0':'@1==0',
+              'mvadm0_sig_gt3':'@1==0&&@2>=%(ip_sig_cut)s',
+              'mvadm0_sig_lt3':'@1==0&&@2<%(ip_sig_cut)s',
+              'mvadm1':'@1==1',
+              'mvadm2':'@1==2',
+              'mvadm10':'@1==10',
+              'mvadm11':'@1==11'
+  }
+
+  # get all fitted functions for raw fake factors and statistical uncertainties from fit uncertainty bands
   for njet in [0,1,2]:
     for dm in dm_bins:
       func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_fit' % vars())
@@ -92,6 +114,19 @@ for wp in wps:
 
       w.factory('expr::pt_bounded("max(min(200,@0),40)",pt[0])' % vars())
       w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_fit("%(func_str)s",pt_bounded)' % vars())
+ 
+      # get stat uncertainties
+      hist_nom = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_uncert' % vars())
+      (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom)
+      wsptools.SafeWrapHist(w, ['pt_bounded'], hist_nom, name='tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom' % vars())
+      wsptools.SafeWrapHist(w, ['pt_bounded'], hist_up, name='tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_up' % vars())
+      wsptools.SafeWrapHist(w, ['pt_bounded'], hist_down, name='tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_down' % vars())  
+ 
+      njets_cut = cutsmap_njets[njet] % vars() 
+      dm_cut    = cutsmap_dm[dm] % vars()
+
+      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_up("(%(njets_cut)s&&%(dm_cut)s)*(1.+@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_up,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_down("(%(njets_cut)s&&%(dm_cut)s)*(1.-@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_down,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
 
   # make njets / dm binned functions
 
@@ -99,7 +134,8 @@ for wp in wps:
 
   w.factory('expr::ff_tt_%(wp)s_mvadmbins_nosig_qcd("(@0==0)*((@1==0)*@2+(@1==1)*@3+(@1==2)*@4+(@1==10)*@5+(@1==11)*@6) + (@0==1)*((@1==0)*@7+(@1==1)*@8+(@1==2)*@9+(@1==10)*@10+(@1==11)*@11) + (@0>1)*((@1==0)*@12+(@1==1)*@13+(@1==2)*@14+(@1==10)*@15+(@1==11)*@16)", njets[0], mvadm[1], tt_mvadm0_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
 
-  w.factory('expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<3)*@3+(@1==0&&@2>=3)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<3)*@9+(@1==0&&@2>=3)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<3)*@15+(@1==0&&@2>=3)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
+  w.factory('expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<%(ip_sig_cut)s)*@3+(@1==0&&@2>=%(ip_sig_cut)s)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<3)*@9+(@1==0&&@2>=%(ip_sig_cut)s)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<3)*@15+(@1==0&&@2>=%(ip_sig_cut)s)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
+
 
   # os/ss corrections
   for dm in dm_bins:
@@ -116,10 +152,12 @@ for wp in wps:
 
   w.factory('expr::tt_mvadmbins_nosig_%(wp)s_qcd_corr("(@0==0)*@1+(@0==1)*@2+(@0==2)*@3+(@0==10)*@4+(@0==11)*@5", mvadm[1], tt_mvadm0_%(wp)s_qcd_corr,tt_mvadm1_%(wp)s_qcd_corr,tt_mvadm2_%(wp)s_qcd_corr,tt_mvadm10_%(wp)s_qcd_corr,tt_mvadm11_%(wp)s_qcd_corr)' % vars())
 
+  w.factory('expr::tt_mvadmbins_%(wp)s_qcd_corr("(@0==0&&@1<%(ip_sig_cut)s)*@2 + (@0==0&&@1>=%(ip_sig_cut)s)*@3 + (@0==1)*@4+(@0==2)*@5+(@0==10)*@6+(@0==11)*@7", mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_%(wp)s_qcd_corr,tt_mvadm0_sig_gt3_%(wp)s_qcd_corr,tt_mvadm1_%(wp)s_qcd_corr,tt_mvadm2_%(wp)s_qcd_corr,tt_mvadm10_%(wp)s_qcd_corr,tt_mvadm11_%(wp)s_qcd_corr)' % vars())
   
   for dmtype in ['mvadmbins','mvadmbins_nosig','dmbins']:
     # apply QCD corrections - only do this for the fraction of events that come from QCD
     w.factory('expr::ff_tt_%(wp)s_%(dmtype)s("(@0!=0)*@1*(@2*@3 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
+
     # add QCD systematics defined by not applying the OS/SS correction and applying the correction twice -> this might be a convervative approach but represents the extent of our knowladge about the QCD OS/SS differences
      
     w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_up("(@0!=0)*@1*(@2*@2*@3 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
