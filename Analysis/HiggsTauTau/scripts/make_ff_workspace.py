@@ -88,7 +88,6 @@ for wp in wps:
       func_str = func.GetTitle()
       params = func.GetParameters()
       for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
-      func_str
       func_str = re.sub('x', '@0', func_str)
 
       w.factory('expr::pt_bounded("max(min(200,@0),40)",pt[0])' % vars())
@@ -119,7 +118,29 @@ for wp in wps:
 
   
   for dmtype in ['mvadmbins','mvadmbins_nosig','dmbins']:
-    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s("(@0!=0)*@1*@2 + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr)' % vars())
+    # apply QCD corrections - only do this for the fraction of events that come from QCD
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s("(@0!=0)*@1*(@2*@3 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
+    # add QCD systematics defined by not applying the OS/SS correction and applying the correction twice -> this might be a convervative approach but represents the extent of our knowladge about the QCD OS/SS differences
+     
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_up("(@0!=0)*@1*(@2*@2*@3 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_down("(@0!=0)*@1 + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
+
+    # wjets and ttbar systematics from comparing the inclusive fakefactors derived from data for QCD events with the MC fake factors predicted in MC for wjets and ttbar
+
+    for x in ['qcd','wjets_mc','ttbar_mc']:
+      func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2018.root:inclusive_inclusive_pt_1_ff_%(x)s_fit' % vars())
+      func_str = func.GetTitle()
+      params = func.GetParameters()
+      for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
+      func_str = re.sub('x', '@0', func_str)
+      w.factory('expr::pt_bounded("max(min(200,@0),40)",pt[0])' % vars())
+      w.factory('expr::tt_inclusive_%(wp)s_%(x)s_fit("%(func_str)s",pt_bounded)' % vars())
+
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_wjets_syst_up("@0*(1.-@1 + @1*@2/@3)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_wjets, tt_inclusive_%(wp)s_wjets_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_wjets_syst_down("@0*(1.-@1 + @1*@3/@2)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_wjets, tt_inclusive_%(wp)s_wjets_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
+
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_ttbar_syst_up("@0*(1.-@1 + @1*@2/@3)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_ttbar, tt_inclusive_%(wp)s_ttbar_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_ttbar_syst_down("@0*(1.-@1 + @1*@3/@2)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_ttbar, tt_inclusive_%(wp)s_ttbar_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
 
 w.Print()
 w.writeToFile('fakefactors_ws_2018.root')
