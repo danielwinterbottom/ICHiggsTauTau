@@ -180,6 +180,14 @@ for wp in wps:
     w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_ttbar_syst_up("@0*(1.-@1 + @1*@2/@3)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_ttbar, tt_inclusive_%(wp)s_ttbar_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
     w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_ttbar_syst_down("@0*(1.-@1 + @1*@3/@2)", ff_tt_%(wp)s_%(dmtype)s, tt_%(wp)s_fracs_ttbar, tt_inclusive_%(wp)s_ttbar_mc_fit, tt_inclusive_%(wp)s_qcd_fit)' % vars())
 
+    # add statistical uncertainties 1 per njets/dm bin
+    for njet in [0,1,2]:
+      for dm in dm_bins:
+        print '!!!!!!!!!!!!!!!!!!'
+        print 'expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_up("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_up,ff_tt_%(wp)s_%(dmtype)s)' % vars()
+        w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_up("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_up,ff_tt_%(wp)s_%(dmtype)s)' % vars())
+        w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_down("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_down,ff_tt_%(wp)s_%(dmtype)s)' % vars())
+  
 w.Print()
 w.writeToFile('fakefactors_ws_2018.root')
 w.Delete()
