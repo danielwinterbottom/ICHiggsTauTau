@@ -1274,7 +1274,7 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoMu24ObjectProducer+
       process.icIsoTkMu22ObjectProducer+
       process.icIsoTkMu24ObjectProducer+
-
+      process.icIsoMu22ObjectProducer+
       process.icIsoTkMu22Eta2p1ObjectProducer+
 
       process.icDoubleMediumTau40ObjectProducer +
