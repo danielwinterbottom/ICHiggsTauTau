@@ -528,6 +528,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
  //Add photons to veto Final State Radiation for isolation SF (zee).
     if(event->ExistsInTree("photons")){
         std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
+        std::vector<SuperCluster*> scs = event->GetPtrVec<SuperCluster>("superClusters");
         ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
         std::vector<Candidate const*> elec_vec_1 = {lep1};
         std::vector<Candidate const*> elec_vec_2 = {lep2};
@@ -542,17 +543,23 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         if (input1.size()>0){
             sum_vec +=  input1[0].first->vector();
             pass_FSR_condition_=true;
-            std::cout<<"--------------------"<<std::endl;
-            std::cout<<"e_pt  = "<<lep1->pt()<<"   ,    e_E ="<<lep1->energy()<<std::endl; 
-            std::cout<<"g1_pt = "<<input1[0].first->pt()<<"   ,    g1_E = "<<input1[0].first->energy()<<std::endl;
-            std::cout<<"g2_pt = "<<input2[0].first->pt()<<"   ,    g2_E = "<<input2[0].first->energy()<<std::endl;
-            std::cout<<"--------------------"<<std::endl;
         }
         if (input2.size()>0){
             sum_vec += input2[0].first->vector();
             pass_FSR_condition_=true;
         }
         m_gamma_leptons_= sum_vec.M();
+ //       if (input1.size()>1){
+ //          Electron const* elec11 = dynamic_cast<Electron const*>(lep1);
+ //          std::cout<<"--------------------"<<std::endl;
+ //          std::cout<<"e_pt = "<<lep1->pt()<<" , e_E ="<<lep1->energy()<<"  sc_eta="<<elec11->sc_eta()<<" sc-E="<<elec11->sc_energy()<<std::endl; 
+ //          std::cout<<"g1_pt = "<<input1[0].first->pt()<<" , g1_E = "<<input1[0].first->energy()<<" , DR(g1,e) = "<<std::fabs(ROOT::Math::VectorUtil::DeltaR(input1[0].first->vector(),lep1->vector()))<<" , veto1 = "<<input1[0].first->pass_electron_veto()<<"  sc_eta="<<input1[0].first->eta()<<"super="<<input1[0].first->supercluster()<<std::endl;
+ //          std::cout<<"g2_pt = "<<input1[1].first->pt()<<" , g2_E = "<<input1[1].first->energy()<<" , DR(g2,e) = "<<std::fabs(ROOT::Math::VectorUtil::DeltaR(input1[1].first->vector(),lep1->vector()))<<" , veto2 = "<<input1[1].first->pass_electron_veto()<<"  sc_eta="<<input1[1].first->eta()<<std::endl;
+ //          for (auto s: scs) {
+ //            if(s->id()==input1[0].first->supercluster()) std::cout << s->energy() << "   " << s->eta() << std::endl;
+ //          }
+ //          std::cout<<"--------------------"<<std::endl;
+ //       }
     }
   
   }

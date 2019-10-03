@@ -3044,14 +3044,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          
           // for single electron trigger
-          .set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
-          .set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          //.set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+          //.set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          
           //// for Ele23 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
           //.set_extra_l1_probe_pt(20.)
           //.set_extra_l1_iso_probe_pt(18.)
+          
           // for Ele12 leg of EMu cross-trigger
           //.set_probe_trg_objects("triggerObjectsEle23Ele12")
           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
