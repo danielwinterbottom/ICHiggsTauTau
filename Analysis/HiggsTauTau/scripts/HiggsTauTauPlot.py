@@ -1744,12 +1744,12 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           #if process == 'tt' and njet != 'njet1': continue  
           template_name = 'ff_'+process+'_'+dm+'_'+njet+'_'+options.channel+'_stat'
           if process == 'tt': 'ff_'+process+'_'+dm+'_'+options.channel+'_stat'
-          # if options.era == 'cpsummer16','cpdecay16',"legacy16": template_name = 'ff_'+process+'_'+dm+'_'+njet+'_'+options.channel+'_2016_stat'
+          # if options.era in ['cpsummer16','cpdecay16',"legacy16"]: template_name = 'ff_'+process+'_'+dm+'_'+njet+'_'+options.channel+'_2016_stat'
           #if options.era == 'cpsummer17': template_name = 'ff_'+process+'_'+dm+'_'+njet+'_'+options.channel+'_2017_stat'
           weight_name = 'wt_ff_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-    if options.channel == "tt" and options.era != 'cpsummer16' and options.era !='cpdecay16',"legacy16" and options.era != 'mvadm2016':
+    if options.channel == "tt" and options.era not in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
       processes = ['w', 'tt']
       for process in processes:
         template_name = 'ff_'+process+'_frac_tt_syst'
@@ -1758,7 +1758,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down_alt', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
     
     template_name = 'ff_sub_syst_%s' % (options.channel) 
-    # if options.era == 'cpsummer16','cpdecay16',"legacy16":   template_name = 'ff_sub_syst_%s_2016_%s' % (options.channel, options.cat)
+    # if options.era in ['cpsummer16','cpdecay16',"legacy16"]:   template_name = 'ff_sub_syst_%s_2016_%s' % (options.channel, options.cat)
     #elif options.era == 'cpsummer17': template_name = 'ff_sub_syst_%s_2017_%s' % (options.channel, options.cat)
     systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
     systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)       
