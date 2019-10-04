@@ -452,21 +452,21 @@ namespace ic {
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
           w_->function("zptmass_weight_nom")->functor(w_->argSet("z_gen_pt,z_gen_mass")));
 
-      // em osss same names for all years
-      fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-      fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
-        w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // // em osss same names for all years
+     // fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
+     //   w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
 
 
 

@@ -2011,18 +2011,30 @@ namespace ic {
     return taus;
   }
 
-  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
-    return GetTauGammas(tau, pfcands, 0.5);
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, int gammas_shift=0) {
+    return GetTauGammas(tau, pfcands, 0.5, gammas_shift);
   }
 
-  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift=0) {
+    // shift gammas energy down: gammas_shift = 1
+    // shift gammas energy up: gammas_shift = 2
+    // No shift of gammas energy: gammas_shift = 0
     std::vector<ic::PFCandidate*> gammas = {}; 
     std::vector<std::size_t> gammas_ids = tau->sig_gamma_cands();
     for(auto id : gammas_ids){
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          if(p->pt()>pt_cut) gammas.push_back(p);
+          ic::PFCandidate *gam = new ic::PFCandidate(*p);
+          if(gammas_shift!=0) {
+            double uncert = sqrt(0.0009/gam->energy()+0.000001);
+            double shift=1.;
+            if(gammas_shift==1)      shift-=uncert;
+            else if(gammas_shift==2) shift+=uncert;
+            gam->set_pt(gam->pt()*shift);
+            gam->set_energy(gam->energy()*shift);
+          } 
+          if(p->pt()>pt_cut) gammas.push_back(gam);
           break;
         }
       }
@@ -2075,7 +2087,7 @@ namespace ic {
     ic::Candidate *pi0 = new ic::Candidate();
     std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
     if(hads.size()>0) pi = (ic::Candidate*)hads[0];
-    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut);
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut,0);
     // reconstruct strips from "signal" gammas
     double mass = 0.1349;     
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05); 
@@ -2237,10 +2249,10 @@ namespace ic {
       }
     }
     std::vector<ic::PFCandidate*> gammas;
-    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut);
+    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut,0);
     else  {
       // need to modify isolation collection to exclude these gammas!
-      gammas = GetTauGammas(tau, pfcands, pt_cut);//signal gammasi
+      gammas = GetTauGammas(tau, pfcands, pt_cut,0);//signal gammas
       std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, pt_cut);//iso gammas 
       gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
       std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
@@ -2826,4 +2838,52 @@ namespace ic {
     //std::cout << value << "    " << p << "    " << xlow << "    " << xhigh << "    " << ylow << "    " << yhigh << "    " << x << "    " << new_value << std::endl;
     return new_value;
   }
+
+  std::pair<TVector3,double> IPAndSignificance(ic::Tau const *intau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands) {
+      std::vector<float> h_param = {};
+      ic::Tau  *tau = const_cast<Tau*>(intau);
+      for(auto i :  tau->track_params()) h_param.push_back(i);
+      double B = tau->bfield();
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(tau->svx(),tau->svy(),tau->svz());
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
+      std::vector<ic::PFCandidate*> charged_cands = GetTauHads(tau, pfcands);
+      ROOT::Math::PtEtaPhiEVector charged_vec;
+      for(auto c : charged_cands) charged_vec+=c->vector();
+
+      ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>> p4;
+
+      p4.SetPxPyPzE(charged_vec.Px(),charged_vec.Py(),charged_vec.Pz(),charged_vec.E());
+      ImpactParameter IP;
+      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv, p4);
+
+      ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = tau->track_params_covariance();
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SigmaPrV = vertex->covariance();
+
+      ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
+
+      //std::cout << "---------" << std::endl;
+      //std::cout << "IP = " << ip.X() << "    " << ip.Y() << "    " << ip.Z() << "    mag = " << ip.Mag() << std::endl;
+      //std::cout << "covariance = " << ip_cov[0][0] << "    " << ip_cov[1][1] << "    " << ip_cov[2][2] << std::endl;
+      //std::cout << "PV = " << vertex->vx() << "    " << vertex->vy() << "    " << vertex->vz() << std::endl;
+      //std::cout << "PV covariance = " << SigmaPrV[0][0] << "    " << SigmaPrV[1][1] << "    " << SigmaPrV[2][2] << std::endl;
+
+      //std::cout << "covariance (rel) = " << ip_cov[0][0]/fabs(ip.X()) << "    " << ip_cov[1][1]/fabs(ip.Y()) << "    " << ip_cov[2][2]/fabs(ip.Z()) << std::endl;
+      //std::cout << "IP covariance using only PV uncert (rel) = " << (SigmaPrV[0][0])/fabs(ip.X()) << "    " << (SigmaPrV[1][1])/fabs(ip.Y()) << "    " << (SigmaPrV[2][2])/fabs(ip.Z()) << std::endl;
+
+      double mag = ip.Mag();
+      ROOT::Math::SVector<double, 3> ip_svec;
+      ip_svec(0) = ip.X();
+      ip_svec(1) = ip.Y();
+      ip_svec(2) = ip.Z();
+
+      ip_svec = ip_svec.Unit();
+
+      double uncert = sqrt(ROOT::Math::Dot( ip_svec, ip_cov * ip_svec));
+      double sig = mag/uncert;
+      //std::cout << "IP uncert = " << uncert << std::endl;
+      //double uncert_pvonly = sqrt(ROOT::Math::Dot( ip_svec, SigmaPrV * ip_svec));
+      //std::cout << "IP uncert (PV only) = " << uncert_pvonly << std::endl;
+      return std::make_pair(ip, sig);
+  }
+
 } //namespace

@@ -54,6 +54,20 @@ namespace ic {
       fns_["ff_tt_qcd"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_tt_qcd")->functor(ff_ws_->argSet("t_pt,mvadm,njets")));
     }
+
+    if(strategy_ == strategy::cpdecays18 && channel_==channel::tt) {
+      TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
+      ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f.Close();
+
+      std::vector<std::string> systs = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down"  
+      };
+      for(auto s : systs) {
+        fns_["ff_tt_tight_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_->function(("ff_tt_tight_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,mvis,os")));
+      }
+    }
+
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
@@ -73,17 +87,19 @@ namespace ic {
       
       std::string map_key = category_names_[i];
       std::string map_name = "ff_map_"+channel+"_"+map_key;
-      if(ProductExists(map_name)){
-        fake_factors_[map_key] = GetProduct<std::shared_ptr<FakeFactor>>(map_name);
-        std::cout << "Getting " << fake_factors_[map_key] << std::endl;
-      } else {
-        TFile* ff_file = new TFile(ff_file_name.c_str());
-        FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
-        fake_factors_[map_key]  = std::shared_ptr<FakeFactor>(ff);
-        AddToProducts(map_name, fake_factors_[map_key]);
-        std::cout << "Adding " << fake_factors_[map_key] << std::endl;
-        ff_file->Close();
-        delete ff_file;
+      if(strategy_ != strategy::cpdecays18){
+        if(ProductExists(map_name)){
+          fake_factors_[map_key] = GetProduct<std::shared_ptr<FakeFactor>>(map_name);
+          std::cout << "Getting " << fake_factors_[map_key] << std::endl;
+        } else {
+          TFile* ff_file = new TFile(ff_file_name.c_str());
+          FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
+          fake_factors_[map_key]  = std::shared_ptr<FakeFactor>(ff);
+          AddToProducts(map_name, fake_factors_[map_key]);
+          std::cout << "Adding " << fake_factors_[map_key] << std::endl;
+          ff_file->Close();
+          delete ff_file;
+        }
       }
     }
     
@@ -394,17 +410,18 @@ namespace ic {
         std::vector<double> args_2 = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
         double qcd_frac_1=1.0, w_frac_1=0.0, tt_frac_1=0.0, dy_frac_1=0.0, qcd_frac_2=1.0, w_frac_2=0.0, tt_frac_2=0.0, dy_frac_2=0.0;
 
-        qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
-        w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
-        tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
-        dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args_1.data());
-        qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args_2.data());  
-        w_frac_2 = fns_["w_tt_fracs_2"]->eval(args_2.data());
-        tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args_2.data());
-        dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args_2.data());
-        real_frac = 1-qcd_frac_1-w_frac_1-tt_frac_1-dy_frac_1;
-        real_frac_2 = 1-qcd_frac_2-w_frac_2-tt_frac_2-dy_frac_2;
-
+        if(fracs_file_!="") {
+          qcd_frac_1 = fns_["qcd_tt_fracs_1"]->eval(args_1.data());  
+          w_frac_1 = fns_["w_tt_fracs_1"]->eval(args_1.data());
+          tt_frac_1 = fns_["ttbar_tt_fracs_1"]->eval(args_1.data());
+          dy_frac_1 = fns_["dy_tt_fracs_1"]->eval(args_1.data());
+          qcd_frac_2 = fns_["qcd_tt_fracs_2"]->eval(args_2.data());  
+          w_frac_2 = fns_["w_tt_fracs_2"]->eval(args_2.data());
+          tt_frac_2 = fns_["ttbar_tt_fracs_2"]->eval(args_2.data());
+          dy_frac_2 = fns_["dy_tt_fracs_2"]->eval(args_2.data());
+          real_frac = 1-qcd_frac_1-w_frac_1-tt_frac_1-dy_frac_1;
+          real_frac_2 = 1-qcd_frac_2-w_frac_2-tt_frac_2-dy_frac_2;
+        }
         // for some bins the fractions can be 0 (if all background is accounted for by real taus) in this case take QCD fraction as 1
         if(qcd_frac_1+w_frac_1+tt_frac_1<=0) {
           qcd_frac_1 = 1.0;
@@ -458,53 +475,40 @@ namespace ic {
         }
       } else if(channel_ == channel::tt){
 
-        if(false) {
+        if(strategy_ == strategy::cpdecays18) { 
+          // FF from workspace for cp in decay analysis
 
           Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
           Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-          int tau_decaymode_1 = tau1->decay_mode();
-          int tau_decaymode_2 = tau2->decay_mode();
 
-          double mva_dm_1=-1;
-          if(event->Exists("mvadm_max_index_1")) {
-            int max_index = event->Get<int>("mvadm_max_index_1");
-            if(tau_decaymode_1<2){
-              if(max_index==1) mva_dm_1= 1;
-              if(max_index==2) mva_dm_1= 0;
-              if(max_index==3) mva_dm_1= 2;
-            } else {
-              if(max_index==1) mva_dm_1= 10;
-              if(max_index==2) mva_dm_1= 11;
-            }
+          std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+          std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+          ic::Vertex* refit_vertex = vertex_vec[0];
+          for(auto v : refit_vertex_vec) {
+            if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
           }
 
-          double mva_dm_2=-1;
-          if(event->Exists("mvadm_max_index_2")) {
-            int max_index = event->Get<int>("mvadm_max_index_2");
-            if(tau_decaymode_2<2){
-              if(max_index==1) mva_dm_2= 1;
-              if(max_index==2) mva_dm_2= 0;
-              if(max_index==3) mva_dm_2= 2;
-            } else {
-              if(max_index==1) mva_dm_2= 10;
-              if(max_index==2) mva_dm_2= 11;
+          double ipsig = IPAndSignificance(tau1, refit_vertex, pfcands).second;
+
+          double mva_dm_1=tau1->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
+          double os = PairOppSign(ditau);
+
+          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,m_vis_,os};
+          //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << ipsig << "    " << n_jets_ << "    " << m_vis_ << "    " << os << std::endl;
+          double ff_nom = fns_["ff_tt_tight_mvadmbins"]->eval(args.data()); 
+          event->Add("wt_ff_1",  ff_nom);
+          //std::cout << ff_nom << std::endl;
+          if(do_systematics_){
+            std::vector<std::string> systematics = {"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down"};
+
+            for(auto s : systematics){
+              double ff_syst = fns_["ff_tt_tight_mvadmbins"+s]->eval(args.data()); 
+              std::string syst_name = "wt_ff"+s;
+              //std::cout << syst_name << "    " << ff_syst << "    " << ff_nom << std::endl;
+              event->Add(syst_name+"_1", ff_syst);
             }
           }
-          double ss = !PairOppSign(ditau);
-          auto args1 = std::vector<double>{pt_1_,mva_dm_1,n_jets_,m_vis_,pt_2_,ss};
-          //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << n_jets_ << "    " << m_vis_ << "    " << pt_2_ << "    " <<ss << std::endl;
-          auto args2 = std::vector<double>{pt_2_,mva_dm_2,n_jets_,m_vis_,pt_1_,ss};
-          auto args1_qcd = std::vector<double>{pt_1_,mva_dm_1,n_jets_};
-          auto args2_qcd = std::vector<double>{pt_2_,mva_dm_2,n_jets_};
-          double ff_nom_1 = fns_["ff_tt"]->eval(args1.data())*0.5;  
-          double ff_nom_2 = fns_["ff_tt"]->eval(args2.data())*0.5;
-          double ff_qcd_1 = fns_["ff_tt_qcd"]->eval(args1.data())*0.5;
-          double ff_qcd_2 = fns_["ff_tt_qcd"]->eval(args2.data())*0.5;
-          event->Add("wt_ff_1",  ff_nom_1);
-          event->Add("wt_ff_2",  ff_nom_2);
-          event->Add("wt_ff_qcd_1",  ff_qcd_1);
-          event->Add("wt_ff_qcd_2",  ff_qcd_2);
-          //std::cout << ff_nom_1 << std::endl;
           return 0;
         }
         double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
