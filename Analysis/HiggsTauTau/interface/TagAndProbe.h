@@ -26,6 +26,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, fwlite::TFileService*, fs)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_filters)
+  CLASS_MEMBER(TagAndProbe, std::string, add_name)
   CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_objects)
@@ -127,6 +128,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   loose_iso_trgprobe_=false;
   extra_l1_iso_probe_pt_=0.;
   do_extra_=false;
+  add_name_=""; 
 }
 
 template <class T>
@@ -137,7 +139,7 @@ TagAndProbe<T>::~TagAndProbe() {
 template <class T> 
 int TagAndProbe<T>::PreAnalysis() {
   if(fs_){  
-    outtree_ = fs_->make<TTree>("tagandprobe","tagandprobe");
+    outtree_ = fs_->make<TTree>(("tagandprobe"+add_name_).c_str(),("tagandprobe"+add_name_).c_str());
     outtree_->Branch("event" , &event_ );
     outtree_->Branch("wt"    , &wt_    );
     outtree_->Branch("pt_1"  , &pt_1_  );
@@ -266,12 +268,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     trg_tag_1_ = trg_tag_1_ && add_trg_tag_1;
     trg_tag_2_ = trg_tag_2_ && add_trg_tag_2;
   }
+
+
  
-  online_pt_1_=-9999;
-  online_pt_2_=-9999; 
-  trg_probe_2_1_ = false;
-  trg_probe_2_2_ = false;
-  trg_probe_2_3_ = false;
   trg_probe_1_ = false;
   trg_probe_2_ = false;
   std::vector<TriggerObject *> objs_probe;
@@ -286,8 +285,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
     bool trg_probe_temp_1 = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1);
     bool trg_probe_temp_2 = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2);
- 
-    //if(trg_probe_temp_2 && gen_match_2_==5) std::cout << pt_2_ << "    " << gen_match_2_ << "    " << probe_filts[i] << std::endl;
    
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
@@ -300,7 +297,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
      
     if(trg_probe_temp_1) { 
       unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
-      online_pt_1_ = objs_probe[leg1_match_index_1]->pt();
       if(extra_hlt_probe_pt_>0) trg_probe_temp_1 = trg_probe_temp_1 && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
@@ -314,15 +310,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
         trg_probe_temp_2 = trg_probe_temp_2 && objs_probe[leg1_match_index_2]->pt() > pt_cut;
-        //if(gen_match_2_==5) std::cout << trg_probe_temp_2 << "    " <<  objs_probe[leg1_match_index_2]->pt() << "    " <<  pt_cut <<std::endl;
       }
     }
     trg_probe_1_ = trg_probe_temp_1  || trg_probe_1_;
     trg_probe_2_ = trg_probe_temp_2  || trg_probe_2_;    
-
-    if(i==0 && trg_probe_temp_2) trg_probe_2_1_ = true;
-    if(i==1 && trg_probe_temp_2) trg_probe_2_2_ = true;
-    if(i==2 && trg_probe_temp_2) trg_probe_2_3_ = true; 
 
   }
   
