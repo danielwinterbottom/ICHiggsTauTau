@@ -1,12 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr02_MC_80X/",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar25_MC_102X/",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/May24_MC_102X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep05_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt","et","em","zee","zmm"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,20 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-     "output_folder" : "/vols/cms/dw515/Offline/output/SM/doubletau_trg_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec05_JES_2016/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar4_2016_gen/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr12_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr12_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Ele_TnP_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr30_2018_effective/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jun11_2018_effective/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep10_2018/", 
-    //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jun11_2018/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr30_2018_pu/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May14_2018_noBTagSF/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Apr24_2018_emTrgHighMuLeg/",
-     "output_folder" : "output/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/fake_factors_v2p1_2018_test/",
+    //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
@@ -81,7 +67,8 @@
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
     // "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_SVFit_2018_decays/",
+    //"svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_SVFit_2018_decays/",
+    "svfit_folder"  : "./output/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
@@ -169,11 +156,11 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
+        "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "tt_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2018.root",
+        "ff_fracs_file" : ""
       }
     },
 

@@ -277,7 +277,7 @@ namespace ic {
         pi0_2 = rho_2.second;
       }
 
-      gammas2 = GetTauGammas(tau2, pfcands);
+      gammas2 = GetTauGammas(tau2, pfcands,0);
       strip_pt_2_ = pi0_2->pt();
 
       E_2_ = tau2->energy();;
@@ -526,7 +526,7 @@ namespace ic {
         pi0_1 = rho_1.second;
       }
 
-      gammas1 = GetTauGammas(tau1, pfcands);
+      gammas1 = GetTauGammas(tau1, pfcands,0);
       strip_pt_1_ = pi0_1->pt();
 
       E_1_ = tau1->energy();;
