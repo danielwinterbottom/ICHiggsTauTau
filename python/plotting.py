@@ -2141,6 +2141,8 @@ def HTTPlot(nodename,
     sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False )
     sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False )
     sig_schemes["sm_cp_decays_mm"] = ( str(int(signal_scale))+"#times MM H#rightarrow#tau#tau", ["ggH_mm_htt", "qqH_mm_htt"], False )
+
+    sig_schemes["sm_18"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2436,10 +2438,10 @@ def HTTPlot(nodename,
         sighists = dict()
 
         if ggh_scheme == 'powheg':
-            # signal_split_schemes = ['sm_ggH','sm_qqH']
-            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
+            signal_split_schemes = ['sm_ggH','sm_qqH']
+            # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == "tauspinner":
-            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
+            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2460,7 +2462,7 @@ def HTTPlot(nodename,
                 if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays']:
                     sighists[split_scheme].SetLineColor(R.kRed)
                 elif split_scheme == 'sm_qqH':
-                    sighists[split_scheme].SetLineColor(R.kBlue)
+                    sighists[split_scheme].SetLineColor(R.TColor.GetColor(51,51,230))
                 elif split_scheme in ['sm_ps','sm_cp_decays_ps']:
                     sighists[split_scheme].SetLineColor(R.kGreen+3)
                 elif split_scheme in ['sm_mm','sm_cp_decays_mm']:

@@ -8,7 +8,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 plot.ModTDRStyle()
 
-fin = ROOT.TFile("htt_scalefactors_2018_v1.root")
+fin = ROOT.TFile("input/scale_factors/htt_scalefactors_legacy_2018.root")
 w = fin.Get('w')
 
 def run_command(command):
@@ -115,7 +115,8 @@ if __name__ == "__main__":
     if args.use == "m":
         eta_bins = [0.0, 0.9, 1.2, 2.1]
         trg_threshold = 24.
-        single_trg_desy = "m_trgIsoMu24orIsoMu27_desy"
+        # single_trg_desy = "m_trgIsoMu24orIsoMu27_desy"
+        single_trg_desy = "m_trg24_27_kit"
     elif args.use == "e":
         eta_bins = [0.0, 2.0, 2.4]
         trg_threshold = 32.
@@ -123,21 +124,21 @@ if __name__ == "__main__":
 
     for eta_bin in eta_bins:
         # idiso ratio, same syntax for both muons and electrons
-        compare_functions(w, 'compare_ic_desy_{}_idiso_ratio_eta_{}'.format(args.use, eta_bin).replace(".","p"),
-                '{}_id_ratio'.format(args.use),
-                '{}_idiso_desy_ratio'.format(args.use),
-                bins=[100, 0, 100],
-                var='{}_pt'.format(args.use),
-                other_vars={'{}_eta'.format(args.use):eta_bin},
-                line_pos=trg_threshold,
-                add_fn="{}_iso_ratio".format(args.use), # need these for idiso
-                add_name="{}_idiso_ratio".format(args.use),
-                )
+        # compare_functions(w, 'compare_ic_kis_{}_idiso_ratio_eta_{}'.format(args.use, eta_bin).replace(".","p"),
+        #         '{}_id_ratio'.format(args.use),
+        #         '{}_idiso_desy_ratio'.format(args.use),
+        #         bins=[100, 0, 100],
+        #         var='{}_pt'.format(args.use),
+        #         other_vars={'{}_eta'.format(args.use):eta_bin},
+        #         line_pos=trg_threshold,
+        #         add_fn="{}_iso_ratio".format(args.use), # need these for idiso
+        #         add_name="{}_idiso_ratio".format(args.use),
+        #         )
 
         # trg comparisons, for data, mc and ratio/SFs
         for t in ["data", "mc", "ratio"]:
             compare_functions(w,
-                    'compare_ic_desy_{}_trg_{}_eta_{}'.format(args.use, t, eta_bin).replace(".","p"),
+                    'compare_ic_kit_{}_trg_{}_eta_{}'.format(args.use, t, eta_bin).replace(".","p"),
                     '{}_trg_{}'.format(args.use, t),
                     '{}_{}'.format(single_trg_desy, t),
                     bins=[100, 0, 100],

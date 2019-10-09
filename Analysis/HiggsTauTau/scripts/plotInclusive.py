@@ -71,6 +71,8 @@ def main(args):
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct07_tauspinnerPS_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct07_tauspinnerSM_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_tauspinner_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
@@ -109,6 +111,8 @@ def main(args):
             # "dnn_tight_2(20,0,1)",
             # "m_vis(25,20,250)",
             # "pt_1(20,40,140)","pt_2(12,40,100)",
+            # "pt_1(24,20,140)",
+            # "pt_2(16,20,100)",
             # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "aco_angle_mod(20,0,6.3)",
             # "pt_tt,aco_angle_mod[0,100,170],(18,0,6.3)",
@@ -155,7 +159,7 @@ def main(args):
             # "m_vis(25,20,250)",
             # "m_sv(30,0,300)",
             # "pt_tt(30,0,300)",
-            "pt_1(20,40,140)",
+            # "pt_1(20,40,140)",
             # "pt_2(12,40,100)",
             # "eta_1(12,-2.3,2.3)","eta_2(12,-2.3,2.3)",
             # "tau_decay_mode_1,pt_1(11,0,11),[40,60,80,100]",
@@ -186,13 +190,14 @@ def main(args):
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
+        # extras += " --deeptau --add_wt deeptau_sf "
         # extras += " --cat {}_highMjj ".format(args.cat)
-        extras += " --split_sm_scheme  "
+        extras += " --split_sm_scheme  --ggh_scheme tauspinner "
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1 && mvadm_rho_2>mvadm_a1_2 && mvadm_rho_2>mvadm_pi_2 && mvadm_rho_2>mvadm_other_2) " '
         # extras += " --add_wt wt_prefire "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
-        extras += ' --set_alias "inclusive:(m_vis<90)" '
+        # extras += ' --set_alias "inclusive:(m_vis<90)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==10 &&  tau_decay_mode_2==10)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==0 &&  tau_decay_mode_2==0)" '
         # extras += ' --ratio_range 0,2 '
@@ -200,7 +205,7 @@ def main(args):
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        # extras += '  --ff_ss_closure  '
+        extras += '  --ff_ss_closure  '
         # extras += " --threePads "
         # extras += " --extra_pad 0.55 "
 
@@ -247,8 +252,8 @@ def main(args):
             # "bcsv_1(10,0,1)",
             # "bcsv_2(10,0,1)",
 
-            "m_vis(20,20,200)",
-            # "m_sv(30,0,300)",
+            # "m_vis(20,20,200)",
+            "m_sv(30,0,300)",
 
             # "pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]",
             # "pt_tt(30,0,200)",
@@ -257,7 +262,7 @@ def main(args):
             # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_binary_Oct11_score(20,0.,1.)",
             # "met(20,0,200)",
-            # "jeta_1(12,-4.7,4.7)",
+            "jeta_1(12,-4.7,4.7)",
             # "jeta_2(12,-4.7,4.7)",
             # "mjj(16,0,800)",
             # "sjdphi(12,-3.2,3.2)",
@@ -347,9 +352,9 @@ def main(args):
             # "jmva_2(40,-1,1)",
             # "pt_tt(40,0,400)",
             # "m_vis(50,70,120)",
-            # "pt_1(18,10,100)",
+            "pt_1(18,10,100)",
             # "pt_2(18,10,100)",
-            "jpt_1(14,30,100)",
+            # "jpt_1(14,30,100)",
             # "jlrm_1(20,-1,1)",
             # "n_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
@@ -380,14 +385,14 @@ def main(args):
 
             ]
         # extras += ' --ratio_range 0.01,2.99 '
-        extras += ' --ratio_range 0,2 '
+        # extras += ' --ratio_range 0,2 '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && (fabs(jeta_1)<2.65 || fabs(jeta_1)>3.139 || jpt_1>50) && (fabs(jeta_2)<2.65 || fabs(jeta_2)>3.139 || jpt_2>50))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && jpt_1>30 && (fabs(jeta_1)<3.0 && fabs(jeta_1)>2.75))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1)" '
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
+        extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
         # extras += ' --set_alias "inclusive:(m_vis>50)" '
-        extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
 
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>30 && jpt_1<40 && jnemf_1<(0.668493+0.856164*jmva_1))" '
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 && n_jets==1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139 && jpt_1>30 && jpt_1<40 && jnemf_1<(0.27+1.11*jmva_1))" '
@@ -473,6 +478,8 @@ def main(args):
         config = " scripts/plot_cpdecays_2016.cfg "
     elif args.era == "2016_jets":
         config = " scripts/new_plot_sm_2016_NewPlotting.cfg "
+    elif args.era == "legacy16":
+        config = " scripts/plot_legacy_2016.cfg "
 
     for var in plot_vars:
         custom_extras = ""

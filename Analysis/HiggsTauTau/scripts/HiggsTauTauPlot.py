@@ -381,6 +381,7 @@ print 'syst_scale_j      ='  ,  options.syst_scale_j
 print 'syst_eff_b        ='  ,  options.syst_eff_b
 print 'syst_fake_b       ='  ,  options.syst_fake_b
 print 'do_ff_systs       ='  ,  options.do_ff_systs
+print 'deeptau           ='  ,  options.deeptau
 print '###############################################'
 print ''
 
@@ -461,11 +462,15 @@ if options.channel == 'tt':
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
     if options.era in ['cpsummer17','cp18']:
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+        # cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && (trg_doubletau && pt_2>40))'
+        # cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>20)))'
         cats['baseline_aisotau1'] = '(pt_1>50 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         if options.deeptau:
-          cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+          # cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+          cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+          # cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>20)) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
           cats['baseline_aiso2'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
           cats['baseline_bothaiso'] = '(deepTauVsJets_tight_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
         cats['baseline_aisotau2_sb'] = '(pt_1>40 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
@@ -502,12 +507,16 @@ cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era in ['cpsummer17']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+# if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
+if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && (trg_doubletau && pt_2>40))'
+# if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && ((trg_doubletau && pt_2>40)||(trg_vbfdoubletau && pt_2>20)))'
 #if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) &&  antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 if options.deeptau:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+  # cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+  cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+  # cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>40)) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
 
 
 # CR categories
@@ -812,53 +821,61 @@ if options.channel == 'tt':
     # old is Feb13_fix1
     # mva_ggh                = '(IC_Jun13_dR_tauspinner_split_max_index==0)'
     # mva_jetFakes           = '(IC_Jun13_dR_tauspinner_split_max_index==1)'
-    mva_qqh                = '(IC_Jun13_dR_tauspinner_split_max_index==2)'
+    # mva_qqh                = '(IC_Jun13_dR_tauspinner_split_max_index==2)'
     # mva_zttEmbed           = '(IC_Jun13_dR_tauspinner_split_max_index==3)'
 
-    mva_ggh                = '(IC_Feb13_fix1_max_index==0)'
-    mva_jetFakes           = '(IC_Feb13_fix1_max_index==1)'
-    mva_zttEmbed           = '(IC_Feb13_fix1_max_index==2)'
+    # mva_ggh                = '(IC_Feb13_fix1_max_index==0)'
+    # mva_jetFakes           = '(IC_Feb13_fix1_max_index==1)'
+    # mva_zttEmbed           = '(IC_Feb13_fix1_max_index==2)'
+
+    # testing SM vs PS training on tauspinner samples
+    mva_ggh                = '(IC_Oct07_tauspinnerSM_max_index==0)'
+    mva_jetFakes           = '(IC_Oct07_tauspinnerSM_max_index==1)'
+    mva_zttEmbed           = '(IC_Oct07_tauspinnerSM_max_index==2)'
+    # mva_ggh                = '(IC_Oct07_tauspinnerPS_max_index==0)'
+    # mva_jetFakes           = '(IC_Oct07_tauspinnerPS_max_index==1)'
+    # mva_zttEmbed           = '(IC_Oct07_tauspinnerPS_max_index==2)'
 
     cats['higgs_rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    cats['ggh_rho']        = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
-    cats['qqh_rho']        = '({} && {})'.format(mva_qqh, cats["inclusive_rho"])
+    # cats['ggh_rho']        = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
+    # cats['qqh_rho']        = '({} && {})'.format(mva_qqh, cats["inclusive_rho"])
     cats['zttEmbed_rho']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_rho"])
     cats['jetFakes_rho']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_rho"])
 
     cats['higgs_a1rho']    = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
-    cats['ggh_a1rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
-    cats['qqh_a1rho']      = '({} && {})'.format(mva_qqh, cats["inclusive_a1rho"])
+    # cats['ggh_a1rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_a1rho"])
+    # cats['qqh_a1rho']      = '({} && {})'.format(mva_qqh, cats["inclusive_a1rho"])
     cats['zttEmbed_a1rho'] = '({} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"])
     cats['jetFakes_a1rho'] = '({} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"])
 
     cats['higgs_other']    = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    cats['ggh_other']      = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
-    cats['qqh_other']      = '({} && !({}||{}))'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['ggh_other']      = '({} && !({}||{}))'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"])
+    # cats['qqh_other']      = '({} && !({}||{}))'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"])
     cats['zttEmbed_other'] = '({} && !({}||{}))'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"])
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
     cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    # cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    # cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
     cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
 
     cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
-    cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
-    cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    # cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    # cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaa1rho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['jetFakes_mvaa1rho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
 
     cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}))'\
             .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
                     cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
-    cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
-            .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
-                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
-    cats['qqh_mvaother']    = '({} && !({}||{}||{}||{}))'\
-            .format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
-                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    # cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
+    #         .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
+    #                 cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    # cats['qqh_mvaother']    = '({} && !({}||{}||{}||{}))'\
+    #         .format(mva_qqh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
+    #                 cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaother'] = '({} && !({}||{}||{}||{}))'\
             .format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_a1rho"], 
                     cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
@@ -1368,13 +1385,13 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
         #"qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
         #"qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
 
-        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
 
-        # "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        # "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        # "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
         #  "WplusH_htt" : "WplusHToTauTau_M-*",
         #  "WminusH_htt" : "WminusHToTauTau_M-*",
@@ -1418,12 +1435,12 @@ if options.era in ['cp18']:
         # 'WplusH_htt': 'WplusHToTauTau_M-*', 
         # 'WminusH_htt': 'WminusHToTauTau_M-*', 
 
-         'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-         'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-         'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-         'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         # 'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
+         # 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         # 'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
+         # 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         # 'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
+         # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
         }
 
 

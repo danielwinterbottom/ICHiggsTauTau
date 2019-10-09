@@ -387,6 +387,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
     tau_pt=40;
     lead_tau_pt=40;
+    if(js["do_vbftrg"].asBool()) {
+      tau_pt = 20.;
+      lead_tau_pt = 20;
+  }
     if(js["store_hltpaths"].asBool()) tau_pt = 25;
   }
 
@@ -2630,7 +2634,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
            // httStitching.SetWInputYields(33043732.0+44586629.0,54106926.0,6570442.0,19669693.0,11273215.0); 
-           httStitching.SetWInputYields(74828211.0,53699173.0,6404085.0,18438870.0,11028984.0); 
+           httStitching.SetWInputYields(74828211.0,53699173.0,6404085.0,18438870.0,11074019.0); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -2638,7 +2642,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
             // httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33319159.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
-            httStitching.SetDYInputYields(97220464.0, 40502369.0+32563784.0, 88795.0+9894402.0,1138820.0, 4104551.0); //missed DY3(no ext) here, to be added
+            httStitching.SetDYInputYields(97220464.0, 40502369.0+32563784.0, 88795.0+9894402.0,5740168.0+1138820.0, 4104551.0);
           }
        
        BuildModule(httStitching);   
@@ -2893,17 +2897,17 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           //.set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
 
 
-          //.set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
-          //.set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
-          //.set_probe_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          .set_probe_id(muon_probe_id)
           //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
           //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
           //.set_tag_id(muon_probe_id)
           // to measure em muon trg SF for 8 GeV leg
-           .set_probe_trg_objects("triggerObjectsMu17Mu8")
-           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-           .set_extra_hlt_probe_pt(8.)
-           .set_extra_l1_probe_pt(5.)
+          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          // .set_extra_hlt_probe_pt(8.)
+          // .set_extra_l1_probe_pt(5.)
           // to measure em muon trg SF for 23 GeV leg
           // .set_probe_trg_objects("triggerObjectsMu17Mu8")
           // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")

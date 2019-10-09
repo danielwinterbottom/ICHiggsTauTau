@@ -158,27 +158,23 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-         #'VBFHToTauTau_M-125',
-         #'VBFHToPseudoscalarTauTau_GEN',
-         #'VBFHToMaxmixTauTau_GEN',
-         #'SUSYGluGluToHToTauTau_M-120',
-         #'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
+         'VBFHToTauTau_M-125',
+         # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
          # 'GluGluToHToTauTau_M125_nospinner-2017',
          #'VBFHToTauTau_M125_nospinner-2017',
 
-         # 'GluGluHToTauTau_M-125',
          #'GluGluHToPseudoscalarTauTau_GEN',
          #'GluGluHToMaxmixTauTau_GEN',
 
+         # 'GluGluHToTauTau_M-125',
          # 'GluGluHToTauTau_M-125-ext',
-         #'GluGluHToTauTau_M-125',
-         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         'GluGluToHToTauTau_M125_amcatnloFXFX',
-         #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-         #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         #'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+         # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
+         # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+         # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
 
          #'VBFHToTauTau_M-125',
          #'WminusHToTauTau_M-125',
@@ -348,17 +344,17 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-      'DYJetsToLL_M-10-50-LO-ext1',
-      'DYJetsToLL_M-10-50-LO',
-      'DY1JetsToLL-LO', #new pmx
-      'DY1JetsToLL-LO-ext', #new sample
-      'DY2JetsToLL-LO',
-      'DY2JetsToLL-LO-ext',
+      # 'DYJetsToLL_M-10-50-LO-ext1',
+      # 'DYJetsToLL_M-10-50-LO',
+      # 'DY1JetsToLL-LO', #new pmx
+      # 'DY1JetsToLL-LO-ext', #new sample
+      # 'DY2JetsToLL-LO',
+      # 'DY2JetsToLL-LO-ext',
       # 'DY3JetsToLL-LO',
-      'DY3JetsToLL-LO-ext',
-      'DY4JetsToLL-LO', # new
-      'DYJetsToLL-LO-ext1',
-      'DYJetsToLL-LO',
+      # 'DY3JetsToLL-LO-ext',
+      # 'DY4JetsToLL-LO', # new
+      # 'DYJetsToLL-LO-ext1',
+      # 'DYJetsToLL-LO',
       # 'DYJetsToLL',
       # 'DYJetsToLL-ext',
       # 'EWKZ2Jets',
@@ -369,7 +365,7 @@ if options.proc_bkg or options.proc_all:
       # 'W1JetsToLNu-LO',
       # 'W2JetsToLNu-LO',
       # 'W3JetsToLNu-LO',
-      # 'W4JetsToLNu-LO',
+      'W4JetsToLNu-LO',
       # 'WGToLNuG',
       # 'WWTo2L2Nu',
       # 'WWToLNuQQ-ext',
