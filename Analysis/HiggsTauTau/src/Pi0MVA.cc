@@ -1,5 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/Pi0MVA.h"
- 
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/ImpactParameter.h" 
 
 ROOT::Math::PtEtaPhiEVector Cluster(std::vector<ic::PFCandidate*> gammas) {
   ROOT::Math::PtEtaPhiEVector cluster;
@@ -428,7 +428,7 @@ namespace ic {
     }
 
     if (event->ExistsInTree("pfCandidates")) {
-      Tau const* tau1;
+      Tau const *tau1;
       if(channel_==channel::tt) tau1 = dynamic_cast<Tau const*>(lep1);
       else tau1 = dynamic_cast<Tau const*>(lep2);
       tau_decay_mode_1_=tau1->decay_mode();
@@ -441,6 +441,42 @@ namespace ic {
       for (auto g : gammas_pt1) {
         if(fabs(g->pdgid())==11) NelecspT1_1_++;
       }
+
+      //ImpactParameter::CalculatePCA(double B, std::vector<float> h_param, RMPoint ref, RMPoint PrV, RMFLV p4);
+      //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //auto vertex = vertex_vec[0];
+      //
+      //std::vector<float> h_param = {};
+      //ic::Tau  *tau = const_cast<Tau*>(tau1);
+      //for(auto i :  tau->track_params()) h_param.push_back(i);
+      //double B = tau->bfield();
+      //ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(tau->svx(),tau->svy(),tau->svz());
+      //ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
+      //std::vector<ic::PFCandidate*> charged_cands = GetTauHads(tau, pfcands);
+      //ROOT::Math::PtEtaPhiEVector charged_vec;
+      //for(auto c : charged_cands) charged_vec+=c->vector();
+
+      //ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>> p4; 
+
+      //p4.SetPxPyPzE(charged_vec.Px(),charged_vec.Py(),charged_vec.Pz(),charged_vec.E());
+      //ImpactParameter IP;
+      //TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv, p4);
+
+      //ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = tau->track_params_covariance();
+      //ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SigmaPrV = vertex->covariance();
+
+      //ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
+      //std::cout << "---------" << std::endl;
+      //std::cout << ip_cov[0][0] << "    " << ip_cov[1][1] << "    " << ip_cov[2][2] << std::endl;
+      //double mag = ip.Mag();
+      //ROOT::Math::SVector<double, 3> ip_svec;
+      //ip_svec(0) = ip.X()/mag;
+      //ip_svec(1) = ip.Y()/mag;
+      //ip_svec(2) = ip.Z()/mag;
+      //std::cout << ip_svec(0) << "    " << ip_svec(1) << "    " << ip_svec(2) << std::endl;
+
+      //double uncert = ROOT::Math::Dot( ip_svec, ip_cov * ip_svec);
+      //std::cout << uncert << std::endl; 
  
       std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands, 0.0);
 

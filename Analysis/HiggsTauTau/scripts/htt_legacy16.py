@@ -155,11 +155,10 @@ if options.proc_sm or options.proc_all:
   for mass in masses :
     signal_mc += [
      'VBFHToTauTau_M-'+mass,
-     'GluGluToHToTauTau_M-'+mass,
-     'VBFHToTauTau_M-'+mass,
-     'WplusHToTauTau_M-'+mass,
-     'WminusHToTauTau_M-'+mass,
-     'ZHToTauTau_M-'+mass,
+     # 'GluGluToHToTauTau_M-'+mass,
+     # 'WplusHToTauTau_M-'+mass,
+     # 'WminusHToTauTau_M-'+mass,
+     # 'ZHToTauTau_M-'+mass,
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -387,7 +386,7 @@ if options.proc_sm or options.proc_all:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 5
+        nperjob = 1
         if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

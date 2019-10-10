@@ -214,6 +214,8 @@ void ICElectronProducer::produce(edm::Event& event,
       dest.set_sc_theta(src.superCluster()->position().theta());
       dest.set_sc_energy(src.superCluster()->energy());
       dest.set_sc_e_over_p(src.eSuperClusterOverP());
+
+      dest.set_supercluster(sc_hasher_(&(*(src.superCluster()))));
     }
     dest.set_ecal_energy(src.ecalEnergy());
     dest.set_vx(src.vx());

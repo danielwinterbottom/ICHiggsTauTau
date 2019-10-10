@@ -71,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1392,7 +1392,6 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icMu24MediumIsoTau35ObjectProducer+
     process.icMu24MediumIsoTauHPS35ObjectProducer+
     process.icMu24TightIsoTau35ObjectProducer+
-    process.icMu24MediumIsoTauHPS35ObjectProducer+
     process.icVBFDoubleLooseChargedIsoPFTau20ObjectProducer+
     process.icVBFDoubleLooseChargedIsoPFTauHPS20ObjectProducer+
     process.icVBFDoubleMediumChargedIsoPFTau20ObjectProducer+
@@ -1487,7 +1486,7 @@ else: lheTag = 'externalLHEProducer'
 
 data_type = ""
 if isData: data_type = "RECO"
-elif isEmbed: data_type = "SIMembedding"
+elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(

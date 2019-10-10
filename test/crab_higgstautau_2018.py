@@ -3,12 +3,12 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Sep05_Data_102X_2018'
+config.General.workArea='Oct07_Data_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v13']
+config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_v12']
 #config.JobType.maxMemoryMB = 2000
 # config.JobType.numCores = 4
 config.JobType.allowUndistributedCMSSW = True
@@ -72,9 +72,9 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         if "17Sep2018" in task[1]:
-            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Sep2018ABC_v2']
+            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_v12']
         else:
-            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v13']
+            config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v15']
 
 
         #config.Data.lumiMask = "May23_Data_102X/crab_{}/results/notFinishedLumis.json".format(task[0])
