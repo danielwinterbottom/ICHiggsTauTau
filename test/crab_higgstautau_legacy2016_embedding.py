@@ -3,7 +3,7 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Sep27_MC_102X_2016'
+config.General.workArea='Oct2_MC_102X_2016'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
@@ -11,12 +11,12 @@ config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 2500
 config.JobType.pyCfgParams = ['release=102XMINIAOD','isEmbed=1','isData=0','doHT=0', 'globalTag=94X_dataRun2_v10']
 config.section_('Data')
-config.Data.unitsPerJob = 100000
+config.Data.unitsPerJob = 50000
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_UK_London_IC'
