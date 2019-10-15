@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Oct04_MC_102X_2018'
+config.General.workArea='Oct07_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -19,6 +19,8 @@ config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
+config.Data.ignoreLocality = True
+
 
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']
 config.Site.storageSite = 'T2_UK_London_IC'
@@ -101,8 +103,6 @@ if __name__ == '__main__':
     tasks.append(('GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     tasks.append(('GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX', '/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     tasks.append(('GluGluToHToTauTau_M125_amcatnloFXFX', '/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
-    tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
-    tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-MiniAOD-v2-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
     tasks.append(('DYJetsToLL-2017', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
 
 
@@ -114,7 +114,11 @@ if __name__ == '__main__':
     tasks.append(('VBFHToTauTau_M-125-SM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_SM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_SM_filter_v2_miniAOD-v1/USER'))
 
     # private samples
-    tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2-miniAOD-5f646ecd4e1c7a39ab0ed099ff55ceb9/USER'))
+
+    tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_MM_filter_v2_miniAOD-v1/USER'))
+    tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_-v1/USER'))
+    tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_MiniAO-v1/USER'))
+
 
 
 
@@ -156,14 +160,6 @@ if __name__ == '__main__':
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
         else:
             config.JobType.pyCfgParams = cfgParams
-
-        if 'VBFHToTauTau_M-125-MM-filter' in task[0] or 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX' in task[0] or 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX' in task[0]:
-          config.Data.ignoreLocality= True
-          config.Data.inputDBS = 'phys03'
-        else:
-          config.Data.ignoreLocality = True
-          config.Data.inputDBS = 'global'
-
 
         print(config)
         submit(config)

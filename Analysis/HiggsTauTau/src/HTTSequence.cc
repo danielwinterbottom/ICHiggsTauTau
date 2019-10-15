@@ -2537,12 +2537,12 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
              output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
           httStitching.set_do_w_soup(true);
           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-          httStitching.SetWInputYields(56457288 + 29514020 , 44762109 , 29976502 + 29473030 , 19653091 + 38357553 , 9073814 + 2073275 + 17974984);
+          httStitching.SetWInputYields(29514020+57402435,45283121,30064264+30374504,19798117+39356942,9116657+2073275+18693568);
          }
          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
            httStitching.set_do_dy_soup(true);
            httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-           httStitching.SetDYInputYields(94284439 + 48429964 ,62787365 , 18621394 ,5712316 , 4197868);
+           httStitching.SetDYInputYields(49748967+82894032,63730337,19879279,5857441,4052827);
          }
       
       BuildModule(httStitching);   
@@ -2868,9 +2868,11 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
     std::function<bool(Muon const*)> muon_probe_id;
     
     if(strategy_type==strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
         std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
-        BuildModule(TagAndProbe<Muon const*>("TagAndProbe")
+        // low pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMLow")
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -2879,49 +2881,124 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id) 
-
-          // use this for runB
-          //.set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
-          //.set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
-          //.set_do_extra(true)
- 
-          // use double muon for runsC-F
-          //.set_probe_trg_objects("triggerObjectsDoubleMu20")
-          //.set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
-
-
-          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")       
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          .set_add_name("_em_low")
+        );
+        // high pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMHigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          //.set_probe_id(MuonLooseID) // only for embedded selection efficiencies!
-          //.set_tag_id(MuonLooseID)// only for DZ and mass filters for embedded selection efficiencies!
-          //.set_tag_id(muon_probe_id)
-          // to measure em muon trg SF for 8 GeV leg
-          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          // .set_extra_hlt_probe_pt(8.)
-          // .set_extra_l1_probe_pt(5.)
-          // to measure em muon trg SF for 23 GeV leg
-          // .set_probe_trg_objects("triggerObjectsMu17Mu8")
-          // .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
-          // .set_extra_hlt_probe_pt(23.)
-          // .set_extra_l1_probe_pt(20.)
-          
-          //For Embedding selection efficiencies:
-          // for mu8 leg of MuMu cross-trigger
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(8.) //8
-          //.set_do_dzmass(true)
-          // for mu17 leg of MuMu cross-trigger
-          //.set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
-          //.set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
-          //.set_extra_hlt_probe_pt(17.)
-          // DZFilter = hltDiMuon178RelTrkIsoFiltered0p4DzFiltered0p2
-          // Mass filter = hltDiMuon178Mass8Filtered
-
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
+          .set_add_name("_em_high")
+        );
+        // mu leg of mu+tau cross trigger for runs C-F
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_CtoF")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsDoubleMu20")
+          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_add_name("_mt_c_to_f")
+        );
+        // mu leg of mu+tau cross trigger for run B
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_B")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          .set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_do_extra(true)
+          .set_add_name("_mt_b")
+        );
+        // single muons trigger measurment
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_single")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")  
+        );
+        // low pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_low")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
 
         );
+        // high pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuhigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_high")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(17.)
+        );
+        // use to measure DZ filter efficiency for embedded selection selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuDZ")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu27")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(MuonLooseID)
+          .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_dz")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_do_dzmass(true)
+        );
+         
     } else {
       if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos || mc_type== mc::mcleg2016) muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
       else muon_probe_id = [](Muon const* m) {return MuonMediumHIPsafe(m); };
@@ -4494,7 +4571,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||  strategy_type == strategy::legacy16 || strategy_type == strategy::cpsummer17){
+  } else if (strategy_type == strategy::fall15||strategy_type == strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
