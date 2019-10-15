@@ -1045,6 +1045,7 @@ class HTTCategories : public ModuleBase {
   bool trg_muonelectron_2_;
   bool trg_muonelectron_3_;
   bool trg_doubletau_;
+  bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
   bool trg_mutaucross_;

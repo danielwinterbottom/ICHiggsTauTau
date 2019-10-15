@@ -387,6 +387,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
     tau_pt=40;
     lead_tau_pt=40;
+    if(js["do_vbftrg"].asBool()) {
+      tau_pt = 20.;
+      lead_tau_pt = 20;
+  }
     if(js["store_hltpaths"].asBool()) tau_pt = 25;
   }
 
@@ -1672,7 +1676,7 @@ if(do_met_filters){
 }
 
 
-if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16){
+/*if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16){
   BuildModule(GenericModule("BadMuonFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -1684,7 +1688,7 @@ if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
        if(do_ggH_stitch && (strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) ) return pass_filters; //annoyingly the official ggH samples are 'backwards'
        else return !pass_filters;
     }));
-};
+};*/
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -2584,8 +2588,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-     .set_do_quarkmass_higgspt(do_ggH_stitch)
-     .set_do_ps_weights(do_ggH_stitch);
+     .set_do_quarkmass_higgspt(false)
+     .set_do_ps_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
      httWeights.set_is_embedded(is_embedded);
@@ -2630,7 +2634,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
            // httStitching.SetWInputYields(33043732.0+44586629.0,54106926.0,6570442.0,19669693.0,11273215.0); 
-           httStitching.SetWInputYields(74828211.0,53699173.0,6404085.0,18438870.0,11028984.0); 
+           httStitching.SetWInputYields(74828211.0,53699173.0,6404085.0,18438870.0,11074019.0); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -2638,7 +2642,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
             // httStitching.SetDYInputYields(48632630.0+48882817.0, 42073199.0+33319159.0, 88795.0+9691457.0,5540063.0+1147725.0, 46884.0); 
-            httStitching.SetDYInputYields(97220464.0, 40502369.0+32563784.0, 88795.0+9894402.0,1138820.0, 4104551.0); //missed DY3(no ext) here, to be added
+            httStitching.SetDYInputYields(97220464.0, 40502369.0+32563784.0, 88795.0+9894402.0,5740168.0+1138820.0, 4104551.0);
           }
        
        BuildModule(httStitching);   

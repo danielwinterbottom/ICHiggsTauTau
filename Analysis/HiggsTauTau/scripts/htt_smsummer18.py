@@ -159,7 +159,7 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
         'VBFHToTauTau_M-125-ext1',
-        'GluGluHToTauTau_M-125',
+        # 'GluGluHToTauTau_M-125',
         #'VBFHToTauTau_M-125-ext1',
         # 'GluGluHToTauTau_M-125',
 
@@ -251,8 +251,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Sep05_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 40
-            if "TauC" in sa: nperjob = 42
-            elif "TauD" in sa: nperjob = 45
+            # if "TauC" in sa: nperjob = 42
+            # elif "TauD" in sa: nperjob = 45
             
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
@@ -313,44 +313,44 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        #'DYJetsToLL-2017',
-        #'DYJetsToLL',
-        #'DY1JetsToLL-LO',
-        #'DY2JetsToLL-LO',
-        #'DY3JetsToLL-LO',
-        #'DY4JetsToLL-LO',
+        # 'DYJetsToLL-2017',
+        'DYJetsToLL',
+        'DY1JetsToLL-LO',
+        'DY2JetsToLL-LO',
+        'DY3JetsToLL-LO',
+        'DY4JetsToLL-LO',
         'DYJetsToLL-LO',
-        #'DYJetsToLL_M-10-50-LO',
-        #'EWKWMinus2Jets',
-        #'EWKWPlus2Jets',
-        #'EWKZ2Jets',
-        #'T-t',
-        #'T-tW-ext1',
-        #'TTTo2L2Nu',
-        #'TTToHadronic',
-        #'TTToSemiLeptonic',
-        #'Tbar-t',
-        #'Tbar-tW-ext1',
-        #'W1JetsToLNu-LO',
-        #'W2JetsToLNu-LO',
-        #'W3JetsToLNu-LO',
-        #'W4JetsToLNu-LO',
-        #'WGToLNuG',
-        ## 'WGToLNuG_01J_5f-ext1',
-        #'WJetsToLNu-LO',
-        #'WWTo1L1Nu2Q',
-        #'WWTo2L2Nu',
-        ## # 'WWTo4Q',
-        ## 'WWToLNuQQ',
-        #'WZTo1L3Nu',
-        #'WZTo2L2Q',
-        #'WZTo3LNu',
-        #'WZTo3LNu-ext1',
-        #'ZZTo2L2Nu-ext1',
-        #'ZZTo2L2Nu-ext2',
-        #'ZZTo2L2Q',
-        #'ZZTo4L',
-        #'ZZTo4L-ext',
+        'DYJetsToLL_M-10-50-LO',
+        'EWKWMinus2Jets',
+        'EWKWPlus2Jets',
+        'EWKZ2Jets',
+        'T-t',
+        'T-tW-ext1',
+        'TTTo2L2Nu',
+        'TTToHadronic',
+        'TTToSemiLeptonic',
+        'Tbar-t',
+        'Tbar-tW-ext1',
+        'W1JetsToLNu-LO',
+        'W2JetsToLNu-LO',
+        'W3JetsToLNu-LO',
+        'W4JetsToLNu-LO',
+        'WGToLNuG',
+        # 'WGToLNuG_01J_5f-ext1',
+        'WJetsToLNu-LO',
+        'WWTo1L1Nu2Q',
+        'WWTo2L2Nu',
+        # # 'WWTo4Q',
+        # 'WWToLNuQQ',
+        'WZTo1L3Nu',
+        'WZTo2L2Q',
+        'WZTo3LNu',
+        'WZTo3LNu-ext1',
+        'ZZTo2L2Nu-ext1',
+        'ZZTo2L2Nu-ext2',
+        'ZZTo2L2Q',
+        'ZZTo4L',
+        'ZZTo4L-ext',
     ]
 
 
@@ -408,7 +408,8 @@ if options.mg_signal or options.proc_sm:
             FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-                nperjob = 20
+                # nperjob = 20
+                nperjob = 1
                 if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                     os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
