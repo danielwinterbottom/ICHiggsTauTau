@@ -1378,7 +1378,7 @@ BuildModule(jetIDFilter);
     );*/
 
 
-if (era_type == era::data_2016 || era_type == era::data_2017) {
+if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {

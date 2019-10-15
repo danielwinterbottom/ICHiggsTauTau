@@ -72,8 +72,9 @@ def main(args):
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Oct07_tauspinnerPS_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            # "IC_Oct07_tauspinnerSM_split_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.7],(14,0,6.28319)"
+            "IC_Oct07_tauspinnerSM_individualSigWts_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.7],(14,0,6.28319)"
+            # "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.7],(14,0,6.28319)"
             # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Jun13_dR_tauspinner_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
