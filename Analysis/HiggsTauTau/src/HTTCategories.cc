@@ -978,6 +978,7 @@ namespace ic {
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_muonelectron_1",    &trg_muonelectron_1_);
       outtree_->Branch("trg_muonelectron_2",    &trg_muonelectron_2_);
@@ -1365,8 +1366,10 @@ namespace ic {
       synctree_->Branch("m_vis", &m_vis_.var_float, "m_vis/F");
       // SVFit di-tau transverse mass
       synctree_->Branch("mt_sv", &mt_sv_.var_float, "mt_sv/F");
+      synctree_->Branch("mt_fast", &m_sv_.var_float, "mt_fast/F");
       // SVFit di-tau mass
-      synctree_->Branch("m_sv", &m_sv_.var_float, "m_sv/F");
+      synctree_->Branch("m_sv",   &m_sv_.var_float, "m_sv/F");
+      synctree_->Branch("m_fast", &m_sv_.var_float, "m_fast/F");
       // SVFit di-tau pt (only for Markov-Chain SVFit)
       synctree_->Branch("pt_sv", &pt_h_.var_float, "pt_h/F");
       // SVFit di-tau eta (only for Markov-Chain SVFit)
@@ -1409,8 +1412,16 @@ namespace ic {
       synctree_->Branch("puppimt_1", &puppimt_1_.var_float, "puppimt_1/F");
       // Non-triggering electron ID MVA score
 
-      synctree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_, "tau_decay_mode_2/I");
-      synctree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_,"tau_decay_mode_1/I");
+      // repeated twice in case want different branch names for sync
+      synctree_->Branch("tau_decay_mode_1", & tau_decay_mode_1_, "tau_decay_mode_1/I");
+      synctree_->Branch("tau_decay_mode_2", & tau_decay_mode_2_, "tau_decay_mode_2/I");
+      synctree_->Branch("dm_1", & tau_decay_mode_1_, "dm_1/I");
+      synctree_->Branch("dm_2", & tau_decay_mode_2_, "dm_2/I");
+      // MVA tau decay modes (for decays analysis specifically)
+      synctree_->Branch("mva_dm_1",         & tau_mva_decay_mode_1_, "mva_dm_1/I");
+      synctree_->Branch("mva_dm_2",         & tau_mva_decay_mode_2_, "mva_dm_2/I");
+      synctree_->Branch("dmMVA_1",         & tau_mva_decay_mode_1_, "dmMVA_1/I");
+      synctree_->Branch("dmMVA_2",         & tau_mva_decay_mode_2_, "dmMVA_2/I");
 
       synctree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1,"mva_olddm_medium_1/O");
       synctree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2,"mva_olddm_medium_2/O");
@@ -1418,6 +1429,20 @@ namespace ic {
       synctree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
       synctree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
       synctree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
+
+      // deeptau variables
+      synctree_->Branch("deepTauVsJetsRaw_1", & deepTauVsJets_iso_1_, "deepTauVsJetsRaw_1/O");
+      synctree_->Branch("deepTauVsJetsRaw_2", & deepTauVsJets_iso_2_, "deepTauVsJetsRaw_2/O");
+      synctree_->Branch("deepTauVsEleRaw_1",  & deepTauVsEle_iso_1_, "deepTauVsEleRaw_1/O");
+      synctree_->Branch("deepTauVsEleRaw_2",  & deepTauVsEle_iso_2_, "deepTauVsEleRaw_2/O");
+      synctree_->Branch("deepTauVsMuRaw_1",   & deepTauVsMu_iso_1_, "deepTauVsMuRaw_1/O");
+      synctree_->Branch("deepTauVsMuRaw_2",   & deepTauVsMu_iso_2_, "deepTauVsMuRaw_2/O");
+
+      // tauspinner weights
+      synctree_->Branch("tauspinnerH",      & wt_cp_sm_, "tauspinnerH/F");
+      synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/F");
+      synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/F");
+
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -1710,6 +1735,7 @@ namespace ic {
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_muonelectron_1"))   trg_muonelectron_1_   = event->Get<bool>("trg_muonelectron_1");
     if (event->Exists("trg_muonelectron_2"))   trg_muonelectron_2_   = event->Get<bool>("trg_muonelectron_2");

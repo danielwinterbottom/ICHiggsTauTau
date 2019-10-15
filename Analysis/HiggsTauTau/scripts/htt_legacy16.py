@@ -154,12 +154,11 @@ if options.proc_sm or options.proc_all:
   else: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'VBFHToTauTau_M-'+mass,
-     'GluGluToHToTauTau_M-'+mass,
+     # 'GluGluToHToTauTau_M-'+mass,
      'VBFHToTauTau_M-'+mass,
-     'WplusHToTauTau_M-'+mass,
-     'WminusHToTauTau_M-'+mass,
-     'ZHToTauTau_M-'+mass,
+     # 'WplusHToTauTau_M-'+mass,
+     # 'WminusHToTauTau_M-'+mass,
+     # 'ZHToTauTau_M-'+mass,
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -334,11 +333,6 @@ if options.proc_bkg or options.proc_all:
      'EWKZ2Jets_ZToNuNu-ext1',
      'EWKZ2Jets_ZToNuNu-ext2',
      'ZZTo4L-amcat',
-     'GluGluToHToTauTau_M-125',
-     'VBFHToTauTau_M-125',
-     'WplusHToTauTau_M-125',
-     'WminusHToTauTau_M-125',
-     'ZHToTauTau_M-125',
      'GluGluHToWWTo2L2Nu_M-125',
      'VBFHToWWTo2L2Nu_M-125',
      ]
@@ -388,7 +382,7 @@ if options.proc_sm or options.proc_all:
     print sa
     JOB='%s_2016' % (sa)
     SIG_DIR = SIG_FILELIST.split('/')[1]
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
@@ -396,7 +390,7 @@ if options.proc_sm or options.proc_all:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 5
+        nperjob = 1
         if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

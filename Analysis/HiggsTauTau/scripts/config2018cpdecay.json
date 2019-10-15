@@ -33,6 +33,7 @@
     "get_effective" : false,
     "do_btag_eff": false,
     "trg_in_mc" : true,
+    "do_vbftrg" : false,
     "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
@@ -58,7 +59,15 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+<<<<<<< HEAD
     "output_folder" : "/vols/cms/dw515/Offline/output/SM/fake_factors_v2p1_2018_metcorr/",
+=======
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct02_2018/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct03_2018/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct07_2018_vbftrg_fixtaupt/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct09_2018_sync/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fake_factors_v2p1_2018_test/",
+>>>>>>> 4c4f3ee687c09a3b9bc81b102f8e294ac70c30ca
     //"output_folder" : "output/",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

@@ -217,6 +217,12 @@ namespace ic {
 
       // triggers for muon legs in mt and zmm channels
       if(mc_ == mc::mc2018 || mc_ == mc::mc2017) {
+        if(mc_ == mc::mc2018) {
+          fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trg_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        }
         fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg24_27_binned_kit_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
@@ -398,7 +404,9 @@ namespace ic {
         fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_idiso_binned_embed_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
-            w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+            w_->function("m_idiso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+        //fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+        //    w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
         fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_id_kit_ratio")->functor(w_->argSet("m_pt,m_eta")));
         fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(

@@ -126,7 +126,7 @@ sample_list = [
     'TauF',
     'Tbar-t',
     'Tbar-tW',
-    # 'VBFHToTauTau_M-125',
+    'VBFHToTauTau_M-125',
     'VBFHiggs0MToTauTau',
     'VBFHiggs0Mf05ph0ToTauTau',
     'VBFHiggs0PMToTauTau',
