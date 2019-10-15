@@ -45,26 +45,16 @@ namespace ic {
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
 
-    if(strategy_ == strategy::cpdecays16 && channel_==channel::tt &&true) {
-      TFile f("input/fake_factors/ff_2016_v1.root");
-      ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
-      f.Close();
-      fns_["ff_tt"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_tt")->functor(ff_ws_->argSet("t_pt,mvadm,njets,mvis,t_pt_2,ss")));
-      fns_["ff_tt_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_tt_qcd")->functor(ff_ws_->argSet("t_pt,mvadm,njets")));
-    }
-
-    if(strategy_ == strategy::cpdecays18 && channel_==channel::tt) {
+    if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16) && channel_==channel::tt) {
       TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
-      std::vector<std::string> systs = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down"  
+      std::vector<std::string> systs = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_met_up","_qcd_stat_met_down"  
       };
       for(auto s : systs) {
         fns_["ff_tt_tight_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_tt_tight_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,mvis,os")));
+              ff_ws_->function(("ff_tt_tight_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met")));
       }
     }
 
@@ -73,7 +63,7 @@ namespace ic {
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
       if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
-      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+      if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
         ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
@@ -87,7 +77,7 @@ namespace ic {
       
       std::string map_key = category_names_[i];
       std::string map_name = "ff_map_"+channel+"_"+map_key;
-      if(strategy_ != strategy::cpdecays18){
+      if(strategy_ != strategy::cpdecays18 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::legacy16){
         if(ProductExists(map_name)){
           fake_factors_[map_key] = GetProduct<std::shared_ptr<FakeFactor>>(map_name);
           std::cout << "Getting " << fake_factors_[map_key] << std::endl;
@@ -475,7 +465,7 @@ namespace ic {
         }
       } else if(channel_ == channel::tt){
 
-        if(strategy_ == strategy::cpdecays18) { 
+        if(strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) { 
           // FF from workspace for cp in decay analysis
 
           Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -491,16 +481,24 @@ namespace ic {
 
           double ipsig = IPAndSignificance(tau1, refit_vertex, pfcands).second;
 
-          double mva_dm_1=tau1->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
+          double mva_dm_1=tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : -1.;
           double os = PairOppSign(ditau);
 
-          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,m_vis_,os};
+          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met->pt()};
           //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << ipsig << "    " << n_jets_ << "    " << m_vis_ << "    " << os << std::endl;
           double ff_nom = fns_["ff_tt_tight_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
           //std::cout << ff_nom << std::endl;
+          //
+          //wt_ff_2
+          double mva_dm_2=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
+          double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2,ipsig2,n_jets_,pt_1_,false,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          double ff_nom_2 = fns_["ff_tt_tight_mvadmbins"]->eval(args2.data());
+          event->Add("wt_ff_2",  ff_nom_2);
+
           if(do_systematics_){
-            std::vector<std::string> systematics = {"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down"};
+            std::vector<std::string> systematics = {"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down"};
 
             for(auto s : systematics){
               double ff_syst = fns_["ff_tt_tight_mvadmbins"+s]->eval(args.data()); 
