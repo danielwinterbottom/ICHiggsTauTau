@@ -1388,10 +1388,8 @@ namespace ic {
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
           auto args_pt = std::vector<double>{pt_2};
           tau_sf_2 = (gen_match_2==5) ? fns_["t_id_pt_tight"]->eval(args_pt.data()) : 1.0;
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_2 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_pt_tight"]->eval(args_pt.data()) : 1.0;
-            event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2);
-          }
+          double deeptau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_tight"]->eval(args_pt.data()) : 1.0;
+          event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2);
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;
@@ -1428,12 +1426,10 @@ namespace ic {
             else if (decay_mode_1>3) tau_sf_1*=pow(0.975,3);
           } else tau_sf_1 = 1.0;
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
-          auto args_dm = std::vector<double>{decay_mode_1};
-          tau_sf_1 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm.data()) : 1.0;      
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_1 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm.data()) : 1.0;
-            event->Add("deeptau_sf_1",deeptau_sf_1/tau_sf_1);
-          } 
+          auto args_dm_1 = std::vector<double>{decay_mode_1};
+          tau_sf_1 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm_1.data()) : 1.0;      
+          double deeptau_sf_1 = (gen_match_2==5) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm_1.data()) : 1.0;
+          event->Add("deeptau_sf_1",deeptau_sf_1/tau_sf_1);
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_1!=5) tau_sf_1=1.0;
@@ -1456,12 +1452,10 @@ namespace ic {
           } else tau_sf_2 = 1.0;
         } 
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
-          auto args_dm = std::vector<double>{decay_mode_2};
-          tau_sf_2 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm.data()) : 1.0;            
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_2 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm.data()) : 1.0;
-            event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2); 
-          }
+          auto args_dm_2 = std::vector<double>{decay_mode_2};
+          tau_sf_2 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm_2.data()) : 1.0;            
+          double deeptau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm_2.data()) : 1.0;
+          event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2); 
         }
 	else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;

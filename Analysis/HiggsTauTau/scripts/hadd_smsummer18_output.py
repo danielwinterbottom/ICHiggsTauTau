@@ -127,7 +127,8 @@ sample_list = [
     'EmbeddingTauTauC',
     'EmbeddingTauTauD',
     'EmbeddingTauTauA',
-
+    'VBFHToTauTau_M-125-nospinner-filter',
+    'GluGluToHToTauTau_M-125-nospinner-filter'
 	]
 
 

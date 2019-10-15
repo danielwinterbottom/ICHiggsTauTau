@@ -17,6 +17,7 @@ for file_name in os.listdir(sys.argv[1]):
 for f in file_names:
     if "SingleMuon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
             "Tau" in f:
+        continue
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])
         tree = input_file.Get("ntuple")
         entries = tree.GetEntries()
