@@ -207,7 +207,8 @@ if options.proc_data or options.proc_all or options.calc_lumi or options.proc_em
 if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
-    data_eras = ['A','B','C','D']
+#    data_eras = ['A','B','C','D']
+    data_eras=['D']
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
