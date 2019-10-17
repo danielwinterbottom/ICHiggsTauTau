@@ -155,7 +155,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' #mu8
-        trg_pt_bins = '[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
+        trg_pt_bins = '[10,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
         if options.era == 'smsummer17':
@@ -752,6 +752,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
 if options.channel == 'tpzmm': 
     if options.era == 'summer17':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+        #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'summer18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == 'legacy16':
@@ -777,6 +778,7 @@ if options.era == 'summer17':
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
+  #if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB']

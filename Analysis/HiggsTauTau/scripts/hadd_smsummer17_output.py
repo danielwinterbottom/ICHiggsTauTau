@@ -168,6 +168,8 @@ sample_list = [
     'VBFHToTauTau_M125_nospinner',
     'VBFHToTauTau_M125_PS',
     'VBFHToTauTau_M125_SM',
+    'VBFHToTauTau_M-125-nospinner-filter',
+    'GluGluToHToTauTau_M-125-nospinner-filter'
 	]
 
 

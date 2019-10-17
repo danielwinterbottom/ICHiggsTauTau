@@ -157,7 +157,9 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-         'VBFHToTauTau_M-125',
+        'VBFHToTauTau_M-125-nospinner-filter',
+        'GluGluToHToTauTau_M-125-nospinner-filter',
+#         'VBFHToTauTau_M-125',
          # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 
          # 'GluGluToHToTauTau_M125_nospinner-2017',
@@ -168,8 +170,9 @@ if options.proc_sm or options.proc_all:
 
          #'GluGluHToTauTau_M-125-ext',
          #'GluGluHToTauTau_M-125',
-         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         'GluGluToHToTauTau_M125_amcatnloFXFX',
+#         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+#
+#         'GluGluToHToTauTau_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
          #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
          #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
@@ -455,7 +458,7 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 1
+        nperjob = 20
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

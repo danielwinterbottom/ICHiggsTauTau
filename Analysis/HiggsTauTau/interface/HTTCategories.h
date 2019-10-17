@@ -509,6 +509,7 @@ class HTTCategories : public ModuleBase {
   double aco_sign_3_;
   double aco_sign_4_;
   double aco_sign_5_;
+  double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
 
 

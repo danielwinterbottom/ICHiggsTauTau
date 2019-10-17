@@ -829,6 +829,9 @@ namespace ic {
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
+      outtree_->Branch("lead_pt_1", &lead_pt_1_);
+      outtree_->Branch("lead_pt_2", &lead_pt_2_);
+
       outtree_->Branch("aco_sign_1", &aco_sign_1_);
       outtree_->Branch("aco_sign_2", &aco_sign_2_);
       outtree_->Branch("aco_sign_3", &aco_sign_3_);
@@ -4518,6 +4521,9 @@ namespace ic {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
+      lead_pt_1_ =  tau1->lead_pt();
+      lead_pt_2_ =  tau2->lead_pt();
+
       mvadm_pi_1_ = tau1->HasTauID("MVADM2016v1DM0raw") ? tau1->GetTauID("MVADM2016v1DM0raw") : 0.0;
       mvadm_rho_1_ = tau1->HasTauID("MVADM2016v1DM1raw") ? tau1->GetTauID("MVADM2016v1DM1raw") : 0.0;
       mvadm_a1_1_ = tau1->HasTauID("MVADM2016v1DM2raw") ? tau1->GetTauID("MVADM2016v1DM2raw") : 0.0;
@@ -4649,6 +4655,10 @@ namespace ic {
           else                    aco_angle_5_ = aco_angle_5_-M_PI;
         }
         aco_angle_6_ = IPAcoAngle(lvec1_1, lvec2, lvec3_1, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
+          else                    aco_angle_6_ = aco_angle_6_-M_PI;
+        }
       }
 
       if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
@@ -4808,6 +4818,8 @@ namespace ic {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
+      lead_pt_2_ =  tau2->lead_pt();
+
       mvadm_pi_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
       mvadm_rho_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
       mvadm_a1_2_ = tau2->HasTauID("MVADM2017v1DM2raw") ? tau2->GetTauID("MVADM2017v1DM2raw") : 0.0;
@@ -4881,6 +4893,8 @@ namespace ic {
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {
       Electron const* ele1 = dynamic_cast<Electron const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      lead_pt_2_ =  tau2->lead_pt();
     
       mvadm_pi_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
       mvadm_rho_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
