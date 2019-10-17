@@ -12,10 +12,10 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
-parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018')
-parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018_new.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/fake_factors_v2p1_2018_pt2corr/')
+parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2017.root')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2017')
+parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2017.json')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/fakefactors_2017/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -25,9 +25,9 @@ output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
 draw = int(args.draw) > 0
-lumi=58826.8469
+lumi=41859.517
 
-out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
+out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
 # read params from json
 
@@ -35,52 +35,19 @@ with open(params_file) as jsonfile:
   params = json.load(jsonfile)
 
 data_files = [
-  'TauA',
   'TauB',
   'TauC',
-  'TauD'
+  'TauD',
+  'TauE',
+  'TauF',
 ]
 
-ttbar_files = [
-  'TTTo2L2Nu',
-  'TTToHadronic',
-  'TTToSemiLeptonic'
-]
+ttbar_files = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
 
-wjets_files = [
-  'W1JetsToLNu-LO',
-  'W2JetsToLNu-LO',
-  'W3JetsToLNu-LO',
-  'W4JetsToLNu-LO',
-  'WJetsToLNu-LO',
-  'EWKWMinus2Jets',
-  'EWKWPlus2Jets'
-]
+wjets_files = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
 
-other_files = [
-  'EWKZ2Jets',
-  'T-tW-ext1',
-  'T-t',
-  'DY1JetsToLL-LO',
-  'DY2JetsToLL-LO',
-  'DY3JetsToLL-LO',
-  'DY4JetsToLL-LO',
-  'DYJetsToLL-LO',
-  'DYJetsToLL_M-10-50-LO',
-  'Tbar-tW-ext1',
-  'Tbar-t',
-  'WWTo1L1Nu2Q',
-  'WWTo2L2Nu',
-  'WZTo1L3Nu',
-  'WZTo2L2Q',
-  'WZTo3LNu-ext1',
-  'WZTo3LNu',
-  'ZZTo2L2Nu-ext1',
-  'ZZTo2L2Nu-ext2',
-  'ZZTo2L2Q',
-  'ZZTo4L-ext',
-  'ZZTo4L'
-]
+# Add MC sample names   
+other_files = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1','T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','EWKZ2Jets']
 
 
 njets_bins = { 
@@ -94,7 +61,7 @@ dm_bins = {
               'dm0':'(tau_decay_mode_X==0)',
               'dm1':'(tau_decay_mode_X==1)',
               'dm10':'(tau_decay_mode_X==10)',
-              'dm11':'(tau_decay_mode_X==11)',
+              'dm11': '(tau_decay_mode_X==11)',
               'mvadm0':'(mva_dm_X==0)',
               'mvadm0_sig_gt3':'(mva_dm_X==0&&ip_sig_1>=1)',
               'mvadm0_sig_lt3':'(mva_dm_X==0&&ip_sig_1<1)',
@@ -165,7 +132,6 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   bkgs = hout.Clone()
   bkgs.SetName(name+'_bkgs')
 
-
   # draw data
   for i in data_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
@@ -207,6 +173,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   # draw all backgrounds to be subtracted from data for QCD estimation
 
   for i in other_files+wjets_files+ttbar_files:
+    print i
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
     h = hout.Clone()
@@ -221,7 +188,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     bkgs.Add(h)
 
   data.Add(bkgs,-1)
- 
+  
   return (data, wjets, ttbar)
 
 def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
@@ -579,8 +546,9 @@ for njetbin in njets_bins:
     cut_aiso1 = re.sub('X', '1','(%(baseline_aiso2_aiso1)s)*(%(cuts)s)' % vars())
     ff_list[name+'_aiso2_ss_pt_1'] = (var1, cut_iso1, cut_aiso1)
 
-
 for ff in ff_list:
+
+  print "Doing Fits for: ", ff
   wjets_ff=None
   ttbar_ff=None
   if draw:
@@ -706,6 +674,7 @@ print '\n'
 print "anti-isolated region mva-dm binning:"
 print tau1_mvadm_aiso_string_ipsig
 
+
 # derive non-closure corrections for n_jets=0 events as a function of MET
 var='met[0,10,20,30,40,50,60,70,80,90,100]'
 for i in ['mvadm_nosig','mvadm','dm']:
@@ -726,15 +695,15 @@ for i in ['mvadm_nosig','mvadm','dm']:
   qcd_ss_data_aiso2.Divide(qcd_ss_pred_aiso2)
 
   qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
-
+  
   qcd_ss_data.Write()
   qcd_ss_data_fit.Write()
   qcd_ss_data_uncert.Write()
   PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
-
-  fout.cd()
+ 
+  fout.cd() 
   qcd_ss_data_aiso2_fit, qcd_ss_data_aiso2_uncert =  FitCorrection(qcd_ss_data_aiso2, func='pol3')
-
+  
   qcd_ss_data_aiso2.Write()
   qcd_ss_data_aiso2_fit.Write()
   qcd_ss_data_aiso2_uncert.Write()
@@ -752,19 +721,20 @@ for i in ['mvadm_nosig','mvadm','dm']:
   met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
   (qcd_os_data, wjets_os_data, ttbar_os_data) = DrawHists(var, baseline_aiso2_iso, '%(i)s_pt_2_os_closure' % vars(),input_folder,file_ext,True)
   if i=='mvadm': (qcd_os_pred, wjets_os_pred_mvadm, ttbar_os_pred_mvadm) = DrawHists(var, baseline_aiso2_aiso1, '%(i)s_pt_2_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string_ipsig+met_corr)
-  if i=='mvadm_nosig': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, baseline_aiso2_aiso1, '%(i)s_pt_2_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string+met_corr)
+  if i=='mvadm_nosig': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, baseline_aiso2_aiso1, '%(i)s_pt_2_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string+met_corr) 
   if i=='dm': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, baseline_aiso2_aiso1, '%(i)s_pt_2_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_dm_aiso_string+met_corr)
   fout.cd()
   qcd_os_data.Divide(qcd_os_pred)
-
+  
   qcd_os_data_fit, qcd_os_data_uncert =  FitCorrection(qcd_os_data, func='pol3')
-
+  
   qcd_os_data.Write()
   qcd_os_data_fit.Write()
   qcd_os_data_uncert.Write()
   PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp)
 
   ## apply pt_2 closure correction then define uncertainty as 2D data/pred differences in dm variables
+  # fix this for histograms don;t return nan anymore!
   p = qcd_os_data_fit.GetParameters()
   pt2_corr_str='(%f+ %f*min(pt_2,140.) + %f*min(pt_2,140.)*min(pt_2,140.) + %f*min(pt_2,140.)*min(pt_2,140.)*min(pt_2,140.))' % (p[0], p[1], p[2], p[3])
   var1 = 'mva_dm_1[0,1,2,3,10,11,12]'
@@ -776,6 +746,7 @@ for i in ['mvadm_nosig','mvadm','dm']:
   fout.cd()
   qcd_os_data.Divide(qcd_os_pred)
   qcd_os_data.Write()
+
  
 
 fout.Close()

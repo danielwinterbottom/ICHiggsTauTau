@@ -67,8 +67,8 @@ dm_bins = {
               'dm10':'(tau_decay_mode_X==10)',
               'dm11': '(tau_decay_mode_X==11)',
               'mvadm0':'(mva_dm_X==0)',
-              'mvadm0_sig_gt3':'(mva_dm_X==0&&ip_sig_1>=3)',
-              'mvadm0_sig_lt3':'(mva_dm_X==0&&ip_sig_1<3)',
+              'mvadm0_sig_gt3':'(mva_dm_X==0&&ip_sig_1>=1)',
+              'mvadm0_sig_lt3':'(mva_dm_X==0&&ip_sig_1<1)',
               'mvadm1':'(mva_dm_X==1)',
               'mvadm2':'(mva_dm_X==2)',
               'mvadm10':'(mva_dm_X==10)',
@@ -436,7 +436,7 @@ def WriteFunctionMVADM2JetsIPSig(fout, subtau=False, aiso=False):
       else:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
-  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_1<3)*(%s)+(mva_dm_X==0&&ip_sig_1>=3)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_1<3)*(%s)+(mva_dm_X==0&&ip_sig_1>=3)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_1<3)*(%s)+(mva_dm_X==0&&ip_sig_1>=3)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
+  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
   if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
   else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
