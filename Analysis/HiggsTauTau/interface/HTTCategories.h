@@ -502,10 +502,14 @@ class HTTCategories : public ModuleBase {
   double aco_angle_2_;
   double aco_angle_3_;
   double aco_angle_4_;
+  double aco_angle_5_;
+  double aco_angle_6_;
   double aco_sign_1_;
   double aco_sign_2_;
   double aco_sign_3_;
   double aco_sign_4_;
+  double aco_sign_5_;
+  double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
 
 
@@ -627,7 +631,7 @@ class HTTCategories : public ModuleBase {
   double wt_ff_dy_frac_syst_down_2_;
  
   // ff uncertainties for cp in decay analysis
-  double wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet0_mvadm1_up_1_, wt_ff_qcd_stat_njet0_mvadm1_down_1_, wt_ff_qcd_stat_njet0_mvadm2_up_1_, wt_ff_qcd_stat_njet0_mvadm2_down_1_, wt_ff_qcd_stat_njet0_mvadm10_up_1_, wt_ff_qcd_stat_njet0_mvadm10_down_1_, wt_ff_qcd_stat_njet0_mvadm11_up_1_, wt_ff_qcd_stat_njet0_mvadm11_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet1_mvadm1_up_1_, wt_ff_qcd_stat_njet1_mvadm1_down_1_, wt_ff_qcd_stat_njet1_mvadm2_up_1_, wt_ff_qcd_stat_njet1_mvadm2_down_1_, wt_ff_qcd_stat_njet1_mvadm10_up_1_, wt_ff_qcd_stat_njet1_mvadm10_down_1_, wt_ff_qcd_stat_njet1_mvadm11_up_1_, wt_ff_qcd_stat_njet1_mvadm11_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet2_mvadm1_up_1_, wt_ff_qcd_stat_njet2_mvadm1_down_1_, wt_ff_qcd_stat_njet2_mvadm2_up_1_, wt_ff_qcd_stat_njet2_mvadm2_down_1_, wt_ff_qcd_stat_njet2_mvadm10_up_1_, wt_ff_qcd_stat_njet2_mvadm10_down_1_, wt_ff_qcd_stat_njet2_mvadm11_up_1_, wt_ff_qcd_stat_njet2_mvadm11_down_1_; 
+  double wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet0_mvadm1_up_1_, wt_ff_qcd_stat_njet0_mvadm1_down_1_, wt_ff_qcd_stat_njet0_mvadm2_up_1_, wt_ff_qcd_stat_njet0_mvadm2_down_1_, wt_ff_qcd_stat_njet0_mvadm10_up_1_, wt_ff_qcd_stat_njet0_mvadm10_down_1_, wt_ff_qcd_stat_njet0_mvadm11_up_1_, wt_ff_qcd_stat_njet0_mvadm11_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet1_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet1_mvadm1_up_1_, wt_ff_qcd_stat_njet1_mvadm1_down_1_, wt_ff_qcd_stat_njet1_mvadm2_up_1_, wt_ff_qcd_stat_njet1_mvadm2_down_1_, wt_ff_qcd_stat_njet1_mvadm10_up_1_, wt_ff_qcd_stat_njet1_mvadm10_down_1_, wt_ff_qcd_stat_njet1_mvadm11_up_1_, wt_ff_qcd_stat_njet1_mvadm11_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_lt3_down_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_up_1_, wt_ff_qcd_stat_njet2_mvadm0_sig_gt3_down_1_, wt_ff_qcd_stat_njet2_mvadm1_up_1_, wt_ff_qcd_stat_njet2_mvadm1_down_1_, wt_ff_qcd_stat_njet2_mvadm2_up_1_, wt_ff_qcd_stat_njet2_mvadm2_down_1_, wt_ff_qcd_stat_njet2_mvadm10_up_1_, wt_ff_qcd_stat_njet2_mvadm10_down_1_, wt_ff_qcd_stat_njet2_mvadm11_up_1_, wt_ff_qcd_stat_njet2_mvadm11_down_1_, wt_ff_qcd_stat_pt2_up_1_, wt_ff_qcd_stat_pt2_down_1_; 
   
   double ff_weight_inclusive_;
   double ff_weight_inclusive_2_;
@@ -1045,6 +1049,7 @@ class HTTCategories : public ModuleBase {
   bool trg_muonelectron_2_;
   bool trg_muonelectron_3_;
   bool trg_doubletau_;
+  bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
   bool trg_mutaucross_;

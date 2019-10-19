@@ -29,14 +29,14 @@ w = ROOT.RooWorkspace('w')
 ### tt channel ####
 ################################################
 
-ip_sig_cut = '3'
-wps = ['tight']
+ip_sig_cut = '1'
+wps = ['tight','medium','vtight']
 
 for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018_newaiso2_ipsig/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018/' % vars()
  
   histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_2018.root:tt_fracs_njets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_tt_%(wp)s_2018.root:tt_fracs_njets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -137,25 +137,18 @@ for wp in wps:
   w.factory('expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<%(ip_sig_cut)s)*@3+(@1==0&&@2>=%(ip_sig_cut)s)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<3)*@9+(@1==0&&@2>=%(ip_sig_cut)s)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<3)*@15+(@1==0&&@2>=%(ip_sig_cut)s)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
 
 
-  # os/ss corrections
-  #commented lines do clousre correction as a function of mvis and mvadm_1 - switch to pt_2 correction instead which seems to work better
-#  for dm in dm_bins:
-#    func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dm)s_os_closure_qcd_fit' % vars())
-#    func_str = "[0] + [1]*x"
-#    params = func.GetParameters()
-#    for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
-#    func_str
-#    func_str = re.sub('x', '@0', func_str)
-#    w.factory('expr::mvis_bounded("min(300,@0)",mvis[0])' % vars())
-#    w.factory('expr::tt_%(dm)s_%(wp)s_qcd_corr("%(func_str)s",mvis_bounded)' % vars())
-# 
-#  w.factory('expr::tt_dmbins_%(wp)s_qcd_corr("(@0==0)*@1+(@0==1)*@2+(@0==10)*@3+(@0==11)*@4", dm[1], tt_dm0_%(wp)s_qcd_corr,tt_dm1_%(wp)s_qcd_corr,tt_dm10_%(wp)s_qcd_corr,tt_dm11_%(wp)s_qcd_corr)' % vars())
-#
-#  w.factory('expr::tt_mvadmbins_nosig_%(wp)s_qcd_corr("(@0==0)*@1+(@0==1)*@2+(@0==2)*@3+(@0==10)*@4+(@0==11)*@5", mvadm[1], tt_mvadm0_%(wp)s_qcd_corr,tt_mvadm1_%(wp)s_qcd_corr,tt_mvadm2_%(wp)s_qcd_corr,tt_mvadm10_%(wp)s_qcd_corr,tt_mvadm11_%(wp)s_qcd_corr)' % vars())
-#
-#  w.factory('expr::tt_mvadmbins_%(wp)s_qcd_corr("(@0==0&&@1<%(ip_sig_cut)s)*@2 + (@0==0&&@1>=%(ip_sig_cut)s)*@3 + (@0==1)*@4+(@0==2)*@5+(@0==10)*@6+(@0==11)*@7", mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_%(wp)s_qcd_corr,tt_mvadm0_sig_gt3_%(wp)s_qcd_corr,tt_mvadm1_%(wp)s_qcd_corr,tt_mvadm2_%(wp)s_qcd_corr,tt_mvadm10_%(wp)s_qcd_corr,tt_mvadm11_%(wp)s_qcd_corr)' % vars())
-
   for dmtype in ['mvadmbins','mvadmbins_nosig','dmbins']:
+
+    # get SS met closure correction
+
+    func = GetFromTFile((loc+'/fakefactor_fits_tt_%(wp)s_2018.root:%(dmtype)s_met_ss_closure_qcd_fit' % vars()).replace('bins',''))
+    func_str_pol3 = "[0] + [1]*x + [2]*x*x + [3]*x*x*x"
+    params = func.GetParameters()
+    for i in range(0,func.GetNpar()): func_str_pol3 = func_str_pol3.replace('[%(i)i]' % vars(),'%.9f' % params[i])
+    func_str_pol3 = re.sub('x', '@0', func_str_pol3)
+    w.factory('expr::met_bounded("min(99.9,@0)",met[0])' % vars())
+    w.factory('expr::tt_%(dmtype)s_%(wp)s_qcd_ss_corr("(%(func_str_pol3)s)*(@1==0) + (@1>0)",met_bounded,njets[0])' % vars())
+
     func = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dmtype)s_pt_2_os_closure_qcd_fit' % vars()).replace('bins',''))
     func_str_pol3 = "[0] + [1]*x + [2]*x*x + [3]*x*x*x"
     params = func.GetParameters()
@@ -164,31 +157,45 @@ for wp in wps:
     w.factory('expr::pt_2_bounded("max(min(139.9,@0),40.)",pt_2[0])' % vars())
     w.factory('expr::tt_%(dmtype)s_%(wp)s_qcd_corr("%(func_str_pol3)s",pt_2_bounded)' % vars())
 
-    # apply QCD corrections - only do this for the fraction of events that come from QCD
-    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s("(@0!=0)*@1*(@2*@3 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd)' % vars())
+    # apply QCD corrections - only do this for the fraction of events that come from QCD - OS events have both met and pt_2 corrections. SS events have only the MET correction
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s("(@0!=0)*@1*(@2*@3*@4 + (1.-@3)) + (@0==0)*(@3*@4 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)' % vars())
 
     # QCD systematic is partly statistical from pt_2 os closure corrections and partly systematic from comparing data to prediction in aiso2 region in bins of dm's of both taus
 
-    # get stat uncertainties
+    # get stat uncertainties for met ss closure correction
+    hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dmtype)s_met_ss_closure_qcd_uncert' % vars()).replace('bins',''))
+    (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom)
+    wsptools.SafeWrapHist(w, ['met_bounded'], hist_nom, name='tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_nom' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded'], hist_up, name='tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_up' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded'], hist_down, name='tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_down' % vars())
+
+    w.factory('expr::tt_%(dmtype)s_met_ss_%(wp)s_qcd_up("(1.+@0/@1)*(@2==0) + (@2>0)",tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_up,tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_nom, njets[0])' % vars())
+    w.factory('expr::tt_%(dmtype)s_met_ss_%(wp)s_qcd_down("(1.-@0/@1)*(@2==0) + (@2>0)",tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_down,tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_nom, njets[0])' % vars())
+
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_met_up("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@4*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr,tt_%(dmtype)s_met_ss_%(wp)s_qcd_up)' % vars())
+
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_met_down("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@4*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr,tt_%(dmtype)s_met_ss_%(wp)s_qcd_down)' % vars())
+
+    # get stat uncertainties for os/ss correction
     hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dmtype)s_pt_2_os_closure_qcd_uncert' % vars()).replace('bins',''))
     (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom)
     wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_nom, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_nom' % vars())
     wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_up, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_down, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_down' % vars()) 
+    wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_down, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_down' % vars())
 
     w.factory('expr::tt_%(dmtype)s_pt_2_%(wp)s_qcd_up("1.+@0/@1",tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_up,tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_nom)' % vars())
     w.factory('expr::tt_%(dmtype)s_pt_2_%(wp)s_qcd_down("1.-@0/@1",tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_down,tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_nom)' % vars())
 
-    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_pt2_up("(@0!=0)*@1*(@2*@3*@4 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_pt_2_%(wp)s_qcd_up)' % vars())
-    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_pt2_down("(@0!=0)*@1*(@2*@3*@4 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_pt_2_%(wp)s_qcd_down)' % vars())
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_pt2_up("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_pt_2_%(wp)s_qcd_up, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)' % vars())
+    w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_pt2_down("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, tt_%(dmtype)s_pt_2_%(wp)s_qcd_down, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)' % vars())
 
     # systematic uncertainty from comparing data to prediction in aiso2 region in bins of tau1 and tau2 dm's
     if dmtype != 'dmbins':
       wsptools.SafeWrapHist(w, ['mvadm','mvadm2'], GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2018.root:%(dmtype)s_os_dm_uncert_qcd' % vars()).replace('bins','')), name='%(dmtype)s_os_dm_uncert_qcd' % vars())
 
 
-      w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_up("(@0!=0)*@1*(@2*@3*@4 + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, %(dmtype)s_os_dm_uncert_qcd)'  % vars())
-      w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_down("(@0!=0)*@1*(@2*@3*(2.-@4) + (1.-@3)) + (@0==0)*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, %(dmtype)s_os_dm_uncert_qcd)'  % vars())
+      w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_up("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, %(dmtype)s_os_dm_uncert_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)'  % vars())
+      w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_down("(@0!=0)*@1*(@2*@3*(2.-@4)*@5 + (1.-@3)) + (@0==0)*(@3*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, %(dmtype)s_os_dm_uncert_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)'  % vars())
 
     # wjets and ttbar systematics from comparing the inclusive fakefactors derived from data for QCD events with the MC fake factors predicted in MC for wjets and ttbar
 

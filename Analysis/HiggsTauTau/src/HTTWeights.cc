@@ -217,8 +217,7 @@ namespace ic {
 
       // triggers for muon legs in mt and zmm channels
       if(mc_ == mc::mc2018 || mc_ == mc::mc2017) {
-        fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg24_27_binned_kit_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+         fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(  w_->function("m_trg24_27_binned_kit_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg24_27_binned_kit_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(
@@ -397,8 +396,10 @@ namespace ic {
       if (mc_ == mc::mc2018 || mc_ == mc::mc2017) { 
         fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_idiso_binned_embed_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
-            w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+         fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+          w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
+        //fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+        //    w_->function("m_idiso_binned_kit_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso"))); 
         fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("m_id_kit_ratio")->functor(w_->argSet("m_pt,m_eta")));
         fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(
@@ -436,17 +437,15 @@ namespace ic {
       fns_["t_id_dm_tight"] = std::shared_ptr<RooFunctor>(
           w_->function("t_id_dm_tight")->functor(w_->argSet("t_dm")));
       fns_["t_id_dm_vloose"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_id_dm_vloose")->functor(w_->argSet("t_dm")));
-      if(mc_ != mc::mc2017) {
-        fns_["t_deeptauid_pt_tight"] = std::shared_ptr<RooFunctor>(
-            w_->function("t_deeptauid_pt_tight")->functor(w_->argSet("t_pt")));
-        fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
-            w_->function("t_deeptauid_pt_vvvloose")->functor(w_->argSet("t_pt")));
-        fns_["t_deeptauid_dm_tight"] = std::shared_ptr<RooFunctor>(
-            w_->function("t_deeptauid_dm_tight")->functor(w_->argSet("t_dm")));
-        fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
-            w_->function("t_deeptauid_dm_vvvloose")->functor(w_->argSet("t_dm")));
-      }
+        w_->function("t_id_dm_vloose")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_pt_tight"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_tight")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_vvvloose")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_dm_tight"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_tight")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_vvvloose")->functor(w_->argSet("t_dm")));
 
       // zpt reweighting
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
@@ -1388,10 +1387,8 @@ namespace ic {
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
           auto args_pt = std::vector<double>{pt_2};
           tau_sf_2 = (gen_match_2==5) ? fns_["t_id_pt_tight"]->eval(args_pt.data()) : 1.0;
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_2 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_pt_tight"]->eval(args_pt.data()) : 1.0;
-            event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2);
-          }
+          double deeptau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_tight"]->eval(args_pt.data()) : 1.0;
+          event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2);
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;
@@ -1428,12 +1425,10 @@ namespace ic {
             else if (decay_mode_1>3) tau_sf_1*=pow(0.975,3);
           } else tau_sf_1 = 1.0;
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
-          auto args_dm = std::vector<double>{decay_mode_1};
-          tau_sf_1 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm.data()) : 1.0;      
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_1 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm.data()) : 1.0;
-            event->Add("deeptau_sf_1",deeptau_sf_1/tau_sf_1);
-          } 
+          auto args_dm_1 = std::vector<double>{decay_mode_1};
+          tau_sf_1 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm_1.data()) : 1.0;      
+          double deeptau_sf_1 = (gen_match_2==5) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm_1.data()) : 1.0;
+          event->Add("deeptau_sf_1",deeptau_sf_1/tau_sf_1);
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_1!=5) tau_sf_1=1.0;
@@ -1456,12 +1451,10 @@ namespace ic {
           } else tau_sf_2 = 1.0;
         } 
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
-          auto args_dm = std::vector<double>{decay_mode_2};
-          tau_sf_2 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm.data()) : 1.0;            
-          if(mc_!=mc::mc2017) { // no deep tau ID SFs for 2017 yet
-            double deeptau_sf_2 = (gen_match_2==5 && mc_ != mc::mc2017) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm.data()) : 1.0;
-            event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2); 
-          }
+          auto args_dm_2 = std::vector<double>{decay_mode_2};
+          tau_sf_2 = (gen_match_2==5) ? fns_["t_id_dm_tight"]->eval(args_dm_2.data()) : 1.0;            
+          double deeptau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_tight"]->eval(args_dm_2.data()) : 1.0;
+          event->Add("deeptau_sf_2",deeptau_sf_2/tau_sf_2); 
         }
 	else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           if(gen_match_2!=5) tau_sf_2=1.0;

@@ -126,7 +126,7 @@ sample_list = [
     'TauF',
     'Tbar-t',
     'Tbar-tW',
-    # 'VBFHToTauTau_M-125',
+    'VBFHToTauTau_M-125',
     'VBFHiggs0MToTauTau',
     'VBFHiggs0Mf05ph0ToTauTau',
     'VBFHiggs0PMToTauTau',
@@ -168,6 +168,8 @@ sample_list = [
     'VBFHToTauTau_M125_nospinner',
     'VBFHToTauTau_M125_PS',
     'VBFHToTauTau_M125_SM',
+    'VBFHToTauTau_M-125-nospinner-filter',
+    'GluGluToHToTauTau_M-125-nospinner-filter'
 	]
 
 

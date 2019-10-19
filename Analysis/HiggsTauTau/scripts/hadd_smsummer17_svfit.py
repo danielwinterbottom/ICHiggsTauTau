@@ -142,7 +142,7 @@ sample_list = [
     'ZHiggs0Mf05ph0ToTauTau',
     'ZHiggs0PMToTauTau',
     'GluGluToHToTauTau_M-125-nospinner',
-    'VBFHToTauTau_M-125-nospinner'
+    'VBFHToTauTau_M-125-nospinner',
     'GluGluToHToTauTau_M125_nospinner-2017',
     'VBFHToTauTau_M125_nospinner-2017',
 

@@ -123,7 +123,8 @@ sample_list = [
      'MuonEGF',
      'MuonEGG',
      'MuonEGH',
-
+     'VBFHToTauTau_M-125-nospinner-filter',
+     'GluGluToHToTauTau_M-125-nospinner-filter'
     ]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
