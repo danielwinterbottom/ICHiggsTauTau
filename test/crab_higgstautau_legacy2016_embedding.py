@@ -8,10 +8,10 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.maxMemoryMB = 2500
+config.JobType.maxMemoryMB = 5000
 config.JobType.pyCfgParams = ['release=102XMINIAOD','isEmbed=1','isData=0','doHT=0', 'globalTag=94X_dataRun2_v10']
 config.section_('Data')
-config.Data.unitsPerJob = 50000
+config.Data.unitsPerJob = 10000
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
