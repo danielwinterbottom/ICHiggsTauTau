@@ -163,9 +163,12 @@ def SetAxisTitles2D(plot, channel):
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events','']
+  titles['mva_dm_2'] = ['#tau MVA decay mode','Events', 'Events','']
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events','']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events','']
+      titles['mva_dm_1'] = ['Lead MVA #tau MVA decay mode','Events', 'Events','']
+      titles['mva_dm_2'] = ['Sub-lead #tau MVA decay mode','Events', 'Events','']
   
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   titles['D0'] = ['D_{0}','Events', 'dN/dD_{0}','']
@@ -195,11 +198,11 @@ def SetAxisTitles2D(plot, channel):
     else: x_titles =  [titles[xvar][0], titles[xvar][2]]
   if yvar not in titles: 
     unit=''
-    if not isVarBins: x_titles = [yvar,'Events',unit]
+    if not isVarBins: y_titles = [yvar,'Events',unit]
     else: y_titles =  [yvar, 'dN/d'+yvar,unit]
   else:
     unit = titles[yvar][3]  
-    if not isVarBins: x_titles = [titles[yvar][0],titles[yvar][1],unit]
+    if not isVarBins: y_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
     
   return [x_titles, y_titles]
@@ -2138,9 +2141,13 @@ def HTTPlot(nodename,
     # sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False )
     # sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False )
 
+    sig_schemes["sm_cp_decays_ggh"] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_sm_htt"], False )
+    sig_schemes["sm_cp_decays_qqh"] = ( str(int(signal_scale))+"#times SM qqH#rightarrow#tau#tau", ["qqH_sm_htt"], False )
     sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False )
     sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False )
     sig_schemes["sm_cp_decays_mm"] = ( str(int(signal_scale))+"#times MM H#rightarrow#tau#tau", ["ggH_mm_htt", "qqH_mm_htt"], False )
+
+    sig_schemes["sm_18"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2230,9 +2237,9 @@ def HTTPlot(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
 
-    if vbf_background:
-        for key in background_schemes: 
-            background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    #if vbf_background:
+    #    for key in background_schemes: 
+    #        background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm','zee']:
@@ -2436,10 +2443,11 @@ def HTTPlot(nodename,
         sighists = dict()
 
         if ggh_scheme == 'powheg':
-            # signal_split_schemes = ['sm_ggH','sm_qqH']
-            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
+            signal_split_schemes = ['sm_ggH','sm_qqH']
+            # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == "tauspinner":
-            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
+            # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
+            signal_split_schemes = ['sm_cp_decays_ggh','sm_cp_decays_qqh']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2457,10 +2465,10 @@ def HTTPlot(nodename,
                     else:
                         sighists[split_scheme].Add(h)
 
-                if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays']:
+                if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays','sm_cp_decays_ggh']:
                     sighists[split_scheme].SetLineColor(R.kRed)
-                elif split_scheme == 'sm_qqH':
-                    sighists[split_scheme].SetLineColor(R.kBlue)
+                elif split_scheme in ['sm_qqH','sm_cp_decays_qqh']:
+                    sighists[split_scheme].SetLineColor(R.TColor.GetColor(51,51,230))
                 elif split_scheme in ['sm_ps','sm_cp_decays_ps']:
                     sighists[split_scheme].SetLineColor(R.kGreen+3)
                 elif split_scheme in ['sm_mm','sm_cp_decays_mm']:
@@ -3547,8 +3555,8 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
-    # sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
+    # sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
     # sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
@@ -3630,9 +3638,9 @@ def HTTPlotUnrolled(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
     
-    if vbf_background:
-        for key in background_schemes: 
-            background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    # if vbf_background:
+    #     for key in background_schemes: 
+    #         background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
 
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
