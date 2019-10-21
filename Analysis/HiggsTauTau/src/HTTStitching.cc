@@ -389,11 +389,8 @@ namespace ic {
   
    if(do_ggH_soup_) {
      int npNLO = eventInfo->npNLO();
-     std::cout << "npNLO: " << npNLO << std::endl;
      if(npNLO<0) npNLO = 2; // this is tempoary as I didn't both re-running the H+2j ntuples to ass npNLO so this will always = the default value (=-1) 
-     std::cout << "printing ggHw2 weight:" << ggHw2_ << std::endl;
       if(npNLO>=2) {
-     std::cout << "npNLO>=2 : printing ggHw2 weight:" << ggHw2_ << std::endl;
           eventInfo->set_weight("ggHsoup", ggHw2_);
       }
       else eventInfo->set_weight("ggHsoup", 1.0);
