@@ -167,28 +167,28 @@ if options.proc_sm or options.proc_all:
          #'GluGluHToPseudoscalarTauTau_GEN',
          #'GluGluHToMaxmixTauTau_GEN',
 
-         # 'GluGluHToTauTau_M-125',
-         # 'GluGluHToTauTau_M-125-ext',
-         # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         # 'GluGluToHToTauTau_M125_amcatnloFXFX',
-         # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-         # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-         # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+         'GluGluHToTauTau_M-125',
+         'GluGluHToTauTau_M-125-ext',
+         'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         'GluGluToHToTauTau_M125_amcatnloFXFX',
+         'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+         'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+         'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
 
-         #'VBFHToTauTau_M-125',
-         #'WminusHToTauTau_M-125',
-         #'WplusHToTauTau_M-125',
-         #'ZHToTauTau_M-125',
-         #'VBFHiggs0Mf05ph0ToTauTau',
-         #'VBFHiggs0MToTauTau',
-         #'VBFHiggs0PMToTauTau',
-         #'WHiggs0Mf05ph0ToTauTau',
-         #'WHiggs0MToTauTau',
-         #'WHiggs0PMToTauTau',
-         #'ZHiggs0Mf05ph0ToTauTau',
-         #'ZHiggs0MToTauTau',
-         #'ZHiggs0PMToTauTau',
+         'VBFHToTauTau_M-125',
+         'WminusHToTauTau_M-125',
+         'WplusHToTauTau_M-125',
+         'ZHToTauTau_M-125',
+         'VBFHiggs0Mf05ph0ToTauTau',
+         'VBFHiggs0MToTauTau',
+         'VBFHiggs0PMToTauTau',
+         'WHiggs0Mf05ph0ToTauTau',
+         'WHiggs0MToTauTau',
+         'WHiggs0PMToTauTau',
+         'ZHiggs0Mf05ph0ToTauTau',
+         'ZHiggs0MToTauTau',
+         'ZHiggs0PMToTauTau',
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -344,47 +344,47 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-      # 'DYJetsToLL_M-10-50-LO-ext1',
-      # 'DYJetsToLL_M-10-50-LO',
-      # 'DY1JetsToLL-LO', #new pmx
-      # 'DY1JetsToLL-LO-ext', #new sample
-      # 'DY2JetsToLL-LO',
-      # 'DY2JetsToLL-LO-ext',
-      # 'DY3JetsToLL-LO',
-      # 'DY3JetsToLL-LO-ext',
-      # 'DY4JetsToLL-LO', # new
-      # 'DYJetsToLL-LO-ext1',
-      # 'DYJetsToLL-LO',
-      # 'DYJetsToLL',
-      # 'DYJetsToLL-ext',
-      # 'EWKZ2Jets',
-      # 'EWKWPlus2Jets',
-      # 'EWKWMinus2Jets',
-      # 'WJetsToLNu-LO',
-      # 'WJetsToLNu-LO-ext',
-      # 'W1JetsToLNu-LO',
-      # 'W2JetsToLNu-LO',
-      # 'W3JetsToLNu-LO',
+      'DYJetsToLL_M-10-50-LO-ext1',
+      'DYJetsToLL_M-10-50-LO',
+      'DY1JetsToLL-LO', #new pmx
+      'DY1JetsToLL-LO-ext', #new sample
+      'DY2JetsToLL-LO',
+      'DY2JetsToLL-LO-ext',
+      'DY3JetsToLL-LO',
+      'DY3JetsToLL-LO-ext',
+      'DY4JetsToLL-LO', # new
+      'DYJetsToLL-LO-ext1',
+      'DYJetsToLL-LO',
+      'DYJetsToLL',
+      'DYJetsToLL-ext',
+      'EWKZ2Jets',
+      'EWKWPlus2Jets',
+      'EWKWMinus2Jets',
+      'WJetsToLNu-LO',
+      'WJetsToLNu-LO-ext',
+      'W1JetsToLNu-LO',
+      'W2JetsToLNu-LO',
+      'W3JetsToLNu-LO',
       'W4JetsToLNu-LO',
-      # 'WGToLNuG',
-      # 'WWTo2L2Nu',
-      # 'WWToLNuQQ-ext',
-      # 'WWToLNuQQ', # new pmx
-      # 'WZTo1L1Nu2Q',
-      # 'WZTo1L3Nu',
-      # 'WZTo2L2Q',
-      # 'WZTo3LNu', # new pmx
-      # 'ZZTo2L2Nu',
-      # 'ZZTo2L2Q',
-      # 'ZZTo4L-ext',
-      # 'ZZTo4L', # new pmx
-      # 'TTToSemiLeptonic', #new pmx
-      # 'TTToHadronic', #new sample v2 and pmx
-      # 'TTTo2L2Nu', #new pmx
-      # 'T-tW',
-      # 'T-t',
-      # 'Tbar-tW',
-      # 'Tbar-t', 
+      'WGToLNuG',
+      'WWTo2L2Nu',
+      'WWToLNuQQ-ext',
+      'WWToLNuQQ', # new pmx
+      'WZTo1L1Nu2Q',
+      'WZTo1L3Nu',
+      'WZTo2L2Q',
+      'WZTo3LNu', # new pmx
+      'ZZTo2L2Nu',
+      'ZZTo2L2Q',
+      'ZZTo4L-ext',
+      'ZZTo4L', # new pmx
+      'TTToSemiLeptonic', #new pmx
+      'TTToHadronic', #new sample v2 and pmx
+      'TTTo2L2Nu', #new pmx
+      'T-tW',
+      'T-t',
+      'Tbar-tW',
+      'Tbar-t', 
      ]
 
 
