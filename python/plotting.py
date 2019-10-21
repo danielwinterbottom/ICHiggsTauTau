@@ -163,9 +163,12 @@ def SetAxisTitles2D(plot, channel):
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events','']
+  titles['mva_dm_2'] = ['#tau MVA decay mode','Events', 'Events','']
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events','']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events','']
+      titles['mva_dm_1'] = ['Lead MVA #tau MVA decay mode','Events', 'Events','']
+      titles['mva_dm_2'] = ['Sub-lead #tau MVA decay mode','Events', 'Events','']
   
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events', 'dN/d#Delta#phi_{jj}','']
   titles['D0'] = ['D_{0}','Events', 'dN/dD_{0}','']
@@ -195,11 +198,11 @@ def SetAxisTitles2D(plot, channel):
     else: x_titles =  [titles[xvar][0], titles[xvar][2]]
   if yvar not in titles: 
     unit=''
-    if not isVarBins: x_titles = [yvar,'Events',unit]
+    if not isVarBins: y_titles = [yvar,'Events',unit]
     else: y_titles =  [yvar, 'dN/d'+yvar,unit]
   else:
     unit = titles[yvar][3]  
-    if not isVarBins: x_titles = [titles[yvar][0],titles[yvar][1],unit]
+    if not isVarBins: y_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
     
   return [x_titles, y_titles]
@@ -2234,9 +2237,9 @@ def HTTPlot(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
 
-    # if vbf_background:
-    #     for key in background_schemes: 
-    #         background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    #if vbf_background:
+    #    for key in background_schemes: 
+    #        background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm','zee']:

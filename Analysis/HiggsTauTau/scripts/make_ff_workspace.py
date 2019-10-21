@@ -29,7 +29,7 @@ w = ROOT.RooWorkspace('w')
 ### tt channel ####
 ################################################
 
-ip_sig_cut = '3'
+ip_sig_cut = '1'
 wps = ['tight','medium','vtight']
 
 for wp in wps:

@@ -58,9 +58,15 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+<<<<<<< HEAD
+    // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/GetEffectiveNumber_Sep05",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2016_metcorr/",
+    //"output_folder" : "output/",
+=======
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct09_leg2016_sync/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     "output_folder" : "output/",
+>>>>>>> 4c4f3ee687c09a3b9bc81b102f8e294ac70c30ca
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
@@ -153,11 +159,11 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
-        "do_ff_systematics": false,
+        "do_ff_weights" : true,
+        "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "NewETFix/tight/tt/fakeFactors_tight.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2016.root"
+        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2016.root",
+        "ff_fracs_file" : ""
       }
     },
 
