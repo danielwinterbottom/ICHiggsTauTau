@@ -116,7 +116,7 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
     if cat != '':
         full_selection += '*('+cat+')'
     return full_selection
-/tree
+
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     full_selection = BuildCutString(wt, sel, cat, 'os', '1')
 
