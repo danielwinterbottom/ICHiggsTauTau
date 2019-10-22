@@ -399,7 +399,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       }
 
     }
-
  //Add photons to veto Final State Radiation for isolation SF(zmm).
     if(event->ExistsInTree("photons")){
         std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
@@ -443,8 +442,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
-      Electron *elec1_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton1"));
-      Electron *elec2_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton2"));
+      Electron *elec1_1 = new Electron (* dynamic_cast<Electron*>(ditau->GetCandidate("lepton1")));
+      Electron *elec2_1 = new Electron (* dynamic_cast<Electron*>(ditau->GetCandidate("lepton2")));
       eta_1_ = elec1_1->sc_eta();
       eta_2_ = elec2_1->sc_eta();
       if(do_extra_){
@@ -533,7 +532,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, elec_vec_2, 0.3, false, false);    
         std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
         std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-        
+         
         m_gamma_leptons_=-999.0;
         pass_FSR_condition_ = false;
         auto sum_vec = lep1->vector() + lep2->vector();
