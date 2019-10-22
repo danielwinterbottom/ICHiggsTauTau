@@ -3068,8 +3068,6 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
           .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       
-          .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       );
     }
   } else if(channel == channel::tpzee){
