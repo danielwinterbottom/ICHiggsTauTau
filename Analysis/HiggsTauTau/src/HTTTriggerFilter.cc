@@ -970,6 +970,14 @@ namespace ic {
             alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; // leading 
             //subleading from following (but contains leading as well)
             alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; 
+            if(is_embedded_) {
+               leg1_filter="hltDoubleL2IsoTau26eta2p2";
+               leg2_filter=leg1_filter;
+               alt_leg1_filter=leg1_filter;
+               alt_leg2_filter=leg1_filter;
+               alt_leg1_filter_2=leg1_filter;
+               alt_leg2_filter_2=leg1_filter;
+            }
         }
     }
       /*
