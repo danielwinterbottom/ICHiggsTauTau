@@ -137,7 +137,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Sep27_MC_102X'
+FILELIST='filelists/Oct2_leg2016_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -154,7 +154,7 @@ if options.proc_sm or options.proc_all:
   else: masses = ['125']
   for mass in masses :
     signal_mc += [
-     # 'GluGluToHToTauTau_M-'+mass,
+      'GluGluToHToTauTau_M-'+mass,
      'VBFHToTauTau_M-'+mass,
      # 'WplusHToTauTau_M-'+mass,
      # 'WminusHToTauTau_M-'+mass,
@@ -199,11 +199,11 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             'Tau'+era]
         
 
-  DATAFILELIST="./filelists/Sep27_Data_102X"
+  DATAFILELIST="./filelists/Oct2_leg2016_Data_102X"
 
   for sa in data_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Sep27_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
 
       if 'TauB' in sa:
@@ -242,16 +242,16 @@ if options.proc_embed or options.proc_all:
 
 
         
-  EMBEDFILELISTZMM="./filelists/Sep27_MC_102X"
+  EMBEDFILELISTZMM="./filelists/Oct2_leg2016_MC_102X"
 
-  EMBEDFILELIST="./filelists/Sep27_MC_102X"
+  EMBEDFILELIST="./filelists/Oct2_leg2016_MC_102X"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan31_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     if 'EmbeddingMuMu' in sa:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan31_MC_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 4
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','')
@@ -278,63 +278,68 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-     'WJetsToLNu-LO',
-     'WJetsToLNu-LO-ext',
-     'W1JetsToLNu-LO',
-     'W2JetsToLNu-LO',
-     'W2JetsToLNu-LO-ext',
-     'W3JetsToLNu-LO',
-     'W3JetsToLNu-LO-ext',
-     'W4JetsToLNu-LO',
-     'W4JetsToLNu-LO-ext1',
-     'W4JetsToLNu-LO-ext2',
-     'WGToLNuG-ext1',
-     'WGToLNuG-ext2',
-     'WGToLNuG-ext3',
-     'WGstarToLNuMuMu',
-     'WGstarToLNuEE',
-     'DYJetsToLL',
+#     'WJetsToLNu-LO',
+#     'WJetsToLNu-LO-ext',
+#     'W1JetsToLNu-LO',
+#     'W2JetsToLNu-LO',
+#     'W2JetsToLNu-LO-ext',
+#     'W3JetsToLNu-LO',
+#     'W3JetsToLNu-LO-ext',
+#     'W4JetsToLNu-LO',
+#     'W4JetsToLNu-LO-ext1',
+#     'W4JetsToLNu-LO-ext2',
+#     'WGToLNuG-ext1',
+#     'WGToLNuG-ext2',
+#     'WGToLNuG-ext3',
+#     'WGstarToLNuMuMu',
+#     'WGstarToLNuEE',
+#     'DYJetsToLL',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO-ext2',
-     'DY1JetsToLL-LO',
-     'DY2JetsToLL-LO',
-     'DY3JetsToLL-LO',
-     'DY4JetsToLL-LO',
-     'DYJetsToLL_M-10-50-LO',
-     'VVTo2L2Nu',
-     'VVTo2L2Nu-ext1',
-     'ZZTo2L2Q',
-     'WWTo1L1Nu2Q',
-     'WWToLNuQQ',
-     'WWToLNuQQ-ext',
-     'WZTo2L2Q',
-     'WZTo1L3Nu',
-     'WZTo1L1Nu2Q',
-     'WZJToLLLNu',
-     'ZZTo4L',
- ###    'QCDMuEnrichedPt15', NOT NEEDED FOR NOW
-     'Tbar-tW',
-     'T-tW',
-     'Tbar-t',
-     'T-t',
-     'TT',
-     #'WJetsToLNu',
-     #'WJetsToLNu-ext',
-     'EWKWMinus2Jets_WToLNu',
-     'EWKWMinus2Jets_WToLNu-ext1',
-     'EWKWMinus2Jets_WToLNu-ext2',
-     'EWKWPlus2Jets_WToLNu',
-     'EWKWPlus2Jets_WToLNu-ext1',
-     'EWKWPlus2Jets_WToLNu-ext2',
-     'EWKZ2Jets_ZToLL',
-     'EWKZ2Jets_ZToLL-ext1',
-     'EWKZ2Jets_ZToLL-ext2',
-     'EWKZ2Jets_ZToNuNu',
-     'EWKZ2Jets_ZToNuNu-ext1',
-     'EWKZ2Jets_ZToNuNu-ext2',
-     'ZZTo4L-amcat',
-     'GluGluHToWWTo2L2Nu_M-125',
-     'VBFHToWWTo2L2Nu_M-125',
+#     'DY1JetsToLL-LO',
+#     'DY2JetsToLL-LO',
+#     'DY3JetsToLL-LO',
+#     'DY4JetsToLL-LO',
+#     'DYJetsToLL_M-10-50-LO',
+#     'VVTo2L2Nu',
+#     'VVTo2L2Nu-ext1',
+#     'ZZTo2L2Q',
+#     'WWTo1L1Nu2Q',
+#     'WWToLNuQQ',
+#     'WWToLNuQQ-ext',
+#     'WZTo2L2Q',
+#     'WZTo1L3Nu',
+#     'WZTo1L1Nu2Q',
+#     'WZJToLLLNu',
+#     'ZZTo4L',
+# ###    'QCDMuEnrichedPt15', NOT NEEDED FOR NOW
+#     'Tbar-tW',
+#     'T-tW',
+#     'Tbar-t',
+#     'T-t',
+#     'TT',
+#     'WJetsToLNu',
+#     'WJetsToLNu-ext',
+#     'EWKWMinus2Jets_WToLNu',
+#     'EWKWMinus2Jets_WToLNu-ext1',
+#     'EWKWMinus2Jets_WToLNu-ext2',
+#     'EWKWPlus2Jets_WToLNu',
+#     'EWKWPlus2Jets_WToLNu-ext1',
+#     'EWKWPlus2Jets_WToLNu-ext2',
+#     'EWKZ2Jets_ZToLL',
+#     'EWKZ2Jets_ZToLL-ext1',
+#     'EWKZ2Jets_ZToLL-ext2',
+#     'EWKZ2Jets_ZToNuNu',
+#     'EWKZ2Jets_ZToNuNu-ext1',
+#     'EWKZ2Jets_ZToNuNu-ext2',
+#     'ZZTo4L-amcat',
+#     'GluGluToHToTauTau_M-125',
+#     'VBFHToTauTau_M-125',
+#     'WplusHToTauTau_M-125',
+#     'WminusHToTauTau_M-125',
+#     'ZHToTauTau_M-125',
+#     'GluGluHToWWTo2L2Nu_M-125',
+#     'VBFHToWWTo2L2Nu_M-125',
      ]
   for sa in central_samples:
       JOB='%s_2016' % (sa)
