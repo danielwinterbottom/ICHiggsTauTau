@@ -102,7 +102,7 @@ for scale in scale_list:
  
 CONFIG='scripts/configlegacy2016.json'
 if options.config != '': CONFIG = options.config
- 
+
 n_channels=1
 with open(CONFIG,"r") as input:
   with open ("config_for_python_channels.json","w") as output:
@@ -162,18 +162,18 @@ if options.proc_sm or options.proc_all:
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
-  with open(CONFIG,"r") as input:
-    with open ("config_for_python.json","w") as output:
-      for line in input:
-        if not '//' in line:
-          output.write(line)
-      output.close()
-    input.close()
+    with open(CONFIG,"r") as input:
+      with open ("config_for_python.json","w") as output:
+        for line in input:
+          if not '//' in line:
+            output.write(line)
+        output.close()
+      input.close()
 
-  with open("config_for_python.json") as config_file:
-    cfg = json.load(config_file)
+    with open("config_for_python.json") as config_file:
+      cfg = json.load(config_file)
 
-  channels=cfg["job"]["channels"]
+    channels=cfg["job"]["channels"]
 
 if options.proc_data or options.proc_all or options.calc_lumi:  
 
