@@ -13,7 +13,7 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt_fixbins')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/fakefactors_2018/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
@@ -84,21 +84,21 @@ other_files = [
 
 
 njets_bins = { 
-              #'inclusive': '(1)',
+              'inclusive': '(1)',
               'njets0':'n_jets==0 && trg_singlemuon',
               'njets1':'n_jets==1 && trg_singlemuon',
               'njets2':'n_jets>1 && trg_singlemuon',
-              #'njets0_crosstrg':'n_jets==0 && trg_singlemuon==0',
-              #'njets1_crosstrg':'n_jets==1 && trg_singlemuon==0',
-              #'njets2_crosstrg':'n_jets>1 && trg_singlemuon==0'
+              'njets0_crosstrg':'n_jets==0 && trg_singlemuon==0',
+              'njets1_crosstrg':'n_jets==1 && trg_singlemuon==0',
+              'njets2_crosstrg':'n_jets>1 && trg_singlemuon==0'
 }
 dm_bins = {
-              #'inclusive': '(1)',
-              #'dm0':'(tau_decay_mode_2==0)',
-              #'dm1':'(tau_decay_mode_2==1)',
-              #'dm10':'(tau_decay_mode_2==10)',
-              #'dm11':'(tau_decay_mode_2==11)',
-              #'mvadm0':'(mva_dm_2==0)',
+              'inclusive': '(1)',
+              'dm0':'(tau_decay_mode_2==0)',
+              'dm1':'(tau_decay_mode_2==1)',
+              'dm10':'(tau_decay_mode_2==10)',
+              'dm11':'(tau_decay_mode_2==11)',
+              'mvadm0':'(mva_dm_2==0)',
               'mvadm0_sig_gt3':'(mva_dm_2==0&&ip_sig_2>=1)',
               'mvadm0_sig_lt3':'(mva_dm_2==0&&ip_sig_2<1)',
               'mvadm1':'(mva_dm_2==1)',
@@ -153,7 +153,15 @@ def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doO
 
   return data
 
-def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
+def ZeroNegativeBins(h):
+  # if a bin of h1 is equal to the -ve of 
+  for i in range(1,h.GetNbinsX()+1): 
+    if h.GetBinContent(i) <= 0:
+      h.SetBinContent(i,0)
+      h.SetBinError(i,0)
+  return h
+
+def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doIso=False):
   var = var_input.split('[')[0]
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
   hout = ROOT.TH1D('hout','',len(bins)-1, bins)
@@ -173,87 +181,99 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   bkgs_w.SetName(name+'_bkgs_wjets')
 
 
-  # draw data for QCD
-  for i in data_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple') 
-    h = hout.Clone()
-    h.SetName('h')
-    if not doOS:
-      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(mt_1<50&&iso_1>0.05)*(%(add_wt)s)' % vars(),'goff')
-    else:
-      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1<50&&iso_1>0.05)*(%(add_wt)s)' % vars(),'goff')
+  if doQCD:
+    # draw data for QCD
+    for i in data_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple') 
+      h = hout.Clone()
+      h.SetName('h')
+      if not doIso:  qcd_cuts = 'mt_1<50&&iso_1>0.05'
+      else: qcd_cuts = 'mt_1<50'
+      if not doOS:
+        t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
+      else:
+        t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
 
-    h = t.GetHistogram()
-    data_qcd.Add(h)
+      h = t.GetHistogram()
+      data_qcd.Add(h)
 
-  # draw all backgrounds to be subtracted from data for QCD estimation
-  # only subtract non j->tau fake component
-  for i in other_files+wjets_files+ttbar_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple')
-    h = hout.Clone()
-    h.SetName('h')
-    if not doOS:
-      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(mt_1<50&&iso_1>0.05)*(%(add_wt)s)' % vars(),'goff')
-    else:
-      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1<50&&iso_1>0.05)*(%(add_wt)s)' % vars(),'goff')
-    h = t.GetHistogram()
-    scale = lumi*params[i]['xs']/params[i]['evt']
-    h.Scale(scale)
-    bkgs_qcd.Add(h)
+    # draw all backgrounds to be subtracted from data for QCD estimation
+    # only subtract non j->tau fake component
+    for i in other_files+wjets_files+ttbar_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      if not doOS:
+        t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
+      else:
+        t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      bkgs_qcd.Add(h)
 
-  data_qcd.Add(bkgs_qcd,-1)
+    bkgs_qcd = ZeroNegativeBins(bkgs_qcd)
+    data_qcd.Add(bkgs_qcd,-1)
+    data_qcd = ZeroNegativeBins(data_qcd)
 
-  # draw data for W+jets
-  for i in data_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple')
-    h = hout.Clone()
-    h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'((%(cuts)s)*((os==1)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
+  if doW:
+    # draw data for W+jets
+    for i in data_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'((%(cuts)s)*((os==1)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
 
-    h = t.GetHistogram()
-    data_w.Add(h)
+      h = t.GetHistogram()
+      data_w.Add(h)
 
-  # draw all (non-QCD) backgrounds to be subtracted from data for W estimation
-  # only subtract non j->tau fake component
-  for i in other_files+ttbar_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple')
-    h = hout.Clone()
-    h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
-    h = t.GetHistogram()
-    scale = lumi*params[i]['xs']/params[i]['evt']
-    h.Scale(scale)
-    bkgs_w.Add(h)
-   
-  data_w.Add(bkgs_w,-1)
+    # draw all (non-QCD) backgrounds to be subtracted from data for W estimation
+    # only subtract non j->tau fake component
+    for i in other_files+ttbar_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      bkgs_w.Add(h)
 
-  # draw wjets when tau candidate is a jet fake
-  for i in wjets_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple')
-    h = hout.Clone()
-    h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1>70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
-    h = t.GetHistogram()
-    scale = lumi*params[i]['xs']/params[i]['evt']
-    h.Scale(scale)
-    wjets.Add(h)
+    bkgs_w = ZeroNegativeBins(bkgs_w)     
+    data_w.Add(bkgs_w,-1)
+    data_w = ZeroNegativeBins(data_w)
 
-  # draw ttbar when tau candidate is a jet fake 
-  for i in ttbar_files:
-    f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-    t = f.Get('ntuple')
-    h = hout.Clone()
-    h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
-    h = t.GetHistogram()
-    scale = lumi*params[i]['xs']/params[i]['evt']
-    h.Scale(scale)
-    ttbar.Add(h)
+  if doMC:
+    # draw wjets when tau candidate is a jet fake
+    for i in wjets_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(mt_1>70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      wjets.Add(h)
+  
+    # draw ttbar when tau candidate is a jet fake 
+    for i in ttbar_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      ttbar.Add(h)
+
+    wjets = ZeroNegativeBins(wjets)
+    ttbar = ZeroNegativeBins(ttbar)
 
   return (data_qcd, data_w, wjets, ttbar)
 
@@ -347,25 +367,34 @@ def CalculateFakeFactors(num,denum):
   ff.Divide(denum)
   return ff
 
-def FitFakeFactors(h,usePol1=True):
+def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,200)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,200)
+  if polOnly is not None:
+    if polOnly == 0: 
+      f1 = ROOT.TF1("f1","pol0",20,200)
+      f2 = ROOT.TF1("f2","pol0",20,200)
+    if polOnly == 1: 
+      f1 = ROOT.TF1("f1","pol1",20,200)
+      f2 = ROOT.TF1("f2","pol1",20,200)
+  
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
   for i in range(1,h.GetNbinsX()+1): 
     content = h.GetBinContent(i)
     error = h.GetBinError(i)
-    if content>0: 
+    if content>0.:
       h_clone.SetBinContent(i,content)
       h_clone.SetBinError(i,error)
   h = h_clone         
-  # fit first with landau to get initial values for parameters - pol values set to 0 initially
-  h.Fit("f1",'IR')
-  f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
-  if usePol1: f2.SetParameter(4,0)
+  if polOnly is not None:
+    # fit first with landau to get initial values for parameters - pol values set to 0 initially
+    h.Fit("f1",'IR')
+    f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
+    if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
@@ -418,11 +447,11 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   c1.Print(output_folder+'/mt_'+wp+'_'+name+'_fit.pdf')
   #time.sleep(2)
 
-def PlotFakeFactorCorrection(f, h, name, output_folder, wp):
+def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
   c1 = ROOT.TCanvas()
   f.SetMinimum(0)
   f.SetStats(0)
-  f.GetXaxis().SetTitle('m_{vis} (GeV)')
+  f.GetXaxis().SetTitle(x_title)
   f.GetYaxis().SetTitle('FF')
   f.SetTitle(name)
   f.SetLineColor(ROOT.kBlack)
@@ -454,6 +483,10 @@ def WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=False):
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
 
+  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
+
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
+
   return ff_eqn_tot
 
 def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
@@ -475,7 +508,11 @@ def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
 
   ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
+  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0_crosstrg'], ff_params['mvadm0_sig_gt3_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_sig_lt3_njets1_crosstrg'], ff_params['mvadm0_sig_gt3_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_sig_lt3_njets2_crosstrg'], ff_params['mvadm0_sig_gt3_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
+
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
 
   return ff_eqn_tot
 
@@ -500,16 +537,22 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
 
+  ff_eqn_tot_cross = '((n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets==1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)))' % (ff_params['dm0_njets0_crosstrg'], ff_params['dm1_njets0_crosstrg'], ff_params['dm10_njets0_crosstrg'], ff_params['dm11_njets0_crosstrg'], ff_params['dm0_njets1_crosstrg'], ff_params['dm1_njets1_crosstrg'], ff_params['dm10_njets1_crosstrg'], ff_params['dm11_njets1_crosstrg'], ff_params['dm0_njets2_crosstrg'], ff_params['dm1_njets2_crosstrg'], ff_params['dm10_njets2_crosstrg'], ff_params['dm11_njets2_crosstrg'])
+
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
+
   return ff_eqn_tot
 
 
 draw_list=[]
 
-# tt plots
-baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0' % vars()
-baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0' % vars()
+# mt plots
+baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
-var1='pt_2[20,25,30,35,40,45,50,55,60,65,70,80,90,100,120,140,200]'
+var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100,140]'
+var2='pt_2[20,30,40,50,60,80]'
+
 
 ff_list = {}
 to_write = []
@@ -520,44 +563,60 @@ for njetbin in njets_bins:
     cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
     cut_iso1 = re.sub('X', '2', '(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
     cut_aiso1 = re.sub('X', '2','(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
-    ff_list[name+'_pt_2'] = (var1, cut_iso1, cut_aiso1)
+    if 'crosstrg' in name: ff_list[name+'_pt_2'] = (var2, cut_iso1, cut_aiso1) 
+    else: ff_list[name+'_pt_2'] = (var1, cut_iso1, cut_aiso1)
 
-# use measurments in tau2 anti iso region to define uncertainty
+
+# add aiso plots
+
+baseline_aiso2_iso = 'iso_1>0.15 && iso_1<0.4 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+
+for njetbin in njets_bins:
+  for dmbin in dm_bins:
+    name= dmbin+'_'+njetbin
+    cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
+    cut_iso1 = re.sub('X', '2', '(%(baseline_aiso2_iso)s)*(%(cuts)s)' % vars())
+    cut_aiso1 = re.sub('X', '2','(%(baseline_aiso2_aiso1)s)*(%(cuts)s)' % vars())
+    ff_list[name+'_aiso2_ss_pt_2'] = (var1, cut_iso1, cut_aiso1)
 
 for ff in ff_list:
   wjets_mc_ff=None
   ttbar_mc_ff=None
   if draw:
-    (qcd_iso, wjets_iso, wjets_mc_iso, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff))
-    (qcd_aiso, wjets_aiso, wjets_mc_aiso, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff))
+    (qcd_iso, wjets_iso, wjets_mc_iso, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
+    (qcd_aiso, wjets_aiso, wjets_mc_aiso, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
 
     qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
     to_write.append(qcd_ff)
-    wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
-    to_write.append(wjets_ff)
 
-    wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
-    to_write.append(wjets_mc_ff)
+    if not 'aiso2' in ff:  
+      wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
+      to_write.append(wjets_ff)
 
-    if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-      to_write.append(ttbar_mc_ff)
+      wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
+      to_write.append(wjets_mc_ff)
+
+      if 'inclusive_inclusive' in ff:
+        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+        to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
     qcd_ff = fin.Get(ff+'_ff_qcd')
     qcd_ff.SetDirectory(0)
     to_write.append(qcd_ff)
-    wjets_ff = fin.Get(ff+'_ff_wjets')
-    wjets_ff.SetDirectory(0)
-    to_write.append(wjets_ff)
-    wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
-    wjets_mc_ff.SetDirectory(0)
-    to_write.append(wjets_mc_ff)
-    if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-      ttbar_mc_ff.SetDirectory(0)
-      to_write.append(ttbar_mc_ff)
+    if not 'aiso2' in ff:
+      wjets_ff = fin.Get(ff+'_ff_wjets')
+      wjets_ff.SetDirectory(0)
+      to_write.append(wjets_ff)
+      wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
+      wjets_mc_ff.SetDirectory(0)
+      to_write.append(wjets_mc_ff)
+      if 'inclusive_inclusive' in ff:
+        ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
+        ttbar_mc_ff.SetDirectory(0)
+        to_write.append(ttbar_mc_ff)
     fin.Close()
 
   # do fitting
@@ -566,20 +625,21 @@ for ff in ff_list:
   to_write.append(qcd_uncert)
   PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
-  (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
-  to_write.append(wjets_fit)
-  to_write.append(wjets_uncert)
-  PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
+  if not 'aiso2' in ff:
+    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
+    to_write.append(wjets_fit)
+    to_write.append(wjets_uncert)
+    PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
 
-  (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff)
-  to_write.append(wjets_mc_fit)
-  to_write.append(wjets_mc_uncert)
-  PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp)
-  if ttbar_mc_ff:
-    (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff)
-    to_write.append(ttbar_mc_fit)
-    to_write.append(ttbar_mc_uncert)
-    PlotFakeFactor(ttbar_mc_ff, ttbar_mc_uncert, ttbar_mc_ff.GetName(), output_folder, wp)
+    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff)
+    to_write.append(wjets_mc_fit)
+    to_write.append(wjets_mc_uncert)
+    PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp)
+    if ttbar_mc_ff:
+      (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff)
+      to_write.append(ttbar_mc_fit)
+      to_write.append(ttbar_mc_uncert)
+      PlotFakeFactor(ttbar_mc_ff, ttbar_mc_uncert, ttbar_mc_ff.GetName(), output_folder, wp)
 
 # make fractions
 
@@ -627,36 +687,106 @@ fout = ROOT.TFile(out_file, 'RECREATE')
 for i in to_write: i.Write()
 
 ## write strings needed for closure tests
-#tau_qcd_dm_string = WriteFunctionDM2Jets(fout,proc='qcd')
-#tau_qcd_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='qcd')
+tau_qcd_dm_string = WriteFunctionDM2Jets(fout,proc='qcd')
+tau_qcd_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='qcd')
 tau_qcd_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd')
 
-#tau_wjets_dm_string = WriteFunctionDM2Jets(fout,proc='wjets')
-#tau_wjets_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets')
+tau_qcd_dm_string_aiso = WriteFunctionDM2Jets(fout,proc='qcd',aiso=True)
+tau_qcd_mvadm_string_aiso = WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=True)
+tau_qcd_mvadm_string_ipsig_aiso = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=True)
+
+tau_wjets_dm_string = WriteFunctionDM2Jets(fout,proc='wjets')
+tau_wjets_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets')
 tau_wjets_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='wjets')
 
-#print '\n'
-#print "QCD isolated region dm binning:"
-#print tau_qcd_dm_string
+print '\n'
+print "QCD isolated region dm binning:"
+print tau_qcd_dm_string
 
-#print '\n'
-#print "QCD isolated region mva-dm binning:"
-#print tau_qcd_mvadm_string
+print '\n'
+print "QCD isolated region mva-dm binning:"
+print tau_qcd_mvadm_string
 
 print '\n'
 print "QCD isolated region mva-dm binning:"
 print tau_qcd_mvadm_string_ipsig
 
-#print '\n'
-#print "W+jets isolated region dm binning:"
-#print tau_wjets_dm_string
+print '\n'
+print "QCD anti-isolated region dm binning:"
+print tau_qcd_dm_string_aiso
 
-#print '\n'
-#print "W+jets isolated region mva-dm binning:"
-#print tau_wjets_mvadm_string
+print '\n'
+print "QCD anti-isolated region mva-dm binning:"
+print tau_qcd_mvadm_string_aiso
+
+print '\n'
+print "QCD anti-isolated region mva-dm binning:"
+print tau_qcd_mvadm_string_ipsig_aiso
+
+print '\n'
+print "W+jets isolated region dm binning:"
+print tau_wjets_dm_string
+
+print '\n'
+print "W+jets isolated region mva-dm binning:"
+print tau_wjets_mvadm_string
 
 print '\n'
 print "W+jets isolated region mva-dm binning:"
 print tau_wjets_mvadm_string_ipsig
+
+## MET dependent QCD closure corrections
+#
+#var='met[0,10,20,30,40,50,60,70,80,90,100]'
+#for i in ['mvadm','mvadm_nosig','dm']:
+#  # ss region for events triggered by single muon trigger
+#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False)
+#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=False,doMC=False)
+#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=False,doMC=False)
+#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=False,doMC=False)
+#  fout.cd()
+#  qcd_ss_data.Divide(qcd_ss_pred)
+#
+#  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
+#
+#  qcd_ss_data.Write()
+#  qcd_ss_data_fit.Write()
+#  qcd_ss_data_uncert.Write()
+#  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
+#
+## apply met correction measured in SS data along with 
+#for i in ['mvadm','mvadm_nosig','dm']:
+#  met_corr_fit = fout.Get('%(i)s_met_ss_closure_qcd_fit' % vars())
+#  p = met_corr_fit.GetParameters()
+#  met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
+#
+#  print '\n'
+#  print 'MET correction for %s' % i 
+#  print met_corr
+#
+#  var='iso_1[0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.30,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.40,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.50]'
+#
+#  # ss region for events triggered by single muon trigger
+#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=False,doMC=False,doIso=True)
+#  fout.cd()
+#  qcd_ss_data.Divide(qcd_ss_pred)
+#
+#  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
+#
+#  qcd_ss_data.Write()
+#  qcd_ss_data_fit.Write()
+#  qcd_ss_data_uncert.Write()
+#  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp,x_title="I^{#mu}_{rel}")
+#
+#  iso_corr_fit = fout.Get('%(i)s_iso_closure_qcd_fit' % vars())
+#  p = iso_corr_fit.GetParameters()
+#  iso_corr = '*(%f+ %f*min(iso_1,0.5) + %f*min(iso_1,0.5)*min(iso_1,0.5) + %f*min(iso_1,0.5)*min(iso_1,0.5)*min(iso_1,0.5))' % (p[0], p[1], p[2], p[3])
+#
+#  print '\n'
+#  print 'iso_1 correction for %s' % i
+#  print iso_corr
 
 fout.Close()
