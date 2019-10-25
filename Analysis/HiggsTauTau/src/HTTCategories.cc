@@ -94,6 +94,7 @@ namespace ic {
       outtree_->Branch("wt_quarkmass_up", &wt_quarkmass_up_);
       outtree_->Branch("wt_quarkmass_down", &wt_quarkmass_down_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
+      outtree_->Branch("looseiso_wt", &looseiso_wt_);
       // adding tempoary gen stuff
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -1859,7 +1860,9 @@ namespace ic {
       wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
       wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
     }
-    
+   
+    looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
+ 
     // save scale factor for deep tau ID to allow easy switching between the two
     deeptau_sf_ = event->Exists("deeptau_sf_2") ? event->Get<double>("deeptau_sf_2") : 1.0;
     if(event->Exists("deeptau_sf_1")) deeptau_sf_*=event->Get<double>("deeptau_sf_1");

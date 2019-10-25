@@ -451,23 +451,40 @@ namespace ic {
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
           w_->function("zptmass_weight_nom")->functor(w_->argSet("z_gen_pt,z_gen_mass")));
 
-     // // em osss same names for all years
-     // fns_["em_qcd_osss_binned"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_osss_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_osss_shapedown_binned"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_osss_shapedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_osss_shapeup_binned"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_osss_shapeup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_osss_ratedown_binned"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_osss_ratedown_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_osss_rateup_binned"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_osss_rateup_binned")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_extrap_up"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
-     // fns_["em_qcd_extrap_down"] = std::shared_ptr<RooFunctor>(
-     //   w_->function("em_qcd_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt,iso")));
+     // em osss same names for all years
+     fns_["em_qcd_osss"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_extrap_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_extrap_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_extrap_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_extrap_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
 
+     fns_["em_qcd_osss_stat_0jet_unc1_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_0jet_unc1_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_0jet_unc1_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_0jet_unc1_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_0jet_unc2_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_0jet_unc2_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_0jet_unc2_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_0jet_unc2_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
 
+     fns_["em_qcd_osss_stat_1jet_unc1_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_1jet_unc1_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_1jet_unc1_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_1jet_unc1_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_1jet_unc2_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_1jet_unc2_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_1jet_unc2_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_1jet_unc2_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+
+     fns_["em_qcd_osss_stat_2jet_unc1_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_2jet_unc1_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_2jet_unc1_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_2jet_unc1_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_2jet_unc2_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_2jet_unc2_up")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
+     fns_["em_qcd_osss_stat_2jet_unc2_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("em_qcd_osss_stat_2jet_unc2_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
 
     }
     else if(scalefactor_file_!="" && !is_embedded_) {
@@ -1523,94 +1540,21 @@ namespace ic {
            qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(trail_pt,lead_pt);
            qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
          }
-       } else if (era_==era::data_2016){
-           if (mc_!=mc::summer16_80X){
-             if(deltaR < 2){
-               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-             } else if (deltaR <=4){
-               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-            } else {
-               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-           }
-         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+       } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016){
            std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
            ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
            double n_jets = (double)jets.size();
-           
-           std::vector<PFJet*> bjets = event->GetPtrVec<PFJet>(jets_label_);
-           ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-           if (event->Exists("retag_result")) {
-             auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
-             ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-           } else {
-             ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8484);
-           }
-           double n_bjets = (double)bjets.size();
-
            double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
            auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
-           auto args_bjets = std::vector<double>{dR,n_jets,elec->pt(),muon->pt(),n_bjets};
-           qcd_weight = fns_["em_qcd_osss_binned_mva"]->eval(args_bjets.data()); 
-           qcd_weight_down = fns_["em_qcd_osss_ratedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-           qcd_weight_up = fns_["em_qcd_osss_rateup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-           double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args.data())/qcd_weight;
-           double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args.data())/qcd_weight;
-           if(n_bjets >=1){
-             qcd_extrap_up = qcd_weight;
-             qcd_extrap_down = qcd_weight;
-           }
-           double qcd_bjets_up = fns_["em_qcd_osss_binned_mva_nbjets_up"]->eval(args_bjets.data())/qcd_weight;
-           double qcd_bjets_down =  fns_["em_qcd_osss_binned_mva_nbjets_down"]->eval(args_bjets.data())/qcd_weight;
-           double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-           double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
+           qcd_weight = fns_["em_qcd_osss"]->eval(args.data()); 
+           //qcd_weight_down = fns_["em_qcd_osss_ratedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
+           //qcd_weight_up = fns_["em_qcd_osss_rateup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
+           double qcd_extrap_up = fns_["em_qcd_osss_extrap_up"]->eval(args.data())/qcd_weight;
+           double qcd_extrap_down = fns_["em_qcd_osss_extrap_down"]->eval(args.data())/qcd_weight;
            event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
            event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
-           event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
-           event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
-           event->Add("wt_em_qcd_bjetsdown",qcd_bjets_down);
-           event->Add("wt_em_qcd_bjetsup",qcd_bjets_up);
 
-           double wt_em_qcd_bothaiso = fns_["em_qcd_osss_binned_bothaiso"]->eval(args.data());
-           event->Add("wt_em_qcd_bothaiso", wt_em_qcd_bothaiso);
-         } else {
-             if(deltaR < 2){
-               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
-             } else if (deltaR <=4){
-               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
-            } else {
-               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
-           }
-             qcd_weight_down = qcd_weight;
-             qcd_weight_up = qcd_weight;
-         }
-           // 2017 em qcd weights
-       } else if (era_ == era::data_2017 || era_ == era::data_2018) {
-           if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
-             std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-             ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-             double n_jets = (double)jets.size();
-             double iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
-             double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
-             auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt(),iso};
-             qcd_weight = fns_["em_qcd_osss_binned"]->eval(args.data()); 
-             qcd_weight_down = fns_["em_qcd_osss_ratedown_binned"]->eval(args.data())/qcd_weight;
-             qcd_weight_up = fns_["em_qcd_osss_rateup_binned"]->eval(args.data())/qcd_weight;
-             double qcd_weight_shapedown = fns_["em_qcd_osss_shapedown_binned"]->eval(args.data())/qcd_weight;
-             double qcd_weight_shapeup = fns_["em_qcd_osss_shapeup_binned"]->eval(args.data())/qcd_weight;
-             double qcd_extrap_up = fns_["em_qcd_extrap_up"]->eval(args.data())/qcd_weight;
-             double qcd_extrap_down = fns_["em_qcd_extrap_down"]->eval(args.data())/qcd_weight;
-             event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
-             event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
-             event->Add("wt_em_qcd_shapedown",qcd_weight_shapedown);
-             event->Add("wt_em_qcd_shapeup",qcd_weight_shapeup);
-           }
-       }
+         } 
 
        event->Add("wt_em_qcd",qcd_weight);
        event->Add("wt_em_qcd_down",qcd_weight_down);
@@ -3900,14 +3844,18 @@ namespace ic {
            m_2_idiso = m_2_idiso_data/m_2_idiso_mc;*/
        } else if (mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016){
          auto args1_2 = std::vector<double>{m_1_pt,m_1_signed_eta,m_1_iso};
-         auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso}; 
+         auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
+         double looseiso_wt = 1.; 
          if(is_embedded_){
            m_1_idiso = fns_["m_idiso_embed_ratio"]->eval(args1_2.data());
            m_2_idiso = fns_["m_idiso_embed_ratio"]->eval(args2_2.data());
+           looseiso_wt = fns_["m_looseiso_embed_ratio"]->eval(args2_2.data())*fns_["m_looseiso_embed_ratio"]->eval(args1_2.data()) * fns_["m_id_embed_ratio"]->eval(args2_2.data())*fns_["m_id_embed_ratio"]->eval(args1_2.data())/(m_1_idiso*m_2_idiso);
          } else {
            m_1_idiso = fns_["m_idiso_ratio"]->eval(args1_2.data());
            m_2_idiso = fns_["m_idiso_ratio"]->eval(args2_2.data());
+           looseiso_wt = fns_["m_looseiso_ratio"]->eval(args2_2.data())*fns_["m_looseiso_ratio"]->eval(args1_2.data()) * fns_["m_id_ratio"]->eval(args2_2.data())*fns_["m_id_ratio"]->eval(args1_2.data())/(m_1_idiso*m_2_idiso);
          }
+         event->Add("looseiso_wt", looseiso_wt);
        }
 
        weight *= (m_1_idiso * m_2_idiso);

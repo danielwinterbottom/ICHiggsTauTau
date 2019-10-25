@@ -3864,7 +3864,7 @@ void HTTSequence::BuildZEEPairs() {
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 20.        &&
+        return  e->pt()                 > 13.        &&
                 fabs(e->eta())          < 2.4        &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
                 fabs(e->dz_vertex())    < elec_dz ;

@@ -1249,6 +1249,8 @@ class HTTCategories : public ModuleBase {
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
   double q_tot_1_, q_tot_2_;
 
+  double looseiso_wt_;
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();
