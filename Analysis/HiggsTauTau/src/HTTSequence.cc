@@ -3068,8 +3068,6 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
           .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       
-          .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       );
     }
   } else if(channel == channel::tpzee){
@@ -3161,6 +3159,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
           .set_extra_l1_probe_pt(20.)
           .set_extra_l1_iso_probe_pt(18.)
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
       );
           // for single electron trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_Single")
@@ -3168,6 +3168,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_channel(channel)
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
           .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")          
           .set_add_name("_Single")          
