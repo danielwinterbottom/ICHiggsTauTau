@@ -19,7 +19,7 @@ parser.add_argument('--input_folder','-i', help= 'Name of output directory', def
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
-wp = args.wp 
+wp = args.wp
 file_ext = args.file_ext
 output_folder=args.output_folder
 params_file=args.params
@@ -83,7 +83,7 @@ other_files = [
 ]
 
 
-njets_bins = { 
+njets_bins = {
               'inclusive': '(1)',
               'njets0':'n_jets==0 && trg_singlemuon',
               'njets1':'n_jets==1 && trg_singlemuon',
@@ -155,7 +155,7 @@ def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doO
 
 def ZeroNegativeBins(h):
   # if a bin of h1 is equal to the -ve of 
-  for i in range(1,h.GetNbinsX()+1): 
+  for i in range(1,h.GetNbinsX()+1):
     if h.GetBinContent(i) <= 0:
       h.SetBinContent(i,0)
       h.SetBinError(i,0)
@@ -180,12 +180,11 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   bkgs_w = hout.Clone()
   bkgs_w.SetName(name+'_bkgs_wjets')
 
-
   if doQCD:
     # draw data for QCD
     for i in data_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-      t = f.Get('ntuple') 
+      t = f.Get('ntuple')
       h = hout.Clone()
       h.SetName('h')
       if not doIso:  qcd_cuts = 'mt_1<50&&iso_1>0.05'
@@ -243,7 +242,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h.Scale(scale)
       bkgs_w.Add(h)
 
-    bkgs_w = ZeroNegativeBins(bkgs_w)     
+    bkgs_w = ZeroNegativeBins(bkgs_w)
     data_w.Add(bkgs_w,-1)
     data_w = ZeroNegativeBins(data_w)
 
@@ -259,7 +258,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       scale = lumi*params[i]['xs']/params[i]['evt']
       h.Scale(scale)
       wjets.Add(h)
-  
+
     # draw ttbar when tau candidate is a jet fake 
     for i in ttbar_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
@@ -352,11 +351,11 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   data.Add(bkgs,-1); data.Add(wjets,-1); data.Add(ttbar,-1)
 
   # fix any negative bins to 0 
-  for i in range(1,data.GetNbinsX()+1): 
+  for i in range(1,data.GetNbinsX()+1):
     if data.GetBinContent(i) < 0: qcd.SetBinContent(i,0.)
     if ttbar.GetBinContent(i) < 0: ttbar.SetBinContent(i,0.)
     if wjets.GetBinContent(i) < 0: wjets.SetBinContent(i,0.)
- 
+
   return (data, wjets, ttbar)
 
 
@@ -373,24 +372,24 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,200)
   if polOnly is not None:
-    if polOnly == 0: 
+    if polOnly == 0:
       f1 = ROOT.TF1("f1","pol0",20,200)
       f2 = ROOT.TF1("f2","pol0",20,200)
-    if polOnly == 1: 
+    if polOnly == 1:
       f1 = ROOT.TF1("f1","pol1",20,200)
       f2 = ROOT.TF1("f2","pol1",20,200)
-  
+
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
-  for i in range(1,h.GetNbinsX()+1): 
+  for i in range(1,h.GetNbinsX()+1):
     content = h.GetBinContent(i)
     error = h.GetBinError(i)
     if content>0.:
       h_clone.SetBinContent(i,content)
       h_clone.SetBinError(i,error)
-  h = h_clone         
-  if polOnly is not None:
+  h = h_clone
+  if polOnly is None:
     # fit first with landau to get initial values for parameters - pol values set to 0 initially
     h.Fit("f1",'IR')
     f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
@@ -402,7 +401,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   while rep:
     fitresult = h.Fit("f2",'SIR')
     rep = int(fitresult) != 0
-    if not rep or count>100: 
+    if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
       fit = f2
       break
@@ -430,7 +429,7 @@ def FitCorrection(h, func='pol1'):
 
 
 def PlotFakeFactor(f, h, name, output_folder, wp):
-  c1 = ROOT.TCanvas() 
+  c1 = ROOT.TCanvas()
   f.SetMinimum(0)
   if f.GetMaximum() > 0.5 and 'sig' not in name: f.SetMaximum(0.5)
   elif f.GetMaximum() > 1.2: f.SetMaximum(1.2)
@@ -467,25 +466,26 @@ def WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=False):
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
   ff_params = {}
-  for njetbin in [0,1,2]:
+  for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for mvadmbin in [0,1,2,10,11]:
       fout.cd()
       extra=''
       if aiso: extra = '_aiso2_ss'
-      f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
+      f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar() > 4:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
 
   ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
+  ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
 
-  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*%(ff_eqn_tot_cross)s)' % vars()
 
   return ff_eqn_tot
 
@@ -494,25 +494,26 @@ def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
   ff_params = {}
-  for njetbin in [0,1,2]:
+  for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for mvadmbin in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
       fout.cd()
       extra=''
       if aiso: extra = '_aiso2_ss'
-      f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
+      f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar() > 4:
-        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
-        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
   ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1)*(%s)+(mva_dm_X==0&&ip_sig_2>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0_crosstrg'], ff_params['mvadm0_sig_gt3_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_sig_lt3_njets1_crosstrg'], ff_params['mvadm0_sig_gt3_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_sig_lt3_njets2_crosstrg'], ff_params['mvadm0_sig_gt3_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
+  ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
 
-  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*%(ff_eqn_tot_cross)s)' % vars()
 
   return ff_eqn_tot
 
@@ -521,17 +522,17 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
   ff_params = {}
-  for njetbin in [0,1,2]:
+  for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for dmbin in [0,1,10,11]:
       fout.cd()
       extra=''
       if aiso: extra = '_aiso2_ss'
-      f = fout.Get('dm%(dmbin)i_njets%(njetbin)i%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
+      f = fout.Get('dm%(dmbin)i_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar() > 4:
-        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
-        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets==1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'], ff_params['dm0_njets2'], ff_params['dm1_njets2'], ff_params['dm10_njets2'], ff_params['dm11_njets2'])
 
@@ -539,7 +540,9 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 
   ff_eqn_tot_cross = '((n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets==1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)))' % (ff_params['dm0_njets0_crosstrg'], ff_params['dm1_njets0_crosstrg'], ff_params['dm10_njets0_crosstrg'], ff_params['dm11_njets0_crosstrg'], ff_params['dm0_njets1_crosstrg'], ff_params['dm1_njets1_crosstrg'], ff_params['dm10_njets1_crosstrg'], ff_params['dm11_njets1_crosstrg'], ff_params['dm0_njets2_crosstrg'], ff_params['dm1_njets2_crosstrg'], ff_params['dm10_njets2_crosstrg'], ff_params['dm11_njets2_crosstrg'])
 
-  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*(ff_eqn_tot_cross)s)' % vars()
+  ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
+
+  ff_eqn_tot = '((trg_singlemuon)*%(ff_eqn_tot)s + (trg_singlemuon==0)*%(ff_eqn_tot_cross)s)' % vars()
 
   return ff_eqn_tot
 
@@ -563,7 +566,7 @@ for njetbin in njets_bins:
     cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
     cut_iso1 = re.sub('X', '2', '(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
     cut_aiso1 = re.sub('X', '2','(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
-    if 'crosstrg' in name: ff_list[name+'_pt_2'] = (var2, cut_iso1, cut_aiso1) 
+    if 'crosstrg' in name: ff_list[name+'_pt_2'] = (var2, cut_iso1, cut_aiso1)
     else: ff_list[name+'_pt_2'] = (var1, cut_iso1, cut_aiso1)
 
 
@@ -578,7 +581,8 @@ for njetbin in njets_bins:
     cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
     cut_iso1 = re.sub('X', '2', '(%(baseline_aiso2_iso)s)*(%(cuts)s)' % vars())
     cut_aiso1 = re.sub('X', '2','(%(baseline_aiso2_aiso1)s)*(%(cuts)s)' % vars())
-    ff_list[name+'_aiso2_ss_pt_2'] = (var1, cut_iso1, cut_aiso1)
+    if 'crosstrg' in name: ff_list[name+'_aiso2_ss_pt_2'] = (var2, cut_iso1, cut_aiso1)
+    else: ff_list[name+'_aiso2_ss_pt_2'] = (var1, cut_iso1, cut_aiso1)
 
 for ff in ff_list:
   wjets_mc_ff=None
@@ -590,7 +594,7 @@ for ff in ff_list:
     qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
     to_write.append(qcd_ff)
 
-    if not 'aiso2' in ff:  
+    if not 'aiso2' in ff:
       wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
       to_write.append(wjets_ff)
 
@@ -619,24 +623,27 @@ for ff in ff_list:
         to_write.append(ttbar_mc_ff)
     fin.Close()
 
+  usePol=None
+  if 'crosstrg' in ff: usePol=1
+
   # do fitting
-  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff)
+  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
   PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
   if not 'aiso2' in ff:
-    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
+    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff,polOnly=usePol)
     to_write.append(wjets_fit)
     to_write.append(wjets_uncert)
     PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
 
-    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff)
+    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff,polOnly=usePol)
     to_write.append(wjets_mc_fit)
     to_write.append(wjets_mc_uncert)
     PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp)
     if ttbar_mc_ff:
-      (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff)
+      (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff,polOnly=usePol)
       to_write.append(ttbar_mc_fit)
       to_write.append(ttbar_mc_uncert)
       PlotFakeFactor(ttbar_mc_ff, ttbar_mc_uncert, ttbar_mc_ff.GetName(), output_folder, wp)
@@ -687,17 +694,17 @@ fout = ROOT.TFile(out_file, 'RECREATE')
 for i in to_write: i.Write()
 
 ## write strings needed for closure tests
-tau_qcd_dm_string = WriteFunctionDM2Jets(fout,proc='qcd')
-tau_qcd_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='qcd')
-tau_qcd_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd')
+tau_qcd_dm_string = WriteFunctionDM2Jets(fout,proc='qcd').replace('pt_2','min(pt_2,100.)')
+tau_qcd_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='qcd').replace('pt_2','min(pt_2,100.)')
+tau_qcd_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd').replace('pt_2','min(pt_2,100.)')
 
-tau_qcd_dm_string_aiso = WriteFunctionDM2Jets(fout,proc='qcd',aiso=True)
-tau_qcd_mvadm_string_aiso = WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=True)
-tau_qcd_mvadm_string_ipsig_aiso = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=True)
+tau_qcd_dm_string_aiso = WriteFunctionDM2Jets(fout,proc='qcd',aiso=True).replace('pt_2','min(pt_2,100.)')
+tau_qcd_mvadm_string_aiso = WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=True).replace('pt_2','min(pt_2,100.)')
+tau_qcd_mvadm_string_ipsig_aiso = WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=True).replace('pt_2','min(pt_2,100.)')
 
-tau_wjets_dm_string = WriteFunctionDM2Jets(fout,proc='wjets')
-tau_wjets_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets')
-tau_wjets_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='wjets')
+tau_wjets_dm_string = WriteFunctionDM2Jets(fout,proc='wjets').replace('pt_2','min(pt_2,140.)')
+tau_wjets_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets').replace('pt_2','min(pt_2,140.)')
+tau_wjets_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='wjets').replace('pt_2','min(pt_2,140.)')
 
 print '\n'
 print "QCD isolated region dm binning:"
@@ -735,42 +742,59 @@ print '\n'
 print "W+jets isolated region mva-dm binning:"
 print tau_wjets_mvadm_string_ipsig
 
-## MET dependent QCD closure corrections
-#
-#var='met[0,10,20,30,40,50,60,70,80,90,100]'
-#for i in ['mvadm','mvadm_nosig','dm']:
-#  # ss region for events triggered by single muon trigger
-#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False)
-#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=False,doMC=False)
-#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=False,doMC=False)
-#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0&&trg_singlemuon)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=False,doMC=False)
-#  fout.cd()
-#  qcd_ss_data.Divide(qcd_ss_pred)
-#
-#  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
-#
-#  qcd_ss_data.Write()
-#  qcd_ss_data_fit.Write()
-#  qcd_ss_data_uncert.Write()
-#  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
-#
-## apply met correction measured in SS data along with 
-#for i in ['mvadm','mvadm_nosig','dm']:
-#  met_corr_fit = fout.Get('%(i)s_met_ss_closure_qcd_fit' % vars())
-#  p = met_corr_fit.GetParameters()
-#  met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
-#
-#  print '\n'
-#  print 'MET correction for %s' % i 
-#  print met_corr
-#
+# MET dependent QCD and W+jets closure corrections - only needed for 0 jet events
+
+var='met[0,10,20,30,40,50,60,70,80,90,100]'
+for i in ['mvadm']:#,'mvadm_nosig','dm']:
+  # ss region for events triggered by single muon trigger
+  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets==0)', '%(i)s_met_ss_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=True,doMC=False)
+  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=True,doMC=False)
+  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=True,doMC=False)
+  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=True,doMC=False)
+  fout.cd()
+  qcd_ss_data.Divide(qcd_ss_pred)
+
+  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
+
+  qcd_ss_data.Write()
+  qcd_ss_data_fit.Write()
+  qcd_ss_data_uncert.Write()
+  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
+
+  wjets_ss_data.Divide(wjets_ss_pred)
+
+  wjets_ss_data_fit, wjets_ss_data_uncert =  FitCorrection(wjets_ss_data, func='pol3')
+
+  wjets_ss_data.Write()
+  wjets_ss_data_fit.Write()
+  wjets_ss_data_uncert.Write()
+  PlotFakeFactorCorrection(wjets_ss_data, wjets_ss_data_uncert, wjets_ss_data.GetName(), output_folder, wp)
+
+# apply met correction measured in SS data along with 
+for i in ['mvadm']:#,'mvadm_nosig','dm']:
+  met_corr_fit = fout.Get('%(i)s_met_ss_closure_qcd_fit' % vars())
+  p = met_corr_fit.GetParameters()
+  met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
+
+  print '\n'
+  print 'QCD MET correction for %s' % i
+  print met_corr
+
+  w_met_corr_fit = fout.Get('%(i)s_met_ss_closure_wjets_fit' % vars())
+  p = w_corr_fit.GetParameters()
+  w_met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
+
+  print '\n'
+  print 'W MET correction for %s' % i
+  print w_met_corr
+
 #  var='iso_1[0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.30,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.40,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.50]'
 #
 #  # ss region for events triggered by single muon trigger
-#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doIso=True)
-#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=False,doMC=False,doIso=True)
-#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=False,doMC=False,doIso=True)
-#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')*(trg_singlemuon)', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=False,doMC=False,doIso=True)
+#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso.replace('iso_1<0.15','1')+')', '%(i)s_iso_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=False,doMC=False,doIso=True)
+#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1.replace('iso_1<0.15','1')+')', '%(i)s_iso_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=False,doMC=False,doIso=True)
 #  fout.cd()
 #  qcd_ss_data.Divide(qcd_ss_pred)
 #
@@ -788,5 +812,6 @@ print tau_wjets_mvadm_string_ipsig
 #  print '\n'
 #  print 'iso_1 correction for %s' % i
 #  print iso_corr
+
 
 fout.Close()
