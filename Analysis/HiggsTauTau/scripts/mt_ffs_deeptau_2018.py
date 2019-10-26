@@ -179,6 +179,11 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   bkgs_qcd.SetName(name+'_bkgs_qcd')
   bkgs_w = hout.Clone()
   bkgs_w.SetName(name+'_bkgs_wjets')
+  w_qcd_sub = hout.Clone()
+  w_qcd_sub.SetName(name+'_qcd_bkgs_wjets')
+
+  w_qcd_sub_mc = hout.Clone()
+  w_qcd_sub_mc.SetName(name+'_qcd_mc_bkgs_wjets')
 
   if doQCD:
     # draw data for QCD
@@ -242,8 +247,39 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h.Scale(scale)
       bkgs_w.Add(h)
 
+
+    # draw data for QCD subtraction
+    for i in data_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'((%(cuts)s)*((os==0)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
+
+      h = t.GetHistogram()
+      w_qcd_sub.Add(h)
+
+    # draw MC for QCD subtraction
+    for i in other_files+ttbar_files+wjets_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(mt_1>70)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      w_qcd_sub_mc.Add(h)
+
+    w_qcd_sub_mc = ZeroNegativeBins(w_qcd_sub_mc)
+    w_qcd_sub.Add(w_qcd_sub_mc,-1)
+    w_qcd_sub = ZeroNegativeBins(w_qcd_sub)
+    # scale by OS/SS ratio
+    w_qcd_sub.Scale(1.1)
+
     bkgs_w = ZeroNegativeBins(bkgs_w)
     data_w.Add(bkgs_w,-1)
+    data_w.Add(w_qcd_sub,-1)
     data_w = ZeroNegativeBins(data_w)
 
   if doMC:
@@ -781,7 +817,7 @@ for i in ['mvadm']:#,'mvadm_nosig','dm']:
   print met_corr
 
   w_met_corr_fit = fout.Get('%(i)s_met_ss_closure_wjets_fit' % vars())
-  p = w_corr_fit.GetParameters()
+  p = w_met_corr_fit.GetParameters()
   w_met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
 
   print '\n'
