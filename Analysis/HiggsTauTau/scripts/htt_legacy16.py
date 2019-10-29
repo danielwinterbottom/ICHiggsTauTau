@@ -154,11 +154,11 @@ if options.proc_sm or options.proc_all:
   else: masses = ['125']
   for mass in masses :
     signal_mc += [
-     # 'GluGluToHToTauTau_M-'+mass,
+     'GluGluToHToTauTau_M-'+mass,
      'VBFHToTauTau_M-'+mass,
-     # 'WplusHToTauTau_M-'+mass,
-     # 'WminusHToTauTau_M-'+mass,
-     # 'ZHToTauTau_M-'+mass,
+     'WplusHToTauTau_M-'+mass,
+     'WminusHToTauTau_M-'+mass,
+     'ZHToTauTau_M-'+mass,
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -318,8 +318,8 @@ if options.proc_bkg or options.proc_all:
      'Tbar-t',
      'T-t',
      'TT',
-     #'WJetsToLNu',
-     #'WJetsToLNu-ext',
+     'WJetsToLNu',
+     'WJetsToLNu-ext',
      'EWKWMinus2Jets_WToLNu',
      'EWKWMinus2Jets_WToLNu-ext1',
      'EWKWMinus2Jets_WToLNu-ext2',

@@ -309,12 +309,10 @@ namespace ic {
           w_->function("t_trg_tight_ditau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
       fns_["t_trg_35_mc"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_tight_ditau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      if (mc_ == mc::mc2017) {
-        fns_["t_trg_35_embed_data"] = std::shared_ptr<RooFunctor>(
-            w_->function("tt_PFTau35OR40_tight_kit_data")->functor(w_->argSet("t_pt")));
-        fns_["t_trg_35_embed_embed"] = std::shared_ptr<RooFunctor>(
-            w_->function("tt_PFTau35OR40_tight_kit_embed")->functor(w_->argSet("t_pt")));
-      }
+      fns_["t_trg_35_embed_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("tt_PFTau35OR40_tight_kit_data")->functor(w_->argSet("t_pt")));
+      fns_["t_trg_35_embed"] = std::shared_ptr<RooFunctor>(
+          w_->function("tt_PFTau35OR40_tight_kit_embed")->functor(w_->argSet("t_pt")));
 
       if(mc_ == mc::mc2018) { 
         fns_["t_trg_27_embed"] = std::shared_ptr<RooFunctor>(

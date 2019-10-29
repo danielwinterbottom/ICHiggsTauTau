@@ -147,7 +147,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     if options.channel == 'tpzmm':
       gen_cuts='gen_match_1==2&&gen_match_2==2'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      idiso_pt_bins = '[10,20,25,30,40,45,50,55,60,70,80,100,200]'
+      idiso_pt_bins = '[10,15,20,25,30,40,45,50,55,60,70,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
@@ -158,7 +158,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_pt_bins = '[10,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
-        if options.era == 'smsummer17':
+        if options.era in ['smsummer17','summer18']:
           trg_pt_bins='[28,1000]'
         else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
@@ -413,7 +413,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,15])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,85,110], width[2.495], sigmaf[2,1,30])",
                   "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
               ]
           )
@@ -957,9 +957,10 @@ for name in wsnames:
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
   else: sig_model = 'BWDoubleCBConvCorr'
 
-  if options.era == 'summer17':
+  if options.era in ['summer17','summer18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm': sig_model = 'DoubleVPartcorr'
+    # elif options.channel =='tpzmm':  sig_model = 'BWDoubleCBConvCorr'
     
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
