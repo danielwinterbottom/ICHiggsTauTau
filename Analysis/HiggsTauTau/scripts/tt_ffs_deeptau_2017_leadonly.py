@@ -352,11 +352,11 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
   #time.sleep(2)
 
-def PlotFakeFactorCorrection(f, h, name, output_folder, wp):
+def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
   c1 = ROOT.TCanvas()
   f.SetMinimum(0)
   f.SetStats(0)
-  f.GetXaxis().SetTitle('m_{vis} (GeV)')
+  f.GetXaxis().SetTitle(x_title)
   f.GetYaxis().SetTitle('FF')
   f.SetTitle(name)
   f.SetLineColor(ROOT.kBlack)
@@ -365,7 +365,7 @@ def PlotFakeFactorCorrection(f, h, name, output_folder, wp):
   h.SetFillColor(ROOT.kBlue-10)
   h.Draw("e3 same")
   f.Draw("a sames")
-  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
+  c1.Print(output_folder+'/mt_'+wp+'_'+name+'_fit.pdf')
 
 def WriteFunctionMVADM(fout, subtau=False):
   # this function loops over all njets and dm bins and write the FFs as a function

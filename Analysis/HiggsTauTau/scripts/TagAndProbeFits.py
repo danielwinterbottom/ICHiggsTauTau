@@ -76,7 +76,7 @@ parser.add_argument("--embed_dz", dest="embed_dz", action='store_true',
 parser.add_argument("--draw_hists", dest="draw_hists", type=int,
     help="If set to 0 then will not re-make the 3D histograms instead will use the histograms on the existing root file")
 parser.add_argument("--veto_FSR", dest='veto_FSR', action='store_true', 
-    help="If true, the zmm events with FSR are vetoed (only applied to isolation)")
+    help="If true, the events with FSR are vetoed (only applied to isolation)")
 parser.add_argument("--trg_only", dest='trg_only', action='store_true',
     help="If true only the trigger SFs are computed")
 parser.add_argument("--tree_name", dest="tree_name", type=str,
@@ -490,12 +490,28 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,0.2,4], alpha[1,-50,50], n[1,0,50])",
                   "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[4,4,10], alphap[1,-50,50], np[1,0,50])",
                   "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
-                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,0.2,4], alpha[1,-50,50], n[1,0,50])",
                   "CBShape::CBFail2(m_vis, meanf[80,75,90], sigmaf[8,1,15], alphaf[1,-50,50], nf[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )             
+
+  elif sig_model == 'BWDoubleCBConvUnCorr_TwoPeaks':
+      nparams = 15
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, meanp1[90,80,100], sigmap1[2,1,4], alphap1[1,-50,50], np1[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp2[90,80,100], sigmap2[4,4,10], alphap2[1,-50,50], np2[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, meanf1[90,80,100], sigmaf1[2,1,4], alphaf1[1,-50,50], nf1[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf2[80,75,90], sigmaf2[8,1,15], alphaf2[1,-50,50], nf2[1,0,50])",
                   "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
@@ -884,8 +900,8 @@ idiso_tag_2 = baseline_tag2
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
 if (options.veto_FSR==True):
-    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
-    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
