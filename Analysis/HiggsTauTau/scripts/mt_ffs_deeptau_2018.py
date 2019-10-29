@@ -13,7 +13,7 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt_fixbins')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/fakefactors_2018/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
@@ -161,10 +161,24 @@ def ZeroNegativeBins(h):
       h.SetBinError(i,0)
   return h
 
-def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doIso=False):
-  var = var_input.split('[')[0]
-  bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
-  hout = ROOT.TH1D('hout','',len(bins)-1, bins)
+def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doIso=True):
+  if ':' in var_input:
+    #pass 2D inputs like x[],y[]
+    var_input1 = var_input.split(':')[0]
+    var_input2 = var_input.split(':')[1]
+    var1 = var_input1.split('[')[0]
+    var2 = var_input2.split('[')[0]
+
+    bins1 = array('f', map(float,var_input1.split('[')[1].split(']')[0].split(',')))
+    bins2 = array('f', map(float,var_input2.split('[')[1].split(']')[0].split(',')))
+    hout = ROOT.TH2D('hout','',len(bins1)-1, bins1,len(bins2)-1, bins2)
+    hout.GetXaxis().SetTitle(var1)
+    hout.GetYaxis().SetTitle(var2)
+    var='%(var2)s:%(var1)s' % vars()
+  else:
+    var = var_input.split('[')[0]
+    bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
+    hout = ROOT.TH1D('hout','',len(bins)-1, bins)
   gen_extra='(gen_match_2==6)'
 
   data_qcd = hout.Clone()
@@ -187,13 +201,13 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
 
   if doQCD:
     # draw data for QCD
+    if not doIso:  qcd_cuts = 'mt_1<50&&iso_1>0.05'
+    else: qcd_cuts = 'mt_1<50'
     for i in data_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
       h = hout.Clone()
       h.SetName('h')
-      if not doIso:  qcd_cuts = 'mt_1<50&&iso_1>0.05'
-      else: qcd_cuts = 'mt_1<50'
       if not doOS:
         t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==0)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
       else:
@@ -277,10 +291,15 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     # scale by OS/SS ratio
     w_qcd_sub.Scale(1.1)
 
+    print '!!!!!!!!!!!!!'
+    print "QCD = ", w_qcd_sub.Integral(-1,-1,-1,-1)
     bkgs_w = ZeroNegativeBins(bkgs_w)
+    print "data = ", data_w.Integral(-1,-1,-1,-1)
+    print "bkg = ", bkgs_w.Integral(-1,-1,-1,-1)
     data_w.Add(bkgs_w,-1)
     data_w.Add(w_qcd_sub,-1)
     data_w = ZeroNegativeBins(data_w)
+    print "final estimate = ", data_w.Integral(-1,-1,-1,-1)
 
   if doMC:
     # draw wjets when tau candidate is a jet fake
@@ -445,9 +464,13 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   fit.SetName(h.GetName()+'_fit')
   return fit, h_uncert, h
 
-def FitCorrection(h, func='pol1'):
-  h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
-  f1 = ROOT.TF1("f1",func)
+def FitCorrection(h, func='pol1',is2D=False):
+  if is2D: 
+    h_uncert = ROOT.TH2D(h.GetName()+'_uncert',"",1000,h.GetXaxis().GetBinLowEdge(1),h.GetXaxis().GetBinLowEdge(h.GetNbinsX()+1),1000,h.GetYaxis().GetBinLowEdge(1),h.GetYaxis().GetBinLowEdge(h.GetNbinsY()+1))
+    f1 = ROOT.TF2("f1",func)
+  else: 
+    h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+    f1 = ROOT.TF1("f1",func)
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
@@ -501,6 +524,8 @@ def WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for mvadmbin in [0,1,2,10,11]:
@@ -509,7 +534,11 @@ def WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=False):
       if aiso: extra = '_aiso2_ss'
       f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
@@ -529,6 +558,8 @@ def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for mvadmbin in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
@@ -537,7 +568,11 @@ def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
       if aiso: extra = '_aiso2_ss'
       f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
@@ -557,6 +592,8 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
     for dmbin in [0,1,10,11]:
@@ -565,7 +602,11 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
       if aiso: extra = '_aiso2_ss'
       f = fout.Get('dm%(dmbin)i_njets%(njetbin)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
@@ -637,9 +678,9 @@ for ff in ff_list:
       wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
       to_write.append(wjets_mc_ff)
 
-      if 'inclusive_inclusive' in ff:
-        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-        to_write.append(ttbar_mc_ff)
+      #if 'inclusive_inclusive' in ff:
+      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+      to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
@@ -653,6 +694,7 @@ for ff in ff_list:
       wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
+      # do for all later!
       if 'inclusive_inclusive' in ff:
         ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
         ttbar_mc_ff.SetDirectory(0)
@@ -742,6 +784,10 @@ tau_wjets_dm_string = WriteFunctionDM2Jets(fout,proc='wjets').replace('pt_2','mi
 tau_wjets_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets').replace('pt_2','min(pt_2,140.)')
 tau_wjets_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='wjets').replace('pt_2','min(pt_2,140.)')
 
+tau_wjets_mc_dm_string = WriteFunctionDM2Jets(fout,proc='wjets_mc').replace('pt_2','min(pt_2,140.)')
+tau_wjets_mc_mvadm_string = WriteFunctionMVADM2Jets(fout,proc='wjets_mc').replace('pt_2','min(pt_2,140.)')
+tau_wjets_mc_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout,proc='wjets_mc').replace('pt_2','min(pt_2,140.)')
+
 print '\n'
 print "QCD isolated region dm binning:"
 print tau_qcd_dm_string
@@ -778,52 +824,84 @@ print '\n'
 print "W+jets isolated region mva-dm binning:"
 print tau_wjets_mvadm_string_ipsig
 
-# MET dependent QCD and W+jets closure corrections - only needed for 0 jet events
+print '\n'
+print "W+jets (MC) isolated region dm binning:"
+print tau_wjets_mc_dm_string
 
-var='met[0,10,20,30,40,50,60,70,80,90,100]'
+print '\n'
+print "W+jets (MC) isolated region mva-dm binning:"
+print tau_wjets_mc_mvadm_string
+
+print '\n'
+print "W+jets (MC) isolated region mva-dm binning:"
+print tau_wjets_mc_mvadm_string_ipsig
+
+
+# for W+jets, first non-closure correction is to correct the MET distribution, this is correlated to the tau pT so needs to be derved using a 2D histogram
+var='pt_2[20,30,40,50,60,100]:met[20,30,40,50,60,70,80,100,140]'
 for i in ['mvadm']:#,'mvadm_nosig','dm']:
-  # ss region for events triggered by single muon trigger
-  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets==0)', '%(i)s_met_ss_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=True,doMC=False)
-  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=True,doMC=False)
-  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=True,doMC=False)
-  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=True,doMC=False)
+  (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets<2)', '%(i)s_met_closure' % vars(),input_folder,file_ext,False,doQCD=False,doW=True,doMC=False)
+  if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets<2)', '%(i)s_met_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_wjets_mvadm_string_ipsig,doQCD=False,doW=True,doMC=False)
+  if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets<2)', '%(i)s_met_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_wjets_mvadm_string,doQCD=False,doW=True,doMC=False)
+  if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets<2)', '%(i)s_met_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_wjets_dm_string,doQCD=False,doW=True,doMC=False)
+
   fout.cd()
-  qcd_ss_data.Divide(qcd_ss_pred)
 
-  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
+  wjets_data.Divide(wjets_pred)
+  wjets_met_corr_fit, wjets_met_corr_uncert = FitCorrection(wjets_data, func='([0]*x+[1])*y*y*y + ([2]*x+[3])*y*y + ([4]*x+[5])*y + ([6]*x+[7])',is2D=True)
+  wjets_data.Write()
+  wjets_met_corr_fit.Write()
+  wjets_met_corr_uncert.Write()
 
-  qcd_ss_data.Write()
-  qcd_ss_data_fit.Write()
-  qcd_ss_data_uncert.Write()
-  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
 
-  wjets_ss_data.Divide(wjets_ss_pred)
+## MET dependent QCD and W+jets closure corrections - only needed for 0 jet events
+#
+#var='met[0,10,20,30,40,50,60,70,80,90,100]'
+#for i in ['mvadm']:#,'mvadm_nosig','dm']:
+#  # ss region for events triggered by single muon trigger
+#  (qcd_ss_data, wjets_ss_data, wjets_mc_data, ttbar_ss_data) = DrawHists(var, '('+baseline_bothiso+')*(n_jets==0)', '%(i)s_met_ss_closure' % vars(),input_folder,file_ext,False,doQCD=True,doW=True,doMC=False)
+#  if i=='mvadm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string_ipsig,doQCD=True,doW=True,doMC=False)
+#  if i=='mvadm_nosig': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_mvadm_string,doQCD=True,doW=True,doMC=False)
+#  if i=='dm': (qcd_ss_pred, wjets_ss_pred, wjets_ss_mc_pred, ttbar_ss_pred) = DrawHists(var, '('+baseline_aiso1+')*(n_jets==0)', '%(i)s_met_ss_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau_qcd_dm_string,doQCD=True,doW=True,doMC=False)
+#  fout.cd()
+#  qcd_ss_data.Divide(qcd_ss_pred)
+#
+#  qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func='pol3')
+#
+#  qcd_ss_data.Write()
+#  qcd_ss_data_fit.Write()
+#  qcd_ss_data_uncert.Write()
+#  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp)
+#
+#  wjets_ss_data.Divide(wjets_ss_pred)
+#
+#  wjets_ss_data_fit, wjets_ss_data_uncert =  FitCorrection(wjets_ss_data, func='pol3')
+#
+#  wjets_ss_data.Write()
+#  wjets_ss_data_fit.Write()
+#  wjets_ss_data_uncert.Write()
+#  PlotFakeFactorCorrection(wjets_ss_data, wjets_ss_data_uncert, wjets_ss_data.GetName(), output_folder, wp)
+#
+#
 
-  wjets_ss_data_fit, wjets_ss_data_uncert =  FitCorrection(wjets_ss_data, func='pol3')
-
-  wjets_ss_data.Write()
-  wjets_ss_data_fit.Write()
-  wjets_ss_data_uncert.Write()
-  PlotFakeFactorCorrection(wjets_ss_data, wjets_ss_data_uncert, wjets_ss_data.GetName(), output_folder, wp)
-
-# apply met correction measured in SS data along with 
-for i in ['mvadm']:#,'mvadm_nosig','dm']:
-  met_corr_fit = fout.Get('%(i)s_met_ss_closure_qcd_fit' % vars())
-  p = met_corr_fit.GetParameters()
-  met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
-
-  print '\n'
-  print 'QCD MET correction for %s' % i
-  print met_corr
-
-  w_met_corr_fit = fout.Get('%(i)s_met_ss_closure_wjets_fit' % vars())
-  p = w_met_corr_fit.GetParameters()
-  w_met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
-
-  print '\n'
-  print 'W MET correction for %s' % i
-  print w_met_corr
-
+## apply met correction measured in SS data along with 
+#for i in ['mvadm']:#,'mvadm_nosig','dm']:
+#  met_corr_fit = fout.Get('%(i)s_met_ss_closure_qcd_fit' % vars())
+#  p = met_corr_fit.GetParameters()
+#  met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %.9f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
+#
+#  print '\n'
+#  print 'QCD MET correction for %s' % i
+#  print met_corr
+#
+#  w_met_corr_fit = fout.Get('%(i)s_met_ss_closure_wjets_fit' % vars())
+#  p = w_met_corr_fit.GetParameters()
+#  w_met_corr = '*((n_jets==0)*(%f+ %f*min(met,100.) + %f*min(met,100.)*min(met,100.) + %.9f*min(met,100.)*min(met,100.)*min(met,100.))+(n_jets>0))' % (p[0], p[1], p[2], p[3])
+#
+#  print '\n'
+#  print 'W MET correction for %s' % i
+#  print w_met_corr
+#
 #  var='iso_1[0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.30,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.40,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.50]'
 #
 #  # ss region for events triggered by single muon trigger
