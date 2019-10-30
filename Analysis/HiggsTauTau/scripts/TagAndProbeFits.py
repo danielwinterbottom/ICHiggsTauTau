@@ -147,7 +147,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     if options.channel == 'tpzmm':
       gen_cuts='gen_match_1==2&&gen_match_2==2'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      idiso_pt_bins = '[10,20,25,30,40,45,50,55,60,70,80,100,200]'
+      idiso_pt_bins = '[10,15,20,25,30,40,45,50,55,60,70,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
@@ -410,10 +410,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,10])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,15])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,10])",
                   "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
               ]
           )
@@ -423,7 +423,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,15])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
                   "Voigtian::signal2Fail(m_vis, meanf[90,70,100], width[2.495], sigmaf[2,1,15])",
@@ -459,12 +459,12 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass1(m_vis, meanp1[90,80,100], sigmap1[2,0,10], alphap1[1,-50,50], np1[1,0,50])",
-                  "CBShape::CBPass2(m_vis, meanp2[90,80,100], sigmap2[2,0,10], alphap2[1,-50,50], np2[1,0,50])",
+                  "CBShape::CBPass1(m_vis, meanp1[90,80,100], sigmap1[2,0.5,10], alphap1[1,-50,50], np1[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp2[90,80,100], sigmap2[2,0.5,10], alphap2[1,-50,50], np2[1,0,50])",
                   "SUM::DoubleCBPass(CBPass1, vFracp[0.8,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
-                  "CBShape::CBFail1(m_vis, meanf1[90,80,100], sigmaf1[2,0,10], alphaf1[1,-50,50], nf1[1,0,50])",
-                  "CBShape::CBFail2(m_vis, meanf2[90,80,100], sigmaf2[2,0,10], alphaf2[1,-50,50], nf2[1,0,50])",
+                  "CBShape::CBFail1(m_vis, meanf1[90,80,100], sigmaf1[2,0.5,10], alphaf1[1,-50,50], nf1[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf2[90,80,100], sigmaf2[2,0.5,10], alphaf2[1,-50,50], nf2[1,0,50])",
                   "SUM::DoubleCBFail(CBFail1, vFracf[0.8,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
@@ -971,6 +971,8 @@ for name in wsnames:
   else: sig_model='BWCBGausConvUncorr'
   #sig_model = 'DoubleVUncorr'
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
+  elif options.channel == 'tpzmm' and 'id' in name: sig_model = 'DoubleVPartcorr'
+  #elif options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWDoubleCBConvUncorr'
   else: sig_model = 'BWDoubleCBConvCorr'
 
   if options.era == 'summer17':
