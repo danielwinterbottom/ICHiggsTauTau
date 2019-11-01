@@ -60,8 +60,7 @@ defaults = {
     "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
-    "ff_ss_closure":False, "threePads":False,
-    "deeptau":False
+    "ff_ss_closure":False, "threePads":False,"deeptau":False,"auto_blind":False,
 }
 
 if options.cfg:
@@ -834,6 +833,7 @@ if options.channel == 'tt':
     # mva_ggh                = '(IC_Oct07_tauspinnerSM_max_index==0)'
     # mva_jetFakes           = '(IC_Oct07_tauspinnerSM_max_index==1)'
     # mva_zttEmbed           = '(IC_Oct07_tauspinnerSM_max_index==2)'
+
     # mva_ggh                = '(IC_Oct07_tauspinnerPS_max_index==0)'
     # mva_jetFakes           = '(IC_Oct07_tauspinnerPS_max_index==1)'
     # mva_zttEmbed           = '(IC_Oct07_tauspinnerPS_max_index==2)'
@@ -845,9 +845,19 @@ if options.channel == 'tt':
     # mva_zttEmbed           = '(IC_Oct07_tauspinnerSM_split_max_index==3)'
 
     # tauspinner with individual weights for signals, still single higgs
-    mva_ggh                = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==0)'
-    mva_jetFakes           = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==1)'
-    mva_zttEmbed           = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==2)'
+    # mva_ggh                = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==0)'
+    # mva_jetFakes           = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==1)'
+    # mva_zttEmbed           = '(IC_Oct07_tauspinnerSM_individualSigWts_max_index==2)'
+
+    # tauspinner with slimmed vars and classic bkg methods
+    # note the names are the same but actually jetFakes is only QCD
+    mva_ggh                = '(IC_Oct22_tauspinnerSM_classic_max_index==0)'
+    mva_jetFakes           = '(IC_Oct22_tauspinnerSM_classic_max_index==1)'
+    mva_zttEmbed           = '(IC_Oct22_tauspinnerSM_classic_max_index==2)'
+
+    cats['higgs']      = '({})'.format(mva_ggh)
+    cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
+    cats['jetFakes']   = '({})'.format(mva_jetFakes)
 
     cats['higgs_rho']      = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
     # cats['ggh_rho']        = '({} && {})'.format(mva_ggh, cats["inclusive_rho"])
@@ -1285,35 +1295,35 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016',
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
 
-if options.era in ['cpdecay16']:
-    # Add data sample names
-    if options.channel in ['mt','zmm','mj']:
-        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
-    if options.channel == 'em':
-        data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
-    if options.channel == 'et' or options.channel == 'zee':
-        data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
-    if options.channel == 'tt':
-        data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+# if options.era in ['cpdecay16']:
+#     # Add data sample names
+#     if options.channel in ['mt','zmm','mj']:
+#         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
+#     if options.channel == 'em':
+#         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
+#     if options.channel == 'et' or options.channel == 'zee':
+#         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
+#     if options.channel == 'tt':
+#         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
 
-    # Add MC sample names   
-    ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
-    wgam_samples = ['WGToLNuG','WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3','WGstarToLNuEE','WGstarToLNuMuMu']
-    top_samples = ['TT']
-    ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
-    if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF','EmbeddingElTauG','EmbeddingElTauH']
-    if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
-    if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF','EmbeddingTauTauG','EmbeddingTauTauH']
-    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
-    if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
+#     # Add MC sample names   
+#     ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+#     #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
+#     wgam_samples = ['WGToLNuG','WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3','WGstarToLNuEE','WGstarToLNuMuMu']
+#     top_samples = ['TT']
+#     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+#     if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
+#     if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF','EmbeddingElTauG','EmbeddingElTauH']
+#     if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
+#     if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF','EmbeddingTauTauG','EmbeddingTauTauH']
+#     if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
+#     if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
 
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-    wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
-    ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
-    gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
-    qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
+#     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+#     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
+#     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
+#     gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
+#     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
     
 if options.era in ['cpsummer17','tauid2017']:
@@ -1376,12 +1386,14 @@ if options.era in ['cp18']:
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
-    # if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
-    # if options.channel == 'et': embed_samples = ['EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD','EmbeddingElTauE','EmbeddingElTauF']
-    # if options.channel == 'em': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF']
-    # if options.channel == 'tt': embed_samples = ['EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD','EmbeddingTauTauE','EmbeddingTauTauF']
-    # if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
-    # if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
+    if options.channel == 'mt':  embed_samples = ['EmbeddingMuTauA','EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD']
+    if options.channel == 'et':  embed_samples = ['EmbeddingElTauA','EmbeddingElTauB','EmbeddingElTauC','EmbeddingElTauD']
+    if options.channel == 'em':  embed_samples = ['EmbeddingElMuA','EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD']
+    if options.channel == 'tt':  embed_samples = ['EmbeddingTauTauA','EmbeddingTauTauB','EmbeddingTauTauC','EmbeddingTauTauD']
+    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuA','EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD']
+    if options.channel == 'zee': embed_samples = ['EmbeddingElElA','EmbeddingElElB','EmbeddingElElC','EmbeddingElElD']
+    print(embed_samples)
+
 
 if options.method==0: ztt_samples+=ewkz_samples
 
@@ -1420,8 +1432,8 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
     sm_samples = {
         # test CP in decay samples
 
-        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
-        'qqH_htt' : 'VBFHToTauTau_M-*',
+        # 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
+        # 'qqH_htt' : 'VBFHToTauTau_M-*',
 
         #"ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
         #"ggH_ps_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
@@ -1431,13 +1443,13 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
         #"qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
         #"qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
 
-        #"ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        #"ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        #"ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
 
-        #"qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        #"qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        #"qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
         #  "WplusH_htt" : "WplusHToTauTau_M-*",
         #  "WminusH_htt" : "WminusHToTauTau_M-*",
@@ -1448,20 +1460,20 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
 
 if options.era in ['cpsummer17']: 
     sm_samples = { 
-            "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-            "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+            # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+            # "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
 
             'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
-            # 'qqH_htt': 'VBFHToTauTau_M-*', 
+            'qqH_htt': 'VBFHToTauTau_M-*', 
             # 'WplusH_htt': 'WplusHToTauTau_M-*', 
             # 'WminusH_htt': 'WminusHToTauTau_M-*', 
             # 'ZH_htt': 'ZHToTauTau_M-*', 
-            'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-            'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-            'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-            'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
             # 'ZHps_htt' : 'ZHiggs0MToTauTau',  
             # 'ZHsm_htt' : 'ZHiggs0PMToTauTau',
             # 'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
@@ -1477,6 +1489,13 @@ if options.era in ['cp18']:
     sm_samples = {
         'ggH_ph_htt' : 'GluGluHToTauTau_M-*', 
         'qqH_htt' : 'VBFHToTauTau_M-*-ext1',
+
+        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter"],
+        # "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter"],
+        # "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter"],
 
         # 'WplusH_htt': 'WplusHToTauTau_M-*', 
         # 'WminusH_htt': 'WminusHToTauTau_M-*', 
@@ -1929,7 +1948,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     wt_ = wt
     if options.channel == 'em' and options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
     elif options.channel != 'em' and options.era in  ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
-    elif options.era == 'cpsummer17': wt_+='*0.97'
+    elif options.era in ['cpsummer17','cp18']: wt_+='*0.97'
     full_selection = BuildCutString(wt_+'*(wt<2)', sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
