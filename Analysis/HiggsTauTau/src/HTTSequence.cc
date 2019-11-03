@@ -3090,8 +3090,8 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           // for single with extra trigger (for nano)
           //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32,triggerObjectsEle35")
           //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
-          //.set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
-          //.set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+          .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
           
  
           // these lines to measure elec24 from double electron trigger (doesnt work for runB)
@@ -3110,10 +3110,10 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
            //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
            //.set_extra_l1_probe_pt(10.)
           // to measure em electron 23 GeV leg
-           .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
-           .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
-           .set_extra_l1_probe_pt(23.)
-           .set_extra_l1_iso_probe_pt(20.)
+          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          // .set_extra_l1_probe_pt(23.)
+          // .set_extra_l1_iso_probe_pt(20.)
       );
         ;
     } else {

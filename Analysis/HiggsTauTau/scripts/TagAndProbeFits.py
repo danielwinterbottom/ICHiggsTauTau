@@ -231,10 +231,10 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
         GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)
          
-        GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-        GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)
+        GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+        GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+        GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+        GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, iso_probe_1)
     
     ana.Run()
     ana.nodes.Output(outfile)
@@ -410,10 +410,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,15])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Fail(m_vis, meanf[90,85,110], width[2.495], sigmaf[2,1,30])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[3,1,10])",
                   "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
               ]
           )
@@ -564,7 +564,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,0.1], gammaPass[0.001,0,1], peak[90])",
-                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
+                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.15], gammaFail[0.001,0,1], peak[90])",
                   # attenmpt to limit shape to peak below 90 GeV: beta_max = 90./1000.*gamma              #90./1000.*gammaPass,
                   #betaFail=62.1537
                   #Parameter betaFail  has zero or invalid step size - consider it as constant
@@ -899,9 +899,15 @@ idiso_tag_1 = baseline_tag1
 idiso_tag_2 = baseline_tag2 
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
+fix_iso_tag_1 = baseline_tag1+'*(id_probe_2)'
+fix_iso_tag_2 = baseline_tag2+'*(id_probe_1)'
 if (options.veto_FSR==True):
-    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
-    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    # for embedded change this to m_gamma_leptons because updated trees
+    if options.embedded:
+        fix_iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+        fix_iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
@@ -975,8 +981,9 @@ for name in wsnames:
 
   if options.era in ['summer17','summer18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
+    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr'
     elif options.channel =='tpzmm': sig_model = 'DoubleVPartcorr'
-    # elif options.channel =='tpzmm':  sig_model = 'BWDoubleCBConvCorr'
+    # elif options.channel =='tpzmm':  sig_model = 'BWCBGausConvCorr'
     
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
