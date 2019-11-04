@@ -117,6 +117,14 @@ def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doO
 
   return data
 
+def ZeroNegativeBins(h):
+  # if a bin of h1 is equal to the -ve of 
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) <= 0:
+      h.SetBinContent(i,0)
+      h.SetBinError(i,0)
+  return h
+
 def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var = var_input.split('[')[0]
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
@@ -173,7 +181,6 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   # draw all backgrounds to be subtracted from data for QCD estimation
 
   for i in other_files+wjets_files+ttbar_files:
-    print i
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
     h = hout.Clone()
@@ -187,8 +194,12 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     h.Scale(scale)
     bkgs.Add(h)
 
+  bkgs = ZeroNegativeBins(bkgs)
   data.Add(bkgs,-1)
-  
+  data = ZeroNegativeBins(data)
+  wjets = ZeroNegativeBins(wjets)
+  ttbar = ZeroNegativeBins(ttbar) 
+ 
   return (data, wjets, ttbar)
 
 def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
@@ -281,25 +292,35 @@ def CalculateFakeFactors(num,denum):
   ff.Divide(denum)
   return ff
 
-def FitFakeFactors(h,usePol1=False):
+def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",40,200)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",40,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",40,200)
+  if polOnly is not None:
+    if polOnly == 0:               
+      f1 = ROOT.TF1("f1","pol0",40,200)
+      f2 = ROOT.TF1("f2","pol0",40,200)
+    if polOnly == 1:
+      f1 = ROOT.TF1("f1","pol1",40,200)
+      f2 = ROOT.TF1("f2","pol1",40,200)
+
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
-  for i in range(1,h.GetNbinsX()+1): 
+  for i in range(1,h.GetNbinsX()+1):
     content = h.GetBinContent(i)
     error = h.GetBinError(i)
-    if content>0: 
+    if content>0:
       h_clone.SetBinContent(i,content)
       h_clone.SetBinError(i,error)
-  h = h_clone         
-  # fit first with landau to get initial values for parameters - pol values set to 0 initially
-  h.Fit("f1",'IR')
-  f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
-  if usePol1: f2.SetParameter(4,0)
+  h = h_clone
+
+  if polOnly is None:
+    # fit first with landau to get initial values for parameters - pol values set to 0 initially
+    h.Fit("f1",'IR')
+    f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
+    if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
@@ -307,13 +328,58 @@ def FitFakeFactors(h,usePol1=False):
   while rep:
     fitresult = h.Fit("f2",'SIR')
     rep = int(fitresult) != 0
-    if not rep or count>100: 
+    if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
       fit = f2
       break
     count+=1
   fit.SetName(h.GetName()+'_fit')
   return fit, h_uncert, h
+
+
+#def FitFakeFactors(h,usePol1=False,polOnly=None):
+#  h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+#  f1 = ROOT.TF1("f1","landau",20,200)
+#  f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,200)
+#  if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,200)
+#  if polOnly is not None and False:
+#    if polOnly == 0:
+#      f1 = ROOT.TF1("f1","pol0",20,200)
+#      f2 = ROOT.TF1("f2","pol0",20,200)
+#    if polOnly == 1:
+#      f1 = ROOT.TF1("f1","pol1",20,200)
+#      f2 = ROOT.TF1("f2","pol1",20,200)
+#
+#  # clone histogram and set all bins with >0 content
+#  h_clone = h.Clone()
+#  h_clone.Reset()
+#  for i in range(1,h.GetNbinsX()+1):
+#    content = h.GetBinContent(i)
+#    error = h.GetBinError(i)
+#    if content>0.:
+#      h_clone.SetBinContent(i,content)
+#      h_clone.SetBinError(i,error)
+#  h = h_clone
+#  if polOnly is not None:
+#    # fit first with landau to get initial values for parameters - pol values set to 0 initially
+#    h.Fit("f1",'IR')
+#    f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
+#    if usePol1: f2.SetParameter(4,0)
+#  # now fit with the full functions
+#  # repeat fit up to 100 times until the fit converges properly
+#  rep = True
+#  count = 0
+#  while rep:
+#    fitresult = h.Fit("f2",'SIR')
+#    rep = int(fitresult) != 0
+#    if not rep or count>100:
+#      ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
+#      fit = f2
+#      break
+#    count+=1
+#  fit.SetName(h.GetName()+'_fit')
+#  return fit, h_uncert, h
+
 
 def FitCorrection(h, func='pol1'):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
@@ -595,6 +661,8 @@ for ff in ff_list:
     to_write.append(ttbar_uncert)
     PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)
 
+
+
 # make fractions
 
 if draw or True:
@@ -641,14 +709,14 @@ fout = ROOT.TFile(out_file, 'RECREATE')
 for i in to_write: i.Write()
 
 # write strings needed for closure tests
-tau1_dm_string = WriteFunctionDM2Jets(fout, subtau=False)
-tau1_mvadm_string = WriteFunctionMVADM2Jets(fout, subtau=False)
-tau1_dm_aiso_string = WriteFunctionDM2Jets(fout, subtau=False,aiso=True)
-tau1_mvadm_aiso_string = WriteFunctionMVADM2Jets(fout, subtau=False,aiso=True)
+tau1_dm_string = WriteFunctionDM2Jets(fout, subtau=False).replace('pt_1','min(pt_1,200.)')
+tau1_mvadm_string = WriteFunctionMVADM2Jets(fout, subtau=False).replace('pt_1','min(pt_1,200.)')
+tau1_dm_aiso_string = WriteFunctionDM2Jets(fout, subtau=False,aiso=True).replace('pt_1','min(pt_1,200.)')
+tau1_mvadm_aiso_string = WriteFunctionMVADM2Jets(fout, subtau=False,aiso=True).replace('pt_1','min(pt_1,200.)')
 
 
-tau1_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout, subtau=False)
-tau1_mvadm_aiso_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout, subtau=False,aiso=True)
+tau1_mvadm_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout, subtau=False).replace('pt_1','min(pt_1,200.)')
+tau1_mvadm_aiso_string_ipsig = WriteFunctionMVADM2JetsIPSig(fout, subtau=False,aiso=True).replace('pt_1','min(pt_1,200.)')
 
 print '\n'
 print "isolated region dm binning:"
@@ -731,7 +799,7 @@ for i in ['mvadm_nosig','mvadm','dm']:
   qcd_os_data.Write()
   qcd_os_data_fit.Write()
   qcd_os_data_uncert.Write()
-  PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp)
+  PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp, 'p_{T}^{#tau_{2}} (GeV)')
 
   ## apply pt_2 closure correction then define uncertainty as 2D data/pred differences in dm variables
   # fix this for histograms don;t return nan anymore!

@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/HHKinFit/include/HHKinFitMaster.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/HHKinFit/include/HHDiJetKinFitMaster.h"
+#include "Utilities/interface/FnRootTools.h"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
@@ -67,6 +68,9 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
+    input_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","mc_cdf"));
+    output_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","data_cdf"));
+
     rand = new TRandom3(0);
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -104,7 +108,6 @@ namespace ic {
       outtree_->Branch("npNLO", &npNLO_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
-      outtree_->Branch("deeptau_sf", &deeptau_sf_);
 
       outtree_->Branch("ip_mag_1", &ip_mag_1_);
       outtree_->Branch("ip_mag_2", &ip_mag_2_);
@@ -786,6 +789,8 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("pt_1",              &pt_1_.var_double);
+      outtree_->Branch("pt_1_corr",              &pt_1_corr_);
+      outtree_->Branch("m_vis_corr",              &m_vis_corr_);
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
@@ -793,6 +798,8 @@ namespace ic {
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
+      outtree_->Branch("gen_met", &gen_met_);
+      outtree_->Branch("fake_met", &fake_met_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("gen_mjj", &gen_mjj_);
       outtree_->Branch("largest_gen_mjj", &largest_gen_mjj_);
@@ -1802,7 +1809,7 @@ namespace ic {
     // end of added gen stuff
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_weights();
+    //eventInfo->print_all_weights();
     wt_tau_id_tight_ = 1.0;
     if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
     wt_tau_id_loose_ = 1.0;
@@ -1863,9 +1870,6 @@ namespace ic {
    
     looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
  
-    // save scale factor for deep tau ID to allow easy switching between the two
-    deeptau_sf_ = event->Exists("deeptau_sf_2") ? event->Get<double>("deeptau_sf_2") : 1.0;
-    if(event->Exists("deeptau_sf_1")) deeptau_sf_*=event->Get<double>("deeptau_sf_1");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -2466,6 +2470,8 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
     if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
+    if(event->Exists("gen_met")) gen_met_ = event->Get<double>("gen_met");
+    if(event->Exists("fake_met")) fake_met_ = event->Get<double>("fake_met");
     /*if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
     if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
@@ -2835,7 +2841,8 @@ namespace ic {
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
-   
+
+    
 
     // This is the HCP hack for the em channel
     // to better align the data with the embedded
@@ -2879,6 +2886,7 @@ namespace ic {
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
+    //std::cout << pt_1_.var_double << "    " << eta_1_.var_double << std::endl;
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
@@ -2890,6 +2898,20 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
+
+    //quantile map corrections for FFs in mt channel
+    pt_1_corr_ = (pt_1_.var_double<100) ? quantile_mapping(pt_1_.var_double, input_cdf_, output_cdf_) : pt_1_.var_double;
+
+    double shift = pt_1_corr_/pt_1_.var_double;
+    if (shift<0) shift=1.;
+    Candidate *lep1_corr = new Candidate(*(lep1));
+    lep1_corr->set_pt(lep1_corr->pt() * shift);
+    lep1_corr->set_energy(lep1_corr->energy() * shift);
+
+    m_vis_corr_ = (lep1_corr->vector()+lep2->vector()).M();
+
+
+
     if(make_sync_ntuple_){
       event->Exists("genpX") ? gen_px_ = event->Get<double>("genpX") : 0.;
       event->Exists("genpY") ? gen_py_ = event->Get<double>("genpY") : 0.;
@@ -4846,7 +4868,8 @@ namespace ic {
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
       //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-      ic::Vertex* refit_vertex = vertex_vec[0];
+      ic::Vertex* refit_vertex = new ic::Vertex();
+      if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
         if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
       }
@@ -4862,9 +4885,9 @@ namespace ic {
         cp_channel_=2;
         lvec1 = ConvertToLorentz(pi0_tau2->vector());
         pvtosv.SetXYZT(
-                muon1->vx() - vertex_vec[0]->vx(),
-                muon1->vy() - vertex_vec[0]->vy(),
-                muon1->vz() - vertex_vec[0]->vz(),
+                muon1->vx() - refit_vertex->vx(),
+                muon1->vy() - refit_vertex->vy(),
+                muon1->vz() - refit_vertex->vz(),
                 0.);
         lvec3 = ConvertToLorentz(pi_tau2->vector());
         lvec4 = ConvertToLorentz(muon1->vector());

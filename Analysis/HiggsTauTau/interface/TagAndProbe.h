@@ -75,6 +75,7 @@ class TagAndProbe : public ModuleBase {
   bool iso_tight_;
   bool pass_antilep_;
   bool lepton_veto_;
+  unsigned n_leptons_;
   int dm_;
   double mt_1_;
   unsigned n_bjets_;
@@ -174,7 +175,8 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("gen_match_2", &gen_match_2_);
     outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
-
+    outtree_->Branch("lepton_veto"  , &lepton_veto_ );
+    outtree_->Branch("n_leptons", &n_leptons_);
 
     if(channel_ == channel::tpmt){
       outtree_->Branch("iso_vloose" , &iso_vloose_);
@@ -182,7 +184,6 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("iso_medium" , &iso_medium_);
       outtree_->Branch("iso_tight"  , &iso_tight_ );     
       outtree_->Branch("pass_antilep"  , &pass_antilep_ );  
-      outtree_->Branch("lepton_veto"  , &lepton_veto_ );
       outtree_->Branch("dm"  , &dm_ );
       outtree_->Branch("mt_1"  , &mt_1_ );
       outtree_->Branch("n_bjets"  , &n_bjets_ );
@@ -199,7 +200,6 @@ int TagAndProbe<T>::PreAnalysis() {
 
 template <class T>
 int TagAndProbe<T>::Execute(TreeEvent *event){
-
     
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   event_ = (unsigned long long) eventInfo->event();
@@ -221,7 +221,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   deta_ = eta_1_-eta_2_;
   dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
   os_ = PairOppSign(ditau);
-  
+ 
   if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
   if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
   
@@ -318,6 +318,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   }
 
   if(channel_ == channel::tpzmm){
+
+    std::vector<Muon *> const& all_muons = event->GetPtrVec<Muon>("muons");
+    n_leptons_= all_muons.size();
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
@@ -428,6 +431,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   }
   if(channel_ == channel::tpzee){
+    std::vector<Electron *> const& all_elecs = event->GetPtrVec<Electron>("electrons");
+    n_leptons_= all_elecs.size();
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);

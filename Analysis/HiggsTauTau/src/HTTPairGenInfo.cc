@@ -55,15 +55,26 @@ namespace ic {
     double gen_match_undecayed_2_pt = -1;
     double gen_match_undecayed_1_eta = -1;
     double gen_match_undecayed_2_eta = -1;
-    
+    double gen_met=0.;
+    ROOT::Math::PtEtaPhiEVector neutrinos; 
+ 
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_particles.push_back(particles[i]);
       }
+      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
     }
+
+    gen_met=neutrinos.Pt();
+
+    event->Add("gen_met",gen_met);
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    double fake_met = (mets->vector() - neutrinos).Pt();
+    event->Add("fake_met",fake_met);
 
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
