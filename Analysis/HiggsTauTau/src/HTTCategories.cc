@@ -802,7 +802,6 @@ namespace ic {
       outtree_->Branch("fake_met", &fake_met_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("gen_mjj", &gen_mjj_);
-      outtree_->Branch("largest_gen_mjj", &largest_gen_mjj_);
       outtree_->Branch("ngenjets" , &ngenjets_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
@@ -2480,7 +2479,6 @@ namespace ic {
     if(event->Exists("ngenjets")) ngenjets_ = event->Get<unsigned>("ngenjets");
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
     if(event->Exists("gen_mjj")) gen_mjj_ = event->Get<double>("gen_mjj");
-    if(event->Exists("largest_gen_mjj")) largest_gen_mjj_ = event->Get<double>("largest_gen_mjj");
     if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
     if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
    

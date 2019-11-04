@@ -483,7 +483,6 @@ class HTTCategories : public ModuleBase {
   double gen_match_2_pt_;
   double gen_sjdphi_;
   double gen_mjj_;
-  double largest_gen_mjj_;
   double gen_m_;
   double gen_pt_;
   int tauFlag_1_;
