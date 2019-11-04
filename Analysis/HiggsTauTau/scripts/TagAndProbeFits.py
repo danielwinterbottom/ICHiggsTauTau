@@ -76,7 +76,7 @@ parser.add_argument("--embed_dz", dest="embed_dz", action='store_true',
 parser.add_argument("--draw_hists", dest="draw_hists", type=int,
     help="If set to 0 then will not re-make the 3D histograms instead will use the histograms on the existing root file")
 parser.add_argument("--veto_FSR", dest='veto_FSR', action='store_true', 
-    help="If true, the zmm events with FSR are vetoed (only applied to isolation)")
+    help="If true, the events with FSR are vetoed (only applied to isolation)")
 parser.add_argument("--trg_only", dest='trg_only', action='store_true',
     help="If true only the trigger SFs are computed")
 parser.add_argument("--tree_name", dest="tree_name", type=str,
@@ -147,7 +147,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     if options.channel == 'tpzmm':
       gen_cuts='gen_match_1==2&&gen_match_2==2'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
-      idiso_pt_bins = '[10,20,25,30,40,45,50,55,60,70,80,100,200]'
+      idiso_pt_bins = '[10,15,20,25,30,40,45,50,55,60,70,80,100,200]'
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
@@ -155,7 +155,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' #mu8
-        trg_pt_bins = '[10,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
+        trg_pt_bins = '[10,12,14,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
         if options.era == 'smsummer17':
@@ -384,10 +384,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     nparams = 6
     pdf_args.extend(
             [
-                "Voigtian::signal1Pass(m_vis, mean1[90,85,95], width[2.495], sigma1[2,1,4])",
+                "Voigtian::signal1Pass(m_vis, mean1[90,85,95], width[2.495], sigma1[2,0.2,4])",
                 "Voigtian::signal2Pass(m_vis, mean2[90,85,95], width,        sigma2[4,2,10])",
                 "SUM::signalPass(vFrac[0.8,0,1]*signal1Pass, signal2Pass)",
-                "Voigtian::signal1Fail(m_vis, mean1[90,85,95], width[2.495], sigma1[2,1,4])",
+                "Voigtian::signal1Fail(m_vis, mean1[90,85,95], width[2.495], sigma1[2,0.2,4])",
                 "Voigtian::signal2Fail(m_vis, mean2[90,85,95], width,        sigma2[4,2,10])",
                 "SUM::signalFail(vFrac[0.8,0,1]*signal1Fail, signal2Fail)",
             ]
@@ -396,23 +396,63 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       nparams = 6
       pdf_args.extend(
               [
-                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,1,4])",
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,0.2,4])",
                   "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,2,10])",
                   "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
-                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,1,4])",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,0.2,4])",
                   "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,2,10])",
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+  elif sig_model == 'DoubleVUncorr_elec':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,0.2,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,0.5,10])",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,0.2,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,0.5,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+
+              ]
+          )
+  elif sig_model == 'DoubleVUncorr_elec_TwoPeaks':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,0.2,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,0.5,10])",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,0.2,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,70,95], widthf,        sigma2f[4,0.5,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+
+              ]
+          )
+
 
   elif sig_model == 'DoubleVPartcorr':
       nparams = 6
       pdf_args.extend(
               [
-                  "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
+                  "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,0.2,4])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,10])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
-                  "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
+                  "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,0.2,4])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,10])",
+                  "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
+
+  elif sig_model == 'DoubleVPartcorr_elec':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,0.5,4])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,15])",
+                  "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,0.5,4])",
                   "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,15])",
                   "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
               ]
@@ -423,7 +463,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
-                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,10])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
                   "Voigtian::signal2Fail(m_vis, meanf[90,70,100], width[2.495], sigmaf[2,1,15])",
@@ -437,9 +477,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass(m_vis, meanp[90,85,95], sigmap[2,0,10], alphap[1,-50,50], np[1,0,50])",
+                  "CBShape::CBPass(m_vis, meanp[90,85,95], sigmap[2,1,10], alphap[1,0,50], np[1,0,50])",
                   "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
-                  "CBShape::CBFail(m_vis, meanf[90,85,95], sigmaf[2,0,10], alphaf[1,-50,50], nf[1,0,50])",
+                  "CBShape::CBFail(m_vis, meanf[90,85,95], sigmaf[2,1,10], alphaf[1,0,50], nf[1,0,50])",
                   "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
               ]
           ) 
@@ -448,9 +488,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass(m_vis, mean[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBPass(m_vis, mean[90,85,95], sigma[2,0.5,10], alpha[1,0,50], n[1,0,50])",
                   "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
-                  "CBShape::CBFail(m_vis, mean[90,80,100], sigma[2,0,10], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail(m_vis, mean[90,85,95], sigma[2,0.5,10], alpha[1,0,50], n[1,0,50])",
                   "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
               ]
           )            
@@ -468,7 +508,23 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::DoubleCBFail(CBFail1, vFracf[0.8,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
-          )           
+          )          
+  elif sig_model == 'BWDoubleCBConvUncorr_elec':
+      nparams = 19
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, meanp1[90,85,95], sigmap1[2,0.5,4], alphap1[1,0,50], np1[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp2[90,85,95], sigmap2[2,2,10], alphap2[1,0,50], np2[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.8,0,1]*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, meanf1[90,85,95], sigmaf1[2,0.5,4], alphaf1[1,0,50], nf1[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf2[90,85,95], sigmaf2[2,2,10], alphaf2[1,0,50], nf2[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.8,0,1]*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )
+ 
   elif sig_model == 'BWDoubleCBConvCorr':
       nparams = 15
       pdf_args.extend(
@@ -490,12 +546,28 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
-                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBPass1(m_vis, mean[90,80,100], sigma[2,0.2,4], alpha[1,-50,50], n[1,0,50])",
                   "CBShape::CBPass2(m_vis, meanp[90,80,100], sigmap[4,4,10], alphap[1,-50,50], np[1,0,50])",
                   "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
                   "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
-                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,1,4], alpha[1,-50,50], n[1,0,50])",
+                  "CBShape::CBFail1(m_vis, mean[90,80,100], sigma[2,0.2,4], alpha[1,-50,50], n[1,0,50])",
                   "CBShape::CBFail2(m_vis, meanf[80,75,90], sigmaf[8,1,15], alphaf[1,-50,50], nf[1,0,50])",
+                  "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
+                  "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
+              ]
+          )             
+
+  elif sig_model == 'BWDoubleCBConvUnCorr_TwoPeaks':
+      nparams = 15
+      pdf_args.extend(
+              [
+                  "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
+                  "CBShape::CBPass1(m_vis, meanp1[90,80,100], sigmap1[2,1,4], alphap1[1,-50,50], np1[1,0,50])",
+                  "CBShape::CBPass2(m_vis, meanp2[90,80,100], sigmap2[4,4,10], alphap2[1,-50,50], np2[1,0,50])",
+                  "SUM::DoubleCBPass(CBPass1, vFracp[0.01,0,1]*CBPass2)",
+                  "FFTConvPdf::signalPass(m_vis,DoubleCBPass,BW)",
+                  "CBShape::CBFail1(m_vis, meanf1[90,80,100], sigmaf1[2,1,4], alphaf1[1,-50,50], nf1[1,0,50])",
+                  "CBShape::CBFail2(m_vis, meanf2[80,75,90], sigmaf2[8,1,15], alphaf2[1,-50,50], nf2[1,0,50])",
                   "SUM::DoubleCBFail(CBFail1, vFracf[0.2,0,1]*CBFail2)",
                   "FFTConvPdf::signalFail(m_vis,DoubleCBFail,BW)",
               ]
@@ -596,17 +668,43 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      #if options.era in ['summer18','summer17','summer16','legacy16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
-      #    if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
+      if options.era in ['summer17'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+          if xmin >= 50: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
       yield_tot = wsp.data(dat).sumEntries()
       yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
       wsp.var("numTot").setVal(yield_tot)
-      wsp.var("efficiency").setVal(yield_pass/yield_tot)
-      wsp.var("efficiency").setError(math.sqrt(yield_pass)/yield_tot) #not quite correct error
-      
+      if yield_tot>0: 
+        wsp.var("efficiency").setVal(yield_pass/yield_tot)
+        wsp.var("efficiency").setError(math.sqrt(yield_pass)/yield_tot) #not quite correct error
+      else: 
+        wsp.var("efficiency").setVal(0.)
+        wsp.var("efficiency").setError(0.) 
+        ForceEventCount = True # dont do fit if yield is 0 anyway
+    
+      if options.channel=='tpzee' and 'id' in name:
+        if xmin>=100: 
+          print 'changing sigma2f parameter'
+          wsp.var('sigma1f').setRange(0.2,4)
+          wsp.var('sigma2f').setRange(2,15)
+          wsp.var('sigma2p').setRange(2,10)
+        elif xmin >= 40:
+          wsp.var('sigma2f').setRange(0.2,10)
+          wsp.var('sigma1f').setRange(0.2,10)
+          wsp.var('sigma2p').setRange(0.2,10)
+        elif xmin>=50 and xmin<100:
+          print 'changing sigmaf parameters'
+          wsp.var('sigma2f').setRange(0.2,10)
+          wsp.var('sigma1f').setRange(0.2,10)
+          wsp.var('sigma2p').setRange(2,10)
+        else: 
+          wsp.var('sigma1f').setRange(0.2,4)
+          wsp.var('sigma2f').setRange(2,10)
+          wsp.var('sigma2p').setRange(2,10)
+
+
       if doFit and not ForceEventCount:
         wsp.pdf("model").fitTo(wsp.data(dat),
                                ROOT.RooFit.Optimize(False),
@@ -752,6 +850,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
 if options.channel == 'tpzmm': 
     if options.era == 'summer17':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+        #data_samples = ['SingleMuonB']
         #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'summer18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
@@ -884,8 +983,8 @@ idiso_tag_2 = baseline_tag2
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
 if (options.veto_FSR==True):
-    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
-    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
@@ -959,7 +1058,13 @@ for name in wsnames:
 
   if options.era == 'summer17':
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
-    elif options.channel =='tpzmm': sig_model = 'DoubleVPartcorr'
+    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
+    elif options.channel =='tpzmm': 
+      sig_model = 'DoubleVPartcorr' #'BWDoubleCBConvCorr'
+      #sig_model = 'BWDoubleCBConvCorr' # use this one for mt cross trigger
+    if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
+    if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
+    if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
     
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'

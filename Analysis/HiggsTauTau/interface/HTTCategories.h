@@ -1241,13 +1241,19 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vvtight_2_;
   //
 
-  double deeptau_sf_;
   double mt_1_nomu_, mu_pt_;
   double rho_dphi_, rho_deta_;
+  double gen_met_, fake_met_;
 
   unsigned ngenjets_;
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
   double q_tot_1_, q_tot_2_;
+
+  double looseiso_wt_;
+
+  TH1D* input_cdf_;
+  TH1D* output_cdf_;
+  double m_vis_corr_, pt_1_corr_;
 
  public:
   HTTCategories(std::string const& name);

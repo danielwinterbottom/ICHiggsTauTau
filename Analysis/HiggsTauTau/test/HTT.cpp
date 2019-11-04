@@ -125,20 +125,19 @@ int main(int argc, char* argv[]) {
   }
 
   std::string output_name = js["sequence"]["output_name"].asString();
-  /* bool is_data = js["sequence"]["is_data"].asBool(); */
+  bool is_data = js["sequence"]["is_data"].asBool();
   bool is_embedded = js["sequence"]["is_embedded"].asBool();
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
 
-    /*if(is_data &&  ( (channel_str.find("em") != channel_str.npos &&
+    if(is_data &&  ( (channel_str.find("em") != channel_str.npos &&
                     output_name.find("MuonEG")==output_name.npos &&
                     channel_str.find("tpem") == channel_str.npos)||
                 (channel_str.find("mt") != channel_str.npos &&
                  output_name.find("SingleMuon") == output_name.npos ) ||
                 (channel_str.find("et") != channel_str.npos &&
-                 output_name.find("SingleEle") == output_name.npos ) ||
-                (channel_str.find("et") != channel_str.npos &&
-                 output_name.find("EGamma") == output_name.npos ) ||
+                 !(output_name.find("SingleEle") != output_name.npos || 
+                  output_name.find("EGamma") != output_name.npos )) ||
                 (channel_str.find("tt") != channel_str.npos &&
                  output_name.find("Tau") == output_name.npos) ||
                 (channel_str.find("zmm") != channel_str.npos &&
@@ -146,20 +145,17 @@ int main(int argc, char* argv[]) {
                 (channel_str.find("tpzmm") != channel_str.npos &&
                  output_name.find("SingleMuon") == output_name.npos ) ||
                 (channel_str.find("zee") != channel_str.npos &&
-                 output_name.find("SingleEle") == output_name.npos ) ||
-                (channel_str.find("zee") != channel_str.npos &&
-                 output_name.find("EGamma") == output_name.npos ) ||
+                 !(output_name.find("SingleEle") != output_name.npos ||
+                  output_name.find("EGamma") != output_name.npos )) ||
                 (channel_str.find("tpzee") != channel_str.npos &&
-                 output_name.find("SingleEle") == output_name.npos ) ||
-                (channel_str.find("tpzee") != channel_str.npos &&
-                 output_name.find("EGamma") == output_name.npos ) ||
+                 !(output_name.find("SingleEle") != output_name.npos ||
+                  output_name.find("EGamma") != output_name.npos )) ||
                 (channel_str.find("tpmt") != channel_str.npos &&
                  output_name.find("SingleMuon") == output_name.npos ) ||
                 (channel_str.find("tpem") != channel_str.npos &&
-                 output_name.find("SingleEle")==output_name.npos ) ||
-                (channel_str.find("tpem") != channel_str.npos &&
-                 output_name.find("EGamma")==output_name.npos ) )) 
-        continue; */
+                 !(output_name.find("SingleEle")!=output_name.npos ||
+                  output_name.find("EGamma")!=output_name.npos ))))
+        continue;
 
     if(is_embedded &&  ( (channel_str.find("em") != channel_str.npos &&
                     output_name.find("EmbeddingElMu")==output_name.npos )||

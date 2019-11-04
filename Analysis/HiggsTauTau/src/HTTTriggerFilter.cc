@@ -116,9 +116,9 @@ namespace ic {
        if (run >= 271036 /*&& run <= 258654*/  && (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v") != name.npos) && do_singlelepton_) path_found = true;
        if (run >= 250985 && run <= 284044  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
        if (run >= 294927 && run < 314472  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos)) path_found = true;
-       if (run >= 314472 && run < 317527  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos || //consider adding Ele28 when available in ic miniaod
+       if (run >= 314472 && run < 317509  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos || //consider adding Ele28 when available in ic miniaod
                    name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
-       if (run >= 317527 /*&& run < xxx*/  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos 
+       if (run >= 317509 /*&& run < xxx*/  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos 
                    || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
@@ -137,8 +137,8 @@ namespace ic {
           if (run >= 256630  && run <= 271035 && (name.find("HLT_IsoMu18_v") != name.npos)) path_found = true;
           if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos || name.find("HLT_IsoTkMu22_v")!=name.npos || name.find("HLT_IsoMu22_eta2p1_v") || name.find("HLT_IsoTkMu22_eta2p1_v")!=name.npos) && do_singlelepton_) path_found = true;
           if (run >= 271036  && run <= 284044 && (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
-          if (run >= 294927 && run < 317527 && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos || name.find("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v") != name.npos)) path_found = true;
-          if (run >= 317527 /*&& run <= 258654*/  && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos || name.find("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+          if (run >= 294927 && run < 317509 && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos || name.find("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+          if (run >= 317509 /*&& run <= 258654*/  && (name.find("HLT_IsoMu24_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos || name.find("HLT_IsoMu27_v") != name.npos || name.find("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
           // Look for Mu Low trigger first
@@ -158,8 +158,8 @@ namespace ic {
           if (run >= 250985 && run <= 284044 && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
           if (run >= 294927 && run < 314472 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
           // only added vbf tau trg for 2018 here
-          if (run >= 314472 && run < 317527 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v") != name.npos)) path_found=true;
-          if (run >= 317527 /*&& run < xxxxx*/ && (name.find("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v") != name.npos )) path_found=true;
+          if (run >= 314472 && run < 317509 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v") != name.npos)) path_found=true;
+          if (run >= 317509 /*&& run < xxxxx*/ && (name.find("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v") != name.npos )) path_found=true;
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
@@ -275,7 +275,7 @@ namespace ic {
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
           high_leg_pt = 25.;
         }
-        if(run >= 314472 && run < 317527){ //2018 pre hps
+        if(run >= 314472 && run < 317509){ //2018 pre hps
           trig_obj_label = "triggerObjectsEle24Tau30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -286,7 +286,7 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle35noerWPTightGsfTrackIsoFilter";
           high_leg_pt = 25.;
         }
-        if(run >= 317527){ //2018 post hps
+        if(run >= 317509){ //2018 post hps
           trig_obj_label = "triggerObjectsEle24TauHPS30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -402,7 +402,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 315974 && run < 317527) { // 2018 pre hps with new filter
+        if (run >= 315974 && run < 317509) { // 2018 pre hps with new filter
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -413,7 +413,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 317527) { //2018 post hps
+        if (run >= 317509) { //2018 post hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -555,7 +555,7 @@ namespace ic {
           alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
         }
-        if(run >= 314472 && run < 317527){
+        if(run >= 314472 && run < 317509){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
@@ -572,7 +572,7 @@ namespace ic {
           //subleading from following (but contains leading as well)
           alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTau20"; 
         }
-        if (run >= 317527) {
+        if (run >= 317509) {
           trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35";
           leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
           leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
@@ -718,7 +718,7 @@ namespace ic {
           extra_filter_2 = "hltEGL1SingleEGOrFilter";
           high_leg_pt = 25.;
           if(is_embedded_){
-            leg2_filter="hltTauJet5";
+            leg2_filter="hltL1sBigORLooseIsoEGXXerIsoTauYYerdRMin0p3";
             extra_leg2_filter="";
           }
           } else if (mc_ == mc::mc2018){
@@ -732,7 +732,8 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle35noerWPTightGsfTrackIsoFilter";
           high_leg_pt = 25.;
           if(is_embedded_){
-            leg2_filter="hltTauJet5";
+            // add non HPS version also for emebdded and data ??
+            leg2_filter="hltL1sBigORLooseIsoEGXXerIsoTauYYerdRMin0p3";
             extra_leg2_filter="";
           }
 
@@ -824,7 +825,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter= "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
           if(is_embedded_){
-            leg2_filter="hltTauJet5";
+            leg2_filter="hltL1sMu18erTau24erIorMu20erTau24er";
             extra_leg2_filter="";
           }
         } else if (mc_ == mc::mc2018) {
@@ -833,10 +834,17 @@ namespace ic {
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
           alt_trk_leg1_filter =  "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07";
           high_leg_pt = 21.;
-          trig_obj_label = "triggerObjectsIsoMu20TauHPS27"; // MC uses HPS only
+          trig_obj_label = "triggerObjectsIsoMu20TauHPS27"; 
           leg1_filter = "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07";
           leg2_filter = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+
+          if(is_embedded_) {
+            trig_obj_label = "triggerObjectsIsoMu20TauHPS27"; // MC uses HPS only
+            leg1_filter = "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+            leg2_filter = "hltL1sBigORMu18erTauXXer2p1";
+            extra_leg2_filter = "";
+          }
         }
 
       } else if (channel_ == channel::em) {
@@ -970,6 +978,14 @@ namespace ic {
             alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; // leading 
             //subleading from following (but contains leading as well)
             alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; 
+            if(is_embedded_) {
+               leg1_filter="hltDoubleL2IsoTau26eta2p2";
+               leg2_filter=leg1_filter;
+               alt_leg1_filter=leg1_filter;
+               alt_leg2_filter=leg1_filter;
+               alt_leg1_filter_2=leg1_filter;
+               alt_leg2_filter_2=leg1_filter;
+            }
         }
     }
       /*
@@ -1093,7 +1109,7 @@ namespace ic {
         }
       }
     }
-    if(is_embedded_&& mc_ == mc::mc2017 && channel_==channel::et){
+    if(is_embedded_&& mc_ == mc::mc2017 && (channel_==channel::et || channel_==channel::zee)){
       // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
       Electron const* elec = dynamic_cast<Electron const*>(dileptons[0]->At(0));
       double eta = fabs(elec->sc_eta());
