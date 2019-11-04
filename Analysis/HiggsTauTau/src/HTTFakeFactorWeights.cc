@@ -41,6 +41,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "ff_file"     % ff_file_;
     std::cout << boost::format(param_fmt()) % "fracs_file"  % fracs_file_;
      
+
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};

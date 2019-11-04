@@ -2818,19 +2818,21 @@ namespace ic {
   double quantile_mapping(double value, TH1D *input_cdf, TH1D *output_cdf) {
     double new_value=value;
     double p = input_cdf->Interpolate(value);
-    double ylow = output_cdf->GetBinContent(1), yhigh = output_cdf->GetBinContent(output_cdf->GetNbinsX()+1), xlow=output_cdf->GetBinLowEdge(1), xhigh=output_cdf->GetBinLowEdge(output_cdf->GetNbinsX()+1);
-    double ydiff_hi=fabs(yhigh-p), ydiff_lo=fabs(ylow-p);
+    double ylow = output_cdf->GetBinContent(1), yhigh = output_cdf->GetBinContent(2), xlow=output_cdf->GetBinLowEdge(1), xhigh=output_cdf->GetBinLowEdge(2);
+    //double ydiff_hi=fabs(yhigh-p);
+    double ydiff_lo=fabs(ylow-p);
     for (unsigned i=1; i<=(unsigned)output_cdf->GetNbinsX(); ++i) {
       double y = output_cdf->GetBinContent(i);
       if ((fabs(y-p)<ydiff_lo && y<p)){
          ydiff_lo = fabs(y-p);
          ylow = y;
          xlow = output_cdf->GetBinLowEdge(i);
-      }
-      if ((fabs(y-p)<ydiff_hi && y>p)){
-         ydiff_hi = fabs(y-p);
-         yhigh = y;
+      //}
+      //if ((fabs(y-p)<ydiff_hi && y>p)){
+         //ydiff_hi = fabs(y-p);
+         //yhigh = y;
          xhigh = output_cdf->GetBinLowEdge(i+1);
+         yhigh = output_cdf->GetBinContent(i+1);
       }
     }
     double x = (xhigh-xlow)/(yhigh-ylow)*(p-ylow);

@@ -334,7 +334,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   var = var_input.split('[')[0]
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
   hout = ROOT.TH1D('hout','',len(bins)-1, bins)
-  gen_extra='(gen_match_1==6 || gen_match_2==6)'
+  gen_extra='(gen_match_2==6)'
   data = hout.Clone()
   data.SetName(name+'_qcd')
   wjets = hout.Clone()
@@ -354,7 +354,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     h = t.GetHistogram()
     data.Add(h)
 
-  # draw wjets when one of tau candidates is a jet fake - this includes VV and DY events also
+  # draw wjets when the tau candidates is a jet fake - this includes VV and DY events also
   for i in wjets_files+other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
@@ -366,7 +366,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     h.Scale(scale)
     wjets.Add(h)
 
-  # draw ttbar when one of tau candidates is a jet fake 
+  # draw ttbar when the tau candidates is a jet fake 
   for i in ttbar_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
@@ -378,7 +378,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     h.Scale(scale)
     ttbar.Add(h)
 
-  # draw all backgrounds with no jet fakes
+  # draw all backgrounds with no jet fake
   for i in other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
@@ -648,8 +648,8 @@ for njetbin in njets_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'iso_1<0.25&&iso_1>0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso2_aiso1 = 'iso_1<0.25&&iso_1>0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
@@ -726,44 +726,26 @@ for ff in ff_list:
       PlotFakeFactor(ttbar_mc_ff, ttbar_mc_uncert, ttbar_mc_ff.GetName(), output_folder, wp)
 
 # make fractions
+ 
+njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
 
-#if draw or True:
-#  #baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-#  # fractions are currently been produced assuming only lead tau will be anti isolated 
-# 
-#  njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
-#  
-#  for njets in [0,1,2]:
-#    njets_cut = njets_cuts[njets]
-#    var= 'm_vis[0,40,60,80,100,120,140,160,180,200,220,240,260,280,300]'
-#    cuts = '(%(baseline_aiso1)s)*(%(njets_cut)s)' % vars()
-#    name = 'tt_fracs_njets%(njets)s' % vars()
-#    qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
-#    qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
-#    total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
-#    total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
-#    qcd_os.Divide(total_os)
-#    wjets_os.Divide(total_os)
-#    ttbar_os.Divide(total_os)
-#    qcd_ss.Divide(total_ss)
-#    wjets_ss.Divide(total_ss)
-#    ttbar_ss.Divide(total_ss)
-#    to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
-#    to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
-#else:
-#  fout = ROOT.TFile(out_file) 
-#  njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
-#
-#  for njets in [0,1,2]:
-#    njets_cut = njets_cuts[njets]
-#    qcd_os = fout.Get('tt_fracs_njets%(njets)s_os_qcd' % vars())
-#    wjets_os = fout.Get('tt_fracs_njets%(njets)s_os_wjets' % vars())
-#    ttbar_os = fout.Get('tt_fracs_njets%(njets)s_os_ttbar' % vars())
-#    qcd_ss = fout.Get('tt_fracs_njets%(njets)s_ss_qcd' % vars())
-#    wjets_ss = fout.Get('tt_fracs_njets%(njets)s_ss_wjets' % vars())
-#    ttbar_ss = fout.Get('tt_fracs_njets%(njets)s_ss_ttbar' % vars())
-#    to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
-#    to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+for njets in [0,1,2]:
+  njets_cut = njets_cuts[njets]
+  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
+  cuts = '(%(baseline_aiso1)s)*(%(njets_cut)s)' % vars()
+  name = 'mt_fracs_njets%(njets)s' % vars()
+  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+  qcd_os.Divide(total_os)
+  wjets_os.Divide(total_os)
+  ttbar_os.Divide(total_os)
+  qcd_ss.Divide(total_ss)
+  wjets_ss.Divide(total_ss)
+  ttbar_ss.Divide(total_ss)
+  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
 # write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
@@ -1085,7 +1067,7 @@ for i in ['mvadm','mvadm_nosig','dm']:
  
   var='pt_1[20,30,40,50,60,70,80,90,100]'
 
-  (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')', '%(i)s_osss_closure' % vars(),input_folder,file_ext,doOS=True,doQCD=True,doW=False,doMC=False,doIso=False)
+  (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_aiso2_iso+')', '%(i)s_osss_closure' % vars(),input_folder,file_ext,doOS=True,doQCD=True,doW=False,doMC=False,doIso=False)
   if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso2_aiso1+')', '%(i)s_osss_closure_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=aiso_ff_string % vars(),doQCD=True,doW=False,doMC=False,doIso=False)
   if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')', '%(i)s_osss_closure_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=aiso_ff_string % vars(),doQCD=True,doW=False,doMC=False,doIso=False)
   if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')', '%(i)s_osss_closure_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=aiso_ff_string % vars(),doQCD=True,doW=False,doMC=False,doIso=False)

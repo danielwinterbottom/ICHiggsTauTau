@@ -291,7 +291,7 @@ namespace ic {
           t_decay_ = 2;
         } else {
           std::cerr << "Error!\n";
-          throw;
+          //throw; // this throw caused the crash ->but  we dont even need this part if we aren't stitching a high mass sample
         }
       }
       if (partons > 4) {
