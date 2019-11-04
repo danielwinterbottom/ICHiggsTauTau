@@ -980,9 +980,9 @@ for name in wsnames:
   else: sig_model = 'BWDoubleCBConvCorr'
 
   if options.era in ['summer17','summer18']:
-    if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
-    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr'
-    elif options.channel =='tpzmm': sig_model = 'DoubleVPartcorr'
+    if 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
+    elif 'id' in name: sig_model = 'DoubleVUncorr'
+    else: sig_model = 'DoubleVPartcorr'
     
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'

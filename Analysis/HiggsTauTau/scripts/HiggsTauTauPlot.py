@@ -1465,24 +1465,24 @@ if options.era in ['cpsummer17']:
 
             'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
             'qqH_htt': 'VBFHToTauTau_M-*', 
-            # 'WplusH_htt': 'WplusHToTauTau_M-*', 
-            # 'WminusH_htt': 'WminusHToTauTau_M-*', 
-            # 'ZH_htt': 'ZHToTauTau_M-*', 
-            # 'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-            # 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            # 'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-            # 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            # 'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-            # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            # 'ZHps_htt' : 'ZHiggs0MToTauTau',  
-            # 'ZHsm_htt' : 'ZHiggs0PMToTauTau',
-            # 'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
-            # 'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
-            # 'qqHps_htt' :'VBFHiggs0MToTauTau',
-            # 'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
-            # 'WHps_htt' :'WHiggs0MToTauTau',
-            # 'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
-            # 'WHsm_htt' : 'WHiggs0PMToTauTau',
+            'WplusH_htt': 'WplusHToTauTau_M-*', 
+            'WminusH_htt': 'WminusHToTauTau_M-*', 
+            'ZH_htt': 'ZHToTauTau_M-*', 
+            'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
+            'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
+            'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
+            'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            'ZHps_htt' : 'ZHiggs0MToTauTau',  
+            'ZHsm_htt' : 'ZHiggs0PMToTauTau',
+            'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
+            'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
+            'qqHps_htt' :'VBFHiggs0MToTauTau',
+            'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
+            'WHps_htt' :'WHiggs0MToTauTau',
+            'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
+            'WHsm_htt' : 'WHiggs0PMToTauTau',
             }
 
 if options.era in ['cp18']:
@@ -1529,8 +1529,8 @@ if options.syst_mu_scale != '':
     # systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['jetFakes','ZTT','ZJ','ZLL','ZL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)
     # systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['jetFakes','ZLL','ZL','ZTT','ZLL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)    
 
-    systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['jetFakes'], False)
-    systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['jetFakes'], False)
+    systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',[], False)
+    systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', [], False)
 
 if options.syst_tau_scale != '':
     systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', ['jetFakes'], False)
