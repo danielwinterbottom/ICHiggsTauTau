@@ -2633,14 +2633,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(33043732+44447288,54106926,6545029,19315767,11074019); 
+           httStitching.SetWInputYields(33043732+44587448,54106926,6545029,19575436,11074019); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(47915140+48989879,42155038+33329594,88795+10027319,5740168+1147725,4255897);
+            httStitching.SetDYInputYields(48443117+49082157,42155038+33329594,88795+10027319,5740168+1147725,4255897);
           }
        
        BuildModule(httStitching);   
@@ -3015,7 +3015,6 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_add_name("_emLow")          
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
-          .set_do_dzmass(true)
           .set_extra_hlt_probe_pt(8.)
           .set_extra_l1_probe_pt(5.)
       );          
@@ -3038,7 +3037,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_extra_l1_probe_pt(20.)
       );
           
-          // for single muon trigger:
+      // for single muon trigger:
       BuildModule(TagAndProbe<Muon const*>("TagAndProbe_Single")
           .set_fs(fs.get())
           .set_channel(channel)
@@ -3071,9 +3070,82 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
       );
     }
   } else if(channel == channel::tpzee){
-    if(strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
+    if(strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17){
       std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
       std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
+
+      // for el12 leg of EMu cross-trigger
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
+          .set_add_name("_emLow")
+      );
+
+      // for el23 leg of EMu cross-trigger
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emHigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          .set_extra_l1_probe_pt(23.)
+          .set_extra_l1_iso_probe_pt(20.)
+          .set_add_name("_emHigh")
+      );
+
+      // for el23 leg of EMu cross-trigger
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Tau30") // for 2017
+          .set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau") // for 2017
+          .set_do_extra(true)
+          .set_add_name("_ET")
+      );
+
+
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+      );
+
+    } else if(strategy_type == strategy::cpdecays18){
+
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+      std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
+
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
           .set_fs(fs.get())
           .set_channel(channel)

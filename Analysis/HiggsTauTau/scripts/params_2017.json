@@ -1,59 +1,55 @@
 {
   "DY1JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY1JetsToLL-LO-ext": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY2JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY2JetsToLL-LO-ext": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY3JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY3JetsToLL-LO-ext": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DY4JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DYJetsToLL": {
     "xs": 6077.22,
-    "evt": 18576627
+    "evt": 264546403
   },
   "DYJetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DYJetsToLL-LO-ext1": {
     "xs": 6077.22,
-    "evt": 96905019
+    "evt": 97525274
   },
   "DYJetsToLL-ext": {
     "xs": 6077.22,
-    "evt": 104282924
+    "evt": 264546403
   },
   "DYJetsToLL_M-10-50-LO": {
     "xs": 18610.0,
-    "evt": 77320921
+    "evt": 78733354
   },
   "DYJetsToLL_M-10-50-LO-ext1": {
     "xs": 18610.0,
-    "evt": 77320921
-  },
-  "DYJetsToLL_M-5-50-LO": {
-    "xs": 81880.0,
-    "evt": 39505301
+    "evt": 78733354
   },
   "EWKWMinus2Jets": {
     "xs": 20.25,
@@ -69,35 +65,35 @@
   },
   "GluGluHToTauTau_M-125": {
     "xs": 3.045966,
-    "evt": 12031600.0
-  },
-  "GluGluHToTauTau_M-125-ext": {
-    "xs": 3.045966,
-    "evt": 12031600.0
+    "evt": 2891556
   },
   "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 7399444.0
+    "evt": 7820754
   },
   "GluGluToHToTauTau_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 7399444.0
+    "evt": 7820754
   },
   "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 1752976.0
+    "evt": 1803052
   },
   "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 1752976.0
+    "evt": 1803052
   },
   "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 1829067.0
+    "evt": 1879685
   },
   "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
     "xs": 3.045966,
-    "evt": 1829067.0
+    "evt": 1879685
+  },
+  "GluGluToHToTauTau_M-125-nospinner-filter": {
+    "xs": 3.045966,
+    "evt": 4897561
   },
   "T-t": {
     "xs": 136.02,
@@ -117,7 +113,7 @@
   },
   "TTToSemiLeptonic": {
     "xs": 365.34,
-    "evt": 41279468
+    "evt": 42076324
   },
   "Tbar-t": {
     "xs": 80.95,
@@ -129,59 +125,91 @@
   },
   "VBFHToTauTau_M-125": {
     "xs": 0.2371,
-    "evt": 2973256.0
+    "evt": 2973256
+  },
+  "VBFHToTauTau_M-125-nospinner-filter": {
+    "xs": 0.2371,
+    "evt": 3129458
   },
   "VBFHiggs0MToTauTau": {
     "xs": 2.6707,
-    "evt": 956100.0
+    "evt": 956100
   },
-  "VBFHiggs0Mf05ph0ToTauTau": { 
+  "VBFHiggs0Mf05ph0ToTauTau": {
     "xs": 0.47421,
-    "evt": 867300.0
+    "evt": 867300
   },
   "VBFHiggs0PMToTauTau": {
     "xs": 0.2371314,
-    "evt": 951200.0
+    "evt": 951200
   },
   "WHiggs0MToTauTau": {
     "xs": 5.6330289,
-    "evt": 965300.0
+    "evt": 965300
   },
   "WHiggs0Mf05ph0ToTauTau": {
     "xs": 0.1721491,
-    "evt": 972400.0
+    "evt": 972400
   },
   "WHiggs0PMToTauTau": {
     "xs": 0.08607456,
-    "evt": 983300.0
+    "evt": 983300
   },
   "ZHiggs0MToTauTau": {
     "xs": 2.6708711,
-    "evt": 906400.0
+    "evt": 906400
   },
   "ZHiggs0Mf05ph0ToTauTau": {
     "xs": 0.1108536,
-    "evt": 974600.0
+    "evt": 974600
   },
   "ZHiggs0PMToTauTau": {
     "xs": 0.0554268,
-    "evt": 945200.0
+    "evt": 945200
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 3761951
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 7820754
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 5390359
+  },
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1803052
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 5307575
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1879685
+  },
+  "GluGluToHToTauTau_M-125-nospinner-filter": {
+    "xs": 3.045966,
+    "evt": 4897561
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "W2JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "W3JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "WGToLNuG": {
     "xs": 510.6,
@@ -189,27 +217,19 @@
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "WJetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 77491020
+    "evt": 77631180
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
-    "evt": 77491020
+    "evt": 77631180
   },
   "WWTo2L2Nu": {
     "xs": 10.48,
     "evt": 1992522
-  },
-  "WWTo4Q": {
-    "xs": 45.2,
-    "evt": 3985044
-  },
-  "WWTo4Q-ext": {
-    "xs": 45.2,
-    "evt": 3985044
   },
   "WWToLNuQQ": {
     "xs": 49.997,
@@ -229,23 +249,23 @@
   },
   "WZTo2L2Q": {
     "xs": 5.595,
-    "evt": 16404748
+    "evt": 16490603
   },
   "WZTo3LNu": {
     "xs": 4.679,
-    "evt": 6853508
+    "evt": 6887413
   },
   "WminusHToTauTau_M-125": {
     "xs": 0.03340,
-    "evt": 6853508
+    "evt": 3590396
   },
   "WplusHToTauTau_M-125": {
     "xs": 0.05266,
-    "evt": 6853508
+    "evt": 3777578
   },
   "ZHToTauTau_M-125": {
     "xs": 0.05542,
-    "evt": 6853508
+    "evt": 4652054
   },
   "ZZTo2L2Nu": {
     "xs": 0.5644,
@@ -253,11 +273,11 @@
   },
   "ZZTo2L2Q": {
     "xs": 3.22,
-    "evt": 17031567
+    "evt": 17240618
   },
   "ZZTo2Q2Nu": {
     "xs": 4.033,
-    "evt": 17031567
+    "evt": 17240618
   },
   "ZZTo4L": {
     "xs": 1.212,
@@ -268,15 +288,15 @@
     "evt": 102126906
   },
   "SingleElectron": {
-    "lumi": 41859.517
+    "lumi": 41530
   },
   "SingleMuon": {
-    "lumi": 41859.517
+    "lumi": 41530
   },
   "Tau": {
-    "lumi": 41859.517
+    "lumi": 41530
   },
   "MuonEG": {
-    "lumi": 41859.517
+    "lumi": 41530
   }
 }
