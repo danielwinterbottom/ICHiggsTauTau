@@ -222,15 +222,7 @@ namespace ic {
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
       }
 
-      double largest_gen_mjj=-9999;
-      for(unsigned i=0; i<gen_jets.size()-1;++i){
-        for(unsigned j=i+1; j<gen_jets.size();++j){
-          double mass = (gen_jets[i]->vector()+gen_jets[j]->vector()).M();
-          if(mass>largest_gen_mjj) largest_gen_mjj = mass;
-        }
-      }
-//      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 25.0, 4.7)); //change back after!
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned ngenjets = gen_jets.size();
       double gen_sjdphi_ = -999; 
       double gen_mjj_=-9999;
@@ -246,7 +238,6 @@ namespace ic {
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
       event->Add("gen_mjj", gen_mjj_);
-      event->Add("largest_gen_mjj", largest_gen_mjj);
     }
 
     return 0;
