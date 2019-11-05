@@ -275,6 +275,7 @@ namespace ic {
           gen_mll = (zll_cands[0]->vector()+zll_cands[1]->vector()).M();
           t_mll_ = gen_mll;
         } else {
+          std::cout << "event with failing dy soup: " << (unsigned long long) eventInfo->event() << std::endl; 
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
         }
@@ -290,7 +291,7 @@ namespace ic {
           t_decay_ = 2;
         } else {
           std::cerr << "Error!\n";
-          throw;
+          //throw; // this throw caused the crash ->but  we dont even need this part if we aren't stitching a high mass sample
         }
       }
       if (partons > 4) {
@@ -389,7 +390,9 @@ namespace ic {
    if(do_ggH_soup_) {
      int npNLO = eventInfo->npNLO();
      if(npNLO<0) npNLO = 2; // this is tempoary as I didn't both re-running the H+2j ntuples to ass npNLO so this will always = the default value (=-1) 
-      if(npNLO>=2) eventInfo->set_weight("ggHsoup", ggHw2_);
+      if(npNLO>=2) {
+          eventInfo->set_weight("ggHsoup", ggHw2_);
+      }
       else eventInfo->set_weight("ggHsoup", 1.0);
    }
 

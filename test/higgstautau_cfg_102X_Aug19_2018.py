@@ -1392,7 +1392,6 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icMu24MediumIsoTau35ObjectProducer+
     process.icMu24MediumIsoTauHPS35ObjectProducer+
     process.icMu24TightIsoTau35ObjectProducer+
-    process.icMu24MediumIsoTauHPS35ObjectProducer+
     process.icVBFDoubleLooseChargedIsoPFTau20ObjectProducer+
     process.icVBFDoubleLooseChargedIsoPFTauHPS20ObjectProducer+
     process.icVBFDoubleMediumChargedIsoPFTau20ObjectProducer+

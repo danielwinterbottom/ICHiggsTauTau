@@ -50,7 +50,7 @@ def TGraphAsymmErrorsToTH1DForTaus(graph):
     # hist.Print('range')
     return hist
 
-def UncertsFromHist(hist):
+def UncertsFromHist(hist,minUncert=-1,maxUncert=-1):
     nbins = hist.GetNbinsX()
     hist_up = hist.Clone()
     hist_down = hist.Clone()
@@ -60,8 +60,23 @@ def UncertsFromHist(hist):
     hist_down.SetTitle(hist.GetTitle()+'_down')
 
     for i in xrange(0, nbins+1):
-      hist_up.SetBinContent(i, hist_up.GetBinError(i))
-      hist_down.SetBinContent(i, hist_down.GetBinError(i))
+      nom = hist.GetBinContent(i)
+      uncert_up = hist_up.GetBinError(i)
+      uncert_down = hist_down.GetBinError(i)
+
+      if minUncert>=0:
+        down = nom-uncert_down
+        if down<minUncert*nom: 
+          down = minUncert*nom  
+          uncert_down = nom - down
+      if maxUncert>=0:
+        up = nom+uncert_up
+        if up>maxUncert*nom: 
+          up = maxUncert*nom
+          uncert_up = up-nom
+        
+      hist_up.SetBinContent(i, uncert_up)
+      hist_down.SetBinContent(i, uncert_down)
     return (hist_up,hist_down)
 
 def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):

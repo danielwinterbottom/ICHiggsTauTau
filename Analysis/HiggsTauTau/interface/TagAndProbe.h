@@ -26,6 +26,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, fwlite::TFileService*, fs)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_filters)
+  CLASS_MEMBER(TagAndProbe, std::string, add_name)
   CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_objects)
   CLASS_MEMBER(TagAndProbe, std::string, tag_add_trg_filters)
   CLASS_MEMBER(TagAndProbe, std::string, probe_trg_objects)
@@ -74,6 +75,7 @@ class TagAndProbe : public ModuleBase {
   bool iso_tight_;
   bool pass_antilep_;
   bool lepton_veto_;
+  unsigned n_leptons_;
   int dm_;
   double mt_1_;
   unsigned n_bjets_;
@@ -91,7 +93,7 @@ class TagAndProbe : public ModuleBase {
   bool trg_probe_2_3_;
   
   bool pass_FSR_condition_;
-  double m_gamma_muons_;
+  double m_gamma_leptons_;
 
     std::vector<std::string> SplitString(std::string instring){
     std::vector<std::string> outstrings;
@@ -127,6 +129,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   loose_iso_trgprobe_=false;
   extra_l1_iso_probe_pt_=0.;
   do_extra_=false;
+  add_name_=""; 
 }
 
 template <class T>
@@ -137,7 +140,7 @@ TagAndProbe<T>::~TagAndProbe() {
 template <class T> 
 int TagAndProbe<T>::PreAnalysis() {
   if(fs_){  
-    outtree_ = fs_->make<TTree>("tagandprobe","tagandprobe");
+    outtree_ = fs_->make<TTree>(("tagandprobe"+add_name_).c_str(),("tagandprobe"+add_name_).c_str());
     outtree_->Branch("event" , &event_ );
     outtree_->Branch("wt"    , &wt_    );
     outtree_->Branch("pt_1"  , &pt_1_  );
@@ -170,9 +173,10 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
-    outtree_->Branch("m_gamma_muons", &m_gamma_muons_);
+    outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
-
+    outtree_->Branch("lepton_veto"  , &lepton_veto_ );
+    outtree_->Branch("n_leptons", &n_leptons_);
 
     if(channel_ == channel::tpmt){
       outtree_->Branch("iso_vloose" , &iso_vloose_);
@@ -180,7 +184,6 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("iso_medium" , &iso_medium_);
       outtree_->Branch("iso_tight"  , &iso_tight_ );     
       outtree_->Branch("pass_antilep"  , &pass_antilep_ );  
-      outtree_->Branch("lepton_veto"  , &lepton_veto_ );
       outtree_->Branch("dm"  , &dm_ );
       outtree_->Branch("mt_1"  , &mt_1_ );
       outtree_->Branch("n_bjets"  , &n_bjets_ );
@@ -197,7 +200,6 @@ int TagAndProbe<T>::PreAnalysis() {
 
 template <class T>
 int TagAndProbe<T>::Execute(TreeEvent *event){
-
     
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   event_ = (unsigned long long) eventInfo->event();
@@ -219,7 +221,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   deta_ = eta_1_-eta_2_;
   dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
   os_ = PairOppSign(ditau);
-  
+ 
   if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
   if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
   
@@ -266,12 +268,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     trg_tag_1_ = trg_tag_1_ && add_trg_tag_1;
     trg_tag_2_ = trg_tag_2_ && add_trg_tag_2;
   }
+
+
  
-  online_pt_1_=-9999;
-  online_pt_2_=-9999; 
-  trg_probe_2_1_ = false;
-  trg_probe_2_2_ = false;
-  trg_probe_2_3_ = false;
   trg_probe_1_ = false;
   trg_probe_2_ = false;
   std::vector<TriggerObject *> objs_probe;
@@ -286,8 +285,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     }
     bool trg_probe_temp_1 = (IsFilterMatched(ditau->At(0), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_1);
     bool trg_probe_temp_2 = (IsFilterMatched(ditau->At(1), objs_probe, probe_filts[i], 0.5)&&pass_extra_filter_2);
- 
-    //if(trg_probe_temp_2 && gen_match_2_==5) std::cout << pt_2_ << "    " << gen_match_2_ << "    " << probe_filts[i] << std::endl;
    
     //// added this bit for DZ filter! 
     //std::size_t hash = CityHash64(probe_filts[i]);
@@ -300,7 +297,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
      
     if(trg_probe_temp_1) { 
       unsigned leg1_match_index_1 = IsFilterMatchedWithIndex(ditau->At(0), objs_probe, probe_filts[i], 0.5).second;
-      online_pt_1_ = objs_probe[leg1_match_index_1]->pt();
       if(extra_hlt_probe_pt_>0) trg_probe_temp_1 = trg_probe_temp_1 && objs_probe[leg1_match_index_1]->pt() > extra_hlt_probe_pt_;
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
@@ -314,43 +310,17 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       if(extra_hlt_probe_pt_vec_.size()>i){
         double pt_cut = extra_hlt_probe_pt_vec_[i];
         trg_probe_temp_2 = trg_probe_temp_2 && objs_probe[leg1_match_index_2]->pt() > pt_cut;
-        //if(gen_match_2_==5) std::cout << trg_probe_temp_2 << "    " <<  objs_probe[leg1_match_index_2]->pt() << "    " <<  pt_cut <<std::endl;
       }
     }
     trg_probe_1_ = trg_probe_temp_1  || trg_probe_1_;
     trg_probe_2_ = trg_probe_temp_2  || trg_probe_2_;    
 
-    if(i==0 && trg_probe_temp_2) trg_probe_2_1_ = true;
-    if(i==1 && trg_probe_temp_2) trg_probe_2_2_ = true;
-    if(i==2 && trg_probe_temp_2) trg_probe_2_3_ = true; 
-
   }
-  
- //Add photons to check Final State Radiation in zmm channel in isolation eff.
-    if(event->ExistsInTree("photons")){
-        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
-        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
-        std::vector<Candidate const*> muon_vec_1 = {lep1};
-        std::vector<Candidate const*> muon_vec_2 = {lep2};
-        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, muon_vec_1, 0.4, false, false);   
-        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
-        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
-        
-        m_gamma_muons_=-999.0;
-        pass_FSR_condition_ = false;
-        auto sum_vec = lep1->vector() + lep2->vector();
-        if (input1.size()>0){
-            sum_vec +=  input1[0].first->vector();
-            pass_FSR_condition_=true;
-        }
-        if (input2.size()>0){
-            sum_vec += input2[0].first->vector();
-            pass_FSR_condition_=true;
-        }
-        m_gamma_muons_= sum_vec.M();
-    }
+
   if(channel_ == channel::tpzmm){
+
+    std::vector<Muon *> const& all_muons = event->GetPtrVec<Muon>("muons");
+    n_leptons_= all_muons.size();
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T muon1 = dynamic_cast<T>(lep1);
       T muon2 = dynamic_cast<T>(lep2);
@@ -432,15 +402,43 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       }
 
     }
-    
+ //Add photons to veto Final State Radiation for isolation SF(zmm).
+    if(event->ExistsInTree("photons")){
+        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
+        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
+        std::vector<Candidate const*> muon_vec_1 = {lep1};
+        std::vector<Candidate const*> muon_vec_2 = {lep2};
+        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, muon_vec_1, 0.4, false, false);   
+        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, muon_vec_2, 0.4, false, false);    
+        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        
+        m_gamma_leptons_=-999.0;
+        pass_FSR_condition_ = false;
+        auto sum_vec = lep1->vector() + lep2->vector();
+        if (input1.size()>0){
+            sum_vec +=  input1[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        if (input2.size()>0){
+            sum_vec += input2[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        m_gamma_leptons_= sum_vec.M();
+    }
+  
+  
+  
   }
   if(channel_ == channel::tpzee){
+    std::vector<Electron *> const& all_elecs = event->GetPtrVec<Electron>("electrons");
+    n_leptons_= all_elecs.size();
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
-        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());  
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
       } else {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
@@ -449,12 +447,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       id_tag_2_ = tag_id_(elec2);
       id_probe_1_ = probe_id_(elec1);
       id_probe_2_ = probe_id_(elec2);
-      
-      Electron *elec1_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton1"));
-      Electron *elec2_1 = dynamic_cast<Electron*>(ditau->GetCandidate("lepton2"));
+      Electron *elec1_1 = new Electron (* dynamic_cast<Electron*>(ditau->GetCandidate("lepton1")));
+      Electron *elec2_1 = new Electron (* dynamic_cast<Electron*>(ditau->GetCandidate("lepton2")));
       eta_1_ = elec1_1->sc_eta();
       eta_2_ = elec2_1->sc_eta();
-
       if(do_extra_){
         //put any extra condition your require the events to pass here
         std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -491,7 +487,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         pt_2_ = elec2_1->pt();
         m_vis_ = (elec1_1->vector()+elec2_1->vector()).M();
       }
-      
     }
     if(extra_l1_probe_pt_>0 || extra_l1_iso_probe_pt_>0){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
@@ -506,7 +501,6 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
       trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
-
     if(extra_l1_tag_pt_>0){
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
       bool found_match_tag_1 = false;
@@ -524,6 +518,39 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
       trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
     }
+ //Add photons to veto Final State Radiation for isolation SF (zee).
+    if(event->ExistsInTree("photons")){
+        std::vector<Photon*> gammas = event->GetPtrVec<Photon>("photons");
+        ic::erase_if(gammas, !boost::bind(MinPtMaxEta, _1, 10.0, 999));
+        Electron const* elec_1 = dynamic_cast<Electron const*>(lep1);
+        Electron const* elec_2 = dynamic_cast<Electron const*>(lep2);
+        if (gammas.size()>0)                        
+           for (unsigned i=0; i<gammas.size();i++){
+                if (gammas[i]->supercluster()==elec_1->supercluster())
+                    gammas.erase(gammas.begin()+i);
+                if (gammas[i]->supercluster()==elec_2->supercluster())
+                    gammas.erase(gammas.begin()+i);                
+           }                   
+        std::vector<Candidate const*> elec_vec_1 = {lep1};
+        std::vector<Candidate const*> elec_vec_2 = {lep2};
+        std::vector<std::pair <Photon*,Candidate const*> > input1 = MatchByDR(gammas, elec_vec_1, 0.3, false, false);   
+        std::vector<std::pair <Photon*,Candidate const*> > input2 = MatchByDR(gammas, elec_vec_2, 0.3, false, false);    
+        std::sort(input1.begin(), input1.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+        std::sort(input2.begin(), input2.end(), [](std::pair <Photon*,Candidate const*> a,std::pair <Photon*,Candidate const*>  b) {return a.first->pt() > b.first->pt();} );
+         
+        m_gamma_leptons_=-999.0;
+        pass_FSR_condition_ = false;
+        auto sum_vec = lep1->vector() + lep2->vector();
+        if (input1.size()>0){
+            sum_vec +=  input1[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        if (input2.size()>0){
+            sum_vec += input2[0].first->vector();
+            pass_FSR_condition_=true;
+        }
+        m_gamma_leptons_= sum_vec.M();    
+    }      
   }
   
   if(channel_ == channel::tpmt){

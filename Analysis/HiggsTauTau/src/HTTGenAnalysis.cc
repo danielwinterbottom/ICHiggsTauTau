@@ -844,7 +844,7 @@ namespace ic {
     }
 
     
-    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    /*std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
     std::vector<std::vector<GenParticle*>> a1_daughters;
@@ -907,7 +907,7 @@ namespace ic {
           }
           if (daughter_id == 211) {
             ++count_pi;
-            /* std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl; */
+            //std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl;
             rho.first = gen_particles[d];
             pi = gen_particles[d];
             prho.first = pi;
@@ -927,11 +927,11 @@ namespace ic {
             rho.second = gen_particles[d];
             a1_2.push_back(gen_particles[d]); 
             fakea1.push_back(gen_particles[d]);
-            /* std::cout << "pi zero " << gen_particles[d]->vector() << std::endl; */
+            //std::cout << "pi zero " << gen_particles[d]->vector() << std::endl;
             continue;
           }
           if (daughter_id == 213) {
-            /* std::cout << "found 213 rho " << daughter_id << std::endl; */
+            //std::cout << "found 213 rho " << daughter_id << std::endl;
             count_pi0 = 0;
             count_pi = 0;
             count_K = 0;
@@ -1579,7 +1579,7 @@ std::cout << k1.Dot(k2) << std::endl;
       double sign = h1.Cross(h2).Dot(n1);
       if(sign>0) aco_angle_1_ = 2*M_PI-aco_angle_1_;
 
-    }
+    }*/
 
     if(fs_) outtree_->Fill();
     return 0;
