@@ -68,8 +68,8 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
-    input_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","mc_cdf"));
-    output_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","data_cdf"));
+    /*input_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","mc_cdf"));
+    output_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","data_cdf"));*/
 
     rand = new TRandom3(0);
     if (fs_ && write_tree_) {
@@ -789,8 +789,8 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("pt_1",              &pt_1_.var_double);
-      outtree_->Branch("pt_1_corr",              &pt_1_corr_);
-      outtree_->Branch("m_vis_corr",              &m_vis_corr_);
+      /*outtree_->Branch("pt_1_corr",              &pt_1_corr_);
+      outtree_->Branch("m_vis_corr",              &m_vis_corr_);*/
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
@@ -2900,7 +2900,7 @@ namespace ic {
     q_2_ = lep2->charge();
 
     //quantile map corrections for FFs in mt channel
-    pt_1_corr_ = (pt_1_.var_double<100) ? quantile_mapping(pt_1_.var_double, input_cdf_, output_cdf_) : pt_1_.var_double;
+    /*pt_1_corr_ = (pt_1_.var_double<100) ? quantile_mapping(pt_1_.var_double, input_cdf_, output_cdf_) : pt_1_.var_double;
 
     double shift = pt_1_corr_/pt_1_.var_double;
     if (shift<0) shift=1.;
@@ -2908,7 +2908,7 @@ namespace ic {
     lep1_corr->set_pt(lep1_corr->pt() * shift);
     lep1_corr->set_energy(lep1_corr->energy() * shift);
 
-    m_vis_corr_ = (lep1_corr->vector()+lep2->vector()).M();
+    m_vis_corr_ = (lep1_corr->vector()+lep2->vector()).M();*/
 
 
 
