@@ -23,6 +23,7 @@ GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX  4691218
 GluGluToHToTauTau_M-125  9673200
 GluGluToHToTauTau_M125_amcatnloFXFX  1612810
 GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX  6274155
+GluGluToMaxmixHToTauTau_M125_amcatnloFXFX  1728080
 GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX  5672804
 GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX  1751196
 T-t  67105876
