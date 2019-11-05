@@ -81,6 +81,9 @@ class TagAndProbe : public ModuleBase {
   double pzeta_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
+  double gen_match_1_pt_;
+  double gen_match_2_pt_;
+  double gen_m_;
   bool pass_dz_;
   bool pass_mass8_;
   bool pass_dimu_;
@@ -172,6 +175,9 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
+    outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
+    outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
+    outtree_->Branch("gen_m" , &gen_m_);
     outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
 
@@ -224,7 +230,9 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   
   if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
   if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-  
+  if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
+  if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");  
+  event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
   trg_tag_1_ = false;
   trg_tag_2_ = false;
   trg_probe_1_ = false;
