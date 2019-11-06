@@ -404,6 +404,47 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+#  elif sig_model == 'DoubleVUncorr_Elec_ID':
+#      nparams = 6
+#      pdf_args.extend(
+#              [
+#                  "Voigtian::signal1Pass(m_vis, mean1p[90,87,92], widthp[2.495], sigma1p[0.8,0.3,3])",
+#                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,2,7])",
+#                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+#                  "expr::sigma1f('sigma1p+x',sigma1p,x[0,0,2])",
+#                  "Voigtian::signal1Fail(m_vis, mean1f[90,87,92], widthf[2.495], sigma1f)",
+#                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,2,10])",
+#                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+#              ]
+#          )
+  elif sig_model == 'DoubleVUncorr_Elec_ID':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,87,92], widthp[2.495], sigma1p[0.8,0.3,3])",
+                  "expr::sigma2p('sigma1p+y',sigma1p,y[0,0,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p)",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+#                  "expr::sigma1f('sigma1p+x',sigma1p,x[0,0,2])",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,87,92], widthf[2.495], sigma1f[1.5,0.7,5])",
+                  "expr::sigma2f('sigma1f+z',sigma1f,z[0,0,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f)",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
+  elif sig_model == 'DoubleVUncorr_elec_TwoPeaks':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,0.2,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,0.5,10])",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,0.2,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,70,95], widthf,        sigma2f[4,0.5,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+
+              ]
+          )
   elif sig_model == 'DoubleVUncorr_diMu_ID':
       nparams = 6
       pdf_args.extend(
@@ -642,8 +683,14 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
       #if options.era in ['summer18','summer17','summer16','legacy16'] and ('_iso' in name or '_trg' in name) and options.channel == 'tpzee': 
-      #    if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True
-      
+      #    if not options.aiso1 and not options.aiso2 and xmin >= 30 and not options.embed_sel: ForceEventCount = True 
+
+      if options.era in ['legacy16'] and '_iso' in name and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+        if xmin >= 40: ForceEventCount = True
+
+      if options.era in ['legacy16'] and '_trg' in name and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+        if xmin >= 34: ForceEventCount = True
+
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
       yield_tot = wsp.data(dat).sumEntries()
@@ -652,6 +699,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       wsp.var("efficiency").setVal(yield_pass/yield_tot)
       wsp.var("efficiency").setError(math.sqrt(yield_pass)/yield_tot) #not quite correct error
      
+
       if options.channel == 'tpzmm' and 'iso' in name:
         if xmin<20:
           wsp.var("alpha").setRange(100,101)
@@ -660,8 +708,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           wsp.var("alphap").setVal(100.5)
           wsp.var("alphaf").setRange(100,101)
           wsp.var("alphaf").setVal(100.5)
-        else:
-          
+        else:          
           wsp.var("alpha").setRange(-50,50)
           wsp.var("alpha").setVal(1)
           wsp.var("alphap").setRange(-50,50)
@@ -1013,18 +1060,19 @@ for name in wsnames:
   if options.channel == 'tpzmm' and 'trg' in name: sig_model = 'DoubleVCorr'
   if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
   if 'id' in name: bkg_model = 'CMSShape'    
-  #elif 'trg' in name: bkg_model = 'CMSShape'#temporary change for em_low trg    
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
   #sig_model = 'DoubleVUncorr'
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
-  elif options.channel =='tpzee' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
   elif (options.channel == 'tpzmm') and ('id' in name) and (not 'dimu' in options.tree_name) : sig_model = 'DoubleVUncorr'
   elif options.channel == 'tpzmm' and 'id' in name and 'dimu' in options.tree_name: sig_model = 'DoubleVUncorr_diMu_ID'
   elif (options.channel == 'tpzmm') and ('trg' in name) and (not 'mt' in options.tree_name) and (not 'dimu' in options.tree_name): sig_model = 'DoubleVUncorr'
   elif options.channel == 'tpzmm' and 'trg' in name and 'mt' in options.tree_name: sig_model = 'DoubleVCorr'
   elif options.channel == 'tpzmm' and 'trg' in name and 'dimu' in options.tree_name: sig_model = 'DoubleVUncorr_diMu_trg'
+  elif options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr_Elec_ID'
+  elif options.channel == 'tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+  elif options.channel == 'tpzee' and 'trg' in name: sig_model = 'DoubleVUncorr_Elec_ID'
   #elif options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWDoubleCBConvUncorr'
   else: sig_model = 'BWDoubleCBConvCorr'
 
