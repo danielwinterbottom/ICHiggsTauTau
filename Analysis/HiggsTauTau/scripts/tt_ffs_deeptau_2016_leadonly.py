@@ -15,7 +15,7 @@ parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors f
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2016.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_leg2016.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/fakefactors_2016/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/new_sf_2016/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -25,7 +25,7 @@ output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
 draw = int(args.draw) > 0
-lumi=35867.060
+lumi=35920.
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
@@ -368,7 +368,7 @@ def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss}
   h.SetFillColor(ROOT.kBlue-10)
   h.Draw("e3 same")
   f.Draw("a sames")
-  c1.Print(output_folder+'/mt_'+wp+'_'+name+'_fit.pdf')
+  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
 
 def WriteFunctionMVADM(fout, subtau=False):
   # this function loops over all njets and dm bins and write the FFs as a function
