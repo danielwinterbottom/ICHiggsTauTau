@@ -36,7 +36,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018_mt/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018_mt_old/' % vars()
 
   histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -214,36 +214,72 @@ for wp in wps:
 
   w.factory('expr::ff_mt_%(wp)s_dmbins_ttbar("(@0==0)*(@1)+(@0==1)*(@2)+(@0==10)*(@3)+(@0==11)*(@4)", dm[1], mt_dm0_inclusive_%(wp)s_ttbar_fit, mt_dm1_inclusive_%(wp)s_ttbar_fit, mt_dm10_inclusive_%(wp)s_ttbar_fit, mt_dm11_inclusive_%(wp)s_ttbar_fit )' % vars()) 
 
-#  # get W+jets corrections
-#  for dmtype in ['mvadm','mvadm_nosig','dm']:
-#
-#    # met correction
-#    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_met_closure_wjets_fit' % vars())
-#    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-#  
-#    w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
-#    w.factory('expr::met_bounded140("max(min(139.9,@0),20.)",met[0])' % vars())
-#    w.factory('expr::mt_%(dmtype)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
-#  
-#    # pt_1 correction
-#    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
-#    func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-#  
-#    w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
-#    w.factory('expr::m_pt_bounded140("max(min(139.9,@0),20.)",m_pt[20])' % vars())
-#    w.factory('expr::mt_%(dmtype)s_%(wp)s_wjets_m_pt_corr("(%(func_m_pt_corr)s)*(@2<2) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0])' % vars())
-#  
-#    # mt_1 correction
-#    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
-#    func_mt_corr = str(func.GetExpFormula('p')).replace('x','@0')
-#  
-#    w.factory('expr::mt_bounded140("min(139.9,@0)",mt[50])' % vars())
-#    w.factory('expr::mt_%(dmtype)s_%(wp)s_wjets_mt_corr("%(func_mt_corr)s",mt_bounded140)' % vars())
+  # get W+jets corrections
+  for dmtype in ['mvadm']:#,'mvadm_nosig','dm']:
 
+    dmname = dmtype.replace('dm','dmbins')
 
+    # met correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_met_closure_wjets_fit' % vars())
+    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
+  
+    w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
+    w.factory('expr::met_bounded140("max(min(139.9,@0),20.)",met[0])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
+  
+    # pt_1 correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
+    func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
+  
+    w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
+    w.factory('expr::m_pt_bounded140("max(min(139.9,@0),20.)",m_pt[20])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr("(%(func_m_pt_corr)s)*(@2<2) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0])' % vars())
+  
+    # mt_1 correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
+    func_mt_corr = str(func.GetExpFormula('p')).replace('x','@0')
+  
+    w.factory('expr::mt_bounded140("min(139.9,@0)",mt[50])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_mt_corr("%(func_mt_corr)s",mt_bounded140)' % vars())
 
-#    # apply corrections to raw W+jets FFs
-#    w.factory('expr::ff_mt_%(wp)s_%(dmtype)sbins_wjets("@0*@1*@2*@3", , mt_%(dmtype)s_%(wp)s_wjets_met_corr, mt_%(dmtype)s_%(wp)s_wjets_m_pt_corr, mt_%(dmtype)s_%(wp)s_wjets_mt_corr)' % vars())
+    # apply corrections to raw W+jets FFs
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets("@0*@1*@2*@3", ff_mt_%(wp)s_%(dmname)s_wjets_raw , mt_%(dmname)s_%(wp)s_wjets_met_corr, mt_%(dmname)s_%(wp)s_wjets_m_pt_corr, mt_%(dmname)s_%(wp)s_wjets_mt_corr)' % vars())
+
+  # get QCD corrections
+  for dmtype in ['mvadm','mvadm_nosig','dm']:
+
+    dmname = dmtype.replace('dm','dmbins')
+
+    # met correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_met_closure_qcd_fit' % vars())
+    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
+
+    w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)",pt)' % vars())
+    w.factory('expr::met_bounded70("min(69.9,@0)",met[0])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr("(%(func_met_corr)s)*(@2==0) + (@2>0)",pt_bounded70,met_bounded70,njets[0])' % vars())
+
+    # pt_1 correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_pt_1_closure_qcd_fit' % vars())
+    func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
+
+    w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)")' % vars())
+    w.factory('expr::m_pt_bounded50("max(min(49.9,@0),20.)",m_pt[20])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr("(%(func_m_pt_corr)s)*(@2==0) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0])' % vars())
+
+    # aiso->iso correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
+    func_iso_corr = str(func.GetExpFormula('p')).replace('x','@0')
+    w.factory('expr::iso_bounded0p5("min(0.499,@0)",m_iso[0])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_iso_corr("%(func_iso_corr)s",iso_bounded0p5)' % vars())
+
+    # OS/SS correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_osss_closure_qcd_fit' % vars())
+    func_osss_corr = str(func.GetExpFormula('p')).replace('x','@0')
+    w.factory('expr::m_pt_bounded80("min(79.99,@0)",m_pt)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_osss_corr("%(func_osss_corr)s",m_pt_bounded80)' % vars())
+
+    # apply corrections to raw QCD FFs
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_qcd("(@5!=0)*@0*@1*@2*@3*@4 + (@5==0)*@0*@1*@2*@3", ff_mt_%(wp)s_%(dmname)s_qcd_raw , mt_%(dmname)s_%(wp)s_qcd_met_corr, mt_%(dmname)s_%(wp)s_qcd_m_pt_corr, mt_%(dmname)s_%(wp)s_qcd_iso_corr, mt_%(dmname)s_%(wp)s_qcd_osss_corr, os[1])' % vars())
 
 #################################################
 #### tt channel ####
