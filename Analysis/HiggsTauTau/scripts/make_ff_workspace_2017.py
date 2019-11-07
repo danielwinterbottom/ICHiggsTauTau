@@ -36,26 +36,26 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2016_mt/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017_mt/' % vars()
 
-  histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_os_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
+  histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_os_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
                 ]
 
   for task in histsToWrap:
@@ -109,8 +109,8 @@ for wp in wps:
   # get all fitted functions for raw fake factors and statistical uncertainties from fit uncertainty bands
   for dm in dm_bins:
     for njet in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
-      func_qcd = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_fit' % vars())
-      func_wjets = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_njets%(njet)s_pt_2_ff_wjets_fit' % vars())
+      func_qcd = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_fit' % vars())
+      func_wjets = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_njets%(njet)s_pt_2_ff_wjets_fit' % vars())
       func_qcd_str = str(func_qcd.GetExpFormula('p')).replace('x','@0')
       func_wjets_str = str(func_wjets.GetExpFormula('p')).replace('x','@0')
 
@@ -128,7 +128,7 @@ for wp in wps:
         w.factory('expr::mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded140)' % vars())
 
       # get stat uncertainties
-      hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_uncert' % vars())
+      hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_uncert' % vars())
       (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
       if 'crosstrg' in njet:
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_nom, name='mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom' % vars())
@@ -156,9 +156,9 @@ for wp in wps:
 
     # get ttbar FFs inclusive in njets and also get W data and MC SFs to be used to define uncertainties
 
-    func_ttbar = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_inclusive_pt_2_ff_ttbar_mc_fit' % vars())
-    func_wjets = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_inclusive_pt_2_ff_wjets_fit' % vars())
-    func_wjets_mc = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_inclusive_pt_2_ff_wjets_mc_fit' % vars())
+    func_ttbar = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_inclusive_pt_2_ff_ttbar_mc_fit' % vars())
+    func_wjets = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_inclusive_pt_2_ff_wjets_fit' % vars())
+    func_wjets_mc = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_inclusive_pt_2_ff_wjets_mc_fit' % vars())
     func_ttbar_str = str(func_ttbar.GetExpFormula('p')).replace('x','@0')
     func_wjets_str = str(func_wjets.GetExpFormula('p')).replace('x','@0')
     func_wjets_mc_str = str(func_wjets_mc.GetExpFormula('p')).replace('x','@0')
@@ -170,7 +170,7 @@ for wp in wps:
     w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_wjets_mc_fit("max(%(func_wjets_mc_str)s,0.)",pt_bounded140)' % vars())
 
     # get stat uncertainties on ttbar
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dm)s_inclusive_pt_2_ff_ttbar_mc_uncert' % vars())
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_inclusive_pt_2_ff_ttbar_mc_uncert' % vars())
     (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
     wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_nom, name='mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom' % vars())
     wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_up, name='mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_up' % vars())
@@ -220,7 +220,7 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_met_closure_wjets_fit' % vars())
     func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
   
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
@@ -228,7 +228,7 @@ for wp in wps:
     w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
   
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
     func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
   
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
@@ -236,7 +236,7 @@ for wp in wps:
     w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr("(%(func_m_pt_corr)s)*(@2<2) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0])' % vars())
   
     # mt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
     func_mt_corr = str(func.GetExpFormula('p')).replace('x','@0')
   
     w.factory('expr::mt_bounded140("min(139.9,@0)",mt)' % vars())
@@ -251,7 +251,7 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_met_closure_qcd_fit' % vars())
     func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
 
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)",pt)' % vars())
@@ -259,7 +259,7 @@ for wp in wps:
     w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr("(%(func_met_corr)s)*(@2==0) + (@2>0)",pt_bounded70,met_bounded70,njets[0])' % vars())
 
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_pt_1_closure_qcd_fit' % vars())
     func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
 
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)")' % vars())
@@ -267,13 +267,13 @@ for wp in wps:
     w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr("(%(func_m_pt_corr)s)*(@2==0) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0])' % vars())
 
     # aiso->iso correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
     func_iso_corr = str(func.GetExpFormula('p')).replace('x','@0')
     w.factory('expr::iso_bounded0p5("min(0.499,@0)",m_iso[0])' % vars())
     w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_iso_corr("%(func_iso_corr)s",iso_bounded0p5)' % vars())
 
     # OS/SS correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_osss_closure_qcd_fit' % vars())
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dmtype)s_osss_closure_qcd_fit' % vars())
     func_osss_corr = str(func.GetExpFormula('p')).replace('x','@0')
     w.factory('expr::m_pt_bounded80("min(79.99,@0)",m_pt)' % vars())
     w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_osss_corr("%(func_osss_corr)s",m_pt_bounded80)' % vars())
@@ -296,26 +296,26 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2016/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017/' % vars()
  
-  histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_os_qcd' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_os_qcd' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets2_os_qcd' % vars()), 
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets0_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets1_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets2_os_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets0_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets1_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
-                 (loc + 'fakefactor_fits_tt_%(wp)s_2016.root:tt_fracs_njets2_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
+  histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_os_qcd' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_os_qcd' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets2_os_qcd' % vars()), 
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_ss_qcd' % vars(), 'tt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets0_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets1_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_os_wjets' % vars(), 'tt_%(wp)s_fracs_njets2_os_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_ss_wjets' % vars(), 'tt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_os_ttbar' % vars(), 'tt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
+                 (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets2_ss_ttbar' % vars(), 'tt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
                 ]
   
   for task in histsToWrap:
@@ -367,7 +367,7 @@ for wp in wps:
   # get all fitted functions for raw fake factors and statistical uncertainties from fit uncertainty bands
   for njet in [0,1,2]:
     for dm in dm_bins:
-      func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_fit' % vars())
+      func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_fit' % vars())
       func_str = func.GetTitle()
       params = func.GetParameters()
       for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
@@ -377,7 +377,7 @@ for wp in wps:
       w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_fit("max(%(func_str)s,0.)",pt_bounded)' % vars())
  
       # get stat uncertainties
-      hist_nom = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_uncert' % vars())
+      hist_nom = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_uncert' % vars())
       (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
       wsptools.SafeWrapHist(w, ['pt_bounded'], hist_nom, name='tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom' % vars())
       wsptools.SafeWrapHist(w, ['pt_bounded'], hist_up, name='tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_up' % vars())
@@ -401,7 +401,7 @@ for wp in wps:
 
     # get SS met closure correction
 
-    func = GetFromTFile((loc+'/fakefactor_fits_tt_%(wp)s_2016.root:%(dmtype)s_met_ss_closure_qcd_fit' % vars()).replace('bins',''))
+    func = GetFromTFile((loc+'/fakefactor_fits_tt_%(wp)s_2017.root:%(dmtype)s_met_ss_closure_qcd_fit' % vars()).replace('bins',''))
     func_str_pol3 = "[0] + [1]*x + [2]*x*x + [3]*x*x*x"
     params = func.GetParameters()
     for i in range(0,func.GetNpar()): func_str_pol3 = func_str_pol3.replace('[%(i)i]' % vars(),'%.9f' % params[i])
@@ -412,7 +412,7 @@ for wp in wps:
 
     # get OS/SS corrections and uncertainties
 
-    func = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dmtype)s_pt_2_os_closure_qcd_fit' % vars()).replace('bins',''))
+    func = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dmtype)s_pt_2_os_closure_qcd_fit' % vars()).replace('bins',''))
     func_str_pol3 = "[0] + [1]*x + [2]*x*x + [3]*x*x*x"
     params = func.GetParameters()
     for i in range(0,func.GetNpar()): func_str_pol3 = func_str_pol3.replace('[%(i)i]' % vars(),'%.9f' % params[i])
@@ -426,7 +426,7 @@ for wp in wps:
     # QCD systematic is partly statistical from pt_2 os closure corrections and partly systematic from comparing data to prediction in aiso2 region in bins of dm's of both taus
 
     # get stat uncertainties for met ss closure correction
-    hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dmtype)s_met_ss_closure_qcd_uncert' % vars()).replace('bins',''))
+    hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dmtype)s_met_ss_closure_qcd_uncert' % vars()).replace('bins',''))
     (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
     wsptools.SafeWrapHist(w, ['met_bounded'], hist_nom, name='tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_nom' % vars())
     wsptools.SafeWrapHist(w, ['met_bounded'], hist_up, name='tt_%(dmtype)s_met_ss_%(wp)s_qcd_uncert_up' % vars())
@@ -441,7 +441,7 @@ for wp in wps:
 
 
     # get stat uncertainties for OS/SS correction
-    hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dmtype)s_pt_2_os_closure_qcd_uncert' % vars()).replace('bins',''))
+    hist_nom = GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dmtype)s_pt_2_os_closure_qcd_uncert' % vars()).replace('bins',''))
     (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
     wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_nom, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_nom' % vars())
     wsptools.SafeWrapHist(w, ['pt_2_bounded'], hist_up, name='tt_%(dmtype)s_pt_2_%(wp)s_qcd_uncert_up' % vars())
@@ -455,7 +455,7 @@ for wp in wps:
 
     # systematic uncertainty from comparing data to prediction in aiso2 region in bins of tau1 and tau2 dm's
     if dmtype != 'dmbins':
-      wsptools.SafeWrapHist(w, ['mvadm','mvadm2'], GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2016.root:%(dmtype)s_os_dm_uncert_qcd' % vars()).replace('bins','')), name='%(dmtype)s_os_dm_uncert_qcd' % vars())
+      wsptools.SafeWrapHist(w, ['mvadm','mvadm2'], GetFromTFile((loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dmtype)s_os_dm_uncert_qcd' % vars()).replace('bins','')), name='%(dmtype)s_os_dm_uncert_qcd' % vars())
 
 
       w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_syst_up("(@0!=0)*@1*(@2*@3*@4*@5 + (1.-@3)) + (@0==0)*(@3*@5 + (1.-@3))*@1", os[1], ff_tt_%(wp)s_%(dmtype)s_qcd, tt_%(dmtype)s_%(wp)s_qcd_corr, tt_%(wp)s_fracs_qcd, %(dmtype)s_os_dm_uncert_qcd, tt_%(dmtype)s_%(wp)s_qcd_ss_corr)'  % vars())
@@ -464,7 +464,7 @@ for wp in wps:
     # wjets and ttbar systematics from comparing the inclusive fakefactors derived from data for QCD events with the MC fake factors predicted in MC for wjets and ttbar
 
     for x in ['qcd','wjets_mc','ttbar_mc']:
-      func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2016.root:inclusive_inclusive_pt_1_ff_%(x)s_fit' % vars())
+      func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2017.root:inclusive_inclusive_pt_1_ff_%(x)s_fit' % vars())
       func_str = func.GetTitle()
       params = func.GetParameters()
       for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
@@ -485,5 +485,5 @@ for wp in wps:
         w.factory('expr::ff_tt_%(wp)s_%(dmtype)s_qcd_stat_njet%(njet)i_%(dm)s_down("@0*@1",tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_down,ff_tt_%(wp)s_%(dmtype)s)' % vars())
   
 w.Print()
-w.writeToFile('fakefactors_ws_2016.root')
+w.writeToFile('fakefactors_ws_2017.root')
 w.Delete()
