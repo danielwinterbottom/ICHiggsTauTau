@@ -24,9 +24,6 @@ TTToHadronic  132609021
 TTToSemiLeptonic  99951890
 Tbar-t  74227130
 Tbar-tW-ext1  7479213
-VBFHToTauTau_M-125-MM-filter  2532611
-VBFHToTauTau_M-125-PS-filter  1140651
-VBFHToTauTau_M-125-SM-filter  2527103
 VBFHToTauTau_M-125-ext1  2995958
 VBFHToTauTau_M-125-nospinner-filter  3129458
 VBFHToTauTau_M-126-nospinner  4979386

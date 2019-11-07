@@ -93,7 +93,8 @@
   },
   "GluGluToHToTauTau_M-125-nospinner-filter": {
     "xs": 3.045966,
-    "evt": 4897561
+    "evt": 4897561,
+    "eff": 0.2537
   },
   "T-t": {
     "xs": 136.02,
@@ -129,7 +130,8 @@
   },
   "VBFHToTauTau_M-125-nospinner-filter": {
     "xs": 0.2371,
-    "evt": 3129458
+    "evt": 3129458,
+    "eff": 0.2831
   },
   "VBFHiggs0MToTauTau": {
     "xs": 2.6707,

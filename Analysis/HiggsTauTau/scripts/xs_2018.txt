@@ -51,7 +51,6 @@ GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX  3.045966
 GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX  3.045966
 GluGluToHToTauTau_M-125-nospinner-filter 3.045966
 GluGluHToTauTau_M-125 3.045966
-GluGluHToTauTau_M-125-ext 3.045966
 WminusHToTauTau_M-125 0.03340
 WplusHToTauTau_M-125 0.05266
 ZHToTauTau_M-125 0.05542
