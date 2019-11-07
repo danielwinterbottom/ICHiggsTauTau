@@ -161,10 +161,10 @@ if options.proc_sm or options.proc_all:
 
       'VBFHToTauTau_M-126-nospinner',
       'VBFHToTauTau_M-125-ext1',
-      'VBFHToTauTau_M-125-MM-filter',
+      #'VBFHToTauTau_M-125-MM-filter',
       'VBFHToTauTau_M-125-nospinner-filter',
-      'VBFHToTauTau_M-125-PS-filter',
-      'VBFHToTauTau_M-125-SM-filter',
+      #'VBFHToTauTau_M-125-PS-filter',
+      #'VBFHToTauTau_M-125-SM-filter',
       'GluGluToHToTauTau_M-125-nospinner',
       'GluGluHToTauTau_M-125',
       'GluGluToHToTauTau_M-125-nospinner-filter',
@@ -207,8 +207,8 @@ if options.proc_data or options.proc_all or options.calc_lumi or options.proc_em
 if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
-#    data_eras = ['A','B','C','D']
-    data_eras=['D']
+    data_eras = ['A','B','C','D']
+#    data_eras=['D']
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
@@ -309,7 +309,7 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        # 'DYJetsToLL-2017',
+       # # 'DYJetsToLL-2017',
         'DYJetsToLL',
         'DY1JetsToLL-LO',
         'DY2JetsToLL-LO',

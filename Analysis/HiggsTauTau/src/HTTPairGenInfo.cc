@@ -55,15 +55,26 @@ namespace ic {
     double gen_match_undecayed_2_pt = -1;
     double gen_match_undecayed_1_eta = -1;
     double gen_match_undecayed_2_eta = -1;
-    
+    double gen_met=0.;
+    ROOT::Math::PtEtaPhiEVector neutrinos; 
+ 
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_particles.push_back(particles[i]);
       }
+      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
     }
+
+    gen_met=neutrinos.Pt();
+
+    event->Add("gen_met",gen_met);
+    Met const* mets = NULL;
+    mets = event->GetPtr<Met>("pfMET");
+    double fake_met = (mets->vector() - neutrinos).Pt();
+    event->Add("fake_met",fake_met);
 
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
@@ -211,15 +222,7 @@ namespace ic {
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
       }
 
-      double largest_gen_mjj=-9999;
-      for(unsigned i=0; i<gen_jets.size()-1;++i){
-        for(unsigned j=i+1; j<gen_jets.size();++j){
-          double mass = (gen_jets[i]->vector()+gen_jets[j]->vector()).M();
-          if(mass>largest_gen_mjj) largest_gen_mjj = mass;
-        }
-      }
-//      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 25.0, 4.7)); //change back after!
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned ngenjets = gen_jets.size();
       double gen_sjdphi_ = -999; 
       double gen_mjj_=-9999;
@@ -235,7 +238,6 @@ namespace ic {
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
       event->Add("gen_mjj", gen_mjj_);
-      event->Add("largest_gen_mjj", largest_gen_mjj);
     }
 
     return 0;

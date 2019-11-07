@@ -33,6 +33,12 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToHToTauTau_M125_amcatnloFXFX',
+     'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+     'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
      'WJetsToLNu-LO',
      'WJetsToLNu-LO-ext',
      'W1JetsToLNu-LO',
@@ -167,6 +173,7 @@ sample_list = [
      'EmbeddingTauTauF',
      'EmbeddingTauTauG',
      'EmbeddingTauTauH',
+
     ]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']

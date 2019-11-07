@@ -385,11 +385,11 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
   #time.sleep(2)
 
-def PlotFakeFactorCorrection(f, h, name, output_folder, wp):
+def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
   c1 = ROOT.TCanvas()
   f.SetMinimum(0)
   f.SetStats(0)
-  f.GetXaxis().SetTitle('m_{vis} (GeV)')
+  f.GetXaxis().SetTitle(x_title)
   f.GetYaxis().SetTitle('FF')
   f.SetTitle(name)
   f.SetLineColor(ROOT.kBlack)

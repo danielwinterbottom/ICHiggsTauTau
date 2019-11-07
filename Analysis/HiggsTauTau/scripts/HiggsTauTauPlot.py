@@ -404,14 +404,11 @@ if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: 
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>20 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>22)||(trg_singlemuon&&pt_1>23)))'
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_mutaucross||trg_singlemuon) && wt<2)'
-          if options.deeptau:
-            cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_mutaucross||trg_singlemuon) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>29)||(trg_singlemuon&&pt_1>25)) && wt<2)'
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>25 && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
@@ -421,20 +418,20 @@ if options.analysis == 'sm':
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: 
-          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && pt_2>30)'
+        if options.era in ['smsummer16']: 
+          cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
           cats['baseline_aisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron && pt_2>30)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
           cats['baseline_loosemu'] = '(iso_1<0.1 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singleelectron)'
           cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
+        if options.era in ['cpsummer16','cpdecay16',"legacy16"]:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>32)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
-          cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && (trg_etaucross||trg_singleelectron) && wt<2)'
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)) && pt_2>30)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>32)||(trg_singleelectron&&pt_1>33)) && wt<2)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -462,21 +459,9 @@ if options.channel == 'tt':
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
     if options.era in ['cpdecay16'] and options.deeptau:
-          cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2)'
     if options.era in ['cpsummer17','cp18']:
-        # cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-        cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && (trg_doubletau && pt_2>40))'
-        # cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>20)))'
-        cats['baseline_aisotau1'] = '(pt_1>50 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-        cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-        if options.deeptau:
-          # cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
-          cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
-          # cats['baseline'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2>0.5 && leptonveto==0 && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>20)) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
-          cats['baseline_aiso2'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-          cats['baseline_bothaiso'] = '(deepTauVsJets_tight_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-        cats['baseline_aisotau2_sb'] = '(pt_1>40 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
-        cats['baseline_aisotau2_sb'] = '(pt_1>40 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
+      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     if options.era == 'mssmsummer16':
@@ -493,11 +478,11 @@ elif options.channel == 'zmm':
     if options.era in ['cpsummer17','cp18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
-    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron)'
+    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
 
-    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>20&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron)'
+    if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
     if options.era in ['cp18']: 
-        cats['baseline'] = '(pt_1>33 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron)'
+        cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -510,15 +495,9 @@ cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_ol
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 # if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && (trg_doubletau && pt_2>40))'
-# if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && ((trg_doubletau && pt_2>40)||(trg_vbfdoubletau && pt_2>20)))'
-#if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_medium_1<0.5 && mva_olddm_loose_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && mva_olddm_loose_1>0.5)) &&  antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
-if options.deeptau:
-  # cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
-  cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
-  # cats['tt_qcd_norm'] = '(deepTauVsJets_tight_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_tight_2<0.5 && leptonveto==0 && ((trg_doubletau && pt_2>40) || (trg_vbfdoubletau && pt_2>40)) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && deepTauVsJets_medium_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
 
 # CR categories
@@ -1262,7 +1241,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
     ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-    wgam_samples = ['WGToLNuG','WGToLNuG-ext','WGstarToLNuEE','WGstarToLNuMuMu']
+    wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
@@ -1281,6 +1260,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016',
     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
     if options.era == "legacy16":
         ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
+
+        wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3','WGstarToLNuEE','WGstarToLNuMuMu']
     gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
     qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
@@ -1318,12 +1299,10 @@ if options.era in ['cpdecay16']:
     
 if options.era in ['cpsummer17','tauid2017']:
 
-    # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     # ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
-    #vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
 
     wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     #wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','EWKWMinus2Jets','EWKWPlus2Jets']
@@ -1927,9 +1906,10 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    if options.channel == 'em' and options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
-    elif options.channel != 'em' and options.era in  ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
-    elif options.era == 'cpsummer17': wt_+='*0.97'
+#    if options.channel == 'et': wt_+='*((fabs(eta_1)<1.479) + (fabs(eta_1)>=1.479)/1.16)'#'*0.98' # this is a tempoary fix for the different rates at which embedded taus pass the tight anti electron discriminator!
+#    if options.channel == 'em' and options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
+#    elif options.channel != 'em' and options.era in  ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
+#    elif options.era == 'cpsummer17': wt_+='*0.97'
     full_selection = BuildCutString(wt_+'*(wt<2)', sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
@@ -2334,7 +2314,7 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
             #qcd_os_ss_factor = 1
             if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd' 
-                if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: weight+='*wt_em_qcd_extrapup'
+                #if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: weight+='*wt_em_qcd_extrapup'
             if options.em_qcd_weight != '':
                 weight=wt+'*'+options.em_qcd_weight
             if method == 19:
@@ -2434,7 +2414,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               anti_isolated_sel = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
               #anti_isolated_sel = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon )'
               if options.deeptau:
-                anti_isolated_sel = cats['baseline'].replace('deepTauVsJets_tight_2>0.5','deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5')
+                anti_isolated_sel = cats['baseline'].replace('deepTauVsJets_medium_2>0.5','deepTauVsJets_medium_2<0.5 && deepTauVsJets_vvvloose_2>0.5')
             else: 
               anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et': 
@@ -2448,10 +2428,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
           if ff_syst_weight is not None and 'ff_sub_syst' not in add_name: fake_factor_wt_string = ff_syst_weight+'_1'
           else: 
-            if options.deeptau: 
-              #fake_factor_wt_string = '(n_jets==0)*((mva_dm_2==0)*(0.088471*TMath::Landau(pt_2,40.757639,9.984249)+0.070247)+(mva_dm_2==1)*(0.163230*TMath::Landau(pt_2,41.061088,8.704081)+0.035143)+(mva_dm_2==2)*(0.128152*TMath::Landau(pt_2,48.295906,14.562720)+0.008404)+(mva_dm_2==10)*(0.159590*TMath::Landau(pt_2,54.642366,16.123527)+0.015530)+(mva_dm_2==11)*(0.051326*TMath::Landau(pt_2,50.607198,13.781517)+0.008490)) + (n_jets>0)*((mva_dm_2==0)*(3.213421*TMath::Landau(pt_2,-7.401630,2.791294)+0.053545)+(mva_dm_2==1)*(0.256461*TMath::Landau(pt_2,70.271732,33.594837)+0.011060)+(mva_dm_2==2)*(0.755519*TMath::Landau(pt_2,135.580688,133.808609)+-0.106400)+(mva_dm_2==10)*(0.211078*TMath::Landau(pt_2,74.660100,34.408529)+0.002893)+(mva_dm_2==11)*(0.033827*TMath::Landau(pt_2,52.092321,11.161325)+0.010755))'
-              fake_factor_wt_string ='((n_jets==0)*((mva_dm_2==0)*(0.876099*TMath::Landau(pt_2,-221.261684,197.515295)+0.000005)+(mva_dm_2==1)*(0.374705*TMath::Landau(pt_2,60.111926,28.826335)+0.030093)+(mva_dm_2==2)*(1.660412*TMath::Landau(pt_2,270.069373,252.369251)+-0.221798)+(mva_dm_2==10)*(0.298279*TMath::Landau(pt_2,74.893285,30.040964)+0.012469)+(mva_dm_2==11)*(0.064695*TMath::Landau(pt_2,51.780727,14.981763)+0.015212)) + (n_jets>0)*((mva_dm_2==0)*(0.188235*TMath::Landau(pt_2,25.917264,2.751776)+0.078993)+(mva_dm_2==1)*(3.354201*TMath::Landau(pt_2,293.891324,346.923405)+-0.497009)+(mva_dm_2==2)*(0.771495*TMath::Landau(pt_2,136.275058,114.247272)+-0.092407)+(mva_dm_2==10)*(3.378319*TMath::Landau(pt_2,238.920558,286.949569)+-0.534181)+(mva_dm_2==11)*(73.289865*TMath::Landau(pt_2,304.045010,1017.652483)+-13.215633)))'
-            else: fake_factor_wt_string = "wt_ff_1"
+            fake_factor_wt_string = "wt_ff_1"
         else:
           if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
           else: fake_factor_wt_string = "wt_ff_"+options.cat
@@ -2476,8 +2453,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           anti_isolated_sel_2 = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
         if options.era in ["cpsummer17","cp18",'cpdecay16']: # need to do also for MVA cats for 2016!
           if options.deeptau:
-            anti_isolated_sel_2 = cats['baseline'].replace('deepTauVsJets_tight_2>0.5','deepTauVsJets_tight_2<0.5 && deepTauVsJets_vvvloose_2>0.5')
-            anti_isolated_sel_1 = cats['baseline'].replace('deepTauVsJets_tight_1>0.5','deepTauVsJets_tight_1<0.5 && deepTauVsJets_vvvloose_1>0.5')
+            anti_isolated_sel_2 = cats['baseline'].replace('deepTauVsJets_medium_2>0.5','deepTauVsJets_medium_2<0.5 && deepTauVsJets_vvvloose_2>0.5')
+            anti_isolated_sel_1 = cats['baseline'].replace('deepTauVsJets_medium_1>0.5','deepTauVsJets_medium_1<0.5 && deepTauVsJets_vvvloose_1>0.5')
           else:
             anti_isolated_sel_2 = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
             anti_isolated_sel_1 = cats['baseline'].replace('mva_olddm_tight_1>0.5','mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5')
@@ -2491,40 +2468,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         else:
           if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18"]:
             # deep tau tight 2018 anti isolating the subleading tau
-            #fake_factor_wt_string_1='0'
-            #fake_factor_wt_string_2='(n_jets==0)*((mva_dm_2==0)*(1.080672*TMath::Landau(pt_2,19.567828,3.373897)+0.132126)+(mva_dm_2==1)*(1.501463*TMath::Landau(pt_2,-302.464548,65.039308)+0.059501)+(mva_dm_2==2)*(44.289316*TMath::Landau(pt_2,-10.815584,0.787868)+0.039165+0.000000*pt_2)+(mva_dm_2==10)*(0.189396*TMath::Landau(pt_2,65.973135,6.041581)+0.067919)) + (n_jets>0)*((mva_dm_2==0)*(0.404031*TMath::Landau(pt_2,49.009079,11.457846)+0.088418)+(mva_dm_2==1)*(0.743263*TMath::Landau(pt_2,224.236833,147.840775)+-0.000001)+(mva_dm_2==2)*(21831.837561*TMath::Landau(pt_2,1160.864024,281.741111)+0.043020+0.000000*pt_2)+(mva_dm_2==10)*(6.472049*TMath::Landau(pt_2,234.902780,257.834163)+-1.030082))'
-
-            #fake_factor_wt_string_1='(n_jets==0)*((mva_dm_1==0)*(1.628799*TMath::Landau(pt_1,91.014400,51.548875)+-0.066730)+(mva_dm_1==1)*(1.441514*TMath::Landau(pt_1,251.104044,64.339338)+0.146547)+(mva_dm_1==2)*(0.191609*TMath::Landau(pt_1,155.120041,44.936804)+0.057457+0.000000*pt_1)+(mva_dm_1==10)*(0.242039*TMath::Landau(pt_1,67.618054,6.673404)+0.089868)) + (n_jets>0)*((mva_dm_1==0)*(0.458387*TMath::Landau(pt_1,79.407817,24.288226)+0.109695)+(mva_dm_1==1)*(0.924187*TMath::Landau(pt_1,87.587746,1.147794)+0.117084)+(mva_dm_1==2)*(1.325812*TMath::Landau(pt_1,894.381562,361.719282)+0.025341+0.000000*pt_1)+(mva_dm_1==10)*(0.626066*TMath::Landau(pt_1,102.262526,44.042123)+-0.004063))'
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0)*(1.625231*TMath::Landau(pt_1,96.797557,59.845273)+-0.067073)+(mva_dm_1==1)*(910.580784*TMath::Landau(pt_1,1177.766551,318.217646)+0.140042)+(mva_dm_1==2)*(0.917326*TMath::Landau(pt_1,584.706493,297.998021)+0.000001)+(mva_dm_1==10)*(0.434475*TMath::Landau(pt_1,107.220337,34.136822)+0.060830)+(mva_dm_1==11)*(0.123345*TMath::Landau(pt_1,90.487585,15.565828)+0.037649)) + (n_jets>0)*((mva_dm_1==0)*(1.178672*TMath::Landau(pt_1,84.934337,41.346175)+-0.026358)+(mva_dm_1==1)*(0.647549*TMath::Landau(pt_1,950.141041,4119.814525)+0.000282)+(mva_dm_1==2)*(14.252719*TMath::Landau(pt_1,1213.907963,383.224655)+0.041332)+(mva_dm_1==10)*(0.255865*TMath::Landau(pt_1,82.182473,18.304244)+0.059530)+(mva_dm_1==11)*(0.119720*TMath::Landau(pt_1,97.488657,25.913692)+0.017522)))*(-0.0947999+1.15613*deepTauVsJets_iso_2)'
-            fake_factor_wt_string_1='0'
             fake_factor_wt_string_2='0'
-            ### FFs inclusive in DM
-
-            #fake_factor_wt_string_1='((n_jets==0)*(0.539067*TMath::Landau(pt_1,123.682902,94.767874)+-0.000001) + (n_jets>0)*(0.414089*TMath::Landau(pt_1,160.520862,158.291741)+0.000001))'
-
-   
-            #fake_factor_wt_string_2='((n_jets==0)*(2.849926*TMath::Landau(pt_2,44.868162,0.014626)+0.063123) + (n_jets>0)*(0.869233*TMath::Landau(pt_2,-548.903775,193.748187)+0.000001))'
-
-            #fake_factor_wt_string_1='((n_jets==0)*((tau_decay_mode_1==0)*(3.430063*TMath::Landau(pt_1,4204.507156,2304.591747)+-0.068503)+(tau_decay_mode_1==1)*(0.585826*TMath::Landau(pt_1,127.729337,134.694010)+-0.000000)+(tau_decay_mode_1==10)*(0.550800*TMath::Landau(pt_1,110.528840,41.521327)+0.029787)+(tau_decay_mode_1==11)*(0.135371*TMath::Landau(pt_1,92.432177,15.309341)+0.032132)) + (n_jets>0)*((tau_decay_mode_1==0)*(0.764267*TMath::Landau(pt_1,111.023379,70.247640)+0.000004)+(tau_decay_mode_1==1)*(1.386158*TMath::Landau(pt_1,-1070.053563,302.049150)+0.000004)+(tau_decay_mode_1==10)*(0.229923*TMath::Landau(pt_1,82.836174,18.010276)+0.047804)+(tau_decay_mode_1==11)*(0.155746*TMath::Landau(pt_1,117.415691,38.956666)+0.011639)))*0.5'
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0&&ip_sig_1<3)*(1.753275*TMath::Landau(pt_1,138.978702,81.301197)+-0.000003)+(mva_dm_1==0&&ip_sig_1>=3)*(2180.320673*TMath::Landau(pt_1,586.174045,2660.600832)+-393.311004)+(mva_dm_1==1)*(1.225190*TMath::Landau(pt_1,159.585442,119.152299)+0.000000)+(mva_dm_1==2)*(0.194063*TMath::Landau(pt_1,121.657405,29.901158)+0.078719)+(mva_dm_1==10)*(1.203792*TMath::Landau(pt_1,115.069576,57.778833)+-0.060293)+(mva_dm_1==11)*(0.858719*TMath::Landau(pt_1,156.323036,131.195296)+-0.101043)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<3)*(1.502003*TMath::Landau(pt_1,200.988214,161.377592)+-0.000002)+(mva_dm_1==0&&ip_sig_1>=3)*(1.371287*TMath::Landau(pt_1,53.466349,14.430665)+0.225046)+(mva_dm_1==1)*(0.196155*TMath::Landau(pt_1,149.229539,36.853190)+0.169882)+(mva_dm_1==2)*(0.189315*TMath::Landau(pt_1,123.655604,25.659706)+0.073337)+(mva_dm_1==10)*(0.670063*TMath::Landau(pt_1,120.009109,57.261090)+0.016137)+(mva_dm_1==11)*(0.262040*TMath::Landau(pt_1,137.414219,73.774794)+0.000001)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<3)*(279.891253*TMath::Landau(pt_1,391.333979,1402.358850)+-50.352063)+(mva_dm_1==0&&ip_sig_1>=3)*(356.438752*TMath::Landau(pt_1,23.546632,0.692765)+0.321140)+(mva_dm_1==1)*(2.295283*TMath::Landau(pt_1,677.830222,233.699032)+0.147593)+(mva_dm_1==2)*(0.159899*TMath::Landau(pt_1,121.020178,27.906624)+0.064144)+(mva_dm_1==10)*(1.077217*TMath::Landau(pt_1,142.334547,84.791692)+-0.063228)+(mva_dm_1==11)*(3.321011*TMath::Landau(pt_1,1271.536159,429.278522)+0.028313)))'#*(((mva_dm_1==0)*(1.06167e+00+m_vis*(-1.96456e-04))+ (mva_dm_1==1)*(1.11630e+00+m_vis*(-5.23667e-04)) + (mva_dm_1==2)*(1.10527e+00+m_vis*(-3.64912e-04)) + (mva_dm_1==10)*(1.11959e+00+m_vis*(-6.26147e-04)) +(mva_dm_1==11)*(1.16058e+00+m_vis*(-9.41924e-04))))' #= aiso os
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0&&ip_sig_1<3)*(1.753275*TMath::Landau(pt_1,138.978702,81.301197)+-0.000003)+(mva_dm_1==0&&ip_sig_1>=3)*(2180.320673*TMath::Landau(pt_1,586.174045,2660.600832)+-393.311004)+(mva_dm_1==1)*(1.225190*TMath::Landau(pt_1,159.585442,119.152299)+0.000000)+(mva_dm_1==2)*(0.194063*TMath::Landau(pt_1,121.657405,29.901158)+0.078719)+(mva_dm_1==10)*(1.203792*TMath::Landau(pt_1,115.069576,57.778833)+-0.060293)+(mva_dm_1==11)*(0.858719*TMath::Landau(pt_1,156.323036,131.195296)+-0.101043)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<3)*(1.502003*TMath::Landau(pt_1,200.988214,161.377592)+-0.000002)+(mva_dm_1==0&&ip_sig_1>=3)*(1.371287*TMath::Landau(pt_1,53.466349,14.430665)+0.225046)+(mva_dm_1==1)*(0.196155*TMath::Landau(pt_1,149.229539,36.853190)+0.169882)+(mva_dm_1==2)*(0.189315*TMath::Landau(pt_1,123.655604,25.659706)+0.073337)+(mva_dm_1==10)*(0.670063*TMath::Landau(pt_1,120.009109,57.261090)+0.016137)+(mva_dm_1==11)*(0.262040*TMath::Landau(pt_1,137.414219,73.774794)+0.000001)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<3)*(279.891253*TMath::Landau(pt_1,391.333979,1402.358850)+-50.352063)+(mva_dm_1==0&&ip_sig_1>=3)*(356.438752*TMath::Landau(pt_1,23.546632,0.692765)+0.321140)+(mva_dm_1==1)*(2.295283*TMath::Landau(pt_1,677.830222,233.699032)+0.147593)+(mva_dm_1==2)*(0.159899*TMath::Landau(pt_1,121.020178,27.906624)+0.064144)+(mva_dm_1==10)*(1.077217*TMath::Landau(pt_1,142.334547,84.791692)+-0.063228)+(mva_dm_1==11)*(3.321011*TMath::Landau(pt_1,1271.536159,429.278522)+0.028313)))*( 1.39867 + (-0.0106053)*pt_2 + (7.76427e-05)*pt_2*pt_2 + (-2.2121e-07)*pt_2*pt_2*pt_2)' # aiso os - pt_2 correction
-
-            #fake_factor_wt_string_2='((n_jets==0)*((mva_dm_2==0)*(1.139442*TMath::Landau(pt_2,44.862109,16.943322)+0.049514)+(mva_dm_2==1)*(1.523430*TMath::Landau(pt_2,38.813913,0.274975)+0.167907)+(mva_dm_2==2)*(3.119182*TMath::Landau(pt_2,-326.988633,526.841397)+-0.413113)+(mva_dm_2==10)*(0.205361*TMath::Landau(pt_2,62.797434,4.687500)+0.087440)+(mva_dm_2==11)*(0.706237*TMath::Landau(pt_2,72.300015,50.137834)+-0.090869)) + (n_jets==1)*((mva_dm_2==0)*(3.933684*TMath::Landau(pt_2,-75.571660,34.892615)+0.000015)+(mva_dm_2==1)*(0.242811*TMath::Landau(pt_2,43.981019,0.748095)+0.164014)+(mva_dm_2==2)*(0.532908*TMath::Landau(pt_2,-260.751941,263.925772)+0.001401)+(mva_dm_2==10)*(0.213105*TMath::Landau(pt_2,78.924598,18.225877)+0.069599)+(mva_dm_2==11)*(0.209797*TMath::Landau(pt_2,109.759325,66.451118)+0.000001)) + (n_jets>1)*((mva_dm_2==0)*(1.553531*TMath::Landau(pt_2,38.749969,0.623096)+0.195505)+(mva_dm_2==1)*(16.925587*TMath::Landau(pt_2,44.956698,0.015450)+0.136289)+(mva_dm_2==2)*(0.364793*TMath::Landau(pt_2,177.667539,194.220135)+0.000005)+(mva_dm_2==10)*(0.327517*TMath::Landau(pt_2,62.550390,4.977293)+0.071047)+(mva_dm_2==11)*(0.285310*TMath::Landau(pt_2,78.554503,3.034455)+0.029112)))*(2.19756-0.036407*pt_1 + 0.000332469*pt_1*pt_1 -(1.02942e-06)*pt_1*pt_1*pt_1)'
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0&&ip_sig_1<3)*(41827.788332*TMath::Landau(pt_1,1753.591078,7474.350025)+-7556.083249)+(mva_dm_1==0&&ip_sig_1>=3)*(2.811012*TMath::Landau(pt_1,48.419987,18.865400)+0.143040)+(mva_dm_1==1)*(0.193292*TMath::Landau(pt_1,98.339733,16.470353)+0.223020)+(mva_dm_1==2)*(0.724415*TMath::Landau(pt_1,199.980850,131.547699)+0.000004)+(mva_dm_1==10)*(1.576269*TMath::Landau(pt_1,97.002463,52.868958)+-0.124883)+(mva_dm_1==11)*(0.073925*TMath::Landau(pt_1,83.045277,12.085097)+0.047161)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<3)*(1081.739326*TMath::Landau(pt_1,461.447145,1666.473580)+-195.144473)+(mva_dm_1==0&&ip_sig_1>=3)*(2.149176*TMath::Landau(pt_1,67.215628,23.279126)+0.089049)+(mva_dm_1==1)*(1.646688*TMath::Landau(pt_1,1082.714530,855.291128)+-0.024455)+(mva_dm_1==2)*(6.109256*TMath::Landau(pt_1,1339.709146,488.562674)+0.047670)+(mva_dm_1==10)*(0.270318*TMath::Landau(pt_1,89.311531,21.101614)+0.090159)+(mva_dm_1==11)*(1.403656*TMath::Landau(pt_1,263.223765,279.389190)+-0.198949)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<3)*(1.350461*TMath::Landau(pt_1,143.545842,134.747375)+0.000022)+(mva_dm_1==0&&ip_sig_1>=3)*(129.805434*TMath::Landau(pt_1,25.550869,0.801641)+0.199950)+(mva_dm_1==1)*(22373.562723*TMath::Landau(pt_1,2617.384716,11405.212172)+-4041.733398)+(mva_dm_1==2)*(0.291981*TMath::Landau(pt_1,107.459523,4.364899)+0.077340)+(mva_dm_1==10)*(4.285079*TMath::Landau(pt_1,219.814743,221.046856)+-0.621361)+(mva_dm_1==11)*(0.047886*TMath::Landau(pt_1,69.140949,3.497055)+0.033521)))'#*(((mva_dm_1==0)*(1.06167e+00+m_vis*(-1.96456e-04))+ (mva_dm_1==1)*(1.11630e+00+m_vis*(-5.23667e-04)) + (mva_dm_1==2)*(1.10527e+00+m_vis*(-3.64912e-04)) + (mva_dm_1==10)*(1.11959e+00+m_vis*(-6.26147e-04)) +(mva_dm_1==11)*(1.16058e+00+m_vis*(-9.41924e-04))))'
-
-            #fake_factor_wt_string_1='(n_jets==0)*((mva_dm_1==0)*(3594.732417*TMath::Landau(pt_1,663.754139,2578.152196)+-649.059414)+(mva_dm_1==1)*(1.678882*TMath::Landau(pt_1,415.232057,302.476366)+0.000000)+(mva_dm_1==2)*(0.757178*TMath::Landau(pt_1,232.721065,151.222714)+0.000002)+(mva_dm_1==10)*(7.910754*TMath::Landau(pt_1,117.312736,124.469691)+-1.267979)+(mva_dm_1==11)*(0.086910*TMath::Landau(pt_1,89.527633,14.982716)+0.046861)) + (n_jets>0)*((mva_dm_1==0)*(4776.322286*TMath::Landau(pt_1,996.623902,4061.325172)+-862.591491)+(mva_dm_1==1)*(10992.671264*TMath::Landau(pt_1,2632.783589,11512.212008)+-1985.701589)+(mva_dm_1==2)*(87.627211*TMath::Landau(pt_1,2065.467988,633.614185)+0.064228)+(mva_dm_1==10)*(0.264680*TMath::Landau(pt_1,89.806706,21.524763)+0.085482)+(mva_dm_1==11)*(0.238469*TMath::Landau(pt_1,164.666784,110.483976)+-0.000002))'
-            #fake_factor_wt_string_1='(n_jets==0)*((mva_dm_1==0)*(3594.732417*TMath::Landau(pt_1,663.754139,2578.152196)+-649.059414)+(mva_dm_1==1)*(1.678882*TMath::Landau(pt_1,415.232057,302.476366)+0.000000)+(mva_dm_1==2)*(0.757178*TMath::Landau(pt_1,232.721065,151.222714)+0.000002)+(mva_dm_1==10)*(7.910754*TMath::Landau(pt_1,117.312736,124.469691)+-1.267979)+(mva_dm_1==11)*(0.086910*TMath::Landau(pt_1,89.527633,14.982716)+0.046861)) + (n_jets>0)*((mva_dm_1==0)*(4857.485501*TMath::Landau(pt_1,824.924235,3302.549589)+-877.239639)+(mva_dm_1==1)*(1.145040*TMath::Landau(pt_1,722.725630,751.104672)+0.009639)+(mva_dm_1==2)*(51.552704*TMath::Landau(pt_1,1823.290101,577.825756)+0.058901)+(mva_dm_1==10)*(0.252666*TMath::Landau(pt_1,88.077702,19.460087)+0.093216)+(mva_dm_1==11)*(5.855631*TMath::Landau(pt_1,5841.079809,3304.669650)+-0.378872))'
-            #fake_factor_wt_string_1='(n_jets==0)*((mva_dm_1==0)*(3594.732417*TMath::Landau(pt_1,663.754139,2578.152196)+-649.059414)+(mva_dm_1==1)*(1.678882*TMath::Landau(pt_1,415.232057,302.476366)+0.000000)+(mva_dm_1==2)*(0.757178*TMath::Landau(pt_1,232.721065,151.222714)+0.000002)+(mva_dm_1==10)*(7.910754*TMath::Landau(pt_1,117.312736,124.469691)+-1.267979)+(mva_dm_1==11)*(0.086910*TMath::Landau(pt_1,89.527633,14.982716)+0.046861)) + (n_jets==1)*((mva_dm_1==0)*(4857.485501*TMath::Landau(pt_1,824.924235,3302.549589)+-877.239639)+(mva_dm_1==1)*(1.145040*TMath::Landau(pt_1,722.725630,751.104672)+0.009639)+(mva_dm_1==2)*(51.552704*TMath::Landau(pt_1,1823.290101,577.825756)+0.058901)+(mva_dm_1==10)*(0.252666*TMath::Landau(pt_1,88.077702,19.460087)+0.093216)+(mva_dm_1==11)*(5.855631*TMath::Landau(pt_1,5841.079809,3304.669650)+-0.378872)) + (n_jets>1)*((mva_dm_1==0)*(1.392964*TMath::Landau(pt_1,-79.524448,285.119992)+0.008191)+(mva_dm_1==1)*(9744.303713*TMath::Landau(pt_1,1771.258695,7657.671711)+-1760.191452)+(mva_dm_1==2)*(1.507881*TMath::Landau(pt_1,515.147333,155.180913)+0.075524)+(mva_dm_1==10)*(1.721257*TMath::Landau(pt_1,144.366432,100.580487)+-0.177793)+(mva_dm_1==11)*(0.049952*TMath::Landau(pt_1,71.300492,4.887868)+0.032699))'
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0)*(3594.732417*TMath::Landau(pt_1,663.754139,2578.152196)+-649.059414)+(mva_dm_1==1)*(1.677430*TMath::Landau(pt_1,413.682766,301.473255)+0.000002)+(mva_dm_1==2)*(0.757178*TMath::Landau(pt_1,232.721065,151.222714)+0.000002)+(mva_dm_1==10)*(7.910754*TMath::Landau(pt_1,117.312736,124.469691)+-1.267979)+(mva_dm_1==11)*(0.086910*TMath::Landau(pt_1,89.527633,14.982716)+0.046861)) + (n_jets==1)*((mva_dm_1==0)*(3998.780789*TMath::Landau(pt_1,751.390765,2971.391356)+-722.108992)+(mva_dm_1==1)*(9.144544*TMath::Landau(pt_1,7101.269514,7145.862840)+-1.202272)+(mva_dm_1==2)*(87.052069*TMath::Landau(pt_1,2021.599717,628.798175)+0.058609)+(mva_dm_1==10)*(0.251403*TMath::Landau(pt_1,87.937179,19.356776)+0.093340)+(mva_dm_1==11)*(6.830998*TMath::Landau(pt_1,6783.006546,3857.797963)+-0.453549)) + (n_jets>1)*((mva_dm_1==0)*(1.372892*TMath::Landau(pt_1,-68.349849,303.360330)+0.007719)+(mva_dm_1==1)*(15035.585256*TMath::Landau(pt_1,2185.365755,9516.520536)+-2716.091468)+(mva_dm_1==2)*(2.886516*TMath::Landau(pt_1,624.775211,187.972589)+0.075094)+(mva_dm_1==10)*(1.768063*TMath::Landau(pt_1,145.655451,102.787805)+-0.186183)+(mva_dm_1==11)*(0.050994*TMath::Landau(pt_1,71.364417,4.959363)+0.032474)))*((mva_dm_1==1)*(1.11632 -(5.23811e-04)*m_vis) + (mva_dm_1!=1))' # iso # os correction for mvadm=1 only
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0)*(2089.279812*TMath::Landau(pt_1,618.888022,2318.788359)+-377.117550)+(mva_dm_1==1)*(1.231774*TMath::Landau(pt_1,143.431627,109.334148)+0.000000)+(mva_dm_1==2)*(0.168101*TMath::Landau(pt_1,108.267502,22.877500)+0.083946)+(mva_dm_1==10)*(0.788758*TMath::Landau(pt_1,100.697017,38.312288)+0.015552)+(mva_dm_1==11)*(0.181551*TMath::Landau(pt_1,106.527661,45.474463)+0.018131)) + (n_jets==1)*((mva_dm_1==0)*(1.509860*TMath::Landau(pt_1,152.184621,138.496798)+-0.000000)+(mva_dm_1==1)*(1.177535*TMath::Landau(pt_1,310.132381,247.342223)+0.000001)+(mva_dm_1==2)*(0.151863*TMath::Landau(pt_1,112.367244,19.503082)+0.075284)+(mva_dm_1==10)*(0.750749*TMath::Landau(pt_1,117.710736,56.483296)+-0.000000)+(mva_dm_1==11)*(611.749884*TMath::Landau(pt_1,888.910337,3482.674883)+-110.471568)) + (n_jets>1)*((mva_dm_1==0)*(685.812939*TMath::Landau(pt_1,947.424467,3941.852603)+-123.661318)+(mva_dm_1==1)*(0.364041*TMath::Landau(pt_1,273.469201,85.853616)+0.158941)+(mva_dm_1==2)*(0.123004*TMath::Landau(pt_1,125.989587,27.912290)+0.068732)+(mva_dm_1==10)*(0.969555*TMath::Landau(pt_1,136.248443,80.369961)+-0.048252)+(mva_dm_1==11)*(1382.770699*TMath::Landau(pt_1,1802.735207,470.289956)+0.034905)))' # aiso
-
-            #fake_factor_wt_string_1='((n_jets==0)*((mva_dm_1==0)*(1.770339*TMath::Landau(pt_1,129.562436,77.391778)+-0.000000)+(mva_dm_1==1)*(1.190698*TMath::Landau(pt_1,153.504489,119.795900)+-0.000001)+(mva_dm_1==2)*(0.193023*TMath::Landau(pt_1,122.474667,30.275003)+0.078214)+(mva_dm_1==10)*(1.004911*TMath::Landau(pt_1,111.303293,51.615663)+-0.027453)+(mva_dm_1==11)*(0.703060*TMath::Landau(pt_1,147.911246,115.158230)+-0.073792)) + (n_jets==1)*((mva_dm_1==0)*(1.701569*TMath::Landau(pt_1,381.458026,304.767036)+0.000002)+(mva_dm_1==1)*(1.101394*TMath::Landau(pt_1,237.141495,188.809345)+0.000000)+(mva_dm_1==2)*(0.191047*TMath::Landau(pt_1,123.309500,24.831223)+0.072947)+(mva_dm_1==10)*(0.645079*TMath::Landau(pt_1,119.677496,57.937184)+0.017737)+(mva_dm_1==11)*(0.257789*TMath::Landau(pt_1,134.069527,72.411757)+0.000009)) + (n_jets>1)*((mva_dm_1==0)*(40.335008*TMath::Landau(pt_1,177.432073,856.799263)+-7.049083)+(mva_dm_1==1)*(2.123804*TMath::Landau(pt_1,613.202108,197.733471)+0.151403)+(mva_dm_1==2)*(0.147098*TMath::Landau(pt_1,121.072145,28.614459)+0.063182)+(mva_dm_1==10)*(0.793448*TMath::Landau(pt_1,132.330552,70.545711)+-0.017815)+(mva_dm_1==11)*(0.843014*TMath::Landau(pt_1,661.806172,222.698401)+0.031173)))' # new aiso region
-            fake_factor_wt_string_1 = "wt_ff_1"#*((1.19546 -0.00955192*met + (2.75657e-05)*met*met)*(n_jets==0) + (n_jets>0))"
+            fake_factor_wt_string_1 = "wt_ff_1"
 
             if not options.deeptau:
               fake_factor_wt_string_1 = "wt_ff_1"
@@ -2592,7 +2537,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
           f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
-        if 'cp' in options.era :
+        if options.deeptau and options.channel=='tt':
           full_selection_extra = BuildCutString(wt+'*wt_ff_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
 
           wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples, plot, full_selection_extra)
@@ -3228,7 +3173,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
 
-        if options.deeptau:
+        if options.deeptau and options.channel=='tt':
           if 'ZLL' not in samples_to_skip:
               GenerateZLL(ana, add_name+'_res', ztt_samples, plot, wt+'*(gen_match_1!=6)', sel, cat, z_sels, not options.do_ss,False,True)
           if 'TT' not in samples_to_skip:
@@ -3254,8 +3199,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             if options.cat in ['pass','fail']:
               cat_pass = '('+cats['pass']+')*('+cats['baseline']+')'  
               cat_fail = '('+cats['fail']+')*('+cats['baseline']+')'
-              GenerateEmbedded(ana, '_pass'+add_name, embed_samples, plot, wt+'/0.97', sel, cat_pass, z_sels, not options.do_ss)
-              GenerateEmbedded(ana, '_fail'+add_name, embed_samples, plot, wt+'/0.97', sel, cat_fail, z_sels, not options.do_ss)
+              GenerateEmbedded(ana, '_pass'+add_name, embed_samples, plot, wt, sel, cat_pass, z_sels, not options.do_ss)
+              GenerateEmbedded(ana, '_fail'+add_name, embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
             if 'mvadm' in options.cat:

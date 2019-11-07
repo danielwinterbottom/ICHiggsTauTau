@@ -102,7 +102,7 @@ for scale in scale_list:
  
 CONFIG='scripts/configlegacy2016.json'
 if options.config != '': CONFIG = options.config
- 
+
 n_channels=1
 with open(CONFIG,"r") as input:
   with open ("config_for_python_channels.json","w") as output:
@@ -154,26 +154,33 @@ if options.proc_sm or options.proc_all:
   else: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluToHToTauTau_M-'+mass,
-     'VBFHToTauTau_M-'+mass,
-     # 'WplusHToTauTau_M-'+mass,
-     # 'WminusHToTauTau_M-'+mass,
-     # 'ZHToTauTau_M-'+mass,
+     'GluGluToHToTauTau_M-125',
+     'VBFHToTauTau_M-125',
+     'WplusHToTauTau_M-125',
+     'WminusHToTauTau_M-125',
+     'ZHToTauTau_M-125',
+     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToHToTauTau_M125_amcatnloFXFX',
+     'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+     'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+     'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX'
+
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
-  with open(CONFIG,"r") as input:
-    with open ("config_for_python.json","w") as output:
-      for line in input:
-        if not '//' in line:
-          output.write(line)
-      output.close()
-    input.close()
+    with open(CONFIG,"r") as input:
+      with open ("config_for_python.json","w") as output:
+        for line in input:
+          if not '//' in line:
+            output.write(line)
+        output.close()
+      input.close()
 
-  with open("config_for_python.json") as config_file:
-    cfg = json.load(config_file)
+    with open("config_for_python.json") as config_file:
+      cfg = json.load(config_file)
 
-  channels=cfg["job"]["channels"]
+    channels=cfg["job"]["channels"]
 
 if options.proc_data or options.proc_all or options.calc_lumi:  
 
@@ -278,68 +285,63 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-#     'WJetsToLNu-LO',
-#     'WJetsToLNu-LO-ext',
-#     'W1JetsToLNu-LO',
-#     'W2JetsToLNu-LO',
-#     'W2JetsToLNu-LO-ext',
-#     'W3JetsToLNu-LO',
-#     'W3JetsToLNu-LO-ext',
-#     'W4JetsToLNu-LO',
-#     'W4JetsToLNu-LO-ext1',
-#     'W4JetsToLNu-LO-ext2',
-#     'WGToLNuG-ext1',
-#     'WGToLNuG-ext2',
-#     'WGToLNuG-ext3',
-#     'WGstarToLNuMuMu',
-#     'WGstarToLNuEE',
-#     'DYJetsToLL',
+     'WJetsToLNu-LO',
+     'WJetsToLNu-LO-ext',
+     'W1JetsToLNu-LO',
+     'W2JetsToLNu-LO',
+     'W2JetsToLNu-LO-ext',
+     'W3JetsToLNu-LO',
+     'W3JetsToLNu-LO-ext',
+     'W4JetsToLNu-LO',
+     'W4JetsToLNu-LO-ext1',
+     'W4JetsToLNu-LO-ext2',
+     'WGToLNuG-ext1',
+     'WGToLNuG-ext2',
+     'WGToLNuG-ext3',
+     'WGstarToLNuMuMu',
+     'WGstarToLNuEE',
+     'DYJetsToLL',
      'DYJetsToLL-LO-ext1',
      'DYJetsToLL-LO-ext2',
-#     'DY1JetsToLL-LO',
-#     'DY2JetsToLL-LO',
-#     'DY3JetsToLL-LO',
-#     'DY4JetsToLL-LO',
-#     'DYJetsToLL_M-10-50-LO',
-#     'VVTo2L2Nu',
-#     'VVTo2L2Nu-ext1',
-#     'ZZTo2L2Q',
-#     'WWTo1L1Nu2Q',
-#     'WWToLNuQQ',
-#     'WWToLNuQQ-ext',
-#     'WZTo2L2Q',
-#     'WZTo1L3Nu',
-#     'WZTo1L1Nu2Q',
-#     'WZJToLLLNu',
-#     'ZZTo4L',
-# ###    'QCDMuEnrichedPt15', NOT NEEDED FOR NOW
-#     'Tbar-tW',
-#     'T-tW',
-#     'Tbar-t',
-#     'T-t',
-#     'TT',
-#     'WJetsToLNu',
-#     'WJetsToLNu-ext',
-#     'EWKWMinus2Jets_WToLNu',
-#     'EWKWMinus2Jets_WToLNu-ext1',
-#     'EWKWMinus2Jets_WToLNu-ext2',
-#     'EWKWPlus2Jets_WToLNu',
-#     'EWKWPlus2Jets_WToLNu-ext1',
-#     'EWKWPlus2Jets_WToLNu-ext2',
-#     'EWKZ2Jets_ZToLL',
-#     'EWKZ2Jets_ZToLL-ext1',
-#     'EWKZ2Jets_ZToLL-ext2',
-#     'EWKZ2Jets_ZToNuNu',
-#     'EWKZ2Jets_ZToNuNu-ext1',
-#     'EWKZ2Jets_ZToNuNu-ext2',
-#     'ZZTo4L-amcat',
-#     'GluGluToHToTauTau_M-125',
-#     'VBFHToTauTau_M-125',
-#     'WplusHToTauTau_M-125',
-#     'WminusHToTauTau_M-125',
-#     'ZHToTauTau_M-125',
-#     'GluGluHToWWTo2L2Nu_M-125',
-#     'VBFHToWWTo2L2Nu_M-125',
+     'DY1JetsToLL-LO',
+     'DY2JetsToLL-LO',
+     'DY3JetsToLL-LO',
+     'DY4JetsToLL-LO',
+     'DYJetsToLL_M-10-50-LO',
+     'VVTo2L2Nu',
+     'VVTo2L2Nu-ext1',
+     'ZZTo2L2Q',
+     'WWTo1L1Nu2Q',
+     #'WWToLNuQQ',
+     #'WWToLNuQQ-ext',
+     'WZTo2L2Q',
+     'WZTo1L3Nu',
+     'WZTo1L1Nu2Q',
+     'WZJToLLLNu',
+     #'ZZTo4L',
+ ###    'QCDMuEnrichedPt15', NOT NEEDED FOR NOW
+     'Tbar-tW',
+     'T-tW',
+     'Tbar-t',
+     'T-t',
+     'TT',
+     'WJetsToLNu',
+     'WJetsToLNu-ext',
+     'EWKWMinus2Jets_WToLNu',
+     'EWKWMinus2Jets_WToLNu-ext1',
+     'EWKWMinus2Jets_WToLNu-ext2',
+     'EWKWPlus2Jets_WToLNu',
+     'EWKWPlus2Jets_WToLNu-ext1',
+     'EWKWPlus2Jets_WToLNu-ext2',
+     'EWKZ2Jets_ZToLL',
+     'EWKZ2Jets_ZToLL-ext1',
+     'EWKZ2Jets_ZToLL-ext2',
+     'EWKZ2Jets_ZToNuNu',
+     'EWKZ2Jets_ZToNuNu-ext1',
+     'EWKZ2Jets_ZToNuNu-ext2',
+     'ZZTo4L-amcat',
+     'GluGluHToWWTo2L2Nu_M-125',
+     'VBFHToWWTo2L2Nu_M-125',
      ]
   for sa in central_samples:
       JOB='%s_2016' % (sa)

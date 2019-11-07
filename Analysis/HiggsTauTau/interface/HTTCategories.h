@@ -483,7 +483,6 @@ class HTTCategories : public ModuleBase {
   double gen_match_2_pt_;
   double gen_sjdphi_;
   double gen_mjj_;
-  double largest_gen_mjj_;
   double gen_m_;
   double gen_pt_;
   int tauFlag_1_;
@@ -1241,13 +1240,15 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vvtight_2_;
   //
 
-  double deeptau_sf_;
   double mt_1_nomu_, mu_pt_;
   double rho_dphi_, rho_deta_;
+  double gen_met_, fake_met_;
 
   unsigned ngenjets_;
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
   double q_tot_1_, q_tot_2_;
+
+  double looseiso_wt_;
 
  public:
   HTTCategories(std::string const& name);
