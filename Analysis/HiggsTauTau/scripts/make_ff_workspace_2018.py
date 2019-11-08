@@ -36,7 +36,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018_mt_old/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2018_mt/' % vars()
 
   histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -215,7 +215,7 @@ for wp in wps:
   w.factory('expr::ff_mt_%(wp)s_dmbins_ttbar("(@0==0)*(@1)+(@0==1)*(@2)+(@0==10)*(@3)+(@0==11)*(@4)", dm[1], mt_dm0_inclusive_%(wp)s_ttbar_fit, mt_dm1_inclusive_%(wp)s_ttbar_fit, mt_dm10_inclusive_%(wp)s_ttbar_fit, mt_dm11_inclusive_%(wp)s_ttbar_fit )' % vars()) 
 
   # get W+jets corrections
-  for dmtype in ['mvadm']:#,'mvadm_nosig','dm']:
+  for dmtype in ['mvadm','mvadm_nosig','dm']:
 
     dmname = dmtype.replace('dm','dmbins')
 
