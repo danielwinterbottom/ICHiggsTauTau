@@ -2121,6 +2121,7 @@ def HTTPlot(nodename,
             ggh_scheme="powheg",
             cat="",
             split_taus=False,
+            auto_blind=True,
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2148,10 +2149,10 @@ def HTTPlot(nodename,
     sig_schemes["sm_cp_decays_mm"] = ( str(int(signal_scale))+"#times MM H#rightarrow#tau#tau", ["ggH_mm_htt", "qqH_mm_htt"], False )
 
     sig_schemes["sm_18"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], False )
-    
+
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
-    
+
     if "sm" in signal_scheme: 
         background_schemes = {
             'mt':[
@@ -2237,9 +2238,9 @@ def HTTPlot(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
 
-    #if vbf_background:
-    #    for key in background_schemes: 
-    #        background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    # if vbf_background:
+    #     for key in background_schemes: 
+    #         background_schemes[key].append(backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
     if embedding:
       background_schemes['zmm'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
       for chan in ['em','et','mt','tt','zmm','zee']:
@@ -2271,7 +2272,7 @@ def HTTPlot(nodename,
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-    
+
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind:
         for i in range(0,total_datahist.GetNbinsX()):
@@ -2280,9 +2281,6 @@ def HTTPlot(nodename,
             if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
                 blind_datahist.SetBinContent(i+1,0)
                 blind_datahist.SetBinError(i+1,0)
-    if norm_bins:
-        blind_datahist.Scale(1.0,"width")
-        total_datahist.Scale(1.0,"width")
     
     
     #Create stacked plot for the backgrounds
@@ -2314,6 +2312,7 @@ def HTTPlot(nodename,
           bkghist = hists.Clone()
       else:
           bkghist.Add(hists.Clone())
+
       
     c1 = R.TCanvas()
     c1.cd()    
@@ -2415,31 +2414,31 @@ def HTTPlot(nodename,
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
     
+    sighist = R.TH1F()
     # for single signal scheme
-    if not split_sm_scheme:
-        sighist = R.TH1F()
-        if signal_mass != "":
-            sig_scheme = sig_schemes[signal_scheme]
-            for i in sig_scheme[1]:
-                h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-                if sighist.GetEntries() == 0: sighist = h
-                else: sighist.Add(h)
-            sighist.SetLineColor(R.kRed)
-            sighist.SetLineWidth(3)
-            sighist.Scale(signal_scale)
-            if norm_bins: sighist.Scale(1.0,"width")
+    if signal_mass != "":
+        sig_scheme = sig_schemes[signal_scheme]
+        for i in sig_scheme[1]:
+            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+            if sighist.GetEntries() == 0: sighist = h
+            else: sighist.Add(h)
+        sighist.SetLineColor(R.kRed)
+        sighist.SetLineWidth(3)
+        sighist.Scale(signal_scale)
+        if norm_bins: sighist.Scale(1.0,"width")
+        if not split_sm_scheme:
             if sig_scheme[2]: 
                 stack.Add(sighist.Clone())
                 if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
             stack.Draw("histsame")
             if not sig_scheme[2]: sighist.Draw("histsame")
-        else:
-            stack.Draw("histsame")
-            
+    elif not split_sm_scheme:
+        stack.Draw("histsame")
+        
     # separate out signal into powheg ggH and qqH,
     # JHU ggH, and VH
         
-    else:
+    if split_sm_scheme:
         sighists = dict()
 
         if ggh_scheme == 'powheg':
@@ -2490,6 +2489,19 @@ def HTTPlot(nodename,
             else:
                 stack.Draw("histsame")
 
+    # Auto blinding option
+    if auto_blind:
+        for i in range(1,total_datahist.GetNbinsX()+1):
+            b = bkghist.GetBinContent(i)
+            s = sighist.GetBinContent(i) / signal_scale
+            if PassAutoBlindMetric(s,b,metric=0.5):
+                blind_datahist.SetBinContent(i,0)
+                blind_datahist.SetBinError(i,0)
+
+    
+    if norm_bins:
+        blind_datahist.Scale(1.0,"width")
+        total_datahist.Scale(1.0,"width")
         
     ## Add another signal mass point
     #sighist2 = R.TH1F()
@@ -3555,8 +3567,8 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    # sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
-    sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    # sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
     # sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)
@@ -3571,7 +3583,7 @@ def HTTPlotUnrolled(nodename,
             backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
             backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
             backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
-            # backgroundComp("SM EWK H#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
+            backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
             ],
         'et':[
             backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),

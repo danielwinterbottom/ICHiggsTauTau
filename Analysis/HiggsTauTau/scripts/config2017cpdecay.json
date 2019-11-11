@@ -58,14 +58,17 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/new_sf_2017/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2017/",
+    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/em_2017/",
+    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_nominalWithFastMTT/",
+    "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Nov05_2017_nominalWithFastMTT/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_SVFit/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct07_2017_SVFit/",
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_SVFit/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_fastMTT/",
+    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2017/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
@@ -285,50 +288,50 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.996
+        "efaketau_0pi_es_shift": 0.962
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.024
+        "efaketau_0pi_es_shift": 1.002
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.023
+        "efaketau_1pi_es_shift": 0.998
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.059
+        "efaketau_1pi_es_shift": 1.038
       }
     },
 
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.996
+        "mufaketau_0pi_es_shift": 0.978
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.002
+        "mufaketau_0pi_es_shift": 1.018
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 1.002
+        "mufaketau_1pi_es_shift": 0.972
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.022
+        "mufaketau_1pi_es_shift": 1.012
       }
     },
     "scale_e_lo": {
