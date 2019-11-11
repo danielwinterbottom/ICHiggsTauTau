@@ -588,7 +588,9 @@ namespace ic {
           } 
         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
-          outtree_->Branch("wt_ff_2"  , &wt_ff_2_);   
+          outtree_->Branch("wt_ff_2"  , &wt_ff_2_);  
+          outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
+          outtree_->Branch("wt_ff_dmbins_2"  , &wt_ff_dmbins_2_); 
           if(channel_ == channel::tt && strategy_ != strategy::cpdecays18){
             //outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
             //outtree_->Branch("wt_ff_1"  , &wt_ff_1_);
@@ -2292,9 +2294,11 @@ namespace ic {
             if(event->Exists("wt_btag_ff_dy_frac_syst_down_2"               )) wt_btag_ff_dy_frac_syst_down_2               = event->Get<double>("wt_btag_ff_dy_frac_syst_down_2");
           }
         }
-      } else if (strategy_ == strategy::cpdecays18) {
+      } else if (strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16) {
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
+        if(event->Exists("wt_ff_dmbins_1")) wt_ff_dmbins_1_ = event->Get<double>("wt_ff_dmbins_1");
+        if(event->Exists("wt_ff_dmbins_2")) wt_ff_dmbins_2_ = event->Get<double>("wt_ff_dmbins_2");
         if(do_ff_systematics_){
           if(event->Exists("wt_ff_qcd_syst_up_1"            )) wt_ff_qcd_syst_up_1_               = event->Get<double>("wt_ff_qcd_syst_up_1");
           if(event->Exists("wt_ff_qcd_syst_down_1"          )) wt_ff_qcd_syst_down_1_             = event->Get<double>("wt_ff_qcd_syst_down_1");

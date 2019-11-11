@@ -563,7 +563,10 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
-  
+
+  double wt_ff_dmbins_1_;
+  double wt_ff_dmbins_2_; 
+ 
   double wt_ff_1_;
   double wt_ff_2_;
   double wt_ff_qcd_1_;
