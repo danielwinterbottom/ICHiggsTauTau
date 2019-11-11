@@ -138,7 +138,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
         "ff_fracs_file" : ""
           }
     },
@@ -155,7 +155,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
         "ff_fracs_file" : ""
       }
     },
@@ -186,7 +186,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
         "ff_fracs_file" : ""
       }
     },

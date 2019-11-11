@@ -1994,8 +1994,8 @@ namespace ic {
             double ele_xtrg_mc=1.;
             if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
               ele_xtrg = fns_["e_crosstrg_data"]->eval(args_1.data());
-              if(is_embedded_) ele_xtrg_mc = fns_["e_crosstrg_embed"]->eval(args_2.data());
-              else ele_xtrg_mc = fns_["e_crosstrg_mc"]->eval(args_2.data());
+              if(is_embedded_) ele_xtrg_mc = fns_["e_crosstrg_embed"]->eval(args_1.data());
+              else ele_xtrg_mc = fns_["e_crosstrg_mc"]->eval(args_1.data());
               
               tau_trg = fns_["t_trg_30_data"]->eval(args_3.data());
               if(is_embedded_) {
@@ -2008,7 +2008,7 @@ namespace ic {
 
             double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
-            double xtrg_OR_sf = (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc);
+            double xtrg_OR_sf = (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) : 0.;
 
             double e_high_pt_cut=28.;
 	    if(mc_ == mc::mc2018) e_high_pt_cut=33;
@@ -2085,8 +2085,9 @@ namespace ic {
             }
  
             // have xtrg OR as default but save others to check 
-            event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_e_sf/xtrg_OR_sf);
-            event->Add("xtrg_sf", xtrg_OR_sf==0 ? 0. : xtrg_et_sf/xtrg_OR_sf);
+            event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : std::min(single_e_sf/xtrg_OR_sf,2.));
+            event->Add("xtrg_sf", xtrg_OR_sf==0 ? 0. : std::min(xtrg_et_sf/xtrg_OR_sf,2.));
+
 
             ele_trg = xtrg_OR_sf;
             //std::cout << xtrg_OR_sf << "    " << single_e_sf << std::endl;
@@ -2408,7 +2409,7 @@ namespace ic {
 
             double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
-            double xtrg_OR_sf = (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc);
+            double xtrg_OR_sf = (mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.;
             if(pt<m_high_pt_cut) xtrg_OR_sf = xtrg_mt_sf; // these line are more correct in cases when different offine pT cuts are applied for each trigger in the OR
             if(t_pt<t_high_pt_cut) xtrg_OR_sf = single_m_sf; 
 
