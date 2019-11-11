@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Oct2_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["et"],
+    "channels":      ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-     "output_folder" : "/vols/cms/dw515/Offline/output/SM/new_sf_2016/",
+     "output_folder" : "/vols/cms/mhh18/Offline/output/SM/MVA_DM_Confusion_Matrix_Check/2016",
+     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/new_sf_2016/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2016/",
     //"output_folder" : "output/",
     "svfit_from_grid" : true,
@@ -136,8 +137,8 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true, 
-        "do_ff_systematics": true,
+        "do_ff_weights" : false, 
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/tt/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
@@ -153,8 +154,8 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/tt/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
@@ -172,8 +173,8 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/tt/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
