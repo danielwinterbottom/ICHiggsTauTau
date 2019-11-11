@@ -3595,7 +3595,7 @@ void HTTSequence::BuildMTPairs() {
       .set_shift(muon_shift));
  }*/
 
- if (mu_scale_mode > 0 && is_embedded){
+ if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_neg_far_endcap(muon_shift_negfarendcap)
@@ -3720,11 +3720,21 @@ void HTTSequence::BuildEMPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str); 
  ic::mc mc_type = String2MC(mc_str);
 
- if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
+ /*if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_shift_label("muon_scales")
       .set_shift(muon_shift));
+ }*/
+
+ if (mu_scale_mode > 0){
+   BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+      .set_input_label("muons")
+      .set_neg_far_endcap(muon_shift_negfarendcap)
+      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_near_endcap(muon_shift_nearendcap)
+      .set_barrel(muon_shift_barrel)
+      );
  }
 
  if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::legacy16 &&  strategy_type != strategy::cpdecays16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18){

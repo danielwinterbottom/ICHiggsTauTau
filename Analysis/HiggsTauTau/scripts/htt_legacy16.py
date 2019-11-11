@@ -104,6 +104,9 @@ CONFIG='scripts/configlegacy2016.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
+output_folder = ""
+svfit_folder = ""
+svfit_mode = 0
 with open(CONFIG,"r") as input:
   with open ("config_for_python_channels.json","w") as output:
     for line in input:
@@ -115,6 +118,14 @@ with open(CONFIG,"r") as input:
 with open("config_for_python_channels.json") as config_file:
   cfg = json.load(config_file)
   n_channels=len(cfg["job"]["channels"])
+  output_folder = cfg["sequence"]["output_folder"]
+  svfit_mode = cfg["sequence"]["new_svfit_mode"]
+  svfit_folder = cfg["sequence"]["svfit_folder"]
+
+# makes sure output folder(s) (and svfit folder(s) if needed) is always created
+# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode != 0:
+#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/50))
 if scale < 1: scale = 1
@@ -206,8 +217,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
 
-      if 'TauB' in sa:
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"./filelists/Oct2_Data_102X_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      # if 'TauB' in sa:
+      #   JSONPATCH= (r"'{\"job\":{\"filelist\":\"./filelists/Oct2_Data_102X_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
 
 
       nperjob = 40
@@ -294,48 +305,48 @@ if options.proc_bkg or options.proc_all:
     'WGstarToLNuMuMu',
     'WGstarToLNuEE',
     'DYJetsToLL',
-     'DYJetsToLL-LO-ext1',
-     'DYJetsToLL-LO-ext2',
-     'DY1JetsToLL-LO',
-     'DY2JetsToLL-LO',
-     'DY3JetsToLL-LO',
-     'DY4JetsToLL-LO',
-     'DYJetsToLL_M-10-50-LO',
-     'VVTo2L2Nu',
-     'VVTo2L2Nu-ext1',
-     'ZZTo2L2Q',
-     'WWTo1L1Nu2Q',
-     'WWToLNuQQ',
-     'WWToLNuQQ-ext',
-     'WZTo2L2Q',
-     'WZTo1L3Nu',
-     'WZTo1L1Nu2Q',
-     'WZJToLLLNu',
-     'ZZTo4L',
- ###    'QCDMuEnrichedPt15', NOT NEEDED FOR NOW
-     'Tbar-tW',
-     'T-tW',
-     'Tbar-t',
-     'T-t',
-     'TT',
-     'WJetsToLNu',
-     'WJetsToLNu-ext',
-     'EWKWMinus2Jets_WToLNu',
-     'EWKWMinus2Jets_WToLNu-ext1',
-     'EWKWMinus2Jets_WToLNu-ext2',
-     'EWKWPlus2Jets_WToLNu',
-     'EWKWPlus2Jets_WToLNu-ext1',
-     'EWKWPlus2Jets_WToLNu-ext2',
-     'EWKZ2Jets_ZToLL',
-     'EWKZ2Jets_ZToLL-ext1',
-     'EWKZ2Jets_ZToLL-ext2',
-     'EWKZ2Jets_ZToNuNu',
-     'EWKZ2Jets_ZToNuNu-ext1',
-     'EWKZ2Jets_ZToNuNu-ext2',
-     'ZZTo4L-amcat',
-     'GluGluHToWWTo2L2Nu_M-125',
-     'VBFHToWWTo2L2Nu_M-125',
-     ]
+    'DYJetsToLL-LO-ext1',
+    'DYJetsToLL-LO-ext2',
+    'DY1JetsToLL-LO',
+    'DY2JetsToLL-LO',
+    'DY3JetsToLL-LO',
+    'DY4JetsToLL-LO',
+    'DYJetsToLL_M-10-50-LO',
+    'VVTo2L2Nu',
+    'VVTo2L2Nu-ext1',
+    'ZZTo2L2Q',
+    'WWTo1L1Nu2Q', 
+    # 'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
+    # 'WWToLNuQQ-ext',
+    'WZTo2L2Q',
+    'WZTo1L3Nu',
+    'WZTo1L1Nu2Q',
+    'WZJToLLLNu',
+    # 'ZZTo4L', # use amcat one below
+    'Tbar-tW',
+    'T-tW',
+    'Tbar-t',
+    'T-t',
+    'TT',
+    'WJetsToLNu',
+    'WJetsToLNu-ext',
+    'EWKWMinus2Jets_WToLNu',
+    'EWKWMinus2Jets_WToLNu-ext1',
+    'EWKWMinus2Jets_WToLNu-ext2',
+    'EWKWPlus2Jets_WToLNu',
+    'EWKWPlus2Jets_WToLNu-ext1',
+    'EWKWPlus2Jets_WToLNu-ext2',
+    'EWKZ2Jets_ZToLL',
+    'EWKZ2Jets_ZToLL-ext1',
+    'EWKZ2Jets_ZToLL-ext2',
+    'EWKZ2Jets_ZToNuNu',
+    'EWKZ2Jets_ZToNuNu-ext1',
+    'EWKZ2Jets_ZToNuNu-ext2',
+    'ZZTo4L-amcat',
+    'GluGluHToWWTo2L2Nu_M-125',
+    'VBFHToWWTo2L2Nu_M-125',
+    ]
+
   for sa in central_samples:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
@@ -355,9 +366,9 @@ if options.proc_bkg or options.proc_all:
         if 'QCD' in sa:
             nperjob = 15
         if 'scale' in FLATJSONPATCH:
-          nperjob = 2
+          nperjob = 5
         #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
-        FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
+        # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -387,7 +398,7 @@ if options.proc_sm or options.proc_all:
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
       #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
-      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
+      # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1

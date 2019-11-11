@@ -312,14 +312,14 @@ namespace ic {
            w_->function("e_trg_binned_12_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_12_data"] = std::shared_ptr<RooFunctor>(
            w_->function("e_trg_binned_12_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
-        // fns_["e_trg_binned_12_embed"] = std::shared_ptr<RooFunctor>(
-        //    w_->function("e_trg_binned_12_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg_binned_12_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("e_trg_binned_12_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(
            w_->function("e_trg_binned_23_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
         fns_["e_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(
            w_->function("e_trg_binned_23_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
-        // fns_["e_trg_binned_23_embed"] = std::shared_ptr<RooFunctor>(
-        //    w_->function("e_trg_binned_23_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+        fns_["e_trg_binned_23_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("e_trg_binned_23_embed")->functor(w_->argSet("e_pt,e_eta,e_iso")));
       }
       if(mc_ == mc::mc2017) {
         fns_["m_trg_binned_8_mc"] = std::shared_ptr<RooFunctor>(
@@ -339,14 +339,14 @@ namespace ic {
            w_->function("m_trg_binned_8_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_8_data"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg_binned_8_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        // fns_["m_trg_binned_8_embed"] = std::shared_ptr<RooFunctor>(
-        //    w_->function("m_trg_binned_8_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_8_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_8_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg_binned_23_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
         fns_["m_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(
            w_->function("m_trg_binned_23_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        // fns_["m_trg_binned_23_embed"] = std::shared_ptr<RooFunctor>(
-        //    w_->function("m_trg_binned_23_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        fns_["m_trg_binned_23_embed"] = std::shared_ptr<RooFunctor>(
+           w_->function("m_trg_binned_23_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
       }
    
       // triggers for tau legs in et, mt and tt channels
@@ -418,8 +418,8 @@ namespace ic {
         fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("e_id90iso_binned_kit_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
       } else if (mc_ == mc::mcleg2016) {
-        // fns_["e_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
-        //     w_->function("e_id90iso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
+        fns_["e_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(
+            w_->function("e_id90iso_binned_embed_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
         fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("e_idiso_ratio")->functor(w_->argSet("e_pt,e_eta")));
       }

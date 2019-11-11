@@ -39,6 +39,34 @@
     "xs": 3.987,
     "evt": 926828
   },
+  "GluGluHToTauTau_M-125": {
+    "xs": 3.045966,
+    "evt": 12445446.0
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 951316
+  },
   "T-t": {
     "xs": 136.02,
     "evt": 144089804
@@ -66,6 +94,10 @@
   "Tbar-tW-ext1": {
     "xs": 34.97,
     "evt": 7479213
+  },
+  "VBFHToTauTau_M-125-ext1": {
+    "xs": 0.2371,
+    "evt": 2995958 
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
