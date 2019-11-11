@@ -14,7 +14,7 @@ files = [
         f for f in os.listdir(path) \
                 if os.path.isfile(os.path.join(path, f)) \
                 and f.endswith(".log") and "{}".format(sys.argv[1]) in f \
-                # and "Tau" in f
+                # and "Embedding" in f
             ]
 print("Checking era {}\n".format(sys.argv[1]))
 
@@ -24,9 +24,9 @@ for file_ in files:
         # if "bad_alloc"  not in open("{}/{}".format(path, file_)).read():
         #     print("{}".format(file_.split(".")[0]))
         print("{}".format(file_.split(".")[0]))
-        # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -l h_vmem=12G -q hep.q jobs/{}.sh"
+        # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -l h_vmem=16G -q hep.q jobs/{}.sh"
         # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -q hep.q jobs/{}.sh"
-        #        .format(file_.split(".")[0]))
+               # .format(file_.split(".")[0]))
         counter += 1
 print "{} incomplete files".format(counter)
 

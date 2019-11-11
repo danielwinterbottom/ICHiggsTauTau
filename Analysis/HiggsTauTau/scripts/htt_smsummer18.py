@@ -111,6 +111,9 @@ CONFIG='scripts/config2018cpdecay.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
+output_folder = ""
+svfit_folder = ""
+svfit_mode = 0
 with open(CONFIG,"r") as input:
     with open ("config_for_python_channels.json","w") as output:
         for line in input:
@@ -122,6 +125,14 @@ with open(CONFIG,"r") as input:
 with open("config_for_python_channels.json") as config_file:
     cfg = json.load(config_file)
     n_channels=len(cfg["job"]["channels"])
+    output_folder = cfg["sequence"]["output_folder"]
+    svfit_mode = cfg["sequence"]["new_svfit_mode"]
+    svfit_folder = cfg["sequence"]["svfit_folder"]
+
+# makes sure output folder(s) (and svfit folder(s) if needed) is always created
+# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode != 0:
+#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
@@ -208,7 +219,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
     data_eras = ['A','B','C','D']
-#    data_eras=['D']
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
@@ -246,7 +256,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             JOB='%s_2018' % (sa)
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Oct07_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
-            nperjob = 40
+            nperjob = 30
             # if "TauC" in sa: nperjob = 42
             # elif "TauD" in sa: nperjob = 45
             

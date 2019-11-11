@@ -1197,7 +1197,7 @@ BuildModule(jetIDFilter);
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2018) {
-    jes_input_file = "input/jec/Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -3188,6 +3188,120 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
       );
 
+    } else if(strategy_type == strategy::cpdecays18){
+
+      std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+      std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
+
+      /*BuildModule(TagAndProbe<Electron const*>("TagAndProbe")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") 
+          // for single with extra trigger (for nano)
+          //.set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32,triggerObjectsEle35")
+          //.set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+          .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+          
+ 
+          // these lines to measure elec24 from double electron trigger (doesnt work for runB)
+          //.set_probe_trg_objects("triggerObjectsDoubleEl24") 
+          //.set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau")
+          
+          // these lines to measure elec24 from e+tau cross trigger 
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30") // for 2017
+          //.set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau") // for 2017
+          //.set_probe_trg_objects("triggerObjectsEle24Tau30,triggerObjectsEle24TauHPS30") // for 2018
+          //.set_probe_trg_filters("hltEle24erWPTightClusterShapeFilterForTau,hltEle24erWPTightClusterShapeFilterForTau") // for 2018 
+          //.set_do_extra(true)
+
+          // to measure em electron 12 GeV leg
+           //.set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+           //.set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+           //.set_extra_l1_probe_pt(10.)
+          // to measure em electron 23 GeV leg
+          // .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          // .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          // .set_extra_l1_probe_pt(23.)
+          // .set_extra_l1_iso_probe_pt(20.)
+      );*/
+
+      // for el12 leg of EMu cross-trigger
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+          .set_extra_l1_probe_pt(10.)
+          .set_add_name("_emLow")
+      );
+
+      // for el23 leg of EMu cross-trigger
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emHigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Ele12") //Ele23 actually-> 
+          .set_probe_trg_filters("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+          .set_extra_l1_probe_pt(23.)
+          .set_extra_l1_iso_probe_pt(20.)
+          .set_add_name("_emHigh")
+      );
+
+      // for electron leg of x-trg
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24Tau30,triggerObjectsEle24TauHPS30") // for 2018
+          .set_probe_trg_filters("hltEle24erWPTightClusterShapeFilterForTau,hltEle24erWPTightClusterShapeFilterForTau") // for 2018 
+          .set_do_extra(true)
+          .set_add_name("_ET")
+      );
+
+      // single electron trg
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle35")
+          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+          .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
+      );
+
     } else {
         
       std::function<bool(Electron const*)> elec_probe_id;  
@@ -3527,7 +3641,7 @@ void HTTSequence::BuildMTPairs() {
       .set_shift(muon_shift));
  }*/
 
- if (mu_scale_mode > 0 && is_embedded){
+ if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_neg_far_endcap(muon_shift_negfarendcap)
@@ -3652,11 +3766,21 @@ void HTTSequence::BuildEMPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str); 
  ic::mc mc_type = String2MC(mc_str);
 
- if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
+ /*if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
    BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
       .set_input_label("muons")
       .set_shift_label("muon_scales")
       .set_shift(muon_shift));
+ }*/
+
+ if (mu_scale_mode > 0){
+   BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+      .set_input_label("muons")
+      .set_neg_far_endcap(muon_shift_negfarendcap)
+      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_near_endcap(muon_shift_nearendcap)
+      .set_barrel(muon_shift_barrel)
+      );
  }
 
  if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::legacy16 &&  strategy_type != strategy::cpdecays16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18){
