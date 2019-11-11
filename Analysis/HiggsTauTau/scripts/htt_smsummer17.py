@@ -170,6 +170,8 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
         'VBFHToTauTau_M-125-nospinner-filter',
         'GluGluToHToTauTau_M-125-nospinner-filter',
+        'VBFHToTauTau_M-125-nospinner',
+        'GluGluToHToTauTau_M-125-nospinner',
 #         'VBFHToTauTau_M-125',
          # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
 

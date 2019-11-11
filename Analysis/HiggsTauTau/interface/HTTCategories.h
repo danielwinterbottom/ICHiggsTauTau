@@ -563,7 +563,10 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
-  
+
+  double wt_ff_dmbins_1_;
+  double wt_ff_dmbins_2_; 
+ 
   double wt_ff_1_;
   double wt_ff_2_;
   double wt_ff_qcd_1_;
@@ -1249,10 +1252,6 @@ class HTTCategories : public ModuleBase {
   double q_tot_1_, q_tot_2_;
 
   double looseiso_wt_;
-
-  TH1D* input_cdf_;
-  TH1D* output_cdf_;
-  double m_vis_corr_, pt_1_corr_;
 
  public:
   HTTCategories(std::string const& name);

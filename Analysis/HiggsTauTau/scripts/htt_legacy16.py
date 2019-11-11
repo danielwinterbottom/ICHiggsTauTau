@@ -161,15 +161,18 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 
 if options.proc_sm or options.proc_all:
-  if options.analysis == 'sm': masses = ['125']
-  else: masses = ['125']
-  for mass in masses :
     signal_mc += [
-     'GluGluToHToTauTau_M-'+mass,
-     'VBFHToTauTau_M-'+mass,
-     'WplusHToTauTau_M-'+mass,
-     'WminusHToTauTau_M-'+mass,
-     'ZHToTauTau_M-'+mass,
+        'GluGluToHToTauTau_M-125',
+        'VBFHToTauTau_M-125',
+        'WplusHToTauTau_M-125',
+        'WminusHToTauTau_M-125',
+        'ZHToTauTau_M-125',
+        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToHToTauTau_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:

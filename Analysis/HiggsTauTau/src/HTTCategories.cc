@@ -68,8 +68,6 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
-    /*input_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","mc_cdf"));
-    output_cdf_ = new TH1D(GetFromTFile<TH1D>("w_closure_mc_cdfs.root","/","data_cdf"));*/
 
     rand = new TRandom3(0);
     if (fs_ && write_tree_) {
@@ -590,7 +588,9 @@ namespace ic {
           } 
         } else if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
-          outtree_->Branch("wt_ff_2"  , &wt_ff_2_);   
+          outtree_->Branch("wt_ff_2"  , &wt_ff_2_);  
+          outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
+          outtree_->Branch("wt_ff_dmbins_2"  , &wt_ff_dmbins_2_); 
           if(channel_ == channel::tt && strategy_ != strategy::cpdecays18){
             //outtree_->Branch("wt_ff_2"  , &wt_ff_2_); 
             //outtree_->Branch("wt_ff_1"  , &wt_ff_1_);
@@ -789,8 +789,6 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("pt_1",              &pt_1_.var_double);
-      /*outtree_->Branch("pt_1_corr",              &pt_1_corr_);
-      outtree_->Branch("m_vis_corr",              &m_vis_corr_);*/
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
@@ -2296,9 +2294,11 @@ namespace ic {
             if(event->Exists("wt_btag_ff_dy_frac_syst_down_2"               )) wt_btag_ff_dy_frac_syst_down_2               = event->Get<double>("wt_btag_ff_dy_frac_syst_down_2");
           }
         }
-      } else if (strategy_ == strategy::cpdecays18) {
+      } else if (strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16) {
         if(event->Exists("wt_ff_1")) wt_ff_1_ = event->Get<double>("wt_ff_1");
         if(event->Exists("wt_ff_2")) wt_ff_2_ = event->Get<double>("wt_ff_2");
+        if(event->Exists("wt_ff_dmbins_1")) wt_ff_dmbins_1_ = event->Get<double>("wt_ff_dmbins_1");
+        if(event->Exists("wt_ff_dmbins_2")) wt_ff_dmbins_2_ = event->Get<double>("wt_ff_dmbins_2");
         if(do_ff_systematics_){
           if(event->Exists("wt_ff_qcd_syst_up_1"            )) wt_ff_qcd_syst_up_1_               = event->Get<double>("wt_ff_qcd_syst_up_1");
           if(event->Exists("wt_ff_qcd_syst_down_1"          )) wt_ff_qcd_syst_down_1_             = event->Get<double>("wt_ff_qcd_syst_down_1");
@@ -2896,18 +2896,6 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
-
-    //quantile map corrections for FFs in mt channel
-    /*pt_1_corr_ = (pt_1_.var_double<100) ? quantile_mapping(pt_1_.var_double, input_cdf_, output_cdf_) : pt_1_.var_double;
-
-    double shift = pt_1_corr_/pt_1_.var_double;
-    if (shift<0) shift=1.;
-    Candidate *lep1_corr = new Candidate(*(lep1));
-    lep1_corr->set_pt(lep1_corr->pt() * shift);
-    lep1_corr->set_energy(lep1_corr->energy() * shift);
-
-    m_vis_corr_ = (lep1_corr->vector()+lep2->vector()).M();*/
-
 
 
     if(make_sync_ntuple_){

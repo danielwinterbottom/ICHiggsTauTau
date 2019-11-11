@@ -663,11 +663,10 @@ for ff in ff_list:
       wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
-      # do for all later!
-      if 'inclusive_inclusive' in ff:
-        ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-        ttbar_mc_ff.SetDirectory(0)
-        to_write.append(ttbar_mc_ff)
+      #if 'inclusive_inclusive' in ff:
+      ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
+      ttbar_mc_ff.SetDirectory(0)
+      to_write.append(ttbar_mc_ff)
     fin.Close()
 
   usePol=None

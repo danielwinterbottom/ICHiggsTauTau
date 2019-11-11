@@ -140,11 +140,11 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false, 
+        "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "et_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
+        "ff_fracs_file" : ""
           }
     },
  "tt": {
@@ -160,7 +160,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/tt/fakefactors_ws_2018.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
         "ff_fracs_file" : ""
       }
     },
@@ -176,11 +176,11 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : false,
+        "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "mt_fakeFactors2018.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
+        "ff_fracs_file" : ""
       }
     },
     "em": {

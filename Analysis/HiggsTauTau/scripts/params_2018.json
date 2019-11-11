@@ -153,7 +153,7 @@
   },
   "ZZTo2L2Nu-ext2": {
     "xs": 0.6008,
-    "evt":56356048
+    "evt": 56356048
   },
   "ZZTo2L2Q": {
     "xs": 3.688,
@@ -167,16 +167,106 @@
     "xs": 1.325,
     "evt": 104607182
   },
+  "VBFHToTauTau_M-125-ext1": {
+    "xs": 0.2371,
+    "evt": 2995958
+  },
+  "VBFHToTauTau_M-125-nospinner-filter": {
+    "xs": 0.2371,
+    "evt": 3129458,
+    "eff": 0.2831
+  },
+  "VBFHiggs0MToTauTau": {
+    "xs": 2.6707,
+    "evt": 3129458
+  },
+  "VBFHiggs0Mf05ph0ToTauTau": {
+    "xs": 0.47421,
+    "evt": 3129458
+  },
+  "VBFHiggs0PMToTauTau": {
+    "xs": 0.2371314,
+    "evt": 3129458
+  },
+  "WHiggs0MToTauTau": {
+    "xs": 5.6330289,
+    "evt": 3129458
+  },
+  "WHiggs0Mf05ph0ToTauTau": {
+    "xs": 0.1721491,
+    "evt": 3129458
+  },
+  "WHiggs0PMToTauTau": {
+    "xs": 0.08607456,
+    "evt": 3129458
+  },
+  "ZHiggs0MToTauTau": {
+    "xs": 2.6708711,
+    "evt": 3129458
+  },
+  "ZHiggs0Mf05ph0ToTauTau": {
+    "xs": 0.1108536,
+    "evt": 3129458
+  },
+  "ZHiggs0PMToTauTau": {
+    "xs": 0.0554268,
+    "evt": 3129458
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 3761951
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 7833676
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 5413199
+  },
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1803052
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 5329008
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1879685
+  },
+  "GluGluToHToTauTau_M-125-nospinner-filter": {
+    "xs": 3.045966,
+    "evt": 4897561,
+    "eff": 0.2537
+  },
+  "GluGluHToTauTau_M-125": {
+    "xs": 3.045966,
+    "evt": 12445446
+  },
+  "WminusHToTauTau_M-125": {
+    "xs": 0.03340,
+    "evt": 3689638
+  },
+  "WplusHToTauTau_M-125": {
+    "xs": 0.05266,
+    "evt": 3573548
+  },
+  "ZHToTauTau_M-125": {
+    "xs": 0.05542,
+    "evt": 4477852
+  },
   "EGamma": {
-    "lumi": 58826.8469
+    "lumi": 59740
   },
   "SingleMuon": {
-    "lumi": 58826.8469
+    "lumi": 59740
   },
   "Tau": {
-    "lumi": 58826.8469
+    "lumi": 59740
   },
   "MuonEG": {
-    "lumi": 58826.8469
+    "lumi": 59740
   }
 }
