@@ -693,7 +693,7 @@ void HTTSequence::BuildSequence(){
     if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) {
       if(era_type == era::data_2016) {
         n_inc = 3131198;
-        n_2 = 16622211.;
+        n_2 = 17047248.;
         frac = 0.274892;
         //private numbers 
         //n_inc = 2982585.;
@@ -715,7 +715,7 @@ void HTTSequence::BuildSequence(){
     if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos ) {
       if(era_type == era::data_2016) {
         n_inc = 3097174.;
-        n_2 = 18540584.;
+        n_2 = 18742957.;
         frac = 0.282932; 
         //private numbers
         //n_inc = 3100706.;
