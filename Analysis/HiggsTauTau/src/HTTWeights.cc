@@ -209,6 +209,10 @@ namespace ic {
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
       f.Close();
 
+      TFile f_ggh(scalefactor_file_ggh_.c_str());
+      w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
+      f_ggh.Close();
+
       // tracking corrections for electrons and muons
       fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
           w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
@@ -416,6 +420,27 @@ namespace ic {
       fns_["em_qcd_osss_stat_2jet_unc2_down"] = std::shared_ptr<RooFunctor>(
          w_->function("em_qcd_osss_stat_2jet_unc2_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
 
+      // MG ggH specific weights
+      if(do_quarkmass_higgspt_){
+        fns_["ggH_quarkmass_corr"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_quarkmass_corr_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr_up")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_quarkmass_corr_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr_down")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_fullquarkmass_corr"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_fullquarkmass_corr")->functor(w_ggh_->argSet("HpT")));
+      }
+      if(do_ps_weights_){
+        fns_["ggH_mg_ps_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ps_up")->functor(w_ggh_->argSet("ngenjets,HpT")));
+        fns_["ggH_mg_ps_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ps_down")->functor(w_ggh_->argSet("ngenjets,HpT")));
+        fns_["ggH_mg_ue_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ue_up")->functor(w_ggh_->argSet("ngenjets")));
+        fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ue_down")->functor(w_ggh_->argSet("ngenjets")));
+      }
     }
     else if(scalefactor_file_!="" && !is_embedded_) {
         TFile f(scalefactor_file_.c_str());
@@ -1012,26 +1037,6 @@ namespace ic {
         }
 
     }
-    //if(do_quarkmass_higgspt_){
-    //  fns_["ggH_quarkmass_corr"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_quarkmass_corr_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr_up")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_quarkmass_corr_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr_down")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_fullquarkmass_corr"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_fullquarkmass_corr")->functor(w_->argSet("HpT")));
-    //}
-    //if(do_ps_weights_){
-    //  fns_["ggH_mg_ps_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ps_up")->functor(w_->argSet("ngenjets,HpT")));
-    //  fns_["ggH_mg_ps_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ps_down")->functor(w_->argSet("ngenjets,HpT")));
-    //  fns_["ggH_mg_ue_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ue_up")->functor(w_->argSet("ngenjets")));
-    //  fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ue_down")->functor(w_->argSet("ngenjets")));
-    //}
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
       mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));

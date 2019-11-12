@@ -158,7 +158,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_pt_bins = '[10,12,14,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
-        if options.era in ['smsummer17','sm18']:
+        if options.era in ['smsummer17','summer18','sm18']:
           trg_pt_bins='[28,1000]'
         else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
@@ -231,10 +231,10 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
         GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)
          
-        GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-        GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)
+        GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+        GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+        GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+        GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, iso_probe_1)
     
     ana.Run()
     ana.nodes.Output(outfile)
@@ -404,6 +404,18 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+  elif sig_model == 'DoubleVUncorr_18':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,85,95], widthp[2.495], sigma1p[2,1,4])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p[4,2,10])",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,1,4])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,2,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
   elif sig_model == 'DoubleVUncorr_elec':
       nparams = 6
       pdf_args.extend(
@@ -413,6 +425,20 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean1f[90,85,95], widthf[2.495], sigma1f[2,0.2,4])",
                   "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f[4,0.5,10])",
+                  "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
+
+              ]
+          )
+  elif sig_model == 'DoubleVUncorr_elec_18':
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean1p[90,87,92], widthp[2.495], sigma1p[2,0.2,4])",
+                  "expr::sigma2p('sigma1p+x', sigma1p, x[0,0,2])",
+                  "Voigtian::signal2Pass(m_vis, mean2p[90,85,95], widthp,        sigma2p)",
+                  "SUM::signalPass(vFracp[0.8,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean1f[90,87,92], widthf[2.495], sigma1f[2,0.2,4])",
+                  "expr::sigma2f('sigma1f+y', sigma1f, y[0,0,2])",
+                  "Voigtian::signal2Fail(m_vis, mean2f[90,85,95], widthf,        sigma2f)",
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
 
               ]
@@ -444,6 +470,18 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+  elif sig_model == 'DoubleVPartcorr_18':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,15])",
+                  "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,85,95], width[2.495], sigmaf[2,1,15])",
+                  "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
 
   elif sig_model == 'DoubleVPartcorr_elec':
       nparams = 6
@@ -464,6 +502,18 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
               [
                   "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
                   "Voigtian::signal2Pass(m_vis, meanp[90,85,95], width[2.495], sigmap[2,1,10])",
+                  "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
+                  "Voigtian::signal2Fail(m_vis, meanf[90,70,100], width[2.495], sigmaf[2,1,15])",
+                  "SUM::signalFail(vFracf[0.01,0,1]*signal1Fail, signal2Fail)"
+              ]
+          )
+  elif sig_model == 'DoubleVPartcorr_TwoPeaks_18':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
+                  "Voigtian::signal2Pass(m_vis, meanp[90,80,100], width[2.495], sigmap[2,1,15])",
                   "SUM::signalPass(vFracp[0.01,0,1]*signal1Pass, signal2Pass)",
                   "Voigtian::signal1Fail(m_vis, mean[90,85,95], width[2.495], sigma[2,1,4])",
                   "Voigtian::signal2Fail(m_vis, meanf[90,70,100], width[2.495], sigmaf[2,1,15])",
@@ -620,7 +670,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,0.1], gammaPass[0.001,0,1], peak[90])",
-                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
+                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.15], gammaFail[0.001,0,1], peak[90])",
                   # attenmpt to limit shape to peak below 90 GeV: beta_max = 90./1000.*gamma              #90./1000.*gammaPass,
                   #betaFail=62.1537
                   #Parameter betaFail  has zero or invalid step size - consider it as constant
@@ -670,6 +720,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
       if options.era in ['summer17','sm18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 50: ForceEventCount = True
+      if options.era in ['summer18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+          if xmin >= 50: ForceEventCount = True
+      if options.era in ['summer18'] and ('_id' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+          if xmin >= 30: ForceEventCount = True
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
@@ -703,6 +757,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           wsp.var('sigma1f').setRange(0.2,4)
           wsp.var('sigma2f').setRange(2,10)
           wsp.var('sigma2p').setRange(2,10)
+      if options.channel=='tpzee' and 'id' in name and option.era in ['sm18']:
+        print("changing range of betaFail for bkg")
+        wsp.var('betaFail').setRange(0,0.1)
+
 
 
       if doFit and not ForceEventCount:
@@ -982,9 +1040,19 @@ idiso_tag_1 = baseline_tag1
 idiso_tag_2 = baseline_tag2 
 iso_tag_1 = baseline_tag1+'*(id_probe_2)'
 iso_tag_2 = baseline_tag2+'*(id_probe_1)'
+fix_iso_tag_1 = baseline_tag1+'*(id_probe_2)'
+fix_iso_tag_2 = baseline_tag2+'*(id_probe_1)'
 if (options.veto_FSR==True):
-    iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
-    iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+    if options.channel == 'tpzee':
+        iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+        iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+    else:
+        iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+        iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
+    # for embedded change this to m_gamma_leptons because updated trees
+    if options.embedded:
+        fix_iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+        fix_iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
@@ -1048,7 +1116,7 @@ for name in wsnames:
   sig_model = 'DoubleVUncorr'  
   if options.channel == 'tpzmm' and 'trg' in name: sig_model = 'DoubleVCorr'
   if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
-  if 'id' in name: bkg_model = 'CMSShape'    
+  if 'id' in name: bkg_model = 'CMSShape'
   else: bkg_model = 'Exponential'
   if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
   else: sig_model='BWCBGausConvUncorr'
@@ -1065,7 +1133,22 @@ for name in wsnames:
     if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
     if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
-    
+
+  if options.era == 'summer18':
+    if options.channel =='tpzmm':
+        if "iso" in name: sig_model = 'DoubleVPartcorr_TwoPeaks_18'
+        elif "id" in name: sig_model = 'DoubleVUncorr_18'
+        elif "trg" in name: 
+            sig_model = 'DoubleVPartcorr_18'
+            # sig_model = 'DoubleVPartcorr_TwoPeaks_18' # consider using this one for mt cross trigger aiso1
+            bkg_model = 'CMSShape'
+    if options.channel =='tpzee':
+        if "iso" in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+        elif "id" in name: 
+            sig_model = 'DoubleVUncorr_elec_18'
+            # bkg_model = 'Exponential'
+        elif "trg" in name: sig_model = 'DoubleVUncorr_elec'
+
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   #sig_model='BWCBConvUncorr'
   if (not options.embed_dz or 'trg' in name or not options.trg_only):
@@ -1099,7 +1182,7 @@ for i in sf_types:
         if 'trg' in i: ratio_range="0.7,1.3"
     label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
     plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='mssmsummer16',ratio_range,True,100,10,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
-  
+
 outfile.Close()  
 wsfile.Close()
 sffile.Close()

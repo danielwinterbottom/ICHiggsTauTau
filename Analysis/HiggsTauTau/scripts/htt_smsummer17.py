@@ -110,6 +110,9 @@ CONFIG='scripts/config2017cpdecay.json'
 if options.config != '': CONFIG = options.config
  
 n_channels=1
+output_folder = ""
+svfit_folder = ""
+svfit_mode = 0
 with open(CONFIG,"r") as input:
   with open ("config_for_python_channels.json","w") as output:
     for line in input:
@@ -121,6 +124,14 @@ with open(CONFIG,"r") as input:
 with open("config_for_python_channels.json") as config_file:
   cfg = json.load(config_file)
   n_channels=len(cfg["job"]["channels"])
+  output_folder = cfg["sequence"]["output_folder"]
+  svfit_mode = cfg["sequence"]["new_svfit_mode"]
+  svfit_folder = cfg["sequence"]["svfit_folder"]
+
+# makes sure output folder(s) (and svfit folder(s) if needed) is always created
+# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode != 0:
+#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
@@ -409,7 +420,7 @@ if options.proc_bkg or options.proc_all:
         if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa or 'WWTo2L2Nu' in sa or 'WZTo3LNu' in sa or 'DY3JetsToLL-LO' in sa:
             nperjob=5
         if 'scale' in FLATJSONPATCH:
-          nperjob = 2
+          nperjob = 5
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -459,8 +470,8 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 20
-        if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
+        nperjob = 1
+        if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 1
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs and not options.condor:
