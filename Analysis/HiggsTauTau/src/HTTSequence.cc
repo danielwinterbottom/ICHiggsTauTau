@@ -679,8 +679,8 @@ void HTTSequence::BuildSequence(){
         //frac = 0.279662;
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
-        n_inc = 20381115.0;
-        n_2 = 10988981.0;
+        n_inc = 13697052.0;
+        n_2 = 10989343.0;
         frac = 0.291244; 
       }
       do_ggH_stitch = true;
@@ -697,7 +697,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
         n_inc = 3329183.;
-        n_2 = 16011774.0;
+        n_2 = 15649381.0;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -714,7 +714,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
         n_inc = 3201858.;
-        n_2=15907023.;
+        n_2=15839577.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
