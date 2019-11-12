@@ -460,7 +460,7 @@ if options.channel == 'tt':
     if options.era in ['cpdecay16','legacy16'] and options.deeptau:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2)'
     if options.era in ['cpsummer17','cp18']:
-      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
+      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     if options.era == 'mssmsummer16':
