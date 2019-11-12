@@ -130,8 +130,8 @@ with open("config_for_python_channels.json") as config_file:
     svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode == 1:
 #     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 scale = int(math.ceil(float(n_scales*n_channels)/100))
@@ -170,24 +170,24 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
 
-      'VBFHToTauTau_M-126-nospinner',
-      'VBFHToTauTau_M-125-ext1',
-      #'VBFHToTauTau_M-125-MM-filter',
-      'VBFHToTauTau_M-125-nospinner-filter',
-      #'VBFHToTauTau_M-125-PS-filter',
-      #'VBFHToTauTau_M-125-SM-filter',
-      'GluGluToHToTauTau_M-125-nospinner',
-      'GluGluHToTauTau_M-125',
-      'GluGluToHToTauTau_M-125-nospinner-filter',
+      # 'VBFHToTauTau_M-126-nospinner',
+      # 'VBFHToTauTau_M-125-ext1',
+      # #'VBFHToTauTau_M-125-MM-filter',
+      # 'VBFHToTauTau_M-125-nospinner-filter',
+      # #'VBFHToTauTau_M-125-PS-filter',
+      # #'VBFHToTauTau_M-125-SM-filter',
+      # 'GluGluToHToTauTau_M-125-nospinner',
+      # 'GluGluHToTauTau_M-125',
+      # 'GluGluToHToTauTau_M-125-nospinner-filter',
       'GluGluToHToTauTau_M125_amcatnloFXFX',
-      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'WplusHToTauTau_M-125', 
-      'WminusHToTauTau_M-125', 
-      'ZHToTauTau_M-125'
+      # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+      # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+      # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      # 'WplusHToTauTau_M-125', 
+      # 'WminusHToTauTau_M-125', 
+      # 'ZHToTauTau_M-125'
 
         ]
    # signal_mc += [

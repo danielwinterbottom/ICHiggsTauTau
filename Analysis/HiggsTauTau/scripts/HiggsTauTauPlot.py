@@ -457,7 +457,7 @@ if options.channel == 'tt':
         cats['baseline_aisotau2'] = '(pt_1>50 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
-    if options.era in ['cpdecay16','legacy16'] and options.deeptau:
+    if options.era in ['cpdecay16','legacy16']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2)'
     if options.era in ['cpsummer17','cp18']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2 && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)'
@@ -1413,8 +1413,8 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
     sm_samples = {
         # test CP in decay samples
 
-        # 'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
-        # 'qqH_htt' : 'VBFHToTauTau_M-*',
+        'ggH_ph_htt' : 'GluGluToHToTauTau_M-*',
+        'qqH_htt' : 'VBFHToTauTau_M-*',
 
         #"ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
         #"ggH_ps_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
@@ -1424,13 +1424,13 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
         #"qqH_ps_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
         #"qqH_mm_nofilter_htt": "VBFHToTauTau_M-125-nospinner",
 
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
 
-        "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
-        "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_ps_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
+        # "qqH_mm_htt": ["VBFHToTauTau_M-125-nospinner-filter","VBFHToTauTau_M-125-nospinner-filter-ext"],
 
         #  "WplusH_htt" : "WplusHToTauTau_M-*",
         #  "WminusH_htt" : "WminusHToTauTau_M-*",
@@ -1441,8 +1441,9 @@ if options.era in ['cpdecay16',"legacy16",'mvadm2016']:
 
 if options.era in ['cpsummer17']: 
     sm_samples = { 
-            # "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+            "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
             # "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
+            "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter"],
 
             'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
             'qqH_htt': 'VBFHToTauTau_M-*', 
