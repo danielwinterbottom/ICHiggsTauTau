@@ -95,6 +95,7 @@ namespace ic {
     ele_tracking_sf_          = nullptr;
     muon_tracking_sf_         = nullptr;
     scalefactor_file_         = "";
+    scalefactor_file_ggh_     = "";
     do_tau_id_sf_             = false;
     mssm_higgspt_file_        = "";
     do_mssm_higgspt_          = false;
@@ -142,7 +143,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
-    std::cout << boost::format(param_fmt()) % "scalefactor_file"         % scalefactor_file_;
+    std::cout << boost::format(param_fmt()) % "scalefactor_file"    % scalefactor_file_;
+    std::cout << boost::format(param_fmt()) % "scalefactor_file_ggh" % scalefactor_file_ggh_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -208,6 +210,12 @@ namespace ic {
       TFile f(scalefactor_file_.c_str());
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
       f.Close();
+
+      if (scalefactor_file_ggh_ != "") {
+        TFile f_ggh(scalefactor_file_ggh_.c_str());
+        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
+        f_ggh.Close();
+      }
 
       // tracking corrections for electrons and muons
       fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -416,6 +424,27 @@ namespace ic {
       fns_["em_qcd_osss_stat_2jet_unc2_down"] = std::shared_ptr<RooFunctor>(
          w_->function("em_qcd_osss_stat_2jet_unc2_down")->functor(w_->argSet("dR,njets,e_pt,m_pt")));
 
+      // MG ggH specific weights
+      if(do_quarkmass_higgspt_){
+        fns_["ggH_quarkmass_corr"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_quarkmass_corr_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr_up")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_quarkmass_corr_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_quarkmass_corr_down")->functor(w_ggh_->argSet("HpT")));
+        fns_["ggH_fullquarkmass_corr"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_fullquarkmass_corr")->functor(w_ggh_->argSet("HpT")));
+      }
+      if(do_ps_weights_){
+        fns_["ggH_mg_ps_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ps_up")->functor(w_ggh_->argSet("ngenjets,HpT")));
+        fns_["ggH_mg_ps_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ps_down")->functor(w_ggh_->argSet("ngenjets,HpT")));
+        fns_["ggH_mg_ue_up"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ue_up")->functor(w_ggh_->argSet("ngenjets")));
+        fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
+                  w_ggh_->function("ggH_mg_ue_down")->functor(w_ggh_->argSet("ngenjets")));
+      }
     }
     else if(scalefactor_file_!="" && !is_embedded_) {
         TFile f(scalefactor_file_.c_str());
@@ -1012,26 +1041,6 @@ namespace ic {
         }
 
     }
-    //if(do_quarkmass_higgspt_){
-    //  fns_["ggH_quarkmass_corr"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_quarkmass_corr_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr_up")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_quarkmass_corr_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_quarkmass_corr_down")->functor(w_->argSet("HpT")));
-    //  fns_["ggH_fullquarkmass_corr"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_fullquarkmass_corr")->functor(w_->argSet("HpT")));
-    //}
-    //if(do_ps_weights_){
-    //  fns_["ggH_mg_ps_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ps_up")->functor(w_->argSet("ngenjets,HpT")));
-    //  fns_["ggH_mg_ps_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ps_down")->functor(w_->argSet("ngenjets,HpT")));
-    //  fns_["ggH_mg_ue_up"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ue_up")->functor(w_->argSet("ngenjets")));
-    //  fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
-    //            w_->function("ggH_mg_ue_down")->functor(w_->argSet("ngenjets")));
-    //}
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
       mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -1632,37 +1641,37 @@ namespace ic {
 
     }
     if(do_quarkmass_higgspt_ || do_ps_weights_){
-      //double HpT=-9999;
-      //std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
-      //for(unsigned i=0; i<gen_particles.size(); ++i){
-      //  unsigned genID = std::fabs(gen_particles[i]->pdgid());
-      //  if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]) HpT = gen_particles[i]->vector().Pt();
-      //}
-      //if(do_quarkmass_higgspt_){
-      //  auto args = std::vector<double>{HpT};
-      //  double wt_quarkmass = fns_["ggH_quarkmass_corr"]->eval(args.data());
-      //  double wt_quarkmass_up = fns_["ggH_quarkmass_corr_up"]->eval(args.data());
-      //  double wt_quarkmass_down = fns_["ggH_quarkmass_corr_down"]->eval(args.data());
-      //  eventInfo->set_weight("wt_quarkmass",wt_quarkmass);
-      //  event->Add("wt_quarkmass" ,1./wt_quarkmass);
-      //  event->Add("wt_quarkmass_up" ,wt_quarkmass_up/wt_quarkmass);
-      //  event->Add("wt_quarkmass_down" ,wt_quarkmass_down/wt_quarkmass); 
-      //  double wt_fullquarkmass = fns_["ggH_fullquarkmass_corr"]->eval(args.data());
-      //  event->Add("wt_fullquarkmass" , wt_fullquarkmass/wt_quarkmass);
-      //}
-      //if(do_ps_weights_) {
-      //  unsigned ngenjets = event->Get<unsigned>("ngenjets");
-      //  auto args_1 = std::vector<double>{(double)ngenjets};
-      //  auto args_2 = std::vector<double>{(double)ngenjets,HpT};
-      //  double wt_ps_up = fns_["ggH_mg_ps_up"]->eval(args_2.data());
-      //  double wt_ps_down = fns_["ggH_mg_ps_down"]->eval(args_2.data());
-      //  double wt_ue_up = fns_["ggH_mg_ue_up"]->eval(args_1.data());
-      //  double wt_ue_down = fns_["ggH_mg_ue_down"]->eval(args_1.data());
-      //  event->Add("wt_ps_up", wt_ps_up);
-      //  event->Add("wt_ps_down", wt_ps_down);
-      //  event->Add("wt_ue_up", wt_ue_up);
-      //  event->Add("wt_ue_down", wt_ue_down);
-      //}
+      double HpT=-9999;
+      std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+      for(unsigned i=0; i<gen_particles.size(); ++i){
+        unsigned genID = std::fabs(gen_particles[i]->pdgid());
+        if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]) HpT = gen_particles[i]->vector().Pt();
+      }
+      if(do_quarkmass_higgspt_){
+        auto args = std::vector<double>{HpT};
+        double wt_quarkmass = fns_["ggH_quarkmass_corr"]->eval(args.data());
+        double wt_quarkmass_up = fns_["ggH_quarkmass_corr_up"]->eval(args.data());
+        double wt_quarkmass_down = fns_["ggH_quarkmass_corr_down"]->eval(args.data());
+        eventInfo->set_weight("wt_quarkmass",wt_quarkmass);
+        event->Add("wt_quarkmass" ,1./wt_quarkmass);
+        event->Add("wt_quarkmass_up" ,wt_quarkmass_up/wt_quarkmass);
+        event->Add("wt_quarkmass_down" ,wt_quarkmass_down/wt_quarkmass); 
+        double wt_fullquarkmass = fns_["ggH_fullquarkmass_corr"]->eval(args.data());
+        event->Add("wt_fullquarkmass" , wt_fullquarkmass/wt_quarkmass);
+      }
+      if(do_ps_weights_) {
+        unsigned ngenjets = event->Get<unsigned>("ngenjets");
+        auto args_1 = std::vector<double>{(double)ngenjets};
+        auto args_2 = std::vector<double>{(double)ngenjets,HpT};
+        double wt_ps_up = fns_["ggH_mg_ps_up"]->eval(args_2.data());
+        double wt_ps_down = fns_["ggH_mg_ps_down"]->eval(args_2.data());
+        double wt_ue_up = fns_["ggH_mg_ue_up"]->eval(args_1.data());
+        double wt_ue_down = fns_["ggH_mg_ue_down"]->eval(args_1.data());
+        event->Add("wt_ps_up", wt_ps_up);
+        event->Add("wt_ps_down", wt_ps_down);
+        event->Add("wt_ue_up", wt_ue_up);
+        event->Add("wt_ue_down", wt_ue_down);
+      }
     }
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  

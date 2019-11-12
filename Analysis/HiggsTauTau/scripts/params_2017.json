@@ -65,7 +65,11 @@
   },
   "GluGluHToTauTau_M-125": {
     "xs": 3.045966,
-    "evt": 2891556
+    "evt": 12055348.0
+  },
+  "GluGluHToTauTau_M-125-ext": {
+    "xs": 3.045966,
+    "evt": 12055348.0
   },
   "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
     "xs": 3.045966,

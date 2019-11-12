@@ -679,8 +679,8 @@ void HTTSequence::BuildSequence(){
         //frac = 0.279662;
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
-        n_inc = 20381115.0;
-        n_2 = 10988981.0;
+        n_inc = 13697052.0;
+        n_2 = 10989343.0;
         frac = 0.291244; 
       }
       do_ggH_stitch = true;
@@ -697,7 +697,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
         n_inc = 3329183.;
-        n_2 = 16011774.0;
+        n_2 = 15649381.0;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -714,7 +714,7 @@ void HTTSequence::BuildSequence(){
       }
       if(era_type == era::data_2017 || era_type == era::data_2018) {
         n_inc = 3201858.;
-        n_2=15907023.;
+        n_2=15839577.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
@@ -2571,10 +2571,11 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-     .set_do_quarkmass_higgspt(false)
-     .set_do_ps_weights(false);
+     .set_do_quarkmass_higgspt(do_ggH_stitch)
+     .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
+     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
@@ -2651,6 +2652,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_ps_weights(do_ggH_stitch);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2018.root");
+     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
      httWeights.set_is_embedded(is_embedded);
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
