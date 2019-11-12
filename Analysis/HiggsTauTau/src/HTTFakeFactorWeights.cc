@@ -488,7 +488,9 @@ namespace ic {
 
           double pass_single = 1.;
           if(channel_==channel::mt) {
-            bool trg_singlemuon = event->Get<bool>("trg_singlemuon"); 
+            bool trg_singlemuon;
+            if (!event->Exists("trg_singlemuon")) trg_singlemuon = true;
+            else  trg_singlemuon = event->Get<bool>("trg_singlemuon"); 
             if(strategy_==strategy::legacy16) {
               if(!(pt_1_>23&&trg_singlemuon)) pass_single=0.;
             } else {
@@ -497,7 +499,9 @@ namespace ic {
           }
 
           if(channel_==channel::et) {
-            bool trg_singleelectron = event->Get<bool>("trg_singleelectron");
+            bool trg_singleelectron;
+            if (!event->Exists("trg_singleelectron")) trg_singleelectron = true;
+            else  trg_singleelectron = event->Get<bool>("trg_singleelectron");
             if(strategy_ == strategy::cpdecays17) {
               if(!(pt_1_>28&&trg_singleelectron)) pass_single=0.;
             } else if(strategy_ == strategy::cpdecays18) {

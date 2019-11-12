@@ -165,7 +165,7 @@ sample_list = [
     'GluGluToHToTauTau_M125_amcatnloFXFX-PSDown',
 
     'VBFHToTauTau_M125_MM',
-    'VBFHToTauTau_M125_nospinner',
+    'VBFHToTauTau_M-125-nospinner',
     'VBFHToTauTau_M125_PS',
     'VBFHToTauTau_M125_SM',
     'VBFHToTauTau_M-125-nospinner-filter',

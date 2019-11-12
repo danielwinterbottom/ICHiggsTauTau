@@ -46,6 +46,7 @@ namespace ic {
       do_sm_ps_wts_ = false;
       do_z_weights_ = false;
       do_faketaus_ = false;
+      trg_applied_in_mc_ = true;
 }
 
   HTTCategories::~HTTCategories() {
@@ -1752,7 +1753,19 @@ namespace ic {
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
     if (event->Exists("trg_etaucross"))     trg_etaucross_ = event->Get<bool>("trg_etaucross");
-    
+   
+    if(!trg_applied_in_mc_) {
+      trg_singleelectron_ = true;
+      trg_singlemuon_     = true;
+      trg_doubletau_      = true;
+      trg_vbfdoubletau_   = true;
+      trg_muonelectron_   = true;
+      trg_singletau_1_      = true;
+      trg_singletau_2_      = true; 
+      trg_mutaucross_ = true;
+      trg_etaucross_ = true;
+    } 
+
     if (event->Exists("flagMETFilter")) flagMETFilter_ = event->Get<bool>("flagMETFilter"); 
     else flagMETFilter_ = false;
 

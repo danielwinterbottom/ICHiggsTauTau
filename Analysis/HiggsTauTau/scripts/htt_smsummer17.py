@@ -172,14 +172,6 @@ if options.proc_sm or options.proc_all:
         'GluGluToHToTauTau_M-125-nospinner-filter',
         'VBFHToTauTau_M-125-nospinner',
         'GluGluToHToTauTau_M-125-nospinner',
-#         'VBFHToTauTau_M-125',
-         # 'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
-
-         # 'GluGluToHToTauTau_M125_nospinner-2017',
-         #'VBFHToTauTau_M125_nospinner-2017',
-
-         #'GluGluHToPseudoscalarTauTau_GEN',
-         #'GluGluHToMaxmixTauTau_GEN',
 
          'GluGluHToTauTau_M-125',
          'GluGluHToTauTau_M-125-ext',
