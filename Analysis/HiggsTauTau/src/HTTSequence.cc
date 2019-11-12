@@ -678,8 +678,13 @@ void HTTSequence::BuildSequence(){
         //n_2 = 14254055.;
         //frac = 0.279662;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 13697052.0;
+        n_2 = 10989343.0;
+        frac = 0.291244; 
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 13719412.0;
         n_2 = 10989343.0;
         frac = 0.291244; 
       }
@@ -695,9 +700,14 @@ void HTTSequence::BuildSequence(){
         //n_2 = 14192951.;
         //frac = 0.274486;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 3329183.;
         n_2 = 15649381.0;
+        frac = 0.267242;
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 3329183.;
+        n_2 = 15713406.0;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -712,9 +722,14 @@ void HTTSequence::BuildSequence(){
         //n_2 = 14302986.;
         //frac = 0.282423;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 3201858.;
         n_2=15839577.;
+        frac = 0.271407;
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 3201858.;
+        n_2=15907023.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
