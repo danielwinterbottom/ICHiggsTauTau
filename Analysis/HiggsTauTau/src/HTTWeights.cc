@@ -95,6 +95,7 @@ namespace ic {
     ele_tracking_sf_          = nullptr;
     muon_tracking_sf_         = nullptr;
     scalefactor_file_         = "";
+    scalefactor_file_ggh_     = "";
     do_tau_id_sf_             = false;
     mssm_higgspt_file_        = "";
     do_mssm_higgspt_          = false;
@@ -142,7 +143,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
-    std::cout << boost::format(param_fmt()) % "scalefactor_file"         % scalefactor_file_;
+    std::cout << boost::format(param_fmt()) % "scalefactor_file"    % scalefactor_file_;
+    std::cout << boost::format(param_fmt()) % "scalefactor_file_ggh" % scalefactor_file_ggh_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -209,9 +211,11 @@ namespace ic {
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
       f.Close();
 
-      TFile f_ggh(scalefactor_file_ggh_.c_str());
-      w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
-      f_ggh.Close();
+      if (scalefactor_file_ggh_ != "") {
+        TFile f_ggh(scalefactor_file_ggh_.c_str());
+        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
+        f_ggh.Close();
+      }
 
       // tracking corrections for electrons and muons
       fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
