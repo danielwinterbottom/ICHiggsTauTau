@@ -1632,37 +1632,37 @@ namespace ic {
 
     }
     if(do_quarkmass_higgspt_ || do_ps_weights_){
-      //double HpT=-9999;
-      //std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
-      //for(unsigned i=0; i<gen_particles.size(); ++i){
-      //  unsigned genID = std::fabs(gen_particles[i]->pdgid());
-      //  if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]) HpT = gen_particles[i]->vector().Pt();
-      //}
-      //if(do_quarkmass_higgspt_){
-      //  auto args = std::vector<double>{HpT};
-      //  double wt_quarkmass = fns_["ggH_quarkmass_corr"]->eval(args.data());
-      //  double wt_quarkmass_up = fns_["ggH_quarkmass_corr_up"]->eval(args.data());
-      //  double wt_quarkmass_down = fns_["ggH_quarkmass_corr_down"]->eval(args.data());
-      //  eventInfo->set_weight("wt_quarkmass",wt_quarkmass);
-      //  event->Add("wt_quarkmass" ,1./wt_quarkmass);
-      //  event->Add("wt_quarkmass_up" ,wt_quarkmass_up/wt_quarkmass);
-      //  event->Add("wt_quarkmass_down" ,wt_quarkmass_down/wt_quarkmass); 
-      //  double wt_fullquarkmass = fns_["ggH_fullquarkmass_corr"]->eval(args.data());
-      //  event->Add("wt_fullquarkmass" , wt_fullquarkmass/wt_quarkmass);
-      //}
-      //if(do_ps_weights_) {
-      //  unsigned ngenjets = event->Get<unsigned>("ngenjets");
-      //  auto args_1 = std::vector<double>{(double)ngenjets};
-      //  auto args_2 = std::vector<double>{(double)ngenjets,HpT};
-      //  double wt_ps_up = fns_["ggH_mg_ps_up"]->eval(args_2.data());
-      //  double wt_ps_down = fns_["ggH_mg_ps_down"]->eval(args_2.data());
-      //  double wt_ue_up = fns_["ggH_mg_ue_up"]->eval(args_1.data());
-      //  double wt_ue_down = fns_["ggH_mg_ue_down"]->eval(args_1.data());
-      //  event->Add("wt_ps_up", wt_ps_up);
-      //  event->Add("wt_ps_down", wt_ps_down);
-      //  event->Add("wt_ue_up", wt_ue_up);
-      //  event->Add("wt_ue_down", wt_ue_down);
-      //}
+      double HpT=-9999;
+      std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+      for(unsigned i=0; i<gen_particles.size(); ++i){
+        unsigned genID = std::fabs(gen_particles[i]->pdgid());
+        if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]) HpT = gen_particles[i]->vector().Pt();
+      }
+      if(do_quarkmass_higgspt_){
+        auto args = std::vector<double>{HpT};
+        double wt_quarkmass = fns_["ggH_quarkmass_corr"]->eval(args.data());
+        double wt_quarkmass_up = fns_["ggH_quarkmass_corr_up"]->eval(args.data());
+        double wt_quarkmass_down = fns_["ggH_quarkmass_corr_down"]->eval(args.data());
+        eventInfo->set_weight("wt_quarkmass",wt_quarkmass);
+        event->Add("wt_quarkmass" ,1./wt_quarkmass);
+        event->Add("wt_quarkmass_up" ,wt_quarkmass_up/wt_quarkmass);
+        event->Add("wt_quarkmass_down" ,wt_quarkmass_down/wt_quarkmass); 
+        double wt_fullquarkmass = fns_["ggH_fullquarkmass_corr"]->eval(args.data());
+        event->Add("wt_fullquarkmass" , wt_fullquarkmass/wt_quarkmass);
+      }
+      if(do_ps_weights_) {
+        unsigned ngenjets = event->Get<unsigned>("ngenjets");
+        auto args_1 = std::vector<double>{(double)ngenjets};
+        auto args_2 = std::vector<double>{(double)ngenjets,HpT};
+        double wt_ps_up = fns_["ggH_mg_ps_up"]->eval(args_2.data());
+        double wt_ps_down = fns_["ggH_mg_ps_down"]->eval(args_2.data());
+        double wt_ue_up = fns_["ggH_mg_ue_up"]->eval(args_1.data());
+        double wt_ue_down = fns_["ggH_mg_ue_down"]->eval(args_1.data());
+        event->Add("wt_ps_up", wt_ps_up);
+        event->Add("wt_ps_down", wt_ps_down);
+        event->Add("wt_ue_up", wt_ue_up);
+        event->Add("wt_ue_down", wt_ue_down);
+      }
     }
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  
