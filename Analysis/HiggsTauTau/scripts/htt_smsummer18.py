@@ -130,8 +130,8 @@ with open("config_for_python_channels.json") as config_file:
     svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode == 1:
 #     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 scale = int(math.ceil(float(n_scales*n_channels)/100))

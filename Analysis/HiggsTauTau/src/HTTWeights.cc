@@ -213,7 +213,7 @@ namespace ic {
 
       if (scalefactor_file_ggh_ != "") {
         TFile f_ggh(scalefactor_file_ggh_.c_str());
-        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
+        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f_ggh.Close();
       }
 
