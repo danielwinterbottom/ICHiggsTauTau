@@ -158,7 +158,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         trg_pt_bins = '[10,12,14,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
         trg_eta_bins='[0,2.4]'
-        if options.era in ['smsummer17','summer18']:
+        if options.era in ['smsummer17','summer18','sm18']:
           trg_pt_bins='[28,1000]'
         else: trg_pt_bins='[23,1000]'
       if options.em_iso: 
@@ -718,7 +718,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['summer17'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+      if options.era in ['summer17','sm18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 50: ForceEventCount = True
       if options.era in ['summer18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 50: ForceEventCount = True
@@ -738,25 +738,26 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         wsp.var("efficiency").setError(0.) 
         ForceEventCount = True # dont do fit if yield is 0 anyway
     
-      if options.channel=='tpzee' and 'id' in name:
-        # if xmin>=100:
-        #   print 'changing sigma2f parameter'
-        #   wsp.var('sigma1f').setRange(0.2,4)
-        #   wsp.var('sigma2f').setRange(2,15)
-        #   wsp.var('sigma2p').setRange(2,10)
-        # elif xmin >= 40:
-        #   wsp.var('sigma2f').setRange(0.2,10)
-        #   wsp.var('sigma1f').setRange(0.2,10)
-        #   wsp.var('sigma2p').setRange(0.2,10)
-        # elif xmin>=50 and xmin<100:
-        #   print 'changing sigmaf parameters'
-        #   wsp.var('sigma2f').setRange(0.2,10)
-        #   wsp.var('sigma1f').setRange(0.2,10)
-        #   wsp.var('sigma2p').setRange(2,10)
-        # else:
-        #   wsp.var('sigma1f').setRange(0.2,4)
-        #   wsp.var('sigma2f').setRange(2,10)
-        #   wsp.var('sigma2p').setRange(2,10)
+      if options.channel=='tpzee' and 'id' in name and options.era == 'summer17':
+        if xmin>=100: 
+          print 'changing sigma2f parameter'
+          wsp.var('sigma1f').setRange(0.2,4)
+          wsp.var('sigma2f').setRange(2,15)
+          wsp.var('sigma2p').setRange(2,10)
+        elif xmin >= 40:
+          wsp.var('sigma2f').setRange(0.2,10)
+          wsp.var('sigma1f').setRange(0.2,10)
+          wsp.var('sigma2p').setRange(0.2,10)
+        elif xmin>=50 and xmin<100:
+          print 'changing sigmaf parameters'
+          wsp.var('sigma2f').setRange(0.2,10)
+          wsp.var('sigma1f').setRange(0.2,10)
+          wsp.var('sigma2p').setRange(2,10)
+        else: 
+          wsp.var('sigma1f').setRange(0.2,4)
+          wsp.var('sigma2f').setRange(2,10)
+          wsp.var('sigma2p').setRange(2,10)
+      if options.channel=='tpzee' and 'id' in name and option.era in ['sm18']:
         print("changing range of betaFail for bkg")
         wsp.var('betaFail').setRange(0,0.1)
 
@@ -909,14 +910,14 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
         #data_samples = ['SingleMuonB']
         #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-    elif options.era == 'summer18':
+    elif options.era in ['summer18','sm18']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == 'legacy16':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
-    if options.era == 'summer18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
+    if options.era in ['summer18','sm18']: data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
@@ -925,7 +926,7 @@ if  options.channel == 'tpzee':
 
 # Add MC sample names   
 if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
-elif options.era == 'summer18': ztt_samples = ['DYJetsToLL-LO']
+elif options.era in ['summer18','sm18']: ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
@@ -938,7 +939,7 @@ if options.era == 'summer17':
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB']
-elif options.era == 'summer18':
+elif options.era in ['summer18','sm18']:
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauA']
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElA']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuA']
@@ -980,7 +981,7 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
   
-  if options.era in ['summer17','summer18']:
+  if options.era in ['summer17','summer18','sm18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
   else:
@@ -992,7 +993,7 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  if options.era in ['summer17','summer18','legacy16']:
+  if options.era in ['summer17','summer18','legacy16','sm18']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -1010,7 +1011,7 @@ if options.channel == 'tpzee':
     if options.aiso2:
       iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso or options.era in ['summer17','summer18']:
+  if options.em_iso or options.era in ['summer17','summer18','sm18']:
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -1020,7 +1021,7 @@ if options.channel == 'tpzee':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  if options.era in ['summer17','summer18']:
+  if options.era in ['summer17','summer18','sm18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
   else:    
@@ -1123,7 +1124,7 @@ for name in wsnames:
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
   else: sig_model = 'BWDoubleCBConvCorr'
 
-  if options.era == 'summer17':
+  if options.era in ['summer17','sm18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
     elif options.channel =='tpzmm': 

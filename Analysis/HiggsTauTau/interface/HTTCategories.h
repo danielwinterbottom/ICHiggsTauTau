@@ -48,6 +48,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_z_weights)
   CLASS_MEMBER(HTTCategories, bool, do_faketaus)
   CLASS_MEMBER(HTTCategories, bool, official_ggH)
+  CLASS_MEMBER(HTTCategories, bool, trg_applied_in_mc)
 
   TTree *outtree_;
   TTree *synctree_;

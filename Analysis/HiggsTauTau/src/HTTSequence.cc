@@ -2845,6 +2845,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
+    .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
     .set_official_ggH(official_ggH));
 
  } else {
