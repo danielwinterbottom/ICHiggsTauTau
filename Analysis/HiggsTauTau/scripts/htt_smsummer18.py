@@ -130,8 +130,8 @@ with open("config_for_python_channels.json") as config_file:
     svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode == 1:
 #     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 scale = int(math.ceil(float(n_scales*n_channels)/100))
@@ -405,11 +405,11 @@ if options.mg_signal or options.proc_sm:
         SIG_DIR = 'Oct07_MC_102X_2018'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-        if "HToTauTau" in sa and "amcatnloFXFX" in sa:
+        if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:
             # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
             # use input/pileup/2018/pileup_2018_DYJetsToLL-2017.root in this case
             # for the 2017 MG ggH signal samples
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2018/pileup_2018_DYJetsToLL-2017.root\"}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\",\"trg_in_mc\":false}}' "%vars());
 
         job_num=0
         for FLATJSONPATCH in flatjsons:

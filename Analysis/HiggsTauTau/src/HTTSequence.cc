@@ -678,8 +678,13 @@ void HTTSequence::BuildSequence(){
         //n_2 = 14254055.;
         //frac = 0.279662;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 13697052.0;
+        n_2 = 10989343.0;
+        frac = 0.291244; 
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 13719412.0;
         n_2 = 10989343.0;
         frac = 0.291244; 
       }
@@ -688,16 +693,21 @@ void HTTSequence::BuildSequence(){
     if(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) {
       if(era_type == era::data_2016) {
         n_inc = 3131198;
-        n_2 = 16622211.;
+        n_2 = 17047248.;
         frac = 0.274892;
         //private numbers 
         //n_inc = 2982585.;
         //n_2 = 14192951.;
         //frac = 0.274486;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 3329183.;
         n_2 = 15649381.0;
+        frac = 0.267242;
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 3329183.;
+        n_2 = 15713406.0;
         frac = 0.267242;
       }
       do_ggH_stitch = true;
@@ -705,16 +715,21 @@ void HTTSequence::BuildSequence(){
     if(output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos ) {
       if(era_type == era::data_2016) {
         n_inc = 3097174.;
-        n_2 = 18540584.;
+        n_2 = 18742957.;
         frac = 0.282932; 
         //private numbers
         //n_inc = 3100706.;
         //n_2 = 14302986.;
         //frac = 0.282423;
       }
-      if(era_type == era::data_2017 || era_type == era::data_2018) {
+      else if(era_type == era::data_2017) {
         n_inc = 3201858.;
         n_2=15839577.;
+        frac = 0.271407;
+      }
+      else if(era_type == era::data_2018) {
+        n_inc = 3201858.;
+        n_2=15907023.;
         frac = 0.271407;
       }
       do_ggH_stitch = true;
@@ -2830,6 +2845,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_sm_ps_wts(do_sm_scale_wts)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
     .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
+    .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
     .set_official_ggH(official_ggH));
 
  } else {

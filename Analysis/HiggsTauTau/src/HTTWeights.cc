@@ -213,7 +213,7 @@ namespace ic {
 
       if (scalefactor_file_ggh_ != "") {
         TFile f_ggh(scalefactor_file_ggh_.c_str());
-        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w_ggh"));;
+        w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f_ggh.Close();
       }
 
@@ -2019,6 +2019,13 @@ namespace ic {
 
             double xtrg_OR_sf = (ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_trg*(1-tau_trg) + ele_xtrg*tau_trg)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) : 0.;
 
+            // if trigger is not applied in the MC then set the SF to the efficiency
+            if(!trg_applied_in_mc_) {
+              xtrg_et_sf = ele_xtrg*tau_trg;
+              xtrg_OR_sf = ele_trg*(1-tau_trg) + ele_xtrg*tau_trg;
+              single_e_sf = ele_trg;
+            }
+
             double e_high_pt_cut=28.;
 	    if(mc_ == mc::mc2018) e_high_pt_cut=33;
             double t_high_pt_cut=32.;
@@ -2099,7 +2106,6 @@ namespace ic {
 
 
             ele_trg = xtrg_OR_sf;
-            //std::cout << xtrg_OR_sf << "    " << single_e_sf << std::endl;
             ele_trg_mc = 1.0;
 
             tau_trg = 1.0;
@@ -2419,6 +2425,14 @@ namespace ic {
             double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
 
             double xtrg_OR_sf = (mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg) + mu_xtrg*tau_trg)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.;
+
+            // if trigger is not applied in the MC then set the SF to the efficiency
+            if(!trg_applied_in_mc_) {
+              xtrg_mt_sf = mu_xtrg*tau_trg;
+              xtrg_OR_sf = mu_trg*(1-tau_trg) + mu_xtrg*tau_trg;
+              single_m_sf = mu_trg;
+            }
+
             if(pt<m_high_pt_cut) xtrg_OR_sf = xtrg_mt_sf; // these line are more correct in cases when different offine pT cuts are applied for each trigger in the OR
             if(t_pt<t_high_pt_cut) xtrg_OR_sf = single_m_sf; 
 
@@ -2745,7 +2759,11 @@ namespace ic {
          // if one of the leptons has pT < 24 then we aren't using the OR of the 2 triggrs anymore for the SF logic is different
          if(e_pt<24.) e_trg = m_trg_23_mc*e_trg_12_mc > 0. ? (m_trg_23*e_trg_12)/(m_trg_23_mc*e_trg_12_mc) :  0.;
          if(m_pt<24.) e_trg = m_trg_8_mc*e_trg_23_mc > 0. ? (m_trg_8*e_trg_23)/(m_trg_8_mc*e_trg_23_mc) : 0.;
-       } else e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
+       } else {
+         e_trg = (m_trg_23*e_trg_12 + m_trg_8*e_trg_23 - m_trg_23*e_trg_23);
+         if(e_pt<24.) e_trg = m_trg_23*e_trg_12;
+         if(m_pt<24.) e_trg = m_trg_8*e_trg_23;
+       }
 
        // these lines may be more correct due to the additonal offline pT cut of 24 GeV on the high leg
        //double e_trg_after = e_trg;
