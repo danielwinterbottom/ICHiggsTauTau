@@ -4861,7 +4861,7 @@ namespace ic {
       TLorentzVector lvec2;
       TLorentzVector lvec3;
       TLorentzVector lvec4;
-      TLorentzVector pvtosv;
+      TLorentzVector pvtosv1;
 
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
@@ -4873,46 +4873,74 @@ namespace ic {
         if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
       }
 
+      auto primary_vtx = refit_vertex;
+
+      pvtosv1.SetXYZT(
+              muon1->vx() - refit_vertex->vx(),
+              muon1->vy() - refit_vertex->vy(),
+              muon1->vz() - refit_vertex->vz(),
+              0.);
+
+      TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+      lvec1 = TLorentzVector(ip1, 0.);
+      lvec3 = ConvertToLorentz(muon1->vector());
+
+
+      if(tau_decay_mode_2_==0) {
+        cp_channel_=5;
+
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
+        lvec4 = ConvertToLorentz(tau2->vector()); 
+
+        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip2, 0.);
+
+        aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+      }
+
+      if(tau_decay_mode_2_==1) {
+               
+        cp_channel_=4;
+        ic::Candidate *pi;
+        ic::Candidate *pi0;
+
+        pi = pi_tau2;
+        pi0 = pi0_tau2;
+
+        lvec2 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+        lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
+
+        cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
+        
+        TLorentzVector lvec4_2 = ConvertToLorentz(tau2->vector());
+
+        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
+        TLorentzVector lvec2_2 = TLorentzVector(ip2, 0.);
+
+        aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+          else                    aco_angle_5_ = aco_angle_5_-M_PI;
+        }
+        aco_angle_6_ = IPAcoAngle(lvec1, lvec2_2, lvec3, lvec4_2,false);
+        if (cp_sign_<0) {
+          if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
+          else                    aco_angle_6_ = aco_angle_6_-M_PI;
+        }
+      }
+
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
-
-      rho_dphi_=-9999; rho_deta_=-9999;
-      if(tau_decay_mode_2_==1){
-        rho_dphi_  = ROOT::Math::VectorUtil::DeltaPhi(pi0_tau2->vector(),pi_tau2->vector());
-        rho_deta_ = pi0_tau2->eta()-pi_tau2->eta();
-        cp_channel_=2;
-        lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        pvtosv.SetXYZT(
-                muon1->vx() - refit_vertex->vx(),
-                muon1->vy() - refit_vertex->vy(),
-                muon1->vz() - refit_vertex->vz(),
-                0.);
-        lvec3 = ConvertToLorentz(pi_tau2->vector());
-        lvec4 = ConvertToLorentz(muon1->vector());
-
-
-        cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
-      }
-      else {
-        cp_channel_ =-1;
-        cp_sign_ = -9999;
-      }
-
-      if(cp_channel_!=-1){
-        if (cp_channel_ == 2)
-          aco_angle_ = IPAcoAngle(lvec1, pvtosv, lvec3, lvec4,false);
-        else
-          aco_angle_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
-      }
-      if(cp_channel_==3 || cp_channel_==2) {
-        if (cp_sign_<0) {
-          if (aco_angle_<M_PI) aco_angle_mod_ = aco_angle_+M_PI;
-          else                  aco_angle_mod_ = aco_angle_-M_PI;
-        } else {
-          aco_angle_mod_ = aco_angle_;
-          }
-      }
       
     }
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {

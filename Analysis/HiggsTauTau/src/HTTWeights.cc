@@ -1349,7 +1349,9 @@ namespace ic {
           else tau_sf_2=0.99;
           if (decay_mode_2==0) tau_sf_2*=0.975;
           else if (decay_mode_2==1) tau_sf_2*=0.975*1.051;
-          else if (decay_mode_2>3) tau_sf_2*=pow(0.975,3);
+          else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
+          else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+          else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
         }
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) && gen_match_2 == 5){
@@ -1388,7 +1390,9 @@ namespace ic {
             tau_sf_1=0.99;
             if (decay_mode_1==0)       tau_sf_1*=0.975;
             else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
-            else if (decay_mode_1>3) tau_sf_1*=pow(0.975,3);
+            else if (decay_mode_1==5||decay_mode_1==6) tau_sf_1*=pow(0.975,2); 
+            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
+            else if (decay_mode_1==11) tau_sf_1*=pow(0.975,3)*1.051;
           }
         }
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
@@ -1399,7 +1403,9 @@ namespace ic {
             tau_sf_2=1.02;
             if (decay_mode_2==0)       tau_sf_2*=0.975;
             else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           } else tau_sf_2 = 1.0;
         } 
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
@@ -1412,7 +1418,9 @@ namespace ic {
             tau_sf_2=0.99;
             if (decay_mode_2==0)       tau_sf_2*=0.975;
             else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           }
         }
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;

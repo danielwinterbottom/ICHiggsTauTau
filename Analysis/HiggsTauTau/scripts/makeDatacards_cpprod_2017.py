@@ -226,38 +226,38 @@ if SCHEME == 'cpprod':
 
 
   scheme_et = [
-    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_ET_LO_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_ET_TI_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_ET_LO_LO, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_ET_TI_LO, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:mt_1<50"   ')
   ]
   scheme_mt = [
-    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:mt_1<50"  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"  --add_wt=wt_prefire ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "boosted",    "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:mt_1<50"   '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:mt_1<50"   ')
 
   ]
   scheme_tt = [
-    ("17",   "0jet",    "2017_0jet",  VAR_0JET_TT, '  --add_wt=wt_prefire '),
-    ("17",   "boosted", "2017_boosted",  VAR_BOOSTED_TT, '  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_TT_LO_LO, '  --add_wt=wt_prefire '),
-    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_TT_LO_HI, '  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_TT_TI_LO, '  --add_wt=wt_prefire '),
-    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_TT_TI_HI, '  --add_wt=wt_prefire ')
+    ("17",   "0jet",    "2017_0jet",  VAR_0JET_TT, '   '),
+    ("17",   "boosted", "2017_boosted",  VAR_BOOSTED_TT, '   '),
+    ("17",   "dijet_loosemjj_lowboost",    "2017_dijet_loosemjj_lowboost", VAR_TT_LO_LO, '   '),
+    ("17",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_TT_LO_HI, '   '),
+    ("17",   "dijet_tightmjj_lowboost",    "2017_dijet_tightmjj_lowboost", VAR_TT_TI_LO, '   '),
+    ("17",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_TT_TI_HI, '   ')
   ]
   scheme_em = [
-    ("19",   "0jet",    "2017_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35" --add_wt=wt_prefire '),
-    ("19",   "boosted", "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35" --add_wt=wt_prefire '),
-    ("19",   "inclusive",    "2017_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)" --add_wt=wt_prefire '),
-    ("19",   "dijet_loosemjj_lowboost",     "2017_dijet_loosemjj_lowboost",  VAR_EM_LO_LO, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
-    ("19",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_EM_LO_HI, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
-    ("19",   "dijet_tightmjj_lowboost",     "2017_dijet_tightmjj_lowboost",  VAR_EM_TI_LO, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire '),
-    ("19",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10" --add_wt=wt_prefire ')
+    ("19",   "0jet",    "2017_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35"  '),
+    ("19",   "boosted", "2017_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35"  '),
+    ("19",   "inclusive",    "2017_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"  '),
+    ("19",   "dijet_loosemjj_lowboost",     "2017_dijet_loosemjj_lowboost",  VAR_EM_LO_LO, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_loosemjj_boosted",     "2017_dijet_loosemjj_boosted",  VAR_EM_LO_HI, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_tightmjj_lowboost",     "2017_dijet_tightmjj_lowboost",  VAR_EM_TI_LO, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_tightmjj_boosted",     "2017_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  ')
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -290,6 +290,7 @@ for ch in channels:
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if options.embedding: extra+=' --embedding'
+        extra+=' --add_wt=wt_prefire '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
