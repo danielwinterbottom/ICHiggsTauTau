@@ -206,12 +206,6 @@ for wp in wps:
   
   w.factory('expr::ff_mt_%(wp)s_dmbins_qcd_raw("%(ff_eqn_tot)s + %(ff_eqn_tot_cross)s", pass_single[1], dm[1], njets[0], mt_dm0_njets0_%(wp)s_qcd_fit, mt_dm1_njets0_%(wp)s_qcd_fit, mt_dm10_njets0_%(wp)s_qcd_fit, mt_dm11_njets0_%(wp)s_qcd_fit, mt_dm0_njets1_%(wp)s_qcd_fit, mt_dm1_njets1_%(wp)s_qcd_fit, mt_dm10_njets1_%(wp)s_qcd_fit, mt_dm11_njets1_%(wp)s_qcd_fit, mt_dm0_njets2_%(wp)s_qcd_fit, mt_dm1_njets2_%(wp)s_qcd_fit, mt_dm10_njets2_%(wp)s_qcd_fit, mt_dm11_njets2_%(wp)s_qcd_fit, mt_dm0_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets2_crosstrg_%(wp)s_qcd_fit )' % vars())
 
-  print '!!!!!!!!!!!11'
-  print 'RAW QCD FFs:'
-
-  print 'expr::ff_mt_%(wp)s_dmbins_qcd_raw("%(ff_eqn_tot)s + %(ff_eqn_tot_cross)s", pass_single[1], dm[1], njets[0], mt_dm0_njets0_%(wp)s_qcd_fit, mt_dm1_njets0_%(wp)s_qcd_fit, mt_dm10_njets0_%(wp)s_qcd_fit, mt_dm11_njets0_%(wp)s_qcd_fit, mt_dm0_njets1_%(wp)s_qcd_fit, mt_dm1_njets1_%(wp)s_qcd_fit, mt_dm10_njets1_%(wp)s_qcd_fit, mt_dm11_njets1_%(wp)s_qcd_fit, mt_dm0_njets2_%(wp)s_qcd_fit, mt_dm1_njets2_%(wp)s_qcd_fit, mt_dm10_njets2_%(wp)s_qcd_fit, mt_dm11_njets2_%(wp)s_qcd_fit, mt_dm0_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets2_crosstrg_%(wp)s_qcd_fit )' % vars()
-
-
   w.factory(('expr::ff_mt_%(wp)s_dmbins_qcd_raw("%(ff_eqn_tot)s + %(ff_eqn_tot_cross)s", pass_single[1], dm[1], njets[0], mt_dm0_njets0_%(wp)s_qcd_fit, mt_dm1_njets0_%(wp)s_qcd_fit, mt_dm10_njets0_%(wp)s_qcd_fit, mt_dm11_njets0_%(wp)s_qcd_fit, mt_dm0_njets1_%(wp)s_qcd_fit, mt_dm1_njets1_%(wp)s_qcd_fit, mt_dm10_njets1_%(wp)s_qcd_fit, mt_dm11_njets1_%(wp)s_qcd_fit, mt_dm0_njets2_%(wp)s_qcd_fit, mt_dm1_njets2_%(wp)s_qcd_fit, mt_dm10_njets2_%(wp)s_qcd_fit, mt_dm11_njets2_%(wp)s_qcd_fit, mt_dm0_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets0_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets1_crosstrg_%(wp)s_qcd_fit, mt_dm0_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm1_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm10_njets2_crosstrg_%(wp)s_qcd_fit, mt_dm11_njets2_crosstrg_%(wp)s_qcd_fit )' % vars()).replace('qcd','wjets'))
 
   w.factory('expr::ff_mt_%(wp)s_mvadmbins_ttbar("(@0==0&&@1<%(ip_sig_cut)s)*(@2)+(@0==0&&@1>=%(ip_sig_cut)s)*(@3)+(@0==1)*(@4)+(@0==2)*(@5)+(@0==10)*(@6)+(@0==11)*(@7)", mvadm[1], ipsig[0], mt_mvadm0_sig_lt3_inclusive_%(wp)s_ttbar_fit, mt_mvadm0_sig_gt3_inclusive_%(wp)s_ttbar_fit, mt_mvadm1_inclusive_%(wp)s_ttbar_fit, mt_mvadm2_inclusive_%(wp)s_ttbar_fit, mt_mvadm10_inclusive_%(wp)s_ttbar_fit, mt_mvadm11_inclusive_%(wp)s_ttbar_fit,)' % vars())
@@ -248,8 +242,15 @@ for wp in wps:
     w.factory('expr::mt_bounded140("min(139.9,@0)",mt)' % vars())
     w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_mt_corr("%(func_mt_corr)s",mt_bounded140)' % vars())
 
+    # m_vis correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_mvis_corr_wjets_mc_fit' % vars())
+    func_mvis_corr = str(func.GetExpFormula('p')).replace('x','@0')
+
+    w.factory('expr::mvis_bounded100("min(99.9,@0)",mvis[50])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_mvis_corr("%(func_mvis_corr)s",mvis_bounded100)' % vars())
+
     # apply corrections to raw W+jets FFs
-    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets("@0*@1*@2*@3", ff_mt_%(wp)s_%(dmname)s_wjets_raw , mt_%(dmname)s_%(wp)s_wjets_met_corr, mt_%(dmname)s_%(wp)s_wjets_m_pt_corr, mt_%(dmname)s_%(wp)s_wjets_mt_corr)' % vars())
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets("@0*@1*@2*@3*((@5<50)*@4 +(@5>=50))", ff_mt_%(wp)s_%(dmname)s_wjets_raw , mt_%(dmname)s_%(wp)s_wjets_met_corr, mt_%(dmname)s_%(wp)s_wjets_m_pt_corr, mt_%(dmname)s_%(wp)s_wjets_mt_corr, mt_%(dmname)s_%(wp)s_wjets_mvis_corr, mt)' % vars())
 
   # get QCD corrections
   for dmtype in ['mvadm','mvadm_nosig','dm']:
@@ -286,15 +287,6 @@ for wp in wps:
 
     # apply corrections to raw QCD FFs
     w.factory('expr::ff_mt_%(wp)s_%(dmname)s_qcd("(@5!=0)*@0*@1*@2*@3*@4 + (@5==0)*@0*@1*@2*@3", ff_mt_%(wp)s_%(dmname)s_qcd_raw , mt_%(dmname)s_%(wp)s_qcd_met_corr, mt_%(dmname)s_%(wp)s_qcd_m_pt_corr, mt_%(dmname)s_%(wp)s_qcd_iso_corr, mt_%(dmname)s_%(wp)s_qcd_osss_corr, os[1])' % vars())
-
-
-
-    if dmtype == 'dm':
-      '!!!!!!!!!!!!!'
-      print 'QCD corrections'
-      print 'expr::mt_%(dmname)s_%(wp)s_qcd_met_corr("(%(func_met_corr)s)*(@2==0) + (@2>0)",pt_bounded70,met_bounded70,njets[0])\n' % vars()
-      print 'expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr("(%(func_m_pt_corr)s)*(@2==0) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0])\n' % vars()
-      print 'expr::mt_%(dmname)s_%(wp)s_qcd_iso_corr("%(func_iso_corr)s",iso_bounded0p5)\n' % vars()
 
 # scale FFs by their fractions
 

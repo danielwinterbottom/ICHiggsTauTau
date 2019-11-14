@@ -901,6 +901,25 @@ for i in ['mvadm','mvadm_nosig','dm']:
   wjets_data_uncert.Write()
   PlotFakeFactorCorrection(wjets_data, wjets_data_uncert, wjets_data.GetName(), output_folder, wp,x_title='m_{T} (GeV)') 
 
+
+# additional m_vis correction form MC non-closure after applying mT correction
+
+  mt_1_corr_mc='('+str(wjets_mc_data_fit.GetExpFormula('p')).replace('x','min(mt_1,140.)')+')'
+
+  var='m_vis[0,10,20,30,40,50,60,70,80,90,100]'
+  (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')', '%(i)s_mvis_corr' % vars(),input_folder,file_ext,False,doQCD=False,doW=False,doMC=True,doTT=False,fullMT=True)
+  if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')', '%(i)s_mvis_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_wjets_mc_mvadm_string_ipsig)s*%(met_2d_corr_mc)s*%(pt_1_2d_corr_mc)s*%(mt_1_corr_mc)s' % vars(),doQCD=False,doW=False,doMC=True,doTT=False,fullMT=True)
+  if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')', '%(i)s_mvis_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_wjets_mc_mvadm_string)s*%(met_2d_corr_mc)s*%(pt_1_2d_corr_mc)s*%(mt_1_corr_mc)s' % vars(),doQCD=False,doW=False,doMC=True,doTT=False,fullMT=True)
+  if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')', '%(i)s_mvis_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_wjets_mc_dm_string)s*%(met_2d_corr_mc)s*%(pt_1_2d_corr_mc)s*%(mt_1_corr_mc)s' % vars() ,doQCD=False,doW=False,doMC=True,doTT=False,fullMT=True)
+
+  fout.cd()
+  wjets_mc_data.Divide(wjets_mc_pred)
+  wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data, func='pol3')
+  wjets_mc_data.Write()
+  wjets_mc_data_fit.Write()
+  wjets_mc_data_uncert.Write()
+  PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='m_{vis} (GeV)')
+
 ### derive QCD non-closure corrections
 # first we need to correct the MET for n_jets=0 events - as with the W+jets this needs to be done using a 2D distribution as a function also of pt_1
 
