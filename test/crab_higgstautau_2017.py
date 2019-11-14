@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Sep05_Data_102X_2017'
+config.General.workArea='Sep29_DataRecovery_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -15,7 +15,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
 config.Site.storageSite = 'T2_UK_London_IC'
@@ -46,28 +46,28 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('SingleMuonB', '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleMuonC', '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleMuonD', '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleMuonE', '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleMuonF', '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleMuonB', '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleMuonC', '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleMuonD', '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleMuonE', '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleMuonF', '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD'))
 
-    tasks.append(('SingleElectronB', '/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleElectronC', '/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleElectronD', '/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleElectronE', '/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD'))
-    tasks.append(('SingleElectronF', '/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleElectronB', '/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleElectronC', '/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleElectronD', '/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleElectronE', '/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('SingleElectronF', '/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD'))
 
-    tasks.append(('TauB', '/Tau/Run2017B-31Mar2018-v1/MINIAOD'))
-    tasks.append(('TauC', '/Tau/Run2017C-31Mar2018-v1/MINIAOD'))
-    tasks.append(('TauD', '/Tau/Run2017D-31Mar2018-v1/MINIAOD'))
-    tasks.append(('TauE', '/Tau/Run2017E-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('TauB', '/Tau/Run2017B-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('TauC', '/Tau/Run2017C-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('TauD', '/Tau/Run2017D-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('TauE', '/Tau/Run2017E-31Mar2018-v1/MINIAOD'))
     tasks.append(('TauF', '/Tau/Run2017F-31Mar2018-v1/MINIAOD'))
 
-    tasks.append(('MuonEGB', '/MuonEG/Run2017B-31Mar2018-v1/MINIAOD'))
-    tasks.append(('MuonEGC', '/MuonEG/Run2017C-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('MuonEGB', '/MuonEG/Run2017B-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('MuonEGC', '/MuonEG/Run2017C-31Mar2018-v1/MINIAOD'))
     tasks.append(('MuonEGD', '/MuonEG/Run2017D-31Mar2018-v1/MINIAOD'))
-    tasks.append(('MuonEGE', '/MuonEG/Run2017E-31Mar2018-v1/MINIAOD'))
+    # tasks.append(('MuonEGE', '/MuonEG/Run2017E-31Mar2018-v1/MINIAOD'))
     tasks.append(('MuonEGF', '/MuonEG/Run2017F-31Mar2018-v1/MINIAOD'))
 
     for task in tasks:
@@ -76,8 +76,8 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         # only to run recovery tasks with the missing lumis
-        # config.Data.lumiMask = "Jan31_Data_94X/crab_{}/results/notFinishedLumis.json".format(task[0])
-        # print config.Data.lumiMask
+        config.Data.lumiMask = "Sep29_Data_102X_2017/crab_{}/results/notFinishedLumis.json".format(task[0])
+        # print(config.Data.lumiMask)
 
         print(config)
         submit(config)

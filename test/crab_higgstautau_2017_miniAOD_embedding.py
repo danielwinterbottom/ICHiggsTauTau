@@ -3,7 +3,7 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Sep16_MC_102X_2017_v3'
+config.General.workArea='Sep29_MC_102X_2017'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -17,7 +17,7 @@ config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.unitsPerJob = 1
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/Sep16_MC_102X_2017_v3/'
+config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 config.section_('User')
@@ -48,40 +48,40 @@ if __name__ == '__main__':
     tasks=list()
     
     tasks.append(('EmbeddingMuTauB', '/EmbeddingRun2017B/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2017C/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingMuTauC', '/EmbeddingRun2017C/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuTauD', '/EmbeddingRun2017D/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuTauE', '/EmbeddingRun2017E/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuTauF', '/EmbeddingRun2017F/MuTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
 
-    tasks.append(('EmbeddingElTauB', '/EmbeddingRun2017B/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElTauB', '/EmbeddingRun2017B/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElTauC', '/EmbeddingRun2017C/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElTauD', '/EmbeddingRun2017D/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElTauE', '/EmbeddingRun2017E/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElTauF', '/EmbeddingRun2017F/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElTauF', '/EmbeddingRun2017F/ElTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
 
     tasks.append(('EmbeddingElMuB', '/EmbeddingRun2017B/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElMuC', '/EmbeddingRun2017C/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElMuD', '/EmbeddingRun2017D/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElMuE', '/EmbeddingRun2017E/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElMuF', '/EmbeddingRun2017F/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElMuF', '/EmbeddingRun2017F/ElMuFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
 
     tasks.append(('EmbeddingTauTauB', '/EmbeddingRun2017B/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingTauTauC', '/EmbeddingRun2017C/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingTauTauD', '/EmbeddingRun2017D/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingTauTauC', '/EmbeddingRun2017C/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingTauTauD', '/EmbeddingRun2017D/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingTauTauE', '/EmbeddingRun2017E/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingTauTauF', '/EmbeddingRun2017F/TauTauFinalState-inputDoubleMu_94X_miniAOD-v2/USER'))
 
     tasks.append(('EmbeddingElElB', '/EmbeddingRun2017B/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElElC', '/EmbeddingRun2017C/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElElD', '/EmbeddingRun2017D/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElElC', '/EmbeddingRun2017C/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElElD', '/EmbeddingRun2017D/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingElElE', '/EmbeddingRun2017E/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingElElF', '/EmbeddingRun2017F/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingElElF', '/EmbeddingRun2017F/ElectronEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
 
-    tasks.append(('EmbeddingMuMuB', '/EmbeddingRun2017B/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingMuMuB', '/EmbeddingRun2017B/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
     tasks.append(('EmbeddingMuMuC', '/EmbeddingRun2017C/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuMuD', '/EmbeddingRun2017D/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuMuE', '/EmbeddingRun2017E/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
-    tasks.append(('EmbeddingMuMuF', '/EmbeddingRun2017F/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingMuMuD', '/EmbeddingRun2017D/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingMuMuE', '/EmbeddingRun2017E/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
+    # tasks.append(('EmbeddingMuMuF', '/EmbeddingRun2017F/MuonEmbedding-inputDoubleMu_94X_miniAOD-v2/USER'))
 
 
     for task in tasks:
