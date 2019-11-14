@@ -830,9 +830,9 @@ if options.channel == 'tt':
 
     # tauspinner with slimmed vars and classic bkg methods
     # note the names are the same but actually jetFakes is only QCD
-    mva_ggh                = '(IC_Oct22_tauspinnerSM_classic_max_index==0)'
-    mva_jetFakes           = '(IC_Oct22_tauspinnerSM_classic_max_index==1)'
-    mva_zttEmbed           = '(IC_Oct22_tauspinnerSM_classic_max_index==2)'
+    mva_ggh                = '(IC_Nov13_tauspinner_max_index==0)'
+    mva_jetFakes           = '(IC_Nov13_tauspinner_max_index==1)'
+    mva_zttEmbed           = '(IC_Nov13_tauspinner_max_index==2)'
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
@@ -857,11 +857,11 @@ if options.channel == 'tt':
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
-    cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['higgs_mvarho']      = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_ggh, cats["inclusive_rho"])
     # cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     # cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['zttEmbed_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1 )'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_jetFakes, cats["inclusive_rho"])
 
     cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     # cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
@@ -1445,26 +1445,26 @@ if options.era in ['cpsummer17']:
             # "ggH_sm_nofilter_htt": "GluGluToHToTauTau_M-125-nospinner",
             "qqH_sm_htt": ["VBFHToTauTau_M-125-nospinner-filter"],
 
-            'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
-            'qqH_htt': 'VBFHToTauTau_M-*', 
-            'WplusH_htt': 'WplusHToTauTau_M-*', 
-            'WminusH_htt': 'WminusHToTauTau_M-*', 
-            'ZH_htt': 'ZHToTauTau_M-*', 
-            'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
-            'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
-            'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
-            'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-            'ZHps_htt' : 'ZHiggs0MToTauTau',  
-            'ZHsm_htt' : 'ZHiggs0PMToTauTau',
-            'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
-            'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
-            'qqHps_htt' :'VBFHiggs0MToTauTau',
-            'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
-            'WHps_htt' :'WHiggs0MToTauTau',
-            'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
-            'WHsm_htt' : 'WHiggs0PMToTauTau',
+            # 'ggH_ph_htt': ['GluGluHToTauTau_M-*','GluGluHToTauTau_M-*-ext'], 
+            # 'qqH_htt': 'VBFHToTauTau_M-*', 
+            # 'WplusH_htt': 'WplusHToTauTau_M-*', 
+            # 'WminusH_htt': 'WminusHToTauTau_M-*', 
+            # 'ZH_htt': 'ZHToTauTau_M-*', 
+            # 'ggHsm_htt': ['GluGluToHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ggHmm_htt': ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ggHps_htt': ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX',
+            # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+            # 'ZHps_htt' : 'ZHiggs0MToTauTau',  
+            # 'ZHsm_htt' : 'ZHiggs0PMToTauTau',
+            # 'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
+            # 'qqHsm_htt' : 'VBFHiggs0PMToTauTau',   
+            # 'qqHps_htt' :'VBFHiggs0MToTauTau',
+            # 'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
+            # 'WHps_htt' :'WHiggs0MToTauTau',
+            # 'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
+            # 'WHsm_htt' : 'WHiggs0PMToTauTau',
             }
 
 if options.era in ['cp18']:
