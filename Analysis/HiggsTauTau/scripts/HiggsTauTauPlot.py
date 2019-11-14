@@ -480,6 +480,10 @@ elif options.channel == 'zee':
     if options.era in ['cp18']: 
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
+if options.analysis == 'cpdecay':
+  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0'
+
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
