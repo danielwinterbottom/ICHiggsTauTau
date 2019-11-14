@@ -1488,12 +1488,40 @@ namespace ic {
            double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
            auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
            qcd_weight = fns_["em_qcd_osss"]->eval(args.data()); 
-           //qcd_weight_down = fns_["em_qcd_osss_ratedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-           //qcd_weight_up = fns_["em_qcd_osss_rateup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
            double qcd_extrap_up = fns_["em_qcd_osss_extrap_up"]->eval(args.data())/qcd_weight;
            double qcd_extrap_down = fns_["em_qcd_osss_extrap_down"]->eval(args.data())/qcd_weight;
            event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
            event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
+
+           double qcd_njets0_unc1_up =   fns_["em_qcd_osss_stat_0jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc1_down =   fns_["em_qcd_osss_stat_0jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc2_up =   fns_["em_qcd_osss_stat_0jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc2_down =   fns_["em_qcd_osss_stat_0jet_unc2_down"]->eval(args.data())/qcd_weight;
+
+           double qcd_njets1_unc1_up =   fns_["em_qcd_osss_stat_1jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc1_down =   fns_["em_qcd_osss_stat_1jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc2_up =   fns_["em_qcd_osss_stat_1jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc2_down =   fns_["em_qcd_osss_stat_1jet_unc2_down"]->eval(args.data())/qcd_weight;
+
+           double qcd_njets2_unc1_up =   fns_["em_qcd_osss_stat_2jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc1_down =   fns_["em_qcd_osss_stat_2jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc2_up =   fns_["em_qcd_osss_stat_2jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc2_down =   fns_["em_qcd_osss_stat_2jet_unc2_down"]->eval(args.data())/qcd_weight;
+        
+           event->Add("wt_em_qcd_njets0_unc1_up",qcd_njets0_unc1_up);
+           event->Add("wt_em_qcd_njets0_unc1_down",qcd_njets0_unc1_down);
+           event->Add("wt_em_qcd_njets0_unc2_up",qcd_njets0_unc2_up);
+           event->Add("wt_em_qcd_njets0_unc2_down",qcd_njets0_unc2_down);
+
+           event->Add("wt_em_qcd_njets1_unc1_up",qcd_njets1_unc1_up);
+           event->Add("wt_em_qcd_njets1_unc1_down",qcd_njets1_unc1_down);
+           event->Add("wt_em_qcd_njets1_unc2_up",qcd_njets1_unc2_up);
+           event->Add("wt_em_qcd_njets1_unc2_down",qcd_njets1_unc2_down);
+
+           event->Add("wt_em_qcd_njets2_unc1_up",qcd_njets2_unc1_up);
+           event->Add("wt_em_qcd_njets2_unc1_down",qcd_njets2_unc1_down);
+           event->Add("wt_em_qcd_njets2_unc2_up",qcd_njets2_unc2_up);
+           event->Add("wt_em_qcd_njets2_unc2_down",qcd_njets2_unc2_down);
 
          } 
 

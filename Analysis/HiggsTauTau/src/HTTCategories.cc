@@ -1031,15 +1031,20 @@ namespace ic {
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
-        outtree_->Branch("wt_em_qcd_bothaiso",         &wt_em_qcd_bothaiso_);
-        outtree_->Branch("wt_em_qcd_up",      &wt_em_qcd_up_);
-        outtree_->Branch("wt_em_qcd_down",    &wt_em_qcd_down_);
-        outtree_->Branch("wt_em_qcd_shapeup",      &wt_em_qcd_shapeup_);
-        outtree_->Branch("wt_em_qcd_shapedown",    &wt_em_qcd_shapedown_);
         outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
         outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
-        outtree_->Branch("wt_em_qcd_bjetsdown",    &wt_em_qcd_bjetsdown_);
-        outtree_->Branch("wt_em_qcd_bjetsup",    &wt_em_qcd_bjetsup_);
+        outtree_->Branch("wt_em_qcd_njets0_unc1_up",    &wt_em_qcd_njets0_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets0_unc1_down",  &wt_em_qcd_njets0_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets0_unc2_up",    &wt_em_qcd_njets0_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets0_unc2_down",  &wt_em_qcd_njets0_unc2_down_);
+        outtree_->Branch("wt_em_qcd_njets1_unc1_up",    &wt_em_qcd_njets1_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets1_unc1_down",  &wt_em_qcd_njets1_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets1_unc2_up",    &wt_em_qcd_njets1_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets1_unc2_down",  &wt_em_qcd_njets1_unc2_down_);
+        outtree_->Branch("wt_em_qcd_njets2_unc1_up",    &wt_em_qcd_njets2_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets2_unc1_down",  &wt_em_qcd_njets2_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets2_unc2_up",    &wt_em_qcd_njets2_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets2_unc2_down",  &wt_em_qcd_njets2_unc2_down_);
       }
       if(add_Hhh_variables_) { 
         outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
@@ -2506,13 +2511,6 @@ namespace ic {
     wt_tau_id_up_ = 1.0;
     wt_tau_id_down_ = 1.0;
     wt_em_qcd_ = 1.0;
-    wt_em_qcd_bothaiso_ = 1.0;
-    wt_em_qcd_down_ = 1.0;
-    wt_em_qcd_up_ = 1.0;
-    wt_em_qcd_shapedown_ = 1.0;
-    wt_em_qcd_shapeup_ = 1.0;
-    wt_em_qcd_bjetsdown_ = 1.0;
-    wt_em_qcd_bjetsup_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
     wt_embed_mc_yield_ = 1.0;
@@ -2527,15 +2525,22 @@ namespace ic {
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
-    if (event->Exists("wt_em_qcd_bothaiso"))         wt_em_qcd_bothaiso_ = event->Get<double>("wt_em_qcd_bothaiso");
-    if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
-    if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
-    if (event->Exists("wt_em_qcd_shapeup"))      wt_em_qcd_shapeup_ = event->Get<double>("wt_em_qcd_shapeup");
-    if (event->Exists("wt_em_qcd_shapedown"))    wt_em_qcd_shapedown_ = event->Get<double>("wt_em_qcd_shapedown");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
-    if (event->Exists("wt_em_qcd_bjetsdown"))    wt_em_qcd_bjetsdown_ = event->Get<double>("wt_em_qcd_bjetsdown");
-    if (event->Exists("wt_em_qcd_bjetsup"))    wt_em_qcd_bjetsup_ = event->Get<double>("wt_em_qcd_bjetsup");
+
+    wt_em_qcd_njets0_unc1_up_   = (event->Exists("wt_em_qcd_njets0_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets0_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets0_unc1_down_ = (event->Exists("wt_em_qcd_njets0_unc1_down")) ? event->Get<double>("wt_em_qcd_njets0_unc1_down") : 1.0; 
+    wt_em_qcd_njets0_unc2_up_   = (event->Exists("wt_em_qcd_njets0_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets0_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets0_unc2_down_ = (event->Exists("wt_em_qcd_njets0_unc2_down")) ? event->Get<double>("wt_em_qcd_njets0_unc2_down") : 1.0; 
+    wt_em_qcd_njets1_unc1_up_   = (event->Exists("wt_em_qcd_njets1_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets1_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets1_unc1_down_ = (event->Exists("wt_em_qcd_njets1_unc1_down")) ? event->Get<double>("wt_em_qcd_njets1_unc1_down") : 1.0; 
+    wt_em_qcd_njets1_unc2_up_   = (event->Exists("wt_em_qcd_njets1_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets1_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets1_unc2_down_ = (event->Exists("wt_em_qcd_njets1_unc2_down")) ? event->Get<double>("wt_em_qcd_njets1_unc2_down") : 1.0; 
+    wt_em_qcd_njets2_unc1_up_   = (event->Exists("wt_em_qcd_njets2_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets2_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets2_unc1_down_ = (event->Exists("wt_em_qcd_njets2_unc1_down")) ? event->Get<double>("wt_em_qcd_njets2_unc1_down") : 1.0; 
+    wt_em_qcd_njets2_unc2_up_   = (event->Exists("wt_em_qcd_njets2_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets2_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets2_unc2_down_ = (event->Exists("wt_em_qcd_njets2_unc2_down")) ? event->Get<double>("wt_em_qcd_njets2_unc2_down") : 1.0;
+
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
     wt_embed_mc_yield_ = event->Exists("wt_embed_mc_yield") ? event->Get<double>("wt_embed_mc_yield") : 1.0;
