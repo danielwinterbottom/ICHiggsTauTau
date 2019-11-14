@@ -79,6 +79,8 @@ class ICElectronProducer : public edm::EDProducer {
   std::string input_scaleDown_;
   std::string input_sigmaUp_;
   std::string input_sigmaDown_;
+
+  boost::hash<reco::SuperCluster const*> sc_hasher_;
 };
 
 #endif

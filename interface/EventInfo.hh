@@ -232,6 +232,7 @@ class EventInfo {
       if(name.length()<13)name.append(13-name.length(), ' ');
       printf("%.13s  |  %.3f  \n",name.c_str(),it->second);
     }
+    std::cout << "total weight = " << total_weight() << std::endl;
     std::cout << "-------------------------" << std::endl;
   }
 

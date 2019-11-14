@@ -1,12 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Apr27_MC_94X_DYJetsToLL-LO-ext1.dat",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Oct15_MC_94X/",
-    // "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Jan31_MC_94X/",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Mar11_MC_94X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt"],
+    "channels":     ["et","mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,29 +58,17 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/RhoID2017/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2018/Dec09_genVars/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Mar29_2017/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May17_2017/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul14_2017_ptNEMFcut/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul30_2017_noisejetIDcut/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Aug29_2017_PUIDandNEMFcut/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_PUIDandNEMFcut/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_ptNEMFcut/",
-    //
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep11_2017_PUIDandNEMFcut/",
-    //
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Sep09_2017_allJets/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_jetveto/",
-    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/May29_2017/",
-     //"output_folder" : "./output/",
-    "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
-    //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
-//    "output_name"   : "VBF_HToTauTau_M-125",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2017/",
+    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/em_2017/",
+    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_nominalWithFastMTT/",
+    "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Nov05_2017_nominalWithFastMTT/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_SVFit/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_SVFit/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct07_2017_SVFit/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_fastMTT/",
+    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2017/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
     "mela_mode" : 0,
@@ -155,8 +141,8 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2017/tight/vloose/et/fakeFactors.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_fracs_file" : ""
           }
     },
  "tt": {
@@ -172,8 +158,8 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2017/tight/vloose/tt/fakeFactors.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_fracs_file" : ""
       }
     },
     "tpmt": {
@@ -203,8 +189,8 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "SM2017/tight/vloose/mt/fakeFactors.root",
-        "ff_fracs_file" : "input/fake_factors/fracs/ff_fracs_new_2017.root"
+        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_fracs_file" : ""
       }
     },
     "em": {
@@ -302,50 +288,50 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.996
+        "efaketau_0pi_es_shift": 0.962
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.024
+        "efaketau_0pi_es_shift": 1.002
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.023
+        "efaketau_1pi_es_shift": 0.998
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.059
+        "efaketau_1pi_es_shift": 1.038
       }
     },
 
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.996
+        "mufaketau_0pi_es_shift": 0.978
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.002
+        "mufaketau_0pi_es_shift": 1.018
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 1.002
+        "mufaketau_1pi_es_shift": 0.972
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.022
+        "mufaketau_1pi_es_shift": 1.012
       }
     },
     "scale_e_lo": {

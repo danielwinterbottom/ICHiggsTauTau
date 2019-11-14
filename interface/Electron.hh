@@ -211,6 +211,8 @@ class Electron : public Candidate {
 
   double bfield() const { return bfield_; }
 
+  inline std::size_t supercluster() const { return supercluster_; }
+
   /**@}*/
 
   /// @name Setters
@@ -446,6 +448,11 @@ class Electron : public Candidate {
     bfield_ = bfield;
   }
 
+  inline void set_supercluster(std::size_t const& supercluster) {
+    supercluster_ = supercluster;
+  }
+
+
 
   /**@}*/
 
@@ -547,9 +554,11 @@ class Electron : public Candidate {
 
   UFmap elec_idiso_;
 
+  std::size_t supercluster_;
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 8);
+  ClassDef(Electron, 9);
  #endif
 };
 

@@ -39,7 +39,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
-    # 'DYJetsToLL-2017',
+    'DYJetsToLL-2017',
     'SingleMuonA',
     'SingleMuonB',
     'SingleMuonC',
@@ -78,7 +78,6 @@ sample_list = [
     'W3JetsToLNu-LO',
     'W4JetsToLNu-LO',
     'WGToLNuG',
-    # 'WGToLNuG_01J_5f-ext1',
     'WJetsToLNu-LO',
     'WWTo1L1Nu2Q',
     'WWTo2L2Nu',#new
@@ -93,16 +92,8 @@ sample_list = [
     'ZZTo2L2Q',
     'ZZTo4L',
     'ZZTo4L-ext',
-    'VBFHToTauTau_M-125-ext1',
-    'GluGluHToTauTau_M-125',
     'WminusHToTauTau_M-125',
     'WplusHToTauTau_M-125',
-    'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-    'GluGluToHToTauTau_M125_amcatnloFXFX',
-    'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-    'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-    'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-    'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
     'EmbeddingElElB',
     'EmbeddingElElC',
     'EmbeddingElElD',
@@ -128,6 +119,24 @@ sample_list = [
     'EmbeddingTauTauD',
     'EmbeddingTauTauA',
 
+    'VBFHToTauTau_M-126-nospinner',
+    'VBFHToTauTau_M-125-ext1',
+    'VBFHToTauTau_M-125-MM-filter',
+    'VBFHToTauTau_M-125-nospinner-filter',
+    'VBFHToTauTau_M-125-PS-filter',
+    'VBFHToTauTau_M-125-SM-filter',
+    'GluGluToHToTauTau_M-125-nospinner',
+    'GluGluHToTauTau_M-125',
+    'GluGluToHToTauTau_M-125-nospinner-filter',
+    'GluGluToHToTauTau_M125_amcatnloFXFX',
+    'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+    'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+    'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+    'WplusHToTauTau_M-125', 
+    'WminusHToTauTau_M-125', 
+    'ZHToTauTau_M-125'
 	]
 
 
@@ -135,10 +144,11 @@ channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
-# subdirs=list_paths(outputf)
+subdirs=list_paths(outputf)
 #print subdirs
+subdirs = []
 # subdirs = ["JES_UP","JES_DOWN"]
-subdirs = ["MUSCALE_UP","MUSCALE_DOWN"]
+#subdirs = ["MUSCALE_UP","MUSCALE_DOWN"]
 # subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP','JES_UNCORR_DOWN','JES_UNCORR_UP','JES_CORR_DOWN','JES_CORR_UP','JESFULL_CORR_DOWN','JESFULL_CORR_UP','JESCENT_CORR_UP','JESCENT_CORR_DOWN','JESHF_CORR_UP','JESHF_CORR_DOWN','JESFULL_UNCORR_DOWN','JESFULL_UNCORR_UP','JESCENT_UNCORR_UP','JESCENT_UNCORR_DOWN','JESHF_UNCORR_UP','JESHF_UNCORR_DOWN','JESRSAMP_DOWN','JESRSAMP_UP','JESBBEE1_DOWN','JESBBEE1_UP','JESBBEE1_UNCORR_DOWN','JESBBEE1_UNCORR_UP','JESBBEE1_CORR_DOWN','JESBBEE1_CORR_UP','JESEE2_DOWN','JESEE2_UP','JESEE2_UNCORR_DOWN','JESEE2_UNCORR_UP','JESEE2_CORR_DOWN','JESEE2_CORR_UP']
 
 nfiles={}

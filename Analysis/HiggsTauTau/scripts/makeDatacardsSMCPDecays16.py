@@ -384,28 +384,40 @@ if SCHEME == 'mlcpdecays16_new':
     VAR_TT_OTHER_MT       = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZLL_OTHER_MT      = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
 
-    VAR_H_TT              = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_H_TT_MVADM        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    # change from Feb13_fix1 tag to Oct07_tauspinnerPS for checks
+    VAR_H_TT              = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_H_TT_MVADM        = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.5,0.6,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT       = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT       = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-    VAR_H_TT_A1           = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    # finish adding these
+    VAR_GGH_TT            = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.6],(14,0,6.28319)"
+    VAR_QQH_TT            = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.6],(14,0,6.28319)"
+    VAR_GGH_TT_MVADM      = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.3,0.4,0.5,0.6],(14,0,6.28319)"
+    VAR_QQH_TT_MVADM      = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.6],(14,0,6.28319)"
+    VAR_GGH_TT_A1         = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.4,0.5,0.6],(14,0,6.28319)"
+    VAR_QQH_TT_A1         = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.4,0.6],(14,0,6.28319)"
+    VAR_GGH_TT_A1_MVADM   = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.3,0.4,0.5,0.6],(14,0,6.28319)"
+    VAR_QQH_TT_A1_MVADM   = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.4,0.6],(14,0,6.28319)"
+    VAR_GGH_OTHER_TT      = "IC_Oct07_tauspinnerSM_split_max_score[0.0,0.4,0.5,0.6,0.7,1.0]"
+    VAR_QQH_OTHER_TT      = "IC_Oct07_tauspinnerSM_split_max_score[0.0,0.4,0.5,0.6,0.7,0.8,1.0]"
 
-    VAR_H_OTHER_TT        = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
-    VAR_ZTTEMBED_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
-    VAR_JETFAKES_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_H_TT_A1           = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT_A1    = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT_A1    = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-    VAR_IDG0p5_TT         = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
-    VAR_H_IDG0p5_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
+    VAR_H_OTHER_TT        = "IC_Oct07_tauspinnerSM_split_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_ZTTEMBED_OTHER_TT = "IC_Oct07_tauspinnerSM_split_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_JETFAKES_OTHER_TT = "IC_Oct07_tauspinnerSM_split_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+
+    VAR_IDG0p5_TT         = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
+    VAR_H_IDG0p5_TT       = "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
 
     VAR_IDG0p5_TT         = VAR_H_TT
     VAR_H_IDG0p5_TT       = VAR_H_TT
 
     addString_LT = ' --set_alias="sel:mt_1<50" --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
     addString_TT = ' --ff_ss_closure --do_ff_systs --add_wt=wt_prefire '
-    #addString_TT = ' --add_wt=wt_prefire '
 
     scheme_em = []
     scheme_et = [
@@ -435,27 +447,33 @@ if SCHEME == 'mlcpdecays16_new':
         ("17", "jetFakes_other",        "jetFakes_other",       VAR_JETFAKES_OTHER_MT, ' {} '.format(addString_LT)),
     ]
     scheme_tt = [
-        ("17", "higgs_rho"   ,           "higgs_rho"  ,            VAR_H_TT,                    ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_rho",           "zttEmbed_rho",           VAR_ZTTEMBED_TT,             ' {} '.format(addString_TT)),
-        ("17", "jetFakes_rho",           "jetFakes_rho",           VAR_JETFAKES_TT,             ' {} '.format(addString_TT)),
+        # ("17", "higgs_rho"   ,           "higgs_rho"  ,            VAR_H_TT,                    ' {} '.format(addString_TT)),
+        # ("17", "zttEmbed_rho",           "zttEmbed_rho",           VAR_ZTTEMBED_TT,             ' {} '.format(addString_TT)),
+        # ("17", "jetFakes_rho",           "jetFakes_rho",           VAR_JETFAKES_TT,             ' {} '.format(addString_TT)),
 
-        ("17", "higgs_a1rho"   ,           "higgs_a1rho"  ,            VAR_H_TT_A1,             ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_a1rho",           "zttEmbed_a1rho",           VAR_ZTTEMBED_TT_A1,      ' {} '.format(addString_TT)),
-        ("17", "jetFakes_a1rho",           "jetFakes_a1rho",           VAR_JETFAKES_TT_A1,      ' {} '.format(addString_TT)),
+        # ("17", "higgs_a1rho"   ,           "higgs_a1rho"  ,            VAR_H_TT_A1,             ' {} '.format(addString_TT)),
+        # ("17", "zttEmbed_a1rho",           "zttEmbed_a1rho",           VAR_ZTTEMBED_TT_A1,      ' {} '.format(addString_TT)),
+        # ("17", "jetFakes_a1rho",           "jetFakes_a1rho",           VAR_JETFAKES_TT_A1,      ' {} '.format(addString_TT)),
 
-        ("17", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,                      ' {} '.format(addString_TT)),
-        ("17", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT,               ' {} '.format(addString_TT)),
-        ("17", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT,               ' {} '.format(addString_TT)),
+        # ("17", "higgs_other",        "higgs_other"  ,      VAR_H_OTHER_TT,                      ' {} '.format(addString_TT)),
+        # ("17", "zttEmbed_other",     "zttEmbed_other",     VAR_ZTTEMBED_OTHER_TT,               ' {} '.format(addString_TT)),
+        # ("17", "jetFakes_other",     "jetFakes_other",     VAR_JETFAKES_OTHER_TT,               ' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvarho"   ,           "higgs_mvarho"  ,            VAR_H_TT_MVADM,        ' {} '.format(addString_TT)),
+        # ("17", "higgs_mvarho"   ,           "higgs_mvarho"  ,            VAR_H_TT_MVADM,        ' {} '.format(addString_TT)),
+        ("17", "ggh_mvarho",            "ggh_mvarho",            VAR_GGH_TT,                   ' {} '.format(addString_TT)),
+        ("17", "qqh_mvarho",            "qqh_mvarho",            VAR_QQH_TT,                   ' {} '.format(addString_TT)),
         ("17", "zttEmbed_mvarho",           "zttEmbed_mvarho",           VAR_ZTTEMBED_TT,       ' {} '.format(addString_TT)),
         ("17", "jetFakes_mvarho",           "jetFakes_mvarho",           VAR_JETFAKES_TT,       ' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvaa1rho"   ,           "higgs_mvaa1rho"  ,            VAR_H_TT_A1,       ' {} '.format(addString_TT)),
+        # ("17", "higgs_mvaa1rho"   ,           "higgs_mvaa1rho"  ,            VAR_H_TT_A1,       ' {} '.format(addString_TT)),
+        ("17", "ggh_mvaa1rho",            "ggh_mvaa1rho",            VAR_GGH_TT_A1,            ' {} '.format(addString_TT)),
+        ("17", "qqh_mvaa1rho",            "qqh_mvaa1rho",            VAR_QQH_TT_A1,            ' {} '.format(addString_TT)),
         ("17", "zttEmbed_mvaa1rho",           "zttEmbed_mvaa1rho",           VAR_ZTTEMBED_TT_A1,' {} '.format(addString_TT)),
         ("17", "jetFakes_mvaa1rho",           "jetFakes_mvaa1rho",           VAR_JETFAKES_TT_A1,' {} '.format(addString_TT)),
 
-        ("17", "higgs_mvaother",        "higgs_mvaother"  ,      VAR_H_OTHER_TT,                ' {} '.format(addString_TT)),
+        # ("17", "higgs_mvaother",        "higgs_mvaother"  ,      VAR_H_OTHER_TT,                ' {} '.format(addString_TT)),
+        ("17", "ggh_mvaother",      "ggh_mvaother",      VAR_GGH_OTHER_TT,                     ' {} '.format(addString_TT)),
+        ("17", "qqh_mvaother",      "qqh_mvaother",      VAR_QQH_OTHER_TT,                     ' {} '.format(addString_TT)),
         ("17", "zttEmbed_mvaother",     "zttEmbed_mvaother",     VAR_ZTTEMBED_OTHER_TT,         ' {} '.format(addString_TT)),
         ("17", "jetFakes_mvaother",     "jetFakes_mvaother",     VAR_JETFAKES_OTHER_TT,         ' {} '.format(addString_TT)),
 ######
@@ -647,25 +665,25 @@ if SCHEME == 'mlcpdecays16_new_dw':
     VAR_TT_OTHER_MT       = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
     VAR_ZLL_OTHER_MT      = "IC_Mar26_fix2_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
 
-    #VAR_H_TT              = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    #VAR_H_TT_MVADM        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.8],(14,0,6.28319)"
-    VAR_H_TT              = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.8],(14,0,6.28319)"
-    VAR_H_TT_MVADM        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.8],(14,0,6.28319)"
+    #VAR_H_TT              = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    #VAR_H_TT_MVADM        = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.5,0.6,0.8],(14,0,6.28319)"
+    VAR_H_TT              = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.8],(14,0,6.28319)"
+    VAR_H_TT_MVADM        = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.8],(14,0,6.28319)"
 
-    VAR_ZTTEMBED_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT       = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT       = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-#    VAR_H_TT_A1           = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_H_TT_A1           = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.8],(14,0,6.28319)"
-    VAR_ZTTEMBED_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
-    VAR_JETFAKES_TT_A1    = "IC_Feb13_fix1_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+#    VAR_H_TT_A1           = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_H_TT_A1           = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_1[0.0,0.8],(14,0,6.28319)"
+    VAR_ZTTEMBED_TT_A1    = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
+    VAR_JETFAKES_TT_A1    = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_1[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"
 
-    VAR_H_OTHER_TT        = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
-    VAR_ZTTEMBED_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
-    VAR_JETFAKES_OTHER_TT = "IC_Feb13_fix1_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_H_OTHER_TT        = "IC_Oct22_tauspinnerSM_classic_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_ZTTEMBED_OTHER_TT = "IC_Oct22_tauspinnerSM_classic_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
+    VAR_JETFAKES_OTHER_TT = "IC_Oct22_tauspinnerSM_classic_max_score[0.0,0.5,0.6,0.7,0.8,0.9,1.0]"
 
-    VAR_IDG0p5_TT         = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
-    VAR_H_IDG0p5_TT       = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
+    VAR_IDG0p5_TT         = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.5,0.7],(14,0,6.28319)"
+    VAR_H_IDG0p5_TT       = "IC_Oct22_tauspinnerSM_classic_max_score,aco_angle_mod[0.0,0.6],(14,0,6.28319)"
 
 #    VAR_H_TT              = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.7,0.8],(14,0,6.28319)"#
 #    VAR_H_TT_MVADM        = "IC_Feb13_fix1_max_score,aco_angle_mod[0.0,0.5,0.6,0.8],(14,0,6.28319)"#

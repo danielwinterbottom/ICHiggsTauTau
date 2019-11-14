@@ -3,12 +3,12 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Oct01_MC_102X_2018'
+config.General.workArea='Oct04_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1','globalTag=102X_dataRun2_Prompt_v13']
+config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1','globalTag=102X_dataRun2_Prompt_v15']
 #config.JobType.maxMemoryMB = 2500
 config.JobType.allowUndistributedCMSSW = True
 
@@ -85,9 +85,9 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         if "Run2018D" in task[1]:
-            config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_Prompt_v13']
+            config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_Prompt_v15']
         else:
-            config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_Sep2018ABC_v2']
+            config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_v12']
 
         print(config.JobType.pyCfgParams)
         print(config.Data.unitsPerJob)
