@@ -242,8 +242,15 @@ for wp in wps:
     w.factory('expr::mt_bounded140("min(139.9,@0)",mt)' % vars())
     w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_mt_corr("%(func_mt_corr)s",mt_bounded140)' % vars())
 
+    # m_vis correction
+    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_mvis_corr_wjets_mc_fit' % vars())
+    func_mvis_corr = str(func.GetExpFormula('p')).replace('x','@0')
+
+    w.factory('expr::mvis_bounded100("min(99.9,@0)",mvis[50])' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_mvis_corr("%(func_mvis_corr)s",mvis_bounded100)' % vars())
+
     # apply corrections to raw W+jets FFs
-    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets("@0*@1*@2*@3", ff_mt_%(wp)s_%(dmname)s_wjets_raw , mt_%(dmname)s_%(wp)s_wjets_met_corr, mt_%(dmname)s_%(wp)s_wjets_m_pt_corr, mt_%(dmname)s_%(wp)s_wjets_mt_corr)' % vars())
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets("@0*@1*@2*@3*((@5<50)*@4 +(@5>=50))", ff_mt_%(wp)s_%(dmname)s_wjets_raw , mt_%(dmname)s_%(wp)s_wjets_met_corr, mt_%(dmname)s_%(wp)s_wjets_m_pt_corr, mt_%(dmname)s_%(wp)s_wjets_mt_corr, mt_%(dmname)s_%(wp)s_wjets_mvis_corr, mt)' % vars())
 
   # get QCD corrections
   for dmtype in ['mvadm','mvadm_nosig','dm']:

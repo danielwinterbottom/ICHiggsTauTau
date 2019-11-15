@@ -91,15 +91,24 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_up_;
   double wt_tau_id_down_;
   double wt_em_qcd_;
-  double wt_em_qcd_down_;
-  double wt_em_qcd_up_;
-  double wt_em_qcd_shapedown_;
-  double wt_em_qcd_shapeup_;
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;
-  double wt_em_qcd_bothaiso_;
-  double wt_em_qcd_bjetsdown_;
-  double wt_em_qcd_bjetsup_;
+
+
+
+  double wt_em_qcd_njets0_unc1_up_;
+  double wt_em_qcd_njets0_unc1_down_;
+  double wt_em_qcd_njets0_unc2_up_;
+  double wt_em_qcd_njets0_unc2_down_;
+  double wt_em_qcd_njets1_unc1_up_;
+  double wt_em_qcd_njets1_unc1_down_;
+  double wt_em_qcd_njets1_unc2_up_;
+  double wt_em_qcd_njets1_unc2_down_;
+  double wt_em_qcd_njets2_unc1_up_;
+  double wt_em_qcd_njets2_unc1_down_;
+  double wt_em_qcd_njets2_unc2_up_;
+  double wt_em_qcd_njets2_unc2_down_;
+
   double wt_embed_mc_yield_;
   double wt_quarkmass_;
   double wt_quarkmass_up_;

@@ -1349,7 +1349,9 @@ namespace ic {
           else tau_sf_2=0.99;
           if (decay_mode_2==0) tau_sf_2*=0.975;
           else if (decay_mode_2==1) tau_sf_2*=0.975*1.051;
-          else if (decay_mode_2>3) tau_sf_2*=pow(0.975,3);
+          else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
+          else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+          else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
         }
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) && gen_match_2 == 5){
@@ -1388,7 +1390,9 @@ namespace ic {
             tau_sf_1=0.99;
             if (decay_mode_1==0)       tau_sf_1*=0.975;
             else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
-            else if (decay_mode_1>3) tau_sf_1*=pow(0.975,3);
+            else if (decay_mode_1==5||decay_mode_1==6) tau_sf_1*=pow(0.975,2); 
+            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
+            else if (decay_mode_1==11) tau_sf_1*=pow(0.975,3)*1.051;
           }
         }
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
@@ -1399,7 +1403,9 @@ namespace ic {
             tau_sf_2=1.02;
             if (decay_mode_2==0)       tau_sf_2*=0.975;
             else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           } else tau_sf_2 = 1.0;
         } 
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
@@ -1412,7 +1418,9 @@ namespace ic {
             tau_sf_2=0.99;
             if (decay_mode_2==0)       tau_sf_2*=0.975;
             else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           }
         }
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
@@ -1480,12 +1488,40 @@ namespace ic {
            double dR = fabs(ROOT::Math::VectorUtil::DeltaR(elec->vector(),muon->vector()));
            auto args = std::vector<double>{dR,n_jets,elec->pt(),muon->pt()};
            qcd_weight = fns_["em_qcd_osss"]->eval(args.data()); 
-           //qcd_weight_down = fns_["em_qcd_osss_ratedown_binned_mva"]->eval(args_bjets.data())/qcd_weight;
-           //qcd_weight_up = fns_["em_qcd_osss_rateup_binned_mva"]->eval(args_bjets.data())/qcd_weight;
            double qcd_extrap_up = fns_["em_qcd_osss_extrap_up"]->eval(args.data())/qcd_weight;
            double qcd_extrap_down = fns_["em_qcd_osss_extrap_down"]->eval(args.data())/qcd_weight;
            event->Add("wt_em_qcd_extrapdown",qcd_extrap_down);
            event->Add("wt_em_qcd_extrapup",qcd_extrap_up);
+
+           double qcd_njets0_unc1_up =   fns_["em_qcd_osss_stat_0jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc1_down =   fns_["em_qcd_osss_stat_0jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc2_up =   fns_["em_qcd_osss_stat_0jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets0_unc2_down =   fns_["em_qcd_osss_stat_0jet_unc2_down"]->eval(args.data())/qcd_weight;
+
+           double qcd_njets1_unc1_up =   fns_["em_qcd_osss_stat_1jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc1_down =   fns_["em_qcd_osss_stat_1jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc2_up =   fns_["em_qcd_osss_stat_1jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets1_unc2_down =   fns_["em_qcd_osss_stat_1jet_unc2_down"]->eval(args.data())/qcd_weight;
+
+           double qcd_njets2_unc1_up =   fns_["em_qcd_osss_stat_2jet_unc1_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc1_down =   fns_["em_qcd_osss_stat_2jet_unc1_down"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc2_up =   fns_["em_qcd_osss_stat_2jet_unc2_up"]->eval(args.data())/qcd_weight;
+           double qcd_njets2_unc2_down =   fns_["em_qcd_osss_stat_2jet_unc2_down"]->eval(args.data())/qcd_weight;
+        
+           event->Add("wt_em_qcd_njets0_unc1_up",qcd_njets0_unc1_up);
+           event->Add("wt_em_qcd_njets0_unc1_down",qcd_njets0_unc1_down);
+           event->Add("wt_em_qcd_njets0_unc2_up",qcd_njets0_unc2_up);
+           event->Add("wt_em_qcd_njets0_unc2_down",qcd_njets0_unc2_down);
+
+           event->Add("wt_em_qcd_njets1_unc1_up",qcd_njets1_unc1_up);
+           event->Add("wt_em_qcd_njets1_unc1_down",qcd_njets1_unc1_down);
+           event->Add("wt_em_qcd_njets1_unc2_up",qcd_njets1_unc2_up);
+           event->Add("wt_em_qcd_njets1_unc2_down",qcd_njets1_unc2_down);
+
+           event->Add("wt_em_qcd_njets2_unc1_up",qcd_njets2_unc1_up);
+           event->Add("wt_em_qcd_njets2_unc1_down",qcd_njets2_unc1_down);
+           event->Add("wt_em_qcd_njets2_unc2_up",qcd_njets2_unc2_up);
+           event->Add("wt_em_qcd_njets2_unc2_down",qcd_njets2_unc2_down);
 
          } 
 
