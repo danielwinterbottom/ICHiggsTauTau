@@ -2665,6 +2665,13 @@ namespace ic {
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     }
+    if (era_ == era::data_2016) {
+      btag_wp = 0.6321;
+      loose_btag_wp = 0.2217;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+
 
     auto sortRuleBTagSum = [btag_label, btag_label_extra] (PFJet* s1, PFJet* s2) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > 
@@ -2715,20 +2722,8 @@ namespace ic {
           ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
         }
       } 
-    } else if (era_ == era::data_2016) {
-      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
-      // that say whether a jet should pass the WP or not
-      if (event->Exists("retag_result")) {
-        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
-      } else{ 
-        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      } 
     } 
-    else if (era_ == era::data_2017 || era_ == era::data_2018) {
+    else if (era_ == era::data_2017 || era_ == era::data_2018 || era_ == era::data_2016) {
       ic::erase_if_not(loose_bjets, filterBTagSumLoose);
       // Instead of changing b-tag value in the promote/demote method we look for a map of bools
       // that say whether a jet should pass the WP or not
