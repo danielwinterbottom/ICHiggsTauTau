@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Oct2_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tt"],
+    "channels":      ["et","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,7 +60,8 @@
     "do_qcd_scale_wts": false,
     // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Oct09_leg2016_sync/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov06_leg2016_withFastMTT/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov06_leg2016_withFastMTT/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
     // "output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

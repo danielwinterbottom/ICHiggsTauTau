@@ -355,7 +355,7 @@ if options.proc_bkg or options.proc_all:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 5 #20
+        nperjob = 10 #20
         if 'scale' in FLATJSONPATCH:
           nperjob = 5
         if 'DY' in sa and 'JetsToLL' in sa:
@@ -363,7 +363,7 @@ if options.proc_bkg or options.proc_all:
         if 'TT' in sa:
           nperjob = 5
           if 'scale' in FLATJSONPATCH:
-            nperjob = 2
+            nperjob = 4
 #        if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
 #          nperjob = 30
         if 'QCD' in sa:
@@ -404,8 +404,8 @@ if options.proc_sm or options.proc_all:
       # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 1
-        if 'filter' in sa: nperjob = 2
+        nperjob = 6
+        if 'filter' in sa: nperjob = 6
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
