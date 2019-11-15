@@ -3315,8 +3315,6 @@ namespace ic {
           double dm_1 = tau1->decay_mode();
           double dm_2 = tau2->decay_mode();
           // fix for using DM10 SFs for all new DM modes too
-          if (dm_1 > 1) dm_1 = 10;
-          if (dm_2 > 1) dm_2 = 10;
           auto args_1 = std::vector<double>{pt_1,eta_1,phi_1,dm_1};  
           auto args_2 = std::vector<double>{pt_2,eta_2,phi_2,dm_2}; 
           tau1_trg = fns_["t_trg_35_data"]->eval(args_1.data());
