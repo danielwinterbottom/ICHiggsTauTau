@@ -83,8 +83,6 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
       outtree_->Branch("wt_btag",           &wt_btag_);
-      outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
-      outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       outtree_->Branch("xtrg_sf", &xtrg_sf_);
@@ -120,6 +118,34 @@ namespace ic {
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
       outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
       if(do_sm_ps_wts_ && !systematic_shift_){
+
+        outtree_->Branch("wt_tau_id_dm0_up", &wt_tau_id_dm0_up_);
+        outtree_->Branch("wt_tau_id_dm1_up", &wt_tau_id_dm1_up_);
+        outtree_->Branch("wt_tau_id_dm10_up", &wt_tau_id_dm10_up_);
+        outtree_->Branch("wt_tau_id_dm11_up"  , &wt_tau_id_dm11_up_);  
+        outtree_->Branch("wt_tau_id_dm0_down", &wt_tau_id_dm0_down_);
+        outtree_->Branch("wt_tau_id_dm1_down", &wt_tau_id_dm1_down_);
+        outtree_->Branch("wt_tau_id_dm10_down", &wt_tau_id_dm10_down_);
+        outtree_->Branch("wt_tau_id_dm11_down", &wt_tau_id_dm11_down_);
+        outtree_->Branch("wt_tau_id_pt_bin1_up", &wt_tau_id_pt_bin1_up_);
+        outtree_->Branch("wt_tau_id_pt_bin2_up", &wt_tau_id_pt_bin2_up_);
+        outtree_->Branch("wt_tau_id_pt_bin3_up", &wt_tau_id_pt_bin3_up_);
+        outtree_->Branch("wt_tau_id_pt_bin4_up", &wt_tau_id_pt_bin4_up_);
+        outtree_->Branch("wt_tau_id_pt_bin5_up", &wt_tau_id_pt_bin5_up_);
+        outtree_->Branch("wt_tau_id_pt_bin1_down", &wt_tau_id_pt_bin1_down_);
+        outtree_->Branch("wt_tau_id_pt_bin2_down", &wt_tau_id_pt_bin2_down_);
+        outtree_->Branch("wt_tau_id_pt_bin3_down", &wt_tau_id_pt_bin3_down_);
+        outtree_->Branch("wt_tau_id_pt_bin4_down", &wt_tau_id_pt_bin4_down_);
+        outtree_->Branch("wt_tau_id_pt_bin5_down", &wt_tau_id_pt_bin5_down_);
+        outtree_->Branch("wt_tau_trg_dm0_up", &wt_tau_trg_dm0_up_);
+        outtree_->Branch("wt_tau_trg_dm1_up", &wt_tau_trg_dm1_up_);
+        outtree_->Branch("wt_tau_trg_dm10_up", &wt_tau_trg_dm10_up_);
+        outtree_->Branch("wt_tau_trg_dm11_up", &wt_tau_trg_dm11_up_);
+        outtree_->Branch("wt_tau_trg_dm0_down", &wt_tau_trg_dm0_down_);
+        outtree_->Branch("wt_tau_trg_dm1_down", &wt_tau_trg_dm1_down_);
+        outtree_->Branch("wt_tau_trg_dm10_down", &wt_tau_trg_dm10_down_);
+        outtree_->Branch("wt_tau_trg_dm11_down", &wt_tau_trg_dm11_down_);
+
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
@@ -132,7 +158,6 @@ namespace ic {
         outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
       }
   
-      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -149,18 +174,6 @@ namespace ic {
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
         outtree_->Branch("idisoweight_down_1",&idisoweight_down_1_);
         outtree_->Branch("idisoweight_down_2",&idisoweight_down_2_);
-      }
-      if(channel_==channel::tt){
-        outtree_->Branch("wt_tau_id_vtight", &wt_tau_id_vtight_); 
-        outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
-        outtree_->Branch("wt_tau1_id_loose", &wt_tau1_id_loose_);
-        outtree_->Branch("wt_tau1_id_medium", &wt_tau1_id_medium_);
-        outtree_->Branch("wt_tau1_id_tight", &wt_tau1_id_tight_);
-        outtree_->Branch("wt_tau1_id_vtight", &wt_tau1_id_vtight_);
-        outtree_->Branch("wt_tau2_id_loose", &wt_tau2_id_loose_);
-        outtree_->Branch("wt_tau2_id_medium", &wt_tau2_id_medium_);
-        outtree_->Branch("wt_tau2_id_tight", &wt_tau2_id_tight_);
-        outtree_->Branch("wt_tau2_id_vtight", &wt_tau2_id_vtight_);
       }
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
@@ -1241,18 +1254,6 @@ namespace ic {
           outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
           outtree_->Branch("wt_z_mjj_down",    &wt_z_mjj_down_);    
         }
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
-          outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
-          outtree_->Branch("wt_tau_id_dm0_down" ,    &wt_tau_id_dm0_down_); 
-          outtree_->Branch("wt_tau_id_dm1_up"   ,    &wt_tau_id_dm1_up_);   
-          outtree_->Branch("wt_tau_id_dm1_down" ,    &wt_tau_id_dm1_down_); 
-          outtree_->Branch("wt_tau_id_dm10_up"  ,    &wt_tau_id_dm10_up_);  
-          outtree_->Branch("wt_tau_id_dm10_down",    &wt_tau_id_dm10_down_); 
-          outtree_->Branch("wt_lfake_dm0_up"    ,    &wt_lfake_dm0_up_);    
-          outtree_->Branch("wt_lfake_dm0_down"  ,    &wt_lfake_dm0_down_);  
-          outtree_->Branch("wt_lfake_dm1_up"    ,    &wt_lfake_dm1_up_);    
-          outtree_->Branch("wt_lfake_dm1_down"  ,    &wt_lfake_dm1_down_);     
-        }
 
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
@@ -1825,31 +1826,36 @@ namespace ic {
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_all_weights();
-    wt_tau_id_tight_ = 1.0;
-    if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
-    wt_tau_id_loose_ = 1.0;
-    if (event->Exists("wt_tau_id_loose")) wt_tau_id_loose_  = event->Get<double>("wt_tau_id_loose");
-    wt_tau_id_medium_ = 1.0;
-    if (event->Exists("wt_tau_id_medium")) wt_tau_id_medium_  = event->Get<double>("wt_tau_id_medium");
-    wt_tau_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau_id_vtight")) wt_tau_id_vtight_  = event->Get<double>("wt_tau_id_vtight");
-    wt_tau1_id_loose_ = 1.0;
-    if (event->Exists("wt_tau1_id_loose")) wt_tau1_id_loose_  = event->Get<double>("wt_tau1_id_loose");
-    wt_tau1_id_medium_ = 1.0;
-    if (event->Exists("wt_tau1_id_medium")) wt_tau1_id_medium_  = event->Get<double>("wt_tau1_id_medium");
-    wt_tau1_id_tight_ = 1.0;
-    if (event->Exists("wt_tau1_id_tight")) wt_tau1_id_tight_  = event->Get<double>("wt_tau1_id_tight");
-    wt_tau1_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau1_id_vtight")) wt_tau1_id_vtight_  = event->Get<double>("wt_tau1_id_vtight");
-    wt_tau2_id_loose_ = 1.0;
-    if (event->Exists("wt_tau2_id_loose")) wt_tau2_id_loose_  = event->Get<double>("wt_tau2_id_loose");
-    wt_tau2_id_medium_ = 1.0;
-    if (event->Exists("wt_tau2_id_medium")) wt_tau2_id_medium_  = event->Get<double>("wt_tau2_id_medium");
-    wt_tau2_id_tight_ = 1.0;
-    if (event->Exists("wt_tau2_id_tight")) wt_tau2_id_tight_  = event->Get<double>("wt_tau2_id_tight");
-    wt_tau2_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
-    
+   
+    wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
+    wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
+    wt_tau_id_dm10_up_ =  (event->Exists("wt_tau_id_dm10_up")) ? event->Get<double>("wt_tau_id_dm10_up") : 1.;
+    wt_tau_id_dm11_up_ =  (event->Exists("wt_tau_id_dm11_up")) ? event->Get<double>("wt_tau_id_dm11_up") : 1.;
+    wt_tau_id_dm0_down_ =  (event->Exists("wt_tau_id_dm0_down")) ? event->Get<double>("wt_tau_id_dm0_down") : 1.;
+    wt_tau_id_dm1_down_ =  (event->Exists("wt_tau_id_dm1_down")) ? event->Get<double>("wt_tau_id_dm1_down") : 1.;
+    wt_tau_id_dm10_down_ =  (event->Exists("wt_tau_id_dm10_down")) ? event->Get<double>("wt_tau_id_dm10_down") : 1.;
+    wt_tau_id_dm11_down_ =  (event->Exists("wt_tau_id_dm11_down")) ? event->Get<double>("wt_tau_id_dm11_down") : 1.;
+
+    wt_tau_id_pt_bin1_up_ =  (event->Exists("wt_tau_id_pt_bin1_up")) ? event->Get<double>("wt_tau_id_pt_bin1_up") : 1.;
+    wt_tau_id_pt_bin2_up_ =  (event->Exists("wt_tau_id_pt_bin2_up")) ? event->Get<double>("wt_tau_id_pt_bin2_up") : 1.;
+    wt_tau_id_pt_bin3_up_ =  (event->Exists("wt_tau_id_pt_bin3_up")) ? event->Get<double>("wt_tau_id_pt_bin3_up") : 1.;
+    wt_tau_id_pt_bin4_up_ =  (event->Exists("wt_tau_id_pt_bin4_up")) ? event->Get<double>("wt_tau_id_pt_bin4_up") : 1.;
+    wt_tau_id_pt_bin5_up_ =  (event->Exists("wt_tau_id_pt_bin5_up")) ? event->Get<double>("wt_tau_id_pt_bin5_up") : 1.;
+    wt_tau_id_pt_bin1_down_ =  (event->Exists("wt_tau_id_pt_bin1_down")) ? event->Get<double>("wt_tau_id_pt_bin1_down") : 1.;
+    wt_tau_id_pt_bin2_down_ =  (event->Exists("wt_tau_id_pt_bin2_down")) ? event->Get<double>("wt_tau_id_pt_bin2_down") : 1.;
+    wt_tau_id_pt_bin3_down_ =  (event->Exists("wt_tau_id_pt_bin3_down")) ? event->Get<double>("wt_tau_id_pt_bin3_down") : 1.;
+    wt_tau_id_pt_bin4_down_ =  (event->Exists("wt_tau_id_pt_bin4_down")) ? event->Get<double>("wt_tau_id_pt_bin4_down") : 1.;
+    wt_tau_id_pt_bin5_down_ =  (event->Exists("wt_tau_id_pt_bin5_down")) ? event->Get<double>("wt_tau_id_pt_bin5_down") : 1.;
+
+    wt_tau_trg_dm0_up_ =  (event->Exists("wt_tau_trg_dm0_up")) ? event->Get<double>("wt_tau_trg_dm0_up") : 1.;
+    wt_tau_trg_dm1_up_ =  (event->Exists("wt_tau_trg_dm1_up")) ? event->Get<double>("wt_tau_trg_dm1_up") : 1.;
+    wt_tau_trg_dm10_up_ =  (event->Exists("wt_tau_trg_dm10_up")) ? event->Get<double>("wt_tau_trg_dm10_up") : 1.;
+    wt_tau_trg_dm11_up_ =  (event->Exists("wt_tau_trg_dm11_up")) ? event->Get<double>("wt_tau_trg_dm11_up") : 1.;
+    wt_tau_trg_dm0_down_ =  (event->Exists("wt_tau_trg_dm0_down")) ? event->Get<double>("wt_tau_trg_dm0_down") : 1.;
+    wt_tau_trg_dm1_down_ =  (event->Exists("wt_tau_trg_dm1_down")) ? event->Get<double>("wt_tau_trg_dm1_down") : 1.;
+    wt_tau_trg_dm10_down_ =  (event->Exists("wt_tau_trg_dm10_down")) ? event->Get<double>("wt_tau_trg_dm10_down") : 1.;
+    wt_tau_trg_dm11_down_ =  (event->Exists("wt_tau_trg_dm11_down")) ? event->Get<double>("wt_tau_trg_dm11_down") : 1.;
+
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
       wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
@@ -4147,19 +4153,6 @@ namespace ic {
       wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
       wt_z_mjj_down_ = event->Exists("wt_z_mjj_down") ? event->Get<double>("wt_z_mjj_down") : 1.0;   
     }
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16){
-      wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm0_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_tau_id_dm1_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm1_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_tau_id_dm10_up_    = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm10_down_  = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_lfake_rate_        = event->Exists("wt_lfake_rate") ? event->Get<double>("wt_lfake_rate") : 1.0;
-      wt_lfake_dm0_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_down") : 1.0;
-      wt_lfake_dm0_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
-      wt_lfake_dm1_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
-      wt_lfake_dm1_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_down") : 1.0;     
-    }
 
 
     if (channel_ == channel::tt && strategy_ == strategy::fall15){
@@ -4706,6 +4699,48 @@ namespace ic {
           else                   aco_angle_1_ -= M_PI;
         }  
       }
+
+      else if((tau_decay_mode_1_==0&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==0)){
+
+        cp_channel_=2;
+
+        ic::Tau const *tau_1;
+        std::vector<ic::PFCandidate*> a1_daughters;
+        if(tau_decay_mode_1_>=10) {
+          a1_daughters  = GetA1(tau1, pfcands).first;
+          tau_1 = tau2;
+        } else {
+          a1_daughters  = GetA1(tau2, pfcands).first;
+          tau_1 = tau1;
+        }
+
+        TLorentzVector pvtosv1(
+                tau_1->svx() - primary_vtx->vx(),
+                tau_1->svy() - primary_vtx->vy(),
+                tau_1->svz() - primary_vtx->vz(),
+                0.);
+        lvec3 = ConvertToLorentz(tau_1->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec1 = TLorentzVector(ip, 0.);
+
+        if (a1_daughters.size()>2){
+
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+            aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+
+            if (cp_sign_<0) {
+              if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+              else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+          }
+      }
+
+
       else if((tau_decay_mode_1_==1&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==1)){
       
         cp_channel_=2;
