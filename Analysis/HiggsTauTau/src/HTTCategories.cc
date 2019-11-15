@@ -4706,7 +4706,7 @@ namespace ic {
           else                   aco_angle_1_ -= M_PI;
         }  
       }
-      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
+      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==1)){
       
         cp_channel_=2;
 
@@ -4747,7 +4747,6 @@ namespace ic {
             aco_sign_2_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]})).second;
             aco_sign_4_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]})).second;
 
-
             cp_sign_1_ = y_1_1_*y_1_2_;
             cp_sign_2_ = y_1_1_*y_2_2_;
             cp_sign_3_ = y_1_1_*y_3_2_;
@@ -4771,7 +4770,7 @@ namespace ic {
         //  else                   aco_angle_4_ -= M_PI;
         //}
 
-      } else if(tau_decay_mode_1_==10&&tau_decay_mode_2_==10){
+      } else if(tau_decay_mode_1_>=10&&tau_decay_mode_2_>=10){
         cp_channel_=3;
         std::vector<ic::PFCandidate*> a1_daughters_1 = GetA1(tau1, pfcands).first;
         std::vector<ic::PFCandidate*> a1_daughters_2 = GetA1(tau2, pfcands).first;
@@ -4936,6 +4935,30 @@ namespace ic {
           if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
           else                    aco_angle_6_ = aco_angle_6_-M_PI;
         }
+      }
+
+      else if(tau_decay_mode_2_>=10){
+
+        cp_channel_=2;
+
+        std::vector<ic::PFCandidate*> a1_daughters;
+        std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+        a1_daughters  = GetA1(tau2, pfcands).first;
+
+        if (a1_daughters.size()>2){
+
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+            aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+
+            if (cp_sign_<0) {
+              if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+              else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+          }
       }
 
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
