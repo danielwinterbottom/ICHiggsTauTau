@@ -72,9 +72,9 @@ namespace ic {
 
       for(auto s : systs) {
         fns_["ff_mt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,mt,m_iso,pass_single")));
+              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
         fns_["ff_mt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met,mt,m_iso,pass_single")));
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
       }
       return 0;
     }
@@ -518,11 +518,11 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.; 
 
-          auto args = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single};
+          auto args = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single,m_vis_};
           double ff_nom = fns_["ff_mt_medium_mvadmbins"]->eval(args.data());
           event->Add("wt_ff_1",  ff_nom);
 
-          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met->pt(),mt_1_,iso_1_,pass_single};
+          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met->pt(),mt_1_,iso_1_,pass_single,m_vis_};
           ff_nom = fns_["ff_mt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
 
