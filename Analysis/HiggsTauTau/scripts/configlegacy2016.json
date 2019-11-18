@@ -60,7 +60,7 @@
     "do_qcd_scale_wts": false,
      "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
-//    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov06_leg2016_withFastMTT/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
     // "output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

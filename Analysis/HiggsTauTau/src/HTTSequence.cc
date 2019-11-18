@@ -2518,6 +2518,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
+    httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
     if (strategy_type == strategy::legacy16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2016.root");
     if(is_embedded) httWeights.set_embedding_scalefactor_file("input/scale_factors/htt_scalefactors_v16_9_embedded.root");
     httWeights.set_is_embedded(is_embedded);
@@ -2817,41 +2818,43 @@ if (strategy_type == strategy::cpdecays16) {
   ;
 }
 do_sm_scale_wts = true; // set this to false after!
-BuildModule(HTTCategories("HTTCategories")
-    .set_fs(fs.get())
-    .set_channel(channel)
-    .set_era(era_type)
-    .set_strategy(strategy_type)
-    .set_ditau_label("ditau")
-    .set_met_label(met_label)
-    .set_jets_label(jets_label)
-    .set_kinfit_mode(kinfit_mode)
-    .set_bjet_regression(bjet_regr_correction)
-    .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-    .set_tau_id_study(js["tau_id_study"].asBool())
-    .set_qcd_study(js["qcd_study"].asBool())
-    .set_optimisation_study(js["optimisation_study"].asBool())
-    .set_mass_shift(mass_shift)
-    .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
-    .set_is_embedded(is_embedded)
-    .set_is_data(is_data)
-    .set_systematic_shift(addit_output_folder!="")
-    .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
-    .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
-    //Good to avoid accidentally overwriting existing output files when syncing
-    .set_write_tree(!js["make_sync_ntuple"].asBool())
-    .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-    .set_ff_categories(js["baseline"]["ff_categories"].asString())
-    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
-    .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-    .set_do_mssm_higgspt(do_mssm_higgspt)
-    .set_do_sm_scale_wts(do_sm_scale_wts) 
-    .set_do_sm_ps_wts(do_sm_scale_wts)
-    .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
-    .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
-    .set_official_ggH(official_ggH));
+if (new_svfit_mode != 1) {
+  BuildModule(HTTCategories("HTTCategories")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_ditau_label("ditau")
+      .set_met_label(met_label)
+      .set_jets_label(jets_label)
+      .set_kinfit_mode(kinfit_mode)
+      .set_bjet_regression(bjet_regr_correction)
+      .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+      .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
+      .set_tau_id_study(js["tau_id_study"].asBool())
+      .set_qcd_study(js["qcd_study"].asBool())
+      .set_optimisation_study(js["optimisation_study"].asBool())
+      .set_mass_shift(mass_shift)
+      .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
+      .set_is_embedded(is_embedded)
+      .set_is_data(is_data)
+      .set_systematic_shift(addit_output_folder!="")
+      .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
+      .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
+      //Good to avoid accidentally overwriting existing output files when syncing
+      .set_write_tree(!js["make_sync_ntuple"].asBool())
+      .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
+      .set_ff_categories(js["baseline"]["ff_categories"].asString())
+      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
+      .set_do_qcd_scale_wts(do_qcd_scale_wts_)
+      .set_do_mssm_higgspt(do_mssm_higgspt)
+      .set_do_sm_scale_wts(do_sm_scale_wts) 
+      .set_do_sm_ps_wts(do_sm_scale_wts)
+      .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
+      .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
+      .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
+      .set_official_ggH(official_ggH));
+    }
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
@@ -3817,6 +3820,7 @@ void HTTSequence::BuildEMPairs() {
   if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
+        .set_e_unc_mode(e_unc_mode)
     );
   }
 
