@@ -129,9 +129,9 @@ with open("config_for_python_channels.json") as config_file:
   svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
-#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+if svfit_mode == 1:
+    os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
@@ -170,15 +170,14 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
         'VBFHToTauTau_M-125-nospinner-filter',
         'GluGluToHToTauTau_M-125-nospinner-filter',
-        'VBFHToTauTau_M-125-nospinner',
-        'GluGluToHToTauTau_M-125-nospinner',
-        'GluGluToHToTauTauPseudoscalarDecay_M125_amcatnloFXFX',
+        # 'VBFHToTauTau_M-125-nospinner',
+        # 'GluGluToHToTauTau_M-125-nospinner',
 
-        # 'GluGluToHToTauTau_M125_nospinner-2017',
-        # 'VBFHToTauTau_M125_nospinner-2017',
+        # # 'GluGluToHToTauTau_M125_nospinner-2017',
+        # # 'VBFHToTauTau_M125_nospinner-2017',
 
-        # 'GluGluHToPseudoscalarTauTau_GEN',
-        # 'GluGluHToMaxmixTauTau_GEN',
+        # # 'GluGluHToPseudoscalarTauTau_GEN',
+        # # 'GluGluHToMaxmixTauTau_GEN',
 
         'GluGluHToTauTau_M-125',
         'GluGluHToTauTau_M-125-ext',
@@ -202,6 +201,11 @@ if options.proc_sm or options.proc_all:
         'ZHiggs0Mf05ph0ToTauTau',
         'ZHiggs0MToTauTau',
         'ZHiggs0PMToTauTau',
+
+        # 'VBFHToTauTauUncorrelatedDecay_Filtered',
+        # 'WminusHToTauTauUncorrelatedDecay_Filtered',
+        # 'WplusHToTauTauUncorrelatedDecay_Filtered',
+        # 'ZHToTauTauUncorrelatedDecay_Filtered',
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -327,7 +331,10 @@ if options.proc_embed or options.proc_all:
       if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
       if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
       if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
-      nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
+      n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
+      if n_scales*n_channels>32: nperjob = 10
+      if n_scales*n_channels>64: nperjob=5
+      # nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
       nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -409,7 +416,7 @@ if options.proc_bkg or options.proc_all:
       for FLATJSONPATCH in flatjsons:
         nperjob = 20
         if 'scale' in FLATJSONPATCH:
-          nperjob = 5
+          nperjob = 10
         if 'TT' in sa:
           nperjob = 20
           if 'scale' in FLATJSONPATCH:
@@ -417,9 +424,9 @@ if options.proc_bkg or options.proc_all:
         if 'QCD' in sa:
             nperjob = 15
         if 'ZZTo4L-ext' in sa or 'TTTo2L2Nu' in sa or 'WWTo2L2Nu' in sa or 'WZTo3LNu' in sa or 'DY3JetsToLL-LO' in sa:
-            nperjob=5
+            nperjob=10
         if 'scale' in FLATJSONPATCH:
-          nperjob = 5
+          nperjob = 10
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -427,7 +434,9 @@ if options.proc_bkg or options.proc_all:
         else: 
           FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
+        if n_scales*n_channels>32: nperjob = 10
+        if n_scales*n_channels>64: nperjob=5
+        # nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -469,8 +478,11 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 1
-        if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 1
+        nperjob = 10
+        n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
+        if n_scales*n_channels>32: nperjob = 10
+        if n_scales*n_channels>64: nperjob=5
+        if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs and not options.condor:
