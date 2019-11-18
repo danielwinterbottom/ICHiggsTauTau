@@ -24,7 +24,7 @@ namespace ic {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
     else if (era_==era::data_2016 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    else if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+    else if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
     else if (era_==era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
     else if (era_==era::data_2017 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
