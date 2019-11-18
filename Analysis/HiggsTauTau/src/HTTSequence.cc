@@ -3819,6 +3819,7 @@ void HTTSequence::BuildEMPairs() {
   if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
+        .set_e_unc_mode(e_unc_mode)
     );
   }
 
