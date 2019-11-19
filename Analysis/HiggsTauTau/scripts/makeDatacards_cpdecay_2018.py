@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs 
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --total_jes 
 
 import sys
 from optparse import OptionParser
@@ -107,7 +107,7 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
-YEAR=2017
+YEAR=2018
 if "year" in configmap:
   YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
@@ -146,7 +146,7 @@ if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
 
 
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV"  --syst_prefire="CMS_PreFire_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV"   '
 
 if not no_shift_systs:
   common_shape_systematics+=' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
@@ -246,19 +246,19 @@ if SCHEME == 'cpdecay':
 
   ]
   scheme_tt = [
-    ("17",   "higgs_mvarho",    "2017_higgs_Rho_Rho",  VAR_H_TT_Rho_Rho, ' '),
-    ("17",   "higgs_mvarho0A1",    "2017_higgs_0A1_Rho_and_0A1_0A1",  VAR_H_TT_0A1_Rho_and_0A1_0A1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho_angle1",  VAR_H_TT_A1_Rho_angle1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho_angle2",  VAR_H_TT_A1_Rho_angle2, ' '),
-    ("17",   "higgs_mvaA1",    "2017_higgs_A1_A1_angle1",  VAR_H_TT_A1_A1_angle1, ' '),
-    ("17",   "higgs_mvaA1",    "2017_higgs_A1_A1_angle2",  VAR_H_TT_A1_A1_angle2, ' '),
-    ("17",   "higgs_mvaA1",    "2017_higgs_A1_A1_angle3",  VAR_H_TT_A1_A1_angle3, ' '),
-    ("17",   "higgs_mvaA1",    "2017_higgs_A1_A1_angle4",  VAR_H_TT_A1_A1_angle4, ' '),
-    ("17",   "higgs_mvapi",    "2017_higgs_Pi_Pi",  VAR_H_TT_Pi_Pi, ' '),
-    ("17",   "higgs_mvarhopi",    "2017_higgs_Pi_Rho_Mixed",  VAR_H_TT_Pi_Rho_Mixed, ' '),
-    ("17",   "higgs_mvarhopi",    "2017_higgs_Pi_Rho_IP",  VAR_H_TT_Pi_Rho_IP, ' '),    
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_0JET_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_0JET_TT, ' '),
+    ("17",   "higgs_mvarho",    "2018_higgs_Rho_Rho",  VAR_H_TT_Rho_Rho, ' '),
+    ("17",   "higgs_mvarho0A1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR_H_TT_0A1_Rho_and_0A1_0A1, ' '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_angle1",  VAR_H_TT_A1_Rho_angle1, ' '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_angle2",  VAR_H_TT_A1_Rho_angle2, ' '),
+    ("17",   "higgs_mvaA1",    "2018_higgs_A1_A1_angle1",  VAR_H_TT_A1_A1_angle1, ' '),
+    ("17",   "higgs_mvaA1",    "2018_higgs_A1_A1_angle2",  VAR_H_TT_A1_A1_angle2, ' '),
+    ("17",   "higgs_mvaA1",    "2018_higgs_A1_A1_angle3",  VAR_H_TT_A1_A1_angle3, ' '),
+    ("17",   "higgs_mvaA1",    "2018_higgs_A1_A1_angle4",  VAR_H_TT_A1_A1_angle4, ' '),
+    ("17",   "higgs_mvapi",    "2018_higgs_Pi_Pi",  VAR_H_TT_Pi_Pi, ' '),
+    ("17",   "higgs_mvarhopi",    "2018_higgs_Pi_Rho_Mixed",  VAR_H_TT_Pi_Rho_Mixed, ' '),
+    ("17",   "higgs_mvarhopi",    "2018_higgs_Pi_Rho_IP",  VAR_H_TT_Pi_Rho_IP, ' '),    
+    ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_0JET_TT, ' '),
+    ("17",   "jetFakes",    "2018_jetFakes",  VAR_0JET_TT, ' '),
 
   ]
   scheme_em = [
@@ -294,7 +294,6 @@ for ch in channels:
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if options.embedding: extra+=' --embedding'
-        extra+=' --add_wt=wt_prefire '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
