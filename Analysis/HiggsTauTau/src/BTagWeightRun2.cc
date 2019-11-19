@@ -23,10 +23,11 @@ namespace ic {
   int BTagWeightRun2::PreAnalysis() {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-    else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    else if ((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-    else if ((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
-    else if (strategy_ == strategy::cpdecays18 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+    else if (era_==era::data_2016 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    else if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+    else if (era_==era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+    else if (era_==era::data_2017 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+    else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
     if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
     else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
@@ -267,11 +268,12 @@ namespace ic {
       bool passtag;
       if(channel_ != channel::tt || era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
         double tight_wp = 0.8;
-        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) tight_wp = 0.8484;
-        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && use_deep_csv_) tight_wp = 0.4941;
-        else if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) && !use_deep_csv_) tight_wp = 0.8838;
-        else if(strategy_ == strategy::cpdecays18 && use_deep_csv_) tight_wp = 0.4184;
-        else if(strategy_ == strategy::cpdecays18 && use_deep_jet_) tight_wp = 0.2770;
+        if(era_==era::data_2016 && !use_deep_csv_) tight_wp = 0.8484;
+        else if(era_==era::data_2016 && use_deep_csv_) tight_wp = 0.6321;
+        else if(era_==era::data_2017 && use_deep_csv_) tight_wp = 0.4941;
+        else if(era_==era::data_2017 && !use_deep_csv_) tight_wp = 0.8838;
+        else if(era_==era::data_2018 && use_deep_csv_) tight_wp = 0.4184;
+        else if(era_==era::data_2018 && use_deep_jet_) tight_wp = 0.2770;
         if (!use_deep_csv_) {
           passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > tight_wp;
         }

@@ -91,15 +91,24 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_up_;
   double wt_tau_id_down_;
   double wt_em_qcd_;
-  double wt_em_qcd_down_;
-  double wt_em_qcd_up_;
-  double wt_em_qcd_shapedown_;
-  double wt_em_qcd_shapeup_;
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;
-  double wt_em_qcd_bothaiso_;
-  double wt_em_qcd_bjetsdown_;
-  double wt_em_qcd_bjetsup_;
+
+
+
+  double wt_em_qcd_njets0_unc1_up_;
+  double wt_em_qcd_njets0_unc1_down_;
+  double wt_em_qcd_njets0_unc2_up_;
+  double wt_em_qcd_njets0_unc2_down_;
+  double wt_em_qcd_njets1_unc1_up_;
+  double wt_em_qcd_njets1_unc1_down_;
+  double wt_em_qcd_njets1_unc2_up_;
+  double wt_em_qcd_njets1_unc2_down_;
+  double wt_em_qcd_njets2_unc1_up_;
+  double wt_em_qcd_njets2_unc1_down_;
+  double wt_em_qcd_njets2_unc2_up_;
+  double wt_em_qcd_njets2_unc2_down_;
+
   double wt_embed_mc_yield_;
   double wt_quarkmass_;
   double wt_quarkmass_up_;
@@ -1060,20 +1069,6 @@ class HTTCategories : public ModuleBase {
   
   bool flagMETFilter_;
   
-  double wt_tau_id_loose_;
-  double wt_tau_id_medium_;
-  double wt_tau_id_tight_;
-  double wt_tau_id_vtight_;
-  
-  double wt_tau1_id_loose_;
-  double wt_tau1_id_medium_;
-  double wt_tau1_id_tight_;
-  double wt_tau1_id_vtight_;
-  double wt_tau2_id_loose_;
-  double wt_tau2_id_medium_;
-  double wt_tau2_id_tight_;
-  double wt_tau2_id_vtight_;
-  
   double wt_zpt_stat_m400pt0_up; 
   double wt_zpt_stat_m400pt40_up; 
   double wt_zpt_stat_m400pt80_up; 
@@ -1123,17 +1118,6 @@ class HTTCategories : public ModuleBase {
   double wt_z_mjj_;
   double wt_z_mjj_down_;
   double wt_z_mjj_up_;
-  double wt_tau_id_dm0_up_;
-  double wt_tau_id_dm0_down_;
-  double wt_tau_id_dm1_up_;
-  double wt_tau_id_dm1_down_;
-  double wt_tau_id_dm10_up_;
-  double wt_tau_id_dm10_down_;  
-  double wt_lfake_dm0_up_;
-  double wt_lfake_dm0_down_;
-  double wt_lfake_dm1_up_;
-  double wt_lfake_dm1_down_;
-  double wt_lfake_rate_;
   
   double spjdphi_;
   double min_hj_deta_;
@@ -1253,6 +1237,33 @@ class HTTCategories : public ModuleBase {
   double q_tot_1_, q_tot_2_;
 
   double looseiso_wt_;
+
+  double wt_tau_id_dm0_up_;
+  double wt_tau_id_dm1_up_;
+  double wt_tau_id_dm10_up_;
+  double wt_tau_id_dm11_up_;  
+  double wt_tau_id_dm0_down_;
+  double wt_tau_id_dm1_down_;
+  double wt_tau_id_dm10_down_;
+  double wt_tau_id_dm11_down_;
+  double wt_tau_id_pt_bin1_up_;
+  double wt_tau_id_pt_bin2_up_;
+  double wt_tau_id_pt_bin3_up_;
+  double wt_tau_id_pt_bin4_up_;
+  double wt_tau_id_pt_bin5_up_;
+  double wt_tau_id_pt_bin1_down_;
+  double wt_tau_id_pt_bin2_down_;
+  double wt_tau_id_pt_bin3_down_;
+  double wt_tau_id_pt_bin4_down_;
+  double wt_tau_id_pt_bin5_down_;
+  double wt_tau_trg_dm0_up_;
+  double wt_tau_trg_dm1_up_;
+  double wt_tau_trg_dm10_up_;
+  double wt_tau_trg_dm11_up_;
+  double wt_tau_trg_dm0_down_;
+  double wt_tau_trg_dm1_down_;
+  double wt_tau_trg_dm10_down_;
+  double wt_tau_trg_dm11_down_;
 
  public:
   HTTCategories(std::string const& name);
