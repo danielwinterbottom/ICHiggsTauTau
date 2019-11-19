@@ -226,6 +226,9 @@ for wp in wps:
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
     w.factory('expr::met_bounded140("max(min(139.9,@0),20.)",met[0])' % vars())
     w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
+
+#      hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_uncert' % vars())
+#      (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
   
     # pt_1 correction
     func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2018.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
@@ -291,6 +294,23 @@ for wp in wps:
 # scale FFs by their fractions
 
     w.factory('expr::ff_mt_%(wp)s_%(dmname)s("@0*@3 + @1*@4 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar)' % vars())
+
+# produce statistical uncertainties
+
+  for dm in dm_bins:
+    for njet in ['0','1','2','0_crosstrg','1_crosstrg','2_crosstrg']:
+
+#stat_njet%(njet)i_%(dm)s
+
+      w.factory('expr::ff_mt_%(wp)s_%(dmname)s_qcd_stat_njet%(njet)s_%(dm)s_up("@0*@3 + @1*@4*@6 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_up)' % vars())
+      w.factory('expr::ff_mt_%(wp)s_%(dmname)s_qcd_stat_njet%(njet)s_%(dm)s_down("@0*@3 + @1*@4*@6 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_down)' % vars())
+
+      w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets_stat_njet%(njet)s_%(dm)s_up("@0*@3*@6 + @1*@4 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_up)' % vars())
+      w.factory('expr::ff_mt_%(wp)s_%(dmname)s_wjets_stat_njet%(njet)s_%(dm)s_down("@0*@3*@6 + @1*@4 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_down)' % vars())
+
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_ttbar_stat_%(dm)s_up("@0*@3 + @1*@4 + @2*@5*@6", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_inclusive_%(wp)s_ttbar_up)' % vars())
+    w.factory('expr::ff_mt_%(wp)s_%(dmname)s_ttbar_stat_%(dm)s_down("@0*@3 + @1*@4 + @2*@5*@6", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_%(dmname)s_wjets, ff_mt_%(wp)s_%(dmname)s_qcd, ff_mt_%(wp)s_%(dmname)s_ttbar, mt_%(dm)s_inclusive_%(wp)s_ttbar_down)' % vars())
+
 
 ################################################
 ### tt channel ####
