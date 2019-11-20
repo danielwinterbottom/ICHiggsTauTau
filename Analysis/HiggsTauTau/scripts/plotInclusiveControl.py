@@ -48,8 +48,8 @@ def main(args):
         plot_vars = [
 
             # taus/leptons
-            "m_vis(25,20,250)",
-            "m_sv(30,0,300)",
+            # "m_vis(25,20,250)",
+            "m_sv(25,50,300)",
             "pt_tt(30,0,300)",
             "pt_1(20,40,140)",
             "pt_2(12,40,100)",
@@ -82,7 +82,8 @@ def main(args):
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
-        extras += " --split_sm_scheme  --ggh_scheme tauspinner "
+        extras += " --outputfolder output/{} ".format(args.analysis)
+        # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
@@ -90,16 +91,14 @@ def main(args):
 
             # taus/leptons
             "m_vis(20,20,200)",
-            "m_sv(30,0,300)",
+            "m_sv(25,50,300)",
             "pt_tt(30,0,300)",
             "pt_1(20,20,120)",
             "pt_2(14,30,100)",
             "eta_1(12,-2.3,2.3)",
             "eta_2(12,-2.3,2.3)",
             "tau_decay_mode_2(11,0,11)",
-            "tau_decay_mode_1(11,0,11)",
             "mva_dm_2(11,0,11)",
-            "mva_dm_1(11,0,11)",
             "met(20,0,200)",
 
             # jets
@@ -123,23 +122,20 @@ def main(args):
         method = "12" if args.ff == False else "17"
         extras += ' --set_alias "sel:mt_1<50" '
         extras += " --cat {} ".format(args.cat)
-        extras += " --split_sm_scheme "
+        extras += " --outputfolder output/{} ".format(args.analysis)
+        # extras += " --split_sm_scheme "
 
     elif args.channel == "em":
         plot_vars = [
 
             # taus/leptons
             "m_vis(20,20,200)",
-            "m_sv(30,0,300)",
+            "m_sv(25,50,300)",
             "pt_tt(30,0,300)",
             "pt_1(18,10,100)",
             "pt_2(18,10,100)",
             "eta_1(12,-2.3,2.3)",
             "eta_2(12,-2.3,2.3)",
-            "tau_decay_mode_2(11,0,11)",
-            "tau_decay_mode_1(11,0,11)",
-            "mva_dm_2(11,0,11)",
-            "mva_dm_1(11,0,11)",
             "met(20,0,200)",
 
             # jets
@@ -153,7 +149,7 @@ def main(args):
             "jpt_2(17,40,200)",
 
             # bjets
-            "n_bjets(5,0,5)",
+            "n_bjets(3,0,3)",
             "bpt_1(17,30,200)",
             "bpt_2(17,30,200)",
             "beta_1(12,-4.7,4.7)",
@@ -164,13 +160,14 @@ def main(args):
         # extras += ' --set_alias "sel:pzeta<-50" ' # to select ttbar region
         extras += ' --set_alias "sel:pzeta>-35" '
         extras += " --cat {} ".format(args.cat)
+        extras += " --outputfolder output/{} ".format(args.analysis)
 
         # if args.cat in ["0jet","boosted","inclusive"]:
         #     extras += ' --set_alias "sel:pzeta>-35" ' 
         # else:
         #     extras += ' --set_alias "sel:pzeta>-10" ' # to select dijet region
 
-        extras += " --split_sm_scheme  "
+        # extras += " --split_sm_scheme  "
 
     if args.analysis == "cpdecays":
         for num in range(7):

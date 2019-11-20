@@ -1425,11 +1425,11 @@ if options.analysis in ['cpprod']:
 
   if options.era == 'cp18':
     sm_samples = {
-         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
-         'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
-         'WplusH_htt': 'WplusHToTauTau_M-125',
-         'WminusH_htt': 'WminusHToTauTau_M-125',
-         'ZH_htt': 'ZHToTauTau_M-125',
+         # 'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
+         # 'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
+         # 'WplusH_htt': 'WplusHToTauTau_M-125',
+         # 'WminusH_htt': 'WminusHToTauTau_M-125',
+         # 'ZH_htt': 'ZHToTauTau_M-125',
          'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
          'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
          'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],

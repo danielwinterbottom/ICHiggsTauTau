@@ -65,6 +65,7 @@
 #include "HiggsTauTau/interface/MVADMEmbedder.h"
 #include "HiggsTauTau/interface/HTTMuonEnergyScale.h"
 #include "HiggsTauTau/interface/Pi0MVA.h"
+#include "HiggsTauTau/interface/HTTEventClassifier.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -2808,17 +2809,14 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 //      .set_strategy(strategy_type));
 
 
-if (strategy_type == strategy::cpdecays16) {
-  //BuildModule(RhoIDEmbedder("RhoIDEmbedder")
-   //   .set_fs(fs.get())
-   //   .set_maketrees(false)
-   //   .set_channel(channel)
-   //   .set_strategy(strategy_type));
-
-  //BuildModule(MVADMEmbedder("MVADMEmbedder")
-  //    .set_fs(fs.get())
-  //    .set_channel(channel)
-  //    .set_strategy(strategy_type));
+if (era_type == era::data_2017) {
+  BuildModule(HTTEventClassifier("HTTEventClassifier")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_ditau_label("ditau")
+      .set_met_label(met_label)
+      .set_jets_label(jets_label)
+      .set_era(era_type));
   ;
 }
 do_sm_scale_wts = true; // set this to false after!

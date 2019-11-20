@@ -873,6 +873,9 @@ namespace ic {
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
 
+      outtree_->Branch("IC_BDT_max_score", &IC_BDT_max_score_)
+      outtree_->Branch("IC_BDT_max_index", &IC_BDT_max_index_)
+
       // moved these here from !(systematics_shifts) because want to use
       // them in BDT
       outtree_->Branch("phi_1",             &phi_1_.var_double);
@@ -5095,6 +5098,9 @@ namespace ic {
       aco_angle_mod_ = -9999;
     }
       
+    // signal background event classification
+    IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;
+    IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<float>("IC_BDT_max_index") : -999.0;
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
