@@ -2518,7 +2518,6 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_do_quarkmass_higgspt(do_ggH_stitch)
     .set_do_ps_weights(do_ggH_stitch);
-    httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
@@ -2809,7 +2808,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 //      .set_strategy(strategy_type));
 
 
-if (era_type == era::data_2017) {
+/*if (era_type == era::data_2017) {
   BuildModule(HTTEventClassifier("HTTEventClassifier")
       .set_fs(fs.get())
       .set_channel(channel)
@@ -2818,7 +2817,7 @@ if (era_type == era::data_2017) {
       .set_jets_label(jets_label)
       .set_era(era_type));
   ;
-}
+}*/
 do_sm_scale_wts = true; // set this to false after!
 if (new_svfit_mode != 1) {
   BuildModule(HTTCategories("HTTCategories")
@@ -2847,7 +2846,7 @@ if (new_svfit_mode != 1) {
       .set_write_tree(!js["make_sync_ntuple"].asBool())
       .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
       .set_ff_categories(js["baseline"]["ff_categories"].asString())
-      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
+      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&&addit_output_folder!="")
       .set_do_qcd_scale_wts(do_qcd_scale_wts_)
       .set_do_mssm_higgspt(do_mssm_higgspt)
       .set_do_sm_scale_wts(do_sm_scale_wts) 

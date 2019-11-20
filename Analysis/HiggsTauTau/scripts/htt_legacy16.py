@@ -388,6 +388,11 @@ if options.proc_bkg or options.proc_all:
           if n_scales*n_channels>32: nperjob = 7
           if n_scales*n_channels>64: nperjob=3
 
+        if sa == 'TT':
+          nperjob = 15 
+          if n_scales*n_channels>32: nperjob = 7
+          if n_scales*n_channels>64: nperjob=3
+
         #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -414,10 +419,10 @@ if options.proc_sm or options.proc_all:
       # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 5
-        n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-          if n_scales*n_channels>32: nperjob = 3
-          if n_scales*n_channels>64: nperjob=2
+        nperjob = 10
+        n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
+        if n_scales*n_channels>=28: nperjob = 5
+        if n_scales*n_channels>=56: nperjob=3
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

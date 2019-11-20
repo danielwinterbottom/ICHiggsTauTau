@@ -2387,14 +2387,14 @@ namespace ic {
                 tau_trg_dm1_down=fns_["t_trg_30_data_dm1_down"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
                 tau_trg_dm10_down=fns_["t_trg_30_data_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
                 tau_trg_dm11_down=fns_["t_trg_30_data_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
-                tau_trg_dm0_up =  (ele_trg*(1-tau_trg*tau_trg_dm0_up) + ele_xtrg*tau_trg*tau_trg_dm0_up)/xtrg_OR_sf;
-                tau_trg_dm1_up =  (ele_trg*(1-tau_trg*tau_trg_dm1_up) + ele_xtrg*tau_trg*tau_trg_dm1_up)/xtrg_OR_sf;
-                tau_trg_dm10_up =  (ele_trg*(1-tau_trg*tau_trg_dm10_up) + ele_xtrg*tau_trg*tau_trg_dm10_up)/xtrg_OR_sf;
-                tau_trg_dm11_up =  (ele_trg*(1-tau_trg*tau_trg_dm11_up) + ele_xtrg*tau_trg*tau_trg_dm11_up)/xtrg_OR_sf;
-                tau_trg_dm0_down =  (ele_trg*(1-tau_trg*tau_trg_dm0_down) + ele_xtrg*tau_trg*tau_trg_dm0_down)/xtrg_OR_sf;
-                tau_trg_dm1_down =  (ele_trg*(1-tau_trg*tau_trg_dm1_down) + ele_xtrg*tau_trg*tau_trg_dm1_down)/xtrg_OR_sf;
-                tau_trg_dm10_down =  (ele_trg*(1-tau_trg*tau_trg_dm10_down) + ele_xtrg*tau_trg*tau_trg_dm10_down)/xtrg_OR_sf;
-                tau_trg_dm11_down =  (ele_trg*(1-tau_trg*tau_trg_dm11_down) + ele_xtrg*tau_trg*tau_trg_dm11_down)/xtrg_OR_sf;
+                tau_trg_dm0_up = (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm0_up) + ele_xtrg*tau_trg*tau_trg_dm0_up)/xtrg_OR_sf : 1.0;
+                tau_trg_dm1_up =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm1_up) + ele_xtrg*tau_trg*tau_trg_dm1_up)/xtrg_OR_sf : 1.0;
+                tau_trg_dm10_up =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm10_up) + ele_xtrg*tau_trg*tau_trg_dm10_up)/xtrg_OR_sf : 1.0;
+                tau_trg_dm11_up =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm11_up) + ele_xtrg*tau_trg*tau_trg_dm11_up)/xtrg_OR_sf : 1.0;
+                tau_trg_dm0_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm0_down) + ele_xtrg*tau_trg*tau_trg_dm0_down)/xtrg_OR_sf : 1.0;
+                tau_trg_dm1_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm1_down) + ele_xtrg*tau_trg*tau_trg_dm1_down)/xtrg_OR_sf : 1.0;
+                tau_trg_dm10_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm10_down) + ele_xtrg*tau_trg*tau_trg_dm10_down)/xtrg_OR_sf : 1.0;
+                tau_trg_dm11_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm11_down) + ele_xtrg*tau_trg*tau_trg_dm11_down)/xtrg_OR_sf : 1.0;
               }
 
               event->Add("wt_tau_trg_dm0_up",tau_trg_dm0_up);
@@ -2784,14 +2784,14 @@ namespace ic {
                 tau_trg_dm11_down=fns_["t_trg_27_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
               }
               if(!(pt<m_high_pt_cut)){
-                tau_trg_dm0_up = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_up) + mu_xtrg*tau_trg*tau_trg_dm0_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm1_up = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_up) + mu_xtrg*tau_trg*tau_trg_dm1_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm10_up = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_up) + mu_xtrg*tau_trg*tau_trg_dm10_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm11_up = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_up) + mu_xtrg*tau_trg*tau_trg_dm11_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm0_down = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_down) + mu_xtrg*tau_trg*tau_trg_dm0_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm1_down = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_down) + mu_xtrg*tau_trg*tau_trg_dm1_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm10_down = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_down) + mu_xtrg*tau_trg*tau_trg_dm10_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
-                tau_trg_dm11_down = ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_down) + mu_xtrg*tau_trg*tau_trg_dm11_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
+                tau_trg_dm0_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_up) + mu_xtrg*tau_trg*tau_trg_dm0_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm1_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_up) + mu_xtrg*tau_trg*tau_trg_dm1_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm10_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_up) + mu_xtrg*tau_trg*tau_trg_dm10_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm11_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_up) + mu_xtrg*tau_trg*tau_trg_dm11_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm0_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_down) + mu_xtrg*tau_trg*tau_trg_dm0_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm1_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_down) + mu_xtrg*tau_trg*tau_trg_dm1_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm10_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_down) + mu_xtrg*tau_trg*tau_trg_dm10_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                tau_trg_dm11_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_down) + mu_xtrg*tau_trg*tau_trg_dm11_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
               }
             }
 

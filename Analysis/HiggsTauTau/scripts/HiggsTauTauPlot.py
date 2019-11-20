@@ -55,12 +55,12 @@ defaults = {
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
     "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"",
-    "vbf_background":False, "syst_em_qcd_rate_0jet":"", "syst_em_qcd_rate_1jet":"",
-    "syst_em_qcd_shape_0jet":"", "syst_em_qcd_shape_1jet":"", "syst_em_qcd_extrap":"", "syst_prefire":"",
-    "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
+    "vbf_background":False, "syst_em_qcd":"", "syst_prefire":"",
+    "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
-    "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
+    "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
+    "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
 }
 
 if options.cfg:
@@ -310,18 +310,8 @@ parser.add_argument("--syst_embedding_tt", dest="syst_embedding_tt", type=str,
     help="If set, adds systematic templates for embedding corresponding to TTbar shift of +/-10\% ")
 parser.add_argument("--vbf_background", dest="vbf_background", action='store_true',
     help="Add VBF to total background template")
-parser.add_argument("--syst_em_qcd_rate_0jet", dest="syst_em_qcd_rate_0jet", type=str,
-    help="If set, adds the QCD rate uncertainty for n_jets==0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_rate_1jet", dest="syst_em_qcd_rate_1jet", type=str,
-    help="If set, adds the QCD rate uncertainty for n_jets>0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_shape_0jet", dest="syst_em_qcd_shape_0jet", type=str,
-    help="If set, adds the QCD shape uncertainty for n_jets==0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_shape_1jet", dest="syst_em_qcd_shape_1jet", type=str,
-    help="If set, adds the QCD shape uncertainty for n_jets>0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_extrap", dest="syst_em_qcd_extrap", type=str,
-    help="If set, adds the QCD anti-iso->iso extrapolation uncertainty with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_btag", dest="syst_em_qcd_btag", type=str,
-    help="If set, adds the QCD n_bjets>0 uncertainty with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_em_qcd", dest="syst_em_qcd", type=str,
+    help="If set, adds the QCD shape uncertainties for the em channel. You string should contain *BIN")
 parser.add_argument("--syst_scale_met", dest="syst_scale_met", type=str,
     help="If set, adds the recoil corrected MET response uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_res_met", dest="syst_res_met", type=str,
@@ -340,8 +330,10 @@ parser.add_argument("--syst_qcd_bkg", dest="syst_qcd_bkg", type=str,
     help="If set, adds systematic templates corresponding to shifting background subtraction in QCD method up/down by +/-10\% ")
 parser.add_argument("--syst_prefire", dest="syst_prefire", type=str,
     help="If set, adds systematic templates corresponding to uncertainty on pre-firing correction.")
-parser.add_argument("--syst_xtrg", dest="syst_xtrg", type=str,
-    help="Do shape uncertainty corresponding to shifting the tau leg efficiency of the cross-trigger up/down by 5%")
+parser.add_argument("--syst_tau_id_diff", dest="syst_tau_id_diff", type=str,
+    help="Do shape uncertainty corresponding to shifting the tau id SFs. The string you pass as the argument should contain either *DM, in which case the DM binned version will be used, or *PT in which base the pT binned version will be used.")
+parser.add_argument("--syst_tau_trg_diff", dest="syst_tau_trg_diff", type=str,
+    help="Do shape uncertainty corresponding to shifting the tau trigger SFs. The string you pass as the argument should contain either *DM which will be replaced with DMi for i=0,1,10,11")
 parser.add_argument("--ff_ss_closure", dest="ff_ss_closure", action='store_true',
     help="If set then applies a non-closure correction to fake factor yields based on differences in SS data.")
 parser.add_argument("--threePads", dest="threePads", action='store_true',
@@ -1721,31 +1713,46 @@ if options.syst_scale_j_by_source != '':
       hist_name = options.syst_scale_j_by_source.replace('SOURCE', source)
       systematics[syst_name+'_up'] = ('JES_UP' , '_'+hist_name+'Up', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
       systematics[syst_name+'_down'] = ('JES_DOWN' , '_'+hist_name+'Down', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
-if options.syst_em_qcd_rate_0jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_rate_0jet_up'] = ('' , '_'+options.syst_em_qcd_rate_0jet+'Up', 'wt*(wt_em_qcd_up*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_rate_0jet_down'] = ('' , '_'+options.syst_em_qcd_rate_0jet+'Down', 'wt*(wt_em_qcd_down*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)       
-if options.syst_em_qcd_rate_1jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_rate_1jet_up'] = ('' , '_'+options.syst_em_qcd_rate_1jet+'Up', 'wt*(wt_em_qcd_up*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_rate_1jet_down'] = ('' , '_'+options.syst_em_qcd_rate_1jet+'Down', 'wt*(wt_em_qcd_down*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)    
-if options.syst_em_qcd_shape_0jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_shape_0jet_up'] = ('' , '_'+options.syst_em_qcd_shape_0jet+'Up', 'wt*(wt_em_qcd_shapeup*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_shape_0jet_down'] = ('' , '_'+options.syst_em_qcd_shape_0jet+'Down', 'wt*(wt_em_qcd_shapedown*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)       
-if options.syst_em_qcd_shape_1jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_shape_1jet_up'] = ('' , '_'+options.syst_em_qcd_shape_1jet+'Up', 'wt*(wt_em_qcd_shapeup*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_shape_1jet_down'] = ('' , '_'+options.syst_em_qcd_shape_1jet+'Down', 'wt*(wt_em_qcd_shapedown*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)     
-if options.syst_em_qcd_extrap != '' and options.channel == 'em':
-    systematics['syst_em_qcd_extrap_up'] = ('' , '_'+options.syst_em_qcd_extrap+'Up', 'wt*wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    if options.era=='cpsummer17': systematics['syst_em_qcd_extrap_down'] = ('' , '_'+options.syst_em_qcd_extrap+'Down', 'wt/wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    else: systematics['syst_em_qcd_extrap_down'] = ('' , '_'+options.syst_em_qcd_extrap+'Down', 'wt/wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)     
-if options.syst_em_qcd_btag != '' and options.channel == 'em':
-    systematics['syst_em_qcd_btag_up'] = ('' , '_'+options.syst_em_qcd_btag+'Up', 'wt*wt_em_qcd_bjetsup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_btag_down'] = ('' , '_'+options.syst_em_qcd_btag+'Down', 'wt*wt_em_qcd_bjetsdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+
+## em QCD uncertainties
+if options.syst_em_qcd != '' and options.channel == 'em':
+    hist_name = options.syst_em_qcd
+    if '*BIN' in hist_name:
+      hist_name_bini = hist_name.replace('*BIN', 'IsoExtrap')
+      systematics['syst_em_qcd_extrap_up'] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+      systematics['syst_em_qcd_extrap_down'] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_em_qcd_extrapdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+      for j in range(0,3):
+        for i in range(1,3):
+          hist_name_bini = hist_name.replace('*BIN', 'stat_njets%(j)i_unc%(i)i' % vars())
+          systematics['syst_em_qcd_njets%(j)i_unc%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_em_qcd_njets%(j)s_unc%(i)i_up' % vars(), ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+          systematics['syst_em_qcd_njets%(j)i_unc%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_em_qcd_njets%(j)i_unc%(i)i_down' % vars(), ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)  
+
 if options.syst_prefire != '':
     systematics['syst_prefire_up'] = ('' , '_'+options.syst_prefire+'Up', 'wt*wt_prefire_up', ['QCD','jetFakes','EmbedZTT'], False)
     systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down', ['QCD','jetFakes','EmbedZTT'], False)
-if options.syst_xtrg != '':
-    systematics['syst_xtrg_up'] = ('' , '_'+options.syst_xtrg+'Up', 'wt*wt_trig_up', ['QCD','jetFakes'], False)
-    systematics['syst_xtrg_down'] = ('' , '_'+options.syst_xtrg+'Down', 'wt*wt_trig_down', ['QCD','jetFakes'], False)
+
+if options.syst_tau_id_diff != '':
+    hist_name = options.syst_tau_id_diff
+    if '*PT' in hist_name:
+      for i in range(1,6):
+        hist_name_bini = hist_name.replace('*PT','bin%(i)i' % vars())
+        systematics['syst_tau_id_diff_bin%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_pt_bin%(i)i_up' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+        systematics['syst_tau_id_diff_bin%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_pt_bin%(i)i_down' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+    if '*DM' in hist_name:
+      for i in [0,1,10,11]:
+        hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
+        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_down' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_up'% vars(), ['QCD','jetFakes'], False) 
+
+if options.syst_tau_trg_diff != '':
+    hist_name = options.syst_tau_trg_diff
+    if '*DM' in hist_name:
+      for i in [0,1,10,11]:
+        hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
+        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_down*(wt>0)' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_up*(wt>0)'% vars(), ['QCD','jetFakes'], False)
+
+
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
