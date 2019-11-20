@@ -22,10 +22,10 @@ class HTTEventClassifier : public ModuleBase {
  private:
   CLASS_MEMBER(HTTEventClassifier, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTEventClassifier, ic::channel, channel)
-  CLASS_MEMBER(HTTCategories, ic::era, era)
-  CLASS_MEMBER(HTTCategories, std::string, ditau_label)
-  CLASS_MEMBER(HTTCategories, std::string, met_label)
-  CLASS_MEMBER(HTTCategories, std::string, jets_label)
+  CLASS_MEMBER(HTTEventClassifier, ic::era, era)
+  CLASS_MEMBER(HTTEventClassifier, std::string, ditau_label)
+  CLASS_MEMBER(HTTEventClassifier, std::string, met_label)
+  CLASS_MEMBER(HTTEventClassifier, std::string, jets_label)
  
   TMVA::Reader *reader_even_;
   TMVA::Reader *reader_odd_;
@@ -43,21 +43,22 @@ class HTTEventClassifier : public ModuleBase {
   float event_;
   unsigned long long evt_;
 
-  float dijetpt;
-  float jdeta;
-  float jpt_1;
-  float m_sv;
-  float m_vis;
-  float met;
-  float mjj;
-  float n_jets;
-  float pt_1;
-  float pt_2;
-  float pt_tt;
-  float pt_vis;
+  float dijetpt_;
+  float jdeta_;
+  float jpt_1_;
+  float m_sv_;
+  float m_vis_;
+  float met_;
+  float mjj_;
+  float n_jets_;
+  float n_lowpt_jets_;
+  float pt_1_;
+  float pt_2_;
+  float pt_tt_;
+  float pt_vis_;
 
 
-  float var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11;
+  float var0_, var1_, var2_, var3_, var4_, var5_, var6_, var7_, var8_, var9_, var10_, var11_;
 
 };
 

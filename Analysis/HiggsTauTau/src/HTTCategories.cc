@@ -873,8 +873,8 @@ namespace ic {
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
 
-      outtree_->Branch("IC_BDT_max_score", &IC_BDT_max_score_)
-      outtree_->Branch("IC_BDT_max_index", &IC_BDT_max_index_)
+      outtree_->Branch("IC_BDT_max_score", &IC_BDT_max_score_);
+      outtree_->Branch("IC_BDT_max_index", &IC_BDT_max_index_);
 
       // moved these here from !(systematics_shifts) because want to use
       // them in BDT

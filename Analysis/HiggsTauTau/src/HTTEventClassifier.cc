@@ -22,7 +22,7 @@ namespace ic {
 
   HTTEventClassifier::HTTEventClassifier(std::string const& name) : ModuleBase(name), 
     channel_(channel::tt), 
-    era_(era::data_2012_rereco),
+    era_(era::data_2012_rereco){
     fs_          = NULL;
     met_label_   = "pfMET";
     jets_label_  = "ak4PFJetsCHS";
@@ -36,7 +36,7 @@ namespace ic {
   std::vector<float> HTTEventClassifier::read_mva_scores(unsigned isEven, std::vector<float> vars) {
       std::vector<float> scores = {};
 
-      var0=vars[0], var1=vars[1], var2=vars[2], var3=vars[3], var4=vars[4], var5=vars[5], var6=vars[6], var7=vars[7], var8=vars[8], var9=vars[9], var10=vars[10], var11=vars[11], var12=vars[12]; 
+      var0_=vars[0], var1_=vars[1], var2_=vars[2], var3_=vars[3], var4_=vars[4], var5_=vars[5], var6_=vars[6], var7_=vars[7], var8_=vars[8], var9_=vars[9], var10_=vars[10], var11_=vars[11];
 
       if(isEven) scores = reader_even_->EvaluateMulticlass("BDT method"); 
       else       scores = reader_odd_->EvaluateMulticlass("BDT method");
@@ -48,6 +48,8 @@ namespace ic {
   int HTTEventClassifier::PreAnalysis() {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "HTTEventClassifier" << std::endl;
+    std::cout << boost::format(param_fmt()) % "channel"             % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "era"                 % Era2String(era_);
     std::cout << "-------------------------------------" << std::endl;
 
     reader_even_ = new TMVA::Reader();
@@ -55,46 +57,46 @@ namespace ic {
 
     // fold0 is trained on even, so apply on odd, and vice versa
 
+    TString filename_even = "";
+    TString filename_odd  = "";
     if (era_ == era::data_2017) {
-      TString filename_even = (std::string)getenv("CMSSW_BASE") +
+      filename_even = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold1_sm_tt_tauspinner_2017_xgb.xml"; // apply to even here
-      TString filename_odd  = (std::string)getenv("CMSSW_BASE") +
+      filename_odd  = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold0_sm_tt_tauspinner_2017_xgb.xml"; // apply to odd
     } 
     else if (era_ == era::data_2018) {
-      TString filename_even = (std::string)getenv("CMSSW_BASE") +
+      filename_even = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold1_sm_tt_tauspinner_2018_xgb.xml"; // apply to even here
-      TString filename_odd  = (std::string)getenv("CMSSW_BASE") +
+      filename_odd  = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold0_sm_tt_tauspinner_2018_xgb.xml"; // apply to odd
     }
 
-    reader_even_->AddVariable( "dijetpt" & var0_ );
-    reader_even_->AddVariable( "jdeta"   & var1_ );
-    reader_even_->AddVariable( "jpt_1"   & var2_ );
-    reader_even_->AddVariable( "m_sv"    & var3_ );
-    reader_even_->AddVariable( "m_vis"   & var4_ );
-    reader_even_->AddVariable( "met"     & var5_ );
-    reader_even_->AddVariable( "mjj"     & var6_ );
-    reader_even_->AddVariable( "n_bjets" & var7_ );
-    reader_even_->AddVariable( "n_jets"  & var8_ );
-    reader_even_->AddVariable( "pt_1"    & var9_ );
-    reader_even_->AddVariable( "pt_2"    & var10_);
-    reader_even_->AddVariable( "pt_tt"   & var11_);
-    reader_even_->AddVariable( "pt_vis"  & var12_);
+    reader_even_->AddVariable( "dijetpt", & var0_ );
+    reader_even_->AddVariable( "jdeta",   & var1_ );
+    reader_even_->AddVariable( "jpt_1",   & var2_ );
+    reader_even_->AddVariable( "m_sv",    & var3_ );
+    reader_even_->AddVariable( "m_vis",   & var4_ );
+    reader_even_->AddVariable( "met",     & var5_ );
+    reader_even_->AddVariable( "mjj",     & var6_ );
+    reader_even_->AddVariable( "n_jets",  & var7_ );
+    reader_even_->AddVariable( "pt_1",    & var8_ );
+    reader_even_->AddVariable( "pt_2",    & var9_);
+    reader_even_->AddVariable( "pt_tt",   & var10_);
+    reader_even_->AddVariable( "pt_vis",  & var11_);
     
-    reader_odd_->AddVariable( "dijetpt" & var0_ );
-    reader_odd_->AddVariable( "jdeta"   & var1_ );
-    reader_odd_->AddVariable( "jpt_1"   & var2_ );
-    reader_odd_->AddVariable( "m_sv"    & var3_ );
-    reader_odd_->AddVariable( "m_vis"   & var4_ );
-    reader_odd_->AddVariable( "met"     & var5_ );
-    reader_odd_->AddVariable( "mjj"     & var6_ );
-    reader_odd_->AddVariable( "n_bjets" & var7_ );
-    reader_odd_->AddVariable( "n_jets"  & var8_ );
-    reader_odd_->AddVariable( "pt_1"    & var9_ );
-    reader_odd_->AddVariable( "pt_2"    & var10_);
-    reader_odd_->AddVariable( "pt_tt"   & var11_);
-    reader_odd_->AddVariable( "pt_vis"  & var12_);
+    reader_odd_->AddVariable( "dijetpt",  & var0_ );
+    reader_odd_->AddVariable( "jdeta",    & var1_ );
+    reader_odd_->AddVariable( "jpt_1",    & var2_ );
+    reader_odd_->AddVariable( "m_sv",     & var3_ );
+    reader_odd_->AddVariable( "m_vis",    & var4_ );
+    reader_odd_->AddVariable( "met",      & var5_ );
+    reader_odd_->AddVariable( "mjj",      & var6_ );
+    reader_odd_->AddVariable( "n_jets",   & var7_ );
+    reader_odd_->AddVariable( "pt_1",     & var8_ );
+    reader_odd_->AddVariable( "pt_2",     & var9_);
+    reader_odd_->AddVariable( "pt_tt",    & var10_);
+    reader_odd_->AddVariable( "pt_vis",   & var11_);
 
     reader_even_->BookMVA( "BDT method", filename_even );
     reader_odd_->BookMVA( "BDT method", filename_odd );
@@ -135,7 +137,7 @@ namespace ic {
       m_sv_ = -9999;
     }
     m_vis_ = ditau->M();
-    pt_tt_ = (ditau->vector() + pfmet->vector()).pt();
+    pt_tt_ = (ditau->vector() + mets->vector()).pt();
     pt_vis_ = ditau->pt();
     met_ = mets->vector().pt();
 
@@ -156,11 +158,11 @@ namespace ic {
       inputs[4]  = m_vis_;
       inputs[5]  = met_;
       inputs[6]  = mjj_;
-      inputs[7]  = n_jets;
+      inputs[7]  = n_jets_;
       inputs[8]  = pt_1_;
       inputs[9]  = pt_2_;
       inputs[10] = pt_tt_;
-      inputs[11] = pt_vis;
+      inputs[11] = pt_vis_;
     }
 
     std::vector<float> scores = read_mva_scores(isEven_,inputs);
@@ -168,7 +170,7 @@ namespace ic {
     event->Add("jetFakes_score", scores[1]);
     event->Add("zttEmbed_score", scores[2]);
 
-    std::pair<float, int> max_pair = getMaxScoreWithIndex(scores2);
+    std::pair<float, int> max_pair = getMaxScoreWithIndex(scores);
     event->Add("IC_BDT_max_score", max_pair.first); 
     event->Add("IC_BDT_max_index", max_pair.second);
 
