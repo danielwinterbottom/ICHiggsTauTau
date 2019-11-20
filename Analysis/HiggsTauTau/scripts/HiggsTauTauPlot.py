@@ -1741,16 +1741,16 @@ if options.syst_tau_id_diff != '':
     if '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
-        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_down' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
-        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_up'% vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False) 
+        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_down' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_up'% vars(), ['QCD','jetFakes'], False) 
 
 if options.syst_tau_trg_diff != '':
     hist_name = options.syst_tau_trg_diff
     if '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
-        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_down*(wt>0)' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
-        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_up*(wt>0)'% vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_down*(wt>0)' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_up*(wt>0)'% vars(), ['QCD','jetFakes'], False)
 
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':

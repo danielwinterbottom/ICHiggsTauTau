@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","mt","et","em"],
+    "channels":     ["tt","em","et","mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,10 +59,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2018/",
-    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2018/",
-    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct23_2018_TnP/",
-    "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Nov04_2018_withFastMTT/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_v4/",
+    //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
@@ -77,7 +75,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -143,7 +141,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2018.root",
         "ff_fracs_file" : ""
           }
     },
@@ -160,7 +158,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_tt_lite_2018.root",
         "ff_fracs_file" : ""
       }
     },
@@ -179,7 +177,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2018.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2018.root",
         "ff_fracs_file" : ""
       }
     },
