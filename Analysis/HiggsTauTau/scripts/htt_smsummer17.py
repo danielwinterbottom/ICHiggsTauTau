@@ -129,9 +129,9 @@ with open("config_for_python_channels.json") as config_file:
   svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-if svfit_mode == 1:
-    os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
+# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+# if svfit_mode == 1:
+#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
@@ -168,44 +168,44 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-        'VBFHToTauTau_M-125-nospinner-filter',
-        'GluGluToHToTauTau_M-125-nospinner-filter',
-        # 'VBFHToTauTau_M-125-nospinner',
-        # 'GluGluToHToTauTau_M-125-nospinner',
+        # 'VBFHToTauTau_M-125-nospinner-filter',
+        # 'GluGluToHToTauTau_M-125-nospinner-filter',
+        # # 'VBFHToTauTau_M-125-nospinner',
+        # # 'GluGluToHToTauTau_M-125-nospinner',
 
-        # # 'GluGluToHToTauTau_M125_nospinner-2017',
-        # # 'VBFHToTauTau_M125_nospinner-2017',
+        # # # 'GluGluToHToTauTau_M125_nospinner-2017',
+        # # # 'VBFHToTauTau_M125_nospinner-2017',
 
-        # # 'GluGluHToPseudoscalarTauTau_GEN',
-        # # 'GluGluHToMaxmixTauTau_GEN',
+        # # # 'GluGluHToPseudoscalarTauTau_GEN',
+        # # # 'GluGluHToMaxmixTauTau_GEN',
 
-        'GluGluHToTauTau_M-125',
-        'GluGluHToTauTau_M-125-ext',
-        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToHToTauTau_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+        # 'GluGluHToTauTau_M-125',
+        # 'GluGluHToTauTau_M-125-ext',
+        # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToHToTauTau_M125_amcatnloFXFX',
+        # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+        # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+        # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
 
-        'VBFHToTauTau_M-125',
-        'WminusHToTauTau_M-125',
-        'WplusHToTauTau_M-125',
-        'ZHToTauTau_M-125',
-        'VBFHiggs0Mf05ph0ToTauTau',
-        'VBFHiggs0MToTauTau',
-        'VBFHiggs0PMToTauTau',
-        'WHiggs0Mf05ph0ToTauTau',
-        'WHiggs0MToTauTau',
-        'WHiggs0PMToTauTau',
-        'ZHiggs0Mf05ph0ToTauTau',
-        'ZHiggs0MToTauTau',
-        'ZHiggs0PMToTauTau',
+        # 'VBFHToTauTau_M-125',
+        # 'WminusHToTauTau_M-125',
+        # 'WplusHToTauTau_M-125',
+        # 'ZHToTauTau_M-125',
+        # 'VBFHiggs0Mf05ph0ToTauTau',
+        # 'VBFHiggs0MToTauTau',
+        # 'VBFHiggs0PMToTauTau',
+        # 'WHiggs0Mf05ph0ToTauTau',
+        # 'WHiggs0MToTauTau',
+        # 'WHiggs0PMToTauTau',
+        # 'ZHiggs0Mf05ph0ToTauTau',
+        # 'ZHiggs0MToTauTau',
+        # 'ZHiggs0PMToTauTau',
 
-        # 'VBFHToTauTauUncorrelatedDecay_Filtered',
-        # 'WminusHToTauTauUncorrelatedDecay_Filtered',
-        # 'WplusHToTauTauUncorrelatedDecay_Filtered',
-        # 'ZHToTauTauUncorrelatedDecay_Filtered',
+        'VBFHToTauTauUncorrelatedDecay_Filtered',
+        'WminusHToTauTauUncorrelatedDecay_Filtered',
+        'WplusHToTauTauUncorrelatedDecay_Filtered',
+        'ZHToTauTauUncorrelatedDecay_Filtered',
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
