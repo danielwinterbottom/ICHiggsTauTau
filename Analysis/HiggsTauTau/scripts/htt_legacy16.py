@@ -359,7 +359,7 @@ if options.proc_bkg or options.proc_all:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
+        nperjob = 10
         #if 'scale' in FLATJSONPATCH:
         #  nperjob = 5
         #if 'DY' in sa and 'JetsToLL' in sa:
@@ -381,8 +381,8 @@ if options.proc_bkg or options.proc_all:
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>32: nperjob = 10
-        if n_scales*n_channels>64: nperjob=5
+        if n_scales*n_channels>32: nperjob = 5
+        if n_scales*n_channels>64: nperjob=3
 
         if sa == 'TT':
           nperjob = 15 
@@ -415,10 +415,10 @@ if options.proc_sm or options.proc_all:
       # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 10
+        nperjob = 5
         n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>=28: nperjob = 5
-        if n_scales*n_channels>=56: nperjob=3
+        if n_scales*n_channels>=28: nperjob = 3
+        if n_scales*n_channels>=56: nperjob=1
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

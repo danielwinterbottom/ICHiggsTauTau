@@ -2345,8 +2345,10 @@ namespace ic {
             double tau_trg_dm10_down=1.;
             double tau_trg_dm11_down=1.;
 
+            bool do_wts = fns_["t_trg_30_ratio"]->eval(args_3.data()) > 0;
+
             if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
-              if(!(t_pt<t_high_pt_cut)) {
+              if(!(t_pt<t_high_pt_cut) && do_wts) {
                 if(!is_embedded_){
                   tau_trg_dm0_up=fns_["t_trg_30_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
                   tau_trg_dm1_up=fns_["t_trg_30_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
@@ -2378,7 +2380,7 @@ namespace ic {
                 }
               }
 
-              if(mc_ == mc::mc2017 && is_embedded_ && e_pt<40 && fabs(e_eta)>1.479) {
+              if(mc_ == mc::mc2017 && is_embedded_ && e_pt<40 && fabs(e_eta)>1.479 && fns_["t_trg_30_data"]->eval(args_3.data())>0) {
                 tau_trg_dm0_up=fns_["t_trg_30_data_dm0_up"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
                 tau_trg_dm1_up=fns_["t_trg_30_data_dm1_up"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
                 tau_trg_dm10_up=fns_["t_trg_30_data_dm11_up"]->eval(args_3.data())/fns_["t_trg_30_data"]->eval(args_3.data());
@@ -2763,7 +2765,9 @@ namespace ic {
             double tau_trg_dm10_down=1.;
             double tau_trg_dm11_down=1.;
 
-            if(!(t_pt<t_high_pt_cut)) {
+            bool do_wts = (fns_["t_trg_27_ratio"]->eval(args_3.data())>0);
+
+            if(!(t_pt<t_high_pt_cut) && do_wts) {
               if(!is_embedded_){
                 tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
                 tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
@@ -3337,9 +3341,9 @@ namespace ic {
           double tau_trg_dm11_down=1;
 
           double trg_tot = (tau1_trg*tau2_trg)/(tau1_trg_mc*tau2_trg_mc);
-          if(trg_tot<=0) trg_tot =1.;
+          bool do_wts = !(tau1_trg==0 || tau2_trg==0 || tau1_trg_mc==0 || tau2_trg_mc==0);
 
-          if(is_embedded_){
+          if(is_embedded_ && do_wts){
             tau_trg_dm0_up = fns_["t_trg_35_embed_ratio_dm0_up"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm0_up"]->eval(args_2.data())/trg_tot;
             tau_trg_dm1_up = fns_["t_trg_35_embed_ratio_dm1_up"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm1_up"]->eval(args_2.data())/trg_tot;
             tau_trg_dm10_up = fns_["t_trg_35_embed_ratio_dm10_up"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm10_up"]->eval(args_2.data())/trg_tot;
@@ -3348,7 +3352,7 @@ namespace ic {
             tau_trg_dm1_down = fns_["t_trg_35_embed_ratio_dm1_down"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm1_down"]->eval(args_2.data())/trg_tot;
             tau_trg_dm10_down = fns_["t_trg_35_embed_ratio_dm10_down"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm10_down"]->eval(args_2.data())/trg_tot;
             tau_trg_dm11_down = fns_["t_trg_35_embed_ratio_dm11_down"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm11_down"]->eval(args_2.data())/trg_tot;
-          } else {
+          } else if(do_wts) {
             tau_trg_dm0_up = fns_["t_trg_35_ratio_dm0_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm0_up"]->eval(args_2.data())/trg_tot;
             tau_trg_dm1_up = fns_["t_trg_35_ratio_dm1_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm1_up"]->eval(args_2.data())/trg_tot;
             tau_trg_dm10_up = fns_["t_trg_35_ratio_dm10_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm10_up"]->eval(args_2.data())/trg_tot;
