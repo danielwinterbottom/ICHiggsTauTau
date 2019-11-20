@@ -123,9 +123,9 @@ with open("config_for_python_channels.json") as config_file:
   svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
-#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+if svfit_mode == 1:
+    os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/50))
 if scale < 1: scale = 1
@@ -359,7 +359,7 @@ if options.proc_bkg or options.proc_all:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
+        nperjob = 5
         #if 'scale' in FLATJSONPATCH:
         #  nperjob = 5
         #if 'DY' in sa and 'JetsToLL' in sa:
@@ -383,6 +383,10 @@ if options.proc_bkg or options.proc_all:
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         if n_scales*n_channels>32: nperjob = 10
         if n_scales*n_channels>64: nperjob=5
+        if sa == 'TT':
+          nperjob = 15 
+          if n_scales*n_channels>32: nperjob = 7
+          if n_scales*n_channels>64: nperjob=3
 
         if sa == 'TT':
           nperjob = 15 

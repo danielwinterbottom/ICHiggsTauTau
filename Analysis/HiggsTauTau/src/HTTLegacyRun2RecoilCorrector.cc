@@ -95,7 +95,7 @@ namespace ic {
       disable_recoil_corrs = false;
     }
 
-    if (sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos){ 
+    if (sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos || sample_.find("JJH")!=sample_.npos){ 
      disable_recoil_corrs = false;
     }
     

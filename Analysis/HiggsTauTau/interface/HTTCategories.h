@@ -551,6 +551,9 @@ class HTTCategories : public ModuleBase {
   float mvadm_3pi_2_;
   int mva_dm_1_, mva_dm_2_;
 
+  float IC_BDT_max_score_;
+  float IC_BDT_max_index_;
+
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
   double jet_csv_dphi_;     // Defined if n_jets >= 2
