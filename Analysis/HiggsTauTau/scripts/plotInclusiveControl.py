@@ -1,23 +1,18 @@
+# Example:
+# python scripts/plotInclusiveControl.py --era 2018 --channel tt --embedding --ff --signal_scale 50
+
+# to run for different categories (rather than just inclusive)
+# for cat in inclusive dijet; do python scripts/plotInclusiveControl.py --era 2018 --channel tt --embedding --ff --signal_scale 50 --cat ${cat}; done
+
+# or to run with several channels:
+# for ch in tt mt et em; do python scripts/plotInclusiveControl.py --era 2018 --channel ${ch} --embedding --ff --signal_scale 50; done
+
+
 from __future__ import print_function
 import argparse
 import numpy as np
 import shlex
 from subprocess import Popen, PIPE
-import datetime
-import os
-import sys
-import shutil
-from multiprocessing import Pool
-
-def transfer(var, dir_prefix):
-    today = datetime.date.today()
-    ftoday = today.strftime("%b%d") # format to month and date
-
-    pdir = "/home/hep/akd116/public_html/CP2017/2018"
-    if not os.path.isdir("{}/{}".format(pdir,ftoday)):
-        os.mkdir("{}/{}".format(pdir,ftoday))
-
-    shutil.copy(var, "{}/{}/{}".format(pdir,ftoday,dir_prefix))
 
 all_processes = []
 
@@ -28,12 +23,6 @@ def run_command(command):
     out, err = p.communicate()
     print(out,err)
     return out, err
-
-def multi_job(command,args):
-    print(command)
-    p = Pool(8)
-    p.map(command, args)
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
