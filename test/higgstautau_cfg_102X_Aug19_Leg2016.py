@@ -764,6 +764,7 @@ process.icPfMetProducer = producers.icMetFromPatProducer.clone(
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
                          input=cms.InputTag("slimmedMETsPuppi"),
                          branch = cms.string("puppiMet"),
+                         includeMetUncertainties=cms.bool(True),
                          getUncorrectedMet=cms.bool(False)
                          )
 

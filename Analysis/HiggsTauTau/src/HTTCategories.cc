@@ -83,8 +83,6 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
       outtree_->Branch("wt_btag",           &wt_btag_);
-      outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
-      outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       outtree_->Branch("xtrg_sf", &xtrg_sf_);
@@ -120,6 +118,34 @@ namespace ic {
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
       outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
       if(do_sm_ps_wts_ && !systematic_shift_){
+
+        outtree_->Branch("wt_tau_id_dm0_up", &wt_tau_id_dm0_up_);
+        outtree_->Branch("wt_tau_id_dm1_up", &wt_tau_id_dm1_up_);
+        outtree_->Branch("wt_tau_id_dm10_up", &wt_tau_id_dm10_up_);
+        outtree_->Branch("wt_tau_id_dm11_up"  , &wt_tau_id_dm11_up_);  
+        outtree_->Branch("wt_tau_id_dm0_down", &wt_tau_id_dm0_down_);
+        outtree_->Branch("wt_tau_id_dm1_down", &wt_tau_id_dm1_down_);
+        outtree_->Branch("wt_tau_id_dm10_down", &wt_tau_id_dm10_down_);
+        outtree_->Branch("wt_tau_id_dm11_down", &wt_tau_id_dm11_down_);
+        outtree_->Branch("wt_tau_id_pt_bin1_up", &wt_tau_id_pt_bin1_up_);
+        outtree_->Branch("wt_tau_id_pt_bin2_up", &wt_tau_id_pt_bin2_up_);
+        outtree_->Branch("wt_tau_id_pt_bin3_up", &wt_tau_id_pt_bin3_up_);
+        outtree_->Branch("wt_tau_id_pt_bin4_up", &wt_tau_id_pt_bin4_up_);
+        outtree_->Branch("wt_tau_id_pt_bin5_up", &wt_tau_id_pt_bin5_up_);
+        outtree_->Branch("wt_tau_id_pt_bin1_down", &wt_tau_id_pt_bin1_down_);
+        outtree_->Branch("wt_tau_id_pt_bin2_down", &wt_tau_id_pt_bin2_down_);
+        outtree_->Branch("wt_tau_id_pt_bin3_down", &wt_tau_id_pt_bin3_down_);
+        outtree_->Branch("wt_tau_id_pt_bin4_down", &wt_tau_id_pt_bin4_down_);
+        outtree_->Branch("wt_tau_id_pt_bin5_down", &wt_tau_id_pt_bin5_down_);
+        outtree_->Branch("wt_tau_trg_dm0_up", &wt_tau_trg_dm0_up_);
+        outtree_->Branch("wt_tau_trg_dm1_up", &wt_tau_trg_dm1_up_);
+        outtree_->Branch("wt_tau_trg_dm10_up", &wt_tau_trg_dm10_up_);
+        outtree_->Branch("wt_tau_trg_dm11_up", &wt_tau_trg_dm11_up_);
+        outtree_->Branch("wt_tau_trg_dm0_down", &wt_tau_trg_dm0_down_);
+        outtree_->Branch("wt_tau_trg_dm1_down", &wt_tau_trg_dm1_down_);
+        outtree_->Branch("wt_tau_trg_dm10_down", &wt_tau_trg_dm10_down_);
+        outtree_->Branch("wt_tau_trg_dm11_down", &wt_tau_trg_dm11_down_);
+
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
@@ -132,7 +158,6 @@ namespace ic {
         outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
       }
   
-      if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16) outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -149,18 +174,6 @@ namespace ic {
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
         outtree_->Branch("idisoweight_down_1",&idisoweight_down_1_);
         outtree_->Branch("idisoweight_down_2",&idisoweight_down_2_);
-      }
-      if(channel_==channel::tt){
-        outtree_->Branch("wt_tau_id_vtight", &wt_tau_id_vtight_); 
-        outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
-        outtree_->Branch("wt_tau1_id_loose", &wt_tau1_id_loose_);
-        outtree_->Branch("wt_tau1_id_medium", &wt_tau1_id_medium_);
-        outtree_->Branch("wt_tau1_id_tight", &wt_tau1_id_tight_);
-        outtree_->Branch("wt_tau1_id_vtight", &wt_tau1_id_vtight_);
-        outtree_->Branch("wt_tau2_id_loose", &wt_tau2_id_loose_);
-        outtree_->Branch("wt_tau2_id_medium", &wt_tau2_id_medium_);
-        outtree_->Branch("wt_tau2_id_tight", &wt_tau2_id_tight_);
-        outtree_->Branch("wt_tau2_id_vtight", &wt_tau2_id_vtight_);
       }
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
@@ -860,6 +873,9 @@ namespace ic {
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
 
+      outtree_->Branch("IC_BDT_max_score", &IC_BDT_max_score_);
+      outtree_->Branch("IC_BDT_max_index", &IC_BDT_max_index_);
+
       // moved these here from !(systematics_shifts) because want to use
       // them in BDT
       outtree_->Branch("phi_1",             &phi_1_.var_double);
@@ -1031,15 +1047,20 @@ namespace ic {
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
-        outtree_->Branch("wt_em_qcd_bothaiso",         &wt_em_qcd_bothaiso_);
-        outtree_->Branch("wt_em_qcd_up",      &wt_em_qcd_up_);
-        outtree_->Branch("wt_em_qcd_down",    &wt_em_qcd_down_);
-        outtree_->Branch("wt_em_qcd_shapeup",      &wt_em_qcd_shapeup_);
-        outtree_->Branch("wt_em_qcd_shapedown",    &wt_em_qcd_shapedown_);
         outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
         outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
-        outtree_->Branch("wt_em_qcd_bjetsdown",    &wt_em_qcd_bjetsdown_);
-        outtree_->Branch("wt_em_qcd_bjetsup",    &wt_em_qcd_bjetsup_);
+        outtree_->Branch("wt_em_qcd_njets0_unc1_up",    &wt_em_qcd_njets0_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets0_unc1_down",  &wt_em_qcd_njets0_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets0_unc2_up",    &wt_em_qcd_njets0_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets0_unc2_down",  &wt_em_qcd_njets0_unc2_down_);
+        outtree_->Branch("wt_em_qcd_njets1_unc1_up",    &wt_em_qcd_njets1_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets1_unc1_down",  &wt_em_qcd_njets1_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets1_unc2_up",    &wt_em_qcd_njets1_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets1_unc2_down",  &wt_em_qcd_njets1_unc2_down_);
+        outtree_->Branch("wt_em_qcd_njets2_unc1_up",    &wt_em_qcd_njets2_unc1_up_);
+        outtree_->Branch("wt_em_qcd_njets2_unc1_down",  &wt_em_qcd_njets2_unc1_down_);
+        outtree_->Branch("wt_em_qcd_njets2_unc2_up",    &wt_em_qcd_njets2_unc2_up_);
+        outtree_->Branch("wt_em_qcd_njets2_unc2_down",  &wt_em_qcd_njets2_unc2_down_);
       }
       if(add_Hhh_variables_) { 
         outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
@@ -1235,18 +1256,6 @@ namespace ic {
           outtree_->Branch("wt_z_mjj",      &wt_z_mjj_);   
           outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
           outtree_->Branch("wt_z_mjj_down",    &wt_z_mjj_down_);    
-        }
-        if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
-          outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
-          outtree_->Branch("wt_tau_id_dm0_down" ,    &wt_tau_id_dm0_down_); 
-          outtree_->Branch("wt_tau_id_dm1_up"   ,    &wt_tau_id_dm1_up_);   
-          outtree_->Branch("wt_tau_id_dm1_down" ,    &wt_tau_id_dm1_down_); 
-          outtree_->Branch("wt_tau_id_dm10_up"  ,    &wt_tau_id_dm10_up_);  
-          outtree_->Branch("wt_tau_id_dm10_down",    &wt_tau_id_dm10_down_); 
-          outtree_->Branch("wt_lfake_dm0_up"    ,    &wt_lfake_dm0_up_);    
-          outtree_->Branch("wt_lfake_dm0_down"  ,    &wt_lfake_dm0_down_);  
-          outtree_->Branch("wt_lfake_dm1_up"    ,    &wt_lfake_dm1_up_);    
-          outtree_->Branch("wt_lfake_dm1_down"  ,    &wt_lfake_dm1_down_);     
         }
 
         if (channel_ == channel::em) {
@@ -1820,31 +1829,36 @@ namespace ic {
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_all_weights();
-    wt_tau_id_tight_ = 1.0;
-    if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
-    wt_tau_id_loose_ = 1.0;
-    if (event->Exists("wt_tau_id_loose")) wt_tau_id_loose_  = event->Get<double>("wt_tau_id_loose");
-    wt_tau_id_medium_ = 1.0;
-    if (event->Exists("wt_tau_id_medium")) wt_tau_id_medium_  = event->Get<double>("wt_tau_id_medium");
-    wt_tau_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau_id_vtight")) wt_tau_id_vtight_  = event->Get<double>("wt_tau_id_vtight");
-    wt_tau1_id_loose_ = 1.0;
-    if (event->Exists("wt_tau1_id_loose")) wt_tau1_id_loose_  = event->Get<double>("wt_tau1_id_loose");
-    wt_tau1_id_medium_ = 1.0;
-    if (event->Exists("wt_tau1_id_medium")) wt_tau1_id_medium_  = event->Get<double>("wt_tau1_id_medium");
-    wt_tau1_id_tight_ = 1.0;
-    if (event->Exists("wt_tau1_id_tight")) wt_tau1_id_tight_  = event->Get<double>("wt_tau1_id_tight");
-    wt_tau1_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau1_id_vtight")) wt_tau1_id_vtight_  = event->Get<double>("wt_tau1_id_vtight");
-    wt_tau2_id_loose_ = 1.0;
-    if (event->Exists("wt_tau2_id_loose")) wt_tau2_id_loose_  = event->Get<double>("wt_tau2_id_loose");
-    wt_tau2_id_medium_ = 1.0;
-    if (event->Exists("wt_tau2_id_medium")) wt_tau2_id_medium_  = event->Get<double>("wt_tau2_id_medium");
-    wt_tau2_id_tight_ = 1.0;
-    if (event->Exists("wt_tau2_id_tight")) wt_tau2_id_tight_  = event->Get<double>("wt_tau2_id_tight");
-    wt_tau2_id_vtight_ = 1.0;
-    if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
-    
+   
+    wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
+    wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
+    wt_tau_id_dm10_up_ =  (event->Exists("wt_tau_id_dm10_up")) ? event->Get<double>("wt_tau_id_dm10_up") : 1.;
+    wt_tau_id_dm11_up_ =  (event->Exists("wt_tau_id_dm11_up")) ? event->Get<double>("wt_tau_id_dm11_up") : 1.;
+    wt_tau_id_dm0_down_ =  (event->Exists("wt_tau_id_dm0_down")) ? event->Get<double>("wt_tau_id_dm0_down") : 1.;
+    wt_tau_id_dm1_down_ =  (event->Exists("wt_tau_id_dm1_down")) ? event->Get<double>("wt_tau_id_dm1_down") : 1.;
+    wt_tau_id_dm10_down_ =  (event->Exists("wt_tau_id_dm10_down")) ? event->Get<double>("wt_tau_id_dm10_down") : 1.;
+    wt_tau_id_dm11_down_ =  (event->Exists("wt_tau_id_dm11_down")) ? event->Get<double>("wt_tau_id_dm11_down") : 1.;
+
+    wt_tau_id_pt_bin1_up_ =  (event->Exists("wt_tau_id_pt_bin1_up")) ? event->Get<double>("wt_tau_id_pt_bin1_up") : 1.;
+    wt_tau_id_pt_bin2_up_ =  (event->Exists("wt_tau_id_pt_bin2_up")) ? event->Get<double>("wt_tau_id_pt_bin2_up") : 1.;
+    wt_tau_id_pt_bin3_up_ =  (event->Exists("wt_tau_id_pt_bin3_up")) ? event->Get<double>("wt_tau_id_pt_bin3_up") : 1.;
+    wt_tau_id_pt_bin4_up_ =  (event->Exists("wt_tau_id_pt_bin4_up")) ? event->Get<double>("wt_tau_id_pt_bin4_up") : 1.;
+    wt_tau_id_pt_bin5_up_ =  (event->Exists("wt_tau_id_pt_bin5_up")) ? event->Get<double>("wt_tau_id_pt_bin5_up") : 1.;
+    wt_tau_id_pt_bin1_down_ =  (event->Exists("wt_tau_id_pt_bin1_down")) ? event->Get<double>("wt_tau_id_pt_bin1_down") : 1.;
+    wt_tau_id_pt_bin2_down_ =  (event->Exists("wt_tau_id_pt_bin2_down")) ? event->Get<double>("wt_tau_id_pt_bin2_down") : 1.;
+    wt_tau_id_pt_bin3_down_ =  (event->Exists("wt_tau_id_pt_bin3_down")) ? event->Get<double>("wt_tau_id_pt_bin3_down") : 1.;
+    wt_tau_id_pt_bin4_down_ =  (event->Exists("wt_tau_id_pt_bin4_down")) ? event->Get<double>("wt_tau_id_pt_bin4_down") : 1.;
+    wt_tau_id_pt_bin5_down_ =  (event->Exists("wt_tau_id_pt_bin5_down")) ? event->Get<double>("wt_tau_id_pt_bin5_down") : 1.;
+
+    wt_tau_trg_dm0_up_ =  (event->Exists("wt_tau_trg_dm0_up")) ? event->Get<double>("wt_tau_trg_dm0_up") : 1.;
+    wt_tau_trg_dm1_up_ =  (event->Exists("wt_tau_trg_dm1_up")) ? event->Get<double>("wt_tau_trg_dm1_up") : 1.;
+    wt_tau_trg_dm10_up_ =  (event->Exists("wt_tau_trg_dm10_up")) ? event->Get<double>("wt_tau_trg_dm10_up") : 1.;
+    wt_tau_trg_dm11_up_ =  (event->Exists("wt_tau_trg_dm11_up")) ? event->Get<double>("wt_tau_trg_dm11_up") : 1.;
+    wt_tau_trg_dm0_down_ =  (event->Exists("wt_tau_trg_dm0_down")) ? event->Get<double>("wt_tau_trg_dm0_down") : 1.;
+    wt_tau_trg_dm1_down_ =  (event->Exists("wt_tau_trg_dm1_down")) ? event->Get<double>("wt_tau_trg_dm1_down") : 1.;
+    wt_tau_trg_dm10_down_ =  (event->Exists("wt_tau_trg_dm10_down")) ? event->Get<double>("wt_tau_trg_dm10_down") : 1.;
+    wt_tau_trg_dm11_down_ =  (event->Exists("wt_tau_trg_dm11_down")) ? event->Get<double>("wt_tau_trg_dm11_down") : 1.;
+
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
       wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
@@ -2506,13 +2520,6 @@ namespace ic {
     wt_tau_id_up_ = 1.0;
     wt_tau_id_down_ = 1.0;
     wt_em_qcd_ = 1.0;
-    wt_em_qcd_bothaiso_ = 1.0;
-    wt_em_qcd_down_ = 1.0;
-    wt_em_qcd_up_ = 1.0;
-    wt_em_qcd_shapedown_ = 1.0;
-    wt_em_qcd_shapeup_ = 1.0;
-    wt_em_qcd_bjetsdown_ = 1.0;
-    wt_em_qcd_bjetsup_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
     wt_embed_mc_yield_ = 1.0;
@@ -2527,15 +2534,22 @@ namespace ic {
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
-    if (event->Exists("wt_em_qcd_bothaiso"))         wt_em_qcd_bothaiso_ = event->Get<double>("wt_em_qcd_bothaiso");
-    if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
-    if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
-    if (event->Exists("wt_em_qcd_shapeup"))      wt_em_qcd_shapeup_ = event->Get<double>("wt_em_qcd_shapeup");
-    if (event->Exists("wt_em_qcd_shapedown"))    wt_em_qcd_shapedown_ = event->Get<double>("wt_em_qcd_shapedown");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
-    if (event->Exists("wt_em_qcd_bjetsdown"))    wt_em_qcd_bjetsdown_ = event->Get<double>("wt_em_qcd_bjetsdown");
-    if (event->Exists("wt_em_qcd_bjetsup"))    wt_em_qcd_bjetsup_ = event->Get<double>("wt_em_qcd_bjetsup");
+
+    wt_em_qcd_njets0_unc1_up_   = (event->Exists("wt_em_qcd_njets0_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets0_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets0_unc1_down_ = (event->Exists("wt_em_qcd_njets0_unc1_down")) ? event->Get<double>("wt_em_qcd_njets0_unc1_down") : 1.0; 
+    wt_em_qcd_njets0_unc2_up_   = (event->Exists("wt_em_qcd_njets0_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets0_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets0_unc2_down_ = (event->Exists("wt_em_qcd_njets0_unc2_down")) ? event->Get<double>("wt_em_qcd_njets0_unc2_down") : 1.0; 
+    wt_em_qcd_njets1_unc1_up_   = (event->Exists("wt_em_qcd_njets1_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets1_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets1_unc1_down_ = (event->Exists("wt_em_qcd_njets1_unc1_down")) ? event->Get<double>("wt_em_qcd_njets1_unc1_down") : 1.0; 
+    wt_em_qcd_njets1_unc2_up_   = (event->Exists("wt_em_qcd_njets1_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets1_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets1_unc2_down_ = (event->Exists("wt_em_qcd_njets1_unc2_down")) ? event->Get<double>("wt_em_qcd_njets1_unc2_down") : 1.0; 
+    wt_em_qcd_njets2_unc1_up_   = (event->Exists("wt_em_qcd_njets2_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets2_unc1_up"  ) : 1.0; 
+    wt_em_qcd_njets2_unc1_down_ = (event->Exists("wt_em_qcd_njets2_unc1_down")) ? event->Get<double>("wt_em_qcd_njets2_unc1_down") : 1.0; 
+    wt_em_qcd_njets2_unc2_up_   = (event->Exists("wt_em_qcd_njets2_unc2_up"  )) ? event->Get<double>("wt_em_qcd_njets2_unc2_up"  ) : 1.0; 
+    wt_em_qcd_njets2_unc2_down_ = (event->Exists("wt_em_qcd_njets2_unc2_down")) ? event->Get<double>("wt_em_qcd_njets2_unc2_down") : 1.0;
+
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
     wt_embed_mc_yield_ = event->Exists("wt_embed_mc_yield") ? event->Get<double>("wt_embed_mc_yield") : 1.0;
@@ -2660,6 +2674,13 @@ namespace ic {
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     }
+    if (era_ == era::data_2016) {
+      btag_wp = 0.6321;
+      loose_btag_wp = 0.2217;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }
+
 
     auto sortRuleBTagSum = [btag_label, btag_label_extra] (PFJet* s1, PFJet* s2) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > 
@@ -2710,20 +2731,8 @@ namespace ic {
           ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
         }
       } 
-    } else if (era_ == era::data_2016) {
-      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
-      // that say whether a jet should pass the WP or not
-      if (event->Exists("retag_result")) {
-        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
-      } else{ 
-        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      } 
     } 
-    else if (era_ == era::data_2017 || era_ == era::data_2018) {
+    else if (era_ == era::data_2017 || era_ == era::data_2018 || era_ == era::data_2016) {
       ic::erase_if_not(loose_bjets, filterBTagSumLoose);
       // Instead of changing b-tag value in the promote/demote method we look for a map of bools
       // that say whether a jet should pass the WP or not
@@ -4147,19 +4156,6 @@ namespace ic {
       wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
       wt_z_mjj_down_ = event->Exists("wt_z_mjj_down") ? event->Get<double>("wt_z_mjj_down") : 1.0;   
     }
-    if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 ||  strategy_ == strategy::cpdecays16){
-      wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm0_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_tau_id_dm1_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm1_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_tau_id_dm10_up_    = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
-      wt_tau_id_dm10_down_  = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
-      wt_lfake_rate_        = event->Exists("wt_lfake_rate") ? event->Get<double>("wt_lfake_rate") : 1.0;
-      wt_lfake_dm0_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_down") : 1.0;
-      wt_lfake_dm0_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
-      wt_lfake_dm1_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
-      wt_lfake_dm1_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_down") : 1.0;     
-    }
 
 
     if (channel_ == channel::tt && strategy_ == strategy::fall15){
@@ -4706,7 +4702,49 @@ namespace ic {
           else                   aco_angle_1_ -= M_PI;
         }  
       }
-      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_==10) || (tau_decay_mode_1_==10&&tau_decay_mode_2_==1)){
+
+      else if((tau_decay_mode_1_==0&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==0)){
+
+        cp_channel_=2;
+
+        ic::Tau const *tau_1;
+        std::vector<ic::PFCandidate*> a1_daughters;
+        if(tau_decay_mode_1_>=10) {
+          a1_daughters  = GetA1(tau1, pfcands).first;
+          tau_1 = tau2;
+        } else {
+          a1_daughters  = GetA1(tau2, pfcands).first;
+          tau_1 = tau1;
+        }
+
+        TLorentzVector pvtosv1(
+                tau_1->svx() - primary_vtx->vx(),
+                tau_1->svy() - primary_vtx->vy(),
+                tau_1->svz() - primary_vtx->vz(),
+                0.);
+        lvec3 = ConvertToLorentz(tau_1->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec1 = TLorentzVector(ip, 0.);
+
+        if (a1_daughters.size()>2){
+
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+            aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+
+            if (cp_sign_<0) {
+              if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+              else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+          }
+      }
+
+
+      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==1)){
       
         cp_channel_=2;
 
@@ -4747,7 +4785,6 @@ namespace ic {
             aco_sign_2_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]})).second;
             aco_sign_4_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]})).second;
 
-
             cp_sign_1_ = y_1_1_*y_1_2_;
             cp_sign_2_ = y_1_1_*y_2_2_;
             cp_sign_3_ = y_1_1_*y_3_2_;
@@ -4771,7 +4808,7 @@ namespace ic {
         //  else                   aco_angle_4_ -= M_PI;
         //}
 
-      } else if(tau_decay_mode_1_==10&&tau_decay_mode_2_==10){
+      } else if(tau_decay_mode_1_>=10&&tau_decay_mode_2_>=10){
         cp_channel_=3;
         std::vector<ic::PFCandidate*> a1_daughters_1 = GetA1(tau1, pfcands).first;
         std::vector<ic::PFCandidate*> a1_daughters_2 = GetA1(tau2, pfcands).first;
@@ -4938,6 +4975,30 @@ namespace ic {
         }
       }
 
+      else if(tau_decay_mode_2_>=10){
+
+        cp_channel_=2;
+
+        std::vector<ic::PFCandidate*> a1_daughters;
+        std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+        a1_daughters  = GetA1(tau2, pfcands).first;
+
+        if (a1_daughters.size()>2){
+
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+            aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+
+            if (cp_sign_<0) {
+              if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+              else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+          }
+      }
+
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
@@ -5037,6 +5098,9 @@ namespace ic {
       aco_angle_mod_ = -9999;
     }
       
+    // signal background event classification
+    IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;
+    IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<float>("IC_BDT_max_index") : -999.0;
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
