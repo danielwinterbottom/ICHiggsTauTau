@@ -123,9 +123,9 @@ with open("config_for_python_channels.json") as config_file:
   svfit_folder = cfg["sequence"]["svfit_folder"]
 
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
-# os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
-# if svfit_mode != 0:
-#     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
+os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
+if svfit_mode == 1:
+    os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 scale = int(math.ceil(float(n_scales*n_channels)/50))
 if scale < 1: scale = 1
@@ -359,35 +359,18 @@ if options.proc_bkg or options.proc_all:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
-        #if 'scale' in FLATJSONPATCH:
-        #  nperjob = 5
-        #if 'DY' in sa and 'JetsToLL' in sa:
-        #  nperjob = 5
-        #if 'TT' in sa:
-        #  nperjob = 5
-        #  if 'scale' in FLATJSONPATCH:
-        #    nperjob = 2
-#       # if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
-#       #   nperjob = 30
-        #if 'QCD' in sa:
-        #    nperjob = 15
-        #if 'scale' in FLATJSONPATCH:
-        #  nperjob = 5
-        #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','')
-        # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
+        nperjob = 10
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>32: nperjob = 10
-        if n_scales*n_channels>64: nperjob=5
-
-        if sa == 'TT':
-          nperjob = 15 
-          if n_scales*n_channels>32: nperjob = 7
-          if n_scales*n_channels>64: nperjob=3
+        if n_scales*n_channels>32: nperjob = 5
+        if n_scales*n_channels>64: nperjob=3
+        #if sa == 'TT':
+        #  nperjob = 15 
+        #  if n_scales*n_channels>32: nperjob = 7
+        #  if n_scales*n_channels>64: nperjob=3
 
         #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -415,10 +398,10 @@ if options.proc_sm or options.proc_all:
       # FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 10
+        nperjob = 5
         n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>=28: nperjob = 5
-        if n_scales*n_channels>=56: nperjob=3
+        if n_scales*n_channels>=28: nperjob = 3
+        if n_scales*n_channels>=56: nperjob=1
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

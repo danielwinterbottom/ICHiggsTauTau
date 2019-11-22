@@ -27,7 +27,7 @@ namespace ic {
   int HTTMuonEnergyScale::Execute(TreeEvent *event) {
     if(channel_ != channel::tt && channel_ != channel::zee && channel_ != channel::et){
       std::vector<Muon *> &muons = event->GetPtrVec<Muon>(input_label_);
-      std::map<std::size_t, double> muon_scales;
+      // std::map<std::size_t, double> muon_scales;
       for (unsigned i = 0; i < muons.size() ;++i){
         double total_shift = 1.00;
         double m_eta = muons[i]->eta();
@@ -45,9 +45,9 @@ namespace ic {
         }
         muons[i]->set_pt(muons[i]->pt() * total_shift);
         muons[i]->set_energy(muons[i]->energy() * total_shift);
-        muon_scales[muons[i]->id()] = total_shift;
+        // muon_scales[muons[i]->id()] = total_shift;
       }
-      event->Add("muon_scales", muon_scales);
+      // event->Add("muon_scales", muon_scales);
     }
     return 0;
   }
