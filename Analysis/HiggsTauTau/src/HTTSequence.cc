@@ -3465,7 +3465,6 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
-  ic::mc mc_type = String2MC(mc_str);
   
   if(e_scale_mode >0 && !is_data && is_embedded){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
@@ -3520,17 +3519,6 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         .set_e_unc_mode(e_unc_mode)
     );
   }
-
-  if(mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
-      BuildModule(GenericModule("ElecIsoFilter")
-        .set_function([=](ic::TreeEvent *event){
-           EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-           std::vector<Electron*> & vec = event->GetPtrVec<Electron>("sel_electrons");
-           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.5));
-           return 0;
-        }));
-  }
-
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
