@@ -1891,6 +1891,7 @@ if(channel != channel::wmnu) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
+    .set_do_light(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
  if(era_type == era::data_2015 || era_type == era::data_2016 
          || era_type == era::data_2017 || era_type == era::data_2018){

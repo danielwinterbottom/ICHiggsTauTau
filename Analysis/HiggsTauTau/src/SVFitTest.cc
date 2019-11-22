@@ -48,6 +48,7 @@ namespace ic {
     fullpath_ = "SVFIT_2012/";
     do_vloose_preselection_ = false;
     verbose_ = false;
+    do_light_ = true;
 
     MC_ = false;
   }
@@ -160,7 +161,8 @@ namespace ic {
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
+            if(do_light_) mass_map_light[tri_unsigned(run, lumi, event)] = (float)svfit_mass;
+            else if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
             else{
               if(read_svfit_mt_){
                 p4_map[tri_unsigned(run, lumi, event)] = std::make_tuple(objects_hash, *svfit_vector, svfit_transverse_mass);
@@ -481,7 +483,18 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
   if (run_mode_ == 2) {
     bool fail_state = false;
     //Different actions for Markov-Chain or Vegas integration
-     if(!MC_){
+     if(do_light_) {
+        auto it = mass_map_light.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+        if (it != mass_map_light.end()) {
+            if (it->second < 1.) {
+              if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << it->second << std::endl;
+            } 
+            event->Add("svfitMass", (double)it->second);
+        } else {
+          fail_state = true;
+        }
+     }
+     else if(!MC_){
         auto it = mass_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
         if (it != mass_map.end()) {
           ;
