@@ -1,22 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEventClassifier.h"
 
-// Add this function to take the maximum score and corresponding index
-// from the vector of scores
-std::pair<float, int> getMaxScoreWithIndex(std::vector<float> vec) {
-  if (vec.empty()) return std::make_pair(0., 0);
-  float max_score = vec[0];
-  int max_index = 0;
-  unsigned ind = 0;
-  for (auto s : vec) {
-    if (s > max_score) {
-      max_score = s;
-      max_index = ind;
-    }
-    ++ind;
-  }
-  std::pair<float, int> out_pair = std::make_pair(max_score, max_index);
-  return out_pair;
-}
 
 namespace ic {
 
@@ -42,6 +25,24 @@ namespace ic {
       else       scores = reader_odd_->EvaluateMulticlass("BDT method");
 
       return scores;
+  }
+
+  // Add this function to take the maximum score and corresponding index
+  // from the vector of scores
+  std::pair<float,int> HTTEventClassifier::getMaxScoreWithIndex(std::vector<float> vec) {
+    if (vec.empty()) return std::make_pair(0., 0);
+    float max_score = vec[0];
+    int max_index = 0;
+    unsigned ind = 0;
+    for (auto s : vec) {
+      if (s > max_score) {
+        max_score = s;
+        max_index = ind;
+      }
+      ++ind;
+    }
+    std::pair<float, int> out_pair = std::make_pair(max_score, max_index);
+    return out_pair;
   }
 
 

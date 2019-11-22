@@ -3465,6 +3465,7 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
+  ic::mc mc_ = String2MC(mc_str);
   
   if(e_scale_mode >0 && !is_data && is_embedded){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
@@ -3681,7 +3682,7 @@ void HTTSequence::BuildMTPairs() {
     else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
 
-  if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) {
+  if(mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
 
     BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(1)
@@ -3927,7 +3928,7 @@ if(strategy_type == strategy::paper2013) {
     );
   }
 
-  if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) {
+  if(mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
       BuildModule(GenericModule("ElecIsoFilter")
         .set_function([=](ic::TreeEvent *event){
            EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -4627,6 +4628,7 @@ void HTTSequence::BuildTauSelection(){
   Json::Value base = js["baseline"];
   ic::strategy strategy_type  = String2Strategy(strategy_str);
   ic::channel channel_type         = String2Channel(channel_str);
+  ic::mc mc_ = String2MC(mc_str);
 
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
