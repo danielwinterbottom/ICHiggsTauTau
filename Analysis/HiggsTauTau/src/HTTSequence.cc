@@ -665,9 +665,9 @@ void HTTSequence::BuildSequence(){
    } 
 
    bool do_ggH_stitch = false;
-   //bool official_ggH = false;
+   bool official_ggH = false;
    //for now use 2017 samples in 2018
-   //if ((era_type == era::data_2017 || era_type == era::data_2018) && !(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos)) official_ggH = true;
+   if ((era_type == era::data_2017 || era_type == era::data_2018) && !(output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos)) official_ggH = true;
    double n_inc=0., n_2=0., frac=0.;
     if(output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos){
       if(era_type == era::data_2016) {
@@ -1902,7 +1902,7 @@ if(channel != channel::wmnu) {
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
 
-//BuildModule(svFitTest);
+BuildModule(svFitTest);
 
 if(js["do_preselection"].asBool() && !js["baseline"]["do_faketaus"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
   BuildModule(GenericModule("PreselectionFilter")
@@ -2000,18 +2000,18 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   }
 
 if (new_svfit_mode != 1) {
-  //BuildModule(BTagWeightRun2("BTagWeightRun2")
-  // .set_channel(channel)
-  // .set_era(era_type)
-  // .set_strategy(strategy_type)
-  // .set_jet_label(jets_label)
-  // .set_bbtag_eff(new TH2F(bbtag_eff))
-  // .set_cbtag_eff(new TH2F(cbtag_eff))
-  // .set_othbtag_eff(new TH2F(othbtag_eff))
-  // .set_do_reshape(do_reshape)
-  // .set_use_deep_csv(use_deep_csv)
-  // .set_btag_mode(btag_mode)
-  // .set_bfake_mode(bfake_mode));
+  BuildModule(BTagWeightRun2("BTagWeightRun2")
+   .set_channel(channel)
+   .set_era(era_type)
+   .set_strategy(strategy_type)
+   .set_jet_label(jets_label)
+   .set_bbtag_eff(new TH2F(bbtag_eff))
+   .set_cbtag_eff(new TH2F(cbtag_eff))
+   .set_othbtag_eff(new TH2F(othbtag_eff))
+   .set_do_reshape(do_reshape)
+   .set_use_deep_csv(use_deep_csv)
+   .set_btag_mode(btag_mode)
+   .set_bfake_mode(bfake_mode));
   }
 }
 
@@ -2628,7 +2628,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
   
    
   
-     //BuildModule(httWeights);
+     BuildModule(httWeights);
      if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
            .set_era(era_type)
@@ -2650,7 +2650,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.SetDYInputYields(48443117+49082157,42155038+33329594,88795+10027319,5740168+1147725,4255897);
           }
        
-       //BuildModule(httStitching);   
+       BuildModule(httStitching);   
      }
    }
 // adding 2018 stitching
@@ -2781,25 +2781,25 @@ if (strategy_type == strategy::cpdecays16) {
 
 if (new_svfit_mode != 1) {
   if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
-    //BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
-    //    .set_channel(channel)
-    //    .set_ditau_label("ditau")
-    //    .set_met_label(met_label)
-    //    .set_jets_label(jets_label)
-    //    .set_strategy(strategy_type)
-    //    .set_categories(js["baseline"]["ff_categories"].asString())
-    //    .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
-    //    .set_ff_file(js["baseline"]["ff_file"].asString())
-    //    .set_fracs_file(js["baseline"]["ff_fracs_file"].asString())
-    //    .set_is_embedded(is_embedded)
-    //    );
+    BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
+        .set_channel(channel)
+        .set_ditau_label("ditau")
+        .set_met_label(met_label)
+        .set_jets_label(jets_label)
+        .set_strategy(strategy_type)
+        .set_categories(js["baseline"]["ff_categories"].asString())
+        .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
+        .set_ff_file(js["baseline"]["ff_file"].asString())
+        .set_fracs_file(js["baseline"]["ff_fracs_file"].asString())
+        .set_is_embedded(is_embedded)
+        );
   }
 }
     
 if(channel != channel::wmnu) {
-//bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
-//bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
-//bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
+bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
+bool do_sm_scale_wts = (output_name.find("GluGluH2JetsToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_amcNLO_M-") != output_name.npos || output_name.find("GluGluToHToTauTau_M") != output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
+bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 
 //  BuildModule(Pi0MVA("Pi0MVA")
 //      .set_fs(fs.get())
@@ -2818,43 +2818,43 @@ if(channel != channel::wmnu) {
       .set_era(era_type));
   ;
 }*/
-//do_sm_scale_wts = true; // set this to false after!
+do_sm_scale_wts = true; // set this to false after!
 if (new_svfit_mode != 1) {
-  //BuildModule(HTTCategories("HTTCategories")
-  //    .set_fs(fs.get())
-  //    .set_channel(channel)
-  //    .set_era(era_type)
-  //    .set_strategy(strategy_type)
-  //    .set_ditau_label("ditau")
-  //    .set_met_label(met_label)
-  //    .set_jets_label(jets_label)
-  //    .set_kinfit_mode(kinfit_mode)
-  //    .set_bjet_regression(bjet_regr_correction)
-  //    .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-  //    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-  //    .set_tau_id_study(js["tau_id_study"].asBool())
-  //    .set_qcd_study(js["qcd_study"].asBool())
-  //    .set_optimisation_study(js["optimisation_study"].asBool())
-  //    .set_mass_shift(mass_shift)
-  //    .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
-  //    .set_is_embedded(is_embedded)
-  //    .set_is_data(is_data)
-  //    .set_systematic_shift(addit_output_folder!="")
-  //    .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
-  //    .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
-  //    //Good to avoid accidentally overwriting existing output files when syncing
-  //    .set_write_tree(!js["make_sync_ntuple"].asBool())
-  //    .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-  //    .set_ff_categories(js["baseline"]["ff_categories"].asString())
-  //    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&&addit_output_folder!="")
-  //    .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-  //    .set_do_mssm_higgspt(do_mssm_higgspt)
-  //    .set_do_sm_scale_wts(do_sm_scale_wts) 
-  //    .set_do_sm_ps_wts(do_sm_scale_wts)
-  //    .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-  //    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
-  //    .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
-  //    .set_official_ggH(official_ggH));
+  BuildModule(HTTCategories("HTTCategories")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_ditau_label("ditau")
+      .set_met_label(met_label)
+      .set_jets_label(jets_label)
+      .set_kinfit_mode(kinfit_mode)
+      .set_bjet_regression(bjet_regr_correction)
+      .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+      .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
+      .set_tau_id_study(js["tau_id_study"].asBool())
+      .set_qcd_study(js["qcd_study"].asBool())
+      .set_optimisation_study(js["optimisation_study"].asBool())
+      .set_mass_shift(mass_shift)
+      .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
+      .set_is_embedded(is_embedded)
+      .set_is_data(is_data)
+      .set_systematic_shift(addit_output_folder!="")
+      .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
+      .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
+      //Good to avoid accidentally overwriting existing output files when syncing
+      .set_write_tree(!js["make_sync_ntuple"].asBool())
+      .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
+      .set_ff_categories(js["baseline"]["ff_categories"].asString())
+      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&&addit_output_folder!="")
+      .set_do_qcd_scale_wts(do_qcd_scale_wts_)
+      .set_do_mssm_higgspt(do_mssm_higgspt)
+      .set_do_sm_scale_wts(do_sm_scale_wts) 
+      .set_do_sm_ps_wts(do_sm_scale_wts)
+      .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
+      .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
+      .set_trg_applied_in_mc(js["trg_in_mc"].asBool())
+      .set_official_ggH(official_ggH));
     }
 
  } else {
