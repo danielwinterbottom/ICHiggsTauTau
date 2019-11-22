@@ -34,6 +34,7 @@ class HTTEventClassifier : public ModuleBase {
   HTTEventClassifier(std::string const& name);
   virtual ~HTTEventClassifier();
   virtual std::vector<float> read_mva_scores(unsigned isEven, std::vector<float> vars);
+  virtual std::pair<float,int> getMaxScoreWithIndex(std::vector<float> vec);
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
