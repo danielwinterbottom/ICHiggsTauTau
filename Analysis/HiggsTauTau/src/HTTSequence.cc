@@ -3465,7 +3465,7 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
-  ic::mc mc_ = String2MC(mc_str);
+  ic::mc mc_type = String2MC(mc_str);
   
   if(e_scale_mode >0 && !is_data && is_embedded){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
@@ -3521,7 +3521,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     );
   }
 
-  if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) {
+  if(mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
       BuildModule(GenericModule("ElecIsoFilter")
         .set_function([=](ic::TreeEvent *event){
            EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -4628,12 +4628,12 @@ void HTTSequence::BuildTauSelection(){
   Json::Value base = js["baseline"];
   ic::strategy strategy_type  = String2Strategy(strategy_str);
   ic::channel channel_type         = String2Channel(channel_str);
-  ic::mc mc_ = String2MC(mc_str);
+  ic::mc mc_type = String2MC(mc_str);
 
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
   
- if (mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) {
+ if (mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
    // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
    double loose_tau_pt = tau_pt*0.8;
    BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
@@ -4821,7 +4821,7 @@ if(strategy_type == strategy::paper2013){
 
       }));
    } 
-   if (strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::legacy16 || mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016){
+   if (strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::legacy16 || mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016){
      BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
         .set_input_label(js["taus"].asString()).set_min(min_taus)
         .set_predicate([=](Tau const* t) {
