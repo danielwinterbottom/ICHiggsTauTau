@@ -3928,16 +3928,6 @@ if(strategy_type == strategy::paper2013) {
     );
   }
 
-  if(mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
-      BuildModule(GenericModule("ElecIsoFilter")
-        .set_function([=](ic::TreeEvent *event){
-           EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-           std::vector<Electron*> & vec = event->GetPtrVec<Electron>("sel_electrons");
-           ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.5));
-           return 0;
-        }));
-  }
-
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
