@@ -21,6 +21,7 @@ W2JetsToLNu-LO  61526.7
 W3JetsToLNu-LO  61526.7
 W4JetsToLNu-LO  61526.7
 WGToLNuG  510.6
+WWToLNuQQ 45.99
 WWTo1L1Nu2Q  45.99
 WWTo2L2Nu  11.08
 WZTo1L3Nu  3.293
@@ -51,7 +52,6 @@ GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX  3.045966
 GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX  3.045966
 GluGluToHToTauTau_M-125-nospinner-filter 3.045966
 GluGluHToTauTau_M-125 3.045966
-GluGluHToTauTau_M-125-ext 3.045966
 WminusHToTauTau_M-125 0.03340
 WplusHToTauTau_M-125 0.05266
 ZHToTauTau_M-125 0.05542

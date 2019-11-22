@@ -2107,7 +2107,7 @@ namespace ic {
       }
       Tau * t = const_cast<Tau*>(tau);
       t->set_sig_gamma_cands(signal_gammas);
-    } else if(tau->decay_mode()==1) {
+    } else if(tau->decay_mode()==1 && strip_pairs.size()>0) {
       pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
       //pi0 = (ic::Candidate*)GetPi0(gammas, true); 
     }

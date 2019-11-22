@@ -71,8 +71,9 @@ def main(args):
             # "rho_id_1(10,0,1)",
             # "rho_id_2(10,0,1)",
             # "IC_Feb13_fix1_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            # "IC_Oct07_tauspinnerPS_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
-            "IC_Oct07_tauspinnerSM_individualSigWts_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct07_tauspinnerSM_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct22_tauspinnerSM_classic_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # "IC_Oct07_tauspinnerSM_individualSigWts_max_score[0.,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.7],(14,0,6.28319)"
             # "IC_Oct07_tauspinnerSM_split_max_score,aco_angle_mod[0.0,0.4,0.5,0.7],(14,0,6.28319)"
             # "IC_Jun13_max_score[0.,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
@@ -137,6 +138,7 @@ def main(args):
             # "jeta_2(12,-4.7,4.7)",
 
             # "m_sv(30,0,300)",
+            # "m_sv[-110,0,300]",
             # "n_jets(5,0,5)",
             # "genM(30,0,300)",
 
@@ -159,7 +161,7 @@ def main(args):
             # for FF checks
 
             # "m_vis(25,20,250)",
-            # "m_sv(30,0,300)",
+            "m_sv(30,0,300)",
             # "pt_tt(30,0,300)",
             # "pt_1(20,40,140)",
             # "pt_2(12,40,100)",
@@ -195,23 +197,26 @@ def main(args):
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
-        # extras += " --deeptau --add_wt deeptau_sf "
+        extras += " --deeptau --add_wt deeptau_sf "
         # extras += " --cat {}_highMjj ".format(args.cat)
-        extras += " --split_sm_scheme  --ggh_scheme tauspinner "
-        # extras += " --split_sm_scheme   "
+        # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
+        extras += " --split_sm_scheme   "
+        # extras += ' --set_alias "inclusive:(mva_dm_1==0)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1)" '
+        # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==1 && tau_decay_mode_2==1 && mvadm_rho_1>mvadm_a1_1 && mvadm_rho_1>mvadm_pi_1 && mvadm_rho_1>mvadm_other_1 && mvadm_rho_2>mvadm_a1_2 && mvadm_rho_2>mvadm_pi_2 && mvadm_rho_2>mvadm_other_2) " '
+        # extras += ' --set_alias "inclusive:(mva_dm_1==10 && mva_dm_2==10) " '
         # extras += " --add_wt wt_prefire "
         # extras += ' --set_alias "inclusive:(n_jets>=2 && mjj>300 && fabs(jeta_2)>2.65 && fabs(jeta_2)<3.139)" '
         # extras += ' --set_alias "inclusive:(m_vis<90)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==10 &&  tau_decay_mode_2==10)" '
         # extras += ' --set_alias "inclusive:(tau_decay_mode_1==0 &&  tau_decay_mode_2==0)" '
-        extras += ' --ratio_range 0,2 '
+        # extras += ' --ratio_range 0,2 '
         # extras += ' --do_ss '
         # extras += ' --ratio_range 0.3,1.7 '
         # extras += '  --ff_ss_closure --custom_y_range --y_axis_min 0.2 --y_axis_max 2.4 '
 
-        extras += '  --ff_ss_closure  '
+        # extras += '  --ff_ss_closure  '
         # extras += " --threePads "
         # extras += " --extra_pad 0.55 "
 
@@ -260,6 +265,7 @@ def main(args):
 
             # "m_vis(20,20,200)",
             "m_sv(30,0,300)",
+            # "m_sv[-110,0,300]",
 
             # "pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]",
             # "pt_tt(30,0,200)",
@@ -268,7 +274,7 @@ def main(args):
             # "IC_highMjj_Oct05_max_score[0.0,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
             # "IC_binary_Oct11_score(20,0.,1.)",
             # "met(20,0,200)",
-            "jeta_1(12,-4.7,4.7)",
+            # "jeta_1(12,-4.7,4.7)",
             # "jeta_2(12,-4.7,4.7)",
             # "mjj(16,0,800)",
             # "sjdphi(12,-3.2,3.2)",
@@ -278,6 +284,7 @@ def main(args):
             ]
         method = "12" if args.ff == False else "17"
         extras += ' --set_alias "sel:mt_1<50" '
+        extras += " --deeptau --add_wt deeptau_sf "
         # extras += ' --ff_ss_closure '
         # extras += ' --set_alias "inclusive:n_bjets==0" '
         # extras += ' --ratio_range 0.3,1.7 '

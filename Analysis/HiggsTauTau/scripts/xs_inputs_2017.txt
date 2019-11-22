@@ -73,3 +73,11 @@ ZZTo2L2Q 3.22
 ZZTo2Q2Nu 4.033
 ZZTo4L 1.212
 ZZTo4L-ext 1.212
+ZHToTauTauUncorrelatedDecay_Filtered 0.05542
+WplusHToTauTauUncorrelatedDecay_Filtered 0.05266
+WminusHToTauTauUncorrelatedDecay_Filtered 0.03340
+WminusHToTauTauUncorrelatedDecay 0.03340
+VBFHToTauTauUncorrelatedDecay_Filtered 0.2371
+VBFHToTauTauUncorrelatedDecay 0.2371
+GluGluHToTauTauUncorrelatedDecay_Filtered 3.045966
+GluGluHToTauTauUncorrelatedDecay 3.045966

@@ -46,17 +46,37 @@ namespace ic {
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
 
-    if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16) && channel_==channel::tt) {
+    if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays17 ) && channel_==channel::tt) {
       TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
-      std::vector<std::string> systs = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_met_up","_qcd_stat_met_down"  
-      };
+      std::vector<std::string> systs = {""};//,"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_met_up","_qcd_stat_met_down"  
+      //};
       for(auto s : systs) {
-        fns_["ff_tt_tight_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_tt_tight_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met")));
+        fns_["ff_tt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_->function(("ff_tt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met")));
+        fns_["ff_tt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_->function(("ff_tt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,pt_2,os,met"))); 
       }
+
+      return 0;
+    }
+
+    if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16||strategy_==strategy::cpdecays17) && (channel_==channel::mt || channel_==channel::et)) {
+      TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
+      ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f.Close();
+
+      std::vector<std::string> systs = {""};
+
+      for(auto s : systs) {
+        fns_["ff_mt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
+        fns_["ff_mt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
+      }
+      return 0;
     }
 
     
@@ -78,7 +98,7 @@ namespace ic {
       
       std::string map_key = category_names_[i];
       std::string map_name = "ff_map_"+channel+"_"+map_key;
-      if(strategy_ != strategy::cpdecays18 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::legacy16){
+      if(strategy_ != strategy::cpdecays18 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::legacy16 && strategy_!=strategy::cpdecays17){
         if(ProductExists(map_name)){
           fake_factors_[map_key] = GetProduct<std::shared_ptr<FakeFactor>>(map_name);
           std::cout << "Getting " << fake_factors_[map_key] << std::endl;
@@ -273,12 +293,8 @@ namespace ic {
     double iso_1_ = 0;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      if(strategy_ == strategy::legacy16){
-        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-        iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
-      }
-      else
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+      EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
     } else if (channel_ == channel::mt){
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
@@ -355,7 +371,8 @@ namespace ic {
           }
         }
       }
-    } else if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+    } else if(strategy_ == strategy::smsummer16 || true) {
+
       double real_frac=0;
       double real_frac_2=0;
       inputs.resize(9);
@@ -366,7 +383,7 @@ namespace ic {
         tt_inputs_1.resize(9);
         tt_inputs_2.resize(9);
       }
-      if(channel_ == channel::et || channel_ == channel::mt){
+      if((channel_ == channel::et || channel_ == channel::mt)&&false){
         std::vector<double> args = {m_sv_,pt_tt_,n_jets_,mjj_,sjdphi_};
         double qcd_frac=0.5, w_frac=0.5, tt_frac=0.0;
         if(channel_ == channel::et){
@@ -446,6 +463,72 @@ namespace ic {
       std::string map_key = "inclusive";
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
+
+        if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
+          std::size_t id = 0;
+          if(channel_==channel::mt){ 
+            Muon const* muon = dynamic_cast<Muon const*>(lep1);
+           id = muon->id();
+          }
+          if(channel_==channel::et){ 
+            Electron const* elec = dynamic_cast<Electron const*>(lep1);
+           id = elec->id();
+          }
+
+          Tau const* tau = dynamic_cast<Tau const*>(lep2);
+
+          std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+          std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+          ic::Vertex* refit_vertex = vertex_vec[0];
+          for(unsigned i=0; i<refit_vertex_vec.size();++i) {
+            Vertex * v = refit_vertex_vec[i];
+            if(v->id() == tau->id()+id) refit_vertex = v;
+          }
+
+          double pass_single = 1.;
+          if(channel_==channel::mt) {
+            bool trg_singlemuon;
+            if (!event->Exists("trg_singlemuon")) trg_singlemuon = true;
+            else  trg_singlemuon = event->Get<bool>("trg_singlemuon"); 
+            if(strategy_==strategy::legacy16) {
+              if(!(pt_1_>23&&trg_singlemuon)) pass_single=0.;
+            } else {
+              if(!(pt_1_>25&&trg_singlemuon)) pass_single=0.;
+            }
+          }
+
+          if(channel_==channel::et) {
+            bool trg_singleelectron;
+            if (!event->Exists("trg_singleelectron")) trg_singleelectron = true;
+            else  trg_singleelectron = event->Get<bool>("trg_singleelectron");
+            if(strategy_ == strategy::cpdecays17) {
+              if(!(pt_1_>28&&trg_singleelectron)) pass_single=0.;
+            } else if(strategy_ == strategy::cpdecays18) {
+              if(!(pt_1_>33&&trg_singleelectron)) pass_single=0.;
+            }
+          }
+
+
+          double ipsig = IPAndSignificance(tau, refit_vertex, pfcands).second;
+
+          double mva_dm_2=tau->HasTauID("MVADM2017v1") ? tau->GetTauID("MVADM2017v1") : -1.;
+
+          bool isOS = PairOppSign(ditau);
+          double os = 1.;
+          if(!isOS) os=0.; 
+
+          auto args = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single,m_vis_};
+          double ff_nom = fns_["ff_mt_medium_mvadmbins"]->eval(args.data());
+          event->Add("wt_ff_1",  ff_nom);
+
+          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met->pt(),mt_1_,iso_1_,pass_single,m_vis_};
+          ff_nom = fns_["ff_mt_medium_dmbins"]->eval(args_dm.data());
+          event->Add("wt_ff_dmbins_1",  ff_nom);
+
+          return 0;
+        }
+
         double ff_nom = fake_factors_[map_key]->value(inputs);
         event->Add("wt_ff_1",  ff_nom);
         double ff_real_up = ff_nom*(1.-real_frac*1.1)/(1.-real_frac);
@@ -466,7 +549,7 @@ namespace ic {
         }
       } else if(channel_ == channel::tt){
 
-        if(strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) { 
+        if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) { 
           // FF from workspace for cp in decay analysis
 
           Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -483,29 +566,41 @@ namespace ic {
           double ipsig = IPAndSignificance(tau1, refit_vertex, pfcands).second;
 
           double mva_dm_1=tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : -1.;
-          double os = PairOppSign(ditau);
+
+          bool isOS = PairOppSign(ditau);
+          double os = 1.;
+          if(!isOS) os=0.;
 
           auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met->pt()};
-          //std::cout << pt_1_ << "    " << mva_dm_1 << "    " << ipsig << "    " << n_jets_ << "    " << m_vis_ << "    " << os << std::endl;
-          double ff_nom = fns_["ff_tt_tight_mvadmbins"]->eval(args.data()); 
+          double ff_nom = fns_["ff_tt_medium_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
-          //std::cout << ff_nom << std::endl;
-          //
-          //wt_ff_2
           double mva_dm_2=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
           double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
-          auto args2 = std::vector<double>{pt_2_,mva_dm_2,ipsig2,n_jets_,pt_1_,false,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
-          double ff_nom_2 = fns_["ff_tt_tight_mvadmbins"]->eval(args2.data());
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2,ipsig2,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          double ff_nom_2 = fns_["ff_tt_medium_mvadmbins"]->eval(args2.data());
           event->Add("wt_ff_2",  ff_nom_2);
+ 
+
+          auto args_dm = std::vector<double>{pt_1_,tau_decaymode_1_,n_jets_,pt_2_,os,met->pt()};
+          ff_nom = fns_["ff_tt_medium_dmbins"]->eval(args_dm.data());
+          event->Add("wt_ff_dmbins_1",  ff_nom);
+          auto args_dm_2 = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          ff_nom_2 = fns_["ff_tt_medium_dmbins"]->eval(args_dm_2.data());
+          event->Add("wt_ff_dmbins_2",  ff_nom_2);
 
           if(do_systematics_){
-            std::vector<std::string> systematics = {"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_met_up","_qcd_stat_met_down"};
+            std::vector<std::string> systematics = {};
+//            std::vector<std::string> systematics = {"_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_ttbar_syst_up","_ttbar_syst_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_qcd_stat_pt2_up","_qcd_stat_pt2_down","_qcd_stat_met_up","_qcd_stat_met_down"};
 
             for(auto s : systematics){
-              double ff_syst = fns_["ff_tt_tight_mvadmbins"+s]->eval(args.data()); 
+              double ff_syst = fns_["ff_tt_medium_mvadmbins"+s]->eval(args.data()); 
               std::string syst_name = "wt_ff"+s;
-              //std::cout << syst_name << "    " << ff_syst << "    " << ff_nom << std::endl;
               event->Add(syst_name+"_1", ff_syst);
+
+              // dm binned values
+              ff_syst = fns_["ff_tt_medium_dmbins"+s]->eval(args_dm.data());
+              syst_name = "wt_ff_dmbins_"+s;
+              event->Add(syst_name+"_1", ff_syst);              
             }
           }
           return 0;
