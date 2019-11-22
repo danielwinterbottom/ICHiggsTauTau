@@ -3743,8 +3743,13 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method in [17,18]
+    if "zttEmbed" in options.cat or "jetFakes" in options.cat:
+        options.blind = False
+        options.x_blind_min = -1e5
+        options.x_blind_max = -1e5 
     if options.do_unrolling and is_2d:
         auto_blind=False
+        options.norm_bins=False
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 
