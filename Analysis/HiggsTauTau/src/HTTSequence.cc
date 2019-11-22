@@ -3868,6 +3868,15 @@ if(strategy_type == strategy::paper2013) {
         }
         }));
   }
+}
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_dirname("ElectronEfficiencyForIDStudy")
+    .set_fs(fs.get()));
+BuildModule(HTTMuonEfficiency("MuonEfficiency")
+    .set_fs(fs.get()));
+}
+
 
 
  if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::legacy16 &&  strategy_type != strategy::cpdecays16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18){
@@ -3977,15 +3986,6 @@ if(strategy_type == strategy::paper2013) {
 //      .set_min_dr(0.3));
 
 
-
-}
-     if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
-BuildModule(HTTElectronEfficiency("ElectronEfficiency")
-    .set_dirname("ElectronEfficiencyForIDStudy")
-    .set_fs(fs.get()));
-BuildModule(HTTMuonEfficiency("MuonEfficiency")
-    .set_fs(fs.get()));
-}
 
   
   BuildModule(CompositeProducer<Electron, Muon>("EMPairProducer")
