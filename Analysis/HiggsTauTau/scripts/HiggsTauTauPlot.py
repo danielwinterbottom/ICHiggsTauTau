@@ -731,10 +731,15 @@ if options.channel in ["mt","et"]:
 
 if options.channel == 'tt':
     cats["inclusive_rho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
-    cats["inclusive_a1rho"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
+    cats["inclusive_a1rho"]     = "((tau_decay_mode_1>=10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2>=10))"
+    cats["mva_a1rho"]           = "((tau_decay_mode_1>=10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2>=10 && mva_dm_2==10))"
+    cats["mva_a1pi"]            = "((tau_decay_mode_1>=10 && mva_dm_1==10 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0) || (tau_decay_mode_2>=10 && mva_dm_2==10 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0) )"
+    cats["mva_0a1pi"]           = "(tau_decay_mode_1==1 && mva_dm_1==2 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 ) || (tau_decay_mode_2==1 && mva_dm_2==2 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 )"
+    cats["inclusive_a1"]        = "(tau_decay_mode_1>=10 && tau_decay_mode_2>=10)"
     # lift conditions on DM (use DM=0||1 for 1pr, DM10||11 for 3pr)
     # use in combination with MVA DM scores to determine genuine rhos/a1s
     cats["DM0or1"]              = "((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==1 || tau_decay_mode_2==0))"
+    cats["mva_rhopi"]           = "( ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1)  ||  ((tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 && tau_decay_mode_1==1 && mva_dm_1==1) )"
     cats["DM10or11and0or1"]     = "(((tau_decay_mode_1==10 || tau_decay_mode_1==11) && (tau_decay_mode_2==1 || tau_decay_mode_2==0)) || ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==10 || tau_decay_mode_2==11)))"
     # cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
     cats["idg0p5"]              = "(rho_id_1>0.5 && rho_id_2>0.5)"
@@ -823,9 +828,9 @@ if options.channel == 'tt':
 
     # tauspinner with slimmed vars and classic bkg methods
     # note the names are the same but actually jetFakes is only QCD
-    mva_ggh                = '(IC_Oct22_tauspinnerSM_classic_max_index==0)'
-    mva_jetFakes           = '(IC_Oct22_tauspinnerSM_classic_max_index==1)'
-    mva_zttEmbed           = '(IC_Oct22_tauspinnerSM_classic_max_index==2)'
+    mva_ggh                = '(IC_Nov13_tauspinner_max_index==0)'
+    mva_jetFakes           = '(IC_Nov13_tauspinner_max_index==1)'
+    mva_zttEmbed           = '(IC_Nov13_tauspinner_max_index==2)'
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
@@ -850,21 +855,40 @@ if options.channel == 'tt':
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
-    cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['higgs_mvarho']      = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_ggh, cats["inclusive_rho"])
     # cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     # cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['zttEmbed_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1 )'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_jetFakes, cats["inclusive_rho"])
 
-    cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    cats['higgs_mvaa1rho']      = '({} && {} )'.format(mva_ggh, cats["mva_a1rho"])
     # cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     # cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaa1rho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['jetFakes_mvaa1rho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    
+    #rho-a1(1prong) and  a1(1prong)-a1(1prong)
+    cats['higgs_mvarho0A1'] = '{} && {} && ( (mva_dm_1==2 && (mva_dm_2==2 || mva_dm_2==1)) || (mva_dm_2==2 && (mva_dm_1==2 || mva_dm_1==1)) )'.format(mva_ggh, cats["inclusive_rho"])
 
-    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}))'\
-            .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
-                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    #a1(3prong)-a1(3prong)
+    cats['higgs_mvaA1'] = '{} && {} && mva_dm_1==10 && mva_dm_2==10'.format(mva_ggh, cats["inclusive_a1"])
+
+    #pi-pi
+    cats["higgs_mvapi"]= '{} && {} && mva_dm_1==0 && mva_dm_2==0'.format(mva_ggh, cats["DM0or1"])
+
+    #rho-pi
+    cats["higgs_mvarhopi"]='{} && {}'.format(mva_ggh, cats["mva_rhopi"])
+
+    #pi-a1(3prong)
+    cats["higgs_mvaA1pi"]= '{} && {}'.format(mva_ggh, cats["mva_a1pi"])
+
+    #pi-a1(1prong)
+    cats["higgs_mva0A1pi"]='{} && {}'.format(mva_ggh, cats["mva_0a1pi"])
+
+    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}))'\
+            .format(mva_ggh, cats["higgs_mvarho"], cats["higgs_mvaa1rho"], cats["higgs_mvarho0A1"], 
+                    cats["higgs_mvaA1"], cats["higgs_mvapi"], cats["higgs_mvarhopi"],
+                    cats["higgs_mvaA1pi"], cats["higgs_mva0A1pi"])
     # cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
     #         .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
     #                 cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
@@ -3738,8 +3762,13 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method in [17,18]
+    if "zttEmbed" in options.cat or "jetFakes" in options.cat:
+        options.blind = False
+        options.x_blind_min = -1e5
+        options.x_blind_max = -1e5 
     if options.do_unrolling and is_2d:
         auto_blind=False
+        options.norm_bins=False
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 
