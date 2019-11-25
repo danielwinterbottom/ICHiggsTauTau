@@ -94,6 +94,7 @@ def SetAxisTitles(plot, channel):
   titles['IC_keras_sm4_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
   titles['IC_keras_sm5_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
   titles['IC_keras_sm6_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['IC_Nov13_tauspinner_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events']
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']

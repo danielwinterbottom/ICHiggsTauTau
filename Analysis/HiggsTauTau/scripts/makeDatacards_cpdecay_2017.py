@@ -174,7 +174,7 @@ mt_shape_systematics=' --syst_xtrg="CMS_eff_Xtrigger_mt_13TeV" '
 if not no_shift_systs:
   mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
 
-tt_shape_systematics='  '
+tt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" --syst_tau_trg_diff="CMS_eff_t_trg_*DM_13TeV" '
 if not no_shift_systs:
   tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
 
@@ -236,6 +236,10 @@ if SCHEME == 'cpdecay':
   VAR_H_TT_Pi_Pi="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
   VAR_H_TT_Pi_Rho_Mixed="IC_Nov13_tauspinner_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" 
   VAR_H_TT_Pi_Rho_IP="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_0A1_Mixed="IC_Nov13_tauspinner_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_0A1_IP="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_A1_Mixed="IC_Nov13_tauspinner_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Other  = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
   VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
 
@@ -257,8 +261,12 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvapi",    "2017_higgs_Pi_Pi",  VAR_H_TT_Pi_Pi, ' '),
     ("17",   "higgs_mvarhopi",    "2017_higgs_Pi_Rho_Mixed",  VAR_H_TT_Pi_Rho_Mixed, ' '),
     ("17",   "higgs_mvarhopi",    "2017_higgs_Pi_Rho_IP",  VAR_H_TT_Pi_Rho_IP, ' '),    
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_0JET_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_0JET_TT, ' '),
+    ("17",   "higgs_mva0A1pi",    "2017_higgs_Pi_0A1_Mixed",  VAR_H_TT_Pi_0A1_Mixed, ' '),
+    ("17",   "higgs_mva0A1pi",    "2017_higgs_Pi_0A1_IP", VAR_H_TT_Pi_0A1_IP , ' '),    
+    ("17",   "higgs_mvaA1pi",    "2017_higgs_Pi_A1_Mixed",  VAR_H_TT_Pi_A1_Mixed, ' '),
+    ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
 
   ]
   scheme_em = [
