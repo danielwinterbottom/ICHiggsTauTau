@@ -2808,7 +2808,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 //      .set_strategy(strategy_type));
 
 
-/*if (era_type == era::data_2017) {
+if (era_type == era::data_2017) {
   BuildModule(HTTEventClassifier("HTTEventClassifier")
       .set_fs(fs.get())
       .set_channel(channel)
@@ -2817,7 +2817,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
       .set_jets_label(jets_label)
       .set_era(era_type));
   ;
-}*/
+}
 do_sm_scale_wts = true; // set this to false after!
 if (new_svfit_mode != 1) {
   BuildModule(HTTCategories("HTTCategories")

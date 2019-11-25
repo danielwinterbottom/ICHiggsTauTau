@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEventClassifier.h"
+#include "boost/format.hpp"
 
 
 namespace ic {
@@ -106,24 +107,27 @@ namespace ic {
   }
 
   int HTTEventClassifier::Execute(TreeEvent *event) {
-
+    std::cout<<"test1"<<std::endl;
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     isEven_ = eventInfo->event() % 2 == 0; // if even then event_ = 1, odd = 0
     evt_ = eventInfo->event();
     event_ = (float)isEven_;
 
+    std::cout<<"test2"<<std::endl;
     std::vector<CompositeCandidate *> const& ditau_vec = 
         event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate * lep1 = ditau->GetCandidate("lepton1");
     Candidate * lep2 = ditau->GetCandidate("lepton2");
     
+    std::cout<<"test3"<<std::endl;
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> lowpt_jets = jets;
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
 
+    std::cout<<"test4"<<std::endl;
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
 
@@ -133,9 +137,9 @@ namespace ic {
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     if (event->Exists("svfitMass")) {
-      m_sv_ = event->Get<double>("svfitMass");
+      m_sv_ = float(event->Get<double>("svfitMass"));
     } else {
-      m_sv_ = -9999;
+      m_sv_ = -9999.;
     }
     m_vis_ = ditau->M();
     pt_tt_ = (ditau->vector() + mets->vector()).pt();
@@ -149,6 +153,7 @@ namespace ic {
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
     }
 
+    std::cout<<"test5"<<std::endl;
     std::vector<float> inputs = {};
     if (channel_ == channel::tt) {
       inputs.resize(12);
@@ -164,26 +169,32 @@ namespace ic {
       inputs[9]  = pt_2_;
       inputs[10] = pt_tt_;
       inputs[11] = pt_vis_;
+      for (int i=0; i<12; i++) std::cout<<i<<"= "<<inputs[i]<<std::endl;
     }
 
+    std::cout<<"test6"<<std::endl;
     std::vector<float> scores = read_mva_scores(isEven_,inputs);
     event->Add("higgs_score",    scores[0]);
     event->Add("jetFakes_score", scores[1]);
     event->Add("zttEmbed_score", scores[2]);
 
+    std::cout<<"test7"<<std::endl;
     std::pair<float, int> max_pair = getMaxScoreWithIndex(scores);
     event->Add("IC_BDT_max_score", max_pair.first); 
     event->Add("IC_BDT_max_index", max_pair.second);
 
 
+    std::cout<<"test8"<<std::endl;
     return 0;
   }
 
   int HTTEventClassifier::PostAnalysis() {
+    std::cout<<"test9"<<std::endl;
     return 0;
   }
 
   void HTTEventClassifier::PrintInfo() {
+    std::cout<<"test10"<<std::endl;
     ;
   }
 
