@@ -1472,9 +1472,12 @@ if options.analysis in ['cpdecay']:
         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         
     }
 
@@ -1483,13 +1486,18 @@ if options.analysis in ['cpdecay']:
         # test CP in decay samples
         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        
+        "ggH_sm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_ps_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_mm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
     }
 
 
