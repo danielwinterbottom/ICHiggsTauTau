@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,10 +58,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2017/",
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/em_2017/",
-    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_nominalWithFastMTT/",
-    "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Nov05_2017_nominalWithFastMTT/",
+    //"output_folder" : "output/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/new_sf_2017/",    
+    //"output_folder" : "/vols/cms/mhh18/Offline/output/SM/11Nov_Run2017_tautau_Nominal/",    
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/11Nov_Run2017_tautau/",    
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
@@ -75,7 +75,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,

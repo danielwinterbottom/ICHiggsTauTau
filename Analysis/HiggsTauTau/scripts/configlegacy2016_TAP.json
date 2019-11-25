@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/TAP_Oct2_2016legacy/try1",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/TAP_Oct2_2016legacy/try4",
     //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

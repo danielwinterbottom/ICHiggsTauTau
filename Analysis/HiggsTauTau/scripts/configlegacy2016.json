@@ -137,8 +137,8 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true, 
-        "do_ff_systematics": true,
+        "do_ff_weights" : false, 
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
@@ -154,8 +154,8 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
@@ -173,8 +173,8 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/fakefactors_ws_2016.root",
         "ff_fracs_file" : ""
