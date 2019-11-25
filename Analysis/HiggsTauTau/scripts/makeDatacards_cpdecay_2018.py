@@ -225,19 +225,23 @@ if SCHEME == 'cpdecay':
   VAR_ET_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
-  VAR_H_TT_Rho_Rho="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_0A1_Rho_and_0A1_0A1="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_Rho_angle1="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_Rho_angle2="IC_Nov13_tauspinner_max_score,aco_angle_2[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_A1_angle1="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_A1_angle2="IC_Nov13_tauspinner_max_score,aco_angle_2[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_A1_angle3="IC_Nov13_tauspinner_max_score,aco_angle_3[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_A1_A1_angle4="IC_Nov13_tauspinner_max_score,aco_angle_4[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_Pi_Pi="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_Pi_Rho_Mixed="IC_Nov13_tauspinner_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_H_TT_Pi_Rho_IP="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
-  VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
+  VAR_H_TT_Rho_Rho="IC_Nov13_tauspinner_v1_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_0A1_Rho_and_0A1_0A1="IC_Nov13_tauspinner_v1_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_Rho_angle1="IC_Nov13_tauspinner_v1_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_Rho_angle2="IC_Nov13_tauspinner_v1_max_score,aco_angle_2[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_A1_angle1="IC_Nov13_tauspinner_v1_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_A1_angle2="IC_Nov13_tauspinner_v1_max_score,aco_angle_2[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_A1_angle3="IC_Nov13_tauspinner_v1_max_score,aco_angle_3[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_A1_A1_angle4="IC_Nov13_tauspinner_v1_max_score,aco_angle_4[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_Pi="IC_Nov13_tauspinner_v1_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_Rho_Mixed="IC_Nov13_tauspinner_v1_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_Rho_IP="IC_Nov13_tauspinner_v1_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)" 
+  VAR_H_TT_Pi_0A1_Mixed="IC_Nov13_tauspinner_v1_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Pi_0A1_IP="IC_Nov13_tauspinner_v1_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Pi_A1_Mixed="IC_Nov13_tauspinner_v1_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_Nov13_tauspinner_v1_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_v1_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_Nov13_tauspinner_v1_max_score[0.,0.7,0.8,0.9]"
 
 
   scheme_et = [
@@ -257,8 +261,12 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvapi",    "2018_higgs_Pi_Pi",  VAR_H_TT_Pi_Pi, ' '),
     ("17",   "higgs_mvarhopi",    "2018_higgs_Pi_Rho_Mixed",  VAR_H_TT_Pi_Rho_Mixed, ' '),
     ("17",   "higgs_mvarhopi",    "2018_higgs_Pi_Rho_IP",  VAR_H_TT_Pi_Rho_IP, ' '),    
-    ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_0JET_TT, ' '),
-    ("17",   "jetFakes",    "2018_jetFakes",  VAR_0JET_TT, ' '),
+    ("17",   "higgs_mva0A1pi",    "2018_higgs_Pi_0A1_Mixed",  VAR_H_TT_Pi_0A1_Mixed, ' '),
+    ("17",   "higgs_mva0A1pi",    "2018_higgs_Pi_0A1_IP", VAR_H_TT_Pi_0A1_IP , ' '),
+    ("17",   "higgs_mvaA1pi",    "2018_higgs_Pi_A1_Mixed",  VAR_H_TT_Pi_A1_Mixed, ' '),
+    ("17",   "higgs_mvaother",    "2018_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
   ]
   scheme_em = [

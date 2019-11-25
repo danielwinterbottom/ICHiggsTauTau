@@ -828,9 +828,9 @@ if options.channel == 'tt':
 
     # tauspinner with slimmed vars and classic bkg methods
     # note the names are the same but actually jetFakes is only QCD
-    mva_ggh                = '(IC_Nov13_tauspinner_max_index==0)'
-    mva_jetFakes           = '(IC_Nov13_tauspinner_max_index==1)'
-    mva_zttEmbed           = '(IC_Nov13_tauspinner_max_index==2)'
+    mva_ggh                = '(IC_Nov13_tauspinner_v1_max_index==0)'
+    mva_jetFakes           = '(IC_Nov13_tauspinner_v1_max_index==1)'
+    mva_zttEmbed           = '(IC_Nov13_tauspinner_v1_max_index==2)'
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
