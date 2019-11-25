@@ -1417,15 +1417,18 @@ if options.analysis in ['cpprod']:
 
   if options.era == 'cp18':
     sm_samples = {
-         # 'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
-         # 'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
-         # 'WplusH_htt': 'WplusHToTauTau_M-125',
-         # 'WminusH_htt': 'WminusHToTauTau_M-125',
-         # 'ZH_htt': 'ZHToTauTau_M-125',
-         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
-         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
+         'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
+         'WplusH_htt': 'WplusHToTauTau_M-125',
+         'WminusH_htt': 'WminusHToTauTau_M-125',
+         'ZH_htt': 'ZHToTauTau_M-125',
+         'ggHsm_old_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
+         'ggHmm_old_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         'ggHps_old_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         #"ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggHsm_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggHmm_htt' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggHps_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets'],
     }
 
 
