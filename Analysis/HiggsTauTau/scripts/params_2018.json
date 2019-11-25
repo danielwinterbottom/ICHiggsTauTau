@@ -294,7 +294,7 @@
   },
   "JJH0MToTauTauPlusTwoJets": {
     "xs": 0.45962534761,
-    "evt": 4472981
+    "evt": 4472981,
     "eff": 0.2908
   },
   "JJH0MToTauTauPlusTwoJets_Filtered": {
