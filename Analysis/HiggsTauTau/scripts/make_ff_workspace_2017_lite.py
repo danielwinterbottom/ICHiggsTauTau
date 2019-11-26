@@ -343,7 +343,7 @@ for wp in wps:
     # aiso->iso correction
     func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2017.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
     func_iso_corr = str(func.GetExpFormula('p')).replace('x','@0')
-    w.factory('expr::iso_bounded0p5("min(0.499,@0)",m_iso[0])' % vars())
+    w.factory('expr::iso_bounded0p5("min(0.499,@0)",e_iso[0])' % vars())
     w.factory('expr::et_%(dmname)s_%(wp)s_qcd_iso_corr("%(func_iso_corr)s",iso_bounded0p5)' % vars())
 
     # OS/SS correction
