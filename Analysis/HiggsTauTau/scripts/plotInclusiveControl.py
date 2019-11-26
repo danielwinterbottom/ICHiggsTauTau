@@ -48,7 +48,7 @@ def main(args):
         plot_vars = [
 
             # taus/leptons
-            # "m_vis(25,20,250)",
+            "m_vis(25,20,250)",
             "m_sv(25,50,300)",
             "pt_tt(30,0,300)",
             "pt_1(20,40,140)",
@@ -120,7 +120,8 @@ def main(args):
 
             ]
         method = "12" if args.ff == False else "17"
-        extras += ' --set_alias "sel:mt_1<50" '
+        extras += ' --set_alias "sel:(mt_1<50)" '
+        extras += ' --set_alias "inclusive:(n_bjets==0)" '
         extras += " --cat {} ".format(args.cat)
         extras += " --outputfolder output/{} ".format(args.analysis)
         # extras += " --split_sm_scheme "
@@ -158,7 +159,8 @@ def main(args):
             ]
         method = "19"
         # extras += ' --set_alias "sel:pzeta<-50" ' # to select ttbar region
-        extras += ' --set_alias "sel:pzeta>-35" '
+        extras += ' --set_alias "sel:(pzeta>-35)" '
+        extras += ' --set_alias "inclusive:(n_bjets==0)" '
         extras += " --cat {} ".format(args.cat)
         extras += " --outputfolder output/{} ".format(args.analysis)
 
@@ -187,7 +189,7 @@ def main(args):
     elif args.era == "2017":
         config = " scripts/plot_{}_2017.cfg ".format(args.analysis)
     elif args.era == "2016":
-        config = " scripts/plot_{}_2016.cfg ".format(args.analysis)
+        config = " scripts/plot_{}_leg2016.cfg ".format(args.analysis)
 
     for var in plot_vars:
         custom_extras = ""
@@ -197,9 +199,22 @@ def main(args):
             pad_extra = " --extra_pad 0.55 "
 
         if var.split("(")[0] in ["jeta_1","jpt_1"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
+            if args.channel in ["mt","et","em"]:
+                custom_extras = ' --set_alias "inclusive:(n_jets>=1 && n_bjets==0)" '
+            else:
+                custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
         elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi"]:
-            custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+            if args.channel in ["mt","et","em"]:
+                custom_extras = ' --set_alias "inclusive:(n_jets>=2 && n_bjets==0)" '
+            else:
+                custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+        elif var.split("(")[0] in ["n_bjets"]:
+            custom_extras = ' --set_alias "inclusive:(1)" '
+        elif var.split("(")[0] in ["bpt_1","beta_1"]:
+            custom_extras = ' --set_alias "inclusive:(n_bjets>=1)" '
+        elif var.split("(")[0] in ["bpt_2","beta_2"]:
+            custom_extras = ' --set_alias "inclusive:(n_bjets>=2)" '
+        
         # elif var.split("(")[0] in ["pt_tt",]:
         #     custom_extras = ' --log_y '
 
