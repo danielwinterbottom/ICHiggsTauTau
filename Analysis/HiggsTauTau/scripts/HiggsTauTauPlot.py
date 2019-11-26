@@ -715,9 +715,10 @@ if options.channel in ["mt","et"]:
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
     mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
 
-    cats['higgs']     = '({})'.format(mva_ggh)
-    cats['zttEmbed']  = '({})'.format(mva_zttEmbed)
-    cats['jetFakes']  = '({})'.format(mva_jetFakes)
+    # apply b jet veto as done in training (to remove ttbar)
+    cats['higgs']     = '({} && n_bjets==0)'.format(mva_ggh)
+    cats['zttEmbed']  = '({} && n_bjets==0)'.format(mva_zttEmbed)
+    cats['jetFakes']  = '({} && n_bjets==0)'.format(mva_jetFakes)
 
     cats["mva_mupi"]  = "(tau_decay_mode_2==0 && mva_dm_2==0)" # aco_angle_6 (ip)
     cats["mva_murho"] = "(tau_decay_mode_2==1 && mva_dm_2==1)" # aco_angle_5 (planes) 6 (ip)
