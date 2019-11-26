@@ -710,24 +710,22 @@ if options.channel in ["mt","et"]:
     if options.channel == "et":
         cut_string = "IC_Apr02"
     elif options.channel == "mt":
-        cut_string = "IC_Mar26_fix2"
+        cut_string = "IC_Nov25_tauspinner"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
-    mva_tt       = '({}_max_index==2)'.format(cut_string)
-    mva_zll      = '({}_max_index==3)'.format(cut_string)
-    mva_zttEmbed = '({}_max_index==4)'.format(cut_string)
+    mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
 
-    cats['higgs']          = '({} && {})'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed']       = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes']       = '({} && {})'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll']            = '({} && {})'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt']             = '({} && {})'.format(mva_tt, cats["inclusive_mixed"])
+    cats['higgs']     = '({})'.format(mva_ggh)
+    cats['zttEmbed']  = '({})'.format(mva_zttEmbed)
+    cats['jetFakes']  = '({})'.format(mva_jetFakes)
 
-    cats['higgs_other']    = '({} && !({}))'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed_other'] = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes_other'] = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll_other']      = '({} && !({}))'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt_other']       = '({} && !({}))'.format(mva_tt, cats["inclusive_mixed"])
+    cats["mva_mupi"]  = "(tau_decay_mode_2==0 && mva_dm_2==0)" # aco_angle_6 (ip)
+    cats["mva_murho"] = "(tau_decay_mode_2==1 && mva_dm_2==1)" # aco_angle_5 (planes) 6 (ip)
+    cats["mva_mua1"]  = "(tau_decay_mode_2>=10 && mva_dm_2==10)" # aco_angle_5 (planes)
+
+    cats["higgs_mvaMuPi"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mupi"])
+    cats["higgs_mvaMuRho"] = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_murho"])
+    cats["higgs_mvaMuA1"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mua1"])
 
 if options.channel == 'tt':
     cats["inclusive_rho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"

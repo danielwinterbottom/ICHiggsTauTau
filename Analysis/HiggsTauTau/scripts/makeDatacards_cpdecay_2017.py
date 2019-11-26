@@ -199,32 +199,7 @@ if options.no_shape_systs:
 
 if SCHEME == 'cpdecay':
   
-  VAR_0JET_LT = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_EM = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-
-  VAR_0JET_TT = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
-
-
-  VAR_BOOSTED = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
-
-  VAR_DIJET = 'm_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_TT_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_HI='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_LO_LO='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_MT_LO_LO='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_HI='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_TI_LO='m_sv,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
-  VAR_MT_TI_LO='m_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_TI_LO='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-
+  # TT variables
   VAR_H_TT_Rho_Rho="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
   VAR_H_TT_0A1_Rho_and_0A1_0A1="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
   VAR_H_TT_A1_Rho_angle1="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" 
@@ -242,11 +217,25 @@ if SCHEME == 'cpdecay':
   VAR_H_TT_Other  = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
   VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
+  
+  # MT variables
+  VAR_H_MT_Mu_Pi        = "IC_Nov25_tauspinner_max_score,aco_angle_6[0.,0.6,0.7,0.8],14,0,6.28319)"
+  VAR_H_MT_Mu_Rho_Ip    = "IC_Nov25_tauspinner_max_score,aco_angle_6[0.,0.6,0.7,0.8],14,0,6.28319)"
+  VAR_H_MT_Mu_Rho_Mixed = "IC_Nov25_tauspinner_max_score,aco_angle_5[0.,0.6,0.7,0.8],14,0,6.28319)"
+  VAR_H_MT_Mu_Pi        = "IC_Nov25_tauspinner_max_score,aco_angle_5[0.,0.6,0.7,0.8],14,0,6.28319)"
+  VAR_ZTTEMBED_MT       = "IC_Nov25_tauspinner_max_score[0.,0.4,0.5,1.0]"
+  VAR_JETFAKES_MT       = "IC_Nov25_tauspinner_max_score[0.,0.5,0.6,0.7,0.8,0.9,1.0]"
 
+  ADD_STRING_MT = ' --set_alias "sel:(mt_1<50 && n_bjets==0)" '
 
   scheme_et = [
   ]
   scheme_mt = [
+    ("17",   "higgs_mvaMuPi",    "2017_higgs_Mu_Pi",   VAR_H_MT_Mu_Pi,  ' {} '.format(ADD_STRING_MT)),
+    ("17",   "higgs_mvaMuRho",    "2017_higgs_Mu_Rho", VAR_H_MT_Mu_Rho, ' {} '.format(ADD_STRING_MT)),
+    ("17",   "higgs_mvaMuA1",    "2017_higgs_Mu_A1",   VAR_H_MT_Mu_A1,  ' {} '.format(ADD_STRING_MT)),
+    ("17",   "zttEmbed",       "2017_zttEmbed",        VAR_ZTTEMBED_MT, ' {} '.format(ADD_STRING_MT)),
+    ("17",   "jetFakes",       "2017_jetFakes",        VAR_JETFAKES_MT, ' {} '.format(ADD_STRING_MT)),
 
   ]
   scheme_tt = [

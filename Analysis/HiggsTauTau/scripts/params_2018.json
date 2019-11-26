@@ -342,7 +342,7 @@
   "GluGluHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 3.045966,
     "evt": 14056498,
-    "eff": 0.2446,
+    "eff": 0.2446
   },
   "GluGluHToTauTauUncorrelatedDecay": {
     "xs": 3.045966,
