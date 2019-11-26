@@ -289,6 +289,26 @@
     "xs": 1.212,
     "evt": 102126906
   },
+  "ZHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05542,
+    "evt": 1387432,
+    "eff": 0.2514
+  },
+  "WplusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05266,
+    "evt": 1343667,
+    "eff": 0.2394
+  },
+  "WminusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.03340,
+    "evt": 1200125,
+    "eff": 0.2567
+  },
+  "VBFHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.2371,
+    "evt": 17790203,
+    "eff": 0.2697
+  },
   "SingleElectron": {
     "lumi": 41530
   },
