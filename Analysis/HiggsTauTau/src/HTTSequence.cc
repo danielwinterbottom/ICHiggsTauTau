@@ -2847,7 +2847,7 @@ if (new_svfit_mode != 1) {
       .set_write_tree(!js["make_sync_ntuple"].asBool())
       .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
       .set_ff_categories(js["baseline"]["ff_categories"].asString())
-      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&&addit_output_folder!="")
+      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
       .set_do_qcd_scale_wts(do_qcd_scale_wts_)
       .set_do_mssm_higgspt(do_mssm_higgspt)
       .set_do_sm_scale_wts(do_sm_scale_wts||output_name.find("JJH")!=output_name.npos) 
@@ -3361,7 +3361,7 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_trg_objects("triggerObjectsMu24TightIsoTightIDTau35,triggerObjectsMu24MediumIsoTau35,triggerObjectsMu24TightIsoTau35")
-          //.set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
+          .set_probe_trg_filters("hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg,hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg")
           // for double tau trigger
           //.set_probe_trg_filters("hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2,hltSingleL2IsoTau26eta2p2")
           //.set_extra_l1_probe_pt(32.)
