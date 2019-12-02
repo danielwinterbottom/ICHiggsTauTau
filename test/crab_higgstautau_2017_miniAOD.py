@@ -12,8 +12,8 @@ config.JobType.outputFiles = ['EventTree.root']
 cfgParams = ['release=102XMINIAOD','isData=0', 'globalTag=102X_mc2017_realistic_v6','doHT=1']
 config.JobType.allowUndistributedCMSSW = True
 
-#config.Data.unitsPerJob = 100000
-#config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 100000
+config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
