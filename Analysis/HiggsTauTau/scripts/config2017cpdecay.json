@@ -58,10 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/fakefactors_2017/",
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/em_2017/",
-    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_nominalWithFastMTT/",
-    "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Nov05_2017_nominalWithFastMTT/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2017_newFF/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
@@ -75,7 +72,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -141,7 +138,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_et_lite_2017.root",
         "ff_fracs_file" : ""
           }
     },
@@ -158,7 +155,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_tt_lite_2017.root",
         "ff_fracs_file" : ""
       }
     },
@@ -189,7 +186,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2017.root",
         "ff_fracs_file" : ""
       }
     },

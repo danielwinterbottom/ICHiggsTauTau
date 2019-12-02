@@ -710,31 +710,35 @@ if options.channel in ["mt","et"]:
     if options.channel == "et":
         cut_string = "IC_Apr02"
     elif options.channel == "mt":
-        cut_string = "IC_Mar26_fix2"
+        cut_string = "IC_Nov25_tauspinner"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
-    mva_tt       = '({}_max_index==2)'.format(cut_string)
-    mva_zll      = '({}_max_index==3)'.format(cut_string)
-    mva_zttEmbed = '({}_max_index==4)'.format(cut_string)
+    mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
 
-    cats['higgs']          = '({} && {})'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed']       = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes']       = '({} && {})'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll']            = '({} && {})'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt']             = '({} && {})'.format(mva_tt, cats["inclusive_mixed"])
+    # apply b jet veto as done in training (to remove ttbar)
+    cats['higgs']     = '({} && n_bjets==0)'.format(mva_ggh)
+    cats['zttEmbed']  = '({} && n_bjets==0)'.format(mva_zttEmbed)
+    cats['jetFakes']  = '({} && n_bjets==0)'.format(mva_jetFakes)
 
-    cats['higgs_other']    = '({} && !({}))'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed_other'] = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes_other'] = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll_other']      = '({} && !({}))'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt_other']       = '({} && !({}))'.format(mva_tt, cats["inclusive_mixed"])
+    cats["mva_mupi"]  = "(tau_decay_mode_2==0 && mva_dm_2==0)" # aco_angle_6 (ip)
+    cats["mva_murho"] = "(tau_decay_mode_2==1 && mva_dm_2==1)" # aco_angle_5 (planes) 6 (ip)
+    cats["mva_mua1"]  = "(tau_decay_mode_2>=10 && mva_dm_2==10)" # aco_angle_5 (planes)
+
+    cats["higgs_mvaMuPi"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mupi"])
+    cats["higgs_mvaMuRho"] = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_murho"])
+    cats["higgs_mvaMuA1"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mua1"])
 
 if options.channel == 'tt':
     cats["inclusive_rho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
-    cats["inclusive_a1rho"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
+    cats["inclusive_a1rho"]     = "((tau_decay_mode_1>=10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2>=10))"
+    cats["mva_a1rho"]           = "((tau_decay_mode_1>=10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2>=10 && mva_dm_2==10))"
+    cats["mva_a1pi"]            = "((tau_decay_mode_1>=10 && mva_dm_1==10 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0) || (tau_decay_mode_2>=10 && mva_dm_2==10 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0) )"
+    cats["mva_0a1pi"]           = "(tau_decay_mode_1==1 && mva_dm_1==2 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 ) || (tau_decay_mode_2==1 && mva_dm_2==2 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 )"
+    cats["inclusive_a1"]        = "(tau_decay_mode_1>=10 && tau_decay_mode_2>=10)"
     # lift conditions on DM (use DM=0||1 for 1pr, DM10||11 for 3pr)
     # use in combination with MVA DM scores to determine genuine rhos/a1s
     cats["DM0or1"]              = "((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==1 || tau_decay_mode_2==0))"
+    cats["mva_rhopi"]           = "( ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1)  ||  ((tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 && tau_decay_mode_1==1 && mva_dm_1==1) )"
     cats["DM10or11and0or1"]     = "(((tau_decay_mode_1==10 || tau_decay_mode_1==11) && (tau_decay_mode_2==1 || tau_decay_mode_2==0)) || ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==10 || tau_decay_mode_2==11)))"
     # cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
     cats["idg0p5"]              = "(rho_id_1>0.5 && rho_id_2>0.5)"
@@ -823,9 +827,9 @@ if options.channel == 'tt':
 
     # tauspinner with slimmed vars and classic bkg methods
     # note the names are the same but actually jetFakes is only QCD
-    mva_ggh                = '(IC_Oct22_tauspinnerSM_classic_max_index==0)'
-    mva_jetFakes           = '(IC_Oct22_tauspinnerSM_classic_max_index==1)'
-    mva_zttEmbed           = '(IC_Oct22_tauspinnerSM_classic_max_index==2)'
+    mva_ggh                = '(IC_Nov13_tauspinner_max_index==0)'
+    mva_jetFakes           = '(IC_Nov13_tauspinner_max_index==1)'
+    mva_zttEmbed           = '(IC_Nov13_tauspinner_max_index==2)'
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
@@ -850,21 +854,40 @@ if options.channel == 'tt':
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
-    cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['higgs_mvarho']      = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_ggh, cats["inclusive_rho"])
     # cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     # cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['zttEmbed_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1 )'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_jetFakes, cats["inclusive_rho"])
 
-    cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    cats['higgs_mvaa1rho']      = '({} && {} )'.format(mva_ggh, cats["mva_a1rho"])
     # cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     # cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaa1rho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['jetFakes_mvaa1rho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    
+    #rho-a1(1prong) and  a1(1prong)-a1(1prong)
+    cats['higgs_mvarho0A1'] = '{} && {} && ( (mva_dm_1==2 && (mva_dm_2==2 || mva_dm_2==1)) || (mva_dm_2==2 && (mva_dm_1==2 || mva_dm_1==1)) )'.format(mva_ggh, cats["inclusive_rho"])
 
-    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}))'\
-            .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
-                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    #a1(3prong)-a1(3prong)
+    cats['higgs_mvaA1'] = '{} && {} && mva_dm_1==10 && mva_dm_2==10'.format(mva_ggh, cats["inclusive_a1"])
+
+    #pi-pi
+    cats["higgs_mvapi"]= '{} && {} && mva_dm_1==0 && mva_dm_2==0'.format(mva_ggh, cats["DM0or1"])
+
+    #rho-pi
+    cats["higgs_mvarhopi"]='{} && {}'.format(mva_ggh, cats["mva_rhopi"])
+
+    #pi-a1(3prong)
+    cats["higgs_mvaA1pi"]= '{} && {}'.format(mva_ggh, cats["mva_a1pi"])
+
+    #pi-a1(1prong)
+    cats["higgs_mva0A1pi"]='{} && {}'.format(mva_ggh, cats["mva_0a1pi"])
+
+    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}))'\
+            .format(mva_ggh, cats["higgs_mvarho"], cats["higgs_mvaa1rho"], cats["higgs_mvarho0A1"], 
+                    cats["higgs_mvaA1"], cats["higgs_mvapi"], cats["higgs_mvarhopi"],
+                    cats["higgs_mvaA1pi"], cats["higgs_mva0A1pi"])
     # cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
     #         .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
     #                 cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
@@ -1417,15 +1440,18 @@ if options.analysis in ['cpprod']:
 
   if options.era == 'cp18':
     sm_samples = {
-         # 'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
-         # 'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
-         # 'WplusH_htt': 'WplusHToTauTau_M-125',
-         # 'WminusH_htt': 'WminusHToTauTau_M-125',
-         # 'ZH_htt': 'ZHToTauTau_M-125',
-         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
-         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
+         'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
+         'WplusH_htt': 'WplusHToTauTau_M-125',
+         'WminusH_htt': 'WminusHToTauTau_M-125',
+         'ZH_htt': 'ZHToTauTau_M-125',
+         'ggHsm_old_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
+         'ggHmm_old_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         'ggHps_old_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         #"ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggHsm_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggHmm_htt' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggHps_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets'],
     }
 
 
@@ -1445,9 +1471,12 @@ if options.analysis in ['cpdecay']:
         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         
     }
 
@@ -1456,13 +1485,18 @@ if options.analysis in ['cpdecay']:
         # test CP in decay samples
         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        
+        "ggH_sm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_ps_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_mm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
     }
 
 
@@ -1679,8 +1713,8 @@ if options.syst_res_met != '':
       systematics['syst_res_met_2jet_up'] = ('MET_RES_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_res_met_2jet_down'] = ('MET_RES_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:
-      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)
-      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False) 
+      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
 if options.syst_scale_met != '':
     hist_name = options.syst_scale_met
     if '$NJET' in hist_name: 
@@ -1696,8 +1730,8 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_2jet_up'] = ('MET_SCALE_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:  
-      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)
-      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)    
+      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
     jes_to_process=[]
@@ -1741,16 +1775,16 @@ if options.syst_tau_id_diff != '':
     if '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
-        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_down' % vars(), ['QCD','jetFakes'], False)
-        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_up'% vars(), ['QCD','jetFakes'], False) 
+        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False) 
 
 if options.syst_tau_trg_diff != '':
     hist_name = options.syst_tau_trg_diff
     if '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
-        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_down*(wt>0)' % vars(), ['QCD','jetFakes'], False)
-        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_up*(wt>0)'% vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
 
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
@@ -3735,8 +3769,13 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method in [17,18]
+    if "zttEmbed" in options.cat or "jetFakes" in options.cat:
+        options.blind = False
+        options.x_blind_min = -1e5
+        options.x_blind_max = -1e5 
     if options.do_unrolling and is_2d:
         auto_blind=False
+        options.norm_bins=False
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 
