@@ -163,7 +163,9 @@ if __name__ == '__main__':
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
-        else: config.JobType.pyCfgParams = cfgParams
+        else:
+            config.JobType.pyCfgParams = cfgParams
+
         print config.Data.unitsPerJob
         print config.Data.splitting
 
