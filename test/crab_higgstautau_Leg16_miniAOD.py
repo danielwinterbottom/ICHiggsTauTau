@@ -133,12 +133,14 @@ if __name__ == '__main__':
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
 
-        if "HToTauTau" in task[0]:
-            if 'amcatnloFXFX' in task[0]:
+        if "HToTauTau" in task[0] or 'JJH' in task[0]:
+            if 'mcatnloFXFX' in task[0]:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
-        else: config.JobType.pyCfgParams = cfgParams
+        else:
+            config.JobType.pyCfgParams = cfgParams
+
         print config.Data.unitsPerJob
         print config.Data.splitting
 
