@@ -70,7 +70,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1343,6 +1343,7 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
+
 
 data_type = ""
 if isData: data_type = "RECO"
