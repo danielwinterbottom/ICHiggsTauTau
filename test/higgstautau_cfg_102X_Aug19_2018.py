@@ -71,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1492,6 +1492,7 @@ else: data_type = "PAT"
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
+    includeGenWeights   = cms.bool(doLHEWeights),
     includenpNLO        = cms.bool(includenpNLO),
     includeEmbeddingWeights = cms.bool(bool(isEmbed)),
     includeHT           = cms.bool(False),

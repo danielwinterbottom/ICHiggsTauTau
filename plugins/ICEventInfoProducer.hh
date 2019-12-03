@@ -39,6 +39,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   bool do_vertex_count_;
   edm::InputTag input_vertices_;
   bool do_lhe_weights_;
+  bool do_gen_weights_;
   bool do_npNLO_;
   bool do_embedding_weights_;
   bool do_ht_;

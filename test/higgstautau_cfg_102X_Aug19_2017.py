@@ -1302,6 +1302,7 @@ else: data_type = "PAT"
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
+    includeGenWeights   = cms.bool(doLHEWeights),
     includenpNLO        = cms.bool(includenpNLO),
     includeEmbeddingWeights = cms.bool(bool(isEmbed)),
     includeHT           = cms.bool(False),
