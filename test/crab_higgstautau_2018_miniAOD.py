@@ -180,7 +180,7 @@ if __name__ == '__main__':
             config.Data.userInputFiles = None
 
         if "HToTauTau" in task[0] or 'JJH' in task[0]:
-            if 'mcatnloFXFX' in task[0]:
+            if 'mcatnloFXFX' in task[0] or "JJH" in task[0]:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
