@@ -55,12 +55,12 @@ defaults = {
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
     "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"",
-    "vbf_background":False, "syst_em_qcd_rate_0jet":"", "syst_em_qcd_rate_1jet":"",
-    "syst_em_qcd_shape_0jet":"", "syst_em_qcd_shape_1jet":"", "syst_em_qcd_extrap":"", "syst_prefire":"",
-    "syst_em_qcd_btag":"", "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
+    "vbf_background":False, "syst_em_qcd":"", "syst_prefire":"",
+    "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
-    "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"", "syst_xtrg":"",
+    "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
+    "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
 }
 
 if options.cfg:
@@ -310,18 +310,8 @@ parser.add_argument("--syst_embedding_tt", dest="syst_embedding_tt", type=str,
     help="If set, adds systematic templates for embedding corresponding to TTbar shift of +/-10\% ")
 parser.add_argument("--vbf_background", dest="vbf_background", action='store_true',
     help="Add VBF to total background template")
-parser.add_argument("--syst_em_qcd_rate_0jet", dest="syst_em_qcd_rate_0jet", type=str,
-    help="If set, adds the QCD rate uncertainty for n_jets==0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_rate_1jet", dest="syst_em_qcd_rate_1jet", type=str,
-    help="If set, adds the QCD rate uncertainty for n_jets>0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_shape_0jet", dest="syst_em_qcd_shape_0jet", type=str,
-    help="If set, adds the QCD shape uncertainty for n_jets==0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_shape_1jet", dest="syst_em_qcd_shape_1jet", type=str,
-    help="If set, adds the QCD shape uncertainty for n_jets>0 events with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_extrap", dest="syst_em_qcd_extrap", type=str,
-    help="If set, adds the QCD anti-iso->iso extrapolation uncertainty with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_em_qcd_btag", dest="syst_em_qcd_btag", type=str,
-    help="If set, adds the QCD n_bjets>0 uncertainty with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_em_qcd", dest="syst_em_qcd", type=str,
+    help="If set, adds the QCD shape uncertainties for the em channel. You string should contain *BIN")
 parser.add_argument("--syst_scale_met", dest="syst_scale_met", type=str,
     help="If set, adds the recoil corrected MET response uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_res_met", dest="syst_res_met", type=str,
@@ -340,8 +330,10 @@ parser.add_argument("--syst_qcd_bkg", dest="syst_qcd_bkg", type=str,
     help="If set, adds systematic templates corresponding to shifting background subtraction in QCD method up/down by +/-10\% ")
 parser.add_argument("--syst_prefire", dest="syst_prefire", type=str,
     help="If set, adds systematic templates corresponding to uncertainty on pre-firing correction.")
-parser.add_argument("--syst_xtrg", dest="syst_xtrg", type=str,
-    help="Do shape uncertainty corresponding to shifting the tau leg efficiency of the cross-trigger up/down by 5%")
+parser.add_argument("--syst_tau_id_diff", dest="syst_tau_id_diff", type=str,
+    help="Do shape uncertainty corresponding to shifting the tau id SFs. The string you pass as the argument should contain either *DM, in which case the DM binned version will be used, or *PT in which base the pT binned version will be used.")
+parser.add_argument("--syst_tau_trg_diff", dest="syst_tau_trg_diff", type=str,
+    help="Do shape uncertainty corresponding to shifting the tau trigger SFs. The string you pass as the argument should contain either *DM which will be replaced with DMi for i=0,1,10,11")
 parser.add_argument("--ff_ss_closure", dest="ff_ss_closure", action='store_true',
     help="If set then applies a non-closure correction to fake factor yields based on differences in SS data.")
 parser.add_argument("--threePads", dest="threePads", action='store_true',
@@ -718,31 +710,35 @@ if options.channel in ["mt","et"]:
     if options.channel == "et":
         cut_string = "IC_Apr02"
     elif options.channel == "mt":
-        cut_string = "IC_Mar26_fix2"
+        cut_string = "IC_Nov25_tauspinner"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
-    mva_tt       = '({}_max_index==2)'.format(cut_string)
-    mva_zll      = '({}_max_index==3)'.format(cut_string)
-    mva_zttEmbed = '({}_max_index==4)'.format(cut_string)
+    mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
 
-    cats['higgs']          = '({} && {})'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed']       = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes']       = '({} && {})'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll']            = '({} && {})'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt']             = '({} && {})'.format(mva_tt, cats["inclusive_mixed"])
+    # apply b jet veto as done in training (to remove ttbar)
+    cats['higgs']     = '({} && n_bjets==0)'.format(mva_ggh)
+    cats['zttEmbed']  = '({} && n_bjets==0)'.format(mva_zttEmbed)
+    cats['jetFakes']  = '({} && n_bjets==0)'.format(mva_jetFakes)
 
-    cats['higgs_other']    = '({} && !({}))'.format(mva_ggh, cats["inclusive_mixed"])
-    cats['zttEmbed_other'] = '({} && !({}))'.format(mva_zttEmbed, cats["inclusive_mixed"])
-    cats['jetFakes_other'] = '({} && !({}))'.format(mva_jetFakes, cats["inclusive_mixed"])
-    cats['zll_other']      = '({} && !({}))'.format(mva_zll, cats["inclusive_mixed"])
-    cats['tt_other']       = '({} && !({}))'.format(mva_tt, cats["inclusive_mixed"])
+    cats["mva_mupi"]  = "(tau_decay_mode_2==0 && mva_dm_2==0)" # aco_angle_6 (ip)
+    cats["mva_murho"] = "(tau_decay_mode_2==1 && mva_dm_2==1)" # aco_angle_5 (planes) 6 (ip)
+    cats["mva_mua1"]  = "(tau_decay_mode_2>=10 && mva_dm_2==10)" # aco_angle_5 (planes)
+
+    cats["higgs_mvaMuPi"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mupi"])
+    cats["higgs_mvaMuRho"] = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_murho"])
+    cats["higgs_mvaMuA1"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mua1"])
 
 if options.channel == 'tt':
     cats["inclusive_rho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
-    cats["inclusive_a1rho"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
+    cats["inclusive_a1rho"]     = "((tau_decay_mode_1>=10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2>=10))"
+    cats["mva_a1rho"]           = "((tau_decay_mode_1>=10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2>=10 && mva_dm_2==10))"
+    cats["mva_a1pi"]            = "((tau_decay_mode_1>=10 && mva_dm_1==10 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0) || (tau_decay_mode_2>=10 && mva_dm_2==10 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0) )"
+    cats["mva_0a1pi"]           = "(tau_decay_mode_1==1 && mva_dm_1==2 && (tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 ) || (tau_decay_mode_2==1 && mva_dm_2==2 && (tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 )"
+    cats["inclusive_a1"]        = "(tau_decay_mode_1>=10 && tau_decay_mode_2>=10)"
     # lift conditions on DM (use DM=0||1 for 1pr, DM10||11 for 3pr)
     # use in combination with MVA DM scores to determine genuine rhos/a1s
     cats["DM0or1"]              = "((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==1 || tau_decay_mode_2==0))"
+    cats["mva_rhopi"]           = "( ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1)  ||  ((tau_decay_mode_2==1 || tau_decay_mode_2==0) && mva_dm_2==0 && tau_decay_mode_1==1 && mva_dm_1==1) )"
     cats["DM10or11and0or1"]     = "(((tau_decay_mode_1==10 || tau_decay_mode_1==11) && (tau_decay_mode_2==1 || tau_decay_mode_2==0)) || ((tau_decay_mode_1==1 || tau_decay_mode_1==0) && (tau_decay_mode_2==10 || tau_decay_mode_2==11)))"
     # cats["dijet_rho"]             = "(n_jets>=2 && mjj>300)"
     cats["idg0p5"]              = "(rho_id_1>0.5 && rho_id_2>0.5)"
@@ -831,9 +827,9 @@ if options.channel == 'tt':
 
     # tauspinner with slimmed vars and classic bkg methods
     # note the names are the same but actually jetFakes is only QCD
-    mva_ggh                = '(IC_Oct22_tauspinnerSM_classic_max_index==0)'
-    mva_jetFakes           = '(IC_Oct22_tauspinnerSM_classic_max_index==1)'
-    mva_zttEmbed           = '(IC_Oct22_tauspinnerSM_classic_max_index==2)'
+    mva_ggh                = '(IC_Nov13_tauspinner_max_index==0)'
+    mva_jetFakes           = '(IC_Nov13_tauspinner_max_index==1)'
+    mva_zttEmbed           = '(IC_Nov13_tauspinner_max_index==2)'
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
@@ -858,21 +854,40 @@ if options.channel == 'tt':
     cats['jetFakes_other'] = '({} && !({}||{}))'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_a1rho"])
 
     # mvadm for rho and a1
-    cats['higgs_mvarho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['higgs_mvarho']      = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_ggh, cats["inclusive_rho"])
     # cats['ggh_mvarho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_rho"], cats["inclusive_mvarho"])
     # cats['qqh_mvarho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['zttEmbed_mvarho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_rho"], cats["inclusive_mvarho"])
-    cats['jetFakes_mvarho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_rho"], cats["inclusive_mvarho"])
+    cats['zttEmbed_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1 )'.format(mva_zttEmbed, cats["inclusive_rho"])
+    cats['jetFakes_mvarho']   = '({} && {} && mva_dm_1==1 && mva_dm_2==1)'.format(mva_jetFakes, cats["inclusive_rho"])
 
-    cats['higgs_mvaa1rho']      = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    cats['higgs_mvaa1rho']      = '({} && {} )'.format(mva_ggh, cats["mva_a1rho"])
     # cats['ggh_mvaa1rho']        = '({} && {} && {})'.format(mva_ggh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     # cats['qqh_mvaa1rho']        = '({} && {} && {})'.format(mva_qqh, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['zttEmbed_mvaa1rho']   = '({} && {} && {})'.format(mva_zttEmbed, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
     cats['jetFakes_mvaa1rho']   = '({} && {} && {})'.format(mva_jetFakes, cats["inclusive_a1rho"], cats["inclusive_mvaa1rho"])
+    
+    #rho-a1(1prong) and  a1(1prong)-a1(1prong)
+    cats['higgs_mvarho0A1'] = '{} && {} && ( (mva_dm_1==2 && (mva_dm_2==2 || mva_dm_2==1)) || (mva_dm_2==2 && (mva_dm_1==2 || mva_dm_1==1)) )'.format(mva_ggh, cats["inclusive_rho"])
 
-    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}))'\
-            .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
-                    cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
+    #a1(3prong)-a1(3prong)
+    cats['higgs_mvaA1'] = '{} && {} && mva_dm_1==10 && mva_dm_2==10'.format(mva_ggh, cats["inclusive_a1"])
+
+    #pi-pi
+    cats["higgs_mvapi"]= '{} && {} && mva_dm_1==0 && mva_dm_2==0'.format(mva_ggh, cats["DM0or1"])
+
+    #rho-pi
+    cats["higgs_mvarhopi"]='{} && {}'.format(mva_ggh, cats["mva_rhopi"])
+
+    #pi-a1(3prong)
+    cats["higgs_mvaA1pi"]= '{} && {}'.format(mva_ggh, cats["mva_a1pi"])
+
+    #pi-a1(1prong)
+    cats["higgs_mva0A1pi"]='{} && {}'.format(mva_ggh, cats["mva_0a1pi"])
+
+    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}))'\
+            .format(mva_ggh, cats["higgs_mvarho"], cats["higgs_mvaa1rho"], cats["higgs_mvarho0A1"], 
+                    cats["higgs_mvaA1"], cats["higgs_mvapi"], cats["higgs_mvarhopi"],
+                    cats["higgs_mvaA1pi"], cats["higgs_mva0A1pi"])
     # cats['ggh_mvaother']    = '({} && !({}||{}||{}||{}))'\
     #         .format(mva_ggh, cats["inclusive_rho"], cats["inclusive_a1rho"], 
     #                 cats["inclusive_mvarho"], cats["inclusive_mvaa1rho"])
@@ -1430,10 +1445,13 @@ if options.analysis in ['cpprod']:
          'WplusH_htt': 'WplusHToTauTau_M-125',
          'WminusH_htt': 'WminusHToTauTau_M-125',
          'ZH_htt': 'ZHToTauTau_M-125',
-         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
-         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggHsm_old_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
+         'ggHmm_old_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         'ggHps_old_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
+         #"ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+         'ggHsm_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggHmm_htt' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggHps_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets'],
     }
 
 
@@ -1453,9 +1471,12 @@ if options.analysis in ['cpdecay']:
         "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
         "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         
     }
 
@@ -1464,13 +1485,18 @@ if options.analysis in ['cpdecay']:
         # test CP in decay samples
         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        
+        "ggH_sm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_ps_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_mm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
     }
 
 
@@ -1687,8 +1713,8 @@ if options.syst_res_met != '':
       systematics['syst_res_met_2jet_up'] = ('MET_RES_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_res_met_2jet_down'] = ('MET_RES_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:
-      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)
-      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False) 
+      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
 if options.syst_scale_met != '':
     hist_name = options.syst_scale_met
     if '$NJET' in hist_name: 
@@ -1704,8 +1730,8 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_2jet_up'] = ('MET_SCALE_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:  
-      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)
-      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','W'], False)    
+      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
     jes_to_process=[]
@@ -1721,31 +1747,46 @@ if options.syst_scale_j_by_source != '':
       hist_name = options.syst_scale_j_by_source.replace('SOURCE', source)
       systematics[syst_name+'_up'] = ('JES_UP' , '_'+hist_name+'Up', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
       systematics[syst_name+'_down'] = ('JES_DOWN' , '_'+hist_name+'Down', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
-if options.syst_em_qcd_rate_0jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_rate_0jet_up'] = ('' , '_'+options.syst_em_qcd_rate_0jet+'Up', 'wt*(wt_em_qcd_up*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_rate_0jet_down'] = ('' , '_'+options.syst_em_qcd_rate_0jet+'Down', 'wt*(wt_em_qcd_down*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)       
-if options.syst_em_qcd_rate_1jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_rate_1jet_up'] = ('' , '_'+options.syst_em_qcd_rate_1jet+'Up', 'wt*(wt_em_qcd_up*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_rate_1jet_down'] = ('' , '_'+options.syst_em_qcd_rate_1jet+'Down', 'wt*(wt_em_qcd_down*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)    
-if options.syst_em_qcd_shape_0jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_shape_0jet_up'] = ('' , '_'+options.syst_em_qcd_shape_0jet+'Up', 'wt*(wt_em_qcd_shapeup*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_shape_0jet_down'] = ('' , '_'+options.syst_em_qcd_shape_0jet+'Down', 'wt*(wt_em_qcd_shapedown*(n_jets==0) + (n_jets>0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)       
-if options.syst_em_qcd_shape_1jet != '' and options.channel == 'em':
-    systematics['syst_em_qcd_shape_1jet_up'] = ('' , '_'+options.syst_em_qcd_shape_1jet+'Up', 'wt*(wt_em_qcd_shapeup*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_shape_1jet_down'] = ('' , '_'+options.syst_em_qcd_shape_1jet+'Down', 'wt*(wt_em_qcd_shapedown*(n_jets>0) + (n_jets==0))', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)     
-if options.syst_em_qcd_extrap != '' and options.channel == 'em':
-    systematics['syst_em_qcd_extrap_up'] = ('' , '_'+options.syst_em_qcd_extrap+'Up', 'wt*wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    if options.era=='cpsummer17': systematics['syst_em_qcd_extrap_down'] = ('' , '_'+options.syst_em_qcd_extrap+'Down', 'wt/wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    else: systematics['syst_em_qcd_extrap_down'] = ('' , '_'+options.syst_em_qcd_extrap+'Down', 'wt/wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)     
-if options.syst_em_qcd_btag != '' and options.channel == 'em':
-    systematics['syst_em_qcd_btag_up'] = ('' , '_'+options.syst_em_qcd_btag+'Up', 'wt*wt_em_qcd_bjetsup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_em_qcd_btag_down'] = ('' , '_'+options.syst_em_qcd_btag+'Down', 'wt*wt_em_qcd_bjetsdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+
+## em QCD uncertainties
+if options.syst_em_qcd != '' and options.channel == 'em':
+    hist_name = options.syst_em_qcd
+    if '*BIN' in hist_name:
+      hist_name_bini = hist_name.replace('*BIN', 'IsoExtrap')
+      systematics['syst_em_qcd_extrap_up'] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_em_qcd_extrapup', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+      systematics['syst_em_qcd_extrap_down'] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_em_qcd_extrapdown', ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+      for j in range(0,3):
+        for i in range(1,3):
+          hist_name_bini = hist_name.replace('*BIN', 'stat_njets%(j)i_unc%(i)i' % vars())
+          systematics['syst_em_qcd_njets%(j)i_unc%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_em_qcd_njets%(j)s_unc%(i)i_up' % vars(), ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+          systematics['syst_em_qcd_njets%(j)i_unc%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_em_qcd_njets%(j)i_unc%(i)i_down' % vars(), ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)  
+
 if options.syst_prefire != '':
     systematics['syst_prefire_up'] = ('' , '_'+options.syst_prefire+'Up', 'wt*wt_prefire_up', ['QCD','jetFakes','EmbedZTT'], False)
     systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down', ['QCD','jetFakes','EmbedZTT'], False)
-if options.syst_xtrg != '':
-    systematics['syst_xtrg_up'] = ('' , '_'+options.syst_xtrg+'Up', 'wt*wt_trig_up', ['QCD','jetFakes'], False)
-    systematics['syst_xtrg_down'] = ('' , '_'+options.syst_xtrg+'Down', 'wt*wt_trig_down', ['QCD','jetFakes'], False)
+
+if options.syst_tau_id_diff != '':
+    hist_name = options.syst_tau_id_diff
+    if '*PT' in hist_name:
+      for i in range(1,6):
+        hist_name_bini = hist_name.replace('*PT','bin%(i)i' % vars())
+        systematics['syst_tau_id_diff_bin%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_pt_bin%(i)i_up' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+        systematics['syst_tau_id_diff_bin%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_pt_bin%(i)i_down' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+    if '*DM' in hist_name:
+      for i in [0,1,10,11]:
+        hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
+        systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False) 
+
+if options.syst_tau_trg_diff != '':
+    hist_name = options.syst_tau_trg_diff
+    if '*DM' in hist_name:
+      for i in [0,1,10,11]:
+        hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
+        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
+
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
@@ -3728,8 +3769,13 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method in [17,18]
+    if "zttEmbed" in options.cat or "jetFakes" in options.cat:
+        options.blind = False
+        options.x_blind_min = -1e5
+        options.x_blind_max = -1e5 
     if options.do_unrolling and is_2d:
         auto_blind=False
+        options.norm_bins=False
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 

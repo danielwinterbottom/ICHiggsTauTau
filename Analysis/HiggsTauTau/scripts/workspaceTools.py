@@ -79,6 +79,38 @@ def UncertsFromHist(hist,minUncert=-1,maxUncert=-1):
       hist_down.SetBinContent(i, uncert_down)
     return (hist_up,hist_down)
 
+def UncertsFrom2DHist(hist,minUncert=-1,maxUncert=-1):
+    nbinsx = hist.GetNbinsX()
+    nbinsy = hist.GetNbinsY()
+    hist_up = hist.Clone()
+    hist_down = hist.Clone()
+    hist_up.SetName(hist.GetName()+'_up')
+    hist_up.SetTitle(hist.GetTitle()+'_up')
+    hist_down.SetName(hist.GetName()+'_down')
+    hist_down.SetTitle(hist.GetTitle()+'_down')
+
+    for i in xrange(0, nbinsx+1):
+      for j in xrange(0, nbinsy+1):
+        nom = hist.GetBinContent(i,j)
+        uncert_up = hist_up.GetBinError(i,j)
+        uncert_down = hist_down.GetBinError(i,j)
+
+        if minUncert>=0:
+          down = nom-uncert_down
+          if down<minUncert*nom:
+            down = minUncert*nom
+            uncert_down = nom - down
+        if maxUncert>=0:
+          up = nom+uncert_up
+          if up>maxUncert*nom:
+            up = maxUncert*nom
+            uncert_up = up-nom
+
+        hist_up.SetBinContent(i, j, uncert_up)
+        hist_down.SetBinContent(i, j, uncert_down)
+    return (hist_up,hist_down)
+
+
 def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
     # Use the histogram name for this function unless a new name has
     # been specified
