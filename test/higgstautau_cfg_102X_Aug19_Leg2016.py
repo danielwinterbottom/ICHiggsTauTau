@@ -739,44 +739,45 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
+
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
-                           isData=bool(isData) or isEmbed,
+                           isData=bool(isData) or bool(isEmbed),
+                           postfix="ModifiedMET",
                            )
 
 
-process.pfMetRe = pfMet.clone(src = "particleFlow")
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, True );
+runMetCorAndUncFromMiniAOD(process,
+                           isData=(bool(isData) or bool(isEmbed)),
+                           metType="Puppi",
+                           postfix="PuppiModifiedMET",
+                           jetFlavor="AK4PFPuppi",
+                           )
 
-process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
-process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
-
-
-process.icRecorrectedPfMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("patpfMETT1"),
-                         branch = cms.string("pfMet"),
-                         getUncorrectedMet=cms.bool(False)
-                         )
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
+                         input = cms.InputTag("slimmedMETsModifiedMET"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
+
+
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("slimmedMETsPuppi"),
+                         input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
                          branch = cms.string("puppiMet"),
-                         includeMetUncertainties=cms.bool(True),
-                         getUncorrectedMet=cms.bool(False)
+                         getUncorrectedMet=cms.bool(False),
+                         includeMetUncertainties=cms.bool(True)
                          )
 
-
-
-process.icPfMetSequence = cms.Sequence(
-  process.pfMetRe+
-  process.icPfMetProducer
+process.icMetSequence = cms.Sequence(
+  process.puppiMETSequence *
+  process.fullPatMetSequencePuppiModifiedMET *
+  process.fullPatMetSequenceModifiedMET *
+  process.icPfMetProducer *
+  process.icPuppiMetProducer
 )
-
-process.icPfMetSequence.remove(process.pfMetRe)
-process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
 
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
@@ -1418,7 +1419,6 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
-  process.fullPatMetSequence+
   process.icMiniAODSequence+
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
@@ -1428,9 +1428,9 @@ process.p = cms.Path(
   process.icTauSequence+
   process.icTauProducer+
   process.icPhotonSequence+
+  process.icMetSequence+
   process.icPFJetSequence+
   process.icPFSequence+
-  process.icPfMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
