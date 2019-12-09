@@ -68,6 +68,21 @@ class Jet : public Candidate {
     return uncorrected_energy_;
   }
 
+  /// The value of jer shift
+  inline double const& jer_shift() const {
+    return jer_shift_;
+  }
+
+  /// The up uncert value of jer shift
+  inline double const& jerup_shift() const {
+    return jerup_shift_;
+  }
+
+  /// The down uncert value of jer shift
+  inline double const& jerdown_shift() const {
+    return jerdown_shift_;
+  }
+
   /// The jet area as used in the L1FastJet correction
   inline float const& jet_area() const { return jet_area_; }
 
@@ -118,6 +133,21 @@ class Jet : public Candidate {
     uncorrected_energy_ = uncorrected_energy;
   }
 
+  /// @copybrief jer_shift()
+  inline void set_jer_shift(double const& jer_shift) {
+    jer_shift_ = jer_shift;
+  }
+
+  /// @copybrief jerup_shift()
+  inline void set_jerup_shift(double const& jerup_shift) {
+    jerup_shift_ = jerup_shift;
+  }
+
+  /// @copybrief jerdown_shift()
+  inline void set_jerdown_shift(double const& jerdown_shift) {
+    jerdown_shift_ = jerdown_shift;
+  }
+
   /// @copybrief jet_area()
   inline void set_jet_area(float const& jet_area) { jet_area_ = jet_area; }
 
@@ -150,13 +180,16 @@ class Jet : public Candidate {
   float jet_area_;
   int parton_flavour_;
   int hadron_flavour_;
+  double jer_shift_;
+  double jerup_shift_;
+  double jerdown_shift_;
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Jet, 3);
+  ClassDef(Jet, 4);
  #endif
 };
 
