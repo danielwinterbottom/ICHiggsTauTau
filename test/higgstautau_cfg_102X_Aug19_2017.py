@@ -10,8 +10,8 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_'
- # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
+#'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_'
+  'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
 #'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
 ,parser.VarParsing.multiplicity.singleton,
@@ -73,7 +73,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000) #20000
+    input = cms.untracked.int32(1) #20000
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -616,6 +616,7 @@ process.icPhotonSequence = cms.Sequence(
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
+
 #rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
@@ -623,7 +624,7 @@ process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 if not (isData or isEmbed):
     updateJetCollection(
         process,
-        jetSource = cms.InputTag("slimmedJets"),
+        jetSource = cms.InputTag("slimmedJets"),#"shiftedPatJetResUpModifiedMET"),#"patSmearedJetsModifiedMET"),#"slimmedJets"),
         labelName = "UpdatedJEC",
         jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
     )
@@ -746,6 +747,18 @@ runMetCorAndUncFromMiniAOD (
         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
 )
+
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, True );
+runMetCorAndUncFromMiniAOD(process,
+                           isData=(bool(isData) or bool(isEmbed)),
+                           metType="Puppi",
+                           postfix="PuppiModifiedMET",
+                           jetFlavor="AK4PFPuppi",
+                           fixEE2017 = True, 
+                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+                           )
+
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
                          input = cms.InputTag("slimmedMETsModifiedMET"), # for 2017 apply re-correction
@@ -753,23 +766,22 @@ process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPfMetSequence = cms.Sequence(
-    process.fullPatMetSequenceModifiedMET *
-    process.icPfMetProducer
-)
-
 ################################################################
 # Puppi MET
 ################################################################
 
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("slimmedMETsPuppi"),
+                         input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
                          branch = cms.string("puppiMet"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPuppiMetSequence = cms.Sequence(
+process.icMetSequence = cms.Sequence(
+  process.puppiMETSequence *
+  process.fullPatMetSequencePuppiModifiedMET *
+  process.fullPatMetSequenceModifiedMET *
+  process.icPfMetProducer *
   process.icPuppiMetProducer
 )
 
@@ -1366,10 +1378,9 @@ process.p = cms.Path(
     process.icElectronSequence+
     process.icMuonSequence+
     process.icTauSequence+
+    process.icMetSequence+
     process.icPFJetSequence+
     process.icPFSequence+
-    process.icPfMetSequence+
-    process.icPuppiMetSequence+
     process.icGenSequence+
     process.icL1EGammaProducer+
     process.icL1TauProducer+

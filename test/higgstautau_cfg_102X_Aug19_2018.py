@@ -71,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -632,7 +632,7 @@ if not (isData or isEmbed):
 else:
     updateJetCollection(
         process,
-        jetSource = cms.InputTag("slimmedJets"),
+        jetSource = cms.InputTag("slimmedJets"), #patSmearedJets
         # pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
         # svSource = cms.InputTag('slimmedSecondaryVertices'),
         labelName = "UpdatedJEC",
@@ -741,7 +741,6 @@ process.icPFJetSequence += cms.Sequence(
    #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
    process.icPFJetProducerFromPat
    )
-
 ################################################################
 # PF MET
 ################################################################
@@ -749,34 +748,43 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
-# from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-# runMetCorAndUncFromMiniAOD (
-#         process,
-#         isData = (bool(isData) or bool(isEmbed)),
-#         fixEE2017 = True,
-#         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-#         postfix = "ModifiedMET"
-# )
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=bool(isData) or bool(isEmbed),
+                           postfix="ModifiedMET",
+                           )
+
+
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, True );
+runMetCorAndUncFromMiniAOD(process,
+                           isData=(bool(isData) or bool(isEmbed)),
+                           metType="Puppi",
+                           postfix="PuppiModifiedMET",
+                           jetFlavor="AK4PFPuppi",
+                           )
+
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
-                         input = cms.InputTag("slimmedMETs"), # for 2017 apply re-correction
+                         input = cms.InputTag("slimmedMETsModifiedMET"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPfMetSequence = cms.Sequence(
-    # process.fullPatMetSequenceModifiedMET *
-    process.icPfMetProducer
-)
 
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("slimmedMETsPuppi"),
+                         input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
                          branch = cms.string("puppiMet"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPuppiMetSequence = cms.Sequence(
+process.icMetSequence = cms.Sequence(
+  process.puppiMETSequence *
+  process.fullPatMetSequencePuppiModifiedMET *
+  process.fullPatMetSequenceModifiedMET *
+  process.icPfMetProducer *
   process.icPuppiMetProducer
 )
 
@@ -1556,10 +1564,9 @@ process.p = cms.Path(
     process.icElectronSequence+
     process.icMuonSequence+
     process.icTauSequence+
+    process.icMetSequence+
     process.icPFJetSequence+
     process.icPFSequence+
-    process.icPfMetSequence+
-    process.icPuppiMetSequence+
     process.icPhotonSequence+
     process.icGenSequence+
     process.icL1EGammaProducer+
