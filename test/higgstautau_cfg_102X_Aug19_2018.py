@@ -71,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -709,24 +709,48 @@ process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
 
-process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+# process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#     branch                    = cms.string("ak4PFJetsCHS"),
+#     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+#     srcConfig = cms.PSet(
+#         isSlimmed               = cms.bool(True),
+#         slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+#         includeJetFlavour       = cms.bool(True),
+#         includeJECs             = cms.bool(True),
+#         inputSVInfo             = cms.InputTag(""),
+#         requestSVInfo           = cms.bool(False)
+#     ),
+#     destConfig = cms.PSet(
+#         includePileupID         = cms.bool(True),
+#         inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+#         includeTrackBasedVars   = cms.bool(False),
+#         inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+#         inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+#         requestTracks           = cms.bool(False)
+#     )
+# )
+
+process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
+    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
+    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
     srcConfig = cms.PSet(
-        isSlimmed               = cms.bool(True),
-        slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
-        includeJetFlavour       = cms.bool(True),
-        includeJECs             = cms.bool(True),
-        inputSVInfo             = cms.InputTag(""),
-        requestSVInfo           = cms.bool(False)
+      isSlimmed               = cms.bool(True),
+      slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+      includeJetFlavour       = cms.bool(True),
+      includeJECs             = cms.bool(True),
+      inputSVInfo             = cms.InputTag(""),
+      requestSVInfo           = cms.bool(False)
     ),
-    destConfig = cms.PSet(
-        includePileupID         = cms.bool(True),
-        inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
-        includeTrackBasedVars   = cms.bool(False),
-        inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
-        inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
-        requestTracks           = cms.bool(False)
+   destConfig = cms.PSet(
+     includePileupID         = cms.bool(True),
+     inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+     includeTrackBasedVars   = cms.bool(False),
+     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+     requestTracks           = cms.bool(False)
     )
 )
 
@@ -739,7 +763,8 @@ process.icPFJetSequence += cms.Sequence(
    process.selectedUpdatedPatJetsUpdatedJEC+
    process.selectedSlimmedJetsAK4+
    #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
-   process.icPFJetProducerFromPat
+   # process.icPFJetProducerFromPat +
+   process.icPFJetProducerFromPatNew
    )
 ################################################################
 # PF MET
