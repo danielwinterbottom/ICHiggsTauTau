@@ -69,17 +69,17 @@ class Jet : public Candidate {
   }
 
   /// The value of jer shift
-  inline double const& jer_shift() const {
+  inline float const& jer_shift() const {
     return jer_shift_;
   }
 
   /// The up uncert value of jer shift
-  inline double const& jerup_shift() const {
+  inline float const& jerup_shift() const {
     return jerup_shift_;
   }
 
   /// The down uncert value of jer shift
-  inline double const& jerdown_shift() const {
+  inline float const& jerdown_shift() const {
     return jerdown_shift_;
   }
 
@@ -134,17 +134,17 @@ class Jet : public Candidate {
   }
 
   /// @copybrief jer_shift()
-  inline void set_jer_shift(double const& jer_shift) {
+  inline void set_jer_shift(float const& jer_shift) {
     jer_shift_ = jer_shift;
   }
 
   /// @copybrief jerup_shift()
-  inline void set_jerup_shift(double const& jerup_shift) {
+  inline void set_jerup_shift(float const& jerup_shift) {
     jerup_shift_ = jerup_shift;
   }
 
   /// @copybrief jerdown_shift()
-  inline void set_jerdown_shift(double const& jerdown_shift) {
+  inline void set_jerdown_shift(float const& jerdown_shift) {
     jerdown_shift_ = jerdown_shift;
   }
 
@@ -180,9 +180,9 @@ class Jet : public Candidate {
   float jet_area_;
   int parton_flavour_;
   int hadron_flavour_;
-  double jer_shift_;
-  double jerup_shift_;
-  double jerdown_shift_;
+  float jer_shift_;
+  float jerup_shift_;
+  float jerdown_shift_;
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
