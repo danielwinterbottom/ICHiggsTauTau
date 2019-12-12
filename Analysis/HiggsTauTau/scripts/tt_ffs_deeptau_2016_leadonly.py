@@ -385,6 +385,8 @@ def WriteFunctionMVADM2Jets(fout, subtau=False, aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in [0,1,2]:
     for mvadmbin in [0,1,2,10,11]:
@@ -414,6 +416,8 @@ def WriteFunctionMVADM2JetsIPSig(fout, subtau=False, aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in [0,1,2]:
     for mvadmbin in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
@@ -443,6 +447,8 @@ def WriteFunctionDM2Jets(fout, subtau=False,aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
   ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
+  ff_pol0 = 'p0'
+  ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
   for njetbin in [0,1,2]:
     for dmbin in [0,1,10,11]:

@@ -74,11 +74,11 @@ dm_bins = {
 }
 
 # choose bins to set to pol1 and pol0 here:
-fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm2_njets2']
-fit_pol1_wjets = ['mvadm11_njets2']
-fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3']
-fit_pol0_qcd   = ['mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm1_njets2_crosstrg']
-fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm1njets2_crosstrg','mvadm10_njets2_crosstrg']
+fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm2_njets2','dm0_njets1','dm1_njets2','dm11_njets0','dm11_njets1']
+fit_pol1_wjets = ['mvadm11_njets2','dm11_njets2']
+fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3','dm0_njets1_crosstrg']
+fit_pol0_qcd   = ['mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm1_njets2_crosstrg','dm11_njets2']
+fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm1njets2_crosstrg','mvadm10_njets2_crosstrg','dm0_njets2_crosstrg','dm10_njets2_crosstrg','dm11_njets2_crosstrg']
 fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):

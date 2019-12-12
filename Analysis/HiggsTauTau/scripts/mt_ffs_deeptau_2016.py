@@ -81,8 +81,8 @@ dm_bins = {
 fit_pol1_qcd   = ['mvadm0_sig_lt3_njets2','mvadm2_njets2','mvadm11_njets2','mvadm0_sig_lt3_njets0']
 fit_pol1_wjets = []
 fit_pol1_ttbar = []
-fit_pol0_qcd   = ['mvadm0_sig_gt3_njets2_crosstrg','mvadm0_sig_lt3_njets1_crosstrg']
-fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm0_sig_gt3_njets1_crosstrg','mvadm11_njets1_crosstrg']
+fit_pol0_qcd   = ['mvadm0_sig_gt3_njets2_crosstrg','mvadm0_sig_lt3_njets1_crosstrg','dm0_njets2_crosstrg']
+fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm0_sig_gt3_njets1_crosstrg','mvadm11_njets1_crosstrg','dm0_njets1_crosstrg','dm11_njets0_crosstrg','dm11_njets2_crosstrg']
 fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
