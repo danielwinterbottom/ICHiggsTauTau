@@ -74,11 +74,11 @@ dm_bins = {
 }
 
 # choose bins to set to pol1 and pol0 here:
-fit_pol1_qcd   = []
-fit_pol1_wjets = []
-fit_pol1_ttbar = []
-fit_pol0_qcd   = []
-fit_pol0_wjets = []
+fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm2_njets2']
+fit_pol1_wjets = ['mvadm11_njets2']
+fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3']
+fit_pol0_qcd   = ['mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm1_njets2_crosstrg']
+fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm1njets2_crosstrg','mvadm10_njets2_crosstrg']
 fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
@@ -674,12 +674,12 @@ for ff in ff_list:
 
   usePol=None
   if 'crosstrg' in ff: usePol=1
-  if True in [x in ff for x in fit_pol1_qcd] and 'qcd' in ff: usePol=1
-  if True in [x in ff for x in fit_pol1_wjets] and 'wjets' in ff: usePol=1
-  if True in [x in ff for x in fit_pol1_ttbar] and 'ttbar' in ff: usePol=1
-  if True in [x in ff for x in fit_pol0_qcd] and 'qcd' in ff: usePol=0
-  if True in [x in ff for x in fit_pol0_wjets] and 'wjets' in ff: usePol=0
-  if True in [x in ff for x in fit_pol0_ttbar] and 'ttbar' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol1_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_qcd])) and 'qcd' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol1_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_wjets])) and 'wjets' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol1_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_ttbar])) and 'ttbar' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol0_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_qcd])) and 'qcd' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol0_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_wjets])) and 'wjets' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol0_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_ttbar])) and 'ttbar' in ff: usePol=0
 
   # do fitting
   (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)

@@ -75,7 +75,7 @@ dm_bins = {
               'mvadm11':'(mva_dm_X==11)'
 }
 
-fit_pol1 = []
+fit_pol1 = ['mvadm0_sig_lt3_njets1']
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]

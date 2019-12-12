@@ -692,12 +692,12 @@ for ff in ff_list:
   usePol=None
   if 'crosstrg' in ff: usePol=0
   else: usePol=1
-  if True in [x in ff for x in fit_pol1_qcd] and 'qcd' in ff: usePol=1
-  if True in [x in ff for x in fit_pol1_wjets] and 'wjets' in ff: usePol=1
-  if True in [x in ff for x in fit_pol1_ttbar] and 'ttbar' in ff: usePol=1
-  if True in [x in ff for x in fit_pol0_qcd] and 'qcd' in ff: usePol=0
-  if True in [x in ff for x in fit_pol0_wjets] and 'wjets' in ff: usePol=0
-  if True in [x in ff for x in fit_pol0_ttbar] and 'ttbar' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol1_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_qcd])) and 'qcd' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol1_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_wjets])) and 'wjets' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol1_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_ttbar])) and 'ttbar' in ff: usePol=1
+  if ((True in [x in ff for x in fit_pol0_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_qcd])) and 'qcd' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol0_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_wjets])) and 'wjets' in ff: usePol=0
+  if ((True in [x in ff for x in fit_pol0_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_ttbar])) and 'ttbar' in ff: usePol=0
 
   print 'Fitting: ', qcd_ff.GetName()
 
