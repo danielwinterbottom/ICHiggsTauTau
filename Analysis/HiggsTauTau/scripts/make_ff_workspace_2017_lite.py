@@ -125,18 +125,18 @@ for wp in wps:
         w.factory('expr::et_%(dm)s_njets%(njet)s_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded80)' % vars())
       else:
         w.factory('expr::et_%(dm)s_njets%(njet)s_%(wp)s_qcd_fit("max(%(func_qcd_str)s,0.)",pt_bounded100)' % vars())
-        w.factory('expr::et_%(dm)s_njets%(njet)s_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded140)' % vars())
+        w.factory('expr::et_%(dm)s_njets%(njet)s_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded100)' % vars())
 
       # get stat uncertainties
       hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2017.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_uncert' % vars())
       (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
-      if 'crosstrg' in njet:
+      if 'crosstrg' not in njet:
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_nom, name='et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom' % vars())
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_up, name='et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_up' % vars())
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_down, name='et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_down' % vars())
-        wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_nom, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom' % vars())
-        wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_up, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_up' % vars())
-        wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_down, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_down' % vars())
+        wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_nom, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom' % vars())
+        wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_up, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_up' % vars())
+        wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_down, name='et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_down' % vars())
       else:
         wsptools.SafeWrapHist(w, ['pt_bounded80'], hist_nom, name='et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom' % vars())
         wsptools.SafeWrapHist(w, ['pt_bounded80'], hist_up, name='et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_up' % vars())
@@ -176,15 +176,15 @@ for wp in wps:
     w.factory('expr::pt_bounded140("max(min(139.9,@0),20)",pt[0])' % vars())
 
     w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_fit("max(%(func_ttbar_str)s,0.)",pt_bounded100)' % vars())
-    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded140)' % vars())
-    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_wjets_mc_fit("max(%(func_wjets_mc_str)s,0.)",pt_bounded140)' % vars())
+    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_wjets_fit("max(%(func_wjets_str)s,0.)",pt_bounded100)' % vars())
+    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_wjets_mc_fit("max(%(func_wjets_mc_str)s,0.)",pt_bounded100)' % vars())
 
     # get stat uncertainties on ttbar
     hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2017.root:%(dm)s_inclusive_pt_2_ff_ttbar_mc_uncert' % vars())
     (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
-    wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_nom, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_up, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded140'], hist_down, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_down' % vars())
+    wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_nom, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom' % vars())
+    wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_up, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_up' % vars())
+    wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_down, name='et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_down' % vars())
 
     dm_cut    = (cutsmap_dm[dm] % vars()).replace('@1','@0').replace('@2','@1')
 
@@ -548,7 +548,7 @@ for wp in wps:
       # get stat uncertainties
       hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2017.root:%(dm)s_njets%(njet)s_pt_2_ff_qcd_uncert' % vars())
       (hist_up, hist_down) = wsptools.UncertsFromHist(hist_nom,0.,2.)
-      if 'crosstrg' in njet:
+      if 'crosstrg' not in njet:
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_nom, name='mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom' % vars())
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_up, name='mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_up' % vars())
         wsptools.SafeWrapHist(w, ['pt_bounded100'], hist_down, name='mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_down' % vars())
@@ -968,7 +968,9 @@ for wp in wps:
 
   w.factory('expr::ff_tt_%(wp)s_mvadmbins_nosig_qcd("(@0==0)*((@1==0)*@2+(@1==1)*@3+(@1==2)*@4+(@1==10)*@5+(@1==11)*@6) + (@0==1)*((@1==0)*@7+(@1==1)*@8+(@1==2)*@9+(@1==10)*@10+(@1==11)*@11) + (@0>1)*((@1==0)*@12+(@1==1)*@13+(@1==2)*@14+(@1==10)*@15+(@1==11)*@16)", njets[0], mvadm[1], tt_mvadm0_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
 
-  w.factory('expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<%(ip_sig_cut)s)*@3+(@1==0&&@2>=%(ip_sig_cut)s)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<3)*@9+(@1==0&&@2>=%(ip_sig_cut)s)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<3)*@15+(@1==0&&@2>=%(ip_sig_cut)s)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
+  w.factory('expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<%(ip_sig_cut)s)*@3+(@1==0&&@2>=%(ip_sig_cut)s)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<%(ip_sig_cut)s)*@9+(@1==0&&@2>=%(ip_sig_cut)s)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<%(ip_sig_cut)s)*@15+(@1==0&&@2>=%(ip_sig_cut)s)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars())
+
+  print 'expr::ff_tt_%(wp)s_mvadmbins_qcd("(@0==0)*((@1==0&&@2<%(ip_sig_cut)s)*@3+(@1==0&&@2>=%(ip_sig_cut)s)*@4+(@1==1)*@5+(@1==2)*@6+(@1==10)*@7+(@1==11)*@8) + (@0==1)*((@1==0&&@2<%(ip_sig_cut)s)*@9+(@1==0&&@2>=%(ip_sig_cut)s)*@10+(@1==1)*@11+(@1==2)*@12+(@1==10)*@13+(@1==11)*@14) + (@0>1)*((@1==0&&@2<%(ip_sig_cut)s)*@15+(@1==0&&@2>=%(ip_sig_cut)s)*@16+(@1==1)*@17+(@1==2)*@18+(@1==10)*@19+(@1==11)*@20)", njets[0], mvadm[1], ipsig[0], tt_mvadm0_sig_lt3_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets0_%(wp)s_qcd_fit, tt_mvadm1_njets0_%(wp)s_qcd_fit, tt_mvadm2_njets0_%(wp)s_qcd_fit, tt_mvadm10_njets0_%(wp)s_qcd_fit, tt_mvadm11_njets0_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets1_%(wp)s_qcd_fit, tt_mvadm1_njets1_%(wp)s_qcd_fit, tt_mvadm2_njets1_%(wp)s_qcd_fit, tt_mvadm10_njets1_%(wp)s_qcd_fit, tt_mvadm11_njets1_%(wp)s_qcd_fit, tt_mvadm0_sig_lt3_njets2_%(wp)s_qcd_fit, tt_mvadm0_sig_gt3_njets2_%(wp)s_qcd_fit, tt_mvadm1_njets2_%(wp)s_qcd_fit, tt_mvadm2_njets2_%(wp)s_qcd_fit, tt_mvadm10_njets2_%(wp)s_qcd_fit, tt_mvadm11_njets2_%(wp)s_qcd_fit)' % vars()
 
   for dmtype in ['mvadmbins','mvadmbins_nosig','dmbins']:
 
