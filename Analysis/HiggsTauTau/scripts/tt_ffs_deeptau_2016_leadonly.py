@@ -75,6 +75,8 @@ dm_bins = {
               'mvadm11':'(mva_dm_X==11)'
 }
 
+fit_pol1 = []
+
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
   var2 = var_input2.split('[')[0]
@@ -284,11 +286,19 @@ def CalculateFakeFactors(num,denum):
   ff.Divide(denum)
   return ff
 
-def FitFakeFactors(h,usePol1=False):
+def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",40,200)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",40,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",40,200)
+  if polOnly is not None:
+    if polOnly == 0:
+      f1 = ROOT.TF1("f1","pol0",20,200)
+      f2 = ROOT.TF1("f2","pol0",20,200)
+    if polOnly == 1:
+      f1 = ROOT.TF1("f1","pol1",20,200)
+      f2 = ROOT.TF1("f2","pol1",20,200)
+
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
@@ -298,11 +308,12 @@ def FitFakeFactors(h,usePol1=False):
     if content>0: 
       h_clone.SetBinContent(i,content)
       h_clone.SetBinError(i,error)
-  h = h_clone         
-  # fit first with landau to get initial values for parameters - pol values set to 0 initially
-  h.Fit("f1",'IR')
-  f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
-  if usePol1: f2.SetParameter(4,0)
+  h = h_clone
+  if polOnly is None:         
+    # fit first with landau to get initial values for parameters - pol values set to 0 initially
+    h.Fit("f1",'IR')
+    f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
+    if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
@@ -370,29 +381,6 @@ def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss}
   f.Draw("a sames")
   c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
 
-def WriteFunctionMVADM(fout, subtau=False):
-  # this function loops over all njets and dm bins and write the FFs as a function
-  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
-  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
-  ff_params = {}
-  for njetbin in [0,1]:
-    for mvadmbin in [0,1,2,10,11]:
-      fout.cd()
-      if subtau: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
-      else: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
-      p = f.GetParameters()
-      if f.GetNpar() > 4:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
-      else:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
-
-  ff_eqn_tot = '(n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'])
-
-  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
-  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
-
-  return ff_eqn_tot
-
 def WriteFunctionMVADM2Jets(fout, subtau=False, aiso=False):
   # this function loops over all njets and dm bins and write the FFs as a function
   ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
@@ -406,7 +394,11 @@ def WriteFunctionMVADM2Jets(fout, subtau=False, aiso=False):
       if subtau: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i%(extra)s_pt_2_ff_qcd_fit' % vars())
       else: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
@@ -431,35 +423,16 @@ def WriteFunctionMVADM2JetsIPSig(fout, subtau=False, aiso=False):
       if subtau: f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_2_ff_qcd_fit' % vars())
       else: f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
-
-  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
-  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
-
-  return ff_eqn_tot
-
-def WriteFunctionDM(fout, subtau=False):
-  # this function loops over all njets and dm bins and write the FFs as a function
-  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
-  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
-  ff_params = {}
-  for njetbin in [0,1]:
-    for dmbin in [0,1,10,11]:
-      fout.cd()
-      if subtau: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
-      else: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
-      p = f.GetParameters()
-      if f.GetNpar() > 4:
-        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
-      else:
-        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
-
-  ff_eqn_tot = '(n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'])
 
   if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
   else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
@@ -479,34 +452,16 @@ def WriteFunctionDM2Jets(fout, subtau=False,aiso=False):
       if subtau: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i%(extra)s_pt_2_ff_qcd_fit' % vars())
       else: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
-      if f.GetNpar() > 4:
+      if f.GetNpar()==1:
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+      elif f.GetNpar()==2:
+        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      elif f.GetNpar() > 4:
         ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
         ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets==1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)) + (n_jets>1)*((tau_decay_mode_X==0)*(%s)+(tau_decay_mode_X==1)*(%s)+(tau_decay_mode_X==10)*(%s)+(tau_decay_mode_X==11)*(%s)))' % (ff_params['dm0_njets0'], ff_params['dm1_njets0'], ff_params['dm10_njets0'], ff_params['dm11_njets0'], ff_params['dm0_njets1'], ff_params['dm1_njets1'], ff_params['dm10_njets1'], ff_params['dm11_njets1'], ff_params['dm0_njets2'], ff_params['dm1_njets2'], ff_params['dm10_njets2'], ff_params['dm11_njets2'])
-
-  if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
-  else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
-
-  return ff_eqn_tot
-
-def WriteFunction(fout, subtau=False):
-  # this function loops over all njets and dm bins and write the FFs as a function
-  ff_eqn = 'p0*TMath::Landau(pt_X,p1,p2)+p3'
-  ff_eqn_alt = 'p0*TMath::Landau(pt_X,p1,p2)+p3+p4*pt_X'
-  ff_params = {}
-  for njetbin in [0,1]:
-    fout.cd()
-    if subtau: f = fout.Get('inclusive_njets%(njetbin)i_pt_2_ff_qcd_fit' % vars())
-    else: f = fout.Get('inclusive_njets%(njetbin)i_pt_1_ff_qcd_fit' % vars())
-    p = f.GetParameters()
-    if f.GetNpar() > 4:
-      ff_params['njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
-    else:
-      ff_params['njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
-
-  ff_eqn_tot = '((n_jets==0)*(%s) + (n_jets>0)*(%s))' % (ff_params['njets0'],ff_params['njets1'])
 
   if subtau: ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
   else:      ff_eqn_tot = re.sub('X', '1', ff_eqn_tot)
@@ -581,19 +536,22 @@ for ff in ff_list:
       to_write.append(ttbar_ff)
     fin.Close()
 
+  usePol=None
+  if True in [x in ff for x in fit_pol1]: usePol=1
+
   # do fitting
-  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff)
+  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
   PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
   if wjets_ff:
-    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
+    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff,polOnly=usePol)
     to_write.append(wjets_fit)
     to_write.append(wjets_uncert)
     PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
   if ttbar_ff:
-    (ttbar_fit, ttbar_uncert, ttbar_ff) = FitFakeFactors(ttbar_ff)
+    (ttbar_fit, ttbar_uncert, ttbar_ff) = FitFakeFactors(ttbar_ff,polOnly=usePol)
     to_write.append(ttbar_fit)
     to_write.append(ttbar_uncert)
     PlotFakeFactor(ttbar_ff, ttbar_uncert, ttbar_ff.GetName(), output_folder, wp)

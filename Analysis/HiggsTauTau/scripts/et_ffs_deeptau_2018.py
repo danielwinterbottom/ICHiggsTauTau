@@ -107,6 +107,14 @@ dm_bins = {
               'mvadm11':'(mva_dm_2==11)'
 }
 
+# choose bins to set to pol1 and pol0 here:
+fit_pol1_qcd   = []
+fit_pol1_wjets = []
+fit_pol1_ttbar = []
+fit_pol0_qcd   = []
+fit_pol0_wjets = []
+fit_pol0_ttbar = []
+
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
   var2 = var_input2.split('[')[0]
@@ -713,6 +721,12 @@ for ff in ff_list:
 
   usePol=None
   if 'crosstrg' in ff: usePol=0
+  if True in [x in ff for x in fit_pol1_qcd] and 'qcd' in ff: usePol=1
+  if True in [x in ff for x in fit_pol1_wjets] and 'wjets' in ff: usePol=1
+  if True in [x in ff for x in fit_pol1_ttbar] and 'ttbar' in ff: usePol=1
+  if True in [x in ff for x in fit_pol0_qcd] and 'qcd' in ff: usePol=0
+  if True in [x in ff for x in fit_pol0_wjets] and 'wjets' in ff: usePol=0
+  if True in [x in ff for x in fit_pol0_ttbar] and 'ttbar' in ff: usePol=0
 
   # do fitting
   (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)

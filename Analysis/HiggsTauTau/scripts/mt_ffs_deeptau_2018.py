@@ -15,7 +15,7 @@ parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors f
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2018.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/new_sf_2018/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/CP_2018_newFF/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -106,6 +106,14 @@ dm_bins = {
               'mvadm10':'(mva_dm_2==10)',
               'mvadm11':'(mva_dm_2==11)'
 }
+
+# choose bins to set to pol1 and pol0 here:
+fit_pol1_qcd   = []
+fit_pol1_wjets = []
+fit_pol1_ttbar = []
+fit_pol0_qcd   = []
+fit_pol0_wjets = []
+fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
@@ -700,6 +708,12 @@ for ff in ff_list:
 
   usePol=None
   if 'crosstrg' in ff: usePol=1
+  if True in [x in ff for x in fit_pol1_qcd] and 'qcd' in ff: usePol=1
+  if True in [x in ff for x in fit_pol1_wjets] and 'wjets' in ff: usePol=1
+  if True in [x in ff for x in fit_pol1_ttbar] and 'ttbar' in ff: usePol=1
+  if True in [x in ff for x in fit_pol0_qcd] and 'qcd' in ff: usePol=0
+  if True in [x in ff for x in fit_pol0_wjets] and 'wjets' in ff: usePol=0
+  if True in [x in ff for x in fit_pol0_ttbar] and 'ttbar' in ff: usePol=0
 
   # do fitting
   (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)
