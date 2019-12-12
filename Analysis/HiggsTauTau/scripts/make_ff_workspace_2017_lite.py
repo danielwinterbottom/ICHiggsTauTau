@@ -941,10 +941,7 @@ for wp in wps:
   for njet in [0,1,2]:
     for dm in dm_bins:
       func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_2017.root:%(dm)s_njets%(njet)i_pt_1_ff_qcd_fit' % vars())
-      func_str = func.GetTitle()
-      params = func.GetParameters()
-      for i in range(0,func.GetNpar()): func_str = func_str.replace('[%(i)i]' % vars(),'%f' % params[i])
-      func_str = re.sub('x', '@0', func_str)
+      func_str = str(func.GetExpFormula('p')).replace('x','@0')
 
       w.factory('expr::pt_bounded("max(min(199.9,@0),40)",pt[0])' % vars())
       w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_fit("max(%(func_str)s,0.)",pt_bounded)' % vars())
