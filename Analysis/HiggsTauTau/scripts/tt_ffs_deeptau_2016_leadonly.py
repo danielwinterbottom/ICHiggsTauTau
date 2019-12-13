@@ -351,8 +351,7 @@ def FitCorrection(h, func='pol1'):
 def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas() 
   f.SetMinimum(0)
-  if f.GetMaximum() > 0.5 and 'sig' not in name: f.SetMaximum(0.5)
-  elif f.GetMaximum() > 1.2: f.SetMaximum(1.2)
+  if f.GetMaximum() > 1.: f.SetMaximum(1.)
   f.SetStats(0)
   f.GetXaxis().SetTitle('p_{T} (GeV)')
   f.GetYaxis().SetTitle('FF')
@@ -428,9 +427,9 @@ def WriteFunctionMVADM2JetsIPSig(fout, subtau=False, aiso=False):
       else: f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar()==1:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_pol0.replace('p0','%f' % p[0])
       elif f.GetNpar()==2:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
       elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
@@ -543,7 +542,7 @@ for ff in ff_list:
     fin.Close()
 
   usePol=None
-  if True in [x in ff for x in fit_pol1]: usePol=1
+  if True in [ff.startswith(x) for x in fit_pol1]: usePol=1
 
   # do fitting
   (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)

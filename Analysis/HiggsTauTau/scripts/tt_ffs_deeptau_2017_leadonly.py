@@ -406,8 +406,7 @@ def FitCorrection(h, func='pol1'):
 def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas() 
   f.SetMinimum(0)
-  if f.GetMaximum() > 0.5 and 'sig' not in name: f.SetMaximum(0.5)
-  elif f.GetMaximum() > 1.2: f.SetMaximum(1.2)
+  if f.GetMaximum() > 1.: f.SetMaximum(1.)
   f.SetStats(0)
   f.GetXaxis().SetTitle('p_{T} (GeV)')
   f.GetYaxis().SetTitle('FF')
@@ -452,9 +451,9 @@ def WriteFunctionMVADM2Jets(fout, subtau=False, aiso=False):
       else: f = fout.Get('mvadm%(mvadmbin)i_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar()==1:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_pol0.replace('p0','%f' % p[0])
       elif f.GetNpar()==2:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
       elif f.GetNpar() > 4:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
@@ -482,14 +481,15 @@ def WriteFunctionMVADM2JetsIPSig(fout, subtau=False, aiso=False):
       if subtau: f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_2_ff_qcd_fit' % vars())
       else: f = fout.Get('mvadm%(mvadmbin)s_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
+
       if f.GetNpar()==1:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
       elif f.GetNpar()==2:
-        ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
       elif f.GetNpar() > 4:
-        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
-        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+        ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
   ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_1<1)*(%s)+(mva_dm_X==0&&ip_sig_1>=1)*(%s)+(mva_dm_X==1)*(%s)+(mva_dm_X==2)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
@@ -514,9 +514,9 @@ def WriteFunctionDM2Jets(fout, subtau=False,aiso=False):
       else: f = fout.Get('dm%(dmbin)i_njets%(njetbin)i%(extra)s_pt_1_ff_qcd_fit' % vars())
       p = f.GetParameters()
       if f.GetNpar()==1:
-        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol0.replace('p0','%f' % p[0])
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_pol0.replace('p0','%f' % p[0])
       elif f.GetNpar()==2:
-        ff_params['dm%(dmbin)i_njets%(njetbin)s' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+        ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
       elif f.GetNpar() > 4:
         ff_params['dm%(dmbin)i_njets%(njetbin)i' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
       else:
@@ -548,9 +548,6 @@ for njetbin in njets_bins:
     cuts=njets_bins[njetbin]+'&&'+dm_bins[dmbin]
     cut_iso1 = re.sub('X', '1', '(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
     cut_aiso1 = re.sub('X', '1','(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
-    print cut_iso1
-    print '\n\n'
-    print cut_aiso1
     ff_list[name+'_pt_1'] = (var1, cut_iso1, cut_aiso1)
 
 # use measurments in tau2 anti iso region to define uncertainty
@@ -601,7 +598,7 @@ for ff in ff_list:
     fin.Close()
 
   usePol=None
-  if True in [x in ff for x in fit_pol1]: usePol=1
+  if True in [ff.startswith(x) for x in fit_pol1]: usePol=1
 
   # do fitting
   (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)
