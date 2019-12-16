@@ -66,9 +66,14 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
         pat::Jet const& smeared = smearjets_handle->at(j);
         pat::Jet const& smearedup = smearupjets_handle->at(j);
         pat::Jet const& smeareddown = smeardownjets_handle->at(j);
-        dest.set_jer_shift(smeared.energy() / src.energy());
-        dest.set_jerup_shift(smearedup.energy() / smeared.energy());
-        dest.set_jerdown_shift(smeareddown.energy() / smeared.energy());
+        dest.set_jer_shift(smeared.pt() / src.pt());
+        dest.set_jerup_shift(smearedup.pt() / src.pt());
+        dest.set_jerdown_shift(smeareddown.pt() / src.pt());
+      }
+      else {
+        dest.set_jer_shift(1.);
+        dest.set_jerup_shift(1.);
+        dest.set_jerdown_shift(1.);
       }
     }
     dest.set_uncorrected_energy(
