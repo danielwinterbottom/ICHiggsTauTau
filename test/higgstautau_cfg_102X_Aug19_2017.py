@@ -73,7 +73,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1) #20000
+    input = cms.untracked.int32(100) #20000
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -755,8 +755,7 @@ runMetCorAndUncFromMiniAOD(process,
                            metType="Puppi",
                            postfix="PuppiModifiedMET",
                            jetFlavor="AK4PFPuppi",
-                           fixEE2017 = True, 
-                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+                           fixEE2017 = False, 
                            )
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
