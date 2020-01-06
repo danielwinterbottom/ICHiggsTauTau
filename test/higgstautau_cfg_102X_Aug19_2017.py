@@ -10,16 +10,16 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-#'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_'
+# 'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_',
   'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/280000/E2C688CA-1F1C-E911-9847-0CC47AD98BC2.root',
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
-#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root'
+# 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '102X_dataRun2_v8', parser.VarParsing.multiplicity.singleton,
 # opts.register('globalTag', '102X_mc2017_realistic_v6', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
@@ -726,8 +726,6 @@ process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
     inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
     inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
-    # inputSmearUp              = cms.InputTag("patSmearedJetsModifiedMET"),
-    # inputSmearDown            = cms.InputTag("patSmearedJetsModifiedMET"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -745,6 +743,10 @@ process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
      requestTracks           = cms.bool(False)
     )
 )
+if isData or isEmbed:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(False)
+else:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
 process.icPFJetSequence = cms.Sequence()
 

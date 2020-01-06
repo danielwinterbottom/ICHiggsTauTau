@@ -54,6 +54,7 @@ class ICPFJetProducerFromPatNew : public edm::EDProducer {
   edm::InputTag inputSmearUp_;
   edm::InputTag inputSmearDown_;
   std::string branch_;
+  bool doSmear_;
 
   std::vector<unsigned> passed_;
 

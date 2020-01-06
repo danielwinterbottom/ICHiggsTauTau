@@ -743,6 +743,10 @@ process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
      requestTracks           = cms.bool(False)
     )
 )
+if isData or isEmbed:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(False)
+else:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
 process.icPFJetSequence = cms.Sequence()
 

@@ -12,6 +12,7 @@ ICPFJetProducerFromPatNew::ICPFJetProducerFromPatNew(const edm::ParameterSet& co
       inputSmearUp_(config.getParameter<edm::InputTag>("inputSmearUp")),
       inputSmearDown_(config.getParameter<edm::InputTag>("inputSmearDown")),
       branch_(config.getParameter<std::string>("branch")),
+      doSmear_(config.getParameter<bool>("doSmear")),
       src_(config.getParameterSet("srcConfig"),consumesCollector()),
       dest_(config.getParameterSet("destConfig"),consumesCollector()) {
   consumes<edm::View<pat::Jet>>(input_);
@@ -61,28 +62,35 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
-    for (unsigned j = 0; j < smearjets_handle->size(); ++j) {
-      if (src.eta() == smearjets_handle->at(j).eta()) {
-        pat::Jet const& smeared = smearjets_handle->at(j);
-        dest.set_jer_shift(smeared.pt() / src.pt());
-        for (unsigned k = 0; k < smearupjets_handle->size(); ++k) {
-          if (src.eta() == smearupjets_handle->at(k).eta()) {
-            pat::Jet const& smearedup = smearupjets_handle->at(k);
-            dest.set_jerup_shift(smearedup.pt() / src.pt());
-            for (unsigned l = 0; l < smearupjets_handle->size(); ++l) {
-              if (src.eta() == smeardownjets_handle->at(l).eta()) {
-                pat::Jet const& smeareddown = smeardownjets_handle->at(l);
-                dest.set_jerdown_shift(smeareddown.pt() / src.pt());
+    if (doSmear_) {
+      for (unsigned j = 0; j < smearjets_handle->size(); ++j) {
+        if (src.eta() == smearjets_handle->at(j).eta()) {
+          pat::Jet const& smeared = smearjets_handle->at(j);
+          dest.set_jer_shift(smeared.pt() / src.pt());
+          for (unsigned k = 0; k < smearupjets_handle->size(); ++k) {
+            if (src.eta() == smearupjets_handle->at(k).eta()) {
+              pat::Jet const& smearedup = smearupjets_handle->at(k);
+              dest.set_jerup_shift(smearedup.pt() / src.pt());
+              for (unsigned l = 0; l < smearupjets_handle->size(); ++l) {
+                if (src.eta() == smeardownjets_handle->at(l).eta()) {
+                  pat::Jet const& smeareddown = smeardownjets_handle->at(l);
+                  dest.set_jerdown_shift(smeareddown.pt() / src.pt());
+                }
               }
             }
           }
         }
+        else {
+          dest.set_jer_shift(1.);
+          dest.set_jerup_shift(1.);
+          dest.set_jerdown_shift(1.);
+        }
       }
-      else {
-        dest.set_jer_shift(1.);
-        dest.set_jerup_shift(1.);
-        dest.set_jerdown_shift(1.);
-      }
+    }
+    else {
+      dest.set_jer_shift(1.);
+      dest.set_jerup_shift(1.);
+      dest.set_jerdown_shift(1.);
     }
     dest.set_uncorrected_energy(
         (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());
