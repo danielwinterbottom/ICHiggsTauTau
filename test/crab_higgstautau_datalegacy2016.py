@@ -3,14 +3,14 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Oct2_Data_102X_2016'
+config.General.workArea='Jan06_Data_102X_2016'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 2500
 #config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','doHT=0', 'globalTag=94X_dataRun2_v10']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','doHT=0', 'globalTag=102X_dataRun2_v12']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 100000
@@ -55,6 +55,7 @@ if __name__ == '__main__':
     tasks.append(('TauF', '/Tau/Run2016F-17Jul2018-v1/MINIAOD'  ))
     tasks.append(('TauG', '/Tau/Run2016G-17Jul2018-v1/MINIAOD'  ))
     tasks.append(('TauH', '/Tau/Run2016H-17Jul2018-v1/MINIAOD'  ))
+
     tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-17Jul2018_ver2-v1/MINIAOD'  ))
     tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-17Jul2018-v1/MINIAOD'  ))
     tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-17Jul2018-v1/MINIAOD'  ))
@@ -62,6 +63,7 @@ if __name__ == '__main__':
     tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-17Jul2018-v1/MINIAOD'  ))
     tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-17Jul2018-v1/MINIAOD'  ))
     tasks.append(('SingleElectronH', '/SingleElectron/Run2016H-17Jul2018-v1/MINIAOD'  ))
+
     tasks.append(('SingleMuonB', '/SingleMuon/Run2016B-17Jul2018_ver2-v1/MINIAOD'  ))
     tasks.append(('SingleMuonC', '/SingleMuon/Run2016C-17Jul2018-v1/MINIAOD'       ))
     tasks.append(('SingleMuonD', '/SingleMuon/Run2016D-17Jul2018-v1/MINIAOD'       ))
