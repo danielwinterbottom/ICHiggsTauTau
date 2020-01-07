@@ -784,8 +784,7 @@ runMetCorAndUncFromMiniAOD(process,
                            metType="Puppi",
                            postfix="PuppiModifiedMET",
                            jetFlavor="AK4PFPuppi",
-                           fixEE2017 = True, 
-                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+                           fixEE2017 = False, 
                            )
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
