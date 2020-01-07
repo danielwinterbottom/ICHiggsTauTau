@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_MC_102X_2018'
+config.General.workArea='Oct07_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -149,10 +149,11 @@ if __name__ == '__main__':
     tasks.append(('JJH0PMToTauTauPlusZeroJets_Filtered','/JJH0PMToTauTauPlusZeroJets_Filtered_M125_TuneCP5_13TeV-mcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('JJH0PMToTauTauPlusZeroJets','/JJH0PMToTauTauPlusZeroJets_M125_TuneCP5_13TeV-mcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
 
+    tasks.append(('JJHiggs0MToTauTau','/JJHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('JJHiggs0MToTauTau','/JJHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('JJHiggs0Mf05ph0ToTauTau','/JJHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('JJHiggs0PMToTauTau','/JJHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
-
+    tasks.append(('VBFHiggs0L1ToTauTau','/VBFHiggs0L1ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('VBFHiggs0L1ToTauTau','/VBFHiggs0L1ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0L1ZgToTauTau','/VBFHiggs0L1ZgToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0L1Zgf05ph0ToTauTau','/VBFHiggs0L1Zgf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
@@ -160,23 +161,32 @@ if __name__ == '__main__':
     tasks.append(('VBFHiggs0MToTauTau','/VBFHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0Mf05ph0ToTauTau','/VBFHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0PHToTauTau','/VBFHiggs0PHToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0PHf05ph0ToTauTau','/VBFHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('VBFHiggs0PHf05ph0ToTauTau','/VBFHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0PMToTauTau','/VBFHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('WHiggs0L1ToTauTau','/WHiggs0L1ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('WHiggs0L1f05ph0ToTauTau','/WHiggs0L1f05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('WHiggs0L1f05ph0ToTauTau','/WHiggs0L1f05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('WHiggs0MToTauTau','/WHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('WHiggs0Mf05ph0ToTauTau','/WHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('WHiggs0Mf05ph0ToTauTau','/WHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('WHiggs0PHToTauTau','/WHiggs0PHToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('WHiggs0PHToTauTau','/WHiggs0PHToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('WHiggs0PHf05ph0ToTauTau','/WHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('WHiggs0PMToTauTau','/WHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0L1ToTauTau','/ZHiggs0L1ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('ZHiggs0L1ToTauTau','/ZHiggs0L1ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0L1ZgToTauTau','/ZHiggs0L1ZgToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('ZHiggs0L1ZgToTauTau','/ZHiggs0L1ZgToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ZHiggs0L1Zgf05ph0ToTauTau','/ZHiggs0L1Zgf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ZHiggs0L1f05ph0ToTauTau','/ZHiggs0L1f05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0MToTauTau','/ZHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('ZHiggs0MToTauTau','/ZHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ZHiggs0Mf05ph0ToTauTau','/ZHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ZHiggs0PHToTauTau','/ZHiggs0PHToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0PHf05ph0ToTauTau','/ZHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('ZHiggs0PHf05ph0ToTauTau','/ZHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0PMToTauTau','/ZHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'))
     tasks.append(('ZHiggs0PMToTauTau','/ZHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ttHiggs0MToTauTau','/ttHiggs0MToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))
     tasks.append(('ttHiggs0Mf05ph0ToTauTau','/ttHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'))

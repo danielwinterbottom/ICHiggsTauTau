@@ -35,7 +35,7 @@ for i in $directory/*; do
     fi
   fi
   if [ $flag == 'SUBMITFAILED' ]; then
-    if [[ "$(crab status $i/ | grep '\bSUBMITFAILED\b')" != "" ]]; then
+    if [[ "$(crab status $i/ | grep SUBMITFAILED)" != "" ]]; then
       echo $i
       if [ $resubmit == 1 ]; then
         crab resubmit  -d $i  >> resubmit.txt
