@@ -46,9 +46,6 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
   /* edm::Handle<reco::VertexCollection> vtx_handle; */
   /* std::map<unsigned, unsigned> trk_vtx_map; */
 
-  /* edm::Handle<std::vector <pat::Jet>> smearjets_handle; */
-  /* event.getByLabel("patSmearedJets", smearjets_handle); */
-
   /* std::unique_ptr<reco::TrackRefVector> track_requests( */
   /*     new reco::TrackRefVector()); */
 
@@ -71,7 +68,7 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
             if (src.eta() == smearupjets_handle->at(k).eta()) {
               pat::Jet const& smearedup = smearupjets_handle->at(k);
               dest.set_jerup_shift(smearedup.pt() / src.pt());
-              for (unsigned l = 0; l < smearupjets_handle->size(); ++l) {
+              for (unsigned l = 0; l < smeardownjets_handle->size(); ++l) {
                 if (src.eta() == smeardownjets_handle->at(l).eta()) {
                   pat::Jet const& smeareddown = smeardownjets_handle->at(l);
                   dest.set_jerdown_shift(smeareddown.pt() / src.pt());
