@@ -2,7 +2,7 @@
 
 namespace ic {
 // Constructors/Destructors
-Vertex::Vertex() : chi2_(0.), ndof_(0.), id_(0), ntracks_(0) {}
+Vertex::Vertex() : chi2_(0.), ndof_(0.), id_(0) {}
 
 Vertex::~Vertex() {}
 
