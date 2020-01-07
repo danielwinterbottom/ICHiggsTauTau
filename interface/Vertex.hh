@@ -56,6 +56,9 @@ class Vertex {
   /// The covariance matrix
   inline ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance() { return covariance_; }
 
+  /// The number of tracks
+  inline unsigned ntracks() const { return ntracks_; }
+
   /**@{*/
 
   /// @name Setters
@@ -96,6 +99,9 @@ class Vertex {
   inline void set_covariance(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance) { 
     covariance_ = covariance;
   }
+
+  /// @copybrief ntracks()
+  inline void set_ntracks(unsigned const& ntracks) { ntracks_ = ntracks; }
  
   /**@}*/
 
@@ -106,10 +112,11 @@ class Vertex {
   std::vector<TrkPair> tracks_;
   std::size_t id_;
   ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > covariance_;
+  unsigned ntracks_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Vertex, 3);
+  ClassDef(Vertex, 4);
  #endif
 };
 

@@ -435,6 +435,30 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     # destConfig = cms.PSet()
 )
 
+icPFJetFromPatNewProducer = cms.EDProducer('ICPFJetProducerFromPatNew',
+    branch                    = cms.string("pfJetsFromPat"),
+    input                     = cms.InputTag("ak4PFJets"),
+    #### The srcConfig PSet when the input is a reco::Jet collection
+    #### The srcConfig PSet when the input is a pat::Jet collection
+     srcConfig = cms.PSet(
+       isSlimmed                 = cms.bool(False),
+       slimmedPileupIDLabel      = cms.string('pileupJetId:fullDiscriminant'),
+       includeJetFlavour         = cms.bool(False),
+       includeJECs               = cms.bool(False),
+       inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
+       requestSVInfo             = cms.bool(False)
+     ),
+    #### The destConfig PSet when the output is an ic::PFJet collection
+    destConfig = cms.PSet(
+      includePileupID       = cms.bool(False),
+      inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
+      includeTrackBasedVars = cms.bool(False),
+      inputTracks           = cms.InputTag("generalTracks"),
+      inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+      requestTracks         = cms.bool(False)
+    )
+)
+
 ## [Jet]
 
 ## [Vertex]

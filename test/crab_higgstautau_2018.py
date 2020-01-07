@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Oct07_Data_102X_2018'
+config.General.workArea='Jan05_Data_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -16,7 +16,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']
@@ -50,11 +50,13 @@ if __name__ == '__main__':
     tasks.append(('SingleMuonB', '/SingleMuon/Run2018B-17Sep2018-v1/MINIAOD'))
     tasks.append(('SingleMuonC', '/SingleMuon/Run2018C-17Sep2018-v1/MINIAOD'))
     tasks.append(('SingleMuonD', '/SingleMuon/Run2018D-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonD_ReReco', '/SingleMuon/Run2018D-22Jan2019-v2/MINIAOD'))
 
     tasks.append(('EGammaA',     '/EGamma/Run2018A-17Sep2018-v2/MINIAOD'))
     tasks.append(('EGammaB',     '/EGamma/Run2018B-17Sep2018-v1/MINIAOD'))
     tasks.append(('EGammaC',     '/EGamma/Run2018C-17Sep2018-v1/MINIAOD'))
     tasks.append(('EGammaD',     '/EGamma/Run2018D-PromptReco-v2/MINIAOD'))
+    tasks.append(('EGammaD_ReReco',     '/EGamma/Run2018D-22Jan2019-v2/MINIAOD'))
 
     tasks.append(('TauA',        '/Tau/Run2018A-17Sep2018-v1/MINIAOD'))
     tasks.append(('TauB',        '/Tau/Run2018B-17Sep2018-v1/MINIAOD'))
@@ -71,7 +73,7 @@ if __name__ == '__main__':
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
 
-        if "17Sep2018" in task[1]:
+        if "17Sep2018" in task[1] or "22Jan2019" in task[1]:
             config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_v12']
         else:
             config.JobType.pyCfgParams = ['isData=1','globalTag=102X_dataRun2_Prompt_v15']
