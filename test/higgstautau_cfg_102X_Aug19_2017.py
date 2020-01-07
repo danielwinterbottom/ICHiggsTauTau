@@ -16,8 +16,8 @@ opts.register('file',
 # 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_dataRun2_v8', parser.VarParsing.multiplicity.singleton,
-# opts.register('globalTag', '102X_mc2017_realistic_v6', parser.VarParsing.multiplicity.singleton,
+# opts.register('globalTag', '102X_dataRun2_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_mc2017_realistic_v6', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")

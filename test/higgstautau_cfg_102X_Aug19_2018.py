@@ -13,11 +13,11 @@ opts.register('file',
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
 # 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
  'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
-# 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root'
+# 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root',
 #'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_dataRun2_Prompt_v13', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_upgrade2018_realistic_v20', parser.VarParsing.multiplicity.singleton,
 #102X_upgrade2018_realistic_v18
 #102X_dataRun2_Sep2018ABC_v2
     parser.VarParsing.varType.string, "global tag")
@@ -71,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -207,7 +207,8 @@ vtxLabel = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.icVertexProducer = producers.icVertexProducer.clone(
     branch  = cms.string("vertices"),
     input = vtxLabel,
-    firstVertexOnly = cms.bool(True)
+    firstVertexOnly = cms.bool(True),
+    requestTracks = cms.bool(True),
 )
 
 process.icGenVertexProducer = producers.icGenVertexProducer.clone(
@@ -229,13 +230,15 @@ process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmed
 process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
   branch  = cms.string("refittedVertices"),
   input = "refitOfflineSlimmedPrimaryVertices",
-  firstVertexOnly = cms.bool(False)
+  firstVertexOnly = cms.bool(False),
+  requestNumTracks = cms.bool(True)
 )
 
 process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
   branch  = cms.string("refittedVerticesBS"),
   input = "refitOfflineSlimmedPrimaryVerticesBS",
-  firstVertexOnly = cms.bool(False)
+  firstVertexOnly = cms.bool(False),
+  requestNumTracks = cms.bool(True)
 )
 
 process.icVertexSequence = cms.Sequence(
