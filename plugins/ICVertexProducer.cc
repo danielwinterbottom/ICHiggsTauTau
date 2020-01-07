@@ -32,6 +32,7 @@ ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
   }
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, first_only_, "firstVertexOnly");
+  PrintOptional(1, request_trks_, "requestTracks");
 }
 
 ICVertexProducer::~ICVertexProducer() { delete vertices_; }
@@ -73,7 +74,6 @@ void ICVertexProducer::produce(edm::Event& event,
         trk_requests->push_back(trk_ref);
       }
     }
-
     if (first_only_) break;
   }
   if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");

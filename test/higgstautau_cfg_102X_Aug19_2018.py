@@ -230,15 +230,13 @@ process.refitOfflineSlimmedPrimaryVerticesBS.srcLeptons = cms.VInputTag("slimmed
 process.icRefitVertexProducer = producers.icRefitVertexProducer.clone(
   branch  = cms.string("refittedVertices"),
   input = "refitOfflineSlimmedPrimaryVertices",
-  firstVertexOnly = cms.bool(False),
-  requestNumTracks = cms.bool(True)
+  firstVertexOnly = cms.bool(False)
 )
 
 process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
   branch  = cms.string("refittedVerticesBS"),
   input = "refitOfflineSlimmedPrimaryVerticesBS",
-  firstVertexOnly = cms.bool(False),
-  requestNumTracks = cms.bool(True)
+  firstVertexOnly = cms.bool(False)
 )
 
 process.icVertexSequence = cms.Sequence(
