@@ -207,7 +207,8 @@ vtxLabel = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.icVertexProducer = producers.icVertexProducer.clone(
     branch  = cms.string("vertices"),
     input = vtxLabel,
-    firstVertexOnly = cms.bool(True)
+    firstVertexOnly = cms.bool(True),
+    requestTracks = cms.bool(True),
 )
 
 process.icGenVertexProducer = producers.icGenVertexProducer.clone(
