@@ -74,8 +74,11 @@ void ICRefitVertexProducer::produce(edm::Event& event,
         trk_requests->push_back(trk_ref);
       }
     }
+
+    dest.set_ntracks(src.tracksSize());
     count++;
     if (first_only_) break;
+
   }
   if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
 }
