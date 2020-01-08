@@ -1,30 +1,28 @@
-from WMCore.Configuration import Configuration
-from multiprocessing import Process
-config = Configuration()
-config.section_('General')
+from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
+
+config = config()
+
 config.General.transferOutputs = True
 config.General.workArea='Oct2_MC_102X_2016'
-config.section_('JobType')
+
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 5000
 config.JobType.pyCfgParams = ['release=102XMINIAOD','isEmbed=1','isData=0','doHT=0', 'globalTag=102X_dataRun2_v12']
-config.section_('Data')
+config.JobType.allowUndistributedCMSSW = True
+
 config.Data.unitsPerJob = 10000
-#config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
-config.section_('User')
-config.section_('Site')
-config.Site.storageSite = 'T2_UK_London_IC'
-config.JobType.allowUndistributedCMSSW = True
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS = 'phys03'
+
+config.Site.storageSite = 'T2_UK_London_IC'
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']
-#config.Site.blacklist = ['T1_DE_KIT']
 
 if __name__ == '__main__':
 
@@ -100,10 +98,6 @@ if __name__ == '__main__':
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
         
-        #submit(config)
-        p = Process(target=submit, args=(config,))
-        p.start()
-        p.join()
-
-
+        print(config)
+        submit(config)
 
