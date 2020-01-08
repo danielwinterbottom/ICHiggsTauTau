@@ -3,12 +3,12 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jan06_MC_102X_2017'
+config.General.workArea='Sep16_MC_102X_2017_v3'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v12']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v8']
 config.JobType.maxMemoryMB = 2500
 config.section_('Data')
 config.Data.unitsPerJob = 10000
@@ -17,7 +17,7 @@ config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.unitsPerJob = 1
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/dwinterb/Sep16_MC_102X_2017_v3/'
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 config.section_('User')

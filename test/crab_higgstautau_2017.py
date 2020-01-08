@@ -3,12 +3,12 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_Data_102X_2017'
+config.General.workArea='Sep05_Data_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','doHT=0', 'globalTag=102X_dataRun2_v12']
+config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','doHT=0', 'globalTag=102X_dataRun2_v8']
 config.JobType.maxMemoryMB = 2500
 config.JobType.allowUndistributedCMSSW = True
 
@@ -76,8 +76,8 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
 
         # only to run recovery tasks with the missing lumis
-        # config.Data.lumiMask = "Sep29_Data_102X_2017/crab_{}/results/notFinishedLumis.json".format(task[0])
-        # print(config.Data.lumiMask)
+        # config.Data.lumiMask = "Jan31_Data_94X/crab_{}/results/notFinishedLumis.json".format(task[0])
+        # print config.Data.lumiMask
 
         print(config)
         submit(config)
