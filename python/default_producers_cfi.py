@@ -438,6 +438,7 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
 icPFJetFromPatNewProducer = cms.EDProducer('ICPFJetProducerFromPatNew',
     branch                    = cms.string("pfJetsFromPat"),
     input                     = cms.InputTag("ak4PFJets"),
+    doSmear                   = cms.bool(False),
     #### The srcConfig PSet when the input is a reco::Jet collection
     #### The srcConfig PSet when the input is a pat::Jet collection
      srcConfig = cms.PSet(
