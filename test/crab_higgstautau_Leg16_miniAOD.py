@@ -1,4 +1,5 @@
 from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
 
 config = config()
 
@@ -17,7 +18,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 #config.Data.ignoreLocality= True
@@ -173,9 +174,6 @@ if __name__ == '__main__':
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
         else:
             config.JobType.pyCfgParams = cfgParams
-
-        print config.Data.unitsPerJob
-        print config.Data.splitting
 
         print(config)
         submit(config)
