@@ -208,7 +208,7 @@ process.icVertexProducer = producers.icVertexProducer.clone(
     branch  = cms.string("vertices"),
     input = vtxLabel,
     firstVertexOnly = cms.bool(True),
-    requestTracks = cms.bool(True),
+    requestTracks = cms.bool(False),
 )
 
 process.icGenVertexProducer = producers.icGenVertexProducer.clone(
