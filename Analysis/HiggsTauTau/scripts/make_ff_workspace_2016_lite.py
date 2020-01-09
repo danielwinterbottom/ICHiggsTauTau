@@ -220,41 +220,28 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets_fit' % vars())
-    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-  
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
     w.factory('expr::met_bounded140("max(min(139.9,@0),20.)",met[0])' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','met'], hist_nom, name='et_%(dmname)s_%(wp)s_wjets_met_corr' % vars())
+    w.function('et_%(dmname)s_%(wp)s_wjets_met_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_nom, name='et_%(dmname)s_wjets_met_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_up, name='et_%(dmname)s_wjets_met_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_down, name='et_%(dmname)s_wjets_met_uncert_down' % vars())
-
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_met_corr_up("(%(func_met_corr)s)*(@2<2)*(1.+@3/@4) + (@2>1)",pt_bounded100,met_bounded140,njets[0],et_%(dmname)s_wjets_met_uncert_up,et_%(dmname)s_wjets_met_uncert_nom)' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_met_corr_down("(%(func_met_corr)s)*(@2<2)*(1-@3/@4) + (@2>1)",pt_bounded100,met_bounded140,njets[0],et_%(dmname)s_wjets_met_uncert_down,et_%(dmname)s_wjets_met_uncert_nom)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_met_corr_up("@0*@0",et_%(dmname)s_%(wp)s_wjets_met_corr)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_met_corr_down("@0/@0",et_%(dmname)s_%(wp)s_wjets_met_corr)' % vars())
 
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
-    func_e_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-
-  
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
     w.factory('expr::e_pt_bounded140("max(min(139.9,@0),20.)",e_pt[20])' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_e_pt_corr("(%(func_e_pt_corr)s)*(@2<2) + (@2>1)",pt_bounded100,e_pt_bounded140,njets[0])' % vars())
- 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded100','e_pt_bounded140'], hist_nom, name='et_%(dmname)s_wjets_e_pt_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','e_pt_bounded140'], hist_up, name='et_%(dmname)s_wjets_e_pt_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','e_pt_bounded140'], hist_down, name='et_%(dmname)s_wjets_e_pt_uncert_down' % vars())
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','e_pt'], hist_nom, name='et_%(dmname)s_%(wp)s_wjets_e_pt_corr' % vars())
+    w.function('et_%(dmname)s_%(wp)s_wjets_e_pt_corr' % vars()).setInterpolationOrder(1)
 
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_e_pt_corr_up("(%(func_e_pt_corr)s)*(@2<2)*(1.+@3/@4) + (@2>1)",pt_bounded100,e_pt_bounded140,njets[0],et_%(dmname)s_wjets_e_pt_uncert_up,et_%(dmname)s_wjets_e_pt_uncert_nom)' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_e_pt_corr_down("(%(func_e_pt_corr)s)*(@2<2)*(1.-@3/@4) + (@2>1)",pt_bounded100,e_pt_bounded140,njets[0],et_%(dmname)s_wjets_e_pt_uncert_down,et_%(dmname)s_wjets_e_pt_uncert_nom)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_e_pt_corr_up("@0*@0",et_%(dmname)s_%(wp)s_wjets_e_pt_corr)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_wjets_e_pt_corr_down("@0/@0",et_%(dmname)s_%(wp)s_wjets_e_pt_corr)' % vars())
  
     # mt_1 correction
     func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
@@ -291,40 +278,29 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd_fit' % vars())
-    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)",pt)' % vars())
     w.factory('expr::met_bounded70("min(69.9,@0)",met[0])' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_met_corr("(%(func_met_corr)s)*(@2==0) + (@2>0)",pt_bounded70,met_bounded70,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','met'], hist_nom, name='et_%(dmname)s_%(wp)s_qcd_met_corr' % vars())
+    w.function('et_%(dmname)s_%(wp)s_qcd_met_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_nom, name='et_%(dmname)s_qcd_met_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_up, name='et_%(dmname)s_qcd_met_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_down, name='et_%(dmname)s_qcd_met_uncert_down' % vars())
-
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_met_corr_up("(%(func_met_corr)s)*(@2==0)*(1.+@3/@4) + (@2>0)",pt_bounded70,met_bounded70,njets[0],et_%(dmname)s_qcd_met_uncert_up,et_%(dmname)s_qcd_met_uncert_nom)' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_met_corr_down("(%(func_met_corr)s)*(@2==0)*(1.-@3/@4) + (@2>0)",pt_bounded70,met_bounded70,njets[0],et_%(dmname)s_qcd_met_uncert_down,et_%(dmname)s_qcd_met_uncert_nom)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_met_corr_up("@0*@0",et_%(dmname)s_%(wp)s_qcd_met_corr)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_met_corr_down("@0/@0",et_%(dmname)s_%(wp)s_qcd_met_corr)' % vars())
 
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd_fit' % vars())
-    func_e_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
 
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)")' % vars())
     w.factory('expr::e_pt_bounded50("max(min(49.9,@0),20.)",e_pt[20])' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_e_pt_corr("(%(func_e_pt_corr)s)*(@2==0) + (@2>0)",pt_bounded70,e_pt_bounded50,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','e_pt'], hist_nom, name='et_%(dmname)s_%(wp)s_qcd_e_pt_corr' % vars())
+    w.function('et_%(dmname)s_%(wp)s_qcd_e_pt_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded70','e_pt_bounded50'], hist_nom, name='et_%(dmname)s_qcd_e_pt_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','e_pt_bounded50'], hist_up, name='et_%(dmname)s_qcd_e_pt_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','e_pt_bounded50'], hist_down, name='et_%(dmname)s_qcd_e_pt_uncert_down' % vars())
-
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_e_pt_corr_up("(%(func_e_pt_corr)s)*(@2==0)*(1.+@3/@4) + (@2>0)",pt_bounded70,e_pt_bounded50,njets[0], et_%(dmname)s_qcd_e_pt_uncert_up, et_%(dmname)s_qcd_e_pt_uncert_nom)' % vars())
-    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_e_pt_corr_down("(%(func_e_pt_corr)s)*(@2==0)*(1.-@3/@4) + (@2>0)",pt_bounded70,e_pt_bounded50,njets[0], et_%(dmname)s_qcd_e_pt_uncert_down, et_%(dmname)s_qcd_e_pt_uncert_nom)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_e_pt_corr_up("@0*@0",et_%(dmname)s_%(wp)s_qcd_e_pt_corr)' % vars())
+    w.factory('expr::et_%(dmname)s_%(wp)s_qcd_e_pt_corr_down("@0/@0",et_%(dmname)s_%(wp)s_qcd_e_pt_corr)' % vars())
 
     # aiso->iso correction
     func = GetFromTFile(loc+'fakefactor_fits_et_%(wp)s_2016.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
@@ -622,41 +598,28 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets_fit' % vars())
-    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-  
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
     w.factory('expr::met_bounded140("max(min(139.9,@0),20.)",met[0])' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr("(%(func_met_corr)s)*(@2<2) + (@2>1)",pt_bounded100,met_bounded140,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_wjets' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','met'], hist_nom, name='mt_%(dmname)s_%(wp)s_wjets_met_corr' % vars())
+    w.function('mt_%(dmname)s_%(wp)s_wjets_met_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_nom, name='mt_%(dmname)s_wjets_met_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_up, name='mt_%(dmname)s_wjets_met_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','met_bounded140'], hist_down, name='mt_%(dmname)s_wjets_met_uncert_down' % vars())
-
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr_up("(%(func_met_corr)s)*(@2<2)*(1.+@3/@4) + (@2>1)",pt_bounded100,met_bounded140,njets[0],mt_%(dmname)s_wjets_met_uncert_up,mt_%(dmname)s_wjets_met_uncert_nom)' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr_down("(%(func_met_corr)s)*(@2<2)*(1-@3/@4) + (@2>1)",pt_bounded100,met_bounded140,njets[0],mt_%(dmname)s_wjets_met_uncert_down,mt_%(dmname)s_wjets_met_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr_up("@0*@0",mt_%(dmname)s_%(wp)s_wjets_met_corr)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_met_corr_down("@0/@0",mt_%(dmname)s_%(wp)s_wjets_met_corr)' % vars())
 
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets_fit' % vars())
-    func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-
-  
     w.factory('expr::pt_bounded100("max(min(99.9,@0),20.)",pt[20])' % vars())
     w.factory('expr::m_pt_bounded140("max(min(139.9,@0),20.)",m_pt[20])' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr("(%(func_m_pt_corr)s)*(@2<2) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0])' % vars())
- 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded100','m_pt_bounded140'], hist_nom, name='mt_%(dmname)s_wjets_m_pt_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','m_pt_bounded140'], hist_up, name='mt_%(dmname)s_wjets_m_pt_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded100','m_pt_bounded140'], hist_down, name='mt_%(dmname)s_wjets_m_pt_uncert_down' % vars())
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_wjets' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','m_pt'], hist_nom, name='mt_%(dmname)s_%(wp)s_wjets_m_pt_corr' % vars())
+    w.function('mt_%(dmname)s_%(wp)s_wjets_m_pt_corr' % vars()).setInterpolationOrder(1)
 
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr_up("(%(func_m_pt_corr)s)*(@2<2)*(1.+@3/@4) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0],mt_%(dmname)s_wjets_m_pt_uncert_up,mt_%(dmname)s_wjets_m_pt_uncert_nom)' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr_down("(%(func_m_pt_corr)s)*(@2<2)*(1.-@3/@4) + (@2>1)",pt_bounded100,m_pt_bounded140,njets[0],mt_%(dmname)s_wjets_m_pt_uncert_down,mt_%(dmname)s_wjets_m_pt_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr_up("@0*@0",mt_%(dmname)s_%(wp)s_wjets_m_pt_corr)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_wjets_m_pt_corr_down("@0/@0",mt_%(dmname)s_%(wp)s_wjets_m_pt_corr)' % vars())
  
     # mt_1 correction
     func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_mt_corr_wjets_mc_fit' % vars())
@@ -693,40 +656,28 @@ for wp in wps:
     dmname = dmtype.replace('dm','dmbins')
 
     # met correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd_fit' % vars())
-    func_met_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)",pt)' % vars())
     w.factory('expr::met_bounded70("min(69.9,@0)",met[0])' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr("(%(func_met_corr)s)*(@2==0) + (@2>0)",pt_bounded70,met_bounded70,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_met_closure_qcd' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','met'], hist_nom, name='mt_%(dmname)s_%(wp)s_qcd_met_corr' % vars())
+    w.function('mt_%(dmname)s_%(wp)s_qcd_met_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_nom, name='mt_%(dmname)s_qcd_met_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_up, name='mt_%(dmname)s_qcd_met_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','met_bounded70'], hist_down, name='mt_%(dmname)s_qcd_met_uncert_down' % vars())
-
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr_up("(%(func_met_corr)s)*(@2==0)*(1.+@3/@4) + (@2>0)",pt_bounded70,met_bounded70,njets[0],mt_%(dmname)s_qcd_met_uncert_up,mt_%(dmname)s_qcd_met_uncert_nom)' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr_down("(%(func_met_corr)s)*(@2==0)*(1.-@3/@4) + (@2>0)",pt_bounded70,met_bounded70,njets[0],mt_%(dmname)s_qcd_met_uncert_down,mt_%(dmname)s_qcd_met_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr_up("@0*@0",mt_%(dmname)s_%(wp)s_qcd_met_corr)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_met_corr_down("@0/@0",mt_%(dmname)s_%(wp)s_qcd_met_corr)' % vars())
 
     # pt_1 correction
-    func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd_fit' % vars())
-    func_m_pt_corr = str(func.GetExpFormula('p')).replace('x','@0').replace('y','@1')
-
     w.factory('expr::pt_bounded70("max(min(69.9,@0),20.)")' % vars())
     w.factory('expr::m_pt_bounded50("max(min(49.9,@0),20.)",m_pt[20])' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr("(%(func_m_pt_corr)s)*(@2==0) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0])' % vars())
 
-    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd_uncert' % vars())
-    (hist_up, hist_down) = wsptools.UncertsFrom2DHist(hist_nom,0.,2.)
+    hist_nom = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_pt_1_closure_qcd' % vars())
+    hist_nom.Smooth()
+    wsptools.SafeWrapHist(w, ['pt','m_pt'], hist_nom, name='mt_%(dmname)s_%(wp)s_qcd_m_pt_corr' % vars())
+    w.function('mt_%(dmname)s_%(wp)s_qcd_m_pt_corr' % vars()).setInterpolationOrder(1)
 
-    wsptools.SafeWrapHist(w, ['pt_bounded70','m_pt_bounded50'], hist_nom, name='mt_%(dmname)s_qcd_m_pt_uncert_nom' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','m_pt_bounded50'], hist_up, name='mt_%(dmname)s_qcd_m_pt_uncert_up' % vars())
-    wsptools.SafeWrapHist(w, ['pt_bounded70','m_pt_bounded50'], hist_down, name='mt_%(dmname)s_qcd_m_pt_uncert_down' % vars())
-
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr_up("(%(func_m_pt_corr)s)*(@2==0)*(1.+@3/@4) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0], mt_%(dmname)s_qcd_m_pt_uncert_up, mt_%(dmname)s_qcd_m_pt_uncert_nom)' % vars())
-    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr_down("(%(func_m_pt_corr)s)*(@2==0)*(1.-@3/@4) + (@2>0)",pt_bounded70,m_pt_bounded50,njets[0], mt_%(dmname)s_qcd_m_pt_uncert_down, mt_%(dmname)s_qcd_m_pt_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr_up("@0*@0",mt_%(dmname)s_%(wp)s_qcd_m_pt_corr)' % vars())
+    w.factory('expr::mt_%(dmname)s_%(wp)s_qcd_m_pt_corr_down("@0/@0",mt_%(dmname)s_%(wp)s_qcd_m_pt_corr)' % vars())
 
     # aiso->iso correction
     func = GetFromTFile(loc+'fakefactor_fits_mt_%(wp)s_2016.root:%(dmtype)s_iso_closure_qcd_fit' % vars())
