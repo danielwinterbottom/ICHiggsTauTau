@@ -510,6 +510,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  tau_shift_1prong0pi0 = 1.0;
  tau_shift_1prong1pi0 = 1.0;
  tau_shift_3prong0pi0 = 1.0;
+ tau_shift_3prong1pi0 = 1.0;
  fakeE_tau_shift_0pi = 1.0;
  fakeE_tau_shift_1pi = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
@@ -520,11 +521,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    if(!is_embedded){
      tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
      tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+     tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+     tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
    } else {
      tau_shift_1prong0pi0 = json["baseline"]["embedtau_1prong0pi0_es_shift"].asDouble();
      tau_shift_1prong1pi0 = json["baseline"]["embedtau_1prong1pi0_es_shift"].asDouble();
+     tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
+     tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
    }
-   tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
  }
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
@@ -4354,6 +4358,10 @@ void HTTSequence::BuildTPMTPairs() {
   
         BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
           "genmatched_taus", "genmatched_taus_3prong0pi0"));
+
+        BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
+          "genmatched_taus", "genmatched_taus_3prong1pi0"));
+
   
         BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
           .set_input_label("genmatched_taus_1prong0pi0")
@@ -4372,6 +4380,13 @@ void HTTSequence::BuildTPMTPairs() {
           .set_predicate([=](Tau const* t) {
             return  t->decay_mode() == 10;
           }));
+
+        BuildModule(SimpleFilter<Tau>("3Prong1PiTauHadFilter")
+          .set_input_label("genmatched_taus_3prong1pi0")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 11;
+          }));
+
          
         BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
         .set_input_label("genmatched_taus_1prong0pi0")
@@ -4390,6 +4405,12 @@ void HTTSequence::BuildTPMTPairs() {
         .set_save_shifts(true) 
         .set_shift_label("scales_taues_3prong0pi0") 
         .set_shift(tau_shift_3prong0pi0));
+
+        BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
+        .set_input_label("genmatched_taus_3prong1pi0")
+        .set_save_shifts(true)
+        .set_shift_label("scales_taues_3prong1pi0")
+        .set_shift(tau_shift_3prong1pi0));
 
         BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
           .set_input_vec_label(js["taus"].asString())
@@ -4645,6 +4666,9 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
       "genmatched_taus", "genmatched_taus_3prong0pi0"));
 
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
+      "genmatched_taus", "genmatched_taus_3prong1pi0"));
+
     BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
       .set_input_label("genmatched_taus_1prong0pi0")
       .set_predicate([=](Tau const* t) {
@@ -4680,6 +4704,12 @@ void HTTSequence::BuildTauSelection(){
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_3prong0pi0") 
     .set_shift(tau_shift_3prong0pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
+    .set_input_label("genmatched_taus_3prong1pi0")
+    .set_save_shifts(true)
+    .set_shift_label("scales_taues_3prong1pi0")
+    .set_shift(tau_shift_3prong1pi0));
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0

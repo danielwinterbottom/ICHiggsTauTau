@@ -37,7 +37,7 @@ class HTTSequence {
   double muon_shift_barrel, muon_shift_nearendcap, muon_shift_negfarendcap, muon_shift_posfarendcap;
   unsigned e_unc_mode;
   double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi, fakeMu_tau_shift_0pi, fakeMu_tau_shift_1pi ;
-  double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0;
+  double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0, tau_shift_3prong1pi0;
   bool do_qcd_scale_wts_;
   std::string alt_jes_input_set;
 
