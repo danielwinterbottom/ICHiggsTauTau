@@ -555,6 +555,22 @@
         "jes_input_set" : "HF"
       }
     },
+    "scale_j_hf2016_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF2016_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2016"
+      }
+    },
+    "scale_j_hf2016_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF2016_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2016"
+      }
+    },
     "scale_j_relsamp2016_lo": {
       "baseline": {
         "addit_output_folder" : "JESRELSAMP2016_DOWN",
@@ -694,24 +710,24 @@
       }
     },
     //
-    "scale_j_hf_lo": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_DOWN",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 1
-       }
-      },
-      "scale_j_hf_hi": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_UP",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 2
-        }
-      },
+    //"scale_j_hf_lo": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_DOWN",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 1
+    //   }
+    //  },
+    //  "scale_j_hf_hi": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_UP",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 2
+    //    }
+    //  },
       // adding correlations splitting for regional sources
       // jes HF detector
     "scale_j_hf_corr_lo": {

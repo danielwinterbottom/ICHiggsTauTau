@@ -556,6 +556,22 @@
         "jes_input_set" : "HF"
       }
     },
+    "scale_j_hf2018_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF2018_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2018"
+      }
+    },
+    "scale_j_hf2018_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF2018_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2018"
+      }
+    },
     "scale_j_relsamp2018_lo": {
       "baseline": {
         "addit_output_folder" : "JESRELSAMP2018_DOWN",
