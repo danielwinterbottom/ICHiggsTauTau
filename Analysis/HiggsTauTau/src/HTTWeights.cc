@@ -2314,7 +2314,7 @@ namespace ic {
 
             double e_high_pt_cut=28.;
 	    if(mc_ == mc::mc2018) e_high_pt_cut=33;
-            double t_high_pt_cut=32.;
+            double t_high_pt_cut=35.;
             if(e_pt<e_high_pt_cut) xtrg_OR_sf = xtrg_et_sf; // these line are more correct in cases when different offine pT cuts are applied for each trigger in the OR
             if(t_pt<t_high_pt_cut) xtrg_OR_sf = single_e_sf;
 
@@ -2734,8 +2734,8 @@ namespace ic {
             auto args_4 = std::vector<double>{t_pt};
 
             double m_high_pt_cut = 25;
-            if(mc_ == mc::mcleg2016) m_high_pt_cut = 23;
-            double t_high_pt_cut = 29;
+            if(mc_ == mc::mcleg2016) m_high_pt_cut = 25;
+            double t_high_pt_cut = 32;
             if(mc_ == mc::mcleg2016) t_high_pt_cut = 22;
 
             double mu_xtrg = fns_["m_crosstrg_data"]->eval(args_1.data());
