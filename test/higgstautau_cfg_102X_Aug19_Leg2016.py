@@ -699,9 +699,33 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
 
 
-process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+# process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#     branch                    = cms.string("ak4PFJetsCHS"),
+#     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+#     srcConfig = cms.PSet(
+#       isSlimmed               = cms.bool(True),
+#       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+#       includeJetFlavour       = cms.bool(True),
+#       includeJECs             = cms.bool(True),
+#       inputSVInfo             = cms.InputTag(""),
+#       requestSVInfo           = cms.bool(False)
+#     ),
+#    destConfig = cms.PSet(
+#      includePileupID         = cms.bool(True),
+#      inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+#      includeTrackBasedVars   = cms.bool(False),
+#      inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+#      inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+#      requestTracks           = cms.bool(False)
+#     )
+# )
+
+process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
+    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
+    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -719,6 +743,10 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
      requestTracks           = cms.bool(False)
     )
 )
+if isData or isEmbed:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(False)
+else:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
 process.icPFJetSequence = cms.Sequence()
 
@@ -729,7 +757,8 @@ process.icPFJetSequence += cms.Sequence(
    process.selectedUpdatedPatJetsUpdatedJEC+
    process.selectedSlimmedJetsAK4+
    process.unpackedTracksAndVertices+
-   process.icPFJetProducerFromPat
+   # process.icPFJetProducerFromPat +
+   process.icPFJetProducerFromPatNew
    )
 
 # ################################################################
