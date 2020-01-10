@@ -1212,15 +1212,19 @@ BuildModule(jetIDFilter);
   }
   if (era_type == era::data_2016) {
     jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    // jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) 
+        jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+    // jes_input_file = "input/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2018) {
-    jes_input_file = "input/jec/Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+    // jes_input_file = "input/jec/Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1406,12 +1410,9 @@ if (jer_mode > 0 && !is_data) {
    BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
     .set_input_label(jets_label)
     .set_jer_shift_mode(jer_mode)
+    .set_EENoiseFix(era_type == era::data_2017)
    );
 }
-
-/*BuildModule(NoiseJetIDEmbedder("NoiseJetIDEmbedder")
-    .set_fs(fs.get())
-    );*/
 
 
 if (era_type == era::data_2017) {

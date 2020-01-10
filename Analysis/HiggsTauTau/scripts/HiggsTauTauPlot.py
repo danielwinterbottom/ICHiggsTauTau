@@ -1613,6 +1613,47 @@ if options.syst_scale_j_cent_uncorr != '':
 if options.syst_scale_j_hf_uncorr != '':
     systematics['syst_scale_j_hf_uncorr_up'] = ('JESHF_UNCORR_UP' , '_'+options.syst_scale_j_hf_uncorr+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_uncorr_down'] = ('JESHF_UNCORR_DOWN' , '_'+options.syst_scale_j_hf_uncorr+'Down', 'wt', ['EmbedZTT'], False)
+############ Regrouped JEC for full run2
+if options.syst_scale_j_relbal != '':
+    systematics['syst_scale_j_relbal_up']   = ('JESRBAL_UP' , '_'+options.syst_scale_j_relbal+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_relbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_relbal+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_abs != '':
+    systematics['syst_scale_j_abs_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_abs+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_abs_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_abs+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_abs_year != '':
+    systematics['syst_scale_j_abs_year_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_abs_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_abs_year_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_abs_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_flav != '':
+    systematics['syst_scale_j_flav_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_flav+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_flav_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_flav+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_bbec1 != '':
+    systematics['syst_scale_j_bbec1_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_bbec1+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_bbec1_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_bbec1+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_bbec1_year != '':
+    systematics['syst_scale_j_bbec1_year_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_bbec1_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_bbec1_year_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_bbec1_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_ec2 != '':
+    systematics['syst_scale_j_ec2_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_ec2+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_ec2_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_ec2+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_ec2_year != '':
+    systematics['syst_scale_j_ec2_year_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_ec2_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_ec2_year_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_ec2_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_hf != '':
+    systematics['syst_scale_j_hf_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_hf_year != '':
+    systematics['syst_scale_j_year_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_year_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_relsamp_year != '':
+    systematics['syst_scale_j_relsamp_year_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_relsamp_year_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
+############
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
