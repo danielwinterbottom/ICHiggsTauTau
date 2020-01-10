@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt"],
+    "channels":     ["mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -24,7 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : false,
+    "make_sync_ntuple" : true,
     "lumi_mask_only" : false,
     "iso_study" : false,
     "qcd_study" : false,
@@ -66,6 +66,8 @@
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Jul15_2017_SVFit/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct07_2017_SVFit/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_2017_fastMTT/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2017/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2017_newSignals/",
     "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2017/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
@@ -73,7 +75,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -434,6 +436,7 @@
         "jes_corr_mode" : 2
       }
     },
+    // adding regrouped JECs (legacy/full run2 -- https://tinyurl.com/r976rmc)
     "scale_j_relbal_lo": {
       "baseline": {
         "addit_output_folder" : "JESRBAL_DOWN",
@@ -450,22 +453,167 @@
         "jes_input_set" : "RelativeBal"
       }
     },
-    "scale_j_relsamp_lo": {
+    "scale_j_abs_lo": {
       "baseline": {
-        "addit_output_folder" : "JESRSAMP_DOWN",
+        "addit_output_folder" : "JESABS_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
-        "jes_input_set" : "RelativeSample"
+        "jes_input_set" : "Absolute"
       }
     },
-    "scale_j_relsamp_hi": {
+    "scale_j_abs_hi": {
       "baseline": {
-        "addit_output_folder" : "JESRSAMP_UP",
+        "addit_output_folder" : "JESABS_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
-        "jes_input_set" : "RelativeSample"
+        "jes_input_set" : "Absolute"
       }
     },
+    "scale_j_abs_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2017"
+      }
+    },
+    "scale_j_abs_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2017"
+      }
+    },
+    "scale_j_flav_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_flav_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_bbec1_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2017"
+      }
+    },
+    "scale_j_bbec1_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2017"
+      }
+    },
+    "scale_j_ec2_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2017"
+      }
+    },
+    "scale_j_ec2_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2017"
+      }
+    },
+    "scale_j_hf_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2017"
+      }
+    },
+    "scale_j_hf_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2017"
+      }
+    },
+    "scale_j_relsamp_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2017"
+      }
+    },
+    "scale_j_relsamp_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2017"
+      }
+    },
+    ////////
     "scale_j_full_lo": {
         "baseline": {
           "addit_output_folder" : "JESFULL_DOWN",
@@ -588,24 +736,24 @@
       }
     },
     //
-    "scale_j_hf_lo": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_DOWN",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 1
-       }
-      },
-      "scale_j_hf_hi": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_UP",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 2
-        }
-      },
+    //"scale_j_hf_lo": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_DOWN",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 1
+    //   }
+    //  },
+    //  "scale_j_hf_hi": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_UP",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 2
+    //    }
+    //  },
       // adding correlations splitting for regional sources
       // jes HF detector
     "scale_j_hf_corr_lo": {
