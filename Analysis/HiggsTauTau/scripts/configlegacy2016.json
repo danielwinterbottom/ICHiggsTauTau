@@ -277,14 +277,14 @@
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_3prong1pi0_es_shift" : 1.01,
+         "tau_3prong1pi0_es_shift" : 1.011,
          "embedtau_3prong1pi0_es_shift" : 1.015
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_3prong1pi0_es_shift" : 0.99,
+         "tau_3prong1pi0_es_shift" : 0.989,
          "embedtau_3prong1pi0_es_shift" : 0.985
       }
     },

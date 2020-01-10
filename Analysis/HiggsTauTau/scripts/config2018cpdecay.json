@@ -103,7 +103,7 @@
       "tau_1prong0pi0_es_shift": 0.987,
       "tau_1prong1pi0_es_shift": 0.995,
       "tau_3prong0pi0_es_shift": 0.988,
-      "tau_3prong1pi0_es_shift" : 1.0,
+      "tau_3prong1pi0_es_shift": 0.988,
       "embedtau_1prong1pi0_es_shift": 1.0, 
       "embedtau_1prong0pi0_es_shift": 1.0,
       "embedtau_3prong0pi0_es_shift": 1.0,
@@ -281,14 +281,14 @@
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_3prong1pi0_es_shift" : 1.01,
+         "tau_3prong1pi0_es_shift" : 0.996,
          "embedtau_3prong1pi0_es_shift" : 1.015
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_3prong1pi0_es_shift" : 0.99,
+         "tau_3prong1pi0_es_shift" : 0.980,
          "embedtau_3prong1pi0_es_shift" : 0.985
       }
     },
