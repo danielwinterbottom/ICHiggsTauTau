@@ -444,17 +444,17 @@
         "jes_input_set" : "Absolute"
       }
     },
-    "scale_j_abs2018_lo": {
+    "scale_j_abs_year_lo": {
       "baseline": {
-        "addit_output_folder" : "JESABS2018_DOWN",
+        "addit_output_folder" : "JESABS_YEAR_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
         "jes_input_set" : "Absolute_2018"
       }
     },
-    "scale_j_abs2018_hi": {
+    "scale_j_abs_year_hi": {
       "baseline": {
-        "addit_output_folder" : "JESABS2018_UP",
+        "addit_output_folder" : "JESABS_YEAR_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "Absolute_2018"
@@ -492,17 +492,17 @@
         "jes_input_set" : "BBEC1"
       }
     },
-    "scale_j_bbec12018_lo": {
+    "scale_j_bbec1_year_lo": {
       "baseline": {
-        "addit_output_folder" : "JESBBEC12018_DOWN",
+        "addit_output_folder" : "JESBBEC1_YEAR_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
         "jes_input_set" : "BBEC1_2018"
       }
     },
-    "scale_j_bbec12018_hi": {
+    "scale_j_bbec1_year_hi": {
       "baseline": {
-        "addit_output_folder" : "JESBBEC12018_UP",
+        "addit_output_folder" : "JESBBEC1_YEAR_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "BBEC1_2018"
@@ -524,17 +524,17 @@
         "jes_input_set" : "EC2"
       }
     },
-    "scale_j_ec22018_lo": {
+    "scale_j_ec2_year_lo": {
       "baseline": {
-        "addit_output_folder" : "JESEC22018_DOWN",
+        "addit_output_folder" : "JESEC2_YEAR_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
         "jes_input_set" : "EC2_2018"
       }
     },
-    "scale_j_ec22018_hi": {
+    "scale_j_ec2_year_hi": {
       "baseline": {
-        "addit_output_folder" : "JESEC22018_UP",
+        "addit_output_folder" : "JESEC2_YEAR_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "EC2_2018"
@@ -556,33 +556,33 @@
         "jes_input_set" : "HF"
       }
     },
-    "scale_j_hf2018_lo": {
+    "scale_j_hf_year_lo": {
       "baseline": {
-        "addit_output_folder" : "JESHF2018_DOWN",
+        "addit_output_folder" : "JESHF_YEAR_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
         "jes_input_set" : "HF_2018"
       }
     },
-    "scale_j_hf2018_hi": {
+    "scale_j_hf_year_hi": {
       "baseline": {
-        "addit_output_folder" : "JESHF2018_UP",
+        "addit_output_folder" : "JESHF_YEAR_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "HF_2018"
       }
     },
-    "scale_j_relsamp2018_lo": {
+    "scale_j_relsamp_year_lo": {
       "baseline": {
-        "addit_output_folder" : "JESRELSAMP2018_DOWN",
+        "addit_output_folder" : "JESRELSAMP_YEAR_DOWN",
         "jes_mode" : 1,
         "split_by_source" : false,
         "jes_input_set" : "RelativeSample_2018"
       }
     },
-    "scale_j_relsamp2018_hi": {
+    "scale_j_relsamp_year_hi": {
       "baseline": {
-        "addit_output_folder" : "JESRELSAMP2018_UP",
+        "addit_output_folder" : "JESRELSAMP_YEAR_UP",
         "jes_mode" : 2,
         "split_by_source" : false,
         "jes_input_set" : "RelativeSample_2018"
