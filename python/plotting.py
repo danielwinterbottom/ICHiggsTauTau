@@ -86,6 +86,12 @@ def SetAxisTitles(plot, channel):
   titles['IC_lowMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_1'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_2'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_3'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_4'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_5'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
+  titles['aco_angle_6'] = ['#phi#mbox{*}_{CP}','Events / '+bin_width, 'dN/d#phi#mbox{*}_{CP}']
   titles['IC_Feb13_fix1_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Mar26_fix2_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['IC_Apr02_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
@@ -93,6 +99,7 @@ def SetAxisTitles(plot, channel):
   titles['IC_keras_sm4_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
   titles['IC_keras_sm5_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
   titles['IC_keras_sm6_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
+  titles['IC_Nov25_tauspinner_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events']
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']
@@ -2464,12 +2471,13 @@ def HTTPlot(nodename,
     if split_sm_scheme:
         sighists = dict()
 
+        signal_split_schemes = ""
         if ggh_scheme == 'powheg':
             signal_split_schemes = ['sm_ggH','sm_qqH']
             # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == "tauspinner":
-            # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
-            signal_split_schemes = ['sm_cp_decays_ggh','sm_cp_decays_qqh']
+            signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps','sm_cp_decays_mm']
+            # signal_split_schemes = ['sm_cp_decays_ggh','sm_cp_decays_qqh']
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
@@ -2704,7 +2712,7 @@ def HTTPlot(nodename,
     #     # blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
     #     sighist_ratios = []
     #     for index,split_scheme in enumerate(signal_split_schemes):
-    #         sighist_ratio = MakeRatioHist(sighists[split_scheme].Clone(),sighists["sm_cp"].Clone(),False,False)
+    #         sighist_ratio = MakeRatioHist(sighists[split_scheme].Clone(),sighists["sm_cp_decays"].Clone(),False,False)
     #         sighist_ratio.SetMarkerSize(0)
     #         sighist_ratios.append(sighist_ratio)
     #     pads[1].cd()
@@ -3590,8 +3598,8 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
-    # sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
+    # sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
     # sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False, R.kOrange-5)

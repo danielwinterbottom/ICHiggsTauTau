@@ -49,12 +49,8 @@ def main(args):
     for key, samples in sample_list.iteritems():
         for sample in samples:
             if sample in [
-                "EmbeddingElMuC",
-                "EmbeddingElMuA",
-                "EmbeddingElMuB",
-                "EmbeddingElMuD",
-                "TTTo2L2Nu",
-                "ZZTo4L-ext",]:
+                "WWToLNuQQ",]:
+                
                 for subdir in subdirs:
                     print("{}/{}_{}_{}.root".format(args.path, sample, args.channel, args.year))
                     if glob.glob("{}/{}_{}_{}.root".format(args.path, sample, args.channel, args.year)):
