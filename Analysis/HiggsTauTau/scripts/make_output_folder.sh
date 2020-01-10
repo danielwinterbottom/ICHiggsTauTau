@@ -12,6 +12,8 @@ mkdir -p -v $1/TSCALE1PI_UP
 mkdir -p -v $1/TSCALE1PI_DOWN
 mkdir -p -v $1/TSCALE3PRONG_UP
 mkdir -p -v $1/TSCALE3PRONG_DOWN
+mkdir -p -v $1/TSCALE3PRONG1PI0_UP
+mkdir -p -v $1/TSCALE3PRONG1PI0_DOWN
 mkdir -p -v $1/TSCALE_UP_1
 mkdir -p -v $1/TSCALE_DOWN_1
 mkdir -p -v $1/TSCALE_UP_2

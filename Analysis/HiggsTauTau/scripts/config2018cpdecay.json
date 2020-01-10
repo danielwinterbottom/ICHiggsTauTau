@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","em","et","mt"],
+    "channels":     ["et","mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,8 +59,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_v5/",
-    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/2018_missing/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_newFF/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
@@ -107,8 +106,11 @@
       "tau_1prong0pi0_es_shift": 0.987,
       "tau_1prong1pi0_es_shift": 0.995,
       "tau_3prong0pi0_es_shift": 0.988,
-      "embedtau_1prong1pi0_es_shift": 1.011, 
-      "embedtau_1prong0pi0_es_shift": 0.997,
+      "tau_3prong1pi0_es_shift": 0.988,
+      "embedtau_1prong1pi0_es_shift": 1.0, 
+      "embedtau_1prong0pi0_es_shift": 1.0,
+      "embedtau_3prong0pi0_es_shift": 1.0,
+      "embedtau_3prong1pi0_es_shift" : 1.0,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -146,7 +148,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2018.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_et_lite_2018.root",
         "ff_fracs_file" : ""
           }
     },
@@ -241,7 +243,7 @@
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
          "tau_1prong0pi0_es_shift" : 0.998,
-         "embedtau_1prong0pi0_es_shift": 1.009
+         "embedtau_1prong0pi0_es_shift": 1.015
       }
     },
     "scale_t_0pi_lo": {
@@ -255,29 +257,44 @@
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
          "tau_1prong1pi0_es_shift" : 1.004,
-         "embedtau_1prong1pi0_es_shift" : 1.014
+         "embedtau_1prong1pi0_es_shift" : 1.015
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
          "tau_1prong1pi0_es_shift" : 0.986,
-         "embedtau_1prong1pi0_es_shift" : 0.990
+         "embedtau_1prong1pi0_es_shift" : 0.985
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 0.996
+         "tau_3prong0pi0_es_shift" : 0.996,
+         "embedtau_3prong0pi0_es_shift" : 1.015
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.980
+         "tau_3prong0pi0_es_shift" : 0.980,
+         "embedtau_3prong0pi0_es_shift" : 0.985
       }
     },
-
+    "scale_t_3prong1pi0_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
+         "tau_3prong1pi0_es_shift" : 0.996,
+         "embedtau_3prong1pi0_es_shift" : 1.015
+      }
+    },
+    "scale_t_3prong1pi0_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
+         "tau_3prong1pi0_es_shift" : 0.980,
+         "embedtau_3prong1pi0_es_shift" : 0.985
+      }
+    },
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
@@ -306,25 +323,25 @@
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.978
+        "mufaketau_0pi_es_shift": 0.988
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.018
+        "mufaketau_0pi_es_shift": 1.008
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 0.970
+        "mufaketau_1pi_es_shift": 0.980
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.018
+        "mufaketau_1pi_es_shift": 1.0
       }
     },
     "scale_e_lo": {

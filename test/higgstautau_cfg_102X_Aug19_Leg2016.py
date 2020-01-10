@@ -70,7 +70,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(5000)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -699,9 +699,33 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
 
 
-process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+# process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#     branch                    = cms.string("ak4PFJetsCHS"),
+#     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+#     srcConfig = cms.PSet(
+#       isSlimmed               = cms.bool(True),
+#       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+#       includeJetFlavour       = cms.bool(True),
+#       includeJECs             = cms.bool(True),
+#       inputSVInfo             = cms.InputTag(""),
+#       requestSVInfo           = cms.bool(False)
+#     ),
+#    destConfig = cms.PSet(
+#      includePileupID         = cms.bool(True),
+#      inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+#      includeTrackBasedVars   = cms.bool(False),
+#      inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+#      inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+#      requestTracks           = cms.bool(False)
+#     )
+# )
+
+process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
+    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
+    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -719,6 +743,10 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
      requestTracks           = cms.bool(False)
     )
 )
+if isData or isEmbed:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(False)
+else:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
 process.icPFJetSequence = cms.Sequence()
 
@@ -729,7 +757,8 @@ process.icPFJetSequence += cms.Sequence(
    process.selectedUpdatedPatJetsUpdatedJEC+
    process.selectedSlimmedJetsAK4+
    process.unpackedTracksAndVertices+
-   process.icPFJetProducerFromPat
+   # process.icPFJetProducerFromPat +
+   process.icPFJetProducerFromPatNew
    )
 
 # ################################################################
@@ -739,44 +768,45 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
+
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
-                           isData=bool(isData) or isEmbed,
+                           isData=bool(isData) or bool(isEmbed),
+                           postfix="ModifiedMET",
                            )
 
 
-process.pfMetRe = pfMet.clone(src = "particleFlow")
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, True );
+runMetCorAndUncFromMiniAOD(process,
+                           isData=(bool(isData) or bool(isEmbed)),
+                           metType="Puppi",
+                           postfix="PuppiModifiedMET",
+                           jetFlavor="AK4PFPuppi",
+                           )
 
-process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
-process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
-
-
-process.icRecorrectedPfMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("patpfMETT1"),
-                         branch = cms.string("pfMet"),
-                         getUncorrectedMet=cms.bool(False)
-                         )
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
+                         input = cms.InputTag("slimmedMETsModifiedMET"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
+
+
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("slimmedMETsPuppi"),
+                         input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
                          branch = cms.string("puppiMet"),
-                         includeMetUncertainties=cms.bool(True),
-                         getUncorrectedMet=cms.bool(False)
+                         getUncorrectedMet=cms.bool(False),
+                         includeMetUncertainties=cms.bool(True)
                          )
 
-
-
-process.icPfMetSequence = cms.Sequence(
-  process.pfMetRe+
-  process.icPfMetProducer
+process.icMetSequence = cms.Sequence(
+  process.puppiMETSequence *
+  process.fullPatMetSequencePuppiModifiedMET *
+  process.fullPatMetSequenceModifiedMET *
+  process.icPfMetProducer *
+  process.icPuppiMetProducer
 )
-
-process.icPfMetSequence.remove(process.pfMetRe)
-process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
 
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
@@ -1344,6 +1374,7 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 if opts.LHETag: lheTag = opts.LHETag
 else: lheTag = 'externalLHEProducer'
 
+
 data_type = ""
 if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
@@ -1352,6 +1383,7 @@ else: data_type = "PAT"
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
+  includeGenWeights   = cms.bool(doLHEWeights),
   includenpNLO        = cms.bool(includenpNLO),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
@@ -1416,7 +1448,6 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
-  process.fullPatMetSequence+
   process.icMiniAODSequence+
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
@@ -1426,9 +1457,9 @@ process.p = cms.Path(
   process.icTauSequence+
   process.icTauProducer+
   process.icPhotonSequence+
+  process.icMetSequence+
   process.icPFJetSequence+
   process.icPFSequence+
-  process.icPfMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+

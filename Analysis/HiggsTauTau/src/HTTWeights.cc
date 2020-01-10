@@ -2314,7 +2314,7 @@ namespace ic {
 
             double e_high_pt_cut=28.;
 	    if(mc_ == mc::mc2018) e_high_pt_cut=33;
-            double t_high_pt_cut=32.;
+            double t_high_pt_cut=35.;
             if(e_pt<e_high_pt_cut) xtrg_OR_sf = xtrg_et_sf; // these line are more correct in cases when different offine pT cuts are applied for each trigger in the OR
             if(t_pt<t_high_pt_cut) xtrg_OR_sf = single_e_sf;
 
@@ -2398,6 +2398,16 @@ namespace ic {
                 tau_trg_dm10_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm10_down) + ele_xtrg*tau_trg*tau_trg_dm10_down)/xtrg_OR_sf : 1.0;
                 tau_trg_dm11_down =  (xtrg_OR_sf > 0) ? (ele_trg*(1-tau_trg*tau_trg_dm11_down) + ele_xtrg*tau_trg*tau_trg_dm11_down)/xtrg_OR_sf : 1.0;
               }
+
+              tau_trg_dm0_up = std::isnan(tau_trg_dm0_up) ? 0 : tau_trg_dm0_up;
+              tau_trg_dm0_down = std::isnan(tau_trg_dm0_down) ? 0 : tau_trg_dm0_down;
+              tau_trg_dm1_up = std::isnan(tau_trg_dm1_up) ? 0 : tau_trg_dm1_up;
+              tau_trg_dm1_down = std::isnan(tau_trg_dm1_down) ? 0 : tau_trg_dm1_down;
+              tau_trg_dm10_up = std::isnan(tau_trg_dm10_up) ? 0 : tau_trg_dm10_up;
+              tau_trg_dm10_down = std::isnan(tau_trg_dm10_down) ? 0 : tau_trg_dm10_down;
+              tau_trg_dm11_up = std::isnan(tau_trg_dm11_up) ? 0 : tau_trg_dm11_up;
+              tau_trg_dm11_down = std::isnan(tau_trg_dm11_down) ? 0 : tau_trg_dm11_down;
+
 
               event->Add("wt_tau_trg_dm0_up",tau_trg_dm0_up);
               event->Add("wt_tau_trg_dm1_up",tau_trg_dm1_up);
@@ -2724,8 +2734,8 @@ namespace ic {
             auto args_4 = std::vector<double>{t_pt};
 
             double m_high_pt_cut = 25;
-            if(mc_ == mc::mcleg2016) m_high_pt_cut = 23;
-            double t_high_pt_cut = 29;
+            if(mc_ == mc::mcleg2016) m_high_pt_cut = 25;
+            double t_high_pt_cut = 32;
             if(mc_ == mc::mcleg2016) t_high_pt_cut = 22;
 
             double mu_xtrg = fns_["m_crosstrg_data"]->eval(args_1.data());
@@ -2798,6 +2808,15 @@ namespace ic {
                 tau_trg_dm11_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_down) + mu_xtrg*tau_trg*tau_trg_dm11_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
               }
             }
+
+            tau_trg_dm0_up = std::isnan(tau_trg_dm0_up) ? 0 : tau_trg_dm0_up;
+            tau_trg_dm0_down = std::isnan(tau_trg_dm0_down) ? 0 : tau_trg_dm0_down;
+            tau_trg_dm1_up = std::isnan(tau_trg_dm1_up) ? 0 : tau_trg_dm1_up;
+            tau_trg_dm1_down = std::isnan(tau_trg_dm1_down) ? 0 : tau_trg_dm1_down;
+            tau_trg_dm10_up = std::isnan(tau_trg_dm10_up) ? 0 : tau_trg_dm10_up;
+            tau_trg_dm10_down = std::isnan(tau_trg_dm10_down) ? 0 : tau_trg_dm10_down;
+            tau_trg_dm11_up = std::isnan(tau_trg_dm11_up) ? 0 : tau_trg_dm11_up;
+            tau_trg_dm11_down = std::isnan(tau_trg_dm11_down) ? 0 : tau_trg_dm11_down;
 
             event->Add("wt_tau_trg_dm0_up",tau_trg_dm0_up);
             event->Add("wt_tau_trg_dm1_up",tau_trg_dm1_up);
@@ -3362,6 +3381,16 @@ namespace ic {
             tau_trg_dm10_down = fns_["t_trg_35_ratio_dm10_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm10_down"]->eval(args_2.data())/trg_tot;
             tau_trg_dm11_down = fns_["t_trg_35_ratio_dm11_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm11_down"]->eval(args_2.data())/trg_tot;
           }
+
+          tau_trg_dm0_up = std::isnan(tau_trg_dm0_up) ? 0 : tau_trg_dm0_up;
+          tau_trg_dm0_down = std::isnan(tau_trg_dm0_down) ? 0: tau_trg_dm0_down;
+          tau_trg_dm1_up = std::isnan(tau_trg_dm1_up) ? 0 : tau_trg_dm1_up;
+          tau_trg_dm1_down = std::isnan(tau_trg_dm1_down) ? 0: tau_trg_dm1_down;
+          tau_trg_dm10_up = std::isnan(tau_trg_dm10_up) ? 0 : tau_trg_dm10_up;
+          tau_trg_dm10_down = std::isnan(tau_trg_dm10_down) ? 0: tau_trg_dm10_down;
+          tau_trg_dm11_up = std::isnan(tau_trg_dm11_up) ? 0 : tau_trg_dm11_up;
+          tau_trg_dm11_down = std::isnan(tau_trg_dm11_down) ? 0 : tau_trg_dm11_down;
+
           event->Add("wt_tau_trg_dm0_up",tau_trg_dm0_up);
           event->Add("wt_tau_trg_dm1_up",tau_trg_dm1_up);
           event->Add("wt_tau_trg_dm10_up",tau_trg_dm10_up);

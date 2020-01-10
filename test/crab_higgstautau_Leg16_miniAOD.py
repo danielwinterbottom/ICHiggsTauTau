@@ -1,15 +1,16 @@
 from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Oct2_MC_102X_2016'
+config.General.workArea='Jan06_MC_102X_2016'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 2500
-cfgParams = ['release=102XMINIAOD','isData=0' ,'doHT=1' , 'globalTag=94X_mcRun2_asymptotic_v3']
+cfgParams = ['release=102XMINIAOD','isData=0' ,'doHT=1' , 'globalTag=102X_mcRun2_asymptotic_v7']
 config.JobType.allowUndistributedCMSSW = True
 
 #config.Data.unitsPerJob = 100000
@@ -17,7 +18,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 #config.Data.ignoreLocality= True
@@ -116,31 +117,63 @@ if __name__ == '__main__':
     tasks.append(('GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX','/GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_tauola/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
     tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX','/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_tauola/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
 
-##    tasks.append(('VBFHiggs0PM_M-125','/VBFHiggs0PM_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##    tasks.append(('VBFHiggs0Mf05ph0_M-125','/VBFHiggs0Mf05ph0_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##    tasks.append(('VBFHiggs0M_M-125','/VBFHiggs0M_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##
-##    tasks.append(('ZHiggs0PM_M-125', '/ZHiggs0PM_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##    tasks.append(('ZHiggs0Mf05ph0_M-125', '/ZHiggs0MfZH05ph0_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
-##    tasks.append(('ZHiggs0M_M-125', '/ZHiggs0M_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##
-##    tasks.append(('WHiggs0PM_M-125', '/WHiggs0PM_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##    tasks.append(('WHiggs0Mf05ph0_M-125', '/WHiggs0MfWH05ph0_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
-##    tasks.append(('WHiggs0M_M-125', '/WHiggs0M_Undecayed_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('GluGluHToTauTauUncorrelatedDecay_Filtered','/GluGluHToTauTauUncorrelatedDecay_Filtered_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('GluGluHToTauTauUncorrelatedDecay','/GluGluHToTauTauUncorrelatedDecay_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('VBFHToTauTauUncorrelatedDecay_Filtered','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('VBFHToTauTauUncorrelatedDecay','/VBFHToTauTauUncorrelatedDecay_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('WminusHToTauTauUncorrelatedDecay_Filtered','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('WminusHToTauTauUncorrelatedDecay','/WminusHToTauTauUncorrelatedDecay_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('WplusHToTauTauUncorrelatedDecay_Filtered','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('WplusHToTauTauUncorrelatedDecay','/WplusHToTauTauUncorrelatedDecay_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('ZHToTauTauUncorrelatedDecay_Filtered','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('ZHToTauTauUncorrelatedDecay','/ZHToTauTauUncorrelatedDecay_M125_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+
+    tasks.append(('JJH0MToTauTauPlusOneJets_Filtered','/JJH0MToTauTauPlusOneJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0MToTauTauPlusOneJets','/JJH0MToTauTauPlusOneJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0MToTauTauPlusTwoJets_Filtered','/JJH0MToTauTauPlusTwoJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0MToTauTauPlusTwoJets','/JJH0MToTauTauPlusTwoJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0MToTauTauPlusZeroJets_Filtered','/JJH0MToTauTauPlusZeroJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0MToTauTauPlusZeroJets','/JJH0MToTauTauPlusZeroJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','/JJH0Mf05ph0ToTauTauPlusOneJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusOneJets','/JJH0Mf05ph0ToTauTauPlusOneJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered','/JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusTwoJets','/JJH0Mf05ph0ToTauTauPlusTwoJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','/JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0Mf05ph0ToTauTauPlusZeroJets','/JJH0Mf05ph0ToTauTauPlusZeroJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusOneJets_Filtered','/JJH0PMToTauTauPlusOneJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusOneJets','/JJH0PMToTauTauPlusOneJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusTwoJets_Filtered','/JJH0PMToTauTauPlusTwoJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusTwoJets','/JJH0PMToTauTauPlusTwoJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusZeroJets_Filtered','/JJH0PMToTauTauPlusZeroJets_Filtered_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJH0PMToTauTauPlusZeroJets','/JJH0PMToTauTauPlusZeroJets_M125_TuneCUETP8M1_13TeV-mcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+
+    tasks.append(('JJHiggs0MToTauTau','/JJHiggs0MToTauTau_M-125_13TeV-JHUGenV6_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('JJHiggs0Mf05ph0ToTauTau','/JJHiggs0Mf05ph0ToTauTau_M-125_13TeV-JHUGenV6_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('VBFHiggs0L1_HToTauTau','/VBFHiggs0L1_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v4/MINIAODSIM'))
+    tasks.append(('VBFHiggs0L1f05ph0_HToTauTau','/VBFHiggs0L1f05ph0_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0M_HToTauTau','/VBFHiggs0M_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0Mf05ph0_HToTauTau','/VBFHiggs0Mf05ph0_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0PH_HToTauTau','/VBFHiggs0PH_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0PHf05ph0_HToTauTau','/VBFHiggs0PHf05ph0_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('VBFHiggs0PM_HToTauTau','/VBFHiggs0PM_HToTauTau_M-125_13TeV-JHUGenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('WHiggs0L1_HToTauTau','/WHiggs0L1_HToTauTau_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('ZHiggs0L1fZH05ph0_HToTauTau','/ZHiggs0L1fZH05ph0_HToTauTau_M-125_13TeV-JHUgenV6/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'))
+    tasks.append(('ttHiggs0MToTauTau','/ttHiggs0MToTauTau_M-125_13TeV-JHUGenV7_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('ttHiggs0Mf05ph0ToTauTau','/ttHiggs0Mf05ph0ToTauTau_M-125_13TeV-JHUGenV7_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
+    tasks.append(('ttHiggs0PMToTauTau','/ttHiggs0PMToTauTau_M-125_13TeV-JHUGenV7_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'))
 
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
 
-        if "HToTauTau" in task[0]:
-            if 'amcatnloFXFX' in task[0]:
+        if ("HToTauTau" in task[0] or 'JJH' in task[0]) and 'JHUGen' not in task[1]:
+            if 'mcatnloFXFX' in task[0]:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
-        else: config.JobType.pyCfgParams = cfgParams
-        print config.Data.unitsPerJob
-        print config.Data.splitting
+        else:
+            config.JobType.pyCfgParams = cfgParams
 
         print(config)
         submit(config)
