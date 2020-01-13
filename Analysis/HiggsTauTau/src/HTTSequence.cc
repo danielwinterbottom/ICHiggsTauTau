@@ -501,8 +501,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  muon_shift = json["baseline"]["muon_es_shift"].asDouble();
  muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
  muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
- muon_shift_negfarendcap = json["baseline"]["muon_es_shift_negfarendcap"].asDouble();
- muon_shift_posfarendcap = json["baseline"]["muon_es_shift_posfarendcap"].asDouble();
+ muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -3534,8 +3533,7 @@ void HTTSequence::BuildMTPairs() {
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
-      .set_neg_far_endcap(muon_shift_negfarendcap)
-      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_far_endcap(muon_shift_farendcap)
       .set_near_endcap(muon_shift_nearendcap)
       .set_barrel(muon_shift_barrel)
       );
@@ -3683,8 +3681,7 @@ void HTTSequence::BuildEMPairs() {
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
-      .set_neg_far_endcap(muon_shift_negfarendcap)
-      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_far_endcap(muon_shift_farendcap)
       .set_near_endcap(muon_shift_nearendcap)
       .set_barrel(muon_shift_barrel)
       );
