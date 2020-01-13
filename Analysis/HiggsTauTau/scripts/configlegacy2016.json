@@ -364,9 +364,8 @@
         "mu_scale_mode": true,
         "muon_es_shift": 0.99,
         "muon_es_shift_barrel": 0.996,
-        "muon_es_shift_negfarendcap": 0.973,
         "muon_es_shift_nearendcap": 0.991,
-        "muon_es_shift_posfarendcap": 0.983
+        "muon_es_shift_farendcap": 0.983
       }
     },
     "scale_mu_hi": {
@@ -375,9 +374,8 @@
         "mu_scale_mode": true,
         "muon_es_shift": 1.01,
         "muon_es_shift_barrel": 1.004,
-        "muon_es_shift_negfarendcap": 1.027,
         "muon_es_shift_nearendcap": 1.009,
-        "muon_es_shift_posfarendcap": 1.017
+        "muon_es_shift_farendcap": 1.017
       }
     },
     "scale_j_lo": {
