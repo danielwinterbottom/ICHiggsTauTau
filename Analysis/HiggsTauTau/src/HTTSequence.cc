@@ -1428,7 +1428,7 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  jet->pt() > 50 ||
+      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
         fabs(jet->eta()) > 3.139 ||
         fabs(jet->eta()) < 2.65 ;
 
@@ -1932,7 +1932,8 @@ if (new_svfit_mode != 1) {
    .set_bfake_mode(bfake_mode));
   }
 }
-if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+// NOT READY YET
+/*if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
   TH2F bbtag_eff;
   TH2F cbtag_eff;
   TH2F othbtag_eff;
@@ -1980,7 +1981,7 @@ if (new_svfit_mode != 1) {
    .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
    .set_btag_mode(btag_mode));
   }
-}
+}*/
 
  if(strategy_type == strategy::paper2013){
   HTTWeights httWeights = HTTWeights("HTTWeights")
