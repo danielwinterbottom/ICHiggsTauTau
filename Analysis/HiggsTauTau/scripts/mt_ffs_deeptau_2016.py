@@ -681,7 +681,7 @@ for ff in ff_list:
 
   usePolQCD = usePol
   usePolW = usePol
-  usePolTT = uePol
+  usePolTT = usePol
 
   if ((True in [ff.startswith(x) for x in fit_pol1_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_qcd])): usePolQCD=1
   if ((True in [ff.startswith(x) for x in fit_pol1_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_wjets])): usePolW=1

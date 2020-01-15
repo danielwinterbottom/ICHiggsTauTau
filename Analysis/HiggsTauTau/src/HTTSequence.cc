@@ -4186,7 +4186,7 @@ void HTTSequence::BuildZMMPairs() {
       .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > 10.        &&
-                fabs(m->eta())          < muon_eta   &&
+                fabs(m->eta())          < 2.4   &&
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
