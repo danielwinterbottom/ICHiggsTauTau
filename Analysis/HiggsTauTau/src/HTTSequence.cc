@@ -1876,7 +1876,7 @@ if(mela_mode!=0){
 }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) && !is_data){
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
@@ -1932,7 +1932,8 @@ if (new_svfit_mode != 1) {
    .set_bfake_mode(bfake_mode));
   }
 }
-if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+// NOT READY YET
+/*if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
   TH2F bbtag_eff;
   TH2F cbtag_eff;
   TH2F othbtag_eff;
@@ -1980,7 +1981,7 @@ if (new_svfit_mode != 1) {
    .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
    .set_btag_mode(btag_mode));
   }
-}
+}*/
 
  if(strategy_type == strategy::paper2013){
   HTTWeights httWeights = HTTWeights("HTTWeights")
