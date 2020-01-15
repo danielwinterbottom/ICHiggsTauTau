@@ -29,7 +29,7 @@ class HTTSequence {
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
   unsigned min_taus, lead_min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
-  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, jes_corr_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
+  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, jer_mode, jes_corr_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
   bool bjet_regr_correction, tau_scale_mode, e_scale_mode, mu_scale_mode, make_sync_ntuple, moriond_tau_scale, do_reshape, use_deep_csv;
   bool is_data, is_embedded, real_tau_sample, do_met_filters, jlepton_fake, do_recoil;
@@ -37,7 +37,7 @@ class HTTSequence {
   double muon_shift_barrel, muon_shift_nearendcap, muon_shift_negfarendcap, muon_shift_posfarendcap;
   unsigned e_unc_mode;
   double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi, fakeMu_tau_shift_0pi, fakeMu_tau_shift_1pi ;
-  double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0;
+  double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0, tau_shift_3prong1pi0;
   bool do_qcd_scale_wts_;
   std::string alt_jes_input_set;
 

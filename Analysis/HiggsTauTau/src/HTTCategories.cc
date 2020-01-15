@@ -1143,17 +1143,17 @@ namespace ic {
       synctree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
 
       // deeptau variables
-      synctree_->Branch("deepTauVsJetsRaw_1", & deepTauVsJets_iso_1_, "deepTauVsJetsRaw_1/O");
-      synctree_->Branch("deepTauVsJetsRaw_2", & deepTauVsJets_iso_2_, "deepTauVsJetsRaw_2/O");
-      synctree_->Branch("deepTauVsEleRaw_1",  & deepTauVsEle_iso_1_, "deepTauVsEleRaw_1/O");
-      synctree_->Branch("deepTauVsEleRaw_2",  & deepTauVsEle_iso_2_, "deepTauVsEleRaw_2/O");
-      synctree_->Branch("deepTauVsMuRaw_1",   & deepTauVsMu_iso_1_, "deepTauVsMuRaw_1/O");
-      synctree_->Branch("deepTauVsMuRaw_2",   & deepTauVsMu_iso_2_, "deepTauVsMuRaw_2/O");
+      synctree_->Branch("deepTauVsJetsRaw_1", & deepTauVsJets_iso_1_, "deepTauVsJetsRaw_1/D");
+      synctree_->Branch("deepTauVsJetsRaw_2", & deepTauVsJets_iso_2_, "deepTauVsJetsRaw_2/D");
+      synctree_->Branch("deepTauVsEleRaw_1",  & deepTauVsEle_iso_1_, "deepTauVsEleRaw_1/D");
+      synctree_->Branch("deepTauVsEleRaw_2",  & deepTauVsEle_iso_2_, "deepTauVsEleRaw_2/D");
+      synctree_->Branch("deepTauVsMuRaw_1",   & deepTauVsMu_iso_1_, "deepTauVsMuRaw_1/D");
+      synctree_->Branch("deepTauVsMuRaw_2",   & deepTauVsMu_iso_2_, "deepTauVsMuRaw_2/D");
 
       // tauspinner weights
-      synctree_->Branch("tauspinnerH",      & wt_cp_sm_, "tauspinnerH/F");
-      synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/F");
-      synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/F");
+      synctree_->Branch("tauspinnerH",      & wt_cp_sm_, "tauspinnerH/D");
+      synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/D");
+      synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
 
 
       // Lepton 2 properties

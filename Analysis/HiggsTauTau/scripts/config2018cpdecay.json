@@ -67,7 +67,10 @@
     // "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_SVFit_2018/",
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_newSignals/",
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_lepES/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_lepES_JJH/",
+    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018/",
+    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_WWmissing/",
     // "svfit_folder"  : "./output/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
@@ -76,7 +79,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -103,8 +106,11 @@
       "tau_1prong0pi0_es_shift": 0.987,
       "tau_1prong1pi0_es_shift": 0.995,
       "tau_3prong0pi0_es_shift": 0.988,
-      "embedtau_1prong1pi0_es_shift": 1.011, 
-      "embedtau_1prong0pi0_es_shift": 0.997,
+      "tau_3prong1pi0_es_shift": 0.988,
+      "embedtau_1prong1pi0_es_shift": 1.0, 
+      "embedtau_1prong0pi0_es_shift": 1.0,
+      "embedtau_3prong0pi0_es_shift": 1.0,
+      "embedtau_3prong1pi0_es_shift" : 1.0,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -237,7 +243,7 @@
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
          "tau_1prong0pi0_es_shift" : 0.998,
-         "embedtau_1prong0pi0_es_shift": 1.009
+         "embedtau_1prong0pi0_es_shift": 1.015
       }
     },
     "scale_t_0pi_lo": {
@@ -251,29 +257,44 @@
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
          "tau_1prong1pi0_es_shift" : 1.004,
-         "embedtau_1prong1pi0_es_shift" : 1.014
+         "embedtau_1prong1pi0_es_shift" : 1.015
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
          "tau_1prong1pi0_es_shift" : 0.986,
-         "embedtau_1prong1pi0_es_shift" : 0.990
+         "embedtau_1prong1pi0_es_shift" : 0.985
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 0.996
+         "tau_3prong0pi0_es_shift" : 0.996,
+         "embedtau_3prong0pi0_es_shift" : 1.015
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.980
+         "tau_3prong0pi0_es_shift" : 0.980,
+         "embedtau_3prong0pi0_es_shift" : 0.985
       }
     },
-
+    "scale_t_3prong1pi0_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
+         "tau_3prong1pi0_es_shift" : 0.996,
+         "embedtau_3prong1pi0_es_shift" : 1.015
+      }
+    },
+    "scale_t_3prong1pi0_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
+         "tau_3prong1pi0_es_shift" : 0.980,
+         "embedtau_3prong1pi0_es_shift" : 0.985
+      }
+    },
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
@@ -302,25 +323,25 @@
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.978
+        "mufaketau_0pi_es_shift": 0.988
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.018
+        "mufaketau_0pi_es_shift": 1.008
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 0.970
+        "mufaketau_1pi_es_shift": 0.980
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.018
+        "mufaketau_1pi_es_shift": 1.0
       }
     },
     "scale_e_lo": {
@@ -345,14 +366,20 @@
       "baseline": {
         "addit_output_folder" : "MUSCALE_DOWN",
         "mu_scale_mode": true,
-        "muon_es_shift": 0.998
+        "muon_es_shift": 0.998,
+        "muon_es_shift_barrel": 0.996,
+        "muon_es_shift_nearendcap": 0.991,
+        "muon_es_shift_farendcap": 0.983
       }
     },
     "scale_mu_hi": {
       "baseline": {
         "addit_output_folder" : "MUSCALE_UP",
         "mu_scale_mode": true,
-        "muon_es_shift": 1.002
+        "muon_es_shift": 1.002,
+        "muon_es_shift_barrel": 1.004,
+        "muon_es_shift_nearendcap": 1.009,
+        "muon_es_shift_farendcap": 1.017
       }
     },
     "scale_j_lo": {
@@ -399,6 +426,7 @@
         "jes_corr_mode" : 2
       }
     },
+    // adding regrouped JECs (legacy/full run2 -- https://tinyurl.com/r976rmc)
     "scale_j_relbal_lo": {
       "baseline": {
         "addit_output_folder" : "JESRBAL_DOWN",
@@ -415,6 +443,167 @@
         "jes_input_set" : "RelativeBal"
       }
     },
+    "scale_j_abs_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute"
+      }
+    },
+    "scale_j_abs_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute"
+      }
+    },
+    "scale_j_abs_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2018"
+      }
+    },
+    "scale_j_abs_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2018"
+      }
+    },
+    "scale_j_flav_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_flav_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_bbec1_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2018"
+      }
+    },
+    "scale_j_bbec1_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2018"
+      }
+    },
+    "scale_j_ec2_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2018"
+      }
+    },
+    "scale_j_ec2_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2018"
+      }
+    },
+    "scale_j_hf_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2018"
+      }
+    },
+    "scale_j_hf_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2018"
+      }
+    },
+    "scale_j_relsamp_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2018"
+      }
+    },
+    "scale_j_relsamp_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2018"
+      }
+    },
+    //
     "scale_j_full_lo": {
         "baseline": {
           "addit_output_folder" : "JESFULL_DOWN",
@@ -537,24 +726,24 @@
       }
     },
     //
-    "scale_j_hf_lo": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_DOWN",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 1
-       }
-      },
-      "scale_j_hf_hi": {
-        "baseline": {
-          "addit_output_folder" : "JESHF_UP",
-          "split_by_source" : false,
-          "split_by_region" : true,
-          "jec_region" : 2,
-          "jes_mode" : 2
-        }
-      },
+    //"scale_j_hf_lo": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_DOWN",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 1
+    //   }
+    // },
+    //  "scale_j_hf_hi": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_UP",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 2
+    //    }
+    //  },
       // adding correlations splitting for regional sources
       // jes HF detector
     "scale_j_hf_corr_lo": {

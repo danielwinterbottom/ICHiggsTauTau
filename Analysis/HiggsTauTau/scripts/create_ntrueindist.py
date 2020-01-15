@@ -13,6 +13,7 @@ def load_files(filelist):
     return file_names
 
 # files = load_files("scripts/dy_2017for18.txt")
+# files = load_files("new_mc2017puprofiles.txt")
 files = load_files("new_mc2017puprofiles.txt")
 
 channels = ["mt"]

@@ -291,102 +291,56 @@ namespace ic {
           w_->function("m_trg_23_binned_ic_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
    
       // triggers for tau legs in et, mt and tt channels
-      fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
+      fns_["t_trg_30_embed_data"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_etau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+      fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_embed"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_etau_embed")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
       fns_["t_trg_30_ratio"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_embed_ratio"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_etau_embed_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-      fns_["t_trg_27_data"] = std::shared_ptr<RooFunctor>(
+      fns_["t_trg_27_embed_data"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_mutau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+      fns_["t_trg_27_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_mutau_data")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_mc"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_mc")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_embed"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_mutau_embed")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
       fns_["t_trg_27_ratio"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_embed_ratio"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_mutau_embed_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-      fns_["t_trg_35_data"] = std::shared_ptr<RooFunctor>(
+
+      fns_["t_trg_35_ratio"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_embed_data"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_ditau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_35_mc"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_mc")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
       fns_["t_trg_35_embed"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_ditau_embed")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-      fns_["t_trg_27_data_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_data_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_data_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
-      fns_["t_trg_27_embed_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_embed_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_embed_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
-      fns_["t_trg_27_mc_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_27_mc_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_mc_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
       fns_["t_trg_27_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_27_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_mutau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
 
       fns_["t_trg_27_embed_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_mutau_embed_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
@@ -405,73 +359,22 @@ namespace ic {
       fns_["t_trg_27_embed_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_mutau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-      fns_["t_trg_30_data_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_data_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_data_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
-      fns_["t_trg_30_embed_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_embed_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_embed_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
-      fns_["t_trg_30_mc_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-      fns_["t_trg_30_mc_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_mc_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-
       fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_etau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
 
       fns_["t_trg_30_embed_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
@@ -491,21 +394,21 @@ namespace ic {
           w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
       fns_["t_trg_35_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_35_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_->function("t_trg_mediumDeepTau_ditau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+          w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
 
       fns_["t_trg_35_embed_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_mediumDeepTau_ditau_embed_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
@@ -2283,7 +2186,7 @@ namespace ic {
             double t_dm = tau->decay_mode();
             auto args_2 = std::vector<double>{e_pt,e_eta};  
             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
-            auto args_4 = std::vector<double>{t_pt};
+            auto args_4 = std::vector<double>{t_pt,t_dm};
 
             double ele_xtrg = 1.;
             double ele_xtrg_mc=1.;
@@ -2292,12 +2195,13 @@ namespace ic {
               if(is_embedded_) ele_xtrg_mc = fns_["e_crosstrg_embed"]->eval(args_1.data());
               else ele_xtrg_mc = fns_["e_crosstrg_mc"]->eval(args_1.data());
               
-              tau_trg = fns_["t_trg_30_data"]->eval(args_3.data());
               if(is_embedded_) {
                 tau_trg_mc = fns_["t_trg_30_embed"]->eval(args_3.data());
+                tau_trg = fns_["t_trg_30_embed_data"]->eval(args_3.data());
               }
               else {
-                tau_trg_mc = fns_["t_trg_30_mc"]->eval(args_3.data());
+                tau_trg_mc = fns_["t_trg_30_mc"]->eval(args_4.data());
+                tau_trg_mc = fns_["t_trg_30_data"]->eval(args_4.data());
               }
             }
 
@@ -2314,7 +2218,7 @@ namespace ic {
 
             double e_high_pt_cut=28.;
 	    if(mc_ == mc::mc2018) e_high_pt_cut=33;
-            double t_high_pt_cut=32.;
+            double t_high_pt_cut=35.;
             if(e_pt<e_high_pt_cut) xtrg_OR_sf = xtrg_et_sf; // these line are more correct in cases when different offine pT cuts are applied for each trigger in the OR
             if(t_pt<t_high_pt_cut) xtrg_OR_sf = single_e_sf;
 
@@ -2345,20 +2249,20 @@ namespace ic {
             double tau_trg_dm10_down=1.;
             double tau_trg_dm11_down=1.;
 
-            bool do_wts = fns_["t_trg_30_ratio"]->eval(args_3.data()) > 0;
+            bool do_wts = xtrg_OR_sf > 0;
 
             if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
               if(!(t_pt<t_high_pt_cut) && do_wts) {
-                if(!is_embedded_){
-                  tau_trg_dm0_up=fns_["t_trg_30_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm1_up=fns_["t_trg_30_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm10_up=fns_["t_trg_30_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm11_up=fns_["t_trg_30_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm0_down=fns_["t_trg_30_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm1_down=fns_["t_trg_30_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm10_down=fns_["t_trg_30_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                  tau_trg_dm11_down=fns_["t_trg_30_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_ratio"]->eval(args_3.data());
-                } else {
+                if(!is_embedded_ && fns_["t_trg_30_ratio"]->eval(args_4.data())>0){
+                  tau_trg_dm0_up=fns_["t_trg_30_ratio_dm0_up"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm1_up=fns_["t_trg_30_ratio_dm1_up"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm10_up=fns_["t_trg_30_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm11_up=fns_["t_trg_30_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm0_down=fns_["t_trg_30_ratio_dm0_down"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm1_down=fns_["t_trg_30_ratio_dm1_down"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm10_down=fns_["t_trg_30_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                  tau_trg_dm11_down=fns_["t_trg_30_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_30_ratio"]->eval(args_4.data());
+                } else if(fns_["t_trg_30_embed_ratio"]->eval(args_3.data())>0) {
                   tau_trg_dm0_up=fns_["t_trg_30_embed_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_30_embed_ratio"]->eval(args_3.data());
                   tau_trg_dm1_up=fns_["t_trg_30_embed_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_30_embed_ratio"]->eval(args_3.data());
                   tau_trg_dm10_up=fns_["t_trg_30_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_30_embed_ratio"]->eval(args_3.data());
@@ -2731,11 +2635,11 @@ namespace ic {
             double t_dm = tau->decay_mode();
             auto args_2 = std::vector<double>{pt,m_signed_eta};  
             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
-            auto args_4 = std::vector<double>{t_pt};
+            auto args_4 = std::vector<double>{t_pt,t_dm};
 
             double m_high_pt_cut = 25;
-            if(mc_ == mc::mcleg2016) m_high_pt_cut = 23;
-            double t_high_pt_cut = 29;
+            if(mc_ == mc::mcleg2016) m_high_pt_cut = 25;
+            double t_high_pt_cut = 32;
             if(mc_ == mc::mcleg2016) t_high_pt_cut = 22;
 
             double mu_xtrg = fns_["m_crosstrg_data"]->eval(args_1.data());
@@ -2743,12 +2647,13 @@ namespace ic {
             if(is_embedded_) mu_xtrg_mc = fns_["m_crosstrg_embed"]->eval(args_2.data());
             else mu_xtrg_mc = fns_["m_crosstrg_mc"]->eval(args_2.data());
             
-            tau_trg = fns_["t_trg_27_data"]->eval(args_3.data());
             if(is_embedded_) {
               tau_trg_mc = fns_["t_trg_27_embed"]->eval(args_3.data());
+              tau_trg = fns_["t_trg_27_embed_data"]->eval(args_3.data());
             }
             else {
-              tau_trg_mc = fns_["t_trg_27_mc"]->eval(args_3.data());
+              tau_trg_mc = fns_["t_trg_27_mc"]->eval(args_4.data());
+              tau_trg = fns_["t_trg_27_data"]->eval(args_4.data());
             }
 
             double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
@@ -2775,19 +2680,19 @@ namespace ic {
             double tau_trg_dm10_down=1.;
             double tau_trg_dm11_down=1.;
 
-            bool do_wts = (fns_["t_trg_27_ratio"]->eval(args_3.data())>0);
+            bool do_wts = xtrg_OR_sf > 0;
 
             if(!(t_pt<t_high_pt_cut) && do_wts) {
-              if(!is_embedded_){
-                tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-                tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_3.data());
-              } else {
+              if(!is_embedded_ && fns_["t_trg_27_ratio"]->eval(args_4.data())>0){
+                tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+              } else if(fns_["t_trg_27_embed_ratio"]->eval(args_3.data())>0) {
                 tau_trg_dm0_up=fns_["t_trg_27_embed_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
                 tau_trg_dm1_up=fns_["t_trg_27_embed_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
                 tau_trg_dm10_up=fns_["t_trg_27_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
@@ -3339,15 +3244,21 @@ namespace ic {
           double dm_2 = tau2->decay_mode();
           // fix for using DM10 SFs for all new DM modes too
           auto args_1 = std::vector<double>{pt_1,eta_1,phi_1,dm_1};  
-          auto args_2 = std::vector<double>{pt_2,eta_2,phi_2,dm_2}; 
-          tau1_trg = fns_["t_trg_35_data"]->eval(args_1.data());
-          tau1_trg_mc = fns_["t_trg_35_mc"]->eval(args_1.data());
-          tau2_trg = fns_["t_trg_35_data"]->eval(args_2.data());
-          tau2_trg_mc = fns_["t_trg_35_mc"]->eval(args_2.data());
+          auto args_2 = std::vector<double>{pt_2,eta_2,phi_2,dm_2};
+
+          auto args_2_1 = std::vector<double>{pt_1,dm_1};
+          auto args_2_2 = std::vector<double>{pt_2,dm_2};
 
           if(is_embedded_){
             tau1_trg_mc = fns_["t_trg_35_embed"]->eval(args_1.data());
             tau2_trg_mc = fns_["t_trg_35_embed"]->eval(args_2.data());
+            tau1_trg = fns_["t_trg_35_embed_data"]->eval(args_1.data());
+            tau2_trg = fns_["t_trg_35_embed_data"]->eval(args_2.data());
+          } else{
+            tau1_trg = fns_["t_trg_35_ratio"]->eval(args_2_1.data());
+            tau1_trg_mc = 1.;
+            tau2_trg = fns_["t_trg_35_ratio"]->eval(args_2_2.data());
+            tau2_trg_mc = 1.;
           }
 
           double tau_trg_dm0_up=1;
@@ -3372,14 +3283,14 @@ namespace ic {
             tau_trg_dm10_down = fns_["t_trg_35_embed_ratio_dm10_down"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm10_down"]->eval(args_2.data())/trg_tot;
             tau_trg_dm11_down = fns_["t_trg_35_embed_ratio_dm11_down"]->eval(args_1.data())*fns_["t_trg_35_embed_ratio_dm11_down"]->eval(args_2.data())/trg_tot;
           } else if(do_wts) {
-            tau_trg_dm0_up = fns_["t_trg_35_ratio_dm0_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm0_up"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm1_up = fns_["t_trg_35_ratio_dm1_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm1_up"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm10_up = fns_["t_trg_35_ratio_dm10_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm10_up"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm11_up = fns_["t_trg_35_ratio_dm11_up"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm11_up"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm0_down = fns_["t_trg_35_ratio_dm0_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm0_down"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm1_down = fns_["t_trg_35_ratio_dm1_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm1_down"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm10_down = fns_["t_trg_35_ratio_dm10_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm10_down"]->eval(args_2.data())/trg_tot;
-            tau_trg_dm11_down = fns_["t_trg_35_ratio_dm11_down"]->eval(args_1.data())*fns_["t_trg_35_ratio_dm11_down"]->eval(args_2.data())/trg_tot;
+            tau_trg_dm0_up = fns_["t_trg_35_ratio_dm0_up"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm0_up"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm1_up = fns_["t_trg_35_ratio_dm1_up"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm1_up"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm10_up = fns_["t_trg_35_ratio_dm10_up"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm10_up"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm11_up = fns_["t_trg_35_ratio_dm11_up"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm11_up"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm0_down = fns_["t_trg_35_ratio_dm0_down"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm0_down"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm1_down = fns_["t_trg_35_ratio_dm1_down"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm1_down"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm10_down = fns_["t_trg_35_ratio_dm10_down"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm10_down"]->eval(args_2_2.data())/trg_tot;
+            tau_trg_dm11_down = fns_["t_trg_35_ratio_dm11_down"]->eval(args_2_1.data())*fns_["t_trg_35_ratio_dm11_down"]->eval(args_2_2.data())/trg_tot;
           }
 
           tau_trg_dm0_up = std::isnan(tau_trg_dm0_up) ? 0 : tau_trg_dm0_up;
