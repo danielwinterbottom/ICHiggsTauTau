@@ -32,9 +32,10 @@ class HTTSequence {
   unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, jer_mode, jes_corr_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
   bool bjet_regr_correction, tau_scale_mode, e_scale_mode, mu_scale_mode, make_sync_ntuple, moriond_tau_scale, do_reshape, use_deep_csv;
+  std::string wp_to_check;
   bool is_data, is_embedded, real_tau_sample, do_met_filters, jlepton_fake, do_recoil;
   double pair_dr, tau_shift, mass_shift, elec_shift_barrel, elec_shift_endcap, muon_shift;
-  double muon_shift_barrel, muon_shift_nearendcap, muon_shift_negfarendcap, muon_shift_posfarendcap;
+  double muon_shift_barrel, muon_shift_nearendcap, muon_shift_farendcap;
   unsigned e_unc_mode;
   double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi, fakeMu_tau_shift_0pi, fakeMu_tau_shift_1pi ;
   double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0, tau_shift_3prong1pi0;
