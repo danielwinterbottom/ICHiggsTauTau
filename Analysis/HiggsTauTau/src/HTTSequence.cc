@@ -1428,7 +1428,7 @@ if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
-      return  jet->pt() > 50 ||
+      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
         fabs(jet->eta()) > 3.139 ||
         fabs(jet->eta()) < 2.65 ;
 
@@ -1876,7 +1876,7 @@ if(mela_mode!=0){
 }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
