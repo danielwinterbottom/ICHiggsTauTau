@@ -7,13 +7,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "TRandom3.h"
-#include "TF1.h"
-#include "RooWorkspace.h"
-#include "RooRandom.h"
-#include "RooAbsPdf.h"
-#include "RooDataSet.h"
-#include "RooRealVar.h"
-#include "RooMsgService.h"
 
 #include <string>
 
@@ -60,10 +53,6 @@ class HTTCategories : public ModuleBase {
   TTree *outtree_;
   TTree *synctree_;
   TFile *lOFile;
-
-  //std::shared_ptr<RooWorkspace> wsp_smear_;
-  //std::map<std::string, std::shared_ptr<RooAbsPdf>> fns_;
-  std::map<std::string, TF1*> fns_;
 
   TRandom3  *rand;
 
@@ -531,7 +520,7 @@ class HTTCategories : public ModuleBase {
   double aco_sign_5_;
   double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
-  double alpha_;
+
 
   double rand_;
   double y_1_1_;
@@ -989,268 +978,6 @@ class HTTCategories : public ModuleBase {
 
   unsigned ngenjets_;
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
-
-  double ip_nx_1_;
-  double ip_ny_1_;
-  double ip_nz_1_;
-  double ip_nx_2_;
-  double ip_ny_2_;
-  double ip_nz_2_;
-  double ip_theta_1_;
-  double ip_theta_2_;
-  double ip_phi_1_;
-  double ip_phi_2_;
-
-  double ip_bs_mag_1_, ip_bs_mag_2_, ip_bs_sig_1_, ip_bs_sig_2_;
-
-  double ip_bs_nx_1_;
-  double ip_bs_ny_1_;
-  double ip_bs_nz_1_;
-  double ip_bs_nx_2_;
-  double ip_bs_ny_2_;
-  double ip_bs_nz_2_;
-  double ip_bs_theta_1_;
-  double ip_bs_theta_2_;
-  double ip_bs_phi_1_;
-  double ip_bs_phi_2_;
-
-  double ip_bs_nx_smear_new_eta_1_up_;
-  double ip_bs_nx_smear_new_eta_2_up_;
-  double ip_bs_ny_smear_new_eta_1_up_;
-  double ip_bs_ny_smear_new_eta_2_up_;
-  double ip_bs_nz_smear_new_eta_1_up_;
-  double ip_bs_nz_smear_new_eta_2_up_;
-
-  double ip_bs_nx_smear_new_eta_1_down_;
-  double ip_bs_nx_smear_new_eta_2_down_;
-  double ip_bs_ny_smear_new_eta_1_down_;
-  double ip_bs_ny_smear_new_eta_2_down_;
-  double ip_bs_nz_smear_new_eta_1_down_;
-  double ip_bs_nz_smear_new_eta_2_down_;
-
-  double ip_bs_nx_smear_new_eta_2_corr0p0_;
-  double ip_bs_ny_smear_new_eta_2_corr0p0_;
-  double ip_bs_nz_smear_new_eta_2_corr0p0_;
-  double ip_bs_nx_smear_new_eta_2_corr0p1_;
-  double ip_bs_ny_smear_new_eta_2_corr0p1_;
-  double ip_bs_nz_smear_new_eta_2_corr0p1_;
-  double ip_bs_nx_smear_new_eta_2_corr0p2_;
-  double ip_bs_ny_smear_new_eta_2_corr0p2_;
-  double ip_bs_nz_smear_new_eta_2_corr0p2_;
-  double ip_bs_nx_smear_new_eta_2_corr0p3_;
-  double ip_bs_ny_smear_new_eta_2_corr0p3_;
-  double ip_bs_nz_smear_new_eta_2_corr0p3_;
-  double ip_bs_nx_smear_new_eta_2_corr0p4_;
-  double ip_bs_ny_smear_new_eta_2_corr0p4_;
-  double ip_bs_nz_smear_new_eta_2_corr0p4_;
-  double ip_bs_nx_smear_new_eta_2_corr0p5_;
-  double ip_bs_ny_smear_new_eta_2_corr0p5_;
-  double ip_bs_nz_smear_new_eta_2_corr0p5_;
-  double ip_bs_nx_smear_new_eta_2_corr0p6_;
-  double ip_bs_ny_smear_new_eta_2_corr0p6_;
-  double ip_bs_nz_smear_new_eta_2_corr0p6_;
-  double ip_bs_nx_smear_new_eta_2_corr0p7_;
-  double ip_bs_ny_smear_new_eta_2_corr0p7_;
-  double ip_bs_nz_smear_new_eta_2_corr0p7_;
-  double ip_bs_nx_smear_new_eta_2_corr0p8_;
-  double ip_bs_ny_smear_new_eta_2_corr0p8_;
-  double ip_bs_nz_smear_new_eta_2_corr0p8_;
-  double ip_bs_nx_smear_new_eta_2_corr0p9_;
-  double ip_bs_ny_smear_new_eta_2_corr0p9_;
-  double ip_bs_nz_smear_new_eta_2_corr0p9_;
-  double ip_bs_nx_smear_new_eta_2_corr1p0_;
-  double ip_bs_ny_smear_new_eta_2_corr1p0_;
-  double ip_bs_nz_smear_new_eta_2_corr1p0_;
-
-  double ip_dphi_1_;
-  double ip_dphi_2_;
-  double ip_deta_1_;
-  double ip_deta_2_;
-  double ip_dR_1_;
-  double ip_dR_2_;
-  double ip_dphi_smear_1_;
-  double ip_dphi_smear_2_;
-  double ip_deta_smear_1_;
-  double ip_deta_smear_2_;
-  double ip_dR_smear_1_;
-  double ip_dR_smear_2_;
-  double ip_bs_dphi_1_;
-  double ip_bs_dphi_2_;
-  double ip_bs_deta_1_;
-  double ip_bs_deta_2_;
-  double ip_bs_dR_1_;
-  double ip_bs_dR_2_;
-  double ip_bs_dphi_smear_1_;
-  double ip_bs_dphi_smear_2_;
-  double ip_bs_deta_smear_1_;
-  double ip_bs_deta_smear_2_;
-  double ip_bs_phi_smear_1_;
-  double ip_bs_phi_smear_2_;
-  double ip_bs_theta_smear_1_;
-  double ip_bs_theta_smear_2_;
-  double ip_bs_dR_smear_1_;
-  double ip_bs_dR_smear_2_;
-  double ip_mag_smear_1_;
-  double ip_mag_smear_2_;
-  double ip_bs_mag_smear_1_;
-  double ip_bs_mag_smear_2_;
-
-  double ip_nx_smear_1_;
-  double ip_nx_smear_2_;
-  double ip_ny_smear_1_;
-  double ip_ny_smear_2_;
-  double ip_nz_smear_1_;
-  double ip_nz_smear_2_;
-  double ip_bs_nx_smear_1_;
-  double ip_bs_nx_smear_2_;
-  double ip_bs_ny_smear_1_;
-  double ip_bs_ny_smear_2_;
-  double ip_bs_nz_smear_1_;
-  double ip_bs_nz_smear_2_;
-  double ip_bs_sig_smear_1_;
-  double ip_bs_sig_smear_2_;
-  double ip_sig_smear_1_;
-  double ip_sig_smear_2_;
-  double aco_angle_6_smear_;
-
-  double ip_bs_rx_1_;
-  double ip_bs_ry_1_;
-  double ip_bs_rz_1_;
-  double ip_bs_rx_2_;
-  double ip_bs_ry_2_;
-  double ip_bs_rz_2_;
-  double ip_bs_rx_smear_1_;
-  double ip_bs_rx_smear_2_;
-  double ip_bs_ry_smear_1_;
-  double ip_bs_ry_smear_2_;
-  double ip_bs_rz_smear_1_;
-  double ip_bs_rz_smear_2_;
-
-  double ip_bs_rx_smear_new_1_;
-  double ip_bs_rx_smear_new_2_;
-  double ip_bs_ry_smear_new_1_;
-  double ip_bs_ry_smear_new_2_;
-  double ip_bs_rz_smear_new_1_;
-  double ip_bs_rz_smear_new_2_;
-
-  double ip_bs_drx_1_;
-  double ip_bs_dry_1_;
-  double ip_bs_drz_1_;
-  double ip_bs_drx_2_;
-  double ip_bs_dry_2_;
-  double ip_bs_drz_2_;
-  double ip_bs_drx_smear_1_;
-  double ip_bs_drx_smear_2_;
-  double ip_bs_dry_smear_1_;
-  double ip_bs_dry_smear_2_;
-  double ip_bs_drz_smear_1_;
-  double ip_bs_drz_smear_2_;
-
-  double ip_bs_nx_smear_corr_1_;
-  double ip_bs_ny_smear_corr_1_;
-  double ip_bs_nz_smear_corr_1_;
-  double ip_bs_mag_smear_corr_1_;
-  double ip_bs_phi_smear_corr_1_;
-  double ip_bs_theta_smear_corr_1_;
-  double ip_bs_dphi_smear_corr_1_;
-  double ip_bs_deta_smear_corr_1_;
-  double ip_bs_dR_smear_corr_1_;
-  double ip_bs_nx_smear_corr_2_;
-  double ip_bs_ny_smear_corr_2_;
-  double ip_bs_nz_smear_corr_2_;
-  double ip_bs_mag_smear_corr_2_;
-  double ip_bs_phi_smear_corr_2_;
-  double ip_bs_theta_smear_corr_2_;
-  double ip_bs_dphi_smear_corr_2_;
-  double ip_bs_deta_smear_corr_2_;
-  double ip_bs_dR_smear_corr_2_;
-  double aco_angle_6_smear_corr_;
-
-  // new smearing of track params
-  double ip_bs_dphi_smear_new_1_;
-  double ip_bs_dphi_smear_new_2_;
-  double ip_bs_deta_smear_new_1_;
-  double ip_bs_deta_smear_new_2_;
-  double ip_bs_dR_smear_new_1_;
-  double ip_bs_dR_smear_new_2_;
-  double ip_bs_phi_smear_new_1_;
-  double ip_bs_phi_smear_new_2_;
-  double ip_bs_theta_smear_new_1_;
-  double ip_bs_theta_smear_new_2_;
-  double ip_bs_nx_smear_new_1_;
-  double ip_bs_nx_smear_new_2_;
-  double ip_bs_ny_smear_new_1_;
-  double ip_bs_ny_smear_new_2_;
-  double ip_bs_nz_smear_new_1_;
-  double ip_bs_nz_smear_new_2_;
-  double ip_bs_mag_smear_new_1_;
-  double ip_bs_mag_smear_new_2_;
-  double track_dphi_1_;
-  double track_dphi_2_;
-  double track_phi_1_;
-  double track_phi_2_;   
-  double track_lambda_1_;
-  double track_lambda_2_;
-  double track_qoverp_1_;
-  double track_qoverp_2_;
-  double track_dphi_smear_1_;
-  double track_dphi_smear_2_;
-  double track_phi_smear_1_;
-  double track_phi_smear_2_;
-  double track_lambda_smear_1_;
-  double track_lambda_smear_2_;
-  double track_qoverp_smear_1_;
-  double track_qoverp_smear_2_;
-
-  double ip_bs_dphi_smear_new_eta_1_;
-  double ip_bs_dphi_smear_new_eta_2_;
-  double ip_bs_deta_smear_new_eta_1_;
-  double ip_bs_deta_smear_new_eta_2_;
-  double ip_bs_dR_smear_new_eta_1_;
-  double ip_bs_dR_smear_new_eta_2_;
-  double ip_bs_phi_smear_new_eta_1_;
-  double ip_bs_phi_smear_new_eta_2_;
-  double ip_bs_theta_smear_new_eta_1_;
-  double ip_bs_theta_smear_new_eta_2_;
-  double ip_bs_nx_smear_new_eta_1_;
-  double ip_bs_nx_smear_new_eta_2_;
-  double ip_bs_ny_smear_new_eta_1_;
-  double ip_bs_ny_smear_new_eta_2_;
-  double ip_bs_nz_smear_new_eta_1_;
-  double ip_bs_nz_smear_new_eta_2_;
-  double ip_bs_mag_smear_new_eta_1_;
-  double ip_bs_mag_smear_new_eta_2_;
-  double ip_bs_sig_smear_new_eta_1_;
-  double ip_bs_sig_smear_new_eta_2_;
-  double aco_angle_6_smear_eta_;
-
-  double ip_dx_1_;
-  double ip_dy_1_;
-  double ip_dz_1_;
-  double ip_dx_2_;
-  double ip_dy_2_;
-  double ip_dz_2_;
-  double ip_bs_dx_1_;
-  double ip_bs_dy_1_;
-  double ip_bs_dz_1_;
-  double ip_bs_dx_2_;
-  double ip_bs_dy_2_;
-  double ip_bs_dz_2_;
-
-  double ip_bs_dx_smear_1_;
-  double ip_bs_dy_smear_1_;
-  double ip_bs_dz_smear_1_;
-  double ip_bs_dx_smear_2_;
-  double ip_bs_dy_smear_2_;
-  double ip_bs_dz_smear_2_;
-
-  //double ip_bs_m_dx_1_;
-  //double ip_bs_m_dy_1_;
-  //double ip_bs_m_dz_1_;
-  //double ip_bs_m_dx_2_;
-  //double ip_bs_m_dy_2_;
-  //double ip_bs_m_dz_2_;
-
   double q_tot_1_, q_tot_2_;
 
   double looseiso_wt_;
@@ -1282,16 +1009,6 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_dm10_down_;
   double wt_tau_trg_dm11_down_;
 
-  double gen_pvx_;
-  double gen_pvy_;
-  double gen_pvz_;
-  double gen_pvx_bs_;
-  double gen_pvy_bs_;
-  double gen_pvz_bs_;
-
-  double refit_v_ndof_;
-  double refit_v_chi2_;
-
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();
@@ -1301,7 +1018,7 @@ class HTTCategories : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  TF1 *smear_f_;
+
 
 
 
