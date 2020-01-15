@@ -55,6 +55,7 @@
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/BTagWeightLegacyRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
 #include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
 #include "HiggsTauTau/interface/HTTGenAnalysis.h"
@@ -130,6 +131,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   use_deep_csv=json["baseline"]["use_deep_csv"].asBool(); 
+  wp_to_check=json["baseline"]["wp_to_check"].asString(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
   if(js["mc"].asString()=="" && era_str != "data_2017"){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
@@ -605,6 +607,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
   std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
   std::cout << boost::format(param_fmt) % "use_deep_csv" % use_deep_csv;
+  std::cout << boost::format(param_fmt) % "wp_to_check" % wp_to_check;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 //  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
@@ -1413,9 +1416,16 @@ if (jer_mode > 0 && !is_data) {
    );
 }
 
+// Apply loose PUJID universally
+/*BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+  .set_input_label(jets_label)
+  .set_predicate([=](PFJet const* jet) {
+    return  PileupJetID(jet, pu_id_training, false, true);
+  })
+);*/
 
 if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
+  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
       return  jet->pt() > 50 ||
@@ -1456,6 +1466,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_strategy(strategy_type)
     .set_do_legacy(false)
     .set_use_deep_csv(use_deep_csv)
+    .set_wp_to_check(wp_to_check)
     .set_jet_label(jets_label));
 }
 
@@ -1919,6 +1930,55 @@ if (new_svfit_mode != 1) {
    .set_use_deep_csv(use_deep_csv)
    .set_btag_mode(btag_mode)
    .set_bfake_mode(bfake_mode));
+  }
+}
+if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+  TH2F bbtag_eff;
+  TH2F cbtag_eff;
+  TH2F othbtag_eff;
+  TH2F bbtag_eff_alt;
+  TH2F cbtag_eff_alt;
+  TH2F othbtag_eff_alt;
+
+  if (strategy_type == strategy::legacy16){
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpdecays18) {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
+  }
+
+if (new_svfit_mode != 1) {
+  BuildModule(BTagWeightLegacyRun2("BTagWeightLegacyRun2")
+   .set_channel(channel)
+   .set_era(era_type)
+   .set_strategy(strategy_type)
+   .set_jet_label(jets_label)
+   .set_bbtag_eff(new TH2F(bbtag_eff))
+   .set_cbtag_eff(new TH2F(cbtag_eff))
+   .set_othbtag_eff(new TH2F(othbtag_eff))
+   .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
+   .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
+   .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
+   .set_btag_mode(btag_mode));
   }
 }
 
