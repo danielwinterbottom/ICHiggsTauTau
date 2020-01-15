@@ -135,7 +135,8 @@ if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 
-scale = int(math.ceil(float(n_scales*n_channels)/32))
+#scale = int(math.ceil(float(n_scales*n_channels)/32))
+scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -175,10 +176,7 @@ if options.proc_sm or options.proc_all:
 
       #'VBFHToTauTau_M-126-nospinner',
       'VBFHToTauTau_M-125-ext1',
-      #'VBFHToTauTau_M-125-MM-filter',
       'VBFHToTauTau_M-125-nospinner-filter',
-      #'VBFHToTauTau_M-125-PS-filter',
-      #'VBFHToTauTau_M-125-SM-filter',
       'GluGluToHToTauTau_M-125-nospinner',
       'GluGluHToTauTau_M-125',
       'GluGluToHToTauTau_M-125-nospinner-filter',
@@ -248,6 +246,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
     data_eras = ['A','B','C','D']
+    #data_eras=['C']
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
@@ -327,6 +326,8 @@ if options.proc_embed or options.proc_all:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Oct07_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
+            if 'ElTau' in sa: nperjob = 2
+            if 'MuMu' in sa and 'MuMuD' not in sa: nperjob = 5
             #print FLATJSONPATCH
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
    
@@ -340,11 +341,11 @@ if options.proc_embed or options.proc_all:
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
             if n_scales*n_channels>=28: nperjob = 10
             if n_scales*n_channels>=56: nperjob=5
-            if 'MuD' in sa or 'TauD' in sa:
+            if 'MuTauD' in sa or 'TauTauD' in sa:
               nperjob = 300
               if n_scales*n_channels>=28: nperjob = 150
               if n_scales*n_channels>=56: nperjob=75
-              
+            if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -407,7 +408,8 @@ if options.proc_bkg or options.proc_all:
 
         job_num=0
         for FLATJSONPATCH in flatjsons:
-            nperjob = 40
+            #nperjob = 40
+            nperjob=20
             if 'DY' not in sa and 'EWKZ' not in sa:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
             if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
@@ -419,6 +421,7 @@ if options.proc_bkg or options.proc_all:
             if n_scales*n_channels>=28: nperjob = 20
             if n_scales*n_channels>=56: nperjob=10
 
+            if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -456,7 +459,10 @@ if options.mg_signal or options.proc_sm:
                 n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
                 if n_scales*n_channels>=28: nperjob = 10
                 if n_scales*n_channels>=56: nperjob=5
-  
+
+                if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
+                  nperjob = int(math.ceil(float(nperjob)/2)) 
+ 
                 #if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                     os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

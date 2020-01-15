@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016_newFF/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016_newFF_v2/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
     // "output_folder" : "output/",

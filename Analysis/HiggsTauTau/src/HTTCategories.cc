@@ -71,6 +71,33 @@ namespace ic {
 
 
     rand = new TRandom3(0);
+
+    TFile f2("smear_file_2018_new6.root");
+    if(!is_embedded_){
+
+      fns_["ip_bs_rx_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_rx_eta0p0to0p9");
+      fns_["ip_bs_ry_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_ry_eta0p0to0p9");
+      fns_["ip_bs_rz_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_rz_eta0p0to0p9");
+      fns_["ip_bs_rx_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_rx_eta0p9to1p2");
+      fns_["ip_bs_ry_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_ry_eta0p9to1p2");
+      fns_["ip_bs_rz_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_rz_eta0p9to1p2");
+      fns_["ip_bs_rx_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_rx_eta1p2to2p1");
+      fns_["ip_bs_ry_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_ry_eta1p2to2p1");
+      fns_["ip_bs_rz_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_rz_eta1p2to2p1_ext");
+    } else {
+
+      fns_["ip_bs_rx_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_rx_eta0p0to0p9_embed");
+      fns_["ip_bs_ry_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_ry_eta0p0to0p9_embed");
+      fns_["ip_bs_rz_eta0p0to0p9"] = (TF1*)f2.Get("ip_bs_rz_eta0p0to0p9_embed");
+      fns_["ip_bs_rx_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_rx_eta0p9to1p2_embed");
+      fns_["ip_bs_ry_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_ry_eta0p9to1p2_embed");
+      fns_["ip_bs_rz_eta0p9to1p2"] = (TF1*)f2.Get("ip_bs_rz_eta0p9to1p2_embed");
+      fns_["ip_bs_rx_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_rx_eta1p2to2p1_embed");
+      fns_["ip_bs_ry_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_ry_eta1p2to2p1_embed");
+      fns_["ip_bs_rz_eta1p2to2p1"] = (TF1*)f2.Get("ip_bs_rz_eta1p2to2p1_ext_embed");
+    }
+    f2.Close(); 
+
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
@@ -110,6 +137,275 @@ namespace ic {
       outtree_->Branch("ip_mag_2", &ip_mag_2_);
       outtree_->Branch("ip_sig_1", &ip_sig_1_);
       outtree_->Branch("ip_sig_2", &ip_sig_2_);
+
+      outtree_->Branch("ip_nx_1",&ip_nx_1_);
+      outtree_->Branch("ip_ny_1",&ip_ny_1_);
+      outtree_->Branch("ip_nz_1",&ip_nz_1_);
+      outtree_->Branch("ip_nx_2",&ip_nx_2_);
+      outtree_->Branch("ip_ny_2",&ip_ny_2_);
+      outtree_->Branch("ip_nz_2",&ip_nz_2_);
+      outtree_->Branch("ip_theta_1",&ip_theta_1_);
+      outtree_->Branch("ip_theta_2",&ip_theta_2_);
+      outtree_->Branch("ip_phi_1",&ip_phi_1_);
+      outtree_->Branch("ip_phi_2",&ip_phi_2_);
+
+      outtree_->Branch("ip_dphi_1", &ip_dphi_1_);
+      outtree_->Branch("ip_dphi_2", &ip_dphi_2_);
+      outtree_->Branch("ip_deta_1", &ip_deta_1_);
+      outtree_->Branch("ip_deta_2", &ip_deta_2_);
+      outtree_->Branch("ip_dR_1", &ip_dR_1_);
+      outtree_->Branch("ip_dR_2", &ip_dR_2_);
+      outtree_->Branch("ip_dphi_smear_1", &ip_dphi_smear_1_);
+      outtree_->Branch("ip_dphi_smear_2", &ip_dphi_smear_2_);
+      outtree_->Branch("ip_deta_smear_1", &ip_deta_smear_1_);
+      outtree_->Branch("ip_deta_smear_2", &ip_deta_smear_2_);
+      outtree_->Branch("ip_dR_smear_1", &ip_dR_smear_1_);
+      outtree_->Branch("ip_dR_smear_2", &ip_dR_smear_2_);
+      outtree_->Branch("ip_bs_dphi_1", &ip_bs_dphi_1_);
+      outtree_->Branch("ip_bs_dphi_2", &ip_bs_dphi_2_);
+      outtree_->Branch("ip_bs_deta_1", &ip_bs_deta_1_);
+      outtree_->Branch("ip_bs_deta_2", &ip_bs_deta_2_);
+      outtree_->Branch("ip_bs_dR_1", &ip_bs_dR_1_);
+      outtree_->Branch("ip_bs_dR_2", &ip_bs_dR_2_);
+      outtree_->Branch("ip_bs_dphi_smear_1", &ip_bs_dphi_smear_1_);
+      outtree_->Branch("ip_bs_dphi_smear_2", &ip_bs_dphi_smear_2_);
+      outtree_->Branch("ip_bs_deta_smear_1", &ip_bs_deta_smear_1_);
+      outtree_->Branch("ip_bs_deta_smear_2", &ip_bs_deta_smear_2_);
+
+      outtree_->Branch("ip_bs_phi_smear_1", &ip_bs_phi_smear_1_);
+      outtree_->Branch("ip_bs_phi_smear_2", &ip_bs_phi_smear_2_);
+      outtree_->Branch("ip_bs_theta_smear_1", &ip_bs_theta_smear_1_);
+      outtree_->Branch("ip_bs_theta_smear_2", &ip_bs_theta_smear_2_);
+
+      outtree_->Branch("ip_bs_dR_smear_1", &ip_bs_dR_smear_1_);
+      outtree_->Branch("ip_bs_dR_smear_2", &ip_bs_dR_smear_2_);
+      outtree_->Branch("ip_mag_smear_1", &ip_mag_smear_1_);
+      outtree_->Branch("ip_mag_smear_2", &ip_mag_smear_2_);
+      outtree_->Branch("ip_bs_mag_smear_1", &ip_bs_mag_smear_1_);
+      outtree_->Branch("ip_bs_mag_smear_2", &ip_bs_mag_smear_2_);
+
+      outtree_->Branch("ip_nx_smear_1",&ip_nx_smear_1_);
+      outtree_->Branch("ip_nx_smear_2",&ip_nx_smear_2_);
+      outtree_->Branch("ip_ny_smear_1",&ip_ny_smear_1_);
+      outtree_->Branch("ip_ny_smear_2",&ip_ny_smear_2_);
+      outtree_->Branch("ip_nz_smear_1",&ip_nz_smear_1_);
+      outtree_->Branch("ip_nz_smear_2",&ip_nz_smear_2_);
+
+      outtree_->Branch("ip_bs_nx_smear_1",&ip_bs_nx_smear_1_);
+      outtree_->Branch("ip_bs_nx_smear_2",&ip_bs_nx_smear_2_);
+      outtree_->Branch("ip_bs_ny_smear_1",&ip_bs_ny_smear_1_);
+      outtree_->Branch("ip_bs_ny_smear_2",&ip_bs_ny_smear_2_);
+      outtree_->Branch("ip_bs_nz_smear_1",&ip_bs_nz_smear_1_);
+      outtree_->Branch("ip_bs_nz_smear_2",&ip_bs_nz_smear_2_);
+
+      outtree_->Branch("ip_dx_1", &ip_dx_1_);
+      outtree_->Branch("ip_dy_1", &ip_dy_1_);
+      outtree_->Branch("ip_dz_1", &ip_dz_1_);
+      outtree_->Branch("ip_dx_2", &ip_dx_2_);
+      outtree_->Branch("ip_dy_2", &ip_dy_2_);
+      outtree_->Branch("ip_dz_2", &ip_dz_2_);
+      outtree_->Branch("ip_bs_dx_1", &ip_bs_dx_1_);
+      outtree_->Branch("ip_bs_dy_1", &ip_bs_dy_1_);
+      outtree_->Branch("ip_bs_dz_1", &ip_bs_dz_1_);
+      outtree_->Branch("ip_bs_dx_2", &ip_bs_dx_2_);
+      outtree_->Branch("ip_bs_dy_2", &ip_bs_dy_2_);
+      outtree_->Branch("ip_bs_dz_2", &ip_bs_dz_2_);
+
+      outtree_->Branch("ip_bs_dx_smear_1", &ip_bs_dx_smear_1_);
+      outtree_->Branch("ip_bs_dy_smear_1", &ip_bs_dy_smear_1_);
+      outtree_->Branch("ip_bs_dz_smear_1", &ip_bs_dz_smear_1_);
+      outtree_->Branch("ip_bs_dx_smear_2", &ip_bs_dx_smear_2_);
+      outtree_->Branch("ip_bs_dy_smear_2", &ip_bs_dy_smear_2_);
+      outtree_->Branch("ip_bs_dz_smear_2", &ip_bs_dz_smear_2_);
+
+      outtree_->Branch("ip_bs_dphi_smear_new_1",  &ip_bs_dphi_smear_new_1_);
+      outtree_->Branch("ip_bs_dphi_smear_new_2",  &ip_bs_dphi_smear_new_2_);
+      outtree_->Branch("ip_bs_deta_smear_new_1",  &ip_bs_deta_smear_new_1_);
+      outtree_->Branch("ip_bs_deta_smear_new_2",  &ip_bs_deta_smear_new_2_);
+      outtree_->Branch("ip_bs_dR_smear_new_1",    &ip_bs_dR_smear_new_1_);
+      outtree_->Branch("ip_bs_dR_smear_new_2",    &ip_bs_dR_smear_new_2_);
+      outtree_->Branch("ip_bs_phi_smear_new_1",   &ip_bs_phi_smear_new_1_);
+      outtree_->Branch("ip_bs_phi_smear_new_2",   &ip_bs_phi_smear_new_2_);
+      outtree_->Branch("ip_bs_theta_smear_new_1", &ip_bs_theta_smear_new_1_);
+      outtree_->Branch("ip_bs_theta_smear_new_2", &ip_bs_theta_smear_new_2_);
+      outtree_->Branch("ip_bs_nx_smear_new_1",    &ip_bs_nx_smear_new_1_);
+      outtree_->Branch("ip_bs_nx_smear_new_2",    &ip_bs_nx_smear_new_2_);
+      outtree_->Branch("ip_bs_ny_smear_new_1",    &ip_bs_ny_smear_new_1_);
+      outtree_->Branch("ip_bs_ny_smear_new_2",    &ip_bs_ny_smear_new_2_);
+      outtree_->Branch("ip_bs_nz_smear_new_1",    &ip_bs_nz_smear_new_1_);
+      outtree_->Branch("ip_bs_nz_smear_new_2",    &ip_bs_nz_smear_new_2_);
+      outtree_->Branch("ip_bs_mag_smear_new_1",    &ip_bs_mag_smear_new_1_);
+      outtree_->Branch("ip_bs_mag_smear_new_2",    &ip_bs_mag_smear_new_2_);
+
+      outtree_->Branch("ip_bs_dphi_smear_new_eta_1",  &ip_bs_dphi_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_dphi_smear_new_eta_2",  &ip_bs_dphi_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_deta_smear_new_eta_1",  &ip_bs_deta_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_deta_smear_new_eta_2",  &ip_bs_deta_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_dR_smear_new_eta_1",    &ip_bs_dR_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_dR_smear_new_eta_2",    &ip_bs_dR_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_phi_smear_new_eta_1",   &ip_bs_phi_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_phi_smear_new_eta_2",   &ip_bs_phi_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_theta_smear_new_eta_1", &ip_bs_theta_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_theta_smear_new_eta_2", &ip_bs_theta_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_1",    &ip_bs_nx_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2",    &ip_bs_nx_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_1",    &ip_bs_ny_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2",    &ip_bs_ny_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_1",    &ip_bs_nz_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2",    &ip_bs_nz_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_mag_smear_new_eta_1",    &ip_bs_mag_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_mag_smear_new_eta_2",    &ip_bs_mag_smear_new_eta_2_);
+      outtree_->Branch("ip_bs_sig_smear_new_eta_1",    &ip_bs_sig_smear_new_eta_1_);
+      outtree_->Branch("ip_bs_sig_smear_new_eta_2",    &ip_bs_sig_smear_new_eta_2_);
+
+      outtree_->Branch("ip_bs_nx_smear_new_eta_1_up", &ip_bs_nx_smear_new_eta_1_up_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_up", &ip_bs_nx_smear_new_eta_2_up_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_1_up", &ip_bs_ny_smear_new_eta_1_up_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_up", &ip_bs_ny_smear_new_eta_2_up_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_1_up", &ip_bs_nz_smear_new_eta_1_up_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_up", &ip_bs_nz_smear_new_eta_2_up_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_1_down", &ip_bs_nx_smear_new_eta_1_down_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_down", &ip_bs_nx_smear_new_eta_2_down_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_1_down", &ip_bs_ny_smear_new_eta_1_down_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_down", &ip_bs_ny_smear_new_eta_2_down_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_1_down", &ip_bs_nz_smear_new_eta_1_down_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_down", &ip_bs_nz_smear_new_eta_2_down_);
+
+      outtree_->Branch("track_dphi_1",            &track_dphi_1_);
+      outtree_->Branch("track_dphi_2",            &track_dphi_2_);
+      outtree_->Branch("track_phi_1",             &track_phi_1_);
+      outtree_->Branch("track_phi_2",             &track_phi_2_);
+      outtree_->Branch("track_lambda_1",          &track_lambda_1_);
+      outtree_->Branch("track_lambda_2",          &track_lambda_2_);
+      outtree_->Branch("track_qoverp_1",          &track_qoverp_1_);
+      outtree_->Branch("track_qoverp_2",          &track_qoverp_2_);
+      outtree_->Branch("track_dphi_smear_1",            &track_dphi_smear_1_);
+      outtree_->Branch("track_dphi_smear_2",            &track_dphi_smear_2_);
+      outtree_->Branch("track_phi_smear_1",             &track_phi_smear_1_);
+      outtree_->Branch("track_phi_smear_2",             &track_phi_smear_2_);
+      outtree_->Branch("track_lambda_smear_1",          &track_lambda_smear_1_);
+      outtree_->Branch("track_lambda_smear_2",          &track_lambda_smear_2_);
+      outtree_->Branch("track_qoverp_smear_1",          &track_qoverp_smear_1_);
+      outtree_->Branch("track_qoverp_smear_2",          &track_qoverp_smear_2_);
+
+      outtree_->Branch("gen_pvx", &gen_pvx_);
+      outtree_->Branch("gen_pvy", &gen_pvy_);
+      outtree_->Branch("gen_pvz", &gen_pvz_);
+      outtree_->Branch("gen_pvx_bs", &gen_pvx_bs_);
+      outtree_->Branch("gen_pvy_bs", &gen_pvy_bs_);
+      outtree_->Branch("gen_pvz_bs", &gen_pvz_bs_);
+
+      outtree_->Branch("ip_bs_mag_1", &ip_bs_mag_1_);
+      outtree_->Branch("ip_bs_mag_2", &ip_bs_mag_2_);
+      outtree_->Branch("ip_bs_sig_1", &ip_bs_sig_1_);
+      outtree_->Branch("ip_bs_sig_2", &ip_bs_sig_2_);
+      outtree_->Branch("ip_bs_sig_smear_1", &ip_bs_sig_smear_1_);
+      outtree_->Branch("ip_bs_sig_smear_2", &ip_bs_sig_smear_2_);
+      outtree_->Branch("ip_sig_smear_1", &ip_bs_sig_smear_1_);
+      outtree_->Branch("ip_sig_smear_2", &ip_bs_sig_smear_2_);
+      outtree_->Branch("aco_angle_6_smear", &aco_angle_6_smear_);
+      outtree_->Branch("ip_bs_nx_1",&ip_bs_nx_1_);
+      outtree_->Branch("ip_bs_ny_1",&ip_bs_ny_1_);
+      outtree_->Branch("ip_bs_nz_1",&ip_bs_nz_1_);
+      outtree_->Branch("ip_bs_nx_2",&ip_bs_nx_2_);
+      outtree_->Branch("ip_bs_ny_2",&ip_bs_ny_2_);
+      outtree_->Branch("ip_bs_nz_2",&ip_bs_nz_2_);
+      outtree_->Branch("ip_bs_theta_1",&ip_bs_theta_1_);
+      outtree_->Branch("ip_bs_theta_2",&ip_bs_theta_2_);
+      outtree_->Branch("ip_bs_phi_1",&ip_bs_phi_1_);
+      outtree_->Branch("ip_bs_phi_2",&ip_bs_phi_2_);
+
+      // to determine correlation
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p0", &ip_bs_nx_smear_new_eta_2_corr0p0_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p0", &ip_bs_ny_smear_new_eta_2_corr0p0_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p0", &ip_bs_nz_smear_new_eta_2_corr0p0_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p1", &ip_bs_nx_smear_new_eta_2_corr0p1_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p1", &ip_bs_ny_smear_new_eta_2_corr0p1_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p1", &ip_bs_nz_smear_new_eta_2_corr0p1_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p2", &ip_bs_nx_smear_new_eta_2_corr0p2_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p2", &ip_bs_ny_smear_new_eta_2_corr0p2_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p2", &ip_bs_nz_smear_new_eta_2_corr0p2_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p3", &ip_bs_nx_smear_new_eta_2_corr0p3_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p3", &ip_bs_ny_smear_new_eta_2_corr0p3_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p3", &ip_bs_nz_smear_new_eta_2_corr0p3_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p4", &ip_bs_nx_smear_new_eta_2_corr0p4_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p4", &ip_bs_ny_smear_new_eta_2_corr0p4_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p4", &ip_bs_nz_smear_new_eta_2_corr0p4_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p5", &ip_bs_nx_smear_new_eta_2_corr0p5_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p5", &ip_bs_ny_smear_new_eta_2_corr0p5_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p5", &ip_bs_nz_smear_new_eta_2_corr0p5_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p6", &ip_bs_nx_smear_new_eta_2_corr0p6_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p6", &ip_bs_ny_smear_new_eta_2_corr0p6_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p6", &ip_bs_nz_smear_new_eta_2_corr0p6_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p7", &ip_bs_nx_smear_new_eta_2_corr0p7_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p7", &ip_bs_ny_smear_new_eta_2_corr0p7_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p7", &ip_bs_nz_smear_new_eta_2_corr0p7_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p8", &ip_bs_nx_smear_new_eta_2_corr0p8_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p8", &ip_bs_ny_smear_new_eta_2_corr0p8_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p8", &ip_bs_nz_smear_new_eta_2_corr0p8_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr0p9", &ip_bs_nx_smear_new_eta_2_corr0p9_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr0p9", &ip_bs_ny_smear_new_eta_2_corr0p9_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr0p9", &ip_bs_nz_smear_new_eta_2_corr0p9_);
+      outtree_->Branch("ip_bs_nx_smear_new_eta_2_corr1p0", &ip_bs_nx_smear_new_eta_2_corr1p0_);
+      outtree_->Branch("ip_bs_ny_smear_new_eta_2_corr1p0", &ip_bs_ny_smear_new_eta_2_corr1p0_);
+      outtree_->Branch("ip_bs_nz_smear_new_eta_2_corr1p0", &ip_bs_nz_smear_new_eta_2_corr1p0_);
+
+      outtree_->Branch("ip_bs_nx_smear_corr_1",     &ip_bs_nx_smear_corr_1_);
+      outtree_->Branch("ip_bs_ny_smear_corr_1",     &ip_bs_ny_smear_corr_1_);
+      outtree_->Branch("ip_bs_nz_smear_corr_1_",    &ip_bs_nz_smear_corr_1_);
+      outtree_->Branch("ip_bs_mag_smear_corr_1",    &ip_bs_mag_smear_corr_1_);
+      outtree_->Branch("ip_bs_phi_smear_corr_1",    &ip_bs_phi_smear_corr_1_);
+      outtree_->Branch("ip_bs_theta_smear_corr_1",  &ip_bs_theta_smear_corr_1_);
+      outtree_->Branch("ip_bs_dphi_smear_corr_1",   &ip_bs_dphi_smear_corr_1_);
+      outtree_->Branch("ip_bs_deta_smear_corr_1",   &ip_bs_deta_smear_corr_1_);
+      outtree_->Branch("ip_bs_dR_smear_corr_1",     &ip_bs_dR_smear_corr_1_);
+      outtree_->Branch("ip_bs_nx_smear_corr_2",     &ip_bs_nx_smear_corr_2_);
+      outtree_->Branch("ip_bs_ny_smear_corr_2",     &ip_bs_ny_smear_corr_2_);
+      outtree_->Branch("ip_bs_nz_smear_corr_2",     &ip_bs_nz_smear_corr_2_);
+      outtree_->Branch("ip_bs_mag_smear_corr_2",    &ip_bs_mag_smear_corr_2_);
+      outtree_->Branch("ip_bs_phi_smear_corr_2",    &ip_bs_phi_smear_corr_2_);
+      outtree_->Branch("ip_bs_theta_smear_corr_2",  &ip_bs_theta_smear_corr_2_);
+      outtree_->Branch("ip_bs_dphi_smear_corr_2",   &ip_bs_dphi_smear_corr_2_);
+      outtree_->Branch("ip_bs_deta_smear_corr_2",   &ip_bs_deta_smear_corr_2_);
+      outtree_->Branch("ip_bs_dR_smear_corr_2",     &ip_bs_dR_smear_corr_2_);
+      outtree_->Branch("aco_angle_6_smear_corr",    &aco_angle_6_smear_corr_);
+      outtree_->Branch("aco_angle_6_smear_eta",    &aco_angle_6_smear_eta_);
+
+      outtree_->Branch("ip_bs_rx_1",&ip_bs_rx_1_);
+      outtree_->Branch("ip_bs_ry_1",&ip_bs_ry_1_);
+      outtree_->Branch("ip_bs_rz_1",&ip_bs_rz_1_);
+      outtree_->Branch("ip_bs_rx_2",&ip_bs_rx_2_);
+      outtree_->Branch("ip_bs_ry_2",&ip_bs_ry_2_);
+      outtree_->Branch("ip_bs_rz_2",&ip_bs_rz_2_);
+      outtree_->Branch("ip_bs_rx_smear_1",&ip_bs_rx_smear_1_);
+      outtree_->Branch("ip_bs_rx_smear_2",&ip_bs_rx_smear_2_);
+      outtree_->Branch("ip_bs_ry_smear_1",&ip_bs_ry_smear_1_);
+      outtree_->Branch("ip_bs_ry_smear_2",&ip_bs_ry_smear_2_);
+      outtree_->Branch("ip_bs_rz_smear_1",&ip_bs_rz_smear_1_);
+      outtree_->Branch("ip_bs_rz_smear_2",&ip_bs_rz_smear_2_);
+
+      outtree_->Branch("ip_bs_rx_smear_new_1",&ip_bs_rx_smear_new_1_);
+      outtree_->Branch("ip_bs_rx_smear_new_2",&ip_bs_rx_smear_new_2_);
+      outtree_->Branch("ip_bs_ry_smear_new_1",&ip_bs_ry_smear_new_1_);
+      outtree_->Branch("ip_bs_ry_smear_new_2",&ip_bs_ry_smear_new_2_);
+      outtree_->Branch("ip_bs_rz_smear_new_1",&ip_bs_rz_smear_new_1_);
+      outtree_->Branch("ip_bs_rz_smear_new_2",&ip_bs_rz_smear_new_2_);
+
+      outtree_->Branch("ip_bs_drx_1",&ip_bs_drx_1_);
+      outtree_->Branch("ip_bs_dry_1",&ip_bs_dry_1_);
+      outtree_->Branch("ip_bs_drz_1",&ip_bs_drz_1_);
+      outtree_->Branch("ip_bs_drx_2",&ip_bs_drx_2_);
+      outtree_->Branch("ip_bs_dry_2",&ip_bs_dry_2_);
+      outtree_->Branch("ip_bs_drz_2",&ip_bs_drz_2_);
+      outtree_->Branch("ip_bs_drx_smear_1",&ip_bs_drx_smear_1_);
+      outtree_->Branch("ip_bs_drx_smear_2",&ip_bs_drx_smear_2_);
+      outtree_->Branch("ip_bs_dry_smear_1",&ip_bs_dry_smear_1_);
+      outtree_->Branch("ip_bs_dry_smear_2",&ip_bs_dry_smear_2_);
+      outtree_->Branch("ip_bs_drz_smear_1",&ip_bs_drz_smear_1_);
+      outtree_->Branch("ip_bs_drz_smear_2",&ip_bs_drz_smear_2_);
+
+      outtree_->Branch("refit_v_ndof", &refit_v_ndof_);
+      outtree_->Branch("refit_v_chi2", &refit_v_chi2_);
 
       outtree_->Branch("q_tot_1", &q_tot_1_);
       outtree_->Branch("q_tot_2", &q_tot_2_);
@@ -196,9 +492,9 @@ namespace ic {
  
           if(do_ff_systematics_){
             outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
-            outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_wjets_1_);
+            outtree_->Branch("wt_ff_wjets_1"  , &wt_ff_wjets_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_1"  , &wt_ff_dmbins_qcd_1_);
-            outtree_->Branch("wt_ff_dmbins_qcd_1"  , &wt_ff_dmbins_wjets_1_);
+            outtree_->Branch("wt_ff_dmbins_wjets_1"  , &wt_ff_dmbins_wjets_1_);
             outtree_->Branch("wt_ff_wjets_syst_up_1"  , &wt_ff_wjets_syst_up_1_);
             outtree_->Branch("wt_ff_wjets_syst_down_1"  , &wt_ff_wjets_syst_down_1_);
             outtree_->Branch("wt_ff_qcd_syst_up_1"  , &wt_ff_qcd_syst_up_1_);
@@ -542,6 +838,7 @@ namespace ic {
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
+      outtree_->Branch("alpha", &alpha_);
       outtree_->Branch("lead_pt_1", &lead_pt_1_);
       outtree_->Branch("lead_pt_2", &lead_pt_2_);
 
@@ -2400,7 +2697,57 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
-    
+
+    gRandom->SetSeed((int)((lep1->eta()+2.5)*100000 + (lep1->phi()+4)*1000));
+
+    double smear_bs_rx_eta1_1 = 0.;
+    double smear_bs_ry_eta1_1 = 0.;
+    double smear_bs_rz_eta1_1 = 0.;
+    double smear_bs_rx_eta1_2 = 0.;
+    double smear_bs_ry_eta1_2 = 0.;
+    double smear_bs_rz_eta1_2 = 0.;
+
+    double smear_bs_rx_eta2_1 = 0.;
+    double smear_bs_ry_eta2_1 = 0.;
+    double smear_bs_rz_eta2_1 = 0.;
+    double smear_bs_rx_eta2_2 = 0.;
+    double smear_bs_ry_eta2_2 = 0.;
+    double smear_bs_rz_eta2_2 = 0.;
+
+    double smear_bs_rx_eta3_1 = 0.;
+    double smear_bs_ry_eta3_1 = 0.;
+    double smear_bs_rz_eta3_1 = 0.;
+    double smear_bs_rx_eta3_2 = 0.;
+    double smear_bs_ry_eta3_2 = 0.;
+    double smear_bs_rz_eta3_2 = 0.;
+
+
+    if(!is_data_) {
+
+      smear_bs_rx_eta1_1 = fns_["ip_bs_rx_eta0p0to0p9"]->GetRandom();
+      smear_bs_ry_eta1_1 = fns_["ip_bs_ry_eta0p0to0p9"]->GetRandom();
+      smear_bs_rz_eta1_1 = fns_["ip_bs_rz_eta0p0to0p9"]->GetRandom();
+      smear_bs_rx_eta1_2 = fns_["ip_bs_rx_eta0p0to0p9"]->GetRandom();
+      smear_bs_ry_eta1_2 = fns_["ip_bs_ry_eta0p0to0p9"]->GetRandom();
+      smear_bs_rz_eta1_2 = fns_["ip_bs_rz_eta0p0to0p9"]->GetRandom();
+
+      smear_bs_rx_eta2_1 = fns_["ip_bs_rx_eta0p9to1p2"]->GetRandom();
+      smear_bs_ry_eta2_1 = fns_["ip_bs_ry_eta0p9to1p2"]->GetRandom();
+      smear_bs_rz_eta2_1 = fns_["ip_bs_rz_eta0p9to1p2"]->GetRandom();
+      smear_bs_rx_eta2_2 = fns_["ip_bs_rx_eta0p9to1p2"]->GetRandom();
+      smear_bs_ry_eta2_2 = fns_["ip_bs_ry_eta0p9to1p2"]->GetRandom();
+      smear_bs_rz_eta2_2 = fns_["ip_bs_rz_eta0p9to1p2"]->GetRandom();
+
+      smear_bs_rx_eta3_1 = fns_["ip_bs_rx_eta1p2to2p1"]->GetRandom();
+      smear_bs_ry_eta3_1 = fns_["ip_bs_ry_eta1p2to2p1"]->GetRandom();
+      smear_bs_rz_eta3_1 = fns_["ip_bs_rz_eta1p2to2p1"]->GetRandom();
+      smear_bs_rx_eta3_2 = fns_["ip_bs_rx_eta1p2to2p1"]->GetRandom();
+      smear_bs_ry_eta3_2 = fns_["ip_bs_ry_eta1p2to2p1"]->GetRandom();
+      smear_bs_rz_eta3_2 = fns_["ip_bs_rz_eta1p2to2p1"]->GetRandom();
+
+    } 
+  
+ 
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
@@ -3295,6 +3642,375 @@ namespace ic {
     if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //ic::Vertex* refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == muon1->id()+muon2->id()) {refit_vertex = v; }
+      //}
+
+      ic::Vertex* refit_bs_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_bs_vec) {
+        if(v->id() == muon1->id()+muon2->id()) refit_bs_vertex = v;
+      }
+
+      refit_v_ndof_ = refit_bs_vertex->ndof();
+      refit_v_chi2_ = refit_bs_vertex->chi2();
+
+      std::pair<TVector3,double> ipandsig_bs_1 = IPAndSignificanceMuon(muon1, refit_bs_vertex);
+      std::pair<TVector3,double> ipandsig_bs_2 = IPAndSignificanceMuon(muon2, refit_bs_vertex);
+      TVector3 ip_bs_1 = ipandsig_bs_1.first;
+      TVector3 ip_bs_2 = ipandsig_bs_2.first;
+
+      ip_bs_mag_1_ = ip_bs_1.Mag();
+      ip_bs_mag_2_ = ip_bs_2.Mag();
+      ip_bs_nx_1_ = ip_bs_1.X();
+      ip_bs_ny_1_ = ip_bs_1.Y();
+      ip_bs_nz_1_ = ip_bs_1.Z();
+      ip_bs_nx_2_ = ip_bs_2.X();
+      ip_bs_ny_2_ = ip_bs_2.Y();
+      ip_bs_nz_2_ = ip_bs_2.Z();
+      ip_bs_theta_1_ = ip_bs_1.Theta();
+      ip_bs_theta_2_ = ip_bs_2.Theta();
+      ip_bs_phi_1_ = ip_bs_1.Phi();
+      ip_bs_phi_2_ = ip_bs_2.Phi();
+
+      TVector3 tvec_1(muon1->vector().X(), muon1->vector().Y(), muon1->vector().Z());
+      TVector3 tvec_2(muon2->vector().X(), muon2->vector().Y(), muon2->vector().Z());
+
+      ip_bs_dphi_1_ = tvec_1.DeltaPhi(ip_bs_1);
+      ip_bs_dphi_2_ = tvec_2.DeltaPhi(ip_bs_2);
+      ip_bs_deta_1_ = tvec_1.Eta() - ip_bs_1.Eta();
+      ip_bs_deta_2_ = tvec_2.Eta() - ip_bs_2.Eta();
+      ip_bs_dR_1_ = tvec_1.DeltaR(ip_bs_1);
+      ip_bs_dR_2_ = tvec_2.DeltaR(ip_bs_2);
+
+      ip_bs_sig_1_ = ipandsig_bs_1.second;
+      ip_bs_sig_2_ = ipandsig_bs_2.second;
+
+      // new smearing of tracking parameters
+
+      ip_bs_rx_1_ = muon1->vx() - refit_bs_vertex->vx(); 
+      ip_bs_ry_1_ = muon1->vy() - refit_bs_vertex->vy();
+      ip_bs_rz_1_ = muon1->vz() - refit_bs_vertex->vz();
+
+      ip_bs_rx_2_ = muon2->vx() - refit_bs_vertex->vx();
+      ip_bs_ry_2_ = muon2->vy() - refit_bs_vertex->vy();
+      ip_bs_rz_2_ = muon2->vz() - refit_bs_vertex->vz();
+
+      track_dphi_1_   = TVector2::Phi_mpi_pi(muon1->track_params()[2]-muon1->phi());
+      track_dphi_2_   = TVector2::Phi_mpi_pi(muon2->track_params()[2]-muon2->phi());
+      track_phi_1_    = muon1->track_params()[2];
+      track_phi_2_    = muon2->track_params()[2];
+      track_lambda_1_ = muon1->track_params()[1];
+      track_lambda_2_ = muon2->track_params()[1];
+      track_qoverp_1_ = muon1->track_params()[0];
+      track_qoverp_2_ = muon2->track_params()[0];
+
+      double smear_rx_eta_1 = 0.;
+      double smear_ry_eta_1 = 0.;
+      double smear_rz_eta_1 = 0.;
+      double smear_rx_eta_2 = 0.;
+      double smear_ry_eta_2 = 0.;
+      double smear_rz_eta_2 = 0.;
+
+      if(fabs(muon1->eta()) < 0.9) smear_rx_eta_1 = smear_bs_rx_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_rx_eta_1 = smear_bs_rx_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_rx_eta_1 = smear_bs_rx_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_rx_eta_1 = smear_bs_rx_eta3_1;
+
+      if(fabs(muon2->eta()) < 0.9) smear_rx_eta_2 = smear_bs_rx_eta1_2;
+      if(fabs(muon2->eta()) >= 0.9 && fabs(muon2->eta()) < 1.2) smear_rx_eta_2 = smear_bs_rx_eta2_2;
+      if(fabs(muon2->eta()) >= 1.2 && fabs(muon2->eta()) < 2.1) smear_rx_eta_2 = smear_bs_rx_eta3_2;
+      if(fabs(muon2->eta()) >= 2.1) smear_rx_eta_2 = smear_bs_rx_eta3_2;
+
+      if(fabs(muon1->eta()) < 0.9) smear_ry_eta_1 = smear_bs_ry_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_ry_eta_1 = smear_bs_ry_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_ry_eta_1 = smear_bs_ry_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_ry_eta_1 = smear_bs_ry_eta3_1;
+
+      if(fabs(muon2->eta()) < 0.9) smear_ry_eta_2 = smear_bs_ry_eta1_2;
+      if(fabs(muon2->eta()) >= 0.9 && fabs(muon2->eta()) < 1.2) smear_ry_eta_2 = smear_bs_ry_eta2_2;
+      if(fabs(muon2->eta()) >= 1.2 && fabs(muon2->eta()) < 2.1) smear_ry_eta_2 = smear_bs_ry_eta3_2;
+      if(fabs(muon2->eta()) >= 2.1) smear_ry_eta_2 = smear_bs_ry_eta3_2;
+
+      if(fabs(muon1->eta()) < 0.9) smear_rz_eta_1 = smear_bs_rz_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_rz_eta_1 = smear_bs_rz_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_rz_eta_1 = smear_bs_rz_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_rz_eta_1 = smear_bs_rz_eta3_1;
+
+      if(fabs(muon2->eta()) < 0.9) smear_rz_eta_2 = smear_bs_rz_eta1_2;
+      if(fabs(muon2->eta()) >= 0.9 && fabs(muon2->eta()) < 1.2) smear_rz_eta_2 = smear_bs_rz_eta2_2;
+      if(fabs(muon2->eta()) >= 1.2 && fabs(muon2->eta()) < 2.1) smear_rz_eta_2 = smear_bs_rz_eta3_2;
+      if(fabs(muon2->eta()) >= 2.1) smear_rz_eta_2 = smear_bs_rz_eta3_2;
+
+
+
+      if(is_data_) {
+        ip_bs_rx_smear_new_1_ = ip_bs_rx_1_;
+        ip_bs_rx_smear_new_2_ = ip_bs_rx_2_;
+        ip_bs_ry_smear_new_1_ = ip_bs_ry_1_;
+        ip_bs_ry_smear_new_2_ = ip_bs_ry_2_;
+        ip_bs_rz_smear_new_1_ = ip_bs_rz_1_;
+        ip_bs_rz_smear_new_2_ = ip_bs_rz_2_;
+
+      } else {
+        ip_bs_rx_smear_new_1_ = ip_bs_rx_1_+smear_rx_eta_1;
+        ip_bs_rx_smear_new_2_ = ip_bs_rx_2_+smear_rx_eta_2;
+        ip_bs_ry_smear_new_1_ = ip_bs_ry_1_+smear_ry_eta_1;
+        ip_bs_ry_smear_new_2_ = ip_bs_ry_2_+smear_ry_eta_2;
+        ip_bs_rz_smear_new_1_ = ip_bs_rz_1_+smear_rz_eta_1;
+        ip_bs_rz_smear_new_2_ = ip_bs_rz_2_+smear_rz_eta_2;
+
+      }
+
+      // eta binned results
+
+      Muon *muon1_smear_eta = new Muon(*(muon1));
+      Muon *muon2_smear_eta = new Muon(*(muon2));
+
+      muon1_smear_eta->set_vx(ip_bs_rx_smear_new_1_+refit_bs_vertex->vx());
+      muon1_smear_eta->set_vy(ip_bs_ry_smear_new_1_+refit_bs_vertex->vy());
+      muon1_smear_eta->set_vz(ip_bs_rz_smear_new_1_+refit_bs_vertex->vz());
+      muon2_smear_eta->set_vx(ip_bs_rx_smear_new_2_+refit_bs_vertex->vx());
+      muon2_smear_eta->set_vy(ip_bs_ry_smear_new_2_+refit_bs_vertex->vy());
+      muon2_smear_eta->set_vz(ip_bs_rz_smear_new_2_+refit_bs_vertex->vz());
+
+      // get correlated shifts
+
+      ip_bs_nx_smear_new_eta_2_corr0p0_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p0_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p0_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p1_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p1_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p1_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p2_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p2_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p2_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p3_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p3_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p3_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p4_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p4_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p4_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p5_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p5_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p5_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p6_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p6_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p6_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p7_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p7_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p7_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p8_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p8_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p8_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr0p9_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr0p9_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr0p9_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_2_corr1p0_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_2_corr1p0_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_2_corr1p0_ = ip_bs_nz_2_;
+
+      if(!is_data_) {
+        Muon *muon2_smear_eta_corr = new Muon(*(muon2));
+        muon2_smear_eta_corr->set_vx(0.0*smear_rx_eta_1 + (1.-0.0)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.0*smear_ry_eta_1 + (1.-0.0)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.0*smear_rz_eta_1 + (1.-0.0)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        TVector3 ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p0_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p0_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p0_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.1*smear_rx_eta_1 + (1.-0.1)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.1*smear_ry_eta_1 + (1.-0.1)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.1*smear_rz_eta_1 + (1.-0.1)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p1_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p1_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p1_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.2*smear_rx_eta_1 + (1.-0.2)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.2*smear_ry_eta_1 + (1.-0.2)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.2*smear_rz_eta_1 + (1.-0.2)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p2_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p2_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p2_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.3*smear_rx_eta_1 + (1.-0.3)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.3*smear_ry_eta_1 + (1.-0.3)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.3*smear_rz_eta_1 + (1.-0.3)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p3_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p3_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p3_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.4*smear_rx_eta_1 + (1.-0.4)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.4*smear_ry_eta_1 + (1.-0.4)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.4*smear_rz_eta_1 + (1.-0.4)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p4_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p4_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p4_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.5*smear_rx_eta_1 + (1.-0.5)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.5*smear_ry_eta_1 + (1.-0.5)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.5*smear_rz_eta_1 + (1.-0.5)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p5_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p5_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p5_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.6*smear_rx_eta_1 + (1.-0.6)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.6*smear_ry_eta_1 + (1.-0.6)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.6*smear_rz_eta_1 + (1.-0.6)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p6_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p6_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p6_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.7*smear_rx_eta_1 + (1.-0.7)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.7*smear_ry_eta_1 + (1.-0.7)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.7*smear_rz_eta_1 + (1.-0.7)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p7_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p7_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p7_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.8*smear_rx_eta_1 + (1.-0.8)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.8*smear_ry_eta_1 + (1.-0.8)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.8*smear_rz_eta_1 + (1.-0.8)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p8_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p8_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p8_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(0.9*smear_rx_eta_1 + (1.-0.9)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(0.9*smear_ry_eta_1 + (1.-0.9)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(0.9*smear_rz_eta_1 + (1.-0.9)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr0p9_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr0p9_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr0p9_ = ip_bs_smear_eta_2_corr.Z();
+        
+        muon2_smear_eta_corr->set_vx(1.0*smear_rx_eta_1 + (1.-1.0)*smear_rx_eta_2 +ip_bs_rx_2_+refit_bs_vertex->vx());
+        muon2_smear_eta_corr->set_vy(1.0*smear_ry_eta_1 + (1.-1.0)*smear_ry_eta_2 +ip_bs_ry_2_+refit_bs_vertex->vy());
+        muon2_smear_eta_corr->set_vz(1.0*smear_rz_eta_1 + (1.-1.0)*smear_rz_eta_2 +ip_bs_rz_2_+refit_bs_vertex->vz());
+        ip_bs_smear_eta_2_corr = IPAndSignificanceMuon(muon2_smear_eta_corr, refit_bs_vertex).first;
+        ip_bs_nx_smear_new_eta_2_corr1p0_ = ip_bs_smear_eta_2_corr.X();
+        ip_bs_ny_smear_new_eta_2_corr1p0_ = ip_bs_smear_eta_2_corr.Y();
+        ip_bs_nz_smear_new_eta_2_corr1p0_ = ip_bs_smear_eta_2_corr.Z();
+      }
+
+      std::pair<TVector3,double> ipandsig_bs_smear_eta_1 = IPAndSignificanceMuon(muon1_smear_eta, refit_bs_vertex);
+      std::pair<TVector3,double> ipandsig_bs_smear_eta_2 = IPAndSignificanceMuon(muon2_smear_eta, refit_bs_vertex);
+      TVector3 ip_bs_smear_eta_1 = ipandsig_bs_smear_eta_1.first;
+      TVector3 ip_bs_smear_eta_2 = ipandsig_bs_smear_eta_2.first;
+
+      ip_bs_dphi_smear_new_eta_1_ = tvec_1.DeltaPhi(ip_bs_smear_eta_1);
+      ip_bs_dphi_smear_new_eta_2_ = tvec_2.DeltaPhi(ip_bs_smear_eta_2);
+      ip_bs_deta_smear_new_eta_1_ = tvec_1.Eta() - ip_bs_smear_eta_1.Eta();
+      ip_bs_deta_smear_new_eta_2_ = tvec_2.Eta() - ip_bs_smear_eta_2.Eta();
+      ip_bs_dR_smear_new_eta_1_ = tvec_1.DeltaR(ip_bs_smear_eta_1);
+      ip_bs_dR_smear_new_eta_2_ = tvec_2.DeltaR(ip_bs_smear_eta_2);
+      ip_bs_phi_smear_new_eta_1_ = ip_bs_smear_eta_1.Phi();
+      ip_bs_phi_smear_new_eta_2_ = ip_bs_smear_eta_2.Phi();
+      ip_bs_theta_smear_new_eta_1_ = ip_bs_smear_eta_1.Theta();
+      ip_bs_theta_smear_new_eta_2_ = ip_bs_smear_eta_2.Theta();
+      ip_bs_nx_smear_new_eta_1_ = ip_bs_smear_eta_1.X();
+      ip_bs_nx_smear_new_eta_2_ = ip_bs_smear_eta_2.X();
+      ip_bs_ny_smear_new_eta_1_ = ip_bs_smear_eta_1.Y();
+      ip_bs_ny_smear_new_eta_2_ = ip_bs_smear_eta_2.Y();
+      ip_bs_nz_smear_new_eta_1_ = ip_bs_smear_eta_1.Z();
+      ip_bs_nz_smear_new_eta_2_ = ip_bs_smear_eta_2.Z();
+      ip_bs_mag_smear_new_eta_1_ = ip_bs_smear_eta_1.Mag();
+      ip_bs_mag_smear_new_eta_2_ = ip_bs_smear_eta_2.Mag();
+
+      ip_bs_sig_smear_new_eta_1_ = ipandsig_bs_smear_eta_1.second;
+      ip_bs_sig_smear_new_eta_2_ = ipandsig_bs_smear_eta_2.second;
+
+      TVector3 ip1 = ip_bs_smear_eta_1.Unit();
+      TLorentzVector lvec1 = TLorentzVector(ip1, 0.);
+      TLorentzVector lvec3 = ConvertToLorentz(muon1->vector());
+      TLorentzVector lvec4 = ConvertToLorentz(muon2->vector());
+      TVector3 ip2 = ip_bs_smear_eta_2.Unit();
+      TLorentzVector lvec2 = TLorentzVector(ip2, 0.);
+
+      aco_angle_6_smear_eta_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+      // uncerts check
+
+      ip_bs_nx_smear_new_eta_1_up_ = ip_bs_nx_1_; 
+      ip_bs_nx_smear_new_eta_2_up_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_1_up_ = ip_bs_ny_1_;
+      ip_bs_ny_smear_new_eta_2_up_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_1_up_ = ip_bs_nz_1_;
+      ip_bs_nz_smear_new_eta_2_up_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_1_down_ = ip_bs_nx_1_; 
+      ip_bs_nx_smear_new_eta_2_down_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_1_down_ = ip_bs_ny_1_;
+      ip_bs_ny_smear_new_eta_2_down_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_1_down_ = ip_bs_nz_1_;
+      ip_bs_nz_smear_new_eta_2_down_ = ip_bs_nz_2_;
+
+
+      if(!is_data_){
+        Muon *muon_smear_eta_uncert = new Muon(*(muon1));
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_1_+smear_rx_eta_1*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_1_+smear_ry_eta_1*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_1_+smear_rz_eta_1*0.3+refit_bs_vertex->vz());
+        TVector3 ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.Z();
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_1_-smear_rx_eta_1*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_1_-smear_ry_eta_1*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_1_-smear_rz_eta_1*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.Z();
+
+        muon_smear_eta_uncert = new Muon(*(muon2));
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_2_+smear_rx_eta_2*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_2_+smear_ry_eta_2*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_2_+smear_rz_eta_2*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.Z();
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_2_-smear_rx_eta_2*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_2_-smear_ry_eta_2*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_2_-smear_rz_eta_2*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.Z();
+
+      }
+
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
@@ -3977,6 +4693,7 @@ namespace ic {
     mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
+
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
@@ -4030,8 +4747,8 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
-      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands);
-      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands);
+      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
+      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);
       q_tot_1_=0., q_tot_2_=0.;
 
       for(auto c : charged_cands_1) q_tot_1_+=c->charge();
@@ -4062,6 +4779,9 @@ namespace ic {
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+        if(tau1->charge()<0) alpha_ = AlphaAngle(lvec3.Vect(), ip1);
+        else                 alpha_ = AlphaAngle(lvec4.Vect(), ip2);
       }
 
       if((tau_decay_mode_1_==1&&tau_decay_mode_2_==0) || (tau_decay_mode_1_==0&&tau_decay_mode_2_==1)) {
@@ -4342,40 +5062,71 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      //std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      std::vector<ic::Vertex*> & refit_vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = new ic::Vertex();
       if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
         if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
       }
 
-      auto primary_vtx = refit_vertex;
+      ic::Vertex* refit_bs_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_bs_vec) {
+        if(v->id() == muon1->id()+tau2->id()) refit_bs_vertex = v;
+      }
 
-      pvtosv1.SetXYZT(
-              muon1->vx() - refit_vertex->vx(),
-              muon1->vy() - refit_vertex->vy(),
-              muon1->vz() - refit_vertex->vz(),
-              0.);
+      refit_v_ndof_ = refit_bs_vertex->ndof();
+      refit_v_chi2_ = refit_bs_vertex->chi2();
 
-      TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+      //auto primary_vtx = refit_vertex;
+
+//      pvtosv1.SetXYZT(
+//              muon1->vx() - refit_bs_vertex->vx(),
+//              muon1->vy() - refit_bs_vertex->vy(),
+//              muon1->vz() - refit_bs_vertex->vz(),
+//              0.);
+
+      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
+      std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
+      TVector3 ip_1 = ipandsig_1.first;
+      TVector3 ip_2 = ipandsig_2.first;
+
+      std::pair<TVector3,double> ipandsig_bs_1 = IPAndSignificanceMuon(muon1, refit_bs_vertex);
+      std::pair<TVector3,double> ipandsig_bs_2 = IPAndSignificance(tau2, refit_bs_vertex,pfcands);
+      TVector3 ip_bs_1 = ipandsig_bs_1.first;
+      TVector3 ip_bs_2 = ipandsig_bs_2.first;
+
+      //TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+      //TVector3 ip1 = ip_1.Unit();
+      TVector3 ip1 = ip_bs_1.Unit();
       lvec1 = TLorentzVector(ip1, 0.);
+      //lvec1 = pvtosv1.Unit();
       lvec3 = ConvertToLorentz(muon1->vector());
 
+      //pvtosv1.SetXYZT(ip_1.X(),ip_1.Y(),ip_1.Z(),0.);
 
       if(tau_decay_mode_2_==0) {
         cp_channel_=5;
 
-        TLorentzVector pvtosv2(
-                tau2->svx() - primary_vtx->vx(),
-                tau2->svy() - primary_vtx->vy(),
-                tau2->svz() - primary_vtx->vz(),
-                0.);
+        //TLorentzVector pvtosv2(
+        //        tau2->svx() - refit_bs_vertex->vx(),
+        //        tau2->svy() - refit_bs_vertex->vy(),
+        ///        tau2->svz() - refit_bs_vertex->vz(),
+        //        0.);
+
+        //TLorentzVector pvtosv2(ip_2.X(),ip_2.Y(),ip_2.Z(),0.); 
+
         lvec4 = ConvertToLorentz(tau2->vector()); 
 
-        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //TVector3 ip2 = ip_2.Unit();
+        TVector3 ip2 = ip_bs_2.Unit();
+        //lvec2 = pvtosv2.Unit();
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+        if(muon1->charge()<0) alpha_ = AlphaAngle(lvec3.Vect(), ip1);
+        else                  alpha_ = AlphaAngle(lvec4.Vect(), ip2);
       }
 
       if(tau_decay_mode_2_==1) {
@@ -4391,16 +5142,21 @@ namespace ic {
         lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
 
         cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
-        TLorentzVector pvtosv2(
-                tau2->svx() - primary_vtx->vx(),
-                tau2->svy() - primary_vtx->vy(),
-                tau2->svz() - primary_vtx->vz(),
-                0.);
+        //TLorentzVector pvtosv2(
+        //        tau2->svx() - refit_bs_vertex->vx(),
+        //        tau2->svy() - refit_bs_vertex->vy(),
+        //        tau2->svz() - refit_bs_vertex->vz(),
+        //        0.);
+
+        //TLorentzVector pvtosv2(ip_2.X(),ip_2.Y(),ip_2.Z(),0.); 
         
         TLorentzVector lvec4_2 = ConvertToLorentz(tau2->vector());
 
-        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
+        TVector3 ip2 = ip_2.Unit();
+        //TVector3 ip2 = ip_bs_2.Unit();
         TLorentzVector lvec2_2 = TLorentzVector(ip2, 0.);
+        //TLorentzVector lvec2_2 = pvtosv2.Unit();
 
         aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         if (cp_sign_<0) {
@@ -4438,10 +5194,215 @@ namespace ic {
           }
       }
 
-      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
-      ip_mag_2_ = ipandsig_2.first.Mag();
-      ip_sig_2_ = ipandsig_2.second;
-      
+
+      ip_bs_mag_1_ = ip_bs_1.Mag();
+      ip_bs_mag_2_ = ip_bs_2.Mag();
+      ip_bs_nx_1_ = ip_bs_1.X();
+      ip_bs_ny_1_ = ip_bs_1.Y();
+      ip_bs_nz_1_ = ip_bs_1.Z();
+      ip_bs_nx_2_ = ip_bs_2.X();
+      ip_bs_ny_2_ = ip_bs_2.Y();
+      ip_bs_nz_2_ = ip_bs_2.Z();
+      ip_bs_theta_1_ = ip_bs_1.Theta();
+      ip_bs_theta_2_ = ip_bs_2.Theta();
+      ip_bs_phi_1_ = ip_bs_1.Phi();
+      ip_bs_phi_2_ = ip_bs_2.Phi();
+
+
+      TVector3 tvec_1(muon1->vector().X(), muon1->vector().Y(), muon1->vector().Z());
+      TVector3 tvec_2(tau2->vector().X(), tau2->vector().Y(), tau2->vector().Z());
+
+      ip_bs_dphi_1_ = tvec_1.DeltaPhi(ip_bs_1);
+      ip_bs_dphi_2_ = tvec_2.DeltaPhi(ip_bs_2);
+      ip_bs_deta_1_ = tvec_1.Eta() - ip_bs_1.Eta();
+      ip_bs_deta_2_ = tvec_2.Eta() - ip_bs_2.Eta();
+      ip_bs_dR_1_ = tvec_1.DeltaR(ip_bs_1);
+      ip_bs_dR_2_ = tvec_2.DeltaR(ip_bs_2);
+
+      ip_bs_sig_1_ = ipandsig_bs_1.second;
+      ip_bs_sig_2_ = ipandsig_bs_2.second;
+
+      // new smearing of tracking parameters
+
+      ip_bs_rx_1_ = muon1->vx() - refit_bs_vertex->vx();
+      ip_bs_ry_1_ = muon1->vy() - refit_bs_vertex->vy();
+      ip_bs_rz_1_ = muon1->vz() - refit_bs_vertex->vz();
+
+      ip_bs_rx_2_ = tau2->svx() - refit_bs_vertex->vx();
+      ip_bs_ry_2_ = tau2->svy() - refit_bs_vertex->vy();
+      ip_bs_rz_2_ = tau2->svz() - refit_bs_vertex->vz();
+
+      // new smearing of tracking parameters
+
+      track_dphi_1_   = TVector2::Phi_mpi_pi(muon1->track_params()[2]-muon1->phi());
+      track_dphi_2_   = TVector2::Phi_mpi_pi(tau2->track_params()[2]-tau2->phi());
+      track_phi_1_    = muon1->track_params()[2];
+      track_phi_2_    = tau2->track_params()[2];
+      track_lambda_1_ = muon1->track_params()[1];
+      track_lambda_2_ = tau2->track_params()[1];
+      track_qoverp_1_ = muon1->track_params()[0];
+      track_qoverp_2_ = tau2->track_params()[0];
+
+      double smear_rx_eta_1 = 0.;
+      double smear_ry_eta_1 = 0.;
+      double smear_rz_eta_1 = 0.;
+      double smear_rx_eta_2 = 0.;
+      double smear_ry_eta_2 = 0.;
+      double smear_rz_eta_2 = 0.;
+
+      if(fabs(muon1->eta()) < 0.9) smear_rx_eta_1 = smear_bs_rx_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_rx_eta_1 = smear_bs_rx_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_rx_eta_1 = smear_bs_rx_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_rx_eta_1 = smear_bs_rx_eta3_1;
+
+      if(fabs(tau2->eta()) < 0.9) smear_rx_eta_2 = smear_bs_rx_eta1_2;
+      if(fabs(tau2->eta()) >= 0.9 && fabs(tau2->eta()) < 1.2) smear_rx_eta_2 = smear_bs_rx_eta2_2;
+      if(fabs(tau2->eta()) >= 1.2 && fabs(tau2->eta()) < 2.1) smear_rx_eta_2 = smear_bs_rx_eta3_2;
+      if(fabs(tau2->eta()) >= 2.1) smear_rx_eta_2 = smear_bs_rx_eta3_2;
+
+      if(fabs(muon1->eta()) < 0.9) smear_ry_eta_1 = smear_bs_ry_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_ry_eta_1 = smear_bs_ry_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_ry_eta_1 = smear_bs_ry_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_ry_eta_1 = smear_bs_ry_eta3_1;
+
+      if(fabs(tau2->eta()) < 0.9) smear_ry_eta_2 = smear_bs_ry_eta1_2;
+      if(fabs(tau2->eta()) >= 0.9 && fabs(tau2->eta()) < 1.2) smear_ry_eta_2 = smear_bs_ry_eta2_2;
+      if(fabs(tau2->eta()) >= 1.2 && fabs(tau2->eta()) < 2.1) smear_ry_eta_2 = smear_bs_ry_eta3_2;
+      if(fabs(tau2->eta()) >= 2.1) smear_ry_eta_2 = smear_bs_ry_eta3_2;
+
+      if(fabs(muon1->eta()) < 0.9) smear_rz_eta_1 = smear_bs_rz_eta1_1;
+      if(fabs(muon1->eta()) >= 0.9 && fabs(muon1->eta()) < 1.2) smear_rz_eta_1 = smear_bs_rz_eta2_1;
+      if(fabs(muon1->eta()) >= 1.2 && fabs(muon1->eta()) < 2.1) smear_rz_eta_1 = smear_bs_rz_eta3_1;
+      if(fabs(muon1->eta()) >= 2.1) smear_rz_eta_1 = smear_bs_rz_eta3_1;
+
+      if(fabs(tau2->eta()) < 0.9) smear_rz_eta_2 = smear_bs_rz_eta1_2;
+      if(fabs(tau2->eta()) >= 0.9 && fabs(tau2->eta()) < 1.2) smear_rz_eta_2 = smear_bs_rz_eta2_2;
+      if(fabs(tau2->eta()) >= 1.2 && fabs(tau2->eta()) < 2.1) smear_rz_eta_2 = smear_bs_rz_eta3_2;
+      if(fabs(tau2->eta()) >= 2.1) smear_rz_eta_2 = smear_bs_rz_eta3_2;
+
+      if(is_data_) {
+        ip_bs_rx_smear_new_1_ = ip_bs_rx_1_;
+        ip_bs_rx_smear_new_2_ = ip_bs_rx_2_;
+        ip_bs_ry_smear_new_1_ = ip_bs_ry_1_;
+        ip_bs_ry_smear_new_2_ = ip_bs_ry_2_;
+        ip_bs_rz_smear_new_1_ = ip_bs_rz_1_;
+        ip_bs_rz_smear_new_2_ = ip_bs_rz_2_;
+      } else {
+        ip_bs_rx_smear_new_1_ = ip_bs_rx_1_+smear_rx_eta_1;
+        ip_bs_rx_smear_new_2_ = ip_bs_rx_2_+smear_rx_eta_2;
+        ip_bs_ry_smear_new_1_ = ip_bs_ry_1_+smear_ry_eta_1;
+        ip_bs_ry_smear_new_2_ = ip_bs_ry_2_+smear_ry_eta_2;
+        ip_bs_rz_smear_new_1_ = ip_bs_rz_1_+smear_rz_eta_1;
+        ip_bs_rz_smear_new_2_ = ip_bs_rz_2_+smear_rz_eta_2;
+
+      }
+
+      // eta dep smearing
+
+      Muon *muon1_smear_eta = new Muon(*(muon1));
+      Tau *tau2_smear_eta = new Tau(*(tau2));
+
+      muon1_smear_eta->set_vx(ip_bs_rx_smear_new_1_+refit_bs_vertex->vx());
+      muon1_smear_eta->set_vy(ip_bs_ry_smear_new_1_+refit_bs_vertex->vy());
+      muon1_smear_eta->set_vz(ip_bs_rz_smear_new_1_+refit_bs_vertex->vz());
+      tau2_smear_eta->set_svx(ip_bs_rx_smear_new_2_+refit_bs_vertex->vx());
+      tau2_smear_eta->set_svy(ip_bs_ry_smear_new_2_+refit_bs_vertex->vy());
+      tau2_smear_eta->set_svz(ip_bs_rz_smear_new_2_+refit_bs_vertex->vz());
+
+      std::pair<TVector3,double> ipandsig_bs_smear_eta_1 = IPAndSignificanceMuon(muon1_smear_eta, refit_bs_vertex);
+      std::pair<TVector3,double> ipandsig_bs_smear_eta_2 = IPAndSignificance(tau2_smear_eta, refit_bs_vertex,pfcands);
+      TVector3 ip_bs_smear_eta_1 = ipandsig_bs_smear_eta_1.first;
+      TVector3 ip_bs_smear_eta_2 = ipandsig_bs_smear_eta_2.first;
+
+      ip_bs_dphi_smear_new_eta_1_ = tvec_1.DeltaPhi(ip_bs_smear_eta_1);
+      ip_bs_dphi_smear_new_eta_2_ = tvec_2.DeltaPhi(ip_bs_smear_eta_2);
+      ip_bs_deta_smear_new_eta_1_ = tvec_1.Eta() - ip_bs_smear_eta_1.Eta();
+      ip_bs_deta_smear_new_eta_2_ = tvec_2.Eta() - ip_bs_smear_eta_2.Eta();
+      ip_bs_dR_smear_new_eta_1_ = tvec_1.DeltaR(ip_bs_smear_eta_1);
+      ip_bs_dR_smear_new_eta_2_ = tvec_2.DeltaR(ip_bs_smear_eta_2);
+      ip_bs_phi_smear_new_eta_1_ = ip_bs_smear_eta_1.Phi();
+      ip_bs_phi_smear_new_eta_2_ = ip_bs_smear_eta_2.Phi();
+      ip_bs_theta_smear_new_eta_1_ = ip_bs_smear_eta_1.Theta();
+      ip_bs_theta_smear_new_eta_2_ = ip_bs_smear_eta_2.Theta();
+      ip_bs_nx_smear_new_eta_1_ = ip_bs_smear_eta_1.X();
+      ip_bs_nx_smear_new_eta_2_ = ip_bs_smear_eta_2.X();
+      ip_bs_ny_smear_new_eta_1_ = ip_bs_smear_eta_1.Y();
+      ip_bs_ny_smear_new_eta_2_ = ip_bs_smear_eta_2.Y();
+      ip_bs_nz_smear_new_eta_1_ = ip_bs_smear_eta_1.Z();
+      ip_bs_nz_smear_new_eta_2_ = ip_bs_smear_eta_2.Z();
+      ip_bs_mag_smear_new_eta_1_ = ip_bs_smear_eta_1.Mag();
+      ip_bs_mag_smear_new_eta_2_ = ip_bs_smear_eta_2.Mag();
+
+      ip_bs_sig_smear_new_eta_1_ = ipandsig_bs_smear_eta_1.second;
+      ip_bs_sig_smear_new_eta_2_ = ipandsig_bs_smear_eta_2.second;
+
+      ip1 = ip_bs_smear_eta_1.Unit();
+      lvec1 = TLorentzVector(ip1, 0.);
+      lvec3 = ConvertToLorentz(muon1->vector());
+      lvec4 = ConvertToLorentz(tau2->vector());
+      TVector3 ip2 = ip_bs_smear_eta_2.Unit();
+      lvec2 = TLorentzVector(ip2, 0.);
+
+      aco_angle_6_smear_eta_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+      // uncerts check
+
+      ip_bs_nx_smear_new_eta_1_up_ = ip_bs_nx_1_; 
+      ip_bs_nx_smear_new_eta_2_up_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_1_up_ = ip_bs_ny_1_;
+      ip_bs_ny_smear_new_eta_2_up_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_1_up_ = ip_bs_nz_1_;
+      ip_bs_nz_smear_new_eta_2_up_ = ip_bs_nz_2_;
+
+      ip_bs_nx_smear_new_eta_1_down_ = ip_bs_nx_1_; 
+      ip_bs_nx_smear_new_eta_2_down_ = ip_bs_nx_2_;
+      ip_bs_ny_smear_new_eta_1_down_ = ip_bs_ny_1_;
+      ip_bs_ny_smear_new_eta_2_down_ = ip_bs_ny_2_;
+      ip_bs_nz_smear_new_eta_1_down_ = ip_bs_nz_1_;
+      ip_bs_nz_smear_new_eta_2_down_ = ip_bs_nz_2_;
+
+      if(!is_data_){
+        Muon *muon_smear_eta_uncert = new Muon(*(muon1));
+        Tau *tau_smear_eta_uncert = new Tau(*(tau2));
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_1_+smear_rx_eta_1*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_1_+smear_ry_eta_1*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_1_+smear_rz_eta_1*0.3+refit_bs_vertex->vz());
+        TVector3 ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_1_up_ = ip_bs_smear_eta_uncert.Z();
+
+        muon_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_1_-smear_rx_eta_1*0.3+refit_bs_vertex->vx());
+        muon_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_1_-smear_ry_eta_1*0.3+refit_bs_vertex->vy());
+        muon_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_1_-smear_rz_eta_1*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificanceMuon(muon_smear_eta_uncert, refit_bs_vertex).first;
+
+        ip_bs_nx_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_1_down_ = ip_bs_smear_eta_uncert.Z();
+
+        tau_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_2_+smear_rx_eta_2*0.3+refit_bs_vertex->vx());
+        tau_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_2_+smear_ry_eta_2*0.3+refit_bs_vertex->vy());
+        tau_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_2_+smear_rz_eta_2*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificance(tau_smear_eta_uncert, refit_bs_vertex,pfcands).first;
+
+        ip_bs_nx_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_2_up_ = ip_bs_smear_eta_uncert.Z();
+
+        tau_smear_eta_uncert->set_vx(ip_bs_rx_smear_new_2_-smear_rx_eta_2*0.3+refit_bs_vertex->vx());
+        tau_smear_eta_uncert->set_vy(ip_bs_ry_smear_new_2_-smear_ry_eta_2*0.3+refit_bs_vertex->vy());
+        tau_smear_eta_uncert->set_vz(ip_bs_rz_smear_new_2_-smear_rz_eta_2*0.3+refit_bs_vertex->vz());
+        ip_bs_smear_eta_uncert = IPAndSignificance(tau_smear_eta_uncert, refit_bs_vertex,pfcands).first;
+
+        ip_bs_nx_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.X();
+        ip_bs_ny_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.Y();
+        ip_bs_nz_smear_new_eta_2_down_ = ip_bs_smear_eta_uncert.Z();
+
+      }
+ 
     }
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {
       Electron const* ele1 = dynamic_cast<Electron const*>(lep1);
