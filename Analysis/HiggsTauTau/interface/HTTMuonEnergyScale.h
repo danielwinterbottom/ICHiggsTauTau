@@ -14,8 +14,8 @@ class HTTMuonEnergyScale : public ModuleBase {
   CLASS_MEMBER(HTTMuonEnergyScale, ic::channel, channel)
   CLASS_MEMBER(HTTMuonEnergyScale, ic::strategy, strategy)
   CLASS_MEMBER(HTTMuonEnergyScale, std::string, input_label)
-  CLASS_MEMBER(HTTMuonEnergyScale, double, near_endcap)
   CLASS_MEMBER(HTTMuonEnergyScale, double, far_endcap)
+  CLASS_MEMBER(HTTMuonEnergyScale, double, near_endcap)
   CLASS_MEMBER(HTTMuonEnergyScale, double, barrel)
 
 
