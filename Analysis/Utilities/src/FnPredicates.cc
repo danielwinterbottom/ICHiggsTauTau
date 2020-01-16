@@ -206,16 +206,17 @@ namespace ic {
       && jet->charged_multiplicity()      > 0
       && jet->charged_em_energy_frac()    < 0.99;
     } else if (eta <= 2.7){
-      result = neutralFrac < 0.99
-      && jet->neutral_em_energy_frac()   < 0.99
+      result = neutralFrac < 0.90 // 0.99 (loose)
+      && jet->neutral_em_energy_frac()   < 0.90 // 0.99 (loose)
       && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     } else if(eta<=3.0){
-      result = jet->neutral_em_energy_frac()    < 0.90
-      && jet->neutral_multiplicity() > 2;
+      result = jet->neutral_em_energy_frac() > 0.01
+      && jet->neutralFrac()                  < 0.98
+      && jet->neutral_multiplicity()         > 2;
     }
     else{
-      result = jet->neutral_em_energy_frac()    < 0.90
-      && jet->neutral_multiplicity()>10;
+      result = jet->neutral_em_energy_frac() < 0.90
+      && jet->neutral_multiplicity()         > 10;
     }
     return result;
   } 
