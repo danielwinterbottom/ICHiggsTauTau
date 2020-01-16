@@ -63,7 +63,8 @@ defaults = {
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
     "syst_scale_j_relbal":"", "syst_scale_j_abs":"", "syst_scale_j_abs_year":"",
     "syst_scale_j_flav":"", "syst_scale_j_bbec1":"", "syst_scale_j_bbec1_year":"",
-    "syst_scale_j_ec2":"", "syst_scale_j_hf":"", "syst_scale_j_hf_year":"",
+    "syst_scale_j_ec2":"", "syst_scale_j_ec2_year":"",
+    "syst_scale_j_hf":"", "syst_scale_j_hf_year":"",
     "syst_scale_j_relsamp_year":"",
 
 }
