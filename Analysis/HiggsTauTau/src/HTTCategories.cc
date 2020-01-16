@@ -7,7 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/HHKinFit/include/HHKinFitMaster.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/HHKinFit/include/HHDiJetKinFitMaster.h"
 #include "Utilities/interface/FnRootTools.h"
-
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "TMVA/Reader.h"
 #include "TVector3.h"
 #include "boost/format.hpp"
@@ -150,6 +150,15 @@ namespace ic {
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
+      }
+
+      if(channel_==channel::mt && (strategy_==strategy::legacy16 || strategy_==strategy::cpdecays17 || strategy_==strategy::cpdecays18)){
+        outtree_->Branch("trg_matched", &trg_matched_);
+        outtree_->Branch("trg_matched_alt1", &trg_matched_alt1_);
+        outtree_->Branch("trg_matched_alt2", &trg_matched_alt2_);
+        outtree_->Branch("trg_matched_alt3", &trg_matched_alt3_);
+        
+        outtree_->Branch("trg_etau_matched", &trg_etau_matched_);
       }
      
       if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
@@ -5101,7 +5110,208 @@ namespace ic {
     // signal background event classification
     IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;
     IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<float>("IC_BDT_max_index") : -999.0;
+   
+
+    if (channel_ == channel::mt){
+        trg_matched_ = false;
+        trg_matched_alt1_ = false;
+        trg_matched_alt2_ = false;
+        trg_matched_alt3_ = false;
+        std::pair<bool, unsigned> match;
+        std::pair<bool, unsigned> match_alt1;
+        std::pair<bool, unsigned> match_alt2;
+        std::pair<bool, unsigned> match_alt3;
+        
+        trg_etau_matched_ = false;
+        std::pair<bool, unsigned> match_etau;
+
+        if(strategy_ == strategy::legacy16){
+            //******tt channel********
+            std::string trg_label="triggerObjectsIsoMu19erMediumIsoTau32";
+            std::string filter_Data_MC="hltOverlapFilterIsoMu19MediumIsoPFTau32Reg";
+            std::string filter_Embed = "hltPFTau32Reg";
+            
+            std::string trg_label_alt1="triggerObjectsIsoMu19erMediumCombinedIsoTau32";
+            std::string filter_Data_MC_alt1="hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg";
+            std::string filter_Embed_alt1 = "hltPFTau32Reg";
+            
+            std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_label);
+            std::vector<TriggerObject *> const& objs_alt1 = event->GetPtrVec<TriggerObject>(trg_label_alt1);
+            
+            if (is_embedded_){ 
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Embed, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Embed_alt1, 0.5);
+            } else{
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Data_MC, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Data_MC_alt1, 0.5);
+            }
+            //HLT pt cut
+            if (match.first)  trg_matched_ = objs[match.second]->vector().Pt()>35;  
+            if (match_alt1.first)  trg_matched_alt1_ = objs_alt1[match_alt1.second]->vector().Pt()>35;  
+
+        }  else if(strategy_ == strategy::cpdecays17){
+            //*****tt channel********
+            std::string trg_label="triggerObjectsMu24TightIsoTightIDTau35";
+            std::string filter_Data_MC="hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+            std::string filter_Embed = "hltSingleL2IsoTau26eta2p2";
+            
+            std::string trg_label_alt1="triggerObjectsMu24MediumIsoTau35";
+            std::string filter_Data_MC_alt1="hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+            std::string filter_Embed_alt1 = "hltSingleL2IsoTau26eta2p2";
+            
+            std::string trg_label_alt2="triggerObjectsMu24TightIsoTau35";
+            std::string filter_Data_MC_alt2="hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg";
+            std::string filter_Embed_alt2 = "hltSingleL2IsoTau26eta2p2";
+            
+            std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_label);
+            std::vector<TriggerObject *> const& objs_alt1 = event->GetPtrVec<TriggerObject>(trg_label_alt1);
+            std::vector<TriggerObject *> const& objs_alt2 = event->GetPtrVec<TriggerObject>(trg_label_alt2);
+            
+            if (is_embedded_){ 
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Embed, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Embed_alt1, 0.5);
+                match_alt2 = IsFilterMatchedWithIndex(lep2, objs_alt2, filter_Embed_alt2, 0.5);
+            } else{
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Data_MC, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Data_MC_alt1, 0.5);
+                match_alt2 = IsFilterMatchedWithIndex(lep2, objs_alt2, filter_Data_MC_alt2, 0.5);
+            }
+            //HLT pt cut
+            if (match.first)  trg_matched_ = true;//no HLT pt cut, when 'true'
+            if (match_alt1.first)  trg_matched_alt1_ = true;
+            if (match_alt2.first)  trg_matched_alt2_ = objs_alt2[match_alt2.second]->vector().Pt()>40;
+
+            //L1 cut
+            std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+            std::vector<ic::L1TObject*> passed_l1_taus;
+            for(unsigned ta=0; ta<l1taus.size(); ++ta){
+                if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+            }
+            std::vector<Candidate const *> match_tau;
+            match_tau.push_back(lep2);
+            bool match_l1_part = (MatchByDR(match_tau,passed_l1_taus,0.5,true,true)).size() == 1;
+            trg_matched_ = trg_matched_ && match_l1_part;
+            trg_matched_alt1_ = trg_matched_alt1_ && match_l1_part;
+            trg_matched_alt2_ = trg_matched_alt2_ && match_l1_part;
+            //*****et channel********
+            std::string trg_etau_label = "triggerObjectsIsoMu20Tau27";
+            std::string filter_etau_Data_MC = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+            std::string filter_etau_Embed = "hltL1sMu18erTau24erIorMu20erTau24er";
+            
+            std::vector<TriggerObject *> const& objs_etau = event->GetPtrVec<TriggerObject>(trg_etau_label);
+
+            if (is_embedded_) 
+                match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Embed, 0.5);
+            else
+                match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Data_MC, 0.5);
+           
+            //HLT pt cut
+            if (match_etau.first)  trg_etau_matched_ = objs_etau[match_etau.second]->vector().Pt()>30;
+            
+            //L1 cut
+            std::vector<ic::L1TObject*> passed_l1_taus_etau;
+            for(unsigned ta=0; ta<l1taus.size(); ++ta){
+                if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);  
+            }
+            bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+            trg_etau_matched_ = trg_etau_matched_ && match_l1_part_etau;
+
+
+
+        }  else if(strategy_ == strategy::cpdecays18){
+            //*****tt channel******
+            std::string trg_label="triggerObjectsMu24TightIsoTightIDTau35";
+            std::string filter_Data_MC="hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+            std::string filter_Embed = "hltSingleL2IsoTau26eta2p2";
+            
+            std::string trg_label_alt1="triggerObjectsMu24MediumIsoTau35";
+            std::string filter_Data_MC_alt1="hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+            std::string filter_Embed_alt1 = "hltSingleL2IsoTau26eta2p2";
+            
+            std::string trg_label_alt2="triggerObjectsMu24TightIsoTau35";
+            std::string filter_Data_MC_alt2="hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg";
+            std::string filter_Embed_alt2 = "hltSingleL2IsoTau26eta2p2";
+            
+            std::string trg_label_alt3="triggerObjectsMu24MediumIsoTauHPS35";
+            std::string filter_Data_MC_alt3="hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
+            std::string filter_Embed_alt3 = "hltSingleL2IsoTau26eta2p2";
+            
+            std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_label);
+            std::vector<TriggerObject *> const& objs_alt1 = event->GetPtrVec<TriggerObject>(trg_label_alt1);
+            std::vector<TriggerObject *> const& objs_alt2 = event->GetPtrVec<TriggerObject>(trg_label_alt2);
+            std::vector<TriggerObject *> const& objs_alt3 = event->GetPtrVec<TriggerObject>(trg_label_alt3);
+            
+            if (is_embedded_){ 
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Embed, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Embed_alt1, 0.5);
+                match_alt2 = IsFilterMatchedWithIndex(lep2, objs_alt2, filter_Embed_alt2, 0.5);
+                match_alt3 = IsFilterMatchedWithIndex(lep2, objs_alt3, filter_Embed_alt3, 0.5);
+            } else{
+                match = IsFilterMatchedWithIndex(lep2, objs, filter_Data_MC, 0.5);
+                match_alt1 = IsFilterMatchedWithIndex(lep2, objs_alt1, filter_Data_MC_alt1, 0.5);
+                match_alt2 = IsFilterMatchedWithIndex(lep2, objs_alt2, filter_Data_MC_alt2, 0.5);
+                match_alt3 = IsFilterMatchedWithIndex(lep2, objs_alt3, filter_Data_MC_alt3, 0.5);
+            }
+            //HLT pt cut
+            if (match.first)  trg_matched_ = true; //no HLT pt cut, when 'true'
+            if (match_alt1.first)  trg_matched_alt1_ = true;
+            if (match_alt2.first)  trg_matched_alt2_ = objs_alt2[match_alt2.second]->vector().Pt()>40; 
+            if (match_alt3.first)  trg_matched_alt3_ = true;
+            
+            //L1 cut
+            std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+            std::vector<ic::L1TObject*> passed_l1_taus;
+            for(unsigned ta=0; ta<l1taus.size(); ++ta){
+                if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
+            }
+            std::vector<Candidate const *> match_tau;
+            match_tau.push_back(lep2);
+            bool match_l1_part = (MatchByDR(match_tau, passed_l1_taus, 0.5, true, true)).size() == 1;
+            
+            trg_matched_alt3_ = trg_matched_alt3_ && match_l1_part; 
+            if(is_embedded_ || is_data_){
+            trg_matched_ = trg_matched_ && match_l1_part;
+            trg_matched_alt1_ = trg_matched_alt1_ && match_l1_part;
+            trg_matched_alt2_ = trg_matched_alt2_ && match_l1_part; 
+            } else {//MC only uses HPS
+            trg_matched_ = false;
+            trg_matched_alt1_ = false;
+            trg_matched_alt2_ = false;
+            }
+            
+            //*****et channel********
+            std::string trg_etau_label = "triggerObjectsIsoMu20TauHPS27";
+            std::string filter_etau_Data_MC = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+            std::string filter_etau_Embed = "hltL1sBigORMu18erTauXXer2p1";
+            
+            std::vector<TriggerObject *> const& objs_etau = event->GetPtrVec<TriggerObject>(trg_etau_label);
+
+            if (is_embedded_)
+                match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Embed, 0.5);
+            else
+                match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Data_MC, 0.5);
+            
+            //HLT pt cut
+           if (match_etau.first)  trg_etau_matched_ = objs_etau[match_etau.second]->vector().Pt()>30;
+            
+            //L1 cut
+            std::vector<ic::L1TObject*> passed_l1_taus_etau;
+            for(unsigned ta=0; ta<l1taus.size(); ++ta){
+                if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);  
+            }
+            bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+            trg_etau_matched_ = trg_etau_matched_ && match_l1_part_etau;
+            
+        }
     
+    }
+
+
+
+
+
+
+
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
 

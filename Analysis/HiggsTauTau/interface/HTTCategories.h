@@ -1267,7 +1267,14 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_dm1_down_;
   double wt_tau_trg_dm10_down_;
   double wt_tau_trg_dm11_down_;
-
+    
+  bool trg_matched_;
+  bool trg_matched_alt1_;
+  bool trg_matched_alt2_;
+  bool trg_matched_alt3_;
+    
+  bool trg_etau_matched_;
+ 
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();

@@ -1966,7 +1966,7 @@ namespace ic {
         bool is_prompt=true; 
         if(use_prompt){
           status_flags = parts[i]->statusFlags();
-          is_prompt=status_flags[IsPrompt];
+          if(status_flags.size()>0) is_prompt=status_flags[IsPrompt];
         }
       if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
         std::size_t tau_id = parts[i]->id();

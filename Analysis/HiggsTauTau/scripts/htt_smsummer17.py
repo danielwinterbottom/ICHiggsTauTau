@@ -362,47 +362,47 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-#      'DYJetsToLL_M-10-50-LO-ext1',
-#      'DYJetsToLL_M-10-50-LO',
-#      'DY1JetsToLL-LO', #new pmx
-#      'DY1JetsToLL-LO-ext', #new sample
-#      'DY2JetsToLL-LO',
-#      'DY2JetsToLL-LO-ext',
-#      'DY3JetsToLL-LO',
-#      'DY3JetsToLL-LO-ext',
-#      'DY4JetsToLL-LO', # new
-#      'DYJetsToLL-LO-ext1',
+      'DYJetsToLL_M-10-50-LO-ext1',
+      'DYJetsToLL_M-10-50-LO',
+      'DY1JetsToLL-LO', #new pmx
+      'DY1JetsToLL-LO-ext', #new sample
+      'DY2JetsToLL-LO',
+      'DY2JetsToLL-LO-ext',
+      'DY3JetsToLL-LO',
+      'DY3JetsToLL-LO-ext',
+      'DY4JetsToLL-LO', # new
+      'DYJetsToLL-LO-ext1',
       'DYJetsToLL-LO',
-#      'DYJetsToLL',
-#      'DYJetsToLL-ext',
-#      'EWKZ2Jets',
-#      'EWKWPlus2Jets',
-#      'EWKWMinus2Jets',
-#      'WJetsToLNu-LO',
-#      'WJetsToLNu-LO-ext',
-#      'W1JetsToLNu-LO',
-#      'W2JetsToLNu-LO',
-#      'W3JetsToLNu-LO',
-#      'W4JetsToLNu-LO',
-#      'WGToLNuG',
-#      'WWTo2L2Nu',
-#      'WWToLNuQQ-ext',
-#      'WWToLNuQQ', # new pmx
-#      'WZTo1L1Nu2Q',
-#      'WZTo1L3Nu',
-#      'WZTo2L2Q',
-#      'WZTo3LNu', # new pmx
-#      'ZZTo2L2Nu',
-#      'ZZTo2L2Q',
-#      'ZZTo4L-ext',
-#      'ZZTo4L', # new pmx
-#      'TTToSemiLeptonic', #new pmx
-#      'TTToHadronic', #new sample v2 and pmx
-#      'TTTo2L2Nu', #new pmx
-#      'T-tW',
-#      'T-t',
-#      'Tbar-tW',
-#      'Tbar-t', 
+      'DYJetsToLL',
+      'DYJetsToLL-ext',
+      'EWKZ2Jets',
+      'EWKWPlus2Jets',
+      'EWKWMinus2Jets',
+      'WJetsToLNu-LO',
+      'WJetsToLNu-LO-ext',
+      'W1JetsToLNu-LO',
+      'W2JetsToLNu-LO',
+      'W3JetsToLNu-LO',
+      'W4JetsToLNu-LO',
+      'WGToLNuG',
+      'WWTo2L2Nu',
+      'WWToLNuQQ-ext',
+      'WWToLNuQQ', # new pmx
+      'WZTo1L1Nu2Q',
+      'WZTo1L3Nu',
+      'WZTo2L2Q',
+      'WZTo3LNu', # new pmx
+      'ZZTo2L2Nu',
+      'ZZTo2L2Q',
+      'ZZTo4L-ext',
+      'ZZTo4L', # new pmx
+      'TTToSemiLeptonic', #new pmx
+      'TTToHadronic', #new sample v2 and pmx
+      'TTTo2L2Nu', #new pmx
+      'T-tW',
+      'T-t',
+      'Tbar-tW',
+      'Tbar-t', 
      ]
 
 
