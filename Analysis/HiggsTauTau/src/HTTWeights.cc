@@ -508,6 +508,56 @@ namespace ic {
       fns_["t_deeptauid_dm_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
           w_->function("t_deeptauid_dm_medium_dm11_down")->functor(w_->argSet("t_dm")));
 
+      fns_["t_deeptauid_pt_embed_medium"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_vvvloose")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_dm_embed_medium"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_vvvloose")->functor(w_->argSet("t_dm")));
+
+
+      fns_["t_deeptauid_pt_embed_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin1_up")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin2_up")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin3_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin3_up")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin4_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin4_up")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin5_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin5_up")->functor(w_->argSet("t_pt")));
+
+      fns_["t_deeptauid_pt_embed_medium_bin1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin1_down")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin2_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin2_down")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin3_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin3_down")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin4_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin4_down")->functor(w_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_embed_medium_bin5_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_pt_embed_medium_bin5_down")->functor(w_->argSet("t_pt")));
+
+      fns_["t_deeptauid_dm_embed_medium_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm0_up")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm1_up")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm10_up")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm11_up")->functor(w_->argSet("t_dm")));
+
+      fns_["t_deeptauid_dm_embed_medium_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm0_down")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm1_down")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm10_down")->functor(w_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_embed_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_deeptauid_dm_embed_medium_dm11_down")->functor(w_->argSet("t_dm")));
+
       // zpt reweighting
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
           w_->function("zptmass_weight_nom")->functor(w_->argSet("z_gen_pt,z_gen_mass")));
@@ -1466,6 +1516,7 @@ namespace ic {
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
           auto args_pt = std::vector<double>{pt_2};
           tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt.data()) : 1.0;
+
           double tau_sf_2_bin1_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium_bin1_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
           double tau_sf_2_bin2_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium_bin2_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
           double tau_sf_2_bin3_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium_bin3_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
@@ -1489,13 +1540,39 @@ namespace ic {
           event->Add("wt_tau_id_pt_bin5_down",tau_sf_2_bin5_down);
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
-          if(gen_match_2!=5) tau_sf_2=1.0;
-          else tau_sf_2=0.99;
-          if (decay_mode_2==0) tau_sf_2*=0.975;
-          else if (decay_mode_2==1) tau_sf_2*=0.975*1.051;
-          else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
-          else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
-          else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
+
+          auto args_pt = std::vector<double>{pt_2};
+          tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium"]->eval(args_pt.data()) : 1.0;
+
+          double tau_sf_2_bin1_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin1_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin2_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin2_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin3_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin3_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin4_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin4_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin5_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin5_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin1_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin1_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin2_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin2_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin3_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin3_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin4_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin4_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          double tau_sf_2_bin5_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin5_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+
+          if(gen_match_2==5) {
+            if (decay_mode_2==0) tau_sf_2*=0.975;
+            else if (decay_mode_2==1) tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
+            else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
+          }
+
+          event->Add("wt_tau_id_pt_bin1_up",tau_sf_2_bin1_up);
+          event->Add("wt_tau_id_pt_bin2_up",tau_sf_2_bin2_up);
+          event->Add("wt_tau_id_pt_bin3_up",tau_sf_2_bin3_up);
+          event->Add("wt_tau_id_pt_bin4_up",tau_sf_2_bin4_up);
+          event->Add("wt_tau_id_pt_bin5_up",tau_sf_2_bin5_up);
+          event->Add("wt_tau_id_pt_bin1_down",tau_sf_2_bin1_down);
+          event->Add("wt_tau_id_pt_bin2_down",tau_sf_2_bin2_down);
+          event->Add("wt_tau_id_pt_bin3_down",tau_sf_2_bin3_down);
+          event->Add("wt_tau_id_pt_bin4_down",tau_sf_2_bin4_down);
+          event->Add("wt_tau_id_pt_bin5_down",tau_sf_2_bin5_down);
         }
         else tau_sf_2 =  (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
       } else {
@@ -1544,15 +1621,25 @@ namespace ic {
 
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
-          if(gen_match_1!=5) tau_sf_1=1.0;
-          else {
-            tau_sf_1=0.99;
-            if (decay_mode_1==0)       tau_sf_1*=0.975;
-            else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
-            else if (decay_mode_1==5||decay_mode_1==6) tau_sf_1*=pow(0.975,2); 
-            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
-            else if (decay_mode_1==11) tau_sf_1*=pow(0.975,3)*1.051;
+          auto args_dm_1 = std::vector<double>{decay_mode_1};
+          tau_sf_1 = (gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_1.data()) : 1.0;
+          tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm0_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+
+          if(gen_match_2==5) {
+            if (decay_mode_2==0)       tau_sf_2*=0.975;
+            else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
+            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
+            else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
+            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           }
+
         }
         else tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
@@ -1580,15 +1667,25 @@ namespace ic {
           tau_sf_dm11_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm11_down"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         }
 	else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
-          if(gen_match_2!=5) tau_sf_2=1.0;
-          else {
-            tau_sf_2=0.99;
+          auto args_dm_2 = std::vector<double>{decay_mode_2};
+          tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_2.data()) : 1.0;
+          tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm11_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm0_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_down"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm1_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_down"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm10_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_down"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+          tau_sf_dm11_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_down"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
+
+          if(gen_match_2==5) {
             if (decay_mode_2==0)       tau_sf_2*=0.975;
             else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
             else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
             else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
             else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
           }
+
         }
         else tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
 

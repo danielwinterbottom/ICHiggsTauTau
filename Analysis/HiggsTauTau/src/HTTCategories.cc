@@ -4030,8 +4030,8 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
-      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands);
-      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands);
+      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
+      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);
       q_tot_1_=0., q_tot_2_=0.;
 
       for(auto c : charged_cands_1) q_tot_1_+=c->charge();
