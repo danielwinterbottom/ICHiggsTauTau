@@ -1155,6 +1155,64 @@ namespace ic {
       synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/D");
       synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
 
+      // deep tau IDs in same format as agreed with CP in production analyis
+      
+
+      synctree_->Branch("tDeepTau2017v2p1VSjetraw_1",      &deepTauVsJets_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSjetraw",      &deepTauVsJets_iso_2_);
+      synctree_->Branch("tDeepTau2017v2p1VSeraw_1",       &deepTauVsEle_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSeraw",       &deepTauVsEle_iso_2_);
+      synctree_->Branch("tDeepTau2017v2p1VSmuraw_1",        &deepTauVsMu_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSmuraw",        &deepTauVsMu_iso_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSjet_1", &deepTauVsJets_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSjet", &deepTauVsJets_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSjet_1",  &deepTauVsJets_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSjet",  &deepTauVsJets_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSjet_1",   &deepTauVsJets_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSjet",   &deepTauVsJets_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSjet_1",    &deepTauVsJets_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSjet",    &deepTauVsJets_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSjet_1",   &deepTauVsJets_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSjet",   &deepTauVsJets_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSjet_1",    &deepTauVsJets_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSjet",    &deepTauVsJets_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSjet_1",   &deepTauVsJets_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSjet",   &deepTauVsJets_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSjet_1",  &deepTauVsJets_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSjet",  &deepTauVsJets_vvtight_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSe_1",  &deepTauVsEle_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSe",  &deepTauVsEle_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSe_1",   &deepTauVsEle_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSe",   &deepTauVsEle_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSe_1",    &deepTauVsEle_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSe",    &deepTauVsEle_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSe_1",     &deepTauVsEle_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSe",     &deepTauVsEle_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSe_1",    &deepTauVsEle_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSe",    &deepTauVsEle_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSe_1",     &deepTauVsEle_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSe",     &deepTauVsEle_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSe_1",    &deepTauVsEle_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSe",    &deepTauVsEle_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSe_1",   &deepTauVsEle_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSe",   &deepTauVsEle_vvtight_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSmu_1",  &deepTauVsMu_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSmu",  &deepTauVsMu_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSmu_1",   &deepTauVsMu_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSmu",   &deepTauVsMu_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSmu",    &deepTauVsMu_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSmu_1",     &deepTauVsMu_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSmu",     &deepTauVsMu_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSmu_1",    &deepTauVsMu_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSmu",    &deepTauVsMu_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSmu",    &deepTauVsMu_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSmu",    &deepTauVsMu_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSmu",    &deepTauVsMu_vvtight_2_);
+
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)

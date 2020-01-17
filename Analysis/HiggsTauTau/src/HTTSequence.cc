@@ -1491,7 +1491,10 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        }
      }
    }
-   
+
+     bool usePFMET = false;
+     usePFMET = js["usePFMET"].asBool();
+ 
      HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
        .set_channel(channel)
        .set_fs(fs.get())
@@ -1511,8 +1514,9 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        .set_allowed_tau_modes(allowed_tau_modes)
        .set_metuncl_mode(metuncl_mode)
        .set_metcl_mode(metcl_mode)
-       .set_shift_jes(!do_recoil);
-   
+       .set_shift_jes(!do_recoil)
+       .set_usePFMET(usePFMET);
+         
      if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 ||  strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
        httPairSelector.set_gen_taus_label("genParticles");
      }
@@ -1736,8 +1740,13 @@ if(channel != channel::wmnu) {
      .set_w_hack(true));
   }
 
+ bool usePFMET = false;
+ usePFMET = js["usePFMET"].asBool();
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) && channel!=channel::wmnu && do_recoil){ 
+ // in this case the older recoil correction tool already uses the proper PF MET corrections so use this if option is specified
+
+
+ if(((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) || usePFMET) && channel!=channel::wmnu && do_recoil){ 
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1751,7 +1760,7 @@ if(channel != channel::wmnu) {
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
 
- if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu && !usePFMET){
     unsigned njets_mode = js["njets_mode"].asUInt();
     /*BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -1767,6 +1776,7 @@ if(channel != channel::wmnu) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );*/
+
     BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
