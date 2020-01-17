@@ -558,6 +558,32 @@ namespace ic {
       fns_["t_deeptauid_dm_embed_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
           w_->function("t_deeptauid_dm_embed_medium_dm11_down")->functor(w_->argSet("t_dm")));
 
+      fns_["t_id_vs_e_eta_vvloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_vvloose")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_vvloose_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_vvloose_up")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_vvloose_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_vvloose_down")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_tight")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_tight_up")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_e_eta_tight_down")->functor(w_->argSet("t_eta")));
+
+      fns_["t_id_vs_mu_eta_vloose"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_vloose")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_vloose_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_vloose_up")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_vloose_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_vloose_down")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_tight")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_tight_up")->functor(w_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_id_vs_mu_eta_tight_down")->functor(w_->argSet("t_eta")));
+
       // zpt reweighting
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
           w_->function("zptmass_weight_nom")->functor(w_->argSet("z_gen_pt,z_gen_mass")));
@@ -4432,7 +4458,45 @@ namespace ic {
      }
    }
 
-   if (do_etau_fakerate_ && (era_==era::data_2015||era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018)) {
+   if(do_etau_fakerate_ && (era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018) && (mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016) ) {
+     double etau_fakerate_1=1.0;
+     double etau_fakerate_2=1.0;
+     double etau_fakerate_1_up=1.0;
+     double etau_fakerate_1_down=1.0;
+     double etau_fakerate_2_up=1.0;
+     double etau_fakerate_2_down=1.0;
+
+     Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+     double t_eta = fabs(tau->eta());
+     auto t_args = std::vector<double>{t_eta};
+     if(channel_ == channel::et) {
+       etau_fakerate_2 = fns_["t_id_vs_e_eta_tight"]->eval(t_args.data());
+       etau_fakerate_2_up = fns_["t_id_vs_e_eta_tight_up"]->eval(t_args.data());
+       etau_fakerate_2_down = fns_["t_id_vs_e_eta_tight_down"]->eval(t_args.data());
+     }
+     else {
+       etau_fakerate_2 = fns_["t_id_vs_e_eta_vvloose"]->eval(t_args.data());
+       etau_fakerate_2_up = fns_["t_id_vs_e_eta_vvloose_up"]->eval(t_args.data());
+       etau_fakerate_2_down = fns_["t_id_vs_e_eta_vvloose_down"]->eval(t_args.data());
+     }
+
+     if(channel_ == channel::tt) {
+       Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+       double t_1_eta = fabs(tau1->eta());
+       auto t_1_args = std::vector<double>{t_1_eta};
+       etau_fakerate_1 = fns_["t_id_vs_e_eta_vvloose"]->eval(t_1_args.data());
+       etau_fakerate_1_up = fns_["t_id_vs_e_eta_vvloose_up"]->eval(t_1_args.data());
+       etau_fakerate_1_down = fns_["t_id_vs_e_eta_vvloose_down"]->eval(t_1_args.data());
+     }
+
+     eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
+     event->Add("wt_lfake_rate_up",etau_fakerate_1_up*etau_fakerate_2_up/(etau_fakerate_1*etau_fakerate_2));
+     event->Add("wt_lfake_rate_down",etau_fakerate_1_down*etau_fakerate_2_down/(etau_fakerate_1*etau_fakerate_2));
+
+   }
+
+
+   if (do_etau_fakerate_ && (era_==era::data_2015||era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018) && !(mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016)) {
      unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
      double etau_fakerate_1=1.0;
@@ -4587,8 +4651,45 @@ namespace ic {
       eventInfo->set_weight("mtau_fakerate", 1.00);
      }
    }
-   
-   if (do_mtau_fakerate_ && (era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018)) {
+  
+   if(do_mtau_fakerate_ && (era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018) && (mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016) ) {
+     double mtau_fakerate_1=1.0;
+     double mtau_fakerate_2=1.0;
+     double mtau_fakerate_1_up=1.0;
+     double mtau_fakerate_1_down=1.0;
+     double mtau_fakerate_2_up=1.0;
+     double mtau_fakerate_2_down=1.0;
+
+     Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+     double t_eta = fabs(tau->eta());
+     auto t_args = std::vector<double>{t_eta};
+     if(channel_ == channel::mt) {
+       mtau_fakerate_2 = fns_["t_id_vs_mu_eta_tight"]->eval(t_args.data());
+       mtau_fakerate_2_up = fns_["t_id_vs_mu_eta_tight_up"]->eval(t_args.data());
+       mtau_fakerate_2_down = fns_["t_id_vs_mu_eta_tight_down"]->eval(t_args.data());
+     }
+     else {                       
+       mtau_fakerate_2 = fns_["t_id_vs_mu_eta_vloose"]->eval(t_args.data()); 
+       mtau_fakerate_2_up = fns_["t_id_vs_mu_eta_vloose_up"]->eval(t_args.data());
+       mtau_fakerate_2_down = fns_["t_id_vs_mu_eta_vloose_down"]->eval(t_args.data());
+     }
+
+     if(channel_ == channel::tt) {
+       Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+       double t_1_eta = fabs(tau1->eta());
+       auto t_1_args = std::vector<double>{t_1_eta};
+       mtau_fakerate_1 = fns_["t_id_vs_mu_eta_vloose"]->eval(t_1_args.data()); 
+       mtau_fakerate_1_up = fns_["t_id_vs_mu_eta_vloose_up"]->eval(t_1_args.data());
+       mtau_fakerate_1_down = fns_["t_id_vs_mu_eta_vloose_down"]->eval(t_1_args.data());
+     }
+
+     eventInfo->set_weight("mtau_fakerate",mtau_fakerate_1*mtau_fakerate_2);
+     event->Add("wt_lfake_rate_up",mtau_fakerate_1_up*mtau_fakerate_2_up/(mtau_fakerate_1*mtau_fakerate_2));
+     event->Add("wt_lfake_rate_down",mtau_fakerate_1_down*mtau_fakerate_2_down/(mtau_fakerate_1*mtau_fakerate_2));
+
+   }
+ 
+   if (do_mtau_fakerate_ && (era_==era::data_2016 || era_==era::data_2017 || era_ == era::data_2018) && !(mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016)) {
      unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
      double mtau_fakerate_1=1.0;

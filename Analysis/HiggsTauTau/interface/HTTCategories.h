@@ -90,6 +90,8 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_down_;
   double wt_tau_id_up_;
   double wt_tau_id_down_;
+  double wt_lfake_rate_up_;
+  double wt_lfake_rate_down_;
   double wt_em_qcd_;
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;

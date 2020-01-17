@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan06_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["tt","mt"],
@@ -61,8 +61,8 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_newFF_newsmear/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/smear_stage10/",
-    //"output_folder" : "./output/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/smear_stage10/",
+    "output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
@@ -300,25 +300,25 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.948
+        "efaketau_0pi_es_shift": 0.958
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 0.988
+        "efaketau_0pi_es_shift": 0.978
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.006
+        "efaketau_1pi_es_shift": 1.016
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.046
+        "efaketau_1pi_es_shift": 1.036
       }
     },
 
