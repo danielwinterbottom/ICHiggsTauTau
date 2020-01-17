@@ -915,8 +915,10 @@ namespace ic {
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
-        outtree_->Branch("wt_lfake_rate_up", &wt_lfake_rate_up_);
-        outtree_->Branch("wt_lfake_rate_down", &wt_lfake_rate_down_);
+        outtree_->Branch("wt_efake_rate_up", &wt_efake_rate_up_);
+        outtree_->Branch("wt_efake_rate_down", &wt_efake_rate_down_);
+        outtree_->Branch("wt_mfake_rate_up", &wt_mfake_rate_up_);
+        outtree_->Branch("wt_mfake_rate_down", &wt_mfake_rate_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
         outtree_->Branch("wt_trig_up_2",    &wt_trig_up_2_);
         outtree_->Branch("wt_trig_down_1",    &wt_trig_down_1_);
@@ -2021,8 +2023,10 @@ namespace ic {
     wt_em_qcd_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
-    wt_lfake_rate_up_ = 1.0;
-    wt_lfake_rate_down_ = 1.0;
+    wt_efake_rate_up_ = 1.0;
+    wt_efake_rate_down_ = 1.0;
+    wt_mfake_rate_up_ = 1.0;
+    wt_mfake_rate_down_ = 1.0;
     wt_embed_mc_yield_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
@@ -2034,8 +2038,10 @@ namespace ic {
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
-    if (event->Exists("wt_lfake_rate_up"))  wt_lfake_rate_up_   = event->Get<double>("wt_lfake_rate_up");
-    if (event->Exists("wt_lfake_rate_down")) wt_lfake_rate_down_ = event->Get<double>("wt_lfake_rate_down");
+    if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
+    if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");
+    if (event->Exists("wt_mfake_rate_up"))  wt_mfake_rate_up_   = event->Get<double>("wt_mfake_rate_up");
+    if (event->Exists("wt_mfake_rate_down")) wt_mfake_rate_down_ = event->Get<double>("wt_mfake_rate_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");

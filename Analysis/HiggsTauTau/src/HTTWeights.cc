@@ -4490,8 +4490,8 @@ namespace ic {
      }
 
      eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
-     event->Add("wt_lfake_rate_up",etau_fakerate_1_up*etau_fakerate_2_up/(etau_fakerate_1*etau_fakerate_2));
-     event->Add("wt_lfake_rate_down",etau_fakerate_1_down*etau_fakerate_2_down/(etau_fakerate_1*etau_fakerate_2));
+     event->Add("wt_efake_rate_up",etau_fakerate_1_up*etau_fakerate_2_up/(etau_fakerate_1*etau_fakerate_2));
+     event->Add("wt_efake_rate_down",etau_fakerate_1_down*etau_fakerate_2_down/(etau_fakerate_1*etau_fakerate_2));
 
    }
 
@@ -4684,8 +4684,8 @@ namespace ic {
      }
 
      eventInfo->set_weight("mtau_fakerate",mtau_fakerate_1*mtau_fakerate_2);
-     event->Add("wt_lfake_rate_up",mtau_fakerate_1_up*mtau_fakerate_2_up/(mtau_fakerate_1*mtau_fakerate_2));
-     event->Add("wt_lfake_rate_down",mtau_fakerate_1_down*mtau_fakerate_2_down/(mtau_fakerate_1*mtau_fakerate_2));
+     event->Add("wt_mfake_rate_up",mtau_fakerate_1_up*mtau_fakerate_2_up/(mtau_fakerate_1*mtau_fakerate_2));
+     event->Add("wt_mfake_rate_down",mtau_fakerate_1_down*mtau_fakerate_2_down/(mtau_fakerate_1*mtau_fakerate_2));
 
    }
  
