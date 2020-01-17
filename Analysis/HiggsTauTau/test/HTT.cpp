@@ -201,10 +201,11 @@ int main(int argc, char* argv[]) {
 
     for (unsigned j = 0; j < vars.size(); ++j) {
       // if systematic is only relevant for a different channel then return here
-      if((channel_str.find("et") == channel_str.npos || channel_str.find("em") == channel_str.npos) && vars[j].find("scale_e")!=std::string::npos) continue;
-      if(channel_str.find("mt") == channel_str.npos && (vars[j].find("scale_mufake")!=std::string::npos || vars[j].find("scale_mu")!=std::string::npos)) continue;     
-      if(channel_str.find("em") == channel_str.npos && 
-              (vars[j].find("scale_mu")!=std::string::npos || vars[j].find("scale_e")!=std::string::npos || vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
+      if((channel_str.find("et") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_e_")!=std::string::npos) continue;
+      if(channel_str.find("et") == channel_str.npos && vars[j].find("scale_efake")!=std::string::npos) continue;
+      if(channel_str.find("mt") == channel_str.npos && vars[j].find("scale_mufake")!=std::string::npos) continue;     
+      if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_mu_")!=std::string::npos) continue;     
+      if(channel_str.find("em") == channel_str.npos && (vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
       if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos)) continue;
 
       std::string seq_str = channel_str+"_"+vars[j];

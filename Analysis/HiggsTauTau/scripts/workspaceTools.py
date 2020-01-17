@@ -167,6 +167,34 @@ def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
     wsp.imp(rhf)
     wsp.imp(hist.Clone('hist_'+name))
 
+# wrap TF1
+
+def SafeWrapFunc(wsp, fvars, func, name=None):
+    if name is None:
+        name = func.GetName()
+    f_arglist = ROOT.RooArgList()
+    #f_vars = []
+
+    for i, var in enumerate(fvars):
+        # If the function variable doesn't exist in the workspace already we need
+        # to create it
+        if not wsp.arg(var):
+            # Check if the user has defined a function here
+            if var.startswith('expr::'):
+                funcarg = wsp.factory(var)
+                var = funcarg.GetName()
+            # otherwise create a normal variable
+            else:
+                wsp.factory('%s[0]' % var)
+        #f_vars.append()
+        f_arglist.add(wsp.arg(var)) 
+
+    # Finally we can import it into the workspace
+    wsp.imp(func)
+    if len(fvars) == 1:
+      fr = ROOT.RooFit.bindFunction(func, f_arglist.at(0))
+    wsp.imp(fr)
+
 
 def MakeBinnedCategory(wsp, name, bins):
     var = wsp.factory('%s[%g,%g,%g]' % (name, bins[0], bins[0], bins[-1]))

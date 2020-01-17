@@ -1,24 +1,25 @@
 from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Oct04_MC_102X_2018'
+config.General.workArea='Jan06_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1','globalTag=102X_dataRun2_Prompt_v15']
+config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v12']
 #config.JobType.maxMemoryMB = 2500
 config.JobType.allowUndistributedCMSSW = True
 
 #config.Data.unitsPerJob = 6
 #config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 100000
-config.Data.splitting = 'EventAwareLumiBased'
+#config.Data.unitsPerJob = 100000
+#config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 
@@ -69,7 +70,6 @@ if __name__ == '__main__':
     tasks.append(('EmbeddingTauTauC', '/EmbeddingRun2018C/TauTauFinalState-inputDoubleMu_102X_miniAOD-v1/USER'))
     tasks.append(('EmbeddingTauTauD', '/EmbeddingRun2018D/TauTauFinalState-inputDoubleMu_102X_miniAOD-v1/USER'))
 
-
     tasks.append(('EmbeddingMuMuA', '/EmbeddingRun2018A/MuonEmbedding-inputDoubleMu_102X_miniAOD-v1/USER'))
     tasks.append(('EmbeddingMuMuB', '/EmbeddingRun2018B/MuonEmbedding-inputDoubleMu_102X_miniAOD-v1/USER'))
     tasks.append(('EmbeddingMuMuC', '/EmbeddingRun2018C/MuonEmbedding-inputDoubleMu_102X_miniAOD-v1/USER'))
@@ -86,8 +86,12 @@ if __name__ == '__main__':
 
         if "Run2018D" in task[1]:
             config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_Prompt_v15']
+            config.Data.unitsPerJob = 6
+            config.Data.splitting = 'FileBased'
         else:
             config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1', 'doHT=0', 'globalTag=102X_dataRun2_v12']
+            config.Data.unitsPerJob = 100000
+            config.Data.splitting = 'EventAwareLumiBased'
 
         print(config.JobType.pyCfgParams)
         print(config.Data.unitsPerJob)

@@ -6,24 +6,41 @@ import glob
 import os
 
 file_names = []
-channels = ["mt","et","tt","em"]
-years = ["2016","2017","2018"]
-subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN']
-# subdirs = ['TSCALE_DOWN']
+channels = ["mt"]#,"et","tt","em"]
+years = ["2018"]
+# subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN']
+# subdirs = ['','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN']
+# subdirs = ['JES_UP']
+subdirs = ['']
 
 for dir_ in subdirs:
     filenames = glob.glob("{}/{}/svfit_*_output.root".format(sys.argv[1],dir_))
-    for file_name in filenames:
-        if 'output.root' not in file_name:
-            continue
-        for year in years:
-            for channel in channels:
-                if sys.argv[2] == "svfit":
-                    if "_{}_{}_output.root".format(channel, year) in file_name:
-                        # key = file_name.replace("_{}_{}_output.root".format(channel, year),"")
-                        # file_names[key] = file_name
-                        file_names.append(file_name)
-                elif sys.argv[2] == "ntuple":
+    svfitfiles = [x.split("svfit_")[1][0:-20] for x in filenames]
+    # filenames = glob.glob("{}/{}/*.root".format(sys.argv[1],dir_))
+    if sys.argv[2] == "svfit":
+        for file_name in svfitfiles:
+            for year in years:
+                channels = ["mt","et","tt","em"]
+                if "TSCALE" in dir_: channels = ["mt","et","tt"]
+                elif "MUSCALE" in dir_: channels = ["mt","em"]
+                elif "MUFAKE" in dir_: channels = ["mt"]
+                elif "ESCALE" in dir_: channels = ["et","em"]
+                elif "EFAKE" in dir_: channels = ["et"]
+
+                if "EmbeddingTauTau" in file_name: channels = ["tt"]
+                elif "EmbeddingMuTau" in file_name: channels = ["mt"]
+                elif "EmbeddingElTau" in file_name: channels = ["et"]
+                elif "EmbeddingElMu" in file_name: channels = ["em"]
+                elif "\bTau" in file_name: channels = ["tt"]
+                elif "SingleMuon" in file_name: channels = ["mt"]
+                elif "EGamma" in file_name or "SingleElectron" in file_name: channels = ["et"]
+                elif "MuonEG" in file_name: channels = ["em"]
+                for channel in channels:
+                    file_names.append("{}/{}/svfit_{}_{}_{}_output.root".format(sys.argv[1],dir_,file_name,channel,year))
+    elif sys.argv[2] == "ntuple":
+        for file_name in filenames:
+            for year in years:
+                for channel in channels:
                     if "_{}_{}.root".format(channel, year) in file_name:
                         file_names.append("{}".format(file_name))
 
@@ -38,20 +55,20 @@ for f in file_names:
             # print(df[df["svfit_mass"] < 0])
             if not df[df["svfit_mass"] < 0].empty:
                 print("Found {} out of {} events with svfit below 0 in {}!\n".format(df[df["svfit_mass"] < 0].shape[0], df.shape[0], f))
-        except:
+        except IOError:
             print("not found svfit tree\n")
             missing.append(f)
 
     elif sys.argv[2] == "ntuple":
         try:
             tree = uproot.open("{}".format(f))["ntuple"]
-            df = tree.pandas.df("m_sv", namedecode="utf-8")
-            if not df[df["m_sv"] < 0].empty:
-                print("Found {} out of {} events with svfit below 0 in {}!\n".format(df[df["m_sv"] < 0].shape[0], df.shape[0], f))
-        except:
+            df = tree.pandas.df("svfit_mass", namedecode="utf-8")
+            if not df[df["svfit_mass"] < 0].empty:
+                print("Found {} out of {} events with svfit below 0 in {}!\n".format(df[df["svfit_mass"] < 0].shape[0], df.shape[0], f))
+        except IOError:
             print("not found ntuple tree\n")
             missing.append(f)
 
-print(missing)
+print("Missing\n", missing)
 
 

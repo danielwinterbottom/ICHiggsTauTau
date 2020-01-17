@@ -135,6 +135,10 @@
     "xs": 6.331,
     "evt": 16921021
   },
+  "WWToLNuQQ": {
+    "xs": 45.99,
+    "evt": 19092251
+  },
   "WZTo3LNu": {
     "xs": 5.052,
     "evt": 13789395
@@ -228,6 +232,125 @@
   "ZHToTauTau_M-125": {
     "xs": 0.05542,
     "evt": 4477852
+  },
+  "JJH0PMToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.63657297477,
+    "evt": 777811,
+    "eff": 0.2438
+  },
+  "JJH0PMToTauTauPlusZeroJets": {
+    "xs": 1.63657297477,
+    "evt": 393237
+  },
+  "JJH0PMToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.478064899382,
+    "evt": 5847609,
+    "eff": 0.2895
+  },
+  "JJH0PMToTauTauPlusTwoJets": {
+    "xs": 0.478064899382,
+    "evt": 107914
+  },
+  "JJH0PMToTauTauPlusOneJets_Filtered": {
+    "xs": 0.931328125848,
+    "evt": 1512790,
+    "eff": 0.2438
+  },
+  "JJH0PMToTauTauPlusOneJets": {
+    "xs": 0.931328125848,
+    "evt": 65355
+  },
+  "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.63639439752,
+    "evt": 65355,
+    "eff": 0.2389
+  },
+  "JJH0Mf05ph0ToTauTauPlusZeroJets": {
+    "xs": 1.63639439752,
+    "evt": 28743
+  },
+  "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.47418961404,
+    "evt": 4255264,
+    "eff": 0.2900
+  },
+  "JJH0Mf05ph0ToTauTauPlusTwoJets": {
+    "xs": 0.47418961404,
+    "evt": 180596
+  },
+  "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
+    "xs": 0.935381988438,
+    "evt": 1552953,
+    "eff": 0.2436
+  },
+  "JJH0Mf05ph0ToTauTauPlusOneJets": {
+    "xs": 0.935381988438,
+    "evt": 156281
+  },
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.65090952689,
+    "evt": 830022,
+    "eff": 0.2389
+  },
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 1.65090952689,
+    "evt": 376567
+  },
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 0.45962534761,
+    "evt": 4472981,
+    "eff": 0.2908
+  },
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.45962534761,
+    "evt": 4472981,
+    "eff": 0.2908
+  },
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 0.935431125498,
+    "evt": 1364135,
+    "eff": 0.2437
+  },
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 0.935431125498,
+    "evt": 57456
+  },
+  "ZHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05542,
+    "evt": 691556,
+    "eff": 0.2513
+  },
+  "WplusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05266,
+    "evt": 913701,
+    "eff": 0.2397
+  },
+  "WminusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.03340,
+    "evt": 1636278,
+    "eff": 0.2563
+  },
+  "WminusHToTauTauUncorrelatedDecay": {
+    "xs": 0.03340,
+    "evt": 94658
+  },
+  "VBFHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.2371,
+    "evt": 20149254,
+    "eff": 0.2695
+  },
+  "VBFHToTauTauUncorrelatedDecay": {
+    "xs": 0.2371,
+    "evt": 240698
+  },
+  "GluGluHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 3.045966,
+    "evt": 14056498,
+    "eff": 0.2446
+  },
+  "GluGluHToTauTauUncorrelatedDecay": {
+    "xs": 3.045966,
+    "evt": 481283
   },
   "EGamma": {
     "lumi": 59740

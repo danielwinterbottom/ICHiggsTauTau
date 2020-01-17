@@ -40,6 +40,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
+      do_gen_weights_(config.getParameter<bool>("includeGenWeights")),
       do_npNLO_(config.getParameter<bool>("includenpNLO")),
       do_embedding_weights_(config.getParameter<bool>("includeEmbeddingWeights")),
       do_ht_(config.getParameter<bool>("includeHT")),
@@ -109,6 +110,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithBranch(config, branch_);
   PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
+  PrintOptional(1, do_gen_weights_, "includeGenWeights");
   PrintOptional(1, do_embedding_weights_, "includeEmbeddingWeights");  
   PrintOptional(1, do_ht_, "includeHT");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
@@ -191,6 +193,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
     int npNLO = lhe_handle->npNLO();
     info_->set_npNLO(npNLO);
   }
+  if(do_gen_weights_ && !event.isRealData()) {
+    event.getByLabel("generator",gen_info_handle);
+    std::vector<double> gen_weights = gen_info_handle->weights();
+    for (unsigned i=0; i<gen_weights.size(); ++i) info_->set_weight("genweight"+std::to_string(i),gen_weights[i]/gen_info_handle->weight(), false);
+  }
   if(do_embedding_weights_){
     event.getByLabel("generator",gen_info_handle);
     info_->set_weight("wt_embedding", gen_info_handle->weight());
@@ -239,6 +246,8 @@ void ICEventInfoProducer::produce(edm::Event& event,
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
         info_->set_weight(lhe_handle->weights()[i].id,
                           lhe_handle->weights()[i].wgt / nominal_wt, false);
+
+        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
       }
     }
   }

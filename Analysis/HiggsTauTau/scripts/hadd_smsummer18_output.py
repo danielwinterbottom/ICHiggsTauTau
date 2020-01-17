@@ -92,8 +92,6 @@ sample_list = [
     'ZZTo2L2Q',
     'ZZTo4L',
     'ZZTo4L-ext',
-    'WminusHToTauTau_M-125',
-    'WplusHToTauTau_M-125',
     'EmbeddingElElB',
     'EmbeddingElElC',
     'EmbeddingElElD',
@@ -166,6 +164,7 @@ sample_list = [
 
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
+#channel = ['zmm']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 

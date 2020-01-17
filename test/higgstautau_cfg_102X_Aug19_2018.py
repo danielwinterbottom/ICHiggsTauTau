@@ -13,11 +13,11 @@ opts.register('file',
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
 # 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
  'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
-# 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root'
+# 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root',
 #'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_dataRun2_Prompt_v13', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_upgrade2018_realistic_v20', parser.VarParsing.multiplicity.singleton,
 #102X_upgrade2018_realistic_v18
 #102X_dataRun2_Sep2018ABC_v2
     parser.VarParsing.varType.string, "global tag")
@@ -632,7 +632,7 @@ if not (isData or isEmbed):
 else:
     updateJetCollection(
         process,
-        jetSource = cms.InputTag("slimmedJets"),
+        jetSource = cms.InputTag("slimmedJets"), #patSmearedJets
         # pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
         # svSource = cms.InputTag('slimmedSecondaryVertices'),
         labelName = "UpdatedJEC",
@@ -709,26 +709,54 @@ process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
 
-process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+# process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#     branch                    = cms.string("ak4PFJetsCHS"),
+#     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+#     srcConfig = cms.PSet(
+#         isSlimmed               = cms.bool(True),
+#         slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+#         includeJetFlavour       = cms.bool(True),
+#         includeJECs             = cms.bool(True),
+#         inputSVInfo             = cms.InputTag(""),
+#         requestSVInfo           = cms.bool(False)
+#     ),
+#     destConfig = cms.PSet(
+#         includePileupID         = cms.bool(True),
+#         inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+#         includeTrackBasedVars   = cms.bool(False),
+#         inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+#         inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+#         requestTracks           = cms.bool(False)
+#     )
+# )
+
+process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
+    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
+    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
     srcConfig = cms.PSet(
-        isSlimmed               = cms.bool(True),
-        slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
-        includeJetFlavour       = cms.bool(True),
-        includeJECs             = cms.bool(True),
-        inputSVInfo             = cms.InputTag(""),
-        requestSVInfo           = cms.bool(False)
+      isSlimmed               = cms.bool(True),
+      slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+      includeJetFlavour       = cms.bool(True),
+      includeJECs             = cms.bool(True),
+      inputSVInfo             = cms.InputTag(""),
+      requestSVInfo           = cms.bool(False)
     ),
-    destConfig = cms.PSet(
-        includePileupID         = cms.bool(True),
-        inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
-        includeTrackBasedVars   = cms.bool(False),
-        inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
-        inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
-        requestTracks           = cms.bool(False)
+   destConfig = cms.PSet(
+     includePileupID         = cms.bool(True),
+     inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+     includeTrackBasedVars   = cms.bool(False),
+     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+     requestTracks           = cms.bool(False)
     )
 )
+if isData or isEmbed:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(False)
+else:
+    process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
 process.icPFJetSequence = cms.Sequence()
 
@@ -739,9 +767,9 @@ process.icPFJetSequence += cms.Sequence(
    process.selectedUpdatedPatJetsUpdatedJEC+
    process.selectedSlimmedJetsAK4+
    #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
-   process.icPFJetProducerFromPat
+   # process.icPFJetProducerFromPat +
+   process.icPFJetProducerFromPatNew
    )
-
 ################################################################
 # PF MET
 ################################################################
@@ -749,34 +777,43 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
-# from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-# runMetCorAndUncFromMiniAOD (
-#         process,
-#         isData = (bool(isData) or bool(isEmbed)),
-#         fixEE2017 = True,
-#         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-#         postfix = "ModifiedMET"
-# )
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=bool(isData) or bool(isEmbed),
+                           postfix="ModifiedMET",
+                           )
+
+
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, True );
+runMetCorAndUncFromMiniAOD(process,
+                           isData=(bool(isData) or bool(isEmbed)),
+                           metType="Puppi",
+                           postfix="PuppiModifiedMET",
+                           jetFlavor="AK4PFPuppi",
+                           )
+
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
-                         input = cms.InputTag("slimmedMETs"), # for 2017 apply re-correction
+                         input = cms.InputTag("slimmedMETsModifiedMET"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPfMetSequence = cms.Sequence(
-    # process.fullPatMetSequenceModifiedMET *
-    process.icPfMetProducer
-)
 
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                         input=cms.InputTag("slimmedMETsPuppi"),
+                         input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
                          branch = cms.string("puppiMet"),
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
-process.icPuppiMetSequence = cms.Sequence(
+process.icMetSequence = cms.Sequence(
+  process.puppiMETSequence *
+  process.fullPatMetSequencePuppiModifiedMET *
+  process.fullPatMetSequenceModifiedMET *
+  process.icPfMetProducer *
   process.icPuppiMetProducer
 )
 
@@ -1492,6 +1529,7 @@ else: data_type = "PAT"
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
+    includeGenWeights   = cms.bool(doLHEWeights),
     includenpNLO        = cms.bool(includenpNLO),
     includeEmbeddingWeights = cms.bool(bool(isEmbed)),
     includeHT           = cms.bool(False),
@@ -1555,10 +1593,9 @@ process.p = cms.Path(
     process.icElectronSequence+
     process.icMuonSequence+
     process.icTauSequence+
+    process.icMetSequence+
     process.icPFJetSequence+
     process.icPFSequence+
-    process.icPfMetSequence+
-    process.icPuppiMetSequence+
     process.icPhotonSequence+
     process.icGenSequence+
     process.icL1EGammaProducer+
