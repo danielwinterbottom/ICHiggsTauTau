@@ -1991,7 +1991,6 @@ namespace ic {
 
       // Retrieve file with TGraphs of weights
       std::string file = "input/ggh_weights/NNLOPS_reweight.root";
-      std::cout << boost::format(param_fmt()) % "NNLOPS weights" % file;
       ggh_weights_ = new TFile(file.c_str());
       ggh_weights_->cd();
       ggh_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
