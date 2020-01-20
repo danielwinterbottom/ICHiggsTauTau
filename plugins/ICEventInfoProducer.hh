@@ -11,6 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
 
 /**
  * @brief Produces an ic::EventInfo object
@@ -62,6 +63,10 @@ class ICEventInfoProducer : public edm::EDProducer {
 
   //store all filters in one map 
   std::map<std::string, std::size_t> observed_filters_;
+
+  // HTXS stuff
+  bool do_htxs_;
+  edm::EDGetTokenT<HTXS::HiggsClassification> htxsSrc_;
 };
 
 #endif
