@@ -1017,6 +1017,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_dm10_down_;
   double wt_tau_trg_dm11_down_;
 
+  double wt_nnlops_;
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();
