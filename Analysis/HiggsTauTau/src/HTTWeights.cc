@@ -20,90 +20,91 @@ namespace ic {
     mc_(mc::summer12_53X),
     era_(era::data_2012_rereco),
     strategy_(strategy::paper2013){
-    do_trg_weights_           = false;
-    trg_applied_in_mc_        = false;
-    do_single_lepton_trg_     = false;
-    do_cross_trg_             = false;
-    do_singlemu_trg_weights_  = false;
-    do_etau_fakerate_         = false;
-    do_mtau_fakerate_         = false;
-    do_jlepton_fake_           = false;
-    do_idiso_weights_         = false;
-    do_id_weights_            = false;
-    do_emu_e_fakerates_       = false;
-    do_emu_m_fakerates_       = false;
-    do_top_factors_           = false;
-    do_btag_weight_           = false;
-    do_zpt_weight_            = false;
-    do_tracking_eff_          = false;
-    btag_mode_                = 0;
-    bfake_mode_               = 0;
-    tt_trg_iso_mode_          = 0;
-    ggh_mass_                 = "";
-    ggh_hist_                 = nullptr;
-    ggh_hist_up_              = nullptr;
-    ggh_hist_down_            = nullptr;
-    do_tau_mode_scale_        = false;
-    do_topquark_weights_      = false;
-    do_top_jeteta_weights_    = false;
-    do_tau_fake_weights_      = false;
-    do_tt_muon_weights_       = false;
-    do_em_qcd_weights_        = false;
-    gen_tau_collection_       = "genParticlesTaus";
-    jets_label_               = "pfJetsPFlow";
-    btag_label_         = "combinedSecondaryVertexBJetTags";
-    ditau_label_              = "emtauCandidates";
-    z_pt_mass_hist_            = nullptr;
-    mt_idiso_mc_              = nullptr;     
-    mt_idiso_data_            = nullptr;     
-    et_idiso_mc_              = nullptr;     
-    et_idiso_data_            = nullptr;     
-    em_m_idiso_mc_            = nullptr;     
-    em_m_idiso_data_          = nullptr;     
-    em_e_idiso_mc_            = nullptr;     
-    em_e_idiso_data_          = nullptr;     
-    em_m17_trig_mc_           = nullptr;
-    em_m17_trig_data_         = nullptr;
-    em_m8_trig_mc_            = nullptr;
-    em_m8_trig_data_          = nullptr;
-    em_e17_trig_mc_           = nullptr;
-    em_e17_trig_data_         = nullptr;
-    em_e12_trig_mc_           = nullptr;
-    em_e12_trig_data_         = nullptr;
-    et_trig_mc_               = nullptr;
-    et_trig_data_             = nullptr;
-    et_antiiso1_trig_data_    = nullptr;
-    et_antiiso2_trig_data_    = nullptr;
-    et_xtrig_mc_              = nullptr;
-    et_xtrig_data_            = nullptr;
-    et_conditional_data_      = nullptr;
-    et_conditional_mc_        = nullptr;
-    mt_trig_mc_               = nullptr;
-    mt_trig_data_             = nullptr;
-    mt_antiiso1_trig_data_    = nullptr;
-    mt_antiiso2_trig_data_    = nullptr;
-    mt_xtrig_mc_              = nullptr;
-    mt_xtrig_data_            = nullptr;
-    mt_conditional_data_      = nullptr;
-    mt_conditional_mc_      = nullptr;
-    em_qcd_cr1_lt2_           = nullptr;
-    em_qcd_cr1_2to4_          = nullptr;
-    em_qcd_cr1_gt4_           = nullptr;
-    em_qcd_cr2_lt2_           = nullptr;
-    em_qcd_cr2_2to4_          = nullptr;
-    em_qcd_cr2_gt4_           = nullptr;
-    ele_tracking_sf_          = nullptr;
-    muon_tracking_sf_         = nullptr;
-    scalefactor_file_         = "";
-    scalefactor_file_ggh_     = "";
-    do_tau_id_sf_             = false;
-    mssm_higgspt_file_        = "";
-    do_mssm_higgspt_          = false;
-    do_z_weights_         = false;
+    do_trg_weights_             = false;
+    trg_applied_in_mc_          = false;
+    do_single_lepton_trg_       = false;
+    do_cross_trg_               = false;
+    do_singlemu_trg_weights_    = false;
+    do_etau_fakerate_           = false;
+    do_mtau_fakerate_           = false;
+    do_jlepton_fake_            = false;
+    do_idiso_weights_           = false;
+    do_id_weights_              = false;
+    do_emu_e_fakerates_         = false;
+    do_emu_m_fakerates_         = false;
+    do_top_factors_             = false;
+    do_btag_weight_             = false;
+    do_zpt_weight_              = false;
+    do_tracking_eff_            = false;
+    btag_mode_                  = 0;
+    bfake_mode_                 = 0;
+    tt_trg_iso_mode_            = 0;
+    ggh_mass_                   = "";
+    ggh_hist_                   = nullptr;
+    ggh_hist_up_                = nullptr;
+    ggh_hist_down_              = nullptr;
+    do_tau_mode_scale_          = false;
+    do_topquark_weights_        = false;
+    do_top_jeteta_weights_      = false;
+    do_tau_fake_weights_        = false;
+    do_tt_muon_weights_         = false;
+    do_em_qcd_weights_          = false;
+    gen_tau_collection_         = "genParticlesTaus";
+    jets_label_                 = "pfJetsPFlow";
+    btag_label_                 = "combinedSecondaryVertexBJetTags";
+    ditau_label_                = "emtauCandidates";
+    z_pt_mass_hist_             = nullptr;
+    mt_idiso_mc_                = nullptr;
+    mt_idiso_data_              = nullptr;
+    et_idiso_mc_                = nullptr;
+    et_idiso_data_              = nullptr;
+    em_m_idiso_mc_              = nullptr;
+    em_m_idiso_data_            = nullptr;
+    em_e_idiso_mc_              = nullptr;
+    em_e_idiso_data_            = nullptr;
+    em_m17_trig_mc_             = nullptr;
+    em_m17_trig_data_           = nullptr;
+    em_m8_trig_mc_              = nullptr;
+    em_m8_trig_data_            = nullptr;
+    em_e17_trig_mc_             = nullptr;
+    em_e17_trig_data_           = nullptr;
+    em_e12_trig_mc_             = nullptr;
+    em_e12_trig_data_           = nullptr;
+    et_trig_mc_                 = nullptr;
+    et_trig_data_               = nullptr;
+    et_antiiso1_trig_data_      = nullptr;
+    et_antiiso2_trig_data_      = nullptr;
+    et_xtrig_mc_                = nullptr;
+    et_xtrig_data_              = nullptr;
+    et_conditional_data_        = nullptr;
+    et_conditional_mc_          = nullptr;
+    mt_trig_mc_                 = nullptr;
+    mt_trig_data_               = nullptr;
+    mt_antiiso1_trig_data_      = nullptr;
+    mt_antiiso2_trig_data_      = nullptr;
+    mt_xtrig_mc_                = nullptr;
+    mt_xtrig_data_              = nullptr;
+    mt_conditional_data_        = nullptr;
+    mt_conditional_mc_          = nullptr;
+    em_qcd_cr1_lt2_             = nullptr;
+    em_qcd_cr1_2to4_            = nullptr;
+    em_qcd_cr1_gt4_             = nullptr;
+    em_qcd_cr2_lt2_             = nullptr;
+    em_qcd_cr2_2to4_            = nullptr;
+    em_qcd_cr2_gt4_             = nullptr;
+    ele_tracking_sf_            = nullptr;
+    muon_tracking_sf_           = nullptr;
+    scalefactor_file_           = "";
+    scalefactor_file_ggh_       = "";
+    do_tau_id_sf_               = false;
+    mssm_higgspt_file_          = "";
+    do_mssm_higgspt_            = false;
+    do_z_weights_               = false;
     embedding_scalefactor_file_ = "";
-    is_embedded_ = false;
-    do_quarkmass_higgspt_ = false;
-    do_ps_weights_ = false;
+    is_embedded_                = false;
+    do_quarkmass_higgspt_       = false;
+    do_ps_weights_              = false;
+    do_nnlops_weights_          = false;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -1836,10 +1837,10 @@ namespace ic {
       event->Add("retag_result", retag_result);
     }
    
-    if(event->Exists("btag_evt_weight")){
-       double wtbtag = event->Get<double>("btag_evt_weight");
-       weight *= wtbtag;
-     } 
+    if (do_btag_weight_ && (mc_ == mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016)) {
+      double wt_btag = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
+      eventInfo->set_weight("btag_evt_weight", wt_btag);
+    }
 
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
@@ -1958,6 +1959,31 @@ namespace ic {
         event->Add("wt_ue_up", wt_ue_up);
         event->Add("wt_ue_down", wt_ue_down);
       }
+    }
+    if (do_nnlops_weights_){
+      double wt_nnlops = 1.;
+
+      // Retrieve file with TGraphs of weights
+      std::string file = "input/ggh_weights/NNLOPS_reweight.root";
+      std::cout << boost::format(param_fmt()) % "NNLOPS weights" % file;
+      ggh_weights_ = new TFile(file.c_str());
+      ggh_weights_->cd();
+      ggh_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
+      ggh_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
+      ggh_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_2jet");
+      ggh_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
+
+      // Get n_jets30 and higgs pt from eventinfo (produced with rivet)
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/SignalModelingTools
+      unsigned n_jets30 = eventInfo->n_jets30();
+      double pt_h = eventInfo->pt_h();
+      if (n_jets30      == 0) wt_nnlops = ggh_0jet_->Eval(std::min(pt_h, 125.));
+      else if (n_jets30 == 1) wt_nnlops = ggh_1jet_->Eval(std::min(pt_h, 625.));
+      else if (n_jets30 == 2) wt_nnlops = ggh_2jet_->Eval(std::min(pt_h, 800.));
+      else if (n_jets30 >= 3) wt_nnlops = ggh_3jet_->Eval(std::min(pt_h, 925.));
+      else wt_nnlops = 1.;
+
+      event->Add("wt_nnlops", wt_nnlops);
     }
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  

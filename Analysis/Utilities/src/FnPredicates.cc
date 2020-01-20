@@ -211,7 +211,7 @@ namespace ic {
       && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     } else if(eta<=3.0){
       result = jet->neutral_em_energy_frac() > 0.01
-      && jet->neutralFrac()                  < 0.98
+      && neutralFrac                         < 0.98
       && jet->neutral_multiplicity()         > 2;
     }
     else{
