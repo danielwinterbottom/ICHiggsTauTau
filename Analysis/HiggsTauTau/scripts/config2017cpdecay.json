@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt","em"],
+    "channels":     ["tt","mt","et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,6 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2017_newFF/",
     "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2020/btagEff_2017/",
     // "output_folder" : "output/",
     "svfit_from_grid" : true,
@@ -308,25 +307,25 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.962
+        "efaketau_0pi_es_shift": 0.972
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.002
+        "efaketau_0pi_es_shift": 0.992
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 0.998
+        "efaketau_1pi_es_shift": 1.008
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.038
+        "efaketau_1pi_es_shift": 1.028
       }
     },
 

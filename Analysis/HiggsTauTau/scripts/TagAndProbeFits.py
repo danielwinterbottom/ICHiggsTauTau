@@ -152,8 +152,10 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
       if options.embed_sel:
-        trg_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
+        trg_eta_bins   = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
+#        trg_eta_bins   = '[0,0.1,0.15,0.2,0.3,0.8,0.9,1.0,1.1,1.2,1.6,1.7,1.8,2.1,2.4]' #mu8 # finer binning that might be needed for cp in decay
+#        idiso_eta_bins = '[0,0.1,0.15,0.2,0.3,0.8,0.9,1.0,1.1,1.2,1.6,1.7,1.8,2.1,2.4]' #mu8
         #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' #mu8
         trg_pt_bins = '[10,12,14,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
       if  options.embed_dz:
@@ -670,7 +672,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       pdf_args.extend(
               [
                   "RooCMSShape::backgroundPass(m_vis, alphaPass[70,60,200], betaPass[0.001,0,0.1], gammaPass[0.001,0,1], peak[90])",
-                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.15], gammaFail[0.001,0,1], peak[90])",
+                  "RooCMSShape::backgroundFail(m_vis, alphaFail[70,60,200], betaFail[0.001,0,0.1], gammaFail[0.001,0,1], peak[90])",
                   # attenmpt to limit shape to peak below 90 GeV: beta_max = 90./1000.*gamma              #90./1000.*gammaPass,
                   #betaFail=62.1537
                   #Parameter betaFail  has zero or invalid step size - consider it as constant
@@ -724,6 +726,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           if xmin >= 50: ForceEventCount = True
       if options.era in ['summer18'] and ('_id' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 30: ForceEventCount = True
+      if options.era in ['sm18'] and ('_iso' in name) and options.channel == 'tpzmm' and not options.aiso1 and not options.aiso2:
+          if xmin >= 50: ForceEventCount = True
+
       
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
   
@@ -757,7 +762,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           wsp.var('sigma1f').setRange(0.2,4)
           wsp.var('sigma2f').setRange(2,10)
           wsp.var('sigma2p').setRange(2,10)
-      if options.channel=='tpzee' and 'id' in name and option.era in ['sm18']:
+      if options.channel=='tpzee' and 'id' in name and option.era in ['summer18']:
         print("changing range of betaFail for bkg")
         wsp.var('betaFail').setRange(0,0.1)
 
@@ -1073,7 +1078,7 @@ if options.draw_hists == 1:
     ana.remaps = {}
     if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'tpzee':
-        if options.era == 'summer18': ana.remaps['EGamma'] = 'data_obs'
+        if options.era in ['summer18','sm18']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'
     
     # Add all data files
@@ -1133,6 +1138,17 @@ for name in wsnames:
     if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
     if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+
+  if options.era in ['sm18']:
+    if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
+    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
+    elif options.channel =='tpzmm':
+      sig_model = 'BWDoubleCBConvCorr' #'BWDoubleCBConvCorr'
+      #sig_model = 'BWDoubleCBConvCorr' # use this one for mt cross trigger
+    if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
+    if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
+    if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+
 
   if options.era == 'summer18':
     if options.channel =='tpzmm':

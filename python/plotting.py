@@ -2259,7 +2259,8 @@ def HTTPlot(nodename,
                 'tt':[
                     backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
                     backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),
-                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes","Wfakes","TTfakes"],R.TColor.GetColor(192,232,100)),
+#                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes","Wfakes","TTfakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
                     backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
                     ],
                 'ff_comp':[
@@ -2364,7 +2365,7 @@ def HTTPlot(nodename,
     if ratio:
         if(log_x): pads[1].SetLogx(1)
         if not threePads:
-            axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+            axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.0001)
             axish[1].GetXaxis().SetTitle(x_title)
             axish[1].GetXaxis().SetLabelSize(0.03)
             axish[1].GetXaxis().SetTitleSize(0.04)

@@ -94,6 +94,24 @@ namespace ic {
             ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met,mt,pass_single,mvis")));
+
+      // load us groups fake factors
+      
+      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2016.root";
+      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2017.root";
+      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2018.root";
+      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+us_file_).c_str());
+
+      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_us.Close();
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+
+      systs_us_ = {""};
+      for(auto s : systs_us_) {
+        fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_us_->function(("ff_mt_medium"+s).c_str())->functor(ff_ws_->argSet("pt,njets,os,mt,mvis")));
+      }
+
       return 0;
     }
 
@@ -124,6 +142,24 @@ namespace ic {
             ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met,e_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met,mt,pass_single,mvis")));
+
+      // load us groups fake factors
+
+      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2016.root";
+      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2017.root";
+      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2018.root";
+      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+us_file_).c_str());
+
+      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_us.Close();
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+
+      systs_us_ = {""};
+      for(auto s : systs_us_) {
+        fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_us_->function(("ff_et_medium"+s).c_str())->functor(ff_ws_->argSet("pt,njets,os,mt,mvis")));
+      }
+
 
       return 0;
     }
@@ -590,6 +626,11 @@ namespace ic {
           ff_nom = fns_["ff_lt_medium_dmbins_wjets"]->eval(args_dm_w.data());
           event->Add("wt_ff_dmbins_wjets_1",  ff_nom);
 
+          // us groups FFs
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,m_vis_};
+          double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
+          event->Add("wt_ff_us_1",  ff_us_nom);
+
           if(do_systematics_) {
             for(auto s : systs_mvadm_){
               if (s == "") continue;
@@ -603,6 +644,15 @@ namespace ic {
               std::string syst_name = "wt_ff_dmbins"+s;
               event->Add(syst_name+"_1", ff_syst);
             }
+
+            // us groups FFs
+            for(auto s : systs_us_){
+              if (s == "") continue;
+              double ff_us_syst = fns_["ff_lt_medium_us"+s]->eval(args_us.data());
+              std::string syst_name = "wt_ff_us"+s;
+              event->Add(syst_name,  ff_us_syst);
+            } 
+
           }
 
           return 0;

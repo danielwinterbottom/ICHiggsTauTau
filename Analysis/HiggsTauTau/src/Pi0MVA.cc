@@ -434,7 +434,7 @@ namespace ic {
       tau_decay_mode_1_=tau1->decay_mode();
       eta_ = tau1->eta();
       pt_ = tau1->pt();
-      std::vector<ic::PFCandidate*> gammas_pt1 = GetTauGammas(tau1, pfcands, 1.0);
+      std::vector<ic::PFCandidate*> gammas_pt1 = GetTauGammas(tau1, pfcands, 1.0, 0);
       NgammaspT1_1_ = gammas_pt1.size();
 
       NelecspT1_1_ = 0;
@@ -478,11 +478,11 @@ namespace ic {
       //double uncert = ROOT::Math::Dot( ip_svec, ip_cov * ip_svec);
       //std::cout << uncert << std::endl; 
  
-      std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands, 0.0);
+      std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands, 0.0, 0);
 
 // HPS stuff
       std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs = HPSGammas(gammas1, 0, 0, 0, 0., 1);
-      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau1, pfcands, 0.0); //iso gammas 
+      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau1, pfcands, 0.0,0); //iso gammas 
       iso_gammas.insert(iso_gammas.end(), gammas1.begin(), gammas1.end()  );
       std::vector<std::pair<ic::PFCandidate*,std::vector<ic::PFCandidate*>>> strip_pairs_inciso = HPSGammas(iso_gammas, 0, 0, 0, 0., 1);
 
@@ -555,7 +555,7 @@ namespace ic {
 
 
       //std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands, 1.0); // only use gammas > 1 GeV -> to be consistent with 94X samples
-      ic::Candidate* pi_1 = GetTauHads(tau1, pfcands)[0];
+      ic::Candidate* pi_1 = GetTauHads(tau1, pfcands, 0)[0];
       Ngammas_1_ = gammas1.size();
 
       pi0_2gammas_E_=0., pi0_3gammas_E_=0., pi0_4gammas_E_=0.;

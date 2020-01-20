@@ -2012,8 +2012,8 @@ namespace ic {
     return taus;
   }
 
-  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, int gammas_shift=0) {
-    return GetTauGammas(tau, pfcands, 0.5, gammas_shift);
+  std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+    return GetTauGammas(tau, pfcands, 0.5, 0);
   }
 
   std::vector<ic::PFCandidate*> GetTauGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift=0) {
@@ -2045,14 +2045,24 @@ namespace ic {
   }
 
 
-  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
+  std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift) {
     std::vector<ic::PFCandidate*> gammas = {};
     std::vector<std::size_t> gammas_ids = tau->iso_gamma_cands();
     for(auto id : gammas_ids){
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          if(p->pt()>pt_cut) gammas.push_back(p);
+          ic::PFCandidate *gam = new ic::PFCandidate(*p);
+          if(gammas_shift!=0) {
+            double uncert = sqrt(0.0009/gam->energy()+0.000001);
+            double shift=1.;
+            if(gammas_shift==1)      shift-=uncert;
+            else if(gammas_shift==2) shift+=uncert;
+            gam->set_pt(gam->pt()*shift);
+            gam->set_energy(gam->energy()*shift);
+          }
+
+          if(gam->pt()>pt_cut) gammas.push_back(gam);
           break;
         }
       }
@@ -2062,33 +2072,55 @@ namespace ic {
   }
 
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
-    return GetTauIsoGammas(tau, pfcands, 0.5);
+    return GetTauIsoGammas(tau, pfcands, 0.5, 0);
   }
 
 
   
-  std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+  std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, int pi_shift) {
     std::vector<ic::PFCandidate*> hads = {};
     std::vector<std::size_t> hads_ids = tau->sig_charged_cands();
     for(auto id : hads_ids){
       for(auto p : pfcands) {
         std::size_t pfid = p->id();
         if(pfid == id) {
-          hads.push_back(p);
+          ic::PFCandidate *pi = new ic::PFCandidate(*p);
+          if(pi_shift!=0) {
+            double uncert = sqrt(pow(0.00009*pi->pt(),2)+pow(0.0085/sqrt(sin(2*atan(exp(-pi->eta())))),2));
+            double shift=1.;
+            if(pi_shift==1)      shift-=uncert;
+            else if(pi_shift==2) shift+=uncert;
+            p->set_pt(pi->pt()*shift);
+            p->set_energy(pi->energy()*shift);
+          }
+
+          hads.push_back(pi);
           break;
         }
       }
     }
+
     std::sort(hads.begin(), hads.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
     return hads;
   }
 
-  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
+  std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int uncert_mode) {
+    // uncert_mode = 0: no shifts to gammas or pi
+    // uncert_mode = 1: shift gammas down
+    // uncert mode = 2: shift gammas up
+    // uncert_mode = 3: shift pi down
+    // uncert_mode = 4: shift pi up
     ic::Candidate *pi = new ic::Candidate();
     ic::Candidate *pi0 = new ic::Candidate();
-    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
+    int pi_uncert = 0;
+    if(uncert_mode==3) pi_uncert = 1;
+    if(uncert_mode==4) pi_uncert = 2;
+    int gammas_uncert = 0;
+    if(uncert_mode==1) gammas_uncert = 1;
+    if(uncert_mode==2) gammas_uncert = 2;
+    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands, pi_uncert);
     if(hads.size()>0) pi = (ic::Candidate*)hads[0];
-    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut,0);
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, pt_cut, gammas_uncert);
     // reconstruct strips from "signal" gammas
     double mass = 0.1349;     
     double cone_size = std::max(std::min(0.1, 3./tau->pt()),0.05); 
@@ -2111,13 +2143,16 @@ namespace ic {
     } else if(tau->decay_mode()==1 && strip_pairs.size()>0) {
       pi0 = (ic::Candidate*)GetPi0(strip_pairs[0].second, true);
       //pi0 = (ic::Candidate*)GetPi0(gammas, true); 
-    }
+    } //else if(tau->decay_mode()==1) {
+      //// energy of pi0 from sum of gammas, direction from lead gamma
+      //pi0 = (ic::Candidate*)GetPi0(gammas, true);
+    //}
 
     return std::make_pair(pi,pi0);
   }
 
   std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
-    return  GetRho (tau, pfcands, 0.5);
+    return  GetRho (tau, pfcands, 0.5,0);
   }
  
 
@@ -2225,8 +2260,20 @@ namespace ic {
     return pi0;
   }
 
-  std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut) {
-    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands);
+  std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int uncert_mode) {
+    // uncert_mode = 0: no shifts to gammas or pi
+    // uncert_mode = 1: shift gammas down
+    // uncert mode = 2: shift gammas up
+    // uncert_mode = 3: shift pi down
+    // uncert_mode = 4: shift pi up
+    int pi_uncert = 0;
+    if(uncert_mode==3) pi_uncert = 1;
+    if(uncert_mode==4) pi_uncert = 2;
+    int gammas_uncert = 0;
+    if(uncert_mode==1) gammas_uncert = 1;
+    if(uncert_mode==2) gammas_uncert = 2;
+
+    std::vector<ic::PFCandidate*> hads = GetTauHads(tau, pfcands, pi_uncert);
     if(hads.size()==3) {
       // arrange hadrons so the oppositly charged hadron is contained in the first element
       if(hads[1]->charge()!=hads[0]->charge()&&hads[1]->charge()!=hads[2]->charge()){
@@ -2250,11 +2297,11 @@ namespace ic {
       }
     }
     std::vector<ic::PFCandidate*> gammas;
-    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut,0);
+    if(tau->decay_mode()>10) gammas = GetTauGammas(tau, pfcands, pt_cut, gammas_uncert);
     else  {
       // need to modify isolation collection to exclude these gammas!
-      gammas = GetTauGammas(tau, pfcands, pt_cut,0);//signal gammas
-      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, pt_cut);//iso gammas 
+      gammas = GetTauGammas(tau, pfcands, pt_cut,gammas_uncert);//signal gammas
+      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, pt_cut, gammas_uncert);//iso gammas 
       gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
       std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
     }
@@ -2288,7 +2335,7 @@ namespace ic {
   }
 
   std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*> GetA1 (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) { 
-    return  GetA1 (tau, pfcands, 0.5); 
+    return  GetA1 (tau, pfcands, 0.5, 0); 
   }
 
 
@@ -2495,6 +2542,16 @@ namespace ic {
     sign = p4.Vect().Unit().Dot(n1.Cross(n2));   
  
     if(sign<0) angle = 2*M_PI - angle;
+    return angle;
+  }
+
+  double AlphaAngle(TVector3 p, TVector3 ip) {
+    TVector3 z(0,0,1);
+    TVector3 p_unit = p.Unit();
+    TVector3 ip_unit = ip.Unit();
+    TVector3 cross1 = z.Cross(p_unit);
+    TVector3 cross2 = ip_unit.Cross(p_unit);
+    double angle = std::fabs(cross1.Dot(cross2)/ (cross1.Mag()*cross2.Mag()) );
     return angle;
   }
 
@@ -2842,36 +2899,22 @@ namespace ic {
     return new_value;
   }
 
-  std::pair<TVector3,double> IPAndSignificance(ic::Tau const *intau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands) {
+  std::pair<TVector3,double> IPAndSignificance(ic::Tau const *tau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands) {
       std::vector<float> h_param = {};
-      ic::Tau  *tau = const_cast<Tau*>(intau);
+      //ic::Tau  *tau = const_cast<Tau*>(intau);
       for(auto i :  tau->track_params()) h_param.push_back(i);
       double B = tau->bfield();
       ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(tau->svx(),tau->svy(),tau->svz());
       ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
-      std::vector<ic::PFCandidate*> charged_cands = GetTauHads(tau, pfcands);
-      ROOT::Math::PtEtaPhiEVector charged_vec;
-      for(auto c : charged_cands) charged_vec+=c->vector();
+      std::vector<ic::PFCandidate*> charged_cands = GetTauHads(tau, pfcands, 0);
 
-      ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>> p4;
-
-      p4.SetPxPyPzE(charged_vec.Px(),charged_vec.Py(),charged_vec.Pz(),charged_vec.E());
       ImpactParameter IP;
-      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv, p4);
+      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv);
 
       ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = tau->track_params_covariance();
-      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SigmaPrV = vertex->covariance();
+      SMatrixSym3D SigmaPrV = vertex->covariance();
 
       ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
-
-      //std::cout << "---------" << std::endl;
-      //std::cout << "IP = " << ip.X() << "    " << ip.Y() << "    " << ip.Z() << "    mag = " << ip.Mag() << std::endl;
-      //std::cout << "covariance = " << ip_cov[0][0] << "    " << ip_cov[1][1] << "    " << ip_cov[2][2] << std::endl;
-      //std::cout << "PV = " << vertex->vx() << "    " << vertex->vy() << "    " << vertex->vz() << std::endl;
-      //std::cout << "PV covariance = " << SigmaPrV[0][0] << "    " << SigmaPrV[1][1] << "    " << SigmaPrV[2][2] << std::endl;
-
-      //std::cout << "covariance (rel) = " << ip_cov[0][0]/fabs(ip.X()) << "    " << ip_cov[1][1]/fabs(ip.Y()) << "    " << ip_cov[2][2]/fabs(ip.Z()) << std::endl;
-      //std::cout << "IP covariance using only PV uncert (rel) = " << (SigmaPrV[0][0])/fabs(ip.X()) << "    " << (SigmaPrV[1][1])/fabs(ip.Y()) << "    " << (SigmaPrV[2][2])/fabs(ip.Z()) << std::endl;
 
       double mag = ip.Mag();
       ROOT::Math::SVector<double, 3> ip_svec;
@@ -2883,10 +2926,36 @@ namespace ic {
 
       double uncert = sqrt(ROOT::Math::Dot( ip_svec, ip_cov * ip_svec));
       double sig = mag/uncert;
-      //std::cout << "IP uncert = " << uncert << std::endl;
-      //double uncert_pvonly = sqrt(ROOT::Math::Dot( ip_svec, SigmaPrV * ip_svec));
-      //std::cout << "IP uncert (PV only) = " << uncert_pvonly << std::endl;
       return std::make_pair(ip, sig);
   }
+
+  std::pair<TVector3,double> IPAndSignificanceMuon(ic::Muon const *muon, ic::Vertex *vertex) {
+      std::vector<float> h_param = {};
+      ////ic::Muon  *muon = const_cast<Muon*>(inmuon);
+      for(auto i :  muon->track_params()) h_param.push_back(i);
+      double B = muon->bfield();
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(muon->vx(),muon->vy(),muon->vz());
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
+
+      ImpactParameter IP;
+      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv);
+      ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = muon->track_params_covariance();
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SigmaPrV = vertex->covariance();
+
+      ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
+
+      double mag = ip.Mag();
+      ROOT::Math::SVector<double, 3> ip_svec;
+      ip_svec(0) = ip.X();
+      ip_svec(1) = ip.Y();
+      ip_svec(2) = ip.Z();
+
+      ip_svec = ip_svec.Unit();
+
+      double uncert = sqrt(ROOT::Math::Dot( ip_svec, ip_cov * ip_svec));
+      double sig = mag/uncert;
+      return std::make_pair(ip, sig);
+  }
+
 
 } //namespace

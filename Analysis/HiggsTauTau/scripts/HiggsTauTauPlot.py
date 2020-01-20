@@ -1659,7 +1659,7 @@ if options.syst_scale_j_hf_year != '':
 if options.syst_scale_j_relsamp_year != '':
     systematics['syst_scale_j_relsamp_year_up']   = ('JESRELSAMP_YEAR_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_relsamp_year_down'] = ('JESRELSAMP_YEAR_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
-############
+
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
@@ -2525,7 +2525,6 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis == 'cpprod': 
               fake_factor_wt_string = "wt_ff_dmbins_1"
             else: fake_factor_wt_string = "wt_ff_1"
-            if options.channel == 'et': fake_factor_wt_string+='*1.2'
         else:
           if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
           else: fake_factor_wt_string = "wt_ff_"+options.cat
@@ -2632,7 +2631,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         if options.channel=='tt':
-          full_selection_extra = BuildCutString(wt+'*wt_ff_dmbins_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          if options.analysis == 'cpprod': full_selection_extra = BuildCutString(wt+'*wt_ff_dmbins_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          else: full_selection_extra = BuildCutString(wt+'*wt_ff_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
 
           wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples, plot, full_selection_extra)
           ana.nodes[nodename].AddNode(wnode) 
@@ -3497,8 +3497,10 @@ if var_name.count(',') == 2:
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
-if options.extra_name != "": datacard_name+='_'+options.extra_name
-output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+if options.extra_name != "": 
+  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+#datacard_name+='_'+options.extra_name
+else: output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -3796,8 +3798,11 @@ else:
     custom_uncerts_down_name = options.custom_uncerts_down_name
 
 if not options.no_plot:
-    if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
-    else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.extra_name != '': vname = options.extra_name
+    else: vname = var_name
+
+    if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
+    else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
     if options.do_ss: plot_name += "_ss"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"

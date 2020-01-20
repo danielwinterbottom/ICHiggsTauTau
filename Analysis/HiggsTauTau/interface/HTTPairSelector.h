@@ -41,6 +41,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, unsigned, metuncl_mode)
   CLASS_MEMBER(HTTPairSelector, bool, shift_jes)
   CLASS_MEMBER(HTTPairSelector, ic::mc, mc)
+  CLASS_MEMBER(HTTPairSelector, bool, usePFMET)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
 

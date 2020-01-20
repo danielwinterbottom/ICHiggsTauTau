@@ -919,6 +919,10 @@ namespace ic {
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
+        outtree_->Branch("wt_efake_rate_up", &wt_efake_rate_up_);
+        outtree_->Branch("wt_efake_rate_down", &wt_efake_rate_down_);
+        outtree_->Branch("wt_mfake_rate_up", &wt_mfake_rate_up_);
+        outtree_->Branch("wt_mfake_rate_down", &wt_mfake_rate_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
         outtree_->Branch("wt_trig_up_2",    &wt_trig_up_2_);
         outtree_->Branch("wt_trig_down_1",    &wt_trig_down_1_);
@@ -1158,6 +1162,64 @@ namespace ic {
       synctree_->Branch("tauspinnerH",      & wt_cp_sm_, "tauspinnerH/D");
       synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/D");
       synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
+
+      // deep tau IDs in same format as agreed with CP in production analyis
+      
+
+      synctree_->Branch("tDeepTau2017v2p1VSjetraw_1",      &deepTauVsJets_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSjetraw",      &deepTauVsJets_iso_2_);
+      synctree_->Branch("tDeepTau2017v2p1VSeraw_1",       &deepTauVsEle_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSeraw",       &deepTauVsEle_iso_2_);
+      synctree_->Branch("tDeepTau2017v2p1VSmuraw_1",        &deepTauVsMu_iso_1_);
+      synctree_->Branch("tDeepTau2017v2p1VSmuraw",        &deepTauVsMu_iso_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSjet_1", &deepTauVsJets_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSjet", &deepTauVsJets_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSjet_1",  &deepTauVsJets_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSjet",  &deepTauVsJets_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSjet_1",   &deepTauVsJets_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSjet",   &deepTauVsJets_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSjet_1",    &deepTauVsJets_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSjet",    &deepTauVsJets_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSjet_1",   &deepTauVsJets_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSjet",   &deepTauVsJets_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSjet_1",    &deepTauVsJets_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSjet",    &deepTauVsJets_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSjet_1",   &deepTauVsJets_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSjet",   &deepTauVsJets_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSjet_1",  &deepTauVsJets_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSjet",  &deepTauVsJets_vvtight_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSe_1",  &deepTauVsEle_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSe",  &deepTauVsEle_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSe_1",   &deepTauVsEle_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSe",   &deepTauVsEle_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSe_1",    &deepTauVsEle_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSe",    &deepTauVsEle_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSe_1",     &deepTauVsEle_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSe",     &deepTauVsEle_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSe_1",    &deepTauVsEle_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSe",    &deepTauVsEle_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSe_1",     &deepTauVsEle_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSe",     &deepTauVsEle_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSe_1",    &deepTauVsEle_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSe",    &deepTauVsEle_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSe_1",   &deepTauVsEle_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSe",   &deepTauVsEle_vvtight_2_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSmu_1",  &deepTauVsMu_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2017v2p1VSmu",  &deepTauVsMu_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSmu_1",   &deepTauVsMu_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2017v2p1VSmu",   &deepTauVsMu_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2017v2p1VSmu",    &deepTauVsMu_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSmu_1",     &deepTauVsMu_loose_1_);
+      synctree_->Branch("tLooseDeepTau2017v2p1VSmu",     &deepTauVsMu_loose_2_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSmu_1",    &deepTauVsMu_medium_1_);
+      synctree_->Branch("tMediumDeepTau2017v2p1VSmu",    &deepTauVsMu_medium_2_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_tight_1_);
+      synctree_->Branch("tTightDeepTau2017v2p1VSmu",    &deepTauVsMu_tight_2_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2017v2p1VSmu",    &deepTauVsMu_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2017v2p1VSmu",    &deepTauVsMu_vvtight_2_);
 
 
       // Lepton 2 properties
@@ -1965,6 +2027,10 @@ namespace ic {
     wt_em_qcd_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
+    wt_efake_rate_up_ = 1.0;
+    wt_efake_rate_down_ = 1.0;
+    wt_mfake_rate_up_ = 1.0;
+    wt_mfake_rate_down_ = 1.0;
     wt_embed_mc_yield_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
@@ -1976,6 +2042,10 @@ namespace ic {
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
+    if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
+    if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");
+    if (event->Exists("wt_mfake_rate_up"))  wt_mfake_rate_up_   = event->Get<double>("wt_mfake_rate_up");
+    if (event->Exists("wt_mfake_rate_down")) wt_mfake_rate_down_ = event->Get<double>("wt_mfake_rate_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
@@ -4111,8 +4181,8 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
-      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands);
-      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands);
+      std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
+      std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);
       q_tot_1_=0., q_tot_2_=0.;
 
       for(auto c : charged_cands_1) q_tot_1_+=c->charge();
