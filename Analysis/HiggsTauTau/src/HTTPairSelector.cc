@@ -232,7 +232,7 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-    if(mc_ == mc::mcleg2016 || mc_ == mc::mc2018) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
+    if((mc_ == mc::mcleg2016 || mc_ == mc::mc2018 || mc_ == mc::mc2017) && !usePFMET_) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
     Met *pfmet = pfMet_vec.at(0);
     // shift MET for systematic shifts
     if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
@@ -257,7 +257,7 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       //double t_scale = tau_scale_;
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_taues_3prong1pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));

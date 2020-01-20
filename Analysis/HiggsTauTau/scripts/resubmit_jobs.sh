@@ -6,7 +6,7 @@ for i in $(ls jobs/*.sh); do
   (( TOTAL++ ))
   job=$i
   i=${job//.sh/".log"}
-       
+  #if [[ ! -e $i ]]; then continue; fi;    
   if grep -q "Finished Processing" $i; then
     continue;
   else 
@@ -17,7 +17,7 @@ source /vols/grid/cms/setup.sh' $job
     echo $job
     (( COUNT++ ))
     #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
-    #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
+   # qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
   fi; 
 done
 echo $COUNT jobs out of $TOTAL failed

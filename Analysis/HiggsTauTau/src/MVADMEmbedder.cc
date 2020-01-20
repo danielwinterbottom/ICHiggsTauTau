@@ -65,7 +65,7 @@ namespace ic {
     std::cout << "MVADMEmbedder" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
 
-    if(strategy_==strategy::cpdecays17) {
+    if(strategy_==strategy::cpdecays17 || true) { // use 2017 version in all cases
       gammas_pt_cut_ = 1.0;
     }
 
@@ -75,7 +75,7 @@ namespace ic {
     TString filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2016_dm0_dm1.xml"; //add apply to even here
     TString filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2016_dm0_dm1.xml";
 
-    if(strategy_==strategy::cpdecays17) {
+    if(strategy_==strategy::cpdecays17 || true) { // use 2017 version in all cases
       // make sure you add odd training!
       filename_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2017_dm0_dm1.xml";
       filename_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2017_dm0_dm1.xml";
@@ -137,7 +137,7 @@ namespace ic {
     TString filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2016_dm10.xml";
     TString filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2016_dm10.xml";
 
-    if(strategy_==strategy::cpdecays17) {
+    if(strategy_==strategy::cpdecays17 || true) { // use 2017 version in all cases
       // make sure you add odd training!
       filename_dm10_even = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoeven_LeadStripSignalThenIsoCone_2017_dm10.xml";
       filename_dm10_odd = (std::string)getenv("CMSSW_BASE")+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/mvadm_inclusive_2fold_applytoodd_LeadStripSignalThenIsoCone_2017_dm10.xml";
@@ -268,16 +268,16 @@ namespace ic {
       ic::Candidate *pi0_2 = new ic::Candidate();
 
       if(tau_decay_mode_2_>=10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_);
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_,0);
         a1_daughters_2  = a1.first;
         pi0_2 = a1.second;
 
       } else {
-        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_);
+        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_,0);
         pi0_2 = rho_2.second;
       }
 
-      gammas2 = GetTauGammas(tau2, pfcands,0);
+      gammas2 = GetTauGammas(tau2, pfcands,0,0);
       strip_pt_2_ = pi0_2->pt();
 
       E_2_ = tau2->energy();;
@@ -517,16 +517,16 @@ namespace ic {
       ic::Candidate *pi0_1 = new ic::Candidate();
 
       if(tau_decay_mode_1_>=10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_);
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_,0);
         a1_daughters_1  = a1.first;
         pi0_1 = a1.second;
 
       } else {
-        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_);
+        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_,0);
         pi0_1 = rho_1.second;
       }
 
-      gammas1 = GetTauGammas(tau1, pfcands,0);
+      gammas1 = GetTauGammas(tau1, pfcands,0,0);
       strip_pt_1_ = pi0_1->pt();
 
       E_1_ = tau1->energy();;

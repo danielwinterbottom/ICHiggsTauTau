@@ -31,12 +31,14 @@ class ImpactParameter
 {
 public:
 	double CalculatePCADifferece(SMatrixSym3D cov, TVector3 DeltaPCA);
-	TVector3 CalculatePCA(double B, std::vector<float> h_param, RMPoint ref, RMPoint PrV, RMFLV p4);
+	TVector3 CalculatePCA(double B, std::vector<float> h_param, RMPoint ref, RMPoint PrV);
 	ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> CalculatePCACovariance(ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov, SMatrixSym3D SigmaPrV);
 	//TVector3 CalculateShortestDistance(KGenParticle* genParticle, RMPoint* pv);
 	TVector3 CalculateShortestDistance(RMFLV p4, RMPoint vertex, RMPoint* pv);
 	TVector3 CalculateShortestDistance(RMFLV p4, RMPoint ref, RMPoint pv);
 	//std::vector<double> CalculateIPErrors(RMFLV p4, RMPoint ref, KVertex* pv, TVector3* ipvec);
+	double CalculateIPSignificanceHelical(TVector3 IP, ROOT::Math::SMatrix<float,3,3, ROOT::Math::MatRepStd< float, 3, 3 >> IPCovariance);
+	double CalculateIPSignificanceTangential(TVector3 IP, SMatrixSym3D PVCovariance);
 
 	// set functions for variables used in the helical approach
 	inline double GetHelixRadius(){ return helixRadius; }
@@ -73,4 +75,5 @@ private:
 	inline void SetRecoQOverP(double qoverp){ recoQOverP = qoverp; }
 	inline void SetRecoOprime(RMPoint Oprime){ recoOprime = Oprime; }
 };
+
 
