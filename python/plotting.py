@@ -73,6 +73,8 @@ def SetAxisTitles(plot, channel):
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
+  titles['n_btag'] = ['N_{b-tag}^{tight}','Events', 'dN/dN_{b-tag}^{tight}']
+  titles['n_loose_btag'] = ['N_{b-tag}^{loose}','Events', 'dN/dN_{b-tag}^{loose}']
   titles['pzeta'] = ['D_{#zeta} (GeV)','Events / '+bin_width+' GeV', 'dN/dD_{#zeta} (1/GeV)']
   titles['jdeta'] = ['|#Delta#eta_{jj}|','Events / '+bin_width, 'dN/d|#Delta#eta_{jj}|']
   titles['sjdphi'] = ['#Delta#phi_{jj}','Events / '+bin_width, 'dN/d#Delta#phi_{jj}']
@@ -2374,7 +2376,8 @@ def HTTPlot(nodename,
             axish[1].GetYaxis().SetLabelSize(0.03)
 
             # centre X axis bin labels for the following variables
-            if "decay mode" in x_title or x_title in ["N_{jets}","N_{b-jets}"]:
+            if "decay mode" in x_title or x_title in ["N_{jets}","N_{b-jets}",
+                    "N_{b-tag}^{tight}","N_{b-tag}^{loose}"]:
                 axish[0].GetXaxis().SetNdivisions(axish[1].GetNbinsX()+1)
                 axish[1].GetXaxis().SetNdivisions(axish[1].GetNbinsX()+1)
                 axish[1].GetXaxis().CenterLabels(True)
