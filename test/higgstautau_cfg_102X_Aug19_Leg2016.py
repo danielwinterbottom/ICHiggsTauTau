@@ -30,6 +30,8 @@ opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 opts.register('isEmbed', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "dataset is embedded sample")
+opts.register('includeHTXS', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute HTXS Gen level vars")
 
 opts.parseArguments()
 infile      = opts.file
@@ -1385,6 +1387,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeLHEWeights   = cms.bool(doLHEWeights),
   includeGenWeights   = cms.bool(doLHEWeights),
   includenpNLO        = cms.bool(includenpNLO),
+  includeHTXS         = cms.bool(opts.includeHTXS),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -1439,6 +1442,31 @@ if opts.tauSpinner:
   )
 else: process.icTauSpinnerSequence = cms.Sequence()
 
+################################################################
+# HTXS NNLOPS
+################################################################
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+)
+process.genParticles2HepMC = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+)
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('genParticles2HepMC','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+)
+if opts.includeHTXS:
+    process.icHtxsSequence = cms.Sequence(
+        process.mergedGenParticles *
+        process.genParticles2HepMC *
+        process.rivetProducerHTXS
+    )
 
 ################################################################
 # Event
@@ -1463,11 +1491,12 @@ process.p = cms.Path(
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
-  process.icEventInfoSequence+
   process.icL1EGammaProducer+
   process.icL1TauProducer+
   process.icL1MuonProducer+
   process.icTauSpinnerSequence+
+  process.icHtxsSequence+
+  process.icEventInfoSequence+
   process.icEventProducer
 )
 
