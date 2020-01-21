@@ -1,3 +1,15 @@
+import ROOT
+from ROOT import TGraphAsymmErrors
+import UserCode.ICHiggsTauTau.plotting as plotting
+import argparse
+import math
+from matplotlib import pyplot as plt
+from sklearn.gaussian_process.kernels import Matern, ConstantKernel
+from sklearn.gaussian_process import GaussianProcessRegressor
+import copy
+import scipy
+import numpy as np
+from scipy import interpolate
 
 def CleanHist(hist_pass, hist_total):
     hist_pass.ClearUnderflowAndOverflow()
