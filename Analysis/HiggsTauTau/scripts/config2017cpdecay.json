@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","mt","et"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -24,7 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : true,
+    "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,
     "qcd_study" : false,
@@ -58,12 +58,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-<<<<<<< Updated upstream
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2017_newFF/",
+    // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2020/btagEff_2017/",
     "output_folder" : "output/",
-=======
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_newFF_v2/",
->>>>>>> Stashed changes
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
@@ -96,6 +92,7 @@
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
+      "wp_to_check"       : "loose",
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
@@ -442,6 +439,18 @@
         "addit_output_folder" : "JES_UNCORR_UP",
         "jes_mode" : 2,
         "jes_corr_mode" : 2
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jer_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
       }
     },
     // adding regrouped JECs (legacy/full run2 -- https://tinyurl.com/r976rmc)

@@ -1187,6 +1187,15 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
     .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
+// JER
+/*(if (!is_data) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}*/
+
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
@@ -1410,14 +1419,6 @@ BuildModule(jetIDFilter);
    );
  }
 
-}
-
-if (jer_mode > 0 && !is_data) {
-   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-    .set_input_label(jets_label)
-    .set_jer_shift_mode(jer_mode)
-    .set_EENoiseFix(era_type == era::data_2017)
-   );
 }
 
 // Apply loose PUJID universally
@@ -1890,7 +1891,8 @@ if(mela_mode!=0){
 }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+/* if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){ */
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
@@ -1947,7 +1949,7 @@ if (new_svfit_mode != 1) {
   }
 }
 // NOT READY YET
-/*if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
   TH2F bbtag_eff;
   TH2F cbtag_eff;
   TH2F othbtag_eff;
@@ -1963,7 +1965,7 @@ if (new_svfit_mode != 1) {
     bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
     cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
     othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
-  } else if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17) {
+  } else if (strategy_type == strategy::cpdecays17) {
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
@@ -1992,10 +1994,9 @@ if (new_svfit_mode != 1) {
    .set_othbtag_eff(new TH2F(othbtag_eff))
    .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
    .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-   .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
-   .set_btag_mode(btag_mode));
+   .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)));
   }
-}*/
+}
 
  if(strategy_type == strategy::paper2013){
   HTTWeights httWeights = HTTWeights("HTTWeights")
@@ -2499,7 +2500,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-    .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
+    //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    .set_do_nnlops_weights(false);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
@@ -2511,6 +2514,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample && channel !=channel::zmm &&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel!= channel::tpem);
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+    httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode);
     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
     if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
@@ -2577,7 +2581,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -2585,6 +2591,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
      httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode);
      if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
      if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
      if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
@@ -2654,7 +2661,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos);
+     .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos)
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2018.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -2662,6 +2671,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
    if (!is_data ) {
      httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode);
      if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
      if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
      if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);

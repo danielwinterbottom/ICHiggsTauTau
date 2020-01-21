@@ -48,6 +48,8 @@ mkdir -p -v $1/TSCALE_DOWN_2.5
 # mkdir -p -v $1/LFSTATS2_DOWN
 mkdir -p -v $1/JES_UP
 mkdir -p -v $1/JES_DOWN
+mkdir -p -v $1/JER_UP
+mkdir -p -v $1/JER_DOWN
 # mkdir -p -v $1/JES_CORR_UP
 # mkdir -p -v $1/JES_CORR_DOWN
 # mkdir -p -v $1/JES_UNCORR_UP

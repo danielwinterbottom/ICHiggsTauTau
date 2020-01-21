@@ -135,7 +135,7 @@ def main(args):
     elif args.channel == "em":
         plot_vars = [
 
-            # taus/leptons
+            # # taus/leptons
             # "m_vis(20,20,200)",
             # "m_sv(25,50,300)",
             # "pt_tt(30,0,300)",
@@ -156,21 +156,25 @@ def main(args):
             # "jpt_2(17,40,200)",
 
             # # bjets
-            # "n_bjets(3,0,3)",
+            "n_btag(3,0,3)",
+            "n_loose_btag(3,0,3)",
             # "bpt_1(17,30,200)",
             # "bpt_2(17,30,200)",
             # "beta_1(12,-4.7,4.7)",
             # "beta_2(12,-4.7,4.7)",
 
             # "pzeta(20,-100,100)",
-            "svfit_mass_test(25,50,300)",
+            # "svfit_mass_test(25,50,300)",
 
             ]
         method = "19"
         # extras += ' --set_alias "sel:pzeta<-50" ' # to select ttbar region
         extras += ' --set_alias "sel:(pzeta>-35)" '
         # extras += ' --set_alias "inclusive:(n_bjets==0)" '
+        # extras += ' --set_alias "inclusive:(wt_btag>0)" '
+        # extras += ' --set_alias "inclusive:(n_btag==0 && n_loose_btag==0)" '
         extras += " --cat {} ".format(args.cat)
+        extras += " --add_wt (wt_btag_up/wt_btag) "
 
         # if args.cat in ["0jet","boosted","inclusive"]:
         #     extras += ' --set_alias "sel:pzeta>-35" ' 
