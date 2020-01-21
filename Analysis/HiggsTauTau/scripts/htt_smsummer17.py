@@ -156,7 +156,8 @@ for i in range(0,scale):
    if temp == '': continue
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
-FILELIST='filelists/Sep29_MC_102X_2017'
+# FILELIST='filelists/Sep29_MC_102X_2017'
+FILELIST='filelists/Jan06_MC_102X_2017'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -364,20 +365,20 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-      'DYJetsToLL_M-10-50-LO-ext1',
-      'DYJetsToLL_M-10-50-LO',
-      'DY1JetsToLL-LO', #new pmx
-      'DY1JetsToLL-LO-ext', #new sample
-      'DY2JetsToLL-LO',
-      'DY2JetsToLL-LO-ext',
-      'DY3JetsToLL-LO',
-      'DY3JetsToLL-LO-ext',
-      'DY4JetsToLL-LO', # new
+      # 'DYJetsToLL_M-10-50-LO-ext1',
+      # 'DYJetsToLL_M-10-50-LO',
+      # 'DY1JetsToLL-LO', #new pmx
+      # 'DY1JetsToLL-LO-ext', #new sample
+      # 'DY2JetsToLL-LO',
+      # 'DY2JetsToLL-LO-ext',
+      # 'DY3JetsToLL-LO',
+      # 'DY3JetsToLL-LO-ext',
+      # 'DY4JetsToLL-LO', # new
       'DYJetsToLL-LO-ext1',
-      'DYJetsToLL-LO',
-      'DYJetsToLL',
-      'DYJetsToLL-ext',
-      'EWKZ2Jets',
+      # 'DYJetsToLL-LO',
+      # 'DYJetsToLL',
+      # 'DYJetsToLL-ext',
+      # 'EWKZ2Jets',
       # 'EWKWPlus2Jets',
       # 'EWKWMinus2Jets',
       # 'WJetsToLNu-LO',
@@ -412,7 +413,8 @@ if options.proc_bkg or options.proc_all:
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+      PREFIX = FILELIST.split("/")[1]
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
 
       job_num=0
       for FLATJSONPATCH in flatjsons:

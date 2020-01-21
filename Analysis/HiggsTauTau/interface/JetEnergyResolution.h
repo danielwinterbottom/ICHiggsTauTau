@@ -62,12 +62,15 @@ int JetEnergyResolution<T>::Execute(TreeEvent *event) {
   for (unsigned i = 0; i < vec.size(); ++i) {
     bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
     if(!skipJet) before += vec[i]->vector();
-    if (jer_shift_mode_ == 1) shift = vec[i]->jerdown_shift(); //down
+    if (jer_shift_mode_ == 0) shift = vec[i]->jer_shift(); //nominal
+    else if (jer_shift_mode_ == 1) shift = vec[i]->jerdown_shift(); //down
     else if (jer_shift_mode_ == 2) shift = vec[i]->jerup_shift(); //up
+    shift = shift == 0 ? 1. : shift;
     vec[i]->set_vector(vec[i]->vector() * shift);
     if(!skipJet) after += vec[i]->vector();
   }
   event->Add("jer_shift", after-before);
+  std::sort(vec.begin(), vec.end(), bind(&T::pt, _1) > bind(&T::pt, _2));
   
   return 0;
 }

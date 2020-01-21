@@ -366,6 +366,16 @@ namespace ic {
     }
 
     // ************************************************************************
+    // Scale met for the jet energy resolution
+    // ************************************************************************
+
+    if(event->Exists("jer_shift")){
+      Met * met = event->GetPtr<Met>(met_label_);
+      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
+      this->CorrectMETForShift(met, jer_shift);
+    }
+
+    // ************************************************************************
     // Select l->tau or jet->tau fakes
     // ************************************************************************
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu

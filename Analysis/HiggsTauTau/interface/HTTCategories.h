@@ -80,6 +80,8 @@ class HTTCategories : public ModuleBase {
   float mc_weight_;
   float pu_weight_;
   double wt_btag_;
+  double wt_btag_up_;
+  double wt_btag_down_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;
@@ -399,6 +401,8 @@ class HTTCategories : public ModuleBase {
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
   unsigned n_loose_bjets_;
+  unsigned n_btag_;
+  unsigned n_loose_btag_;
   unsigned n_jetsingap_; // Defined if n_jets >= 2
   unsigned n_jetsingap20_; // Defined if n_jets >= 2
   branch_var jpt_1_;     // Defined if n_jets >= 1
@@ -1042,6 +1046,9 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_dm1_down_;
   double wt_tau_trg_dm10_down_;
   double wt_tau_trg_dm11_down_;
+
+  double wt_mg_nnlops_;
+  double wt_ph_nnlops_;
 
  public:
   HTTCategories(std::string const& name);

@@ -83,6 +83,8 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      outtree_->Branch("wt_btag_up",        &wt_btag_up_);
+      outtree_->Branch("wt_btag_down",      &wt_btag_down_);
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       outtree_->Branch("xtrg_sf", &xtrg_sf_);
@@ -150,6 +152,9 @@ namespace ic {
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
+
+        outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
+        outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       }
      
       if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
@@ -504,6 +509,8 @@ namespace ic {
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
+      outtree_->Branch("n_btag",            &n_btag_);
+      outtree_->Branch("n_loose_btag",      &n_loose_btag_);
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
@@ -1683,6 +1690,8 @@ namespace ic {
    
     looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
  
+    wt_mg_nnlops_ = event->Exists("wt_mg_nnlops") ? event->Get<double>("wt_mg_nnlops") : 1.0;
+    wt_ph_nnlops_ = event->Exists("wt_ph_nnlops") ? event->Get<double>("wt_ph_nnlops") : 1.0;
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -2218,6 +2227,10 @@ namespace ic {
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
+    // NEW
+    std::vector<PFJet*> btag = prebjets;
+    std::vector<PFJet*> loose_btag = prebjets;
+    //
     std::string btag_label="combinedSecondaryVertexBJetTags";
     std::string btag_label_extra ="combinedSecondaryVertexBJetTags";
     double btag_wp =  0.679;
@@ -2264,6 +2277,12 @@ namespace ic {
     auto filterBTagSumLoose = [btag_label, btag_label_extra, loose_btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > loose_btag_wp;
     };
+    // NEW
+    if (era_ == era::data_2017 || era_ == era::data_2018 || era_ == era::data_2016) {
+      ic::erase_if_not(loose_btag, filterBTagSumLoose);
+      ic::erase_if_not(btag, filterBTagSumTight);
+    }
+    //
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -2319,10 +2338,11 @@ namespace ic {
     }
 
     
-    //Compare with btag shape reweighting:
-    if(event->Exists("btag_evt_weight")){
-     wt_btag_ = event->Get<double>("btag_evt_weight");
-    } 
+    // Btag weights
+    wt_btag_ = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
+    wt_btag_up_ = event->Exists("btag_evt_weight_up") ? event->Get<double>("btag_evt_weight_up") : 1.;
+    wt_btag_down_ = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
+
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
@@ -3479,6 +3499,9 @@ namespace ic {
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
 
+    n_btag_ = btag.size();
+    n_loose_btag_ = loose_btag.size();
+
     if(uncleaned_jets.size() > 0 && (channel_ == channel::mt || channel_ == channel::et) && jetfake_study_) {
       std::vector<Candidate *> subleading_lepton;
       subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
@@ -3752,6 +3775,69 @@ namespace ic {
         beta_2_ = loose_bjets[1]->eta();
         bphi_2_ = loose_bjets[1]->phi();
         bmva_2_ = loose_bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+
+    } else if (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) {
+        // full Run2 legacy
+        // add medium WP (called it tight) btags
+      if (n_btag_ >= 1) {
+        bpt_1_ = btag[0]->pt();
+        brawf_1_ = btag[0]->uncorrected_energy()/btag[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = btag[0]->eta();
+        bphi_1_ = btag[0]->phi();
+        bmva_1_ = btag[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_btag_ >= 2) {
+        bpt_2_ = btag[1]->pt();
+        brawf_2_ = btag[1]->uncorrected_energy()/btag[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = btag[1]->eta();
+        bphi_2_ = btag[1]->phi();
+        bmva_2_ = btag[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+      // add loose tags as well
+      if (n_loose_btag_ >= 1) {
+        bpt_1_ = loose_btag[0]->pt();
+        brawf_1_ = loose_btag[0]->uncorrected_energy()/loose_btag[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = loose_btag[0]->eta();
+        bphi_1_ = loose_btag[0]->phi();
+        bmva_1_ = loose_btag[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_loose_btag_ >= 2) {
+        bpt_2_ = loose_btag[1]->pt();
+        brawf_2_ = loose_btag[1]->uncorrected_energy()/loose_btag[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = loose_btag[1]->eta();
+        bphi_2_ = loose_btag[1]->phi();
+        bmva_2_ = loose_btag[1]->pu_id_mva_value();
       
       } else {
         bpt_2_ = -9999;
