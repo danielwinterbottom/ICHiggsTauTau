@@ -2496,7 +2496,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-    .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    .set_do_nnlops_weights(false);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
@@ -2576,7 +2577,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
      .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -2655,7 +2657,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
      .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos)
-     .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2018.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");

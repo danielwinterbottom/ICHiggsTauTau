@@ -1987,28 +1987,41 @@ namespace ic {
       }
     }
     if (do_nnlops_weights_){
-      double wt_nnlops = 1.;
+      double wt_mg_nnlops = 1.;
+      double wt_ph_nnlops = 1.;
 
       // Retrieve file with TGraphs of weights
       std::string file = "input/ggh_weights/NNLOPS_reweight.root";
       ggh_weights_ = new TFile(file.c_str());
       ggh_weights_->cd();
-      ggh_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
-      ggh_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
-      ggh_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_2jet");
-      ggh_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
+      ggh_mg_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
+      ggh_mg_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
+      ggh_mg_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_2jet");
+      ggh_mg_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_3jet");
+
+      ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
+      ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
+      ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
+      ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
 
       // Get n_jets30 and higgs pt from eventinfo (produced with rivet)
       // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/SignalModelingTools
       unsigned n_jets30 = eventInfo->n_jets30();
       double pt_h = eventInfo->pt_h();
-      if (n_jets30      == 0) wt_nnlops = ggh_0jet_->Eval(std::min(pt_h, 125.));
-      else if (n_jets30 == 1) wt_nnlops = ggh_1jet_->Eval(std::min(pt_h, 625.));
-      else if (n_jets30 == 2) wt_nnlops = ggh_2jet_->Eval(std::min(pt_h, 800.));
-      else if (n_jets30 >= 3) wt_nnlops = ggh_3jet_->Eval(std::min(pt_h, 925.));
-      else wt_nnlops = 1.;
+      if (n_jets30      == 0) wt_mg_nnlops = ggh_mg_0jet_->Eval(std::min(pt_h, 125.));
+      else if (n_jets30 == 1) wt_mg_nnlops = ggh_mg_1jet_->Eval(std::min(pt_h, 625.));
+      else if (n_jets30 == 2) wt_mg_nnlops = ggh_mg_2jet_->Eval(std::min(pt_h, 800.));
+      else if (n_jets30 >= 3) wt_mg_nnlops = ggh_mg_3jet_->Eval(std::min(pt_h, 925.));
+      else wt_mg_nnlops = 1.;
 
-      event->Add("wt_nnlops", wt_nnlops);
+      if (n_jets30      == 0) wt_ph_nnlops = ggh_ph_0jet_->Eval(std::min(pt_h, 125.));
+      else if (n_jets30 == 1) wt_ph_nnlops = ggh_ph_1jet_->Eval(std::min(pt_h, 625.));
+      else if (n_jets30 == 2) wt_ph_nnlops = ggh_ph_2jet_->Eval(std::min(pt_h, 800.));
+      else if (n_jets30 >= 3) wt_ph_nnlops = ggh_ph_3jet_->Eval(std::min(pt_h, 925.));
+      else wt_ph_nnlops = 1.;
+
+      event->Add("wt_mg_nnlops", wt_mg_nnlops);
+      event->Add("wt_ph_nnlops", wt_ph_nnlops);
     }
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  

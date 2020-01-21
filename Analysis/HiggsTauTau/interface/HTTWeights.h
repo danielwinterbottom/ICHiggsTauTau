@@ -119,10 +119,14 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_;
   TH1F *ggh_hist_up_;
   TH1F *ggh_hist_down_;
-  TGraph *ggh_0jet_;
-  TGraph *ggh_1jet_;
-  TGraph *ggh_2jet_;
-  TGraph *ggh_3jet_;
+  TGraph *ggh_mg_0jet_;
+  TGraph *ggh_mg_1jet_;
+  TGraph *ggh_mg_2jet_;
+  TGraph *ggh_mg_3jet_;
+  TGraph *ggh_ph_0jet_;
+  TGraph *ggh_ph_1jet_;
+  TGraph *ggh_ph_2jet_;
+  TGraph *ggh_ph_3jet_;
   std::shared_ptr<RooWorkspace> w_;
   std::shared_ptr<RooWorkspace> w_ggh_;
   std::shared_ptr<RooWorkspace> wembed_;

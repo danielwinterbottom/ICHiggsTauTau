@@ -153,7 +153,8 @@ namespace ic {
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
 
-        outtree_->Branch("wt_nnlops", & wt_nnlops_);
+        outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
+        outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       }
      
       if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
@@ -1656,7 +1657,8 @@ namespace ic {
    
     looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
  
-    wt_nnlops_ = event->Exists("wt_nnlops") ? event->Get<double>("wt_nnlops") : 1.0;
+    wt_mg_nnlops_ = event->Exists("wt_mg_nnlops") ? event->Get<double>("wt_mg_nnlops") : 1.0;
+    wt_ph_nnlops_ = event->Exists("wt_ph_nnlops") ? event->Get<double>("wt_ph_nnlops") : 1.0;
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
