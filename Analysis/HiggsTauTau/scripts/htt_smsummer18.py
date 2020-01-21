@@ -388,7 +388,7 @@ if options.proc_bkg or options.proc_all:
         'WJetsToLNu-LO',
         #'WWTo1L1Nu2Q',
         'WWTo2L2Nu',
-        'WWTo4Q',
+#        'WWTo4Q',
         'WWToLNuQQ',
         'WZTo1L3Nu',
         'WZTo2L2Q',
