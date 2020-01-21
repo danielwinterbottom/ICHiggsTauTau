@@ -1183,6 +1183,15 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
     .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
+// JER
+/*(if (!is_data) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}*/
+
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
@@ -1406,14 +1415,6 @@ BuildModule(jetIDFilter);
    );
  }
 
-}
-
-if (jer_mode > 0 && !is_data) {
-   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-    .set_input_label(jets_label)
-    .set_jer_shift_mode(jer_mode)
-    .set_EENoiseFix(era_type == era::data_2017)
-   );
 }
 
 // Apply loose PUJID universally
