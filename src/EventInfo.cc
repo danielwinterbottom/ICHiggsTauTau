@@ -16,7 +16,8 @@ EventInfo::EventInfo()
       gen_mll_(0.),
       good_vertices_(0),
       pt_h_(0.),
-      n_jets30_(0) {}
+      n_jets30_(0), 
+      stage1_cat_(0) {}
 
 EventInfo::~EventInfo() {}
 
