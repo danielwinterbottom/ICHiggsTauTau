@@ -1862,11 +1862,6 @@ namespace ic {
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
       event->Add("retag_result", retag_result);
     }
-   
-    if (do_btag_weight_ && (mc_ == mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016)) {
-      double wt_btag = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
-      eventInfo->set_weight("btag_evt_weight", wt_btag);
-    }
 
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
