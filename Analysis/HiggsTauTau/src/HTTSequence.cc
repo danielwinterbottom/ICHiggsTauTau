@@ -4716,25 +4716,25 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_0pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.479;
+        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.5;
       }));
     
     BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_1pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.479;
+        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.5;
       }));
      
     BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
       .set_input_label("fakeE_genmatched_taus_0pi_endcap")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.479;
+        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.5;
       }));
 
     BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
       .set_input_label("fakeE_genmatched_taus_1pi_endcap")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.479;
+        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.5;
       }));
 
     BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")

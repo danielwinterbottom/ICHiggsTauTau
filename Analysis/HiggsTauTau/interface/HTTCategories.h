@@ -805,6 +805,36 @@ class HTTCategories : public ModuleBase {
   double wt_ff_wjets_1_;
   double wt_ff_dmbins_qcd_1_;
   double wt_ff_dmbins_wjets_1_;
+  double wt_ff_dmbins_ttbar_syst_up_1_;
+  double wt_ff_dmbins_ttbar_syst_down_1_;
+  double wt_ff_ttbar_syst_up_1_;
+  double wt_ff_ttbar_syst_down_1_;
+
+  double wt_ff_us_1_;
+  double wt_ff_us_qcd_syst_osss_up_1_;
+  double wt_ff_us_qcd_syst_osss_down_1_;
+  double wt_ff_us_wjets_syst_mt_unc1_up_1_;
+  double wt_ff_us_wjets_syst_mt_unc1_down_1_;
+  double wt_ff_us_wjets_syst_mt_unc2_up_1_;
+  double wt_ff_us_wjets_syst_mt_unc2_down_1_;
+  double wt_ff_us_qcd_syst_closure_up_1_;
+  double wt_ff_us_qcd_syst_closure_down_1_;
+  double wt_ff_us_wjets_syst_closure_up_1_;
+  double wt_ff_us_wjets_syst_closure_down_1_;
+  double wt_ff_us_ttbar_syst_closure_up_1_;
+  double wt_ff_us_ttbar_syst_closure_down_1_;
+  double wt_ff_us_qcd_stat_unc1_up_1_;
+  double wt_ff_us_qcd_stat_unc1_down_1_;
+  double wt_ff_us_qcd_stat_unc2_up_1_;
+  double wt_ff_us_qcd_stat_unc2_down_1_;
+  double wt_ff_us_wjets_stat_unc1_up_1_;
+  double wt_ff_us_wjets_stat_unc1_down_1_;
+  double wt_ff_us_wjets_stat_unc2_up_1_;
+  double wt_ff_us_wjets_stat_unc2_down_1_;
+  double wt_ff_us_ttbar_stat_unc1_up_1_;
+  double wt_ff_us_ttbar_stat_unc1_down_1_;
+  double wt_ff_us_ttbar_stat_unc2_up_1_;
+  double wt_ff_us_ttbar_stat_unc2_down_1_;
  
   bool trg_singleelectron_;
   bool trg_singlemuon_;
