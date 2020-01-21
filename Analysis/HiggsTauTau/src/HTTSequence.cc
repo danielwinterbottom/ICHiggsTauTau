@@ -517,11 +517,15 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  tau_shift_3prong1pi0 = 1.0;
  fakeE_tau_shift_0pi = 1.0;
  fakeE_tau_shift_1pi = 1.0;
+ fakeE_tau_shift_0pi_endcap = 1.0;
+ fakeE_tau_shift_1pi_endcap = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+   fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
+   fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
    if(!is_embedded){
      tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
      tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
@@ -4695,19 +4699,37 @@ void HTTSequence::BuildTauSelection(){
     
     BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
       "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi_endcap"));
+
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi_endcap"));
     
     BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_0pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 0;
+        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.479;
       }));
     
     BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_1pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 1;
+        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.479;
       }));
      
+    BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.479;
+      }));
+
+    BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.479;
+      }));
+
     BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
     .set_input_label("fakeE_genmatched_taus_0pi")
     .set_save_shifts(true)
@@ -4719,6 +4741,18 @@ void HTTSequence::BuildTauSelection(){
     .set_save_shifts(true)
     .set_shift_label("scales_efaketaues_1prong1pi0")
     .set_shift(fakeE_tau_shift_1pi));
+
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0_endcap")
+    .set_shift(fakeE_tau_shift_0pi_endcap));
+
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0_endcap")
+    .set_shift(fakeE_tau_shift_1pi_endcap));
   }
 
   //adding a fake mu tau ES shifter

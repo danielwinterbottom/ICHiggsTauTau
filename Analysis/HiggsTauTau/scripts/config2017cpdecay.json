@@ -99,10 +99,12 @@
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 0.982,
-      "efaketau_1pi_es_shift": 1.018,
-      "mufaketau_0pi_es_shift": 0.998,
-      "mufaketau_1pi_es_shift": 0.992,
+      "efaketau_0pi_es_shift": 1.00911,
+      "efaketau_0pi_es_shift_endcap": 0.97396,
+      "efaketau_1pi_es_shift": 1.01154,
+      "efaketau_1pi_es_shift_endcap": 1.015,
+      "mufaketau_0pi_es_shift": 1.0,
+      "mufaketau_1pi_es_shift": 1.0,
       "tau_1prong0pi0_es_shift": 1.007,
       "tau_1prong1pi0_es_shift": 0.998,
       "tau_3prong0pi0_es_shift": 1.001,
@@ -310,50 +312,54 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.972
+        "efaketau_0pi_es_shift": 1.00029,
+        "efaketau_0pi_es_shift_endcap": 0.95966
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 0.992
+        "efaketau_0pi_es_shift": 1.02254,
+        "efaketau_0pi_es_shift_endcap": 0.99645
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.008
+        "efaketau_1pi_es_shift": 1.00181,
+        "efaketau_1pi_es_shift_endcap": 0.96531
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.028
+        "efaketau_1pi_es_shift": 1.03316,
+        "efaketau_1pi_es_shift_endcap": 1.07961
       }
     },
 
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.988
+        "mufaketau_0pi_es_shift": 0.99
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.008
+        "mufaketau_0pi_es_shift": 1.01
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 0.982
+        "mufaketau_1pi_es_shift": 0.99
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.002
+        "mufaketau_1pi_es_shift": 1.01
       }
     },
     "scale_e_lo": {
