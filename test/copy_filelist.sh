@@ -39,4 +39,4 @@ done
 rm dirs.txt
 
 # tar files into one
-# tar -czvf ${folder}.tgz ${folder}_*.dat
+tar -czvf ${folder}.tgz ${folder}_*.dat

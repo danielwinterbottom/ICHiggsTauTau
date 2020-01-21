@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
         if ("HToTauTau" in task[0] or 'JJH' in task[0]) and 'JHUGen' not in task[1]:
             if 'mcatnloFXFX' in task[0]:
-                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
+                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True','includeHTXS=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
         else:

@@ -48,7 +48,9 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")),
-      filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig"))
+      filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
+      do_htxs_(config.getParameter<bool>("includeHTXS")),
+      htxsSrc_(consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification")))
 {
 #if CMSSW_MAJOR_VERSION >= 7
       consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
@@ -184,6 +186,19 @@ void ICEventInfoProducer::produce(edm::Event& event,
   if (do_vertex_count_) {
     event.getByLabel(input_vertices_, vtxs_handle);
     info_->set_good_vertices(vtxs_handle->size());
+  }
+
+  if(do_htxs_){
+    edm::Handle<HTXS::HiggsClassification> htxs;
+    event.getByToken(htxsSrc_, htxs);
+
+    unsigned n_jets = htxs->jets30.size();
+    double pt_h     = htxs->higgs.Pt();
+    int stage1_cat  = htxs->stage1_cat_pTjet30GeV;
+
+    info_->set_n_jets30(n_jets);
+    info_->set_pt_h(pt_h);
+    info_->set_stage1_cat(stage1_cat);
   }
 
   edm::Handle<LHEEventProduct> lhe_handle;
