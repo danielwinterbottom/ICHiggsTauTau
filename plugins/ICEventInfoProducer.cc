@@ -194,9 +194,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
 
     unsigned n_jets = htxs->jets30.size();
     double pt_h     = htxs->higgs.Pt();
+    int stage1_cat  = htxs->stage1_cat_pTjet30GeV;
 
     info_->set_n_jets30(n_jets);
     info_->set_pt_h(pt_h);
+    info_->set_stage1_cat(stage1_cat);
   }
 
   edm::Handle<LHEEventProduct> lhe_handle;
