@@ -2555,6 +2555,17 @@ namespace ic {
     return angle;
   }
 
+  double AlphaAngleRho(TVector3 rho, TVector3 pi) {
+    TVector3 z(0,0,1);
+    TVector3 rho_unit = rho.Unit();
+    TVector3 pi_unit = pi.Unit();
+    TVector3 cross1 = z.Cross(rho_unit);
+    TVector3 cross2 = pi_unit.Cross(rho_unit);
+    double angle = std::fabs(cross1.Dot(cross2)/ (cross1.Mag()*cross2.Mag()) );
+    return angle;
+  }
+
+
   std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
       std::map<std::size_t, ic::PFCandidate*> pfcands) {
     std::vector<ic::PFCandidate*> sig_gammas = {};

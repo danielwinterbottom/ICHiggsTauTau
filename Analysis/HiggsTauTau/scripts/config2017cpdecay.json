@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Sep29_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt"],
+    "channels":     ["tt","mt","et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]

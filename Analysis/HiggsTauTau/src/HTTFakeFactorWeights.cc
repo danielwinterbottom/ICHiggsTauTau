@@ -55,6 +55,8 @@ namespace ic {
 
       systs_dm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down"};
 
+      systs_us_ = {"","_qcd_stat_njets0_up","_qcd_stat_njets0_down","_qcd_stat_njets1_up","_qcd_stat_njets1_down","_qcd_stat_njets2_up","_qcd_stat_njets2_down","_qcd_syst_closure_njets0_up","_qcd_syst_closure_njets0_down","_qcd_syst_closure_njets1_up","_qcd_syst_closure_njets1_down","_qcd_syst_closure_njets2_up","_qcd_syst_closure_njets2_down","_qcd_syst_osss_up","_qcd_syst_osss_down"};
+
       for(auto s : systs_mvadm_) {
         fns_["ff_tt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_->function(("ff_tt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met")));
@@ -63,6 +65,22 @@ namespace ic {
         fns_["ff_tt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_->function(("ff_tt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,pt_2,os,met"))); 
       }
+
+      // load us groups fake factors
+
+      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2016.root";
+      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2017.root";
+      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2018.root";
+      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+us_file_).c_str());
+
+      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_us.Close();
+
+      for(auto s : systs_us_) {
+        fns_["ff_tt_medium_us"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_us_->function(("ff_tt_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,pt_2,os,mvis")));
+      }
+
 
       return 0;
     }
@@ -104,11 +122,11 @@ namespace ic {
 
       ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_wjets_stat_unc1_up","_wjets_stat_unc1_down","_wjets_stat_unc2_up","_wjets_stat_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
 
       for(auto s : systs_us_) {
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_mt_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis")));
+              ff_ws_us_->function(("ff_mt_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
       }
 
       return 0;
@@ -151,11 +169,11 @@ namespace ic {
 
       ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_unc1_up","_qcd_stat_unc1_down","_qcd_stat_unc2_up","_qcd_stat_unc2_down","_wjets_stat_unc1_up","_wjets_stat_unc1_down","_wjets_stat_unc2_up","_wjets_stat_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
 
       for(auto s : systs_us_) {
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_et_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis")));
+              ff_ws_us_->function(("ff_et_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
       }
 
 
@@ -625,7 +643,10 @@ namespace ic {
           event->Add("wt_ff_dmbins_wjets_1",  ff_nom);
 
           // us groups FFs
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,m_vis_};
+          std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+          Met const* pfmet = pfMet_vec.at(0);
+          double pfmt_1 = MT(lep1, pfmet);
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,m_vis_,pfmt_1};
           double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
           event->Add("wt_ff_us_1",  ff_us_nom);
 
@@ -715,6 +736,15 @@ namespace ic {
           ff_nom_2 = fns_["ff_tt_medium_dmbins"]->eval(args_dm_2.data());
           event->Add("wt_ff_dmbins_2",  ff_nom_2);
 
+         auto args_us = std::vector<double>{pt_1_,n_jets_,pt_2_,os,m_vis_};
+         auto args_us_2 = std::vector<double>{pt_2_,n_jets_,pt_1_,os,m_vis_};
+
+         ff_nom = fns_["ff_tt_medium_us"]->eval(args_us.data());
+         event->Add("wt_ff_us_1",  ff_nom);
+         ff_nom_2 = fns_["ff_tt_medium_us"]->eval(args_us_2.data());
+         event->Add("wt_ff_us_2",  ff_nom_2);
+
+
           if(do_systematics_){
 
             for(auto s : systs_mvadm_){
@@ -735,6 +765,17 @@ namespace ic {
               double ff_syst_2 = fns_["ff_tt_medium_dmbins"+s]->eval(args_dm_2.data());
               event->Add(syst_name+"_2", ff_syst_2);
             }
+
+            for(auto s : systs_us_){
+              if (s == "") continue;
+              double ff_syst = fns_["ff_tt_medium_us"+s]->eval(args_us.data());
+              std::string syst_name = "wt_ff_us"+s;
+              event->Add(syst_name+"_1", ff_syst);
+
+              double ff_syst_2 = fns_["ff_tt_medium_us"+s]->eval(args_us_2.data());
+              event->Add(syst_name+"_2", ff_syst_2);
+            }
+
 
           }
           return 0;
