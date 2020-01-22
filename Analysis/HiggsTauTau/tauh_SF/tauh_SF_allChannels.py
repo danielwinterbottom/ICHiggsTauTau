@@ -11,7 +11,7 @@ import scipy
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 from scipy import interpolate
-from tauh_SF_funcs import CleanHist, MinTarget, Graph, FitResults 
+from tauh_SF_funcs import Histogram, CleanHist, MinTarget, Graph, FitResults 
 ROOT.gROOT.SetBatch(True)
 plotting.ModTDRStyle()
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
@@ -38,7 +38,7 @@ def main(args):
     channels = ["tt", "mt","et"]
     ch_validity_thrs = { 'et': 35, 'mt': 32, 'tt': 40 }
    
-    output_file = ROOT.TFile("trigger_SF_tauh.root", 'RECREATE', '', ROOT.RCompressionSetting.EDefaults.kUseSmallest)
+    output_file = ROOT.TFile("outputs/trigger_SF_tauh.root", 'RECREATE', '')
     
     for channel in channels:
         with PdfPages("outputs/SF_plots_{}Channel_{}_{}DM_{}.pdf".format(channel, args.year ,args.DM_type, args.pred_using)) as pdf:
@@ -143,20 +143,20 @@ def main(args):
                 pdf.savefig(bbox_inches='tight')
                 plt.close()
                 
-                out_name_pattern = '{}Channel_{}_PredUsing{}Samples_{}_{}_{{}}'.format(channel, args.year, args.pred_using, args.DM_type, num )
-                output_file.WriteTObject(eff_data_root, out_name_pattern.format('EffOfData'), 'Overwrite')
-                output_file.WriteTObject(eff_mc_root, out_name_pattern.format('EffOfMC'), 'Overwrite')
+                out_name_pattern = '{}Channel_{}_PredUsing{}Samples_{}DM_{}_{{}}'.format(channel, args.year, args.pred_using, args.DM_type, num )
+                output_file.WriteTObject(eff_data_input, out_name_pattern.format('EffOfData'), 'Overwrite')
+                output_file.WriteTObject(eff_MC_input, out_name_pattern.format('EffOfMC'), 'Overwrite')
                 eff_data_fitted_hist = Histogram.CreateTH1(eff_data_fitted.y_pred, [x_low, x_high],
                                                            eff_data_fitted.sigma_pred, fixed_step=True)
-                eff_mc_fitted_hist = Histogram.CreateTH1(eff_mc_fitted.y_pred, [x_low, x_high],
-                                                         eff_mc_fitted.sigma_pred, fixed_step=True)
-                sf_fitted_hist = eff_data_fitted_hist.Clone()
-                sf_fitted_hist.Divide(eff_mc_fitted_hist)
+                eff_MC_fitted_hist = Histogram.CreateTH1(eff_MC_fitted.y_pred, [x_low, x_high],
+                                                         eff_MC_fitted.sigma_pred, fixed_step=True)
+                SF_fitted_hist = eff_data_fitted_hist.Clone()
+                SF_fitted_hist.Divide(eff_MC_fitted_hist)
                 output_file.WriteTObject(eff_data_fitted_hist, out_name_pattern.format('EffOfData_Fitted'), 'Overwrite')
-                output_file.WriteTObject(eff_mc_fitted_hist, out_name_pattern.format('EffOfMC_Fitted'), 'Overwrite')
-                output_file.WriteTObject(sf_fitted_hist, out_name_pattern.format('SF_Fitted'), 'Overwrite')
+                output_file.WriteTObject(eff_MC_fitted_hist, out_name_pattern.format('EffOfMC_Fitted'), 'Overwrite')
+                output_file.WriteTObject(SF_fitted_hist, out_name_pattern.format('SF_Fitted'), 'Overwrite')
 
-
+    output_file.Close()
 
 
 

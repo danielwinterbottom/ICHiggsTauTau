@@ -45,6 +45,32 @@ def MinTarget(dy, eff):
     y = np.cumsum(dy)
     return np.sum(((eff.y - y) / (eff.y_error_high + eff.y_error_low)) ** 2)
 
+
+class Histogram:
+    def __init__(self, th1_hist):
+        n_bins = th1_hist.GetNbinsX()
+        self.values = np.zeros(n_bins)
+        self.errors = np.zeros(n_bins)
+        self.edges = np.zeros(n_bins + 1)
+        for n in range(n_bins):
+            self.values[n] = th1_hist.GetBinContent(n + 1)
+            self.edges[n] = th1_hist.GetBinLowEdge(n + 1)
+            self.errors[n] = th1_hist.GetBinError(n + 1)
+        self.edges[n_bins] = th1_hist.GetBinLowEdge(n_bins + 1)
+
+    @staticmethod
+    def CreateTH1(values, edges, errors, fixed_step=False):
+        if fixed_step:
+            th1_hist = ROOT.TH1F('', '', len(values), edges[0], edges[-1])
+        else:
+            th1_hist = ROOT.TH1F('', '', len(edges) - 1, array('f', edges))
+        for n in range(len(values)):
+            th1_hist.SetBinContent(n + 1, values[n])
+            th1_hist.SetBinError(n + 1, errors[n])
+        return th1_hist
+
+
+
 class Graph:
     def __init__(self, **kwargs):
         if 'root_graph' in kwargs:
