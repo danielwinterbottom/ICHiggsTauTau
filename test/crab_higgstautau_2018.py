@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan05_Data_102X_2018'
+config.General.workArea='Jan06_Data_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -16,7 +16,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adow/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']
