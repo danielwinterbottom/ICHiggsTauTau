@@ -369,7 +369,7 @@ namespace ic {
     // Scale met for the jet energy resolution
     // ************************************************************************
 
-    if(event->Exists("jer_shift")){
+    if(event->Exists("jer_shift") && shift_jes_){
       Met * met = event->GetPtr<Met>(met_label_);
       ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
       this->CorrectMETForShift(met, jer_shift);

@@ -351,7 +351,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.85);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.80);
             } else if (abs_eta < 2.75) {
@@ -373,7 +373,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.6);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.40);
             } else if (abs_eta < 2.75) {
@@ -395,7 +395,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.45);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.63);
             } else if (abs_eta < 2.75) {
@@ -431,7 +431,7 @@ namespace ic {
         }
         else return true;
       }
-      else if (pt > 30.) {
+      else if (pt > 30. && pt <= 50.) {
         if (abs_eta < 2.5) {
           if (doTight) return (pu_id_mva_value > 0.86);
           else if (doLoose) return (pu_id_mva_value > -0.89);

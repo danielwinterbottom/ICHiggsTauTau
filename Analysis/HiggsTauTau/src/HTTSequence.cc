@@ -1188,13 +1188,13 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
 }
 
 // JER
-/*(if (!is_data) {
+if (!is_data && !is_embedded) {
    BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
      .set_input_label(jets_label)
      .set_jer_shift_mode(jer_mode)
      .set_EENoiseFix(era_type == era::data_2017)
    );
-}*/
+}
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
@@ -1422,12 +1422,12 @@ BuildModule(jetIDFilter);
 }
 
 // Apply loose PUJID universally
-/*BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
   .set_input_label(jets_label)
   .set_predicate([=](PFJet const* jet) {
     return  PileupJetID(jet, pu_id_training, false, true);
   })
-);*/
+);
 
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
