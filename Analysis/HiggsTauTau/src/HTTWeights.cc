@@ -1727,6 +1727,8 @@ namespace ic {
   
       }
      eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
+     if(channel_==channel::tt) event->Add("idisoweight_1", tau_sf_1);
+     event->Add("idisoweight_2", tau_sf_2);
     }
     if (do_em_qcd_weights_){
       if(channel_ == channel::em){
@@ -2904,7 +2906,7 @@ namespace ic {
          mu_trg = mu_trg / mu_trg_mc;
          tau_trg = tau_trg / tau_trg_mc;
        }
-       if(mu1_trg>2) mu1_trg=2;
+       if(mu_trg>2) mu_trg=2;
        weight *= (mu_trg * tau_trg);
        event->Add("trigweight_1", mu_trg);
        event->Add("trigweight_2", tau_trg);
@@ -3846,6 +3848,8 @@ namespace ic {
          eventInfo->set_weight("idiso", ele_idiso, false);
        }
        if(mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016){
+         event->Add("idisoweight_1",ele_idiso);
+         //event->Add("idisoweight_2",double(1.0));
          weight *= (ele_idiso); 
        } else if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
          if (do_id_weights_) ele_iso = 1.0;
@@ -3938,7 +3942,7 @@ namespace ic {
        if(mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016) {
          weight *= mu_idiso;
          event->Add("idisoweight_1", mu_idiso);
-         event->Add("idisoweight_2", double(1.0));  
+         //event->Add("idisoweight_2", double(1.0));  
          event->Add("idweight_1", mu_id);
          event->Add("idweight_2", double(1.0));
          event->Add("isoweight_1", mu_iso);
