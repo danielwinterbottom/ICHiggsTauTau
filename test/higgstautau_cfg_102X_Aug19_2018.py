@@ -10,9 +10,9 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
+'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root',
 # 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
- 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
+# 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
 # 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root',
 #'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
 parser.VarParsing.multiplicity.singleton,
@@ -35,6 +35,8 @@ opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Compute weights using tauspinner")
+opts.register('includeHTXS', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute HTXS Gen level vars")
 
 opts.parseArguments()
 infile      = opts.file
@@ -71,7 +73,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1531,6 +1533,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeLHEWeights   = cms.bool(doLHEWeights),
     includeGenWeights   = cms.bool(doLHEWeights),
     includenpNLO        = cms.bool(includenpNLO),
+    includeHTXS         = cms.bool(opts.includeHTXS),
     includeEmbeddingWeights = cms.bool(bool(isEmbed)),
     includeHT           = cms.bool(False),
     lheProducer         = cms.InputTag(lheTag),
@@ -1580,6 +1583,34 @@ if opts.tauSpinner:
     )
 else: process.icTauSpinnerSequence = cms.Sequence()
 
+
+################################################################
+# HTXS NNLOPS
+################################################################
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+)
+process.genParticles2HepMC = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+)
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('genParticles2HepMC','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+)
+process.icHtxsSequence = cms.Sequence()
+if opts.includeHTXS:
+    process.icHtxsSequence = cms.Sequence(
+        process.mergedGenParticles *
+        process.genParticles2HepMC *
+        process.rivetProducerHTXS
+    )
+
 ################################################################
 # Event
 ################################################################
@@ -1604,6 +1635,7 @@ process.p = cms.Path(
     process.icTriggerSequence+
     process.icTriggerObjectSequence+
     process.icTauSpinnerSequence+
+    process.icHtxsSequence+
     process.icEventInfoSequence+
     process.icEventProducer
 )

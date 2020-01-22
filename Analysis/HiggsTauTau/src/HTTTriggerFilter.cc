@@ -1141,17 +1141,17 @@ namespace ic {
 
           passed_mutaucross_alt = alt_leg1_match && alt_leg2_match; 
         }
-        if(is_embedded_ && mc_ == mc::mc2017){
-          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-          std::vector<ic::L1TObject*> passed_l1_taus;
-          for(unsigned ta=0; ta<l1taus.size(); ++ta){
-            if(fabs(l1taus[ta]->eta())<2.17 && l1taus[ta]->vector().Pt() >= 24.) passed_l1_taus.push_back(l1taus[ta]); 
-          }
-          std::vector<Candidate *> match_taus;
-          match_taus.push_back(dileptons[i]->At(1));
-          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
-          passed_mutaucross = passed_mutaucross&&match_l1_parts;
-        }
+        //if(is_embedded_ && mc_ == mc::mc2017){
+        //  std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+        //  std::vector<ic::L1TObject*> passed_l1_taus;
+        //  for(unsigned ta=0; ta<l1taus.size(); ++ta){
+        //    if(fabs(l1taus[ta]->eta())<2.17 && l1taus[ta]->vector().Pt() >= 24.) passed_l1_taus.push_back(l1taus[ta]); 
+        //  }
+        //  std::vector<Candidate *> match_taus;
+        //  match_taus.push_back(dileptons[i]->At(1));
+        //  bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
+        //  passed_mutaucross = passed_mutaucross&&match_l1_parts;
+        //}
         if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
       }
     }
@@ -1168,15 +1168,15 @@ namespace ic {
 
         passed_etaucross = leg1_match && leg2_match;
         if(is_embedded_&& mc_ == mc::mc2017){
-          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-          std::vector<ic::L1TObject*> passed_l1_taus;
-          for(unsigned ta=0; ta<l1taus.size(); ++ta){
-            if(fabs(l1taus[ta]->eta())<2.17 &&l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus.push_back(l1taus[ta]); 
-          }
-          std::vector<Candidate *> match_taus;
-          match_taus.push_back(dileptons[i]->At(1));
-          bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
-          passed_etaucross = passed_etaucross&&match_l1_parts;
+          //std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          //std::vector<ic::L1TObject*> passed_l1_taus;
+          //for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          //  if(fabs(l1taus[ta]->eta())<2.17 &&l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus.push_back(l1taus[ta]); 
+          //}
+          //std::vector<Candidate *> match_taus;
+          //match_taus.push_back(dileptons[i]->At(1));
+          //bool match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() >= 1;
+          //passed_etaucross = passed_etaucross&&match_l1_parts;
           // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
           Electron const* elec = dynamic_cast<Electron const*>(dileptons[i]->At(0)); 
           double eta = fabs(elec->sc_eta());

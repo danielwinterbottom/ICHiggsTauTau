@@ -47,6 +47,7 @@
 #include "HiggsTauTau/interface/HhhMetScale.h"
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/JetEnergyUncertainty.h"
+#include "HiggsTauTau/interface/JetEnergyResolution.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "HiggsTauTau/interface/HTTFilter.h"
 #include "Modules/interface/LumiMask.h"
@@ -54,6 +55,7 @@
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/BTagWeightLegacyRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
 #include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
 #include "HiggsTauTau/interface/HTTGenAnalysis.h"
@@ -91,7 +93,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
-    if(json["baseline"]["jes_mode"].asUInt() > 0 && ((json["baseline"]["split_by_source"].asBool() && !json["baseline"]["split_by_region"].asBool()) || do_recoil)) svfit_folder=svfit_folder+"/";
+    // if(json["baseline"]["jes_mode"].asUInt() > 0 && ((json["baseline"]["split_by_source"].asBool() && !(json["baseline"]["split_by_region"].asBool()) || do_recoil)) svfit_folder=svfit_folder+"/";
+    if(json["baseline"]["jes_mode"].asUInt() > 0 && (((json["baseline"]["split_by_source"].asBool() && !(json["baseline"]["split_by_region"].asBool())) || (!json["baseline"]["split_by_source"].asBool() && json["baseline"]["jes_input_set"].asString() != "") )|| do_recoil)) svfit_folder=svfit_folder+"/";
     else if(addit_output_folder.find("BFAKE_") != output_name.npos || addit_output_folder.find("BTAG_") != output_name.npos) svfit_folder=svfit_folder+"/";
     else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   }
@@ -120,6 +123,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  jer_mode=json["baseline"]["jer_mode"].asUInt();
   jes_corr_mode=json["baseline"]["jes_corr_mode"].asUInt();
   metscale_mode=json["baseline"]["metscale_mode"].asUInt();
   metres_mode=json["baseline"]["metres_mode"].asUInt();
@@ -127,6 +131,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   use_deep_csv=json["baseline"]["use_deep_csv"].asBool(); 
+  wp_to_check=json["baseline"]["wp_to_check"].asString(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
   if(js["mc"].asString()=="" && era_str != "data_2017"){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
@@ -498,8 +503,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  muon_shift = json["baseline"]["muon_es_shift"].asDouble();
  muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
  muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
- muon_shift_negfarendcap = json["baseline"]["muon_es_shift_negfarendcap"].asDouble();
- muon_shift_posfarendcap = json["baseline"]["muon_es_shift_posfarendcap"].asDouble();
+ muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -510,21 +514,29 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  tau_shift_1prong0pi0 = 1.0;
  tau_shift_1prong1pi0 = 1.0;
  tau_shift_3prong0pi0 = 1.0;
+ tau_shift_3prong1pi0 = 1.0;
  fakeE_tau_shift_0pi = 1.0;
  fakeE_tau_shift_1pi = 1.0;
+ fakeE_tau_shift_0pi_endcap = 1.0;
+ fakeE_tau_shift_1pi_endcap = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+   fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
+   fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
    if(!is_embedded){
      tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
      tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+     tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+     tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
    } else {
      tau_shift_1prong0pi0 = json["baseline"]["embedtau_1prong0pi0_es_shift"].asDouble();
      tau_shift_1prong1pi0 = json["baseline"]["embedtau_1prong1pi0_es_shift"].asDouble();
+     tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
+     tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
    }
-   tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
  }
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
@@ -599,6 +611,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
   std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
   std::cout << boost::format(param_fmt) % "use_deep_csv" % use_deep_csv;
+  std::cout << boost::format(param_fmt) % "wp_to_check" % wp_to_check;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 //  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
@@ -1174,6 +1187,15 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
     .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
+// JER
+if (!is_data && !is_embedded) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}
+
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
@@ -1205,15 +1227,19 @@ BuildModule(jetIDFilter);
   }
   if (era_type == era::data_2016) {
     jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    // jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16) 
+        jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+    // jes_input_file = "input/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   if (era_type == era::data_2018) {
-    jes_input_file = "input/jec/Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+    // jes_input_file = "input/jec/Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
   
@@ -1395,21 +1421,25 @@ BuildModule(jetIDFilter);
 
 }
 
-/*BuildModule(NoiseJetIDEmbedder("NoiseJetIDEmbedder")
-    .set_fs(fs.get())
-    );*/
-
+// Apply loose PUJID universally
+BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+  .set_input_label(jets_label)
+  .set_predicate([=](PFJet const* jet) {
+    return  PileupJetID(jet, pu_id_training, false, true);
+  })
+);
 
 if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetPUIDEENoiseFilter")
+  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
+      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
+        fabs(jet->eta()) > 3.139 ||
+        fabs(jet->eta()) < 2.65 ;
+
       /*return  PileupJetID(jet, pu_id_training, false, false) ||
          fabs(jet->eta()) > 3.139 ||
          fabs(jet->eta()) < 2.65 ;*/
-      /*return  jet->pt() > 50 ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;*/
 
       /*return  (PileupJetID(jet, pu_id_training, false, true) &&
          ((jet->pt() > 30 && jet->pt() < 40 && jet->neutral_em_energy_frac() < 0.3) ||
@@ -1419,124 +1449,15 @@ if (era_type == era::data_2017) {
          fabs(jet->eta()) > 3.139 ||
          fabs(jet->eta()) < 2.65 ;*/
 
-      return  
+      /*return  
          (jet->pt() > 30 && jet->pt() < 40 && (jet->neutral_em_energy_frac() < (0.67+0.86*jet->pu_id_mva_value()))) ||
          (jet->pt() > 40 && jet->pt() < 50 && (jet->neutral_em_energy_frac() < (0.39+0.60*jet->pu_id_mva_value()))) ||
          (jet->pt() > 50 && jet->pt() < 60 && (jet->neutral_em_energy_frac() < (0.70+0.61*jet->pu_id_mva_value()))) ||
          (jet->pt() > 60 && jet->pt() < 80 && (jet->neutral_em_energy_frac() < (0.99+0.94*jet->pu_id_mva_value()))) ||
          (jet->pt() > 80) ||
          fabs(jet->eta()) > 3.139 ||
-         fabs(jet->eta()) < 2.65 ;
-
-        /*return jet->linear_radial_moment() < 0.5 ||
-          fabs(jet->eta()) > 3.139 ||
-          fabs(jet->eta()) < 2.65 ;*/
-
-      /*return
-         (jet->pt() > 30 && jet->pt() < 40 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.6 && jet->pu_id_mva_value() > -0.1) ||
-         (jet->neutral_em_energy_frac()>0.6 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > 0.) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > 0.2))) ||
-
-         (jet->pt() > 40 && jet->pt() < 50 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > -0.2))) ||
-
-
-         (jet->pt() > 50 && jet->pt() < 60 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > -0.3))) ||
-
-         jet->pt() > 60 ||
-         fabs(jet->eta()) > 3.139 ||
          fabs(jet->eta()) < 2.65 ;*/
 
-      /* return
-         (jet->pt() > 30 && jet->pt() < 35 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.1 && jet->pu_id_mva_value() > 0.) ||
-         (jet->neutral_em_energy_frac()>0.1 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > 0.2) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > 0.5) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > 0.7))) ||
-
-         (jet->pt() > 35 && jet->pt() < 40 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.3) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.2) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.6 && jet->pu_id_mva_value() > 0.1) ||
-         (jet->neutral_em_energy_frac()>0.6 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > 0.2) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > 0.5))) ||
-
-         (jet->pt() > 40 && jet->pt() < 45 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.5) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 0.7 && jet->pu_id_mva_value() > -0.3) ||
-         (jet->neutral_em_energy_frac()>0.7 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > -0.2) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > -0.1) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() >  0.2))) ||
-
-         (jet->pt() > 45 && jet->pt() < 50 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > -0.3) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > -0.2))) ||
-
-         (jet->pt() > 50 && jet->pt() < 55 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.8) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > -0.2))) ||
-
-         (jet->pt() > 55 && jet->pt() < 60 && 
-         (jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > -0.4)) ||
-
-         jet->pt() > 60 ||
-         fabs(jet->eta()) > 3.139 ||
-         fabs(jet->eta()) < 2.65 ; */
-
-
-      /*return
-         (jet->pt() > 30 && jet->pt() < 40 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.1 && jet->pu_id_mva_value() > -0.1) ||
-         (jet->neutral_em_energy_frac()>0.1 && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.1) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.2) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > 0.0) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > 0.1) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 0.6 && jet->pu_id_mva_value() > 0.2) ||
-         (jet->neutral_em_energy_frac()>0.6 && jet->neutral_em_energy_frac() < 0.7 && jet->pu_id_mva_value() > 0.3) ||
-         (jet->neutral_em_energy_frac()>0.7 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > 0.3) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > 0.5) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() > 0.7))) ||
-
-
-         (jet->pt() > 40 && jet->pt() < 50 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.1 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.1 && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.5) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 0.6 && jet->pu_id_mva_value() > -0.3) ||
-         (jet->neutral_em_energy_frac()>0.6 && jet->neutral_em_energy_frac() < 0.7 && jet->pu_id_mva_value() > -0.3) ||
-         (jet->neutral_em_energy_frac()>0.7 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > -0.2) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > -0.1) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() >  -0.3))) ||
-
-         (jet->pt() > 50 && jet->pt() < 60 && 
-         ((jet->neutral_em_energy_frac()>0. && jet->neutral_em_energy_frac() < 0.1 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.1 && jet->neutral_em_energy_frac() < 0.2 && jet->pu_id_mva_value() > -0.8) ||
-         (jet->neutral_em_energy_frac()>0.2 && jet->neutral_em_energy_frac() < 0.3 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.3 && jet->neutral_em_energy_frac() < 0.4 && jet->pu_id_mva_value() > -0.7) ||
-         (jet->neutral_em_energy_frac()>0.4 && jet->neutral_em_energy_frac() < 0.5 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.5 && jet->neutral_em_energy_frac() < 0.6 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.6 && jet->neutral_em_energy_frac() < 0.7 && jet->pu_id_mva_value() > -0.5) ||
-         (jet->neutral_em_energy_frac()>0.7 && jet->neutral_em_energy_frac() < 0.8 && jet->pu_id_mva_value() > -0.4) ||
-         (jet->neutral_em_energy_frac()>0.8 && jet->neutral_em_energy_frac() < 0.9 && jet->pu_id_mva_value() > -0.6) ||
-         (jet->neutral_em_energy_frac()>0.9 && jet->neutral_em_energy_frac() < 1. && jet->pu_id_mva_value() >  -1.))) ||
-
-         fabs(jet->eta()) > 3.139 ||
-         fabs(jet->eta()) < 2.65 ;*/
     })
   );
 }
@@ -1550,6 +1471,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_strategy(strategy_type)
     .set_do_legacy(false)
     .set_use_deep_csv(use_deep_csv)
+    .set_wp_to_check(wp_to_check)
     .set_jet_label(jets_label));
 }
 
@@ -1574,7 +1496,10 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        }
      }
    }
-   
+
+     bool usePFMET = false;
+     usePFMET = js["usePFMET"].asBool();
+ 
      HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
        .set_channel(channel)
        .set_fs(fs.get())
@@ -1594,8 +1519,9 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
        .set_allowed_tau_modes(allowed_tau_modes)
        .set_metuncl_mode(metuncl_mode)
        .set_metcl_mode(metcl_mode)
-       .set_shift_jes(!do_recoil);
-   
+       .set_shift_jes(!do_recoil)
+       .set_usePFMET(usePFMET);
+         
      if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 ||  strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
        httPairSelector.set_gen_taus_label("genParticles");
      }
@@ -1819,8 +1745,13 @@ if(channel != channel::wmnu) {
      .set_w_hack(true));
   }
 
+ bool usePFMET = false;
+ usePFMET = js["usePFMET"].asBool();
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) && channel!=channel::wmnu && do_recoil){ 
+ // in this case the older recoil correction tool already uses the proper PF MET corrections so use this if option is specified
+
+
+ if(((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) || usePFMET) && channel!=channel::wmnu && do_recoil){ 
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1834,7 +1765,7 @@ if(channel != channel::wmnu) {
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
 
- if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu){
+ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && channel!=channel::wmnu && !usePFMET){
     unsigned njets_mode = js["njets_mode"].asUInt();
     /*BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -1850,6 +1781,7 @@ if(channel != channel::wmnu) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );*/
+
     BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1881,7 +1813,7 @@ if(channel != channel::wmnu) {
     .set_strategy(strategy_type)
     .set_mc(mc_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ((js["baseline"]["split_by_source"].asBool() && !js["baseline"]["split_by_region"].asBool()) || do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
+    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ( ((js["baseline"]["split_by_source"].asBool() && !(js["baseline"]["split_by_region"].asBool())) || (!js["baseline"]["split_by_source"].asBool() && js["baseline"]["jes_input_set"].asString() != "") )|| do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(40000)
@@ -1959,7 +1891,8 @@ if(mela_mode!=0){
 }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+/* if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){ */
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::cpsummer17) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
@@ -2013,6 +1946,55 @@ if (new_svfit_mode != 1) {
    .set_use_deep_csv(use_deep_csv)
    .set_btag_mode(btag_mode)
    .set_bfake_mode(bfake_mode));
+  }
+}
+// NOT READY YET
+if((strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && !is_data){
+  TH2F bbtag_eff;
+  TH2F cbtag_eff;
+  TH2F othbtag_eff;
+  TH2F bbtag_eff_alt;
+  TH2F cbtag_eff_alt;
+  TH2F othbtag_eff_alt;
+
+  if (strategy_type == strategy::legacy16){
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpdecays17) {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
+  } else if (strategy_type == strategy::cpdecays18) {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_oth");
+
+    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
+    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
+    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
+  }
+
+if (new_svfit_mode != 1) {
+  BuildModule(BTagWeightLegacyRun2("BTagWeightLegacyRun2")
+   .set_channel(channel)
+   .set_era(era_type)
+   .set_strategy(strategy_type)
+   .set_jet_label(jets_label)
+   .set_bbtag_eff(new TH2F(bbtag_eff))
+   .set_cbtag_eff(new TH2F(cbtag_eff))
+   .set_othbtag_eff(new TH2F(othbtag_eff))
+   .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
+   .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
+   .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)));
   }
 }
 
@@ -2518,7 +2500,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-    .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
+    //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+    .set_do_nnlops_weights(false);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
@@ -2596,7 +2580,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -2673,7 +2659,9 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_do_cross_trg(js["do_leptonplustau"].asBool())
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos);
+     .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos)
+     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
+     .set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2018.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -3627,8 +3615,7 @@ void HTTSequence::BuildMTPairs() {
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
-      .set_neg_far_endcap(muon_shift_negfarendcap)
-      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_far_endcap(muon_shift_farendcap)
       .set_near_endcap(muon_shift_nearendcap)
       .set_barrel(muon_shift_barrel)
       );
@@ -3776,8 +3763,7 @@ void HTTSequence::BuildEMPairs() {
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
-      .set_neg_far_endcap(muon_shift_negfarendcap)
-      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_far_endcap(muon_shift_farendcap)
       .set_near_endcap(muon_shift_nearendcap)
       .set_barrel(muon_shift_barrel)
       );
@@ -4186,7 +4172,7 @@ void HTTSequence::BuildZMMPairs() {
       .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > 10.        &&
-                fabs(m->eta())          < muon_eta   &&
+                fabs(m->eta())          < 2.4   &&
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
@@ -4354,6 +4340,10 @@ void HTTSequence::BuildTPMTPairs() {
   
         BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
           "genmatched_taus", "genmatched_taus_3prong0pi0"));
+
+        BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
+          "genmatched_taus", "genmatched_taus_3prong1pi0"));
+
   
         BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
           .set_input_label("genmatched_taus_1prong0pi0")
@@ -4372,6 +4362,13 @@ void HTTSequence::BuildTPMTPairs() {
           .set_predicate([=](Tau const* t) {
             return  t->decay_mode() == 10;
           }));
+
+        BuildModule(SimpleFilter<Tau>("3Prong1PiTauHadFilter")
+          .set_input_label("genmatched_taus_3prong1pi0")
+          .set_predicate([=](Tau const* t) {
+            return  t->decay_mode() == 11;
+          }));
+
          
         BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
         .set_input_label("genmatched_taus_1prong0pi0")
@@ -4390,6 +4387,12 @@ void HTTSequence::BuildTPMTPairs() {
         .set_save_shifts(true) 
         .set_shift_label("scales_taues_3prong0pi0") 
         .set_shift(tau_shift_3prong0pi0));
+
+        BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
+        .set_input_label("genmatched_taus_3prong1pi0")
+        .set_save_shifts(true)
+        .set_shift_label("scales_taues_3prong1pi0")
+        .set_shift(tau_shift_3prong1pi0));
 
         BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
           .set_input_vec_label(js["taus"].asString())
@@ -4645,6 +4648,9 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
       "genmatched_taus", "genmatched_taus_3prong0pi0"));
 
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
+      "genmatched_taus", "genmatched_taus_3prong1pi0"));
+
     BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
       .set_input_label("genmatched_taus_1prong0pi0")
       .set_predicate([=](Tau const* t) {
@@ -4680,6 +4686,12 @@ void HTTSequence::BuildTauSelection(){
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_3prong0pi0") 
     .set_shift(tau_shift_3prong0pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
+    .set_input_label("genmatched_taus_3prong1pi0")
+    .set_save_shifts(true)
+    .set_shift_label("scales_taues_3prong1pi0")
+    .set_shift(tau_shift_3prong1pi0));
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
@@ -4694,19 +4706,37 @@ void HTTSequence::BuildTauSelection(){
     
     BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
       "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi_endcap"));
+
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi_endcap"));
     
     BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_0pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 0;
+        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.5;
       }));
     
     BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
       .set_input_label("fakeE_genmatched_taus_1pi")
       .set_predicate([=](Tau const* t) {
-        return  t->decay_mode() == 1;
+        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.5;
       }));
      
+    BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.5;
+      }));
+
+    BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.5;
+      }));
+
     BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
     .set_input_label("fakeE_genmatched_taus_0pi")
     .set_save_shifts(true)
@@ -4718,6 +4748,18 @@ void HTTSequence::BuildTauSelection(){
     .set_save_shifts(true)
     .set_shift_label("scales_efaketaues_1prong1pi0")
     .set_shift(fakeE_tau_shift_1pi));
+
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0_endcap")
+    .set_shift(fakeE_tau_shift_0pi_endcap));
+
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0_endcap")
+    .set_shift(fakeE_tau_shift_1pi_endcap));
   }
 
   //adding a fake mu tau ES shifter

@@ -1,4 +1,5 @@
 from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
 
 config = config()
 
@@ -15,7 +16,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
 config.Site.storageSite = 'T2_UK_London_IC'

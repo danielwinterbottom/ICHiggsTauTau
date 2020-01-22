@@ -15,7 +15,7 @@ parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors f
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2016.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016_mt')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_leg2016.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/new_sf_2016/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/CP_2016_newFF/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -76,6 +76,14 @@ dm_bins = {
               'mvadm10':'(mva_dm_2==10)',
               'mvadm11':'(mva_dm_2==11)'
 }
+
+# choose bins to set to pol1 and pol0 here:
+fit_pol1_qcd   = ['mvadm0_sig_lt3_njets2','mvadm2_njets2','mvadm11_njets2','mvadm0_sig_lt3_njets0']
+fit_pol1_wjets = []
+fit_pol1_ttbar = []
+fit_pol0_qcd   = ['mvadm0_sig_gt3_njets2_crosstrg','mvadm0_sig_lt3_njets1_crosstrg','dm0_njets2_crosstrg']
+fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm0_sig_gt3_njets1_crosstrg','mvadm11_njets1_crosstrg','dm0_njets1_crosstrg','dm11_njets0_crosstrg','dm11_njets2_crosstrg']
+fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
@@ -459,8 +467,7 @@ def FitCorrection(h, func='pol1',is2D=False):
 def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas()
   f.SetMinimum(0)
-  if f.GetMaximum() > 0.5 and 'sig' not in name: f.SetMaximum(0.5)
-  elif f.GetMaximum() > 1.2: f.SetMaximum(1.2)
+  if f.GetMaximum() > 1.: f.SetMaximum(1.)
   f.SetStats(0)
   f.GetXaxis().SetTitle('p_{T} (GeV)')
   f.GetYaxis().SetTitle('FF')
@@ -672,27 +679,39 @@ for ff in ff_list:
   usePol=None
   if 'crosstrg' in ff: usePol=1
 
+  usePolQCD = usePol
+  usePolW = usePol
+  usePolTT = usePol
+
+  if ((True in [ff.startswith(x) for x in fit_pol1_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_qcd])): usePolQCD=1
+  if ((True in [ff.startswith(x) for x in fit_pol1_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_wjets])): usePolW=1
+  if ((True in [ff.startswith(x) for x in fit_pol1_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol1_ttbar])): usePolTT=1
+  if ((True in [ff.startswith(x) for x in fit_pol0_qcd] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_qcd])): usePolQCD=0
+  if ((True in [ff.startswith(x) for x in fit_pol0_wjets] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_wjets])): usePolW=0
+  if ((True in [ff.startswith(x) for x in fit_pol0_ttbar] and 'crosstrg' not in ff) or (True in [x in ff and 'crosstrg' in x for x in fit_pol0_ttbar])): usePolTT=0
+
   # do fitting
-  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePol)
+  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,polOnly=usePolQCD)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
   PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
 
   if not 'aiso2' in ff:
-    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff,polOnly=usePol)
+    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff,polOnly=usePolW)
     to_write.append(wjets_fit)
     to_write.append(wjets_uncert)
     PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp)
 
-    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff,polOnly=usePol)
+    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff,polOnly=usePolW)
     to_write.append(wjets_mc_fit)
     to_write.append(wjets_mc_uncert)
     PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp)
     if ttbar_mc_ff:
-      (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff,polOnly=usePol)
+      (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff,polOnly=usePolTT)
       to_write.append(ttbar_mc_fit)
       to_write.append(ttbar_mc_uncert)
       PlotFakeFactor(ttbar_mc_ff, ttbar_mc_uncert, ttbar_mc_ff.GetName(), output_folder, wp)
+
 
 # make fractions
  

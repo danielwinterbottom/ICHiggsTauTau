@@ -84,7 +84,8 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
     for (unsigned i = 0; i < vec.size(); ++i) {
-      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
+      double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
+      bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
       if(!skipJet) before+=vec[i]->vector();
       uncert_->setJetPt(vec[i]->pt());
       uncert_->setJetEta(vec[i]->eta());
@@ -104,7 +105,8 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
     for (unsigned i = 0; i < vec.size(); ++i) {
-      bool skipJet = (EENoiseFix_ && vec[i]->pt()<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
+      double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
+      bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
       if(!skipJet) before+=vec[i]->vector();  
       double shift=0;
       double factor = 1.; //for correlations

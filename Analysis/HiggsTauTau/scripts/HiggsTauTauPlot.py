@@ -61,6 +61,12 @@ defaults = {
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
+    "syst_scale_j_relbal":"", "syst_scale_j_abs":"", "syst_scale_j_abs_year":"",
+    "syst_scale_j_flav":"", "syst_scale_j_bbec1":"", "syst_scale_j_bbec1_year":"",
+    "syst_scale_j_ec2":"", "syst_scale_j_ec2_year":"",
+    "syst_scale_j_hf":"", "syst_scale_j_hf_year":"",
+    "syst_scale_j_relsamp_year":"",
+
 }
 
 if options.cfg:
@@ -392,11 +398,11 @@ if options.analysis in ['sm','cpprod','cpdecay']:
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: 
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>22)||(trg_singlemuon&&pt_1>23)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>25)||(trg_singlemuon&&pt_1>23)))'
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>29)||(trg_singlemuon&&pt_1>25)) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>32)||(trg_singlemuon&&pt_1>25)) && wt<2)'
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>25 && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
@@ -417,9 +423,9 @@ if options.analysis in ['sm','cpprod','cpdecay']:
         if options.era in ['cpsummer16','cpdecay16',"legacy16"]:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>32)||(trg_singleelectron&&pt_1>28)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>32)||(trg_singleelectron&&pt_1>33)) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>33)) && wt<2)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -1364,6 +1370,11 @@ if options.era in ['cp18']:
             'WWToLNuQQ','WZTo1L3Nu','WZTo3LNu','WZTo3LNu-ext1','WZTo2L2Q',
             'ZZTo2L2Nu-ext1','ZZTo2L2Nu-ext2','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L'
             ]
+    # vv_samples = [ # removed WWToLNuQQ cos forgot svfit 
+    #         'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
+    #         'WZTo1L3Nu','WZTo3LNu','WZTo3LNu-ext1','WZTo2L2Q',
+    #         'ZZTo2L2Nu-ext1','ZZTo2L2Nu-ext2','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L'
+    #         ]
 
 #    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WWToLNuQQ-ext','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
 
@@ -1608,6 +1619,47 @@ if options.syst_scale_j_cent_uncorr != '':
 if options.syst_scale_j_hf_uncorr != '':
     systematics['syst_scale_j_hf_uncorr_up'] = ('JESHF_UNCORR_UP' , '_'+options.syst_scale_j_hf_uncorr+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_uncorr_down'] = ('JESHF_UNCORR_DOWN' , '_'+options.syst_scale_j_hf_uncorr+'Down', 'wt', ['EmbedZTT'], False)
+############ Regrouped JEC for full run2
+if options.syst_scale_j_relbal != '':
+    systematics['syst_scale_j_relbal_up']   = ('JESRBAL_UP' , '_'+options.syst_scale_j_relbal+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_relbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_relbal+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_abs != '':
+    systematics['syst_scale_j_abs_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_abs+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_abs_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_abs+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_abs_year != '':
+    systematics['syst_scale_j_abs_year_up']   = ('JESABS_YEAR_UP' , '_'+options.syst_scale_j_abs_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_abs_year_down'] = ('JESABS_YEAR_DOWN' , '_'+options.syst_scale_j_abs_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_flav != '':
+    systematics['syst_scale_j_flav_up']   = ('JESFLAV_UP' , '_'+options.syst_scale_j_flav+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_flav_down'] = ('JESFLAV_DOWN' , '_'+options.syst_scale_j_flav+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_bbec1 != '':
+    systematics['syst_scale_j_bbec1_up']   = ('JESBBEC1_UP' , '_'+options.syst_scale_j_bbec1+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_bbec1_down'] = ('JESBBEC1_DOWN' , '_'+options.syst_scale_j_bbec1+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_bbec1_year != '':
+    systematics['syst_scale_j_bbec1_year_up']   = ('JESBBEC1_YEAR_UP' , '_'+options.syst_scale_j_bbec1_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_bbec1_year_down'] = ('JESBBEC1_YEAR_DOWN' , '_'+options.syst_scale_j_bbec1_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_ec2 != '':
+    systematics['syst_scale_j_ec2_up']   = ('JESEC2_UP' , '_'+options.syst_scale_j_ec2+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_ec2_down'] = ('JESEC2_DOWN' , '_'+options.syst_scale_j_ec2+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_ec2_year != '':
+    systematics['syst_scale_j_ec2_year_up']   = ('JESEC2_YEAR_UP' , '_'+options.syst_scale_j_ec2_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_ec2_year_down'] = ('JESEC2_YEAR_DOWN' , '_'+options.syst_scale_j_ec2_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_hf != '':
+    systematics['syst_scale_j_hf_up']   = ('JESHF_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_down'] = ('JESHF_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)
+if options.syst_scale_j_hf_year != '':
+    systematics['syst_scale_j_hf_year_up']   = ('JESHF_YEAR_UP' , '_'+options.syst_scale_j_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_hf_year_down'] = ('JESHF_YEAR_DOWN' , '_'+options.syst_scale_j_year+'Down', 'wt', ['EmbedZTT'], False)
+
+if options.syst_scale_j_relsamp_year != '':
+    systematics['syst_scale_j_relsamp_year_up']   = ('JESRELSAMP_YEAR_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_scale_j_relsamp_year_down'] = ('JESRELSAMP_YEAR_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
+
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
@@ -2473,7 +2525,6 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis == 'cpprod': 
               fake_factor_wt_string = "wt_ff_dmbins_1"
             else: fake_factor_wt_string = "wt_ff_1"
-            if options.channel == 'et': fake_factor_wt_string+='*1.2'
         else:
           if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
           else: fake_factor_wt_string = "wt_ff_"+options.cat
@@ -2580,7 +2631,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         if options.channel=='tt':
-          full_selection_extra = BuildCutString(wt+'*wt_ff_dmbins_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          if options.analysis == 'cpprod': full_selection_extra = BuildCutString(wt+'*wt_ff_dmbins_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          else: full_selection_extra = BuildCutString(wt+'*wt_ff_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
 
           wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples, plot, full_selection_extra)
           ana.nodes[nodename].AddNode(wnode) 
@@ -3445,8 +3497,10 @@ if var_name.count(',') == 2:
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
-if options.extra_name != "": datacard_name+='_'+options.extra_name
-output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+if options.extra_name != "": 
+  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+#datacard_name+='_'+options.extra_name
+else: output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -3744,8 +3798,11 @@ else:
     custom_uncerts_down_name = options.custom_uncerts_down_name
 
 if not options.no_plot:
-    if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
-    else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.extra_name != '': vname = options.extra_name
+    else: vname = var_name
+
+    if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
+    else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
     if options.do_ss: plot_name += "_ss"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"

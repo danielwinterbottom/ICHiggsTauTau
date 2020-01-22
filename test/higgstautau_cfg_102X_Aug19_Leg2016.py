@@ -30,6 +30,8 @@ opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 opts.register('isEmbed', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "dataset is embedded sample")
+opts.register('includeHTXS', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute HTXS Gen level vars")
 
 opts.parseArguments()
 infile      = opts.file
@@ -1380,11 +1382,21 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+  includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
   includeGenWeights   = cms.bool(doLHEWeights),
   includenpNLO        = cms.bool(includenpNLO),
+  includeHTXS         = cms.bool(opts.includeHTXS),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -1418,6 +1430,7 @@ process.icEventInfoSequence = cms.Sequence(
   process.BadChargedCandidateFilter+
   process.badGlobalMuonTaggerMAOD+
   process.cloneGlobalMuonTaggerMAOD+
+  process.prefiringweight+
   process.icEventInfoProducer
 )
 
@@ -1439,6 +1452,32 @@ if opts.tauSpinner:
   )
 else: process.icTauSpinnerSequence = cms.Sequence()
 
+################################################################
+# HTXS NNLOPS
+################################################################
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+)
+process.genParticles2HepMC = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+)
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('genParticles2HepMC','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+)
+process.icHtxsSequence = cms.Sequence()
+if opts.includeHTXS:
+    process.icHtxsSequence = cms.Sequence(
+        process.mergedGenParticles *
+        process.genParticles2HepMC *
+        process.rivetProducerHTXS
+    )
 
 ################################################################
 # Event
@@ -1463,11 +1502,12 @@ process.p = cms.Path(
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
-  process.icEventInfoSequence+
   process.icL1EGammaProducer+
   process.icL1TauProducer+
   process.icL1MuonProducer+
   process.icTauSpinnerSequence+
+  process.icHtxsSequence+
+  process.icEventInfoSequence+
   process.icEventProducer
 )
 

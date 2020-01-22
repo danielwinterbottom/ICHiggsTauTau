@@ -359,7 +359,7 @@ namespace ic {
       //std::cout << "DM = " << tau_decay_mode_2_ << std::endl;
 
 
-      std::vector<ic::PFCandidate*> gammas_before_2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
+      std::vector<ic::PFCandidate*> gammas_before_2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_,0);
 
 //###########test####################
       test_dR_lead_strip_2_=-1;
@@ -379,17 +379,17 @@ namespace ic {
      // }
 
       if(tau_decay_mode_2_>=10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_);
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau2, pfcands, gammas_pt_cut_,0);
         a1_daughters_2  = a1.first;
         pi0_2 = a1.second; 
         
       } else {
-        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_);
+        rho_2 = GetRho(tau2, pfcands, gammas_pt_cut_,0);
         pi0_2 = rho_2.second;
       }
 
 
-      gammas2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_);
+      gammas2 = GetTauGammas(tau2, pfcands, gammas_pt_cut_,0);
 
       if(gammas2.size()>0) lead_gamma_pt_2_ = gammas2[0]->pt();
       else lead_gamma_pt_2_ = -1;
@@ -616,16 +616,16 @@ namespace ic {
       ic::Candidate *pi0_1 = new ic::Candidate();
 
       if(tau_decay_mode_1_>=10){
-        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_);
+        std::pair<std::vector<ic::PFCandidate*>, ic::Candidate*>  a1 = GetA1(tau1, pfcands, gammas_pt_cut_,0);
         a1_daughters_1  = a1.first;
         pi0_1 = a1.second;
       } else {
-        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_);
+        rho_1 = GetRho(tau1, pfcands, gammas_pt_cut_,0);
         pi0_1 = rho_1.second;
       }
 
 
-      gammas1 = GetTauGammas(tau1, pfcands, gammas_pt_cut_);
+      gammas1 = GetTauGammas(tau1, pfcands, gammas_pt_cut_,0);
       if(gammas1.size()>0) lead_gamma_pt_1_ = gammas1[0]->pt();
       else lead_gamma_pt_1_ = -1;
       strip_pt_1_ = -1;

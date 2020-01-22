@@ -1,31 +1,25 @@
-from WMCore.Configuration import Configuration
-from multiprocessing import Process
-config = Configuration()
-config.section_('General')
+from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import getUsernameFromSiteDB
+
+config = config()
+
 config.General.transferOutputs = True
 config.General.workArea='Jan06_Data_102X_2016'
-config.section_('JobType')
+
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 2500
-#config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
 config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=1','doHT=0', 'globalTag=102X_dataRun2_v12']
-config.section_('Data')
-#config.Data.inputDataset = 'DUMMY'
+config.JobType.allowUndistributedCMSSW = True
+
 config.Data.unitsPerJob = 100000
-#config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-#config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/mhassans/{}/'.format(config.General.workArea)
-config.section_('User')
-config.section_('Site')
-#config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
-#config.Site.blacklist = ['T2_US_*']
-config.Site.storageSite = 'T2_UK_London_IC'
-config.JobType.allowUndistributedCMSSW = True
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
+
+config.Site.storageSite = 'T2_UK_London_IC'
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']
 
 if __name__ == '__main__':
@@ -85,10 +79,6 @@ if __name__ == '__main__':
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
         
-        #submit(config)
-        p = Process(target=submit, args=(config,))
-        p.start()
-        p.join()
-
-
+        print(config)
+        submit(config)
 

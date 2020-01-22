@@ -14,7 +14,10 @@ EventInfo::EventInfo()
       n_outgoing_partons_(0),
       npNLO_(-1),
       gen_mll_(0.),
-      good_vertices_(0) {}
+      good_vertices_(0),
+      pt_h_(0.),
+      n_jets30_(0), 
+      stage1_cat_(0) {}
 
 EventInfo::~EventInfo() {}
 
@@ -26,6 +29,8 @@ void EventInfo::Print() const {
   std::cout << boost::format("%-17s | %10.3f\n") % "jet_rho"        % jet_rho_;
   std::cout << boost::format("%-17s | %10.3f\n") % "lepton_rho"     % lepton_rho_;
   std::cout << boost::format("%-17s | %10i\n")   % "good_vertices"  % good_vertices_;
+  std::cout << boost::format("%-17s | %10i\n")   % "n_jets30"       % n_jets30_;
+  std::cout << boost::format("%-17s | %10.3f\n") % "pt_h"           % pt_h_;
   std::cout << boost::format("%s\n")      % std::string(30, '-');
   std::cout << boost::format("%-17s\n")   % "weights";
   std::cout << boost::format("%s\n")      % std::string(30, '-');
