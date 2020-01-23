@@ -19,20 +19,16 @@ ROOT.gStyle.SetOptFit(0)
 
 def main():
     output_file = ROOT.TFile("outputs/trigger_SF_tauh.root", 'RECREATE', '')
-    #DM_types = ['mva', 'HPS'] 
-    DM_types = [ 'HPS'] 
-    #years = [2016, 2017, 2018]
-    years = [2017]
-    #predSamples = ["MC", "embed"]
-    predSamples = [ "embed"]
+    DM_types = ['mva', 'HPS'] 
+    years = [2016, 2017, 2018]
+    predSamples = ["MC", "embed"]
     for DM_type in DM_types:
         for year in years:
             for predSample in predSamples:
                 if DM_type=='mva':
                     DM_nums=[0, 1, 2, 10, 11]
                 if DM_type=='HPS':
-                    #DM_nums=[0, 1, 10, 11]
-                    DM_nums=[11]
+                    DM_nums=[0, 1, 10, 11]
                 if(year!=2016):
                     channels = ["tt", "mt","et"]
                 else:
@@ -90,9 +86,7 @@ def main():
 
 
                             eff_data_graph = Graph(root_graph=eff_data_input)        
-                            print "Here" 
                             eff_MC_graph = Graph(root_graph=eff_MC_input)        
-                            print "Here2" 
                             
                             pred_step = 0.1
                             x_low, x_high = 20, 400
@@ -104,7 +98,6 @@ def main():
                             sf_sigma = np.sqrt( (eff_data_fitted.sigma_pred / eff_MC_fitted.y_pred) ** 2 \
                                          + (eff_data_fitted.y_pred / (eff_MC_fitted.y_pred ** 2) * eff_MC_fitted.sigma_pred ) ** 2 )        
 
-                            print "Here3" 
                             fig, (ax, ax_ratio) = plt.subplots(2, 1, figsize=(7, 7), sharex=True, gridspec_kw = {'height_ratios':[2, 1]})
                             
                             MC_color = 'g'
@@ -119,7 +112,6 @@ def main():
                             plt_data_fitted = ax.plot(x_pred, eff_data_fitted.y_pred, data_color+'--')
                             ax.fill(np.concatenate([x_pred, x_pred[::-1]]), np.concatenate([eff_data_fitted.y_pred - eff_data_fitted.sigma_pred,
                                         (eff_data_fitted.y_pred + eff_data_fitted.sigma_pred)[::-1]]), alpha=trans, fc=data_color, ec='None')
-                            print "Here4" 
                             
                             plt_MC_fitted = ax.plot(x_pred, eff_MC_fitted.y_pred, MC_color+'--')
                             ax.fill(np.concatenate([x_pred, x_pred[::-1]]), np.concatenate([eff_MC_fitted.y_pred - eff_MC_fitted.sigma_pred,
@@ -128,7 +120,6 @@ def main():
                             ax_ratio.plot(x_pred, sf, 'b--')
                             ax_ratio.fill(np.concatenate([x_pred, x_pred[::-1]]), np.concatenate([sf - sf_sigma, (sf + sf_sigma)[::-1]]),alpha=trans, fc='b', ec='None')
                             
-                            print "Here5" 
                             title = "Turn-ons: {} Channel - {}DM{} - {} - {} Samples".format(channel ,DM_type.upper(), num, year, predSample)
                             ax.set_title(title, fontsize=16)
                             ax.set_ylabel("Efficiency", fontsize=12)
@@ -142,7 +133,6 @@ def main():
                             validity_plt = ax.plot( [ ch_validity_thrs[channel] ] * 2, ax.get_ylim(), 'r--' )
                             ax_ratio.plot( [ ch_validity_thrs[channel] ] * 2, ax_ratio.get_ylim(), 'r--' )
 
-                            print "Here5" 
                             ax.legend([ plt_data, plt_MC, plt_data_fitted[0], plt_MC_fitted[0], validity_plt[0] ],
                                                       [ "Data", "MC", "Data fitted", "MC fitted", "Validity range"], fontsize=12, loc='lower right')
 
@@ -157,11 +147,11 @@ def main():
                                                                        eff_data_fitted.sigma_pred, fixed_step=True)
                             eff_MC_fitted_hist = Histogram.CreateTH1(eff_MC_fitted.y_pred, [x_low, x_high],
                                                                      eff_MC_fitted.sigma_pred, fixed_step=True)
-                            #SF_fitted_hist = eff_data_fitted_hist.Clone()
-                            #SF_fitted_hist.Divide(eff_MC_fitted_hist)
+                            SF_fitted_hist = eff_data_fitted_hist.Clone()
+                            SF_fitted_hist.Divide(eff_MC_fitted_hist)
                             output_file.WriteTObject(eff_data_fitted_hist, out_name_pattern.format('EffOfData_Fitted'), 'Overwrite')
                             output_file.WriteTObject(eff_MC_fitted_hist, out_name_pattern.format('EffOfMC_Fitted'), 'Overwrite')
-                            #output_file.WriteTObject(SF_fitted_hist, out_name_pattern.format('SF_Fitted'), 'Overwrite')
+                            output_file.WriteTObject(SF_fitted_hist, out_name_pattern.format('SF_Fitted'), 'Overwrite')
 
     output_file.Close()
 

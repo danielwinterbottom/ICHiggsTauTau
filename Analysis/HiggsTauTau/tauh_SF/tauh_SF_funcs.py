@@ -38,6 +38,14 @@ def CleanHist(hist_pass, hist_total):
             hist_pass.SetBinContent(i, hist_total.GetBinContent(i))
             print (hist_total.GetName(), i, hist_pass.GetBinContent(i), hist_total.GetBinContent(i))
             print "****"
+        
+        if  hist_pass.GetBinError(i)>hist_total.GetBinError(i):
+            print "****"
+            print (hist_total.GetName(), i, "pass_error=", hist_pass.GetBinError(i), "total_error=", hist_total.GetBinError(i))
+            hist_total.SetBinError(i, hist_pass.GetBinError(i))
+            print (hist_total.GetName(), i, "pass_error=", hist_pass.GetBinError(i), "total_error=", hist_total.GetBinError(i))
+            print "****"
+
     return hist_pass, hist_total
 
 
