@@ -1603,6 +1603,7 @@ process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
     LHERunInfo = cms.InputTag('externalLHEProducer'),
     ProductionMode = cms.string('AUTO'),
 )
+process.icHtxsSequence = cms.Sequence()
 if opts.includeHTXS:
     process.icHtxsSequence = cms.Sequence(
         process.mergedGenParticles *

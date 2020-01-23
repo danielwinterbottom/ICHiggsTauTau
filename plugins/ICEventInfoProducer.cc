@@ -44,6 +44,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_npNLO_(config.getParameter<bool>("includenpNLO")),
       do_embedding_weights_(config.getParameter<bool>("includeEmbeddingWeights")),
       do_ht_(config.getParameter<bool>("includeHT")),
+      do_prefire_weights_(config.getParameter<bool>("includePrefireWeights")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
@@ -106,6 +107,12 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     gen_weights_.push_back(
         std::make_pair(gwt[i], gwt_pset.getParameter<edm::InputTag>(gwt[i])));
         consumes<double>(gen_weights_[i].second);
+  }
+
+  if(do_prefire_weights_) {
+    prefweight_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+    prefweightup_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+    prefweightdown_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
   }
 
   info_ = new ic::EventInfo();
@@ -331,6 +338,31 @@ void ICEventInfoProducer::produce(edm::Event& event,
                              beam_halo_handle->CSCTightHaloId());
     observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");
    }
+
+   if(do_prefire_weights_) {
+     edm::Handle< double > theprefweight;
+     event.getByToken(prefweight_token_, theprefweight ) ;
+     double _prefiringweight =(*theprefweight);
+     
+     edm::Handle< double > theprefweightup;
+     event.getByToken(prefweightup_token_, theprefweightup ) ;
+     double _prefiringweightup =(*theprefweightup);
+     
+     edm::Handle< double > theprefweightdown;
+     event.getByToken(prefweightdown_token_, theprefweightdown ) ;
+     double _prefiringweightdown =(*theprefweightdown);
+
+     info_->set_weight("wt_prefire",
+                          _prefiringweight, false);
+
+     info_->set_weight("wt_prefire_up",
+                          _prefiringweightup, false);
+
+     info_->set_weight("wt_prefire_down",
+                          _prefiringweightdown, false);
+
+   }
+
 }
 
 void ICEventInfoProducer::beginJob() {
