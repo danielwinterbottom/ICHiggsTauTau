@@ -1,10 +1,11 @@
 from CRABClient.UserUtilities import config
 from CRABClient.UserUtilities import getUsernameFromSiteDB
+from multiprocessing import Process
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_MC_102X_2018'
+config.General.workArea='Jan24_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -227,5 +228,8 @@ if __name__ == '__main__':
             config.JobType.pyCfgParams = cfgParams
 
         print(config)
-        submit(config)
+
+        p = Process(target=submit, args=(config,))
+        p.start()
+        p.join()
 

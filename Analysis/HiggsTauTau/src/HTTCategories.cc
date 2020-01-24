@@ -98,6 +98,7 @@ namespace ic {
       outtree_->Branch("wt_quarkmass_down", &wt_quarkmass_down_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
       outtree_->Branch("looseiso_wt", &looseiso_wt_);
+      outtree_->Branch("wt_tau_id_extra", &wt_tau_id_extra_);
       // adding tempoary gen stuff
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -1738,6 +1739,8 @@ namespace ic {
     }
    
     looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
+
+    wt_tau_id_extra_ = event->Exists("wt_tau_id_extra") ? event->Get<double>("wt_tau_id_extra") : 1.0;
  
     wt_mg_nnlops_ = event->Exists("wt_mg_nnlops") ? event->Get<double>("wt_mg_nnlops") : 1.0;
     wt_ph_nnlops_ = event->Exists("wt_ph_nnlops") ? event->Get<double>("wt_ph_nnlops") : 1.0;
@@ -2266,7 +2269,7 @@ namespace ic {
   if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;
   if (event->Exists("OR_notrig")) OR_notrig_ = event->Get<double>("OR_notrig"); else OR_notrig_ = 1.0; 
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
-  if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 1.0;
   if(channel_==channel::em){
     if(event->Exists("idisoweight_up_1")) idisoweight_up_1_ = event->Get<double>("idisoweight_up_1"); else idisoweight_up_1_ = 1.0;
     if(event->Exists("idisoweight_up_2")) idisoweight_up_2_ = event->Get<double>("idisoweight_up_2"); else idisoweight_up_2_ = 1.0;
@@ -4311,7 +4314,6 @@ namespace ic {
       tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : 0.0;
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
-
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
       ic::Candidate *pi_tau1 = rho1.first;
@@ -4332,7 +4334,6 @@ namespace ic {
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
-        //if(v->id() == tau1->id()+tau2->id()){ refit_vertex = v; std::cout << "found match!" << std::endl; std::cout << v->vx() << "    " << vertex_vec[0]->vx() << "    " << tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")*tau2->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") << std::endl; }
         if(v->id() == tau1->id()+tau2->id()) refit_vertex = v; 
       }
 
@@ -4378,6 +4379,7 @@ namespace ic {
 
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
+
       }
 
       if((tau_decay_mode_1_==1&&tau_decay_mode_2_==0) || (tau_decay_mode_1_==0&&tau_decay_mode_2_==1)) {
@@ -4435,8 +4437,9 @@ namespace ic {
           else                    aco_angle_6_ = aco_angle_6_-M_PI;
         }
 
-        alpha1_1_ = AlphaAngle(lvec3.Vect(), ip);
-        alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
+        alpha1_1_ = AlphaAngle(lvec4.Vect(), ip);
+        alpha2_2_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
+
       }
 
       if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
@@ -4452,15 +4455,18 @@ namespace ic {
         y_1_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
         y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
 
-        aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({pi_tau1,pi0_tau1}), std::vector<Candidate*> ({pi_tau2,pi0_tau2}));
-        aco_sign_1_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho1.first,rho1.second}), std::vector<Candidate*> ({rho2.first,rho2.second})).second;
+        //aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({pi_tau1,pi0_tau1}), std::vector<Candidate*> ({pi_tau2,pi0_tau2}));
+        //aco_sign_1_ = AcoplanarityAngleWithSign(std::vector<Candidate*> ({rho1.first,rho1.second}), std::vector<Candidate*> ({rho2.first,rho2.second})).second;
+
+        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
 
         if (cp_sign_<0) {
           if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
           else                   aco_angle_1_ -= M_PI;
-        }  
+        } 
+
         alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
-        alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
+        alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect()); 
       }
 
       else if((tau_decay_mode_1_==0&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==0)){
@@ -4500,7 +4506,10 @@ namespace ic {
               else                    aco_angle_5_ = aco_angle_5_-M_PI;
             }
 
+            TLorentzVector lvec5 = ConvertToLorentz(a1_daughters[2]->vector());
+
           }
+
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip);
           alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
 
@@ -4511,24 +4520,39 @@ namespace ic {
       
         cp_channel_=2;
 
+        ic::Candidate *pi;
+        ic::Candidate *pi0;
+
         std::vector<ic::PFCandidate*> a1_daughters;
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         if(tau_decay_mode_1_>9){
           a1_daughters  = GetA1(tau1, pfcands).first;
           rho_daughters = GetRho(tau2, pfcands);
+          pi0 = pi0_tau2;
+          pi = pi_tau2;
         }
         if(tau_decay_mode_2_>9){
           a1_daughters  = GetA1(tau2, pfcands).first;
           rho_daughters = GetRho(tau1, pfcands);
+          pi0 = pi0_tau1;
+          pi = pi_tau1;
+
         }
+
 
         if (a1_daughters.size()>2){
             mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
             mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
             mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
 
-            aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
-            //aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[2]})); 
+            //aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({a1_daughters[0],a1_daughters[1]}));
+
+            lvec1 = ConvertToLorentz(pi0->vector());
+            lvec3 = ConvertToLorentz(pi->vector());
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+
+            aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
 
             Candidate* rho_1  = new Candidate();
             Candidate* rho_2  = new Candidate();
@@ -4562,14 +4586,14 @@ namespace ic {
           if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
           else                   aco_angle_2_ -= M_PI;
         }
-        //if (cp_sign_3_<0) {
-        //  if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
-        //  else                   aco_angle_3_ -= M_PI;
-        //}
         //if (cp_sign_4_<0) {
         //  if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
         //  else                   aco_angle_4_ -= M_PI;
+        //
         //}
+
+        alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
+        alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
 
       } else if(tau_decay_mode_1_>=10&&tau_decay_mode_2_>=10){
         cp_channel_=3;
@@ -4582,13 +4606,20 @@ namespace ic {
           rho_1->set_vector(a1_daughters_1[0]->vector()+a1_daughters_1[1]->vector());
           rho_2->set_vector(a1_daughters_2[0]->vector()+a1_daughters_2[1]->vector());
 
-          aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({a1_daughters_1[0],a1_daughters_1[1]}), std::vector<Candidate*> ({a1_daughters_2[0],a1_daughters_2[1]}));
+          //aco_angle_1_ = AcoplanarityAngle(std::vector<Candidate*> ({a1_daughters_1[0],a1_daughters_1[1]}), std::vector<Candidate*> ({a1_daughters_2[0],a1_daughters_2[1]}));
 
           aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({a1_daughters_1[0],a1_daughters_1[1]}), std::vector<Candidate*> ({rho_2,a1_daughters_2[2]}));
 
           aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({a1_daughters_2[0],a1_daughters_2[1]}), std::vector<Candidate*> ({rho_1,a1_daughters_1[2]}));
 
           aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_1,a1_daughters_1[2]}), std::vector<Candidate*> ({rho_2,a1_daughters_2[2]})); 
+
+          lvec1 = ConvertToLorentz(a1_daughters_1[0]->vector());
+          lvec3 = ConvertToLorentz(a1_daughters_1[1]->vector());
+          lvec2 = ConvertToLorentz(a1_daughters_2[0]->vector()); //pi zero from rho
+          lvec4 = ConvertToLorentz(a1_daughters_2[1]->vector()); //pi charge from rho
+
+          aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
 
           double yrho_1_ = YRho(std::vector<Candidate*>({a1_daughters_1[0],a1_daughters_1[1]}),TVector3());
           double yrho_2_ = YRho(std::vector<Candidate*>({a1_daughters_2[0],a1_daughters_2[1]}),TVector3());
@@ -4617,6 +4648,9 @@ namespace ic {
             if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
             else                   aco_angle_4_ -= M_PI;
           }
+
+          alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
+          alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
         }
       }
       else {
@@ -4875,7 +4909,6 @@ namespace ic {
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
-
 
     return 0;
   }
