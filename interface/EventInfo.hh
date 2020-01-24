@@ -343,7 +343,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 8);
+  ClassDef(EventInfo, 9);
  #endif
 };
 }
