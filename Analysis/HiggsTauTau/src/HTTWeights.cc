@@ -2843,14 +2843,14 @@ namespace ic {
 
             if(!(t_pt<t_high_pt_cut) && do_wts) {
               if(!is_embedded_ && fns_["t_trg_27_ratio"]->eval(args_4.data())>0){
-                tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
               } else if(fns_["t_trg_27_embed_ratio"]->eval(args_3.data())>0) {
                 tau_trg_dm0_up=fns_["t_trg_27_embed_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
                 tau_trg_dm1_up=fns_["t_trg_27_embed_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
