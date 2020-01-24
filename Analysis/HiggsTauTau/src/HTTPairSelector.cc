@@ -73,9 +73,7 @@ namespace ic {
       }
     }
 
-    tau_idiso_name_ = "byIsolationMVArun2v1DBoldDMwLTraw";
-    if(strategy_==strategy::cpsummer17) tau_idiso_name_ = "byIsolationMVArun2017v2DBoldDMwLTraw2017";
-    if (strategy_==strategy::cpdecays16 || strategy_==strategy::cpdecays17 || strategy_==strategy::cpdecays18) tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
+    tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
 
     return 0;
   }
