@@ -47,10 +47,13 @@ def main():
                             
                             data_obs_pass = datacard_pass.Get("mt_pass_{}DM{}/data_obs".format(DM_type, num))
                             data_obs_total = datacard_total.Get("mt_total_{}DM{}/data_obs".format(DM_type, num))
-                            
-                            ZTT_pass = datacard_pass.Get("mt_pass_{}DM{}/ZTT".format(DM_type, num))
-                            ZTT_total = datacard_total.Get("mt_total_{}DM{}/ZTT".format(DM_type, num))
-                            
+                           
+                            if predSample == "MC":
+                                ZTT_pass = datacard_pass.Get("mt_pass_{}DM{}/ZTT".format(DM_type, num))
+                                ZTT_total = datacard_total.Get("mt_total_{}DM{}/ZTT".format(DM_type, num))
+                            else:
+                                ZTT_pass = datacard_pass.Get("mt_pass_{}DM{}/EmbedZTT".format(DM_type, num))
+                                ZTT_total = datacard_total.Get("mt_total_{}DM{}/EmbedZTT".format(DM_type, num))
                             
                             hist_bkgs_pass=[]
                             for hist_name in ["ZL","ZJ","TTJ", "VVJ","W","QCD"]:
