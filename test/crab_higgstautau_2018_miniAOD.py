@@ -1,5 +1,6 @@
 from CRABClient.UserUtilities import config
 from CRABClient.UserUtilities import getUsernameFromSiteDB
+from multiprocessing import Process
 
 config = config()
 
@@ -227,5 +228,8 @@ if __name__ == '__main__':
             config.JobType.pyCfgParams = cfgParams
 
         print(config)
-        submit(config)
+
+        p = Process(target=submit, args=(config,))
+        p.start()
+        p.join()
 
