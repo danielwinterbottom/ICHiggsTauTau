@@ -1,5 +1,7 @@
 from CRABClient.UserUtilities import config
 from CRABClient.UserUtilities import getUsernameFromSiteDB
+from multiprocessing import Process
+import os
 
 config = config()
 
@@ -167,10 +169,10 @@ if __name__ == '__main__':
     tasks.append(('ttHiggs0Mf05ph0ToTauTau','/ttHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
     tasks.append(('ttHiggs0PMToTauTau','/ttHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
 
-    # private samples
-    tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_MM_filter_v2_miniAOD-v1/USER'))
-    tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_-v1/USER'))
-    tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_MiniAO-v1/USER'))
+    # # private samples
+    # tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_MM_filter_v2_miniAOD-v1/USER'))
+    # tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_-v1/USER'))
+    # tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_MiniAO-v1/USER'))
 
 
     for task in tasks:
@@ -221,5 +223,9 @@ if __name__ == '__main__':
         print config.Data.splitting
 
         print(config)
-        submit(config)
+        # os.system("crab kill {}/crab_{}".format(config.General.workArea, task[0]))
+        # os.system("rm -r {}/crab_{}".format(config.General.workArea, task[0]))
 
+        p = Process(target=submit, args=(config,))
+        p.start()
+        p.join()
