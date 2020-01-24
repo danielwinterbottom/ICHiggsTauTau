@@ -3,6 +3,7 @@ from ROOT import TGraphAsymmErrors
 import UserCode.ICHiggsTauTau.plotting as plotting
 import math
 from matplotlib import pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 from sklearn.gaussian_process.kernels import Matern, ConstantKernel
 from sklearn.gaussian_process import GaussianProcessRegressor
 import copy
@@ -77,13 +78,13 @@ def main():
                                 xx=ROOT.Double()
                                 yy=ROOT.Double()
                                 eff_data_input.GetPoint(i,xx,yy)
-                                if yy ==0: eff_data_input.SetPoint(i, xx, 0.0001) 
+                                if yy ==0: eff_data_input.RemovePoint(i)
+
                             for i in range(0,eff_MC_input.GetN())[::-1]:
                                 xx=ROOT.Double()
                                 yy=ROOT.Double()
                                 eff_MC_input.GetPoint(i,xx,yy)
-                                if yy ==0: eff_MC_input.SetPoint(i, xx, 0.0001) 
-
+                                if yy ==0: eff_MC_input.RemovePoint(i) 
 
                             eff_data_graph = Graph(root_graph=eff_data_input)        
                             eff_MC_graph = Graph(root_graph=eff_MC_input)        
@@ -135,7 +136,13 @@ def main():
 
                             ax.legend([ plt_data, plt_MC, plt_data_fitted[0], plt_MC_fitted[0], validity_plt[0] ],
                                                       [ "Data", "MC", "Data fitted", "MC fitted", "Validity range"], fontsize=12, loc='lower right')
-
+                            ax.set_xscale('log')
+                            formatter = ScalarFormatter()
+                            formatter.set_scientific(False)
+                            ax.xaxis.set_major_formatter(formatter)
+                            xticks = [20,30,40,50,100,200,400]
+                            ax.set_xticks(xticks)
+                           
                             plt.subplots_adjust(hspace=0)
                             pdf.savefig(bbox_inches='tight')
                             plt.close()
@@ -154,9 +161,6 @@ def main():
                             output_file.WriteTObject(SF_fitted_hist, out_name_pattern.format('SF_Fitted'), 'Overwrite')
 
     output_file.Close()
-
-
-
 
 if __name__=="__main__":
     main()
