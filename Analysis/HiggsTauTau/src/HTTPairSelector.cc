@@ -73,9 +73,7 @@ namespace ic {
       }
     }
 
-    tau_idiso_name_ = "byIsolationMVArun2v1DBoldDMwLTraw";
-    if(strategy_==strategy::cpsummer17) tau_idiso_name_ = "byIsolationMVArun2017v2DBoldDMwLTraw2017";
-    if (strategy_==strategy::cpdecays16 || strategy_==strategy::cpdecays17 || strategy_==strategy::cpdecays18) tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
+    tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
 
     return 0;
   }
@@ -232,7 +230,7 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-    if(mc_ == mc::mcleg2016 || mc_ == mc::mc2018 || mc_ == mc::mc2017) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
+    if((mc_ == mc::mcleg2016 || mc_ == mc::mc2018 || mc_ == mc::mc2017) && !usePFMET_) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
     Met *pfmet = pfMet_vec.at(0);
     // shift MET for systematic shifts
     if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
@@ -305,7 +303,7 @@ namespace ic {
       Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
       Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
+       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0","scales_efaketaues_1prong0pi0_endcap","scales_efaketaues_1prong1pi0_endcap", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
       for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
         if(event->Exists(tau_shifts.at(i))){
           auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
@@ -363,6 +361,16 @@ namespace ic {
       Met * met = event->GetPtr<Met>(met_label_);
       ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
       this->CorrectMETForShift(met, jes_shift);
+    }
+
+    // ************************************************************************
+    // Scale met for the jet energy resolution
+    // ************************************************************************
+
+    if(event->Exists("jer_shift") && shift_jes_){
+      Met * met = event->GetPtr<Met>(met_label_);
+      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
+      this->CorrectMETForShift(met, jer_shift);
     }
 
     // ************************************************************************

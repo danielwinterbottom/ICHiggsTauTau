@@ -7,18 +7,19 @@ from optparse import OptionParser
 ROOT.TH1.AddDirectory(False)
 
 bc_eff = "TT"
-other_eff = "DYJetsToLL-LO"
+other_eff = "DYJetsToLL-LO-ext2"
 
 #ttbarwt = float(831.76/76628591)
 #dywt = float(5765.4/49064064)
 ttbarwt = 1
 dywt = 1
 
+path = "/vols/cms/akd116/Offline/output/SM/2020/btagEff_2016/"
 channels = ['mt','tt','et','em']
 counter = 0
 for ch in channels:
-  ftt = ROOT.TFile("/vols/cms/dw515/Offline/output/SM/deepCSV_eff_2016/"+bc_eff+"_"+ch+"_2016.root")
-  fdy = ROOT.TFile("/vols/cms/dw515/Offline/output/SM/deepCSV_eff_2016/"+other_eff+"_"+ch+"_2016.root")
+  ftt = ROOT.TFile("{}/{}_{}_2016.root".format(path, bc_eff, ch))
+  fdy = ROOT.TFile("{}/{}_{}_2016.root".format(path, other_eff, ch))
   btag_b = ftt.Get("BTagCheck/NBtag_bflav")
   tot_b = ftt.Get("BTagCheck/NTot_bflav")
   btag_c = ftt.Get("BTagCheck/NBtag_cflav")
@@ -61,7 +62,7 @@ comb_btag_b.Divide(comb_tot_b)
 comb_btag_c.Divide(comb_tot_c)
 comb_btag_oth.Divide(comb_tot_oth)
 
-outfile = ROOT.TFile("deepCSV_efficiencies_leg2016.root","RECREATE")
+outfile = ROOT.TFile("deepCSV_efficiencies_leg2016_loose.root","RECREATE")
 outfile.WriteObject(comb_btag_b,"btag_eff_b")
 outfile.WriteObject(comb_btag_c,"btag_eff_c")
 outfile.WriteObject(comb_btag_oth,"btag_eff_oth")

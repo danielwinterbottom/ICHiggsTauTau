@@ -1,10 +1,11 @@
 from CRABClient.UserUtilities import config
 from CRABClient.UserUtilities import getUsernameFromSiteDB
+from multiprocessing import Process
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_MC_102X_2018'
+config.General.workArea='Jan24_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -220,12 +221,15 @@ if __name__ == '__main__':
 
         if ("HToTauTau" in task[0] or 'JJH' in task[0]) and 'JHUGen' not in task[1]:
             if 'mcatnloFXFX' in task[0]:
-                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True']
+                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True','includeHTXS=True']
             else:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
         else:
             config.JobType.pyCfgParams = cfgParams
 
         print(config)
-        submit(config)
+
+        p = Process(target=submit, args=(config,))
+        p.start()
+        p.join()
 

@@ -14,8 +14,6 @@ opts.register('globalTag', '94X_mcRun2_asymptotic_v3', parser.VarParsing.multipl
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
-opts.register('release', '102XMINIAOD', parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('isReHLT', 1, parser.VarParsing.multiplicity.singleton,
@@ -30,13 +28,14 @@ opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 opts.register('isEmbed', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "dataset is embedded sample")
+opts.register('includeHTXS', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute HTXS Gen level vars")
 
 opts.parseArguments()
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
 tag         = opts.globalTag
-release     = opts.release
 doLHEWeights = opts.LHEWeights
 includenpNLO = opts.includenpNLO
 isEmbed = opts.isEmbed
@@ -47,7 +46,6 @@ else:
   doHT     = 0
   isReHLT  = 0
 
-print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
@@ -681,6 +679,9 @@ if isData or isEmbed: pfJECS = cms.PSet(
   L2L3Residual = cms.string("ak4PFResidualCHS")
 )
 
+
+ # b-tagging
+ # ---------
 process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
@@ -689,6 +690,8 @@ import RecoBTag.Configuration.RecoBTag_cff as btag
 process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.pfImpactParameterTagInfos.candidates = cms.InputTag("packedPFCandidates")
 
+ # Pileup ID
+ # ---------
 process.load('RecoJets.JetProducers.PileupJetID_cfi')
 
 process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
@@ -697,6 +700,34 @@ process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
+ # JER
+ # --------
+process.load('Configuration.StandardSequences.Services_cff')
+process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
+
+process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
+        src = cms.InputTag('selectedUpdatedPatJetsUpdatedJEC'),
+        enabled = cms.bool(True),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
+        algo = cms.string('AK4PFchs'),
+        algopt = cms.string('AK4PFchs_pt'),
+        #resolutionFile = cms.FileInPath('Autumn18_V7_MC_PtResolution_AK4PFchs.txt'),
+        #scaleFactorFile = cms.FileInPath('combined_SFs_uncertSources.txt'),
+
+        genJets = cms.InputTag('slimmedGenJets'),
+        dRMax = cms.double(0.2),
+        dPtMaxFactor = cms.double(3),
+
+        debug = cms.untracked.bool(False),
+        # Systematic variation
+        # 0: Nominal
+        # -1: -1 sigma (down variation)
+        # 1: +1 sigma (up variation)
+        variation = cms.int32(0),  # If not specified, default to 0
+)
+
+process.slimmedJetsSmearedDown = process.slimmedJetsSmeared.clone(variation=cms.int32(-1))
+process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.int32(1))
 
 
 # process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
@@ -723,9 +754,9 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
-    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
-    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
-    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
+    inputSmear                = cms.InputTag("slimmedJetsSmeared"),
+    inputSmearDown            = cms.InputTag("slimmedJetsSmearedDown"),
+    inputSmearUp              = cms.InputTag("slimmedJetsSmearedUp"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -752,14 +783,17 @@ process.icPFJetSequence = cms.Sequence()
 
 
 process.icPFJetSequence += cms.Sequence(
-   process.patJetCorrFactorsUpdatedJEC+
-   process.updatedPatJetsUpdatedJEC+
-   process.selectedUpdatedPatJetsUpdatedJEC+
-   process.selectedSlimmedJetsAK4+
-   process.unpackedTracksAndVertices+
-   # process.icPFJetProducerFromPat +
-   process.icPFJetProducerFromPatNew
-   )
+    process.patJetCorrFactorsUpdatedJEC+
+    process.updatedPatJetsUpdatedJEC+
+    process.selectedUpdatedPatJetsUpdatedJEC+
+    process.selectedSlimmedJetsAK4+
+    process.unpackedTracksAndVertices+
+    # process.icPFJetProducerFromPat +
+    process.slimmedJetsSmeared+
+    process.slimmedJetsSmearedDown+
+    process.slimmedJetsSmearedUp+
+    process.icPFJetProducerFromPatNew
+    )
 
 # ################################################################
 # # PF MET
@@ -1380,11 +1414,21 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+  includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
   includeGenWeights   = cms.bool(doLHEWeights),
   includenpNLO        = cms.bool(includenpNLO),
+  includeHTXS         = cms.bool(opts.includeHTXS),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag(lheTag),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -1418,6 +1462,7 @@ process.icEventInfoSequence = cms.Sequence(
   process.BadChargedCandidateFilter+
   process.badGlobalMuonTaggerMAOD+
   process.cloneGlobalMuonTaggerMAOD+
+  process.prefiringweight+
   process.icEventInfoProducer
 )
 
@@ -1439,6 +1484,32 @@ if opts.tauSpinner:
   )
 else: process.icTauSpinnerSequence = cms.Sequence()
 
+################################################################
+# HTXS NNLOPS
+################################################################
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+)
+process.genParticles2HepMC = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+)
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('genParticles2HepMC','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+)
+process.icHtxsSequence = cms.Sequence()
+if opts.includeHTXS:
+    process.icHtxsSequence = cms.Sequence(
+        process.mergedGenParticles *
+        process.genParticles2HepMC *
+        process.rivetProducerHTXS
+    )
 
 ################################################################
 # Event
@@ -1463,11 +1534,12 @@ process.p = cms.Path(
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
-  process.icEventInfoSequence+
   process.icL1EGammaProducer+
   process.icL1TauProducer+
   process.icL1MuonProducer+
   process.icTauSpinnerSequence+
+  process.icHtxsSequence+
+  process.icEventInfoSequence+
   process.icEventProducer
 )
 

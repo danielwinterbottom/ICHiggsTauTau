@@ -12,7 +12,6 @@ namespace ic {
     bbtag_eff_alt_ = nullptr;
     cbtag_eff_alt_ = nullptr;
     othbtag_eff_alt_ = nullptr;
-    btag_mode_ = 0;
     add_name_="";
   }
   BTagWeightLegacyRun2::~BTagWeightLegacyRun2() {
@@ -56,8 +55,10 @@ namespace ic {
   int BTagWeightLegacyRun2::Execute(TreeEvent *event) {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    double btag_evt_weight = EventReweighting(embed_jets, btag_mode_);
-    event->Add("btag_evt_weight"+add_name_, btag_evt_weight);
+    std::vector<double> btag_evt_weight = EventReweighting(embed_jets);
+    event->Add("btag_evt_weight"+add_name_, btag_evt_weight[0]);
+    event->Add("btag_evt_weight_down"+add_name_, btag_evt_weight[1]);
+    event->Add("btag_evt_weight_up"+add_name_, btag_evt_weight[2]);
     return 0;
   }
 
@@ -70,50 +71,41 @@ namespace ic {
     ;
   }
 
-  double BTagWeightLegacyRun2::EventReweighting(std::vector<PFJet *> const& jets, unsigned btag_mode) const {
-    double result = 1;
-    // std::vector<PFJet*> loose_btag;
-    // std::vector<PFJet*> tight_btag;
-    // std::vector<PFJet*> no_btag;
-    double p_mc = 1.;
-    double p_data = 1.;
-
+  std::vector<double> BTagWeightLegacyRun2::EventReweighting(std::vector<PFJet *> const& jets) const {
+    std::vector<double> result = {1.,1.,1.};
+    bool verbose = false;
     double pt = 0.;
     double eta = 0.;
     unsigned jet_flavour = 0;
-    double sf_loose = 1.;
-    double sf_tight = 1.;
+    std::vector<double> sf_loose = {1.,1.,1.};
+    std::vector<double> sf_tight = {1.,1.,1.};
+    /*double sf_loose = 1.;
+    double sf_tight = 1.;*/
+    double eff_loose = 1.;
+    double eff_tight = 1.;
     // First decide whether a jet is tight btagged, loose-only btagged, or untagged
     // Then calculate the probablities for MC and data
     for (unsigned i = 0; i < jets.size(); ++i) {
       eta = fabs(jets[i]->eta());
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
-      double eff_loose = GetEff(jet_flavour,pt, fabs(eta), "loose");
-      double eff_tight = GetEff(jet_flavour,pt, fabs(eta), "tight");
+      eff_loose = GetEff(jet_flavour, pt, fabs(eta), "loose");
+      eff_tight = GetEff(jet_flavour, pt, fabs(eta), "tight");
 
       if(jet_flavour == 5){
-        if(btag_mode == 2){ 
-         sf_tight = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
-        } else if(btag_mode == 1){
-         sf_tight = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-        } else {
-         sf_tight = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-        }
+         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+         sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
+         sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
+         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
+         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
       } else if(jet_flavour == 4){
-        if(btag_mode == 2){ 
-         sf_tight = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
-        } else if(btag_mode == 1){
-         sf_tight = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-        } else {
-         sf_tight = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-         sf_loose = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-        }
+         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
+         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
+         sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
+         sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
+         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
+         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
       }
 
       double csv = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") +
@@ -133,30 +125,50 @@ namespace ic {
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
       }
-      if (csv > tight_wp) {
-        // tight_btag.push_back(jets[i]);
-        p_mc *= eff_tight;
-        p_data *= eff_tight;
+      for (unsigned i = 0; i < sf_tight.size(); i++) {
+        double p_mc = 1.;
+        double p_data = 1.;
+
+        double sf_l = sf_loose[i];
+        double sf_t = sf_tight[i];
+          
+        /*if (csv > tight_wp) {
+          technically need to do 
+          p_mc *= eff_tight;
+          p_data *= eff_tight;
+          however this just factors out when doing the ratio in the end
+          so can set both to 1. (or even remove this if statement)
+        }*/
+        if (csv > loose_wp && csv < tight_wp){
+          p_mc *= (eff_loose - eff_tight);
+          p_data *= (sf_l*eff_loose - sf_t*eff_tight);
+        }
+        else if (csv < loose_wp){
+          p_mc *= (1 - eff_loose);
+          p_data *= (1 - sf_l*eff_loose);
+        }
+
+        if (!(p_data == 0. && p_mc == 0.)) result[i] = p_data/p_mc;
+        else result[i] = 1.;
+
       }
-      else if (csv > loose_wp && csv < tight_wp){
-        // loose_btag.push_back(jets[i]);
-        p_mc *= (eff_loose - eff_tight);
-        p_data *= (sf_loose*eff_loose - sf_tight*eff_tight);
-      }
-      else if (csv < loose_wp){
-        // no_btag.push_back(jets[i]);
-        p_mc *= (1 - eff_loose);
-        p_data *= (1 - sf_loose*eff_loose);
+      if (verbose) {
+        std::cout << "Jet " << i << " " << jets[i]->vector() << " deep csv: " << 
+            jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") + 
+            jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb") << 
+            "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;
+        std::cout << "-- efficiency loose: " << eff_loose << std::endl;
+        std::cout << "-- efficiency tight: " << eff_tight << std::endl;
+        std::cout << "-- scale factor central loose: " << sf_loose[0] << std::endl;
+        std::cout << "-- scale factor central tight: " << sf_tight[0] << std::endl;
       }
     }
 
-    result = p_data/p_mc;
     return result;
   }
 
   double BTagWeightLegacyRun2::GetEff(unsigned flav, double pt, double eta, std::string wp) const {
-    double res=0;
-    wp = "tight";
+    double res = 1.;
     if (wp == "tight") {
       if(flav == 5){
         if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1))

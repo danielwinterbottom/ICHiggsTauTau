@@ -179,6 +179,7 @@ namespace ic {
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
 
   double AlphaAngle(TVector3 p, TVector3 ip);
+  double AlphaAngleRho(TVector3 rho, TVector3 pi);
 
   template <class T>
   TVector3 getIPVector(T *tau/*, Vertex *vtx*/){

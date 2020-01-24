@@ -10,9 +10,9 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/2EE992B1-F942-E811-8F11-0CC47A4C8E8A.root'
+'root://xrootd.unl.edu//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/110000/64A0A8F7-3198-B742-BDC7-865A854C1F0C.root',
 # 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
- 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
+# 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
 # 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root',
 #'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
 parser.VarParsing.multiplicity.singleton,
@@ -35,6 +35,8 @@ opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
 opts.register('tauSpinner', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Compute weights using tauspinner")
+opts.register('includeHTXS', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute HTXS Gen level vars")
 
 opts.parseArguments()
 infile      = opts.file
@@ -71,7 +73,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(5000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -708,6 +710,34 @@ process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
+ # JER
+ # --------
+process.load('Configuration.StandardSequences.Services_cff')
+process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
+
+process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
+        src = cms.InputTag('selectedUpdatedPatJetsUpdatedJEC'),
+        enabled = cms.bool(True),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
+        algo = cms.string('AK4PFchs'),
+        algopt = cms.string('AK4PFchs_pt'),
+        #resolutionFile = cms.FileInPath('Autumn18_V7_MC_PtResolution_AK4PFchs.txt'),
+        #scaleFactorFile = cms.FileInPath('combined_SFs_uncertSources.txt'),
+
+        genJets = cms.InputTag('slimmedGenJets'),
+        dRMax = cms.double(0.2),
+        dPtMaxFactor = cms.double(3),
+
+        debug = cms.untracked.bool(False),
+        # Systematic variation
+        # 0: Nominal
+        # -1: -1 sigma (down variation)
+        # 1: +1 sigma (up variation)
+        variation = cms.int32(0),  # If not specified, default to 0
+)
+
+process.slimmedJetsSmearedDown = process.slimmedJetsSmeared.clone(variation=cms.int32(-1))
+process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.int32(1))
 
 # process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
 #     branch                    = cms.string("ak4PFJetsCHS"),
@@ -733,9 +763,9 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
-    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
-    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
-    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
+    inputSmear                = cms.InputTag("slimmedJetsSmeared"),
+    inputSmearDown            = cms.InputTag("slimmedJetsSmearedDown"),
+    inputSmearUp              = cms.InputTag("slimmedJetsSmearedUp"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -758,18 +788,25 @@ if isData or isEmbed:
 else:
     process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
+
 process.icPFJetSequence = cms.Sequence()
 
 
 process.icPFJetSequence += cms.Sequence(
-   process.patJetCorrFactorsUpdatedJEC+
-   process.updatedPatJetsUpdatedJEC+
-   process.selectedUpdatedPatJetsUpdatedJEC+
-   process.selectedSlimmedJetsAK4+
-   #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
-   # process.icPFJetProducerFromPat +
-   process.icPFJetProducerFromPatNew
-   )
+    process.patJetCorrFactorsUpdatedJEC+
+    process.updatedPatJetsUpdatedJEC+
+    process.selectedUpdatedPatJetsUpdatedJEC+
+    process.selectedSlimmedJetsAK4+
+    #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
+    # process.icPFJetProducerFromPat +
+    process.slimmedJetsSmeared+
+    process.slimmedJetsSmearedDown+
+    process.slimmedJetsSmearedUp+
+    process.icPFJetProducerFromPatNew
+    )
+
+
+
 ################################################################
 # PF MET
 ################################################################
@@ -1531,6 +1568,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeLHEWeights   = cms.bool(doLHEWeights),
     includeGenWeights   = cms.bool(doLHEWeights),
     includenpNLO        = cms.bool(includenpNLO),
+    includeHTXS         = cms.bool(opts.includeHTXS),
     includeEmbeddingWeights = cms.bool(bool(isEmbed)),
     includeHT           = cms.bool(False),
     lheProducer         = cms.InputTag(lheTag),
@@ -1580,6 +1618,34 @@ if opts.tauSpinner:
     )
 else: process.icTauSpinnerSequence = cms.Sequence()
 
+
+################################################################
+# HTXS NNLOPS
+################################################################
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+)
+process.genParticles2HepMC = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+)
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('genParticles2HepMC','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+)
+process.icHtxsSequence = cms.Sequence()
+if opts.includeHTXS:
+    process.icHtxsSequence = cms.Sequence(
+        process.mergedGenParticles *
+        process.genParticles2HepMC *
+        process.rivetProducerHTXS
+    )
+
 ################################################################
 # Event
 ################################################################
@@ -1604,6 +1670,7 @@ process.p = cms.Path(
     process.icTriggerSequence+
     process.icTriggerObjectSequence+
     process.icTauSpinnerSequence+
+    process.icHtxsSequence+
     process.icEventInfoSequence+
     process.icEventProducer
 )

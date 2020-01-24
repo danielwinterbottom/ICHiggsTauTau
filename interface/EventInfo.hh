@@ -68,6 +68,16 @@ class EventInfo {
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
   inline unsigned good_vertices() const { return good_vertices_; }
+
+  /// pT Higgs calculated using HTXS rivet tool
+  inline double pt_h() const { return pt_h_; }
+
+  /// n_jets with pt>30 GeV calculated using HTXS rivet tool
+  inline unsigned n_jets30() const { return n_jets30_; }
+
+  /// stage1 category with jets of pt>30 GeV calculated using HTXS rivet tool
+  inline int stage1_cat() const { return stage1_cat_; }
+
   /**@}*/
 
   /// @name Setters
@@ -116,6 +126,16 @@ class EventInfo {
   inline void set_good_vertices(unsigned const& good_vertices) {
     good_vertices_ = good_vertices;
   }
+
+  /// @copybrief pt_h()
+  inline void set_pt_h(double const& pt_h) { pt_h_ = pt_h; }
+
+  /// @copybrief n_jets()
+  inline void set_n_jets30(unsigned const& n_jets30) { n_jets30_ = n_jets30; }
+
+  /// @copybrief stage1_cat()
+  inline void set_stage1_cat(double const& stage1_cat) { stage1_cat_ = stage1_cat; }
+
   /**@}*/
 
   /// @name Event weights
@@ -317,10 +337,13 @@ class EventInfo {
   SBMap weight_status_;
   unsigned good_vertices_;
   TBMap filters_;
+  double pt_h_;
+  unsigned n_jets30_;
+  int stage1_cat_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 8);
+  ClassDef(EventInfo, 9);
  #endif
 };
 }

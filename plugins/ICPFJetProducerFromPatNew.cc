@@ -59,38 +59,36 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
+
+    dest.set_jer_shift(1.);
+    dest.set_jerup_shift(1.);
+    dest.set_jerdown_shift(1.);
+
     if (doSmear_) {
+      // Find nominal smear jet matching
       for (unsigned j = 0; j < smearjets_handle->size(); ++j) {
-        if (src.eta() == smearjets_handle->at(j).eta()) {
+        if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearjets_handle->at(j).p4()) < 0.01) {
           pat::Jet const& smeared = smearjets_handle->at(j);
           dest.set_jer_shift(smeared.pt() / src.pt());
 
+          // Now look for the up and down smear jets
+          // Loop here in case they aren't in the same order
           for (unsigned k = 0; k < smearupjets_handle->size(); ++k) {
-            if (src.eta() == smearupjets_handle->at(k).eta()) {
+            if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearupjets_handle->at(k).p4()) < 0.01) {
               pat::Jet const& smearedup = smearupjets_handle->at(k);
               dest.set_jerup_shift(smearedup.pt() / smeared.pt());
-
-              for (unsigned l = 0; l < smeardownjets_handle->size(); ++l) {
-                if (src.eta() == smeardownjets_handle->at(l).eta()) {
-                  pat::Jet const& smeareddown = smeardownjets_handle->at(l);
-                  dest.set_jerdown_shift(smeareddown.pt() / smeared.pt());
-                }
-              }
+            }
+          }
+          for (unsigned l = 0; l < smeardownjets_handle->size(); ++l) {
+            if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smeardownjets_handle->at(l).p4()) < 0.01) {
+              pat::Jet const& smeareddown = smeardownjets_handle->at(l);
+              dest.set_jerdown_shift(smeareddown.pt() / smeared.pt());
             }
           }
         }
-        else {
-          dest.set_jer_shift(1.);
-          dest.set_jerup_shift(1.);
-          dest.set_jerdown_shift(1.);
-        }
       }
     }
-    else {
-      dest.set_jer_shift(1.);
-      dest.set_jerup_shift(1.);
-      dest.set_jerdown_shift(1.);
-    }
+
     dest.set_uncorrected_energy(
         (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());
     if (dest_.do_pu_id) {

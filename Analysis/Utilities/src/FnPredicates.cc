@@ -206,16 +206,17 @@ namespace ic {
       && jet->charged_multiplicity()      > 0
       && jet->charged_em_energy_frac()    < 0.99;
     } else if (eta <= 2.7){
-      result = neutralFrac < 0.99
-      && jet->neutral_em_energy_frac()   < 0.99
+      result = neutralFrac < 0.90 // 0.99 (loose)
+      && jet->neutral_em_energy_frac()   < 0.90 // 0.99 (loose)
       && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     } else if(eta<=3.0){
-      result = jet->neutral_em_energy_frac()    < 0.90
-      && jet->neutral_multiplicity() > 2;
+      result = jet->neutral_em_energy_frac() > 0.01
+      && neutralFrac                         < 0.98
+      && jet->neutral_multiplicity()         > 2;
     }
     else{
-      result = jet->neutral_em_energy_frac()    < 0.90
-      && jet->neutral_multiplicity()>10;
+      result = jet->neutral_em_energy_frac() < 0.90
+      && jet->neutral_multiplicity()         > 10;
     }
     return result;
   } 
@@ -350,7 +351,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.85);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.80);
             } else if (abs_eta < 2.75) {
@@ -372,7 +373,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.6);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.40);
             } else if (abs_eta < 2.75) {
@@ -394,7 +395,7 @@ namespace ic {
             } else if (abs_eta < 5.0) {
                   return (pu_id_mva_value > -0.45);
             } else return true;
-      } else if (pt > 30.) {
+      } else if (pt > 30. && pt <= 50.) {
             if (abs_eta < 2.5) {
                   return (pu_id_mva_value > -0.63);
             } else if (abs_eta < 2.75) {
@@ -430,7 +431,7 @@ namespace ic {
         }
         else return true;
       }
-      else if (pt > 30.) {
+      else if (pt > 30. && pt <= 50.) {
         if (abs_eta < 2.5) {
           if (doTight) return (pu_id_mva_value > 0.86);
           else if (doLoose) return (pu_id_mva_value > -0.89);
@@ -2553,6 +2554,17 @@ namespace ic {
     double angle = std::fabs(cross1.Dot(cross2)/ (cross1.Mag()*cross2.Mag()) );
     return angle;
   }
+
+  double AlphaAngleRho(TVector3 rho, TVector3 pi) {
+    TVector3 z(0,0,1);
+    TVector3 rho_unit = rho.Unit();
+    TVector3 pi_unit = pi.Unit();
+    TVector3 cross1 = z.Cross(rho_unit);
+    TVector3 cross2 = pi_unit.Cross(rho_unit);
+    double angle = std::fabs(cross1.Dot(cross2)/ (cross1.Mag()*cross2.Mag()) );
+    return angle;
+  }
+
 
   std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
       std::map<std::size_t, ic::PFCandidate*> pfcands) {

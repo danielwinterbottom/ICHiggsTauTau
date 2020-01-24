@@ -11,6 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
 
 /**
  * @brief Produces an ic::EventInfo object
@@ -43,6 +44,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   bool do_npNLO_;
   bool do_embedding_weights_;
   bool do_ht_;
+  bool do_prefire_weights_;
   std::vector<std::pair<std::string, edm::InputTag> > weights_;
   std::vector<std::pair<std::string, edm::InputTag> > gen_weights_;
   std::vector<std::string> lhe_weight_labels_;
@@ -62,6 +64,14 @@ class ICEventInfoProducer : public edm::EDProducer {
 
   //store all filters in one map 
   std::map<std::string, std::size_t> observed_filters_;
+
+  // HTXS stuff
+  bool do_htxs_;
+  edm::EDGetTokenT<HTXS::HiggsClassification> htxsSrc_;
+
+  edm::EDGetTokenT< double > prefweight_token_;
+  edm::EDGetTokenT< double > prefweightup_token_;
+  edm::EDGetTokenT< double > prefweightdown_token_;
 };
 
 #endif
