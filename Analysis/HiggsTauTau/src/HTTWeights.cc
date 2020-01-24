@@ -461,6 +461,7 @@ namespace ic {
         w_->function("t_id_dm_vloose")->functor(w_->argSet("t_dm")));
       fns_["t_deeptauid_pt_medium"] = std::shared_ptr<RooFunctor>(
           w_->function("t_deeptauid_pt_medium")->functor(w_->argSet("t_pt")));
+
       fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
           w_->function("t_deeptauid_pt_vvvloose")->functor(w_->argSet("t_pt")));
       fns_["t_deeptauid_dm_medium"] = std::shared_ptr<RooFunctor>(
@@ -1570,6 +1571,12 @@ namespace ic {
 
           auto args_pt = std::vector<double>{pt_2};
           tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium"]->eval(args_pt.data()) : 1.0;
+
+          if(channel_== channel::et) {
+            double et_tau_extra = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium"]->eval(args_pt.data()) : 1.0;
+            et_tau_extra/=tau_sf_2;
+            event->Add("wt_tau_id_extra",et_tau_extra);
+          }
 
           double tau_sf_2_bin1_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin1_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
           double tau_sf_2_bin2_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin2_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;

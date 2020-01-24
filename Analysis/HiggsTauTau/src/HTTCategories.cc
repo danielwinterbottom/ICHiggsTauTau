@@ -98,6 +98,7 @@ namespace ic {
       outtree_->Branch("wt_quarkmass_down", &wt_quarkmass_down_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
       outtree_->Branch("looseiso_wt", &looseiso_wt_);
+      outtree_->Branch("wt_tau_id_extra", &wt_tau_id_extra_);
       // adding tempoary gen stuff
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -1738,6 +1739,8 @@ namespace ic {
     }
    
     looseiso_wt_ = event->Exists("looseiso_wt") ? event->Get<double>("looseiso_wt") : 1.0;
+
+    wt_tau_id_extra_ = event->Exists("wt_tau_id_extra") ? event->Get<double>("wt_tau_id_extra") : 1.0;
  
     wt_mg_nnlops_ = event->Exists("wt_mg_nnlops") ? event->Get<double>("wt_mg_nnlops") : 1.0;
     wt_ph_nnlops_ = event->Exists("wt_ph_nnlops") ? event->Get<double>("wt_ph_nnlops") : 1.0;
@@ -2266,7 +2269,7 @@ namespace ic {
   if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;
   if (event->Exists("OR_notrig")) OR_notrig_ = event->Get<double>("OR_notrig"); else OR_notrig_ = 1.0; 
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
-  if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 1.0;
   if(channel_==channel::em){
     if(event->Exists("idisoweight_up_1")) idisoweight_up_1_ = event->Get<double>("idisoweight_up_1"); else idisoweight_up_1_ = 1.0;
     if(event->Exists("idisoweight_up_2")) idisoweight_up_2_ = event->Get<double>("idisoweight_up_2"); else idisoweight_up_2_ = 1.0;
@@ -4875,7 +4878,6 @@ namespace ic {
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
-
 
     return 0;
   }

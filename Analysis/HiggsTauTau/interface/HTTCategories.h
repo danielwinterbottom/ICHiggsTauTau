@@ -1063,6 +1063,7 @@ class HTTCategories : public ModuleBase {
   double q_tot_1_, q_tot_2_;
 
   double looseiso_wt_;
+  double wt_tau_id_extra_;
 
   double wt_tau_id_dm0_up_;
   double wt_tau_id_dm1_up_;
