@@ -159,7 +159,7 @@ for i in range(0,scale):
 
 
 
-FILELIST='filelists/Jan06_MC_102X_2018'
+FILELIST='filelists/Jan06_2018_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -258,7 +258,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
 
-    DATAFILELIST="./filelists/Jan06_Data_102X_2018"
+    DATAFILELIST="./filelists/Jan06_2018_Data_102X"
 
     if options.calc_lumi:
         for sa in data_samples:
@@ -280,7 +280,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Jan06_Data_102X_2018"
+            DATAFILELIST="./filelists/Jan06_2018_Data_102X"
             JOB='%s_2018' % (sa)
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
@@ -318,7 +318,7 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Jan06_MC_102X_2018"
+    EMBEDFILELIST="./filelists/Jan06_2018_MC_102X"
 
     for sa in embed_samples:
         job_num=0
@@ -361,44 +361,44 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        #'DYJetsToLL-2017',
-        'DYJetsToLL',
-        'DY1JetsToLL-LO',
-        'DY2JetsToLL-LO',
-        'DY3JetsToLL-LO',
-        'DY4JetsToLL-LO',
+        # #'DYJetsToLL-2017',
+        # 'DYJetsToLL',
+        # 'DY1JetsToLL-LO',
+        # 'DY2JetsToLL-LO',
+        # 'DY3JetsToLL-LO',
+        # 'DY4JetsToLL-LO',
         'DYJetsToLL-LO',
-        'DYJetsToLL_M-10-50-LO',
-        'EWKWMinus2Jets',
-        'EWKWPlus2Jets',
-        'EWKZ2Jets',
-        'T-t',
-        'T-tW-ext1',
+        # 'DYJetsToLL_M-10-50-LO',
+        # 'EWKWMinus2Jets',
+        # 'EWKWPlus2Jets',
+        # 'EWKZ2Jets',
+        # 'T-t',
+        # 'T-tW-ext1',
         'TTTo2L2Nu',
         'TTToHadronic',
         'TTToSemiLeptonic',
-        'Tbar-t',
-        'Tbar-tW-ext1',
-        'W1JetsToLNu-LO',
-        'W2JetsToLNu-LO',
-        'W3JetsToLNu-LO',
-        'W4JetsToLNu-LO',
-        'WGToLNuG',
-        # 'WGToLNuG_01J_5f-ext1',
-        'WJetsToLNu-LO',
-        #'WWTo1L1Nu2Q',
-        'WWTo2L2Nu',
-        'WWTo4Q',
-        'WWToLNuQQ',
-        'WZTo1L3Nu',
-        'WZTo2L2Q',
-        'WZTo3LNu',
-        'WZTo3LNu-ext1',
-        'ZZTo2L2Nu-ext1',
-        'ZZTo2L2Nu-ext2',
-        'ZZTo2L2Q',
-        'ZZTo4L',
-        'ZZTo4L-ext',
+        # 'Tbar-t',
+        # 'Tbar-tW-ext1',
+        # 'W1JetsToLNu-LO',
+        # 'W2JetsToLNu-LO',
+        # 'W3JetsToLNu-LO',
+        # 'W4JetsToLNu-LO',
+        # 'WGToLNuG',
+        # # 'WGToLNuG_01J_5f-ext1',
+        # 'WJetsToLNu-LO',
+        # #'WWTo1L1Nu2Q',
+        # 'WWTo2L2Nu',
+        # 'WWTo4Q',
+        # 'WWToLNuQQ',
+        # 'WZTo1L3Nu',
+        # 'WZTo2L2Q',
+        # 'WZTo3LNu',
+        # 'WZTo3LNu-ext1',
+        # 'ZZTo2L2Nu-ext1',
+        # 'ZZTo2L2Nu-ext2',
+        # 'ZZTo2L2Q',
+        # 'ZZTo4L',
+        # 'ZZTo4L-ext',
     ]
 
 

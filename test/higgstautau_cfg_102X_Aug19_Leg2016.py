@@ -1414,7 +1414,16 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+  includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
   includeGenWeights   = cms.bool(doLHEWeights),
@@ -1453,6 +1462,7 @@ process.icEventInfoSequence = cms.Sequence(
   process.BadChargedCandidateFilter+
   process.badGlobalMuonTaggerMAOD+
   process.cloneGlobalMuonTaggerMAOD+
+  process.prefiringweight+
   process.icEventInfoProducer
 )
 

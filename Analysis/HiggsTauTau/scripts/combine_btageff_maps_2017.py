@@ -2,14 +2,6 @@ import os
 import ROOT
 import sys
 from optparse import OptionParser
-import shlex
-from subprocess import Popen, PIPE
-
-def run_command(command):
-    p = Popen(shlex.split(command), stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
-    print out, err
-    return out, err
 
 ROOT.TH1.AddDirectory(False)
 
@@ -27,23 +19,21 @@ other_effs = [other_eff_dy, other_eff_dyext]
 #ttbarwt = float(831.76/76628591)
 #dywt = float(5765.4/49064064)
 ttbarwt = 1
-dywt = 5765.4/48632630.0
+dywt = 6077.22/97525274.
 
 channels = ['mt','tt','et','em']
 counter = 0
-path = "/vols/cms/dw515/Offline/output/SM/BTAG_eff/"
+path = "/vols/cms/akd116/Offline/output/SM/2020/btagEff_2017/"
 
 #channels = ['em']
 
 
-tt_had_sf = 377.96/42357944.0
-tt_semilep_sf = 365.34/40346932.0
-tt_lep_sf = 88.29/8634992.0
+tt_had_sf = 377.96/41019500.
+tt_semilep_sf = 365.34/42076324.
+tt_lep_sf = 88.29/8918978.
 
 
 for ch in channels:
-    # Hadded the separate files, now just take the full one
-    print "{}/{}_{}_2017.root".format(path, bc_eff_tthad, ch)
     ftt_had = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_tthad, ch))
     ftt_semilep = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_ttsemilep, ch))
     ftt_lep = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_ttlep, ch))
@@ -160,7 +150,7 @@ comb_btag_b.Divide(comb_tot_b)
 comb_btag_c.Divide(comb_tot_c)
 comb_btag_oth.Divide(comb_tot_oth)
 
-outfile = ROOT.TFile("tagging_efficiencies_deepCSV_Winter2017_v3.root","RECREATE")
+outfile = ROOT.TFile("tagging_efficiencies_deepCSV_2017_loose.root","RECREATE")
 outfile.WriteObject(comb_btag_b,"btag_eff_b")
 outfile.WriteObject(comb_btag_c,"btag_eff_c")
 outfile.WriteObject(comb_btag_oth,"btag_eff_oth")

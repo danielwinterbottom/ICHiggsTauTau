@@ -603,6 +603,7 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   inputVertices       = cms.InputTag("offlinePrimaryVertices"),
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  includePrefireWeights = cms.bool(False),
   filters             = cms.PSet(),
   weights             = cms.PSet(
   ),

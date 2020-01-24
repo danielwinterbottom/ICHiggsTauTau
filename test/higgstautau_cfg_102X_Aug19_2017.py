@@ -13,7 +13,7 @@ opts.register('file',
 # 'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_',
 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/280000/E2C688CA-1F1C-E911-9847-0CC47AD98BC2.root',
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
-# 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '102X_dataRun2_v12', parser.VarParsing.multiplicity.singleton,
@@ -1368,7 +1368,16 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
     includeGenWeights   = cms.bool(doLHEWeights),
@@ -1404,6 +1413,7 @@ process.icEventInfoSequence = cms.Sequence(
     process.ecalBadCalibReducedMINIAODFilter+
     process.BadPFMuonFilter+
     process.BadChargedCandidateFilter+
+    process.prefiringweight+
     process.icEventInfoProducer
 )
 

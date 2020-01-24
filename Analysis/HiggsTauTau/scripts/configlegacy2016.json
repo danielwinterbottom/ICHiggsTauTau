@@ -31,7 +31,7 @@
     "tau_id_study":true,
     "add_Hhh_variables" : false,
     "get_effective" : false,
-    "do_btag_eff":false,
+    "do_btag_eff": false,
     "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
@@ -58,10 +58,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016_newFF_v2/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016_newFF_v2/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
-    // "output_folder" : "output/",
+    "output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_leg2016/",
@@ -73,9 +73,9 @@
     "mela_mode" : 0,
     "njets_mode" : 0,
     //"event_check_file":"checkfile.dat",
-    "pu_id_training": 2,
+    "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -92,13 +92,16 @@
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
+      "wp_to_check"       : "loose",
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 0.995,
-      "efaketau_1pi_es_shift": 1.060,
+      "efaketau_0pi_es_shift": 1.00679,
+      "efaketau_0pi_es_shift_endcap": 0.965,
+      "efaketau_1pi_es_shift": 1.03389,
+      "efaketau_1pi_es_shift_endcap": 1.05,
       "mufaketau_0pi_es_shift": 1.0,
-      "mufaketau_1pi_es_shift": 0.995,
+      "mufaketau_1pi_es_shift": 1.0,
       "tau_1prong0pi0_es_shift": 0.994,
       "tau_1prong1pi0_es_shift": 0.995,
       "tau_3prong0pi0_es_shift": 1.0,
@@ -294,32 +297,36 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.985
+        "efaketau_0pi_es_shift": 0.99697,
+        "efaketau_0pi_es_shift_endcap": 0.95398 
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.005
+        "efaketau_0pi_es_shift": 1.01485,
+        "efaketau_0pi_es_shift_endcap": 0.98308 
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.050
+        "efaketau_1pi_es_shift": 1.00914,
+        "efaketau_1pi_es_shift_endcap": 0.99306
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.070
+        "efaketau_1pi_es_shift": 1.04557,
+        "efaketau_1pi_es_shift_endcap": 1.1157
       }
     },
 
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.990
+        "mufaketau_0pi_es_shift": 0.99
       }
     },
     "scale_mufake_0pi_hi": {
@@ -331,13 +338,13 @@
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 0.985
+        "mufaketau_1pi_es_shift": 0.99
       }
     },
     "scale_mufake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_UP",
-        "mufaketau_1pi_es_shift": 1.005
+        "mufaketau_1pi_es_shift": 1.01
       }
     },
     "scale_e_lo": {
