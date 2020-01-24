@@ -14,8 +14,6 @@ opts.register('globalTag', '94X_mcRun2_asymptotic_v3', parser.VarParsing.multipl
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
-opts.register('release', '102XMINIAOD', parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('isReHLT', 1, parser.VarParsing.multiplicity.singleton,
@@ -38,7 +36,6 @@ infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
 tag         = opts.globalTag
-release     = opts.release
 doLHEWeights = opts.LHEWeights
 includenpNLO = opts.includenpNLO
 isEmbed = opts.isEmbed
@@ -49,7 +46,6 @@ else:
   doHT     = 0
   isReHLT  = 0
 
-print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
@@ -683,6 +679,9 @@ if isData or isEmbed: pfJECS = cms.PSet(
   L2L3Residual = cms.string("ak4PFResidualCHS")
 )
 
+
+ # b-tagging
+ # ---------
 process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
@@ -691,6 +690,8 @@ import RecoBTag.Configuration.RecoBTag_cff as btag
 process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.pfImpactParameterTagInfos.candidates = cms.InputTag("packedPFCandidates")
 
+ # Pileup ID
+ # ---------
 process.load('RecoJets.JetProducers.PileupJetID_cfi')
 
 process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
@@ -699,6 +700,34 @@ process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
+ # JER
+ # --------
+process.load('Configuration.StandardSequences.Services_cff')
+process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
+
+process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
+        src = cms.InputTag('selectedUpdatedPatJetsUpdatedJEC'),
+        enabled = cms.bool(True),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
+        algo = cms.string('AK4PFchs'),
+        algopt = cms.string('AK4PFchs_pt'),
+        #resolutionFile = cms.FileInPath('Autumn18_V7_MC_PtResolution_AK4PFchs.txt'),
+        #scaleFactorFile = cms.FileInPath('combined_SFs_uncertSources.txt'),
+
+        genJets = cms.InputTag('slimmedGenJets'),
+        dRMax = cms.double(0.2),
+        dPtMaxFactor = cms.double(3),
+
+        debug = cms.untracked.bool(False),
+        # Systematic variation
+        # 0: Nominal
+        # -1: -1 sigma (down variation)
+        # 1: +1 sigma (up variation)
+        variation = cms.int32(0),  # If not specified, default to 0
+)
+
+process.slimmedJetsSmearedDown = process.slimmedJetsSmeared.clone(variation=cms.int32(-1))
+process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.int32(1))
 
 
 # process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
@@ -725,9 +754,9 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
-    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
-    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
-    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
+    inputSmear                = cms.InputTag("slimmedJetsSmeared"),
+    inputSmearDown            = cms.InputTag("slimmedJetsSmearedDown"),
+    inputSmearUp              = cms.InputTag("slimmedJetsSmearedUp"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -754,14 +783,17 @@ process.icPFJetSequence = cms.Sequence()
 
 
 process.icPFJetSequence += cms.Sequence(
-   process.patJetCorrFactorsUpdatedJEC+
-   process.updatedPatJetsUpdatedJEC+
-   process.selectedUpdatedPatJetsUpdatedJEC+
-   process.selectedSlimmedJetsAK4+
-   process.unpackedTracksAndVertices+
-   # process.icPFJetProducerFromPat +
-   process.icPFJetProducerFromPatNew
-   )
+    process.patJetCorrFactorsUpdatedJEC+
+    process.updatedPatJetsUpdatedJEC+
+    process.selectedUpdatedPatJetsUpdatedJEC+
+    process.selectedSlimmedJetsAK4+
+    process.unpackedTracksAndVertices+
+    # process.icPFJetProducerFromPat +
+    process.slimmedJetsSmeared+
+    process.slimmedJetsSmearedDown+
+    process.slimmedJetsSmearedUp+
+    process.icPFJetProducerFromPatNew
+    )
 
 # ################################################################
 # # PF MET

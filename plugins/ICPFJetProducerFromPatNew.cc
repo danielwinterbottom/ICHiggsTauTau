@@ -60,31 +60,29 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
 
-    // Initialise the JER shifts here to avoid issues with loops after
-    // Essentially if no match between AK4 and smearedAK4 jets is found
-    // then the shifts remain 1.
-    // Also if doSmear_ is False they remain 1.
     dest.set_jer_shift(1.);
     dest.set_jerup_shift(1.);
     dest.set_jerdown_shift(1.);
 
     if (doSmear_) {
+      // Find nominal smear jet matching
       for (unsigned j = 0; j < smearjets_handle->size(); ++j) {
-        if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearjets_handle->at(j).p4()) < 0.2) {
+        if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearjets_handle->at(j).p4()) < 0.01) {
           pat::Jet const& smeared = smearjets_handle->at(j);
           dest.set_jer_shift(smeared.pt() / src.pt());
 
+          // Now look for the up and down smear jets
+          // Loop here in case they aren't in the same order
           for (unsigned k = 0; k < smearupjets_handle->size(); ++k) {
-            if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearupjets_handle->at(k).p4()) < 0.2) {
+            if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smearupjets_handle->at(k).p4()) < 0.01) {
               pat::Jet const& smearedup = smearupjets_handle->at(k);
               dest.set_jerup_shift(smearedup.pt() / smeared.pt());
-
-              for (unsigned l = 0; l < smeardownjets_handle->size(); ++l) {
-                if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smeardownjets_handle->at(l).p4()) < 0.2) {
-                  pat::Jet const& smeareddown = smeardownjets_handle->at(l);
-                  dest.set_jerdown_shift(smeareddown.pt() / smeared.pt());
-                }
-              }
+            }
+          }
+          for (unsigned l = 0; l < smeardownjets_handle->size(); ++l) {
+            if (ROOT::Math::VectorUtil::DeltaR(src.p4(), smeardownjets_handle->at(l).p4()) < 0.01) {
+              pat::Jet const& smeareddown = smeardownjets_handle->at(l);
+              dest.set_jerdown_shift(smeareddown.pt() / smeared.pt());
             }
           }
         }

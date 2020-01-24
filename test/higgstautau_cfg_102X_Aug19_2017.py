@@ -11,9 +11,9 @@ opts = parser.VarParsing ('analysis')
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
 # 'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_',
-  # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/280000/E2C688CA-1F1C-E911-9847-0CC47AD98BC2.root',
+'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/280000/E2C688CA-1F1C-E911-9847-0CC47AD98BC2.root',
 # 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
-'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
+# 'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '102X_dataRun2_v12', parser.VarParsing.multiplicity.singleton,
@@ -23,8 +23,6 @@ opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
-opts.register('release', '102XMINIAOD', parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.string, "Release label")
 opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
@@ -45,13 +43,11 @@ isData      = opts.isData
 isEmbed      = opts.isEmbed
 if isEmbed: isData = 0
 tag         = opts.globalTag
-release     = opts.release
 doLHEWeights = opts.LHEWeights
 if not isData: doHT     = opts.doHT
 else: doHT = 0
 includenpNLO = opts.includenpNLO
 
-print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'isEmbed      : '+str(isEmbed)
 print 'globalTag   : '+str(tag)
@@ -700,6 +696,34 @@ process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
 process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
+ # JER
+ # --------
+process.load('Configuration.StandardSequences.Services_cff')
+process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
+
+process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
+        src = cms.InputTag('selectedUpdatedPatJetsUpdatedJEC'),
+        enabled = cms.bool(True),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
+        algo = cms.string('AK4PFchs'),
+        algopt = cms.string('AK4PFchs_pt'),
+        #resolutionFile = cms.FileInPath('Autumn18_V7_MC_PtResolution_AK4PFchs.txt'),
+        #scaleFactorFile = cms.FileInPath('combined_SFs_uncertSources.txt'),
+
+        genJets = cms.InputTag('slimmedGenJets'),
+        dRMax = cms.double(0.2),
+        dPtMaxFactor = cms.double(3),
+
+        debug = cms.untracked.bool(False),
+        # Systematic variation
+        # 0: Nominal
+        # -1: -1 sigma (down variation)
+        # 1: +1 sigma (up variation)
+        variation = cms.int32(0),  # If not specified, default to 0
+)
+
+process.slimmedJetsSmearedDown = process.slimmedJetsSmeared.clone(variation=cms.int32(-1))
+process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.int32(1))
 
 # process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
 #     branch                    = cms.string("ak4PFJetsCHS"),
@@ -725,9 +749,9 @@ process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
-    inputSmear                = cms.InputTag("patSmearedJetsModifiedMET"),
-    inputSmearUp              = cms.InputTag("shiftedPatSmearedJetResUpModifiedMET"),
-    inputSmearDown            = cms.InputTag("shiftedPatSmearedJetResDownModifiedMET"),
+    inputSmear                = cms.InputTag("slimmedJetsSmeared"),
+    inputSmearDown            = cms.InputTag("slimmedJetsSmearedUp"),
+    inputSmearUp              = cms.InputTag("slimmedJetsSmearedDown"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -760,7 +784,10 @@ process.icPFJetSequence += cms.Sequence(
     process.selectedSlimmedJetsAK4+
     #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
    # process.icPFJetProducerFromPat +
-   process.icPFJetProducerFromPatNew
+    process.slimmedJetsSmeared+
+    process.slimmedJetsSmearedDown+
+    process.slimmedJetsSmearedUp+
+    process.icPFJetProducerFromPatNew
     )
 
 ################################################################
