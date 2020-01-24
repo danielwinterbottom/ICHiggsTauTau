@@ -774,7 +774,6 @@ void HTTSequence::BuildSequence(){
   else if (era_type == era::data_2018)
       data_json= "input/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt";
 
-
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
    throw;
@@ -1187,14 +1186,14 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
     .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
-// JER
-if (!is_data && !is_embedded) {
-   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-     .set_input_label(jets_label)
-     .set_jer_shift_mode(jer_mode)
-     .set_EENoiseFix(era_type == era::data_2017)
-   );
-}
+//// JER
+//if (!is_data && !is_embedded) {
+//   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+//     .set_input_label(jets_label)
+//     .set_jer_shift_mode(jer_mode)
+//     .set_EENoiseFix(era_type == era::data_2017)
+//   );
+//}
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
@@ -1615,7 +1614,7 @@ if(do_met_filters){
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
       }
-      if(js["make_sync_ntuple"].asBool()){
+      if(js["make_sync_ntuple"].asBool() and false) {
         event->Add("flagMETFilter", pass_filters);  
         return false;    
       }
@@ -3455,15 +3454,15 @@ void HTTSequence::BuildTTPairs(){
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
   
-  if(e_scale_mode >0 && !is_data && is_embedded){
-    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-        .set_shift(elec_shift_barrel)
-        .set_shift_endcap(elec_shift_endcap)
-        .set_strategy(strategy_type)
-        .set_channel(channel::em)
-        .set_moriond_corrections(moriond_tau_scale));
-  }
+  //if(e_scale_mode >0 && !is_data && is_embedded){
+  //  BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+  //      .set_input_label(js["electrons"].asString())
+  //      .set_shift(elec_shift_barrel)
+  //      .set_shift_endcap(elec_shift_endcap)
+  //      .set_strategy(strategy_type)
+  //      .set_channel(channel::em)
+  //      .set_moriond_corrections(moriond_tau_scale));
+  //}
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -4616,6 +4615,7 @@ void HTTSequence::BuildTauSelection(){
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
   
  if (mc_type == mc::mc2018 || mc_type == mc::mc2017 || mc_type == mc::mcleg2016) {
+
    // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
    double loose_tau_pt = tau_pt*0.8;
    BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
@@ -4668,7 +4668,13 @@ void HTTSequence::BuildTauSelection(){
       .set_predicate([=](Tau const* t) {
         return  t->decay_mode() == 10;
       }));
-     
+    
+    BuildModule(SimpleFilter<Tau>("3Prong1PiTauHadFilter")
+      .set_input_label("genmatched_taus_3prong1pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 11;
+      }));
+ 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
     .set_input_label("genmatched_taus_1prong0pi0")
     .set_save_shifts(true) 
@@ -4798,6 +4804,7 @@ void HTTSequence::BuildTauSelection(){
     .set_save_shifts(true)
     .set_shift_label("scales_mufaketaues_1prong1pi0")
     .set_shift(fakeMu_tau_shift_1pi));
+
   }
 
 
