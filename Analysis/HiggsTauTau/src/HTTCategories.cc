@@ -149,6 +149,19 @@ namespace ic {
         outtree_->Branch("wt_tau_trg_dm10_down", &wt_tau_trg_dm10_down_);
         outtree_->Branch("wt_tau_trg_dm11_down", &wt_tau_trg_dm11_down_);
 
+        outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
+        outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
+        outtree_->Branch("wt_tau_trg_mvadm0_up",    &wt_tau_trg_mvadm0_up_);
+        outtree_->Branch("wt_tau_trg_mvadm1_up",    &wt_tau_trg_mvadm1_up_);
+        outtree_->Branch("wt_tau_trg_mvadm2_up",    &wt_tau_trg_mvadm2_up_);
+        outtree_->Branch("wt_tau_trg_mvadm10_up",   &wt_tau_trg_mvadm10_up_);
+        outtree_->Branch("wt_tau_trg_mvadm11_up",   &wt_tau_trg_mvadm11_up_);
+        outtree_->Branch("wt_tau_trg_mvadm0_down",  &wt_tau_trg_mvadm0_down_);
+	outtree_->Branch("wt_tau_trg_mvadm1_down",  &wt_tau_trg_mvadm1_down_);
+        outtree_->Branch("wt_tau_trg_mvadm2_down",  &wt_tau_trg_mvadm2_down_);
+        outtree_->Branch("wt_tau_trg_mvadm10_down", &wt_tau_trg_mvadm10_down_);
+        outtree_->Branch("wt_tau_trg_mvadm11_down", &wt_tau_trg_mvadm11_down_);
+
         outtree_->Branch("wt_ps_up", & wt_ps_up_);
         outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
@@ -1674,7 +1687,7 @@ namespace ic {
     // end of added gen stuff
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_all_weights();
+    //eventInfo->print_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
     wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
@@ -1704,6 +1717,20 @@ namespace ic {
     wt_tau_trg_dm1_down_ =  (event->Exists("wt_tau_trg_dm1_down")) ? event->Get<double>("wt_tau_trg_dm1_down") : 1.;
     wt_tau_trg_dm10_down_ =  (event->Exists("wt_tau_trg_dm10_down")) ? event->Get<double>("wt_tau_trg_dm10_down") : 1.;
     wt_tau_trg_dm11_down_ =  (event->Exists("wt_tau_trg_dm11_down")) ? event->Get<double>("wt_tau_trg_dm11_down") : 1.;
+
+    wt_tau_trg_mvadm0_up_ =     (event->Exists("wt_tau_trg_mvadm0_up")) ?    event->Get<double>("wt_tau_trg_mvadm0_up") : 1.;
+    wt_tau_trg_mvadm1_up_ =     (event->Exists("wt_tau_trg_mvadm1_up")) ?    event->Get<double>("wt_tau_trg_mvadm1_up") : 1.;
+    wt_tau_trg_mvadm2_up_ =     (event->Exists("wt_tau_trg_mvadm2_up")) ?    event->Get<double>("wt_tau_trg_mvadm2_up") : 1.;
+    wt_tau_trg_mvadm10_up_ =    (event->Exists("wt_tau_trg_mvadm10_up")) ?   event->Get<double>("wt_tau_trg_mvadm10_up") : 1.;
+    wt_tau_trg_mvadm11_up_ =    (event->Exists("wt_tau_trg_mvadm11_up")) ?   event->Get<double>("wt_tau_trg_mvadm11_up") : 1.;
+    wt_tau_trg_mvadm0_down_ =   (event->Exists("wt_tau_trg_mvadm0_down")) ?  event->Get<double>("wt_tau_trg_mvadm0_down") : 1.;
+    wt_tau_trg_mvadm1_down_ =   (event->Exists("wt_tau_trg_mvadm1_down")) ?  event->Get<double>("wt_tau_trg_mvadm1_down") : 1.;
+    wt_tau_trg_mvadm2_down_ =   (event->Exists("wt_tau_trg_mvadm2_down")) ?  event->Get<double>("wt_tau_trg_mvadm2_down") : 1.;
+    wt_tau_trg_mvadm10_down_ =  (event->Exists("wt_tau_trg_mvadm10_down")) ? event->Get<double>("wt_tau_trg_mvadm10_down") : 1.;
+    wt_tau_trg_mvadm11_down_ =  (event->Exists("wt_tau_trg_mvadm11_down")) ? event->Get<double>("wt_tau_trg_mvadm11_down") : 1.;
+
+    wt_tau_trg_ic_ =     (event->Exists("wt_tau_trg_ic")) ?    event->Get<double>("wt_tau_trg_ic") : 1.;
+    wt_tau_trg_mvadm_ =     (event->Exists("wt_tau_trg_mvadm")) ?    event->Get<double>("wt_tau_trg_mvadm") : 1.;
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;

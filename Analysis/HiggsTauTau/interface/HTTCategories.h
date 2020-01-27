@@ -1091,6 +1091,19 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_dm1_down_;
   double wt_tau_trg_dm10_down_;
   double wt_tau_trg_dm11_down_;
+  double wt_tau_trg_ic_;
+  double wt_tau_trg_mvadm_;
+  double wt_tau_trg_mvadm0_up_;
+  double wt_tau_trg_mvadm1_up_;
+  double wt_tau_trg_mvadm2_up_;
+  double wt_tau_trg_mvadm10_up_;
+  double wt_tau_trg_mvadm11_up_;
+  double wt_tau_trg_mvadm0_down_;
+  double wt_tau_trg_mvadm1_down_;
+  double wt_tau_trg_mvadm2_down_;
+  double wt_tau_trg_mvadm10_down_;
+  double wt_tau_trg_mvadm11_down_;
+
 
   double wt_mg_nnlops_;
   double wt_ph_nnlops_;
