@@ -441,6 +441,48 @@ namespace ic {
       fns_["t_trg_27_ic_mvadm_embed_ratio"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio")->functor(w_->argSet("t_pt,t_mvadm")));
 
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm0_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm0_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm0_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm1_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm1_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm2_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm2_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm2_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm2_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm10_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm10_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm10_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm10_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm11_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm11_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_ratio_mvadm11_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_ratio_mvadm11_down")->functor(w_->argSet("t_pt,t_mvadm")));
+
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm0_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm0_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm0_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm1_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm1_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm2_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm2_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm2_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm2_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm10_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm10_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm10_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm10_down")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm11_up")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_mutau_embed_ratio_mvadm11_down")->functor(w_->argSet("t_pt,t_mvadm")));
+
       if(mc_ != mc::mcleg2016) {
         fns_["t_trg_30_ic_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("t_trg_ic_deeptau_medium_etau_ratio")->functor(w_->argSet("t_pt,t_dm")));
@@ -451,6 +493,48 @@ namespace ic {
             w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio")->functor(w_->argSet("t_pt,t_mvadm")));
         fns_["t_trg_30_ic_mvadm_embed_ratio"] = std::shared_ptr<RooFunctor>(
             w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio")->functor(w_->argSet("t_pt,t_mvadm")));
+
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm0_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm0_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm0_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm1_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm1_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm1_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm1_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm2_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm2_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm2_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm2_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm10_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm10_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm10_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm10_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm11_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm11_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_ratio_mvadm11_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm11_down")->functor(w_->argSet("t_pt,t_mvadm")));
+
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm0_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm0_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm0_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm1_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm1_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm1_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm1_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm2_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm2_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm2_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm2_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm10_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm10_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm10_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm10_down")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm11_up"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm11_up")->functor(w_->argSet("t_pt,t_mvadm")));
+        fns_["t_trg_30_ic_mvadm_embed_ratio_mvadm11_down"] = std::shared_ptr<RooFunctor>(
+            w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio_mvadm11_down")->functor(w_->argSet("t_pt,t_mvadm")));
       }
 
       fns_["t_trg_35_ic_ratio"] = std::shared_ptr<RooFunctor>(
@@ -2538,7 +2622,7 @@ namespace ic {
                   tau_trg_dm10_down=fns_["t_trg_30_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_embed_ratio"]->eval(args_3.data());
                   tau_trg_dm11_down=fns_["t_trg_30_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_30_embed_ratio"]->eval(args_3.data());
                 }
-                if(!(e_pt<e_high_pt_cut)){
+                if(e_pt<e_high_pt_cut){
                   tau_trg_dm0_up = ((ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_trg*(1-tau_trg*tau_trg_dm0_up) + ele_xtrg*tau_trg*tau_trg_dm0_up)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
                   tau_trg_dm1_up = ((ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_trg*(1-tau_trg*tau_trg_dm1_up) + ele_xtrg*tau_trg*tau_trg_dm1_up)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
                   tau_trg_dm10_up = ((ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_trg*(1-tau_trg*tau_trg_dm10_up) + ele_xtrg*tau_trg*tau_trg_dm10_up)/(ele_trg_mc*(1-tau_trg_mc) + ele_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf;
@@ -2923,7 +3007,7 @@ namespace ic {
               tau_trg_mc = 1.;
               tau_trg = fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
               tau_trg_ic = fns_["t_trg_27_ic_embed_ratio"]->eval(args_4.data());
-              tau_trg_mvadm = fns_["t_trg_27_mvadm_embed_ratio"]->eval(args_mvadm.data());
+              tau_trg_mvadm = fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
 
             }
             else {
@@ -2931,7 +3015,7 @@ namespace ic {
               tau_trg_mc = 1.;
               tau_trg = fns_["t_trg_27_ratio"]->eval(args_4.data());
               tau_trg_ic = fns_["t_trg_27_ic_ratio"]->eval(args_4.data());
-              tau_trg_mvadm = fns_["t_trg_27_mvadm_ratio"]->eval(args_mvadm.data());
+              tau_trg_mvadm = fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
             }
 
             double xtrg_mt_sf = (mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_xtrg*tau_trg)/(mu_xtrg_mc*tau_trg_mc) : 0.0;
@@ -2966,37 +3050,66 @@ namespace ic {
             double tau_trg_dm10_down=1.;
             double tau_trg_dm11_down=1.;
 
-            bool do_wts = xtrg_OR_sf > 0;
+            double tau_trg_mvadm0_up=1.;
+            double tau_trg_mvadm1_up=1.;
+            double tau_trg_mvadm2_up=1.;
+            double tau_trg_mvadm10_up=1.;
+            double tau_trg_mvadm11_up=1.;
+            double tau_trg_mvadm0_down=1.;
+            double tau_trg_mvadm1_down=1.;
+            double tau_trg_mvadm2_down=1.;
+            double tau_trg_mvadm10_down=1.;
+            double tau_trg_mvadm11_down=1.;
 
-            if(do_wts) {
-              if(!is_embedded_ && fns_["t_trg_27_ratio"]->eval(args_4.data())>0){
-                tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
-                tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+            if(pt<m_high_pt_cut) { // if this isn't true then we are using the single lepton trigger and therefore the weight = 1
+              if(!is_embedded_) {
+                if(fns_["t_trg_27_ratio"]->eval(args_4.data())>0){
+                  tau_trg_dm0_up=fns_["t_trg_27_ratio_dm0_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm1_up=fns_["t_trg_27_ratio_dm1_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm10_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm11_up=fns_["t_trg_27_ratio_dm11_up"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm0_down=fns_["t_trg_27_ratio_dm0_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm1_down=fns_["t_trg_27_ratio_dm1_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm10_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                  tau_trg_dm11_down=fns_["t_trg_27_ratio_dm11_down"]->eval(args_4.data())/fns_["t_trg_27_ratio"]->eval(args_4.data());
+                }
+                if(fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data())>0){
+                  tau_trg_mvadm0_up   =fns_["t_trg_27_ic_mvadm_ratio_mvadm0_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm1_up   =fns_["t_trg_27_ic_mvadm_ratio_mvadm1_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm2_up   =fns_["t_trg_27_ic_mvadm_ratio_mvadm2_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm10_up  =fns_["t_trg_27_ic_mvadm_ratio_mvadm11_up"]->eval(args_mvadm.data())  /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm11_up  =fns_["t_trg_27_ic_mvadm_ratio_mvadm11_up"]->eval(args_mvadm.data())  /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm0_down =fns_["t_trg_27_ic_mvadm_ratio_mvadm0_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm1_down =fns_["t_trg_27_ic_mvadm_ratio_mvadm1_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm2_down =fns_["t_trg_27_ic_mvadm_ratio_mvadm2_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm10_down=fns_["t_trg_27_ic_mvadm_ratio_mvadm11_down"]->eval(args_mvadm.data())/fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm11_down=fns_["t_trg_27_ic_mvadm_ratio_mvadm11_down"]->eval(args_mvadm.data())/fns_["t_trg_27_ic_mvadm_ratio"]->eval(args_mvadm.data());
+                }
+
               } else if(fns_["t_trg_27_embed_ratio"]->eval(args_3.data())>0) {
-                tau_trg_dm0_up=fns_["t_trg_27_embed_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm1_up=fns_["t_trg_27_embed_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm10_up=fns_["t_trg_27_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm11_up=fns_["t_trg_27_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm0_down=fns_["t_trg_27_embed_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm1_down=fns_["t_trg_27_embed_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm10_down=fns_["t_trg_27_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-                tau_trg_dm11_down=fns_["t_trg_27_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
-              }
-              if(!(pt<m_high_pt_cut)){
-                tau_trg_dm0_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_up) + mu_xtrg*tau_trg*tau_trg_dm0_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm1_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_up) + mu_xtrg*tau_trg*tau_trg_dm1_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm10_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_up) + mu_xtrg*tau_trg*tau_trg_dm10_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm11_up = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_up) + mu_xtrg*tau_trg*tau_trg_dm11_up)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm0_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm0_down) + mu_xtrg*tau_trg*tau_trg_dm0_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm1_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm1_down) + mu_xtrg*tau_trg*tau_trg_dm1_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm10_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm10_down) + mu_xtrg*tau_trg*tau_trg_dm10_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
-                tau_trg_dm11_down = (xtrg_OR_sf > 0) ? ((mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) > 0 ? (mu_trg*(1-tau_trg*tau_trg_dm11_down) + mu_xtrg*tau_trg*tau_trg_dm11_down)/(mu_trg_mc*(1-tau_trg_mc) + mu_xtrg_mc*tau_trg_mc) : 0.)/xtrg_OR_sf : 1.0;
+                if(fns_["t_trg_27_embed_ratio"]->eval(args_3.data())>0) {
+                  tau_trg_dm0_up=fns_["t_trg_27_embed_ratio_dm0_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm1_up=fns_["t_trg_27_embed_ratio_dm1_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm10_up=fns_["t_trg_27_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm11_up=fns_["t_trg_27_embed_ratio_dm11_up"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm0_down=fns_["t_trg_27_embed_ratio_dm0_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm1_down=fns_["t_trg_27_embed_ratio_dm1_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm10_down=fns_["t_trg_27_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                  tau_trg_dm11_down=fns_["t_trg_27_embed_ratio_dm11_down"]->eval(args_3.data())/fns_["t_trg_27_embed_ratio"]->eval(args_3.data());
+                }
+                if(fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data())>0){
+                  tau_trg_mvadm0_up   =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm0_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm1_up   =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm1_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm2_up   =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm2_up"]->eval(args_mvadm.data())   /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm10_up  =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_up"]->eval(args_mvadm.data())  /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm11_up  =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_up"]->eval(args_mvadm.data())  /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm0_down =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm0_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm1_down =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm1_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm2_down =fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm2_down"]->eval(args_mvadm.data()) /fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm10_down=fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_down"]->eval(args_mvadm.data())/fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                  tau_trg_mvadm11_down=fns_["t_trg_27_ic_mvadm_embed_ratio_mvadm11_down"]->eval(args_mvadm.data())/fns_["t_trg_27_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
+                }
+
               }
             }
 
@@ -3009,6 +3122,17 @@ namespace ic {
             tau_trg_dm11_up = std::isnan(tau_trg_dm11_up) ? 0 : tau_trg_dm11_up;
             tau_trg_dm11_down = std::isnan(tau_trg_dm11_down) ? 0 : tau_trg_dm11_down;
 
+            tau_trg_mvadm0_up    = std::isnan(tau_trg_mvadm0_up)    ? 0 : tau_trg_mvadm0_up;
+            tau_trg_mvadm0_down  = std::isnan(tau_trg_mvadm0_down)  ? 0 : tau_trg_mvadm0_down;
+            tau_trg_mvadm1_up    = std::isnan(tau_trg_mvadm1_up)    ? 0 : tau_trg_mvadm1_up;
+            tau_trg_mvadm1_down  = std::isnan(tau_trg_mvadm1_down)  ? 0 : tau_trg_mvadm1_down;
+            tau_trg_mvadm2_up    = std::isnan(tau_trg_mvadm2_up)    ? 0 : tau_trg_mvadm2_up;
+            tau_trg_mvadm2_down  = std::isnan(tau_trg_mvadm2_down)  ? 0 : tau_trg_mvadm2_down;
+            tau_trg_mvadm10_up   = std::isnan(tau_trg_mvadm10_up)   ? 0 : tau_trg_mvadm10_up;
+            tau_trg_mvadm10_down = std::isnan(tau_trg_mvadm10_down) ? 0 : tau_trg_mvadm10_down;
+            tau_trg_mvadm11_up   = std::isnan(tau_trg_mvadm11_up)   ? 0 : tau_trg_mvadm11_up;
+            tau_trg_mvadm11_down = std::isnan(tau_trg_mvadm11_down) ? 0 : tau_trg_mvadm11_down;
+
             event->Add("wt_tau_trg_dm0_up",tau_trg_dm0_up);
             event->Add("wt_tau_trg_dm1_up",tau_trg_dm1_up);
             event->Add("wt_tau_trg_dm10_up",tau_trg_dm10_up);
@@ -3017,10 +3141,22 @@ namespace ic {
             event->Add("wt_tau_trg_dm1_down",tau_trg_dm1_down);
             event->Add("wt_tau_trg_dm10_down",tau_trg_dm10_down);
             event->Add("wt_tau_trg_dm11_down",tau_trg_dm11_down);
-  
+ 
+            event->Add("wt_tau_trg_mvadm0_up"   ,tau_trg_mvadm0_up);
+            event->Add("wt_tau_trg_mvadm1_up"   ,tau_trg_mvadm1_up);
+            event->Add("wt_tau_trg_mvadm2_up"   ,tau_trg_mvadm2_up);
+            event->Add("wt_tau_trg_mvadm10_up"  ,tau_trg_mvadm10_up);
+            event->Add("wt_tau_trg_mvadm11_up"  ,tau_trg_mvadm11_up);
+            event->Add("wt_tau_trg_mvadm0_down" ,tau_trg_mvadm0_down);
+            event->Add("wt_tau_trg_mvadm1_down" ,tau_trg_mvadm1_down);
+            event->Add("wt_tau_trg_mvadm2_down" ,tau_trg_mvadm2_down);
+            event->Add("wt_tau_trg_mvadm10_down",tau_trg_mvadm10_down);
+            event->Add("wt_tau_trg_mvadm11_down",tau_trg_mvadm11_down);
+
+ 
             // have xtrg OR as default but save others to check 
-            event->Add("single_l_sf", xtrg_OR_sf==0 ? 0. : single_m_sf/xtrg_OR_sf);
-            event->Add("xtrg_sf", xtrg_OR_sf==0 ? 0. : xtrg_mt_sf/xtrg_OR_sf);
+            event->Add("single_l_sf", xtrg_OR_sf==0 ? single_m_sf : single_m_sf/xtrg_OR_sf);
+            event->Add("xtrg_sf", xtrg_OR_sf==0 ? xtrg_mt_sf : xtrg_mt_sf/xtrg_OR_sf);
 
             mu_trg = xtrg_OR_sf;
             mu_trg_mc = 1.0;
