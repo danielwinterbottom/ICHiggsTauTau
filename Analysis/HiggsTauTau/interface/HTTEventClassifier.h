@@ -14,6 +14,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <string>
 #include "Utilities/interface/FnRootTools.h"
+#include "boost/format.hpp"
+#include "boost/bind.hpp"
 #include "TMVA/Reader.h"
 
 namespace ic {
@@ -44,19 +46,19 @@ class HTTEventClassifier : public ModuleBase {
   float event_;
   unsigned long long evt_;
 
-  float dijetpt_;
-  float jdeta_;
-  float jpt_1_;
-  float m_sv_;
-  float m_vis_;
-  float met_;
-  float mjj_;
-  float n_jets_;
-  float n_lowpt_jets_;
-  float pt_1_;
-  float pt_2_;
-  float pt_tt_;
-  float pt_vis_;
+  double dijetpt_;
+  double jdeta_;
+  double jpt_1_;
+  double m_sv_;
+  double m_vis_;
+  double met_;
+  double mjj_;
+  unsigned n_jets_;
+  unsigned n_lowpt_jets_;
+  double pt_1_;
+  double pt_2_;
+  double pt_tt_;
+  double pt_vis_;
 
 
   float var0_, var1_, var2_, var3_, var4_, var5_, var6_, var7_, var8_, var9_, var10_, var11_;
