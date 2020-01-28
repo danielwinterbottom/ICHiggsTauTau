@@ -4932,7 +4932,7 @@ namespace ic {
       
     // signal background event classification
     IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;
-    IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<float>("IC_BDT_max_index") : -999.0;
+    IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<int>("IC_BDT_max_index") : -999;
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
