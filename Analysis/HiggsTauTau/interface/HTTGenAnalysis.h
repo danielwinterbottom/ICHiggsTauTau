@@ -95,6 +95,10 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_prod_sm_;
+  double wt_cp_prod_ps_;
+  double wt_cp_prod_mm_;
+
   double HiggsPt_;
   std::string decayType;
   double wt_ggh_pt_           ;
@@ -266,6 +270,11 @@ class HTTGenAnalysis : public ModuleBase {
   double largest_gen_mjj_=-9999;
 
   double lead_b_eta_=-9999, lead_b_pt_=-9999;
+
+  double wt_ps_isr_up_  ;
+  double wt_ps_isr_down_;
+  double wt_ps_fsr_up_;
+  double wt_ps_fsr_down_;
   
  public:
   HTTGenAnalysis(std::string const& name);

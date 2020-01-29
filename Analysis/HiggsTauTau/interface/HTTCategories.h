@@ -544,6 +544,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_prod_sm_;
+  double wt_cp_prod_ps_;
+  double wt_cp_prod_mm_;
  
   float mvadm_rho_1_;
   float mvadm_a1_1_;
@@ -939,7 +942,12 @@ class HTTCategories : public ModuleBase {
   double wt_scale_tt_boosted_;
   double wt_scale_tt_vbf_;
   double wt_qcdscale_up_;
-  double wt_qcdscale_down_; 
+  double wt_qcdscale_down_;
+
+  double wt_ps_isr_up_  ;
+  double wt_ps_isr_down_;
+  double wt_ps_fsr_up_;
+  double wt_ps_fsr_down_;
 
   double wt_z_mjj_;
   double wt_z_mjj_down_;
