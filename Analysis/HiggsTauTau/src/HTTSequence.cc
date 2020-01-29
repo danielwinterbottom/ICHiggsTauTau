@@ -1186,14 +1186,14 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
     .set_prefire_hist(new TH2F(prefire_hist)));
 }
 
-//// JER
-//if (!is_data && !is_embedded) {
-//   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-//     .set_input_label(jets_label)
-//     .set_jer_shift_mode(jer_mode)
-//     .set_EENoiseFix(era_type == era::data_2017)
-//   );
-//}
+// JER
+if (!is_data && !is_embedded) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
@@ -2623,14 +2623,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
            httStitching.set_do_w_soup(true);
            // W numbers need updating
            httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-           httStitching.SetWInputYields(33043732+44587448,54106926,6545029,19575436,11074019); 
+           httStitching.SetWInputYields(77558539,54013116,6558503,19669693,10325586); 
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
                       && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(48443117+49082157,42155038+33329594,88795+10027319,5740168+1147725,4255897);
+            httStitching.SetDYInputYields(97502567,75523396,10016760,6887893,4317756);
           }
        
        BuildModule(httStitching);   
@@ -2681,7 +2681,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
    }
    
   
-     BuildModule(httWeights);
+     //BuildModule(httWeights);
      if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
          .set_era(era_type)
@@ -2791,7 +2791,7 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
 //      .set_strategy(strategy_type));
 
 
-/*if (era_type == era::data_2017) {
+/*if (era_type == era::data_2017 || era_type == era::data_2018) {
   BuildModule(HTTEventClassifier("HTTEventClassifier")
       .set_fs(fs.get())
       .set_channel(channel)
@@ -2799,7 +2799,6 @@ bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find
       .set_met_label(met_label)
       .set_jets_label(jets_label)
       .set_era(era_type));
-  ;
 }*/
 do_sm_scale_wts = true; // set this to false after!
 BuildModule(HTTCategories("HTTCategories")
