@@ -2696,14 +2696,14 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
             httStitching.set_do_w_soup(true);
             // W numbers need updating
             httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-            httStitching.SetWInputYields(70932275, 51047866, 23161896, 14492897, 9878775); // correspond to params Mar18
+            httStitching.SetWInputYields(7054805, 51017448, 23174717, 14351015, 10062198); // correspond to params Jan24
           }
           if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos 
               && !(output_name.find("JetsToLL-LO-5-50") != output_name.npos) && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
             httStitching.set_do_dy_soup(true);
             // DY XS's are relative to the inclusive XS
             httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-            httStitching.SetDYInputYields(99873581, 68773292, 20441071, 5646595, 2798070); // correspond to params Mar18
+            httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482); // correspond to params Jan24
           }
        
        BuildModule(httStitching);   
