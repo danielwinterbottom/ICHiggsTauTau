@@ -3059,6 +3059,56 @@ if((channel == channel::tpzmm || channel == channel::tpzee || channel == channel
           .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       
       );
+
+        // low pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_add_name("_dimu_low")
+          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+        );
+
+        // high pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuhigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_add_name("_dimu_high")
+          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(17.)
+        );
+
+        // use to measure DZ filter efficiency for embedded selection selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuDZ")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(MuonLooseID)
+          .set_add_name("_dimu_dz")
+          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_do_dzmass(true)
+        );
+
     }
   } else if(channel == channel::tpzee){
     if(strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
