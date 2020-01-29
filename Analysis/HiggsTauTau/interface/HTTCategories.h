@@ -544,6 +544,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_prod_sm_;
+  double wt_cp_prod_ps_;
+  double wt_cp_prod_mm_;
  
   float mvadm_rho_1_;
   float mvadm_a1_1_;
@@ -560,7 +563,7 @@ class HTTCategories : public ModuleBase {
   int mva_dm_1_, mva_dm_2_;
 
   float IC_BDT_max_score_;
-  float IC_BDT_max_index_;
+  int IC_BDT_max_index_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
@@ -939,7 +942,12 @@ class HTTCategories : public ModuleBase {
   double wt_scale_tt_boosted_;
   double wt_scale_tt_vbf_;
   double wt_qcdscale_up_;
-  double wt_qcdscale_down_; 
+  double wt_qcdscale_down_;
+
+  double wt_ps_isr_up_  ;
+  double wt_ps_isr_down_;
+  double wt_ps_fsr_up_;
+  double wt_ps_fsr_down_;
 
   double wt_z_mjj_;
   double wt_z_mjj_down_;
@@ -1098,6 +1106,19 @@ class HTTCategories : public ModuleBase {
   bool trg_matched_alt3_;
     
   bool trg_etau_matched_;
+  double wt_tau_trg_ic_;
+  double wt_tau_trg_mvadm_;
+  double wt_tau_trg_mvadm0_up_;
+  double wt_tau_trg_mvadm1_up_;
+  double wt_tau_trg_mvadm2_up_;
+  double wt_tau_trg_mvadm10_up_;
+  double wt_tau_trg_mvadm11_up_;
+  double wt_tau_trg_mvadm0_down_;
+  double wt_tau_trg_mvadm1_down_;
+  double wt_tau_trg_mvadm2_down_;
+  double wt_tau_trg_mvadm10_down_;
+  double wt_tau_trg_mvadm11_down_;
+
 
   double wt_mg_nnlops_;
   double wt_ph_nnlops_;

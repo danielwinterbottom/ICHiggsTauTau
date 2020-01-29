@@ -120,7 +120,7 @@ namespace ic {
       // add temporary tau trg effs
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
       outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
-      if(do_sm_ps_wts_ && !systematic_shift_){
+      if(!systematic_shift_){
 
         outtree_->Branch("wt_tau_id_dm0_up", &wt_tau_id_dm0_up_);
         outtree_->Branch("wt_tau_id_dm1_up", &wt_tau_id_dm1_up_);
@@ -149,8 +149,21 @@ namespace ic {
         outtree_->Branch("wt_tau_trg_dm10_down", &wt_tau_trg_dm10_down_);
         outtree_->Branch("wt_tau_trg_dm11_down", &wt_tau_trg_dm11_down_);
 
-        outtree_->Branch("wt_ps_up", & wt_ps_up_);
-        outtree_->Branch("wt_ps_down", & wt_ps_down_);
+        outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
+        outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
+        outtree_->Branch("wt_tau_trg_mvadm0_up",    &wt_tau_trg_mvadm0_up_);
+        outtree_->Branch("wt_tau_trg_mvadm1_up",    &wt_tau_trg_mvadm1_up_);
+        outtree_->Branch("wt_tau_trg_mvadm2_up",    &wt_tau_trg_mvadm2_up_);
+        outtree_->Branch("wt_tau_trg_mvadm10_up",   &wt_tau_trg_mvadm10_up_);
+        outtree_->Branch("wt_tau_trg_mvadm11_up",   &wt_tau_trg_mvadm11_up_);
+        outtree_->Branch("wt_tau_trg_mvadm0_down",  &wt_tau_trg_mvadm0_down_);
+	outtree_->Branch("wt_tau_trg_mvadm1_down",  &wt_tau_trg_mvadm1_down_);
+        outtree_->Branch("wt_tau_trg_mvadm2_down",  &wt_tau_trg_mvadm2_down_);
+        outtree_->Branch("wt_tau_trg_mvadm10_down", &wt_tau_trg_mvadm10_down_);
+        outtree_->Branch("wt_tau_trg_mvadm11_down", &wt_tau_trg_mvadm11_down_);
+
+        //outtree_->Branch("wt_ps_up", & wt_ps_up_);
+        //outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
 
@@ -616,6 +629,10 @@ namespace ic {
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
 
+      outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
+      outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
+      outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
+
       outtree_->Branch("mvadm_pi_1", &mvadm_pi_1_);
       outtree_->Branch("mvadm_rho_1", &mvadm_rho_1_);
       outtree_->Branch("mvadm_a1_1", &mvadm_a1_1_);
@@ -1045,10 +1062,17 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
-        if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
-          outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
-          outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
-        }
+        //if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && do_sm_scale_wts_ ){
+        //  outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
+        //  outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
+        //}
+        outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
+        outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
+
+        outtree_->Branch("wt_ps_isr_up" , &wt_ps_isr_up_ );
+        outtree_->Branch("wt_ps_isr_down" , &wt_ps_isr_down_ );
+        outtree_->Branch("wt_ps_fsr_up" , &wt_ps_fsr_up_ );
+        outtree_->Branch("wt_ps_fsr_down" , &wt_ps_fsr_down_ );
         if(do_z_weights_){
           outtree_->Branch("wt_z_mjj",      &wt_z_mjj_);   
           outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
@@ -1683,7 +1707,7 @@ namespace ic {
     // end of added gen stuff
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_all_weights();
+    //eventInfo->print_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
     wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
@@ -1714,6 +1738,20 @@ namespace ic {
     wt_tau_trg_dm10_down_ =  (event->Exists("wt_tau_trg_dm10_down")) ? event->Get<double>("wt_tau_trg_dm10_down") : 1.;
     wt_tau_trg_dm11_down_ =  (event->Exists("wt_tau_trg_dm11_down")) ? event->Get<double>("wt_tau_trg_dm11_down") : 1.;
 
+    wt_tau_trg_mvadm0_up_ =     (event->Exists("wt_tau_trg_mvadm0_up")) ?    event->Get<double>("wt_tau_trg_mvadm0_up") : 1.;
+    wt_tau_trg_mvadm1_up_ =     (event->Exists("wt_tau_trg_mvadm1_up")) ?    event->Get<double>("wt_tau_trg_mvadm1_up") : 1.;
+    wt_tau_trg_mvadm2_up_ =     (event->Exists("wt_tau_trg_mvadm2_up")) ?    event->Get<double>("wt_tau_trg_mvadm2_up") : 1.;
+    wt_tau_trg_mvadm10_up_ =    (event->Exists("wt_tau_trg_mvadm10_up")) ?   event->Get<double>("wt_tau_trg_mvadm10_up") : 1.;
+    wt_tau_trg_mvadm11_up_ =    (event->Exists("wt_tau_trg_mvadm11_up")) ?   event->Get<double>("wt_tau_trg_mvadm11_up") : 1.;
+    wt_tau_trg_mvadm0_down_ =   (event->Exists("wt_tau_trg_mvadm0_down")) ?  event->Get<double>("wt_tau_trg_mvadm0_down") : 1.;
+    wt_tau_trg_mvadm1_down_ =   (event->Exists("wt_tau_trg_mvadm1_down")) ?  event->Get<double>("wt_tau_trg_mvadm1_down") : 1.;
+    wt_tau_trg_mvadm2_down_ =   (event->Exists("wt_tau_trg_mvadm2_down")) ?  event->Get<double>("wt_tau_trg_mvadm2_down") : 1.;
+    wt_tau_trg_mvadm10_down_ =  (event->Exists("wt_tau_trg_mvadm10_down")) ? event->Get<double>("wt_tau_trg_mvadm10_down") : 1.;
+    wt_tau_trg_mvadm11_down_ =  (event->Exists("wt_tau_trg_mvadm11_down")) ? event->Get<double>("wt_tau_trg_mvadm11_down") : 1.;
+
+    wt_tau_trg_ic_ =     (event->Exists("wt_tau_trg_ic")) ?    event->Get<double>("wt_tau_trg_ic") : 1.;
+    wt_tau_trg_mvadm_ =     (event->Exists("wt_tau_trg_mvadm")) ?    event->Get<double>("wt_tau_trg_mvadm") : 1.;
+
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
       wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
@@ -1734,12 +1772,8 @@ namespace ic {
     if(event->Exists("wt_quarkmass_down")) wt_quarkmass_down_ = event->Get<double>("wt_quarkmass_down");
     if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
 
-    if(do_sm_ps_wts_ && !systematic_shift_){
-        wt_ps_up_    = event->Exists("wt_ps_up") ? event->Get<double>("wt_ps_up") : 1.0;
-        wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
-        wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
-        wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
-    }
+    wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
+    wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
 
     if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
@@ -3836,22 +3870,28 @@ namespace ic {
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
-    if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
-      if (official_ggH_){
-        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
-        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
-      } else {
-        wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.27 : 1.0;
-        wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.77 : 1.0;
-        // MM 2.26750 1.76825
-        // PS 2.26810 1.76739
-        // SM 2.26824 1.76799
-        // private numbers
-        //wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.33 : 1.0; 
-        //wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.72 : 1.0;
-      }
-      //SM = 1.18179 0.844494, MM = 2.32794 1.71996 PS = 2.32857 1.72129  -> for 2017!
-    }
+    //if((strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !systematic_shift_ && do_sm_scale_wts_){
+    //  if (official_ggH_){
+    //    wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*1.18 : 1.0;
+    //    wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*0.84 : 1.0;
+    //  } else {
+    //    wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.27 : 1.0;
+    //    wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.77 : 1.0;
+    //    // MM 2.26750 1.76825
+    //    // PS 2.26810 1.76739
+    //    // SM 2.26824 1.76799
+    //    // private numbers
+    //    //wt_qcdscale_up_ = eventInfo->weight_defined("1005") ? eventInfo->weight("1005")*2.33 : 1.0; 
+    //    //wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009")*1.72 : 1.0;
+    //  }
+    //  //SM = 1.18179 0.844494, MM = 2.32794 1.71996 PS = 2.32857 1.72129  -> for 2017!
+    //}
+    wt_qcdscale_up_   = eventInfo->weight_defined("1005") ? eventInfo->weight("1005") : 1.0;
+    wt_qcdscale_down_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0;
+    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
+    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
+    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
+    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
     if(do_z_weights_ && !systematic_shift_){
       wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  
       wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
@@ -4281,12 +4321,18 @@ namespace ic {
     }
 
     // cp stuff
-    wt_cp_sm_=1; wt_cp_ps_=1; wt_cp_mm_=1; 
+    wt_cp_sm_=0.; wt_cp_ps_=0.; wt_cp_mm_=0.; 
     if(event->ExistsInTree("tauspinner")){
       EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
       wt_cp_sm_ = tauspinner->weight("wt_cp_0");
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+    }
+    wt_cp_prod_sm_=0.; wt_cp_prod_ps_=0.; wt_cp_prod_mm_=0.; 
+    if(eventInfo->weight_defined("sm_weight_nlo")) {        
+      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
     }
 
     mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 0.0;

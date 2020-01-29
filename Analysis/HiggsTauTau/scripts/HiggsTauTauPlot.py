@@ -398,7 +398,7 @@ if options.analysis in ['sm','cpprod','cpdecay']:
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: 
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>25)||(trg_singlemuon&&pt_1>23)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>25&&pt_1<23)||(trg_singlemuon&&pt_1>23)))'
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         
@@ -407,7 +407,6 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>32)||(trg_singlemuon&&pt_1>25)) && wt<2)' #for mt and tt tauh SF
           
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>25 && pt_2>30)'
-          cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>30)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
           cats['baseline_loosemu'] = '(iso_1<0.15 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -426,9 +425,9 @@ if options.analysis in ['sm','cpprod','cpdecay']:
         if options.era in ['cpsummer16','cpdecay16',"legacy16"]:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>28)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<28)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35)||(trg_singleelectron&&pt_1>33)) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -456,9 +455,9 @@ if options.channel == 'tt':
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
     if options.era in ['cpdecay16','legacy16']:
-      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2)'
+      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
     if options.era in ['cpsummer17','cp18']:
-      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
+      cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     if options.era == 'mssmsummer16':
@@ -498,7 +497,7 @@ if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']
 # if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
-cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_loose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvvloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
+cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_loose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
 
 # CR categories

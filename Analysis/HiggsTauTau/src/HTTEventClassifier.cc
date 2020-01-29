@@ -22,8 +22,8 @@ namespace ic {
 
       var0_=vars[0], var1_=vars[1], var2_=vars[2], var3_=vars[3], var4_=vars[4], var5_=vars[5], var6_=vars[6], var7_=vars[7], var8_=vars[8], var9_=vars[9], var10_=vars[10], var11_=vars[11];
 
-      if(isEven) scores = reader_even_->EvaluateMulticlass("BDT method"); 
-      else       scores = reader_odd_->EvaluateMulticlass("BDT method");
+      if(isEven) scores = reader_even_->EvaluateMulticlass("Multi"); 
+      else       scores = reader_odd_->EvaluateMulticlass("Multi");
 
       return scores;
   }
@@ -100,8 +100,8 @@ namespace ic {
     reader_odd_->AddVariable( "pt_tt",    & var10_);
     reader_odd_->AddVariable( "pt_vis",   & var11_);
 
-    reader_even_->BookMVA( "BDT method", filename_even );
-    reader_odd_->BookMVA( "BDT method", filename_odd );
+    reader_even_->BookMVA( "Multi", filename_even );
+    reader_odd_->BookMVA( "Multi", filename_odd );
 
     return 0;
   }
@@ -157,19 +157,18 @@ namespace ic {
     std::vector<float> inputs = {};
     if (channel_ == channel::tt) {
       inputs.resize(12);
-      inputs[0]  = dijetpt_;
-      inputs[1]  = jdeta_;
-      inputs[2]  = jpt_1_;
-      inputs[3]  = m_sv_;
-      inputs[4]  = m_vis_;
-      inputs[5]  = met_;
-      inputs[6]  = mjj_;
-      inputs[7]  = n_jets_;
-      inputs[8]  = pt_1_;
-      inputs[9]  = pt_2_;
-      inputs[10] = pt_tt_;
-      inputs[11] = pt_vis_;
-      for (int i=0; i<12; i++) std::cout<<i<<"= "<<inputs[i]<<std::endl;
+      inputs[0]  = float(dijetpt_);
+      inputs[1]  = float(jdeta_);
+      inputs[2]  = float(jpt_1_);
+      inputs[3]  = float(m_sv_);
+      inputs[4]  = float(m_vis_);
+      inputs[5]  = float(met_);
+      inputs[6]  = float(mjj_);
+      inputs[7]  = unsigned(n_jets_);
+      inputs[8]  = float(pt_1_);
+      inputs[9]  = float(pt_2_);
+      inputs[10] = float(pt_tt_);
+      inputs[11] = float(pt_vis_);
     }
 
 //    std::cout<<"test6"<<std::endl;
@@ -183,8 +182,6 @@ namespace ic {
     event->Add("IC_BDT_max_score", max_pair.first); 
     event->Add("IC_BDT_max_index", max_pair.second);
 
-
-//    std::cout<<"test8"<<std::endl;
     return 0;
   }
 
