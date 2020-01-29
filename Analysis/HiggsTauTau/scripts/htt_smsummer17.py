@@ -157,7 +157,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 # FILELIST='filelists/Sep29_MC_102X_2017'
-FILELIST='filelists/Jan06_MC_102X_2017'
+FILELIST='filelists/Jan24_MC_102X_2017'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -173,8 +173,8 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
        # 'VBFHToTauTau_M-125-nospinner-filter',
        # 'GluGluToHToTauTau_M-125-nospinner-filter',
-       # # 'VBFHToTauTau_M-125-nospinner',
-       # # 'GluGluToHToTauTau_M-125-nospinner',
+       # 'VBFHToTauTau_M-125-nospinner',
+       # 'GluGluToHToTauTau_M-125-nospinner',
 
        # # # 'GluGluToHToTauTau_M125_nospinner-2017',
        # # # 'VBFHToTauTau_M125_nospinner-2017',
@@ -205,10 +205,83 @@ if options.proc_sm or options.proc_all:
        # 'ZHiggs0MToTauTau',
        # 'ZHiggs0PMToTauTau',
 
-        'VBFHToTauTauUncorrelatedDecay_Filtered',
-        #'WminusHToTauTauUncorrelatedDecay_Filtered',
-        #'WplusHToTauTauUncorrelatedDecay_Filtered',
-        #'ZHToTauTauUncorrelatedDecay_Filtered',
+       # 'VBFHToTauTauUncorrelatedDecay_Filtered',
+       # 'WminusHToTauTauUncorrelatedDecay_Filtered',
+       # 'WplusHToTauTauUncorrelatedDecay_Filtered',
+       # 'ZHToTauTauUncorrelatedDecay_Filtered',
+
+        "GluGluHToTauTauUncorrelatedDecay",
+        "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "GluGluHToTauTau_M-125",
+        "GluGluHToTauTau_M-125-ext",
+        "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        "GluGluToHToTauTau_M-125-nospinner",
+        "GluGluToHToTauTau_M-125-nospinner-filter",
+        "GluGluToHToTauTau_M125_amcatnloFXFX",
+        "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        "JJH0MToTauTauPlusOneJets",
+        "JJH0MToTauTauPlusOneJets_Filtered",
+        "JJH0MToTauTauPlusTwoJets",
+        "JJH0MToTauTauPlusTwoJets_Filtered",
+        "JJH0MToTauTauPlusZeroJets",
+        "JJH0MToTauTauPlusZeroJets_Filtered",
+        "JJH0Mf05ph0ToTauTauPlusOneJets",
+        "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered",
+        "JJH0Mf05ph0ToTauTauPlusTwoJets",
+        "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered",
+        "JJH0Mf05ph0ToTauTauPlusZeroJets",
+        "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered",
+        "JJH0PMToTauTauPlusOneJets",
+        "JJH0PMToTauTauPlusOneJets_Filtered",
+        "JJH0PMToTauTauPlusTwoJets",
+        "JJH0PMToTauTauPlusTwoJets_Filtered",
+        "JJH0PMToTauTauPlusZeroJets",
+        "JJH0PMToTauTauPlusZeroJets_Filtered",
+        "JJHiggs0MToTauTau",
+        "JJHiggs0Mf05ph0ToTauTau",
+        "JJHiggs0PMToTauTau",
+        "VBFHToTauTauUncorrelatedDecay",
+        "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "VBFHToTauTau_M-125",
+        "VBFHToTauTau_M-125-nospinner",
+        "VBFHToTauTau_M-125-nospinner-filter",
+        "VBFHiggs0L1ToTauTau",
+        "VBFHiggs0L1ZgToTauTau",
+        "VBFHiggs0L1Zgf05ph0ToTauTau",
+        "VBFHiggs0L1f05ph0ToTauTau",
+        "VBFHiggs0MToTauTau",
+        "VBFHiggs0Mf05ph0ToTauTau",
+        "VBFHiggs0PHToTauTau",
+        "VBFHiggs0PHf05ph0ToTauTau",
+        "VBFHiggs0PMToTauTau",
+        "WHiggs0L1ToTauTau",
+        "WHiggs0L1f05ph0ToTauTau",
+        "WHiggs0MToTauTau",
+        "WHiggs0Mf05ph0ToTauTau",
+        "WHiggs0PHToTauTau",
+        "WHiggs0PHf05ph0ToTauTau",
+        "WHiggs0PMToTauTau",
+        "WminusHToTauTauUncorrelatedDecay_Filtered",
+        "WminusHToTauTau_M-125", # buggy PU
+        "WplusHToTauTauUncorrelatedDecay",
+        "WplusHToTauTauUncorrelatedDecay_Filtered",
+        "WplusHToTauTau_M-125", # buggy PU
+        "ZHToTauTauUncorrelatedDecay_Filtered",
+        "ZHToTauTau_M-125",
+        "ZHiggs0L1ToTauTau",
+        "ZHiggs0L1ZgToTauTau",
+        "ZHiggs0L1Zgf05ph0ToTauTau",
+        "ZHiggs0L1f05ph0ToTauTau",
+        "ZHiggs0MToTauTau",
+        "ZHiggs0Mf05ph0ToTauTau",
+        "ZHiggs0PHToTauTau",
+        "ZHiggs0PHf05ph0ToTauTau",
+        "ZHiggs0PMToTauTau",
+        "ttHiggs0MToTauTau",
+        "ttHiggs0Mf05ph0ToTauTau",
+        "ttHiggs0PMToTauTau",
+        
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -335,7 +408,7 @@ if options.proc_embed or options.proc_all:
 
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')  
       if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
-      if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
+      if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','').replace('^scale_t_3prong1pi_hi^scale_t_3prong1pi_lo','')
       if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
       if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
       n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
@@ -369,8 +442,6 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-      # 'DYJetsToLL_M-10-50-LO-ext1',
-      # 'DYJetsToLL_M-10-50-LO',
       # 'DY1JetsToLL-LO', #new pmx
       # 'DY1JetsToLL-LO-ext', #new sample
       # 'DY2JetsToLL-LO',
@@ -378,39 +449,87 @@ if options.proc_bkg or options.proc_all:
       # 'DY3JetsToLL-LO',
       # 'DY3JetsToLL-LO-ext',
       # 'DY4JetsToLL-LO', # new
-      'DYJetsToLL-LO-ext1',
-      # 'DYJetsToLL-LO',
       # 'DYJetsToLL',
+      # 'DYJetsToLL-LO',
+      # 'DYJetsToLL-LO-ext1',
       # 'DYJetsToLL-ext',
-      # 'EWKZ2Jets',
-      # 'EWKWPlus2Jets',
+      # 'DYJetsToLL_M-10-50-LO',
+      # 'DYJetsToLL_M-10-50-LO-ext1',
       # 'EWKWMinus2Jets',
-      # 'WJetsToLNu-LO',
-      # 'WJetsToLNu-LO-ext',
+      # 'EWKWPlus2Jets',
+      # 'EWKZ2Jets',
+      # 'T-t',
+      # 'T-tW',
+      # 'TTTo2L2Nu', #new pmx
+      # 'TTToHadronic', #new sample v2 and pmx
+      # 'TTToSemiLeptonic', #new pmx
+      # 'Tbar-t', 
+      # 'Tbar-tW',
       # 'W1JetsToLNu-LO',
       # 'W2JetsToLNu-LO',
       # 'W3JetsToLNu-LO',
       # 'W4JetsToLNu-LO',
       # 'WGToLNuG',
+      # 'WJetsToLNu-LO',
+      # 'WJetsToLNu-LO-ext',
       # 'WWTo2L2Nu',
-      # 'WWToLNuQQ-ext',
       # 'WWToLNuQQ', # new pmx
+      # 'WWToLNuQQ-ext',
       # 'WZTo1L1Nu2Q',
       # 'WZTo1L3Nu',
       # 'WZTo2L2Q',
       # 'WZTo3LNu', # new pmx
       # 'ZZTo2L2Nu',
       # 'ZZTo2L2Q',
-      # 'ZZTo4L-ext',
       # 'ZZTo4L', # new pmx
-      # 'TTToSemiLeptonic', #new pmx
-      # 'TTToHadronic', #new sample v2 and pmx
-      # 'TTTo2L2Nu', #new pmx
-      # 'T-tW',
-      # 'T-t',
-      # 'Tbar-tW',
-      # 'Tbar-t', 
-     ]
+      # 'ZZTo4L-ext',
+
+
+      "DY1JetsToLL-LO",
+      "DY1JetsToLL-LO-ext",
+      "DY2JetsToLL-LO",
+      "DY2JetsToLL-LO-ext",
+      "DY3JetsToLL-LO",
+      "DY3JetsToLL-LO-ext",
+      "DY4JetsToLL-LO",
+      "DYJetsToLL",
+      "DYJetsToLL-LO", # buggy PU
+      "DYJetsToLL-LO-ext1", # buggy PU
+      "DYJetsToLL-ext",
+      "DYJetsToLL_M-10-50-LO",
+      "DYJetsToLL_M-10-50-LO-ext1",
+      "EWKWMinus2Jets",
+      "EWKWPlus2Jets",
+      "EWKZ2Jets",
+      "GluGluHToWWTo2L2Nu_M-125",
+      "T-t",
+      "T-tW",
+      "TTTo2L2Nu",
+      "TTToHadronic",
+      "TTToSemiLeptonic",
+      "Tbar-t",
+      "Tbar-tW",
+      "VBFHToWWTo2L2Nu_M-125",
+      "VVTo2L2Nu",
+      "W1JetsToLNu-LO",
+      "W2JetsToLNu-LO",
+      "W3JetsToLNu-LO", # buggy PU
+      "W4JetsToLNu-LO",
+      "WGToLNuG",
+      "WJetsToLNu-LO",
+      "WJetsToLNu-LO-ext",
+      "WWTo1L1Nu2Q", # buggy PU
+      "WWTo2L2Nu",
+      "WWToLNuQQ",
+      "WZTo1L1Nu2Q",
+      "WZTo1L3Nu",
+      "WZTo2L2Q",
+      "WZTo3LNu",
+      "ZZTo2L2Nu",
+      "ZZTo2L2Q",
+      "ZZTo4L",
+      "ZZTo4L-ext",
+      ]
 
 
   
@@ -514,5 +633,4 @@ if options.mg_signal or options.proc_sm:
       os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
       PARAJOBSUBMIT = getParaJobSubmit(job_num)
       os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
-     
 

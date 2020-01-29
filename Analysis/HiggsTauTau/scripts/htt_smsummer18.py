@@ -160,6 +160,7 @@ for i in range(0,scale):
 
 
 FILELIST='filelists/Jan06_2018_MC_102X'
+# FILELIST='filelists/Oct07_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -374,9 +375,9 @@ if options.proc_bkg or options.proc_all:
         # 'EWKZ2Jets',
         # 'T-t',
         # 'T-tW-ext1',
-        'TTTo2L2Nu',
-        'TTToHadronic',
-        'TTToSemiLeptonic',
+        # 'TTTo2L2Nu',
+        # 'TTToHadronic',
+        # 'TTToSemiLeptonic',
         # 'Tbar-t',
         # 'Tbar-tW-ext1',
         # 'W1JetsToLNu-LO',
