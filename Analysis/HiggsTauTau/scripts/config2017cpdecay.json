@@ -401,13 +401,13 @@
     "res_j_lo": {
       "baseline": {
         "addit_output_folder" : "JER_DOWN",
-        "jes_mode" : 1,
+        "jes_mode" : 1
       }
     },
     "res_j_hi": {
       "baseline": {
         "addit_output_folder" : "JER_UP",
-        "jer_mode" : 2,
+        "jer_mode" : 2
       }
     },
     "scale_j_lo": {
