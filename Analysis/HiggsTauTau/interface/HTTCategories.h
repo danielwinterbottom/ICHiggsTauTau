@@ -939,7 +939,12 @@ class HTTCategories : public ModuleBase {
   double wt_scale_tt_boosted_;
   double wt_scale_tt_vbf_;
   double wt_qcdscale_up_;
-  double wt_qcdscale_down_; 
+  double wt_qcdscale_down_;
+
+  double wt_ps_isr_up_  ;
+  double wt_ps_isr_down_;
+  double wt_ps_fsr_up_;
+  double wt_ps_fsr_down_;
 
   double wt_z_mjj_;
   double wt_z_mjj_down_;

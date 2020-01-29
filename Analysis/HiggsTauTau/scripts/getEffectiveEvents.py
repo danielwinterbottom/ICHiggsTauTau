@@ -4,7 +4,7 @@ import os
 
 file_names = {}
 channels = ['mt']
-years = ['2017']
+years = ['2018']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
         continue
@@ -15,7 +15,7 @@ for file_name in os.listdir(sys.argv[1]):
                 file_names[key] = file_name
 
 for f in file_names:
-    if "GluGlu" not in f: continue
+    #if "GluGlu" not in f: continue
     if "SingleMuon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
             "\bTau" in f: 
         continue

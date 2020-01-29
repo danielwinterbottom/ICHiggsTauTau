@@ -229,6 +229,11 @@ namespace ic {
       outtree_->Branch("gen_pvx",  &gen_pvx_);
       outtree_->Branch("gen_pvy",  &gen_pvy_);
       outtree_->Branch("gen_pvz",  &gen_pvz_);
+
+      outtree_->Branch("wt_ps_isr_up" , &wt_ps_isr_up_ );
+      outtree_->Branch("wt_ps_isr_down" , &wt_ps_isr_down_ );
+      outtree_->Branch("wt_ps_fsr_up" , &wt_ps_fsr_up_ );
+      outtree_->Branch("wt_ps_fsr_down" , &wt_ps_fsr_down_ );
       
     }
     count_ee_ = 0;
@@ -283,8 +288,18 @@ namespace ic {
         wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
         wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
       }
+      if (eventInfo->weight_defined("sm_weight_nlo")){
+        wt_cp_sm_ = eventInfo->weight("sm_weight_nlo");
+        wt_cp_ps_ = eventInfo->weight("ps_weight_nlo");
+        wt_cp_mm_ = eventInfo->weight("mm_weight_nlo");
+      }
+ 
 
     }
+
+    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
+    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
+    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
 
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
