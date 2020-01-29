@@ -2086,8 +2086,8 @@ namespace ic {
         event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
       } else if (mc_==mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016){
         auto args = std::vector<double>{zpt,zmass};  
-        //double wtzpt = fns_["zpt_weight_nom"]->eval(args.data());
-        double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+        double wtzpt = fns_["zpt_weight_nom"]->eval(args.data());
+        //double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
         double wtzpt_down=1.0;
         double wtzpt_up = wtzpt*wtzpt;
         eventInfo->set_weight("wt_zpt",wtzpt);
