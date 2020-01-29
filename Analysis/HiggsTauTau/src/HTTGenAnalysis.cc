@@ -93,6 +93,10 @@ namespace ic {
       outtree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
 
+      outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
+      outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
+      outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
+
       outtree_->Branch("Ediff_1"       , &Ediff_1_);
       outtree_->Branch("Ediff_2"       , &Ediff_2_);
 
@@ -256,8 +260,8 @@ namespace ic {
     /* ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down"); */
     /* ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up"); */
     /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */   
-    /* ue_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_up"); */
-    /* ue_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_down"); */ 
+    ue_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_up"); 
+    ue_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ue_down"); 
     return 0;
   }
 
@@ -288,15 +292,22 @@ namespace ic {
         wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
         wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
       }
-      if (eventInfo->weight_defined("sm_weight_nlo")){
-        wt_cp_sm_ = eventInfo->weight("sm_weight_nlo");
-        wt_cp_ps_ = eventInfo->weight("ps_weight_nlo");
-        wt_cp_mm_ = eventInfo->weight("mm_weight_nlo");
-      }
- 
 
     }
 
+
+    wt_cp_prod_sm_=0.0;
+    wt_cp_prod_ps_=0.0;
+    wt_cp_prod_mm_=0.0;
+
+    if (eventInfo->weight_defined("sm_weight_nlo")){
+      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
+    }
+
+
+    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
     wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
     wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
     wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
@@ -828,8 +839,8 @@ namespace ic {
     /*   wt_ps_up_ =  ps_3jet_up_  .GetBinContent(ps_3jet_up_  .FindBin(HiggsPt_)); */
     /*   wt_ps_down_ =  ps_3jet_down_.GetBinContent(ps_3jet_down_.FindBin(HiggsPt_)); */
     /* } */
-    /* wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); */
-    /* wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); */
+    wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); 
+    wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); 
 
 
     std::vector<PileupInfo *> puInfo;

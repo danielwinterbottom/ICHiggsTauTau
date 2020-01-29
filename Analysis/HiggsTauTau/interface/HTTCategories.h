@@ -544,6 +544,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_prod_sm_;
+  double wt_cp_prod_ps_;
+  double wt_cp_prod_mm_;
  
   float mvadm_rho_1_;
   float mvadm_a1_1_;

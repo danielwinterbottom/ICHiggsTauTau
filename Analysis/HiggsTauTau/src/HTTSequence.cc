@@ -781,7 +781,7 @@ void HTTSequence::BuildSequence(){
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get())
-    .set_do_qcd_scale_wts(do_qcd_scale_wts_).set_do_pdf_wts(js["do_pdf_wts"].asBool()));
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
   }else if(is_data && js["lumi_mask_only"].asBool()){

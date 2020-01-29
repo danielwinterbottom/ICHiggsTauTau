@@ -120,7 +120,7 @@ namespace ic {
       // add temporary tau trg effs
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
       outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
-      if(do_sm_ps_wts_ && !systematic_shift_){
+      if(!systematic_shift_){
 
         outtree_->Branch("wt_tau_id_dm0_up", &wt_tau_id_dm0_up_);
         outtree_->Branch("wt_tau_id_dm1_up", &wt_tau_id_dm1_up_);
@@ -162,8 +162,8 @@ namespace ic {
         outtree_->Branch("wt_tau_trg_mvadm10_down", &wt_tau_trg_mvadm10_down_);
         outtree_->Branch("wt_tau_trg_mvadm11_down", &wt_tau_trg_mvadm11_down_);
 
-        outtree_->Branch("wt_ps_up", & wt_ps_up_);
-        outtree_->Branch("wt_ps_down", & wt_ps_down_);
+        //outtree_->Branch("wt_ps_up", & wt_ps_up_);
+        //outtree_->Branch("wt_ps_down", & wt_ps_down_);
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
 
@@ -619,6 +619,10 @@ namespace ic {
       outtree_->Branch("wt_cp_sm", &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
+
+      outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
+      outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
+      outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
 
       outtree_->Branch("mvadm_pi_1", &mvadm_pi_1_);
       outtree_->Branch("mvadm_rho_1", &mvadm_rho_1_);
@@ -1759,12 +1763,8 @@ namespace ic {
     if(event->Exists("wt_quarkmass_down")) wt_quarkmass_down_ = event->Get<double>("wt_quarkmass_down");
     if(event->Exists("wt_fullquarkmass")) wt_fullquarkmass_ = event->Get<double>("wt_fullquarkmass");
 
-    if(do_sm_ps_wts_ && !systematic_shift_){
-        wt_ps_up_    = event->Exists("wt_ps_up") ? event->Get<double>("wt_ps_up") : 1.0;
-        wt_ps_down_  = event->Exists("wt_ps_down") ? event->Get<double>("wt_ps_down") : 1.0;
-        wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
-        wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
-    }
+    wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
+    wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
 
     if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
       wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
@@ -4312,17 +4312,18 @@ namespace ic {
     }
 
     // cp stuff
-    wt_cp_sm_=1; wt_cp_ps_=1; wt_cp_mm_=1; 
+    wt_cp_sm_=0.; wt_cp_ps_=0.; wt_cp_mm_=0.; 
     if(event->ExistsInTree("tauspinner")){
       EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
       wt_cp_sm_ = tauspinner->weight("wt_cp_0");
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
     }
+    wt_cp_prod_sm_=0.; wt_cp_prod_ps_=0.; wt_cp_prod_mm_=0.; 
     if(eventInfo->weight_defined("sm_weight_nlo")) {        
-      wt_cp_sm_ = eventInfo->weight("sm_weight_nlo");
-      wt_cp_ps_ = eventInfo->weight("ps_weight_nlo");
-      wt_cp_mm_ = eventInfo->weight("mm_weight_nlo");
+      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
     }
 
     mvadm_rho_1_ = event->Exists("mvadm_rho_1") ? event->Get<float>("mvadm_rho_1") : 0.0;
