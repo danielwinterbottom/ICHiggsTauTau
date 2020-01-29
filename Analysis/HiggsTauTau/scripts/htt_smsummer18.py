@@ -135,8 +135,8 @@ if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 
-#scale = int(math.ceil(float(n_scales*n_channels)/32))
-scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
+scale = int(math.ceil(float(n_scales*n_channels)/30))
+#scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -372,8 +372,8 @@ if options.proc_embed or options.proc_all:
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
 
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-            if n_scales*n_channels>=28: nperjob = 10
-            if n_scales*n_channels>=56: nperjob=5
+            if n_scales*n_channels>=24: nperjob = 10
+            if n_scales*n_channels>=48: nperjob=5
             if 'MuTauD' in sa or 'TauTauD' in sa:
               nperjob = 300
               if n_scales*n_channels>=28: nperjob = 150
@@ -450,8 +450,8 @@ if options.proc_bkg or options.proc_all:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-            if n_scales*n_channels>=28: nperjob = 20
-            if n_scales*n_channels>=56: nperjob=10
+            if n_scales*n_channels>=24: nperjob = 10
+            if n_scales*n_channels>=48: nperjob=5
 
             if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
@@ -487,10 +487,10 @@ if options.mg_signal or options.proc_sm:
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-                nperjob = 10
+                nperjob = 20
                 n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-                if n_scales*n_channels>=28: nperjob = 10
-                if n_scales*n_channels>=56: nperjob=5
+                if n_scales*n_channels>=24: nperjob = 10
+                if n_scales*n_channels>=48: nperjob=5
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/2)) 
