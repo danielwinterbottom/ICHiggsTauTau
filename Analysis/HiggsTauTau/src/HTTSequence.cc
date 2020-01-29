@@ -1187,13 +1187,13 @@ if((strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16
 }
 
 //// JER
-//if (!is_data && !is_embedded) {
-//   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-//     .set_input_label(jets_label)
-//     .set_jer_shift_mode(jer_mode)
-//     .set_EENoiseFix(era_type == era::data_2017)
-//   );
-//}
+if (!is_data && !is_embedded) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
