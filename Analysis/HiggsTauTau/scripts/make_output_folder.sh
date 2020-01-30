@@ -85,6 +85,28 @@ mkdir -p -v $1/ESCALE_DOWN
 mkdir -p -v $1/ESCALE_UP
 mkdir -p -v $1/METUNCL_UP
 mkdir -p -v $1/METUNCL_DOWN
+mkdir -p -v $1/JESRBAL_DOWN
+mkdir -p -v $1/JESRBAL_UP
+mkdir -p -v $1/JESABS_DOWN
+mkdir -p -v $1/JESABS_UP
+mkdir -p -v $1/JESABS_YEAR_DOWN
+mkdir -p -v $1/JESABS_YEAR_UP
+mkdir -p -v $1/JESFLAV_DOWN
+mkdir -p -v $1/JESFLAV_UP
+mkdir -p -v $1/JESBBEC1_DOWN
+mkdir -p -v $1/JESBBEC1_UP
+mkdir -p -v $1/JESBBEC1_YEAR_DOWN
+mkdir -p -v $1/JESBBEC1_YEAR_UP
+mkdir -p -v $1/JESEC2_DOWN
+mkdir -p -v $1/JESEC2_UP
+mkdir -p -v $1/JESEC2_YEAR_DOWN
+mkdir -p -v $1/JESEC2_YEAR_UP
+mkdir -p -v $1/JESHF_DOWN
+mkdir -p -v $1/JESHF_UP
+mkdir -p -v $1/JESHF_YEAR_DOWN
+mkdir -p -v $1/JESHF_YEAR_UP
+mkdir -p -v $1/JESRELSAMP_YEAR_DOWN
+mkdir -p -v $1/JESRELSAMP_YEAR_UP
 # mkdir -p -v $1/METCL_UP
 # mkdir -p -v $1/METCL_DOWN
 # mkdir -p -v $1/JESFULL_UP

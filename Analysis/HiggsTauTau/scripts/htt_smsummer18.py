@@ -396,7 +396,6 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-         #'DYJetsToLL-2017',
          'DYJetsToLL',
          'DY1JetsToLL-LO',
          'DY2JetsToLL-LO',
@@ -419,9 +418,7 @@ if options.proc_bkg or options.proc_all:
          'W3JetsToLNu-LO',
          'W4JetsToLNu-LO',
          'WGToLNuG',
-         # 'WGToLNuG_01J_5f-ext1',
          'WJetsToLNu-LO',
-         #'WWTo1L1Nu2Q',
          'WWTo2L2Nu',
          'WWToLNuQQ',
          'WZTo1L3Nu',

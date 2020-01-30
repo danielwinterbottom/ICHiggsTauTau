@@ -14,7 +14,8 @@ def load_files(filelist):
 
 # files = load_files("scripts/dy_2017for18.txt")
 # files = load_files("new_mc2017puprofiles.txt")
-files = load_files("new_mc2017puprofiles.txt")
+# files = load_files("new_mc2017puprofiles.txt")
+files = load_files("Jan24_2017_mcPU.txt")
 
 channels = ["mt"]
 for file_ in files:
