@@ -135,8 +135,8 @@ if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
 
 
-#scale = int(math.ceil(float(n_scales*n_channels)/32))
-scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
+scale = int(math.ceil(float(n_scales*n_channels)/30))
+#scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -362,18 +362,18 @@ if options.proc_embed or options.proc_all:
             if 'ElTauD' in sa: nperjob = 100
             if 'MuMu' in sa and 'MuMuD' not in sa: nperjob = 10
             #print FLATJSONPATCH
-            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','')
+            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
    
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
             if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
-            if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','')
+            if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','').replace('^scale_t_3prong1pi0_hi^scale_t_3prong1pi0_lo','')
             if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
             if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
 
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-            if n_scales*n_channels>=28: nperjob = 10
-            if n_scales*n_channels>=56: nperjob=5
+            if n_scales*n_channels>=24: nperjob = 10
+            if n_scales*n_channels>=48: nperjob=5
             if 'MuTauD' in sa or 'TauTauD' in sa:
               nperjob = 300
               if n_scales*n_channels>=28: nperjob = 150
@@ -418,7 +418,6 @@ if options.proc_bkg or options.proc_all:
          'WGToLNuG',
          'WJetsToLNu-LO',
          'WWTo2L2Nu',
-         'WWTo4Q',
          'WWToLNuQQ',
          'WZTo1L3Nu',
          'WZTo2L2Q',
@@ -448,8 +447,8 @@ if options.proc_bkg or options.proc_all:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-            if n_scales*n_channels>=28: nperjob = 20
-            if n_scales*n_channels>=56: nperjob=10
+            if n_scales*n_channels>=24: nperjob = 10
+            if n_scales*n_channels>=48: nperjob=5
 
             if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
@@ -485,10 +484,10 @@ if options.mg_signal or options.proc_sm:
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-                nperjob = 10
+                nperjob = 20
                 n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-                if n_scales*n_channels>=28: nperjob = 10
-                if n_scales*n_channels>=56: nperjob=5
+                if n_scales*n_channels>=24: nperjob = 10
+                if n_scales*n_channels>=48: nperjob=5
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/2)) 

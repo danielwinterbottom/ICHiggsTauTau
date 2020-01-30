@@ -86,12 +86,14 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
+    // "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
+    "data_pu_file"  : "input/pileup/pu_distributions_data_2017.root",
     "mc_pu_file"    : "input/pileup/MC_Winter17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
       "jes_mode"          : 0,
+      "jer_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
@@ -398,6 +400,18 @@
         "muon_es_shift_barrel": 1.004,
         "muon_es_shift_nearendcap": 1.009,
         "muon_es_shift_farendcap": 1.017
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jes_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
       }
     },
     "scale_j_lo": {
