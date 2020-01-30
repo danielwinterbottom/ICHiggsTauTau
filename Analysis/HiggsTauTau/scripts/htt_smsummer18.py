@@ -334,21 +334,22 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['A','B','C','D']
+    #data_eras = ['A','B','C','D']
+    data_eras = ['A','B','C']
     for chn in channels:
         for era in data_eras:
-            if 'em' in chn:
-                embed_samples+=['EmbeddingElMu'+era]
+            #if 'em' in chn:
+            #    embed_samples+=['EmbeddingElMu'+era]
             if 'et' in chn:
                 embed_samples+=['EmbeddingElTau'+era]
-            if 'mt' in chn:
-                embed_samples+=['EmbeddingMuTau'+era]
-            if 'tt' in chn:
-                embed_samples+=['EmbeddingTauTau'+era]
-            if 'zmm' in chn:
-                embed_samples+=['EmbeddingMuMu'+era]
-            if 'zee' in chn:
-                embed_samples+=['EmbeddingElEl'+era]
+            #if 'mt' in chn:
+            #    embed_samples+=['EmbeddingMuTau'+era]
+            #if 'tt' in chn:
+            #    embed_samples+=['EmbeddingTauTau'+era]
+            #if 'zmm' in chn:
+            #    embed_samples+=['EmbeddingMuMu'+era]
+            #if 'zee' in chn:
+            #    embed_samples+=['EmbeddingElEl'+era]
 
     EMBEDFILELIST="./filelists/Jan06_2018_MC_102X"
 
@@ -358,7 +359,7 @@ if options.proc_embed or options.proc_all:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
-            if 'ElTau' in sa: nperjob = 10
+            #if 'ElTau' in sa: nperjob = 10
             if 'ElTauD' in sa: nperjob = 100
             if 'MuMu' in sa and 'MuMuD' not in sa: nperjob = 10
             #print FLATJSONPATCH
@@ -379,6 +380,7 @@ if options.proc_embed or options.proc_all:
               if n_scales*n_channels>=28: nperjob = 150
               if n_scales*n_channels>=56: nperjob=75
             if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/5))  
+            if 'ElTau' in sa and 'ElTauD' not in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -453,7 +455,7 @@ if options.proc_bkg or options.proc_all:
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
 
-            if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
+            #if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

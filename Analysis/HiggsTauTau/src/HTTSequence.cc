@@ -97,6 +97,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     if(json["baseline"]["jes_mode"].asUInt() > 0 && (((json["baseline"]["split_by_source"].asBool() && !(json["baseline"]["split_by_region"].asBool())) || (!json["baseline"]["split_by_source"].asBool() && json["baseline"]["jes_input_set"].asString() != "") )|| do_recoil)) svfit_folder=svfit_folder+"/";
     else if(addit_output_folder.find("BFAKE_") != output_name.npos || addit_output_folder.find("BTAG_") != output_name.npos) svfit_folder=svfit_folder+"/";
     else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
+   
+    // if recoil corrections are performed and jer mode is != 0 then use default svfit_folder
+    if(json["baseline"]["jer_mode"].asUInt() > 0 && do_recoil) svfit_folder=svfit_folder+"/";
   }
   svfit_override = json["svfit_override"].asString();
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
@@ -1812,7 +1815,7 @@ if(channel != channel::wmnu) {
     .set_strategy(strategy_type)
     .set_mc(mc_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode((js["baseline"]["jes_mode"].asUInt() > 0 && ( ((js["baseline"]["split_by_source"].asBool() && !(js["baseline"]["split_by_region"].asBool())) || (!js["baseline"]["split_by_source"].asBool() && js["baseline"]["jes_input_set"].asString() != "") )|| do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
+    .set_run_mode(((js["baseline"]["jes_mode"].asUInt() > 0 || js["baseline"]["jer_mode"].asUInt() > 0) && ( ((js["baseline"]["split_by_source"].asBool() && !(js["baseline"]["split_by_region"].asBool())) || (!js["baseline"]["split_by_source"].asBool() && js["baseline"]["jes_input_set"].asString() != "") )|| do_recoil) && new_svfit_mode==1) ? 0 : new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(40000)
