@@ -210,6 +210,14 @@ if options.proc_sm or options.proc_all:
        # 'WplusHToTauTauUncorrelatedDecay_Filtered',
        # 'ZHToTauTauUncorrelatedDecay_Filtered',
 
+
+
+
+
+
+
+
+
         "GluGluHToTauTauUncorrelatedDecay",
         "GluGluHToTauTauUncorrelatedDecay_Filtered",
         "GluGluHToTauTau_M-125",
@@ -594,11 +602,10 @@ if options.mg_signal or options.proc_sm:
   for sa in signal_mc:
     user='adow'
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
-    if "nospinner" in sa and "GluGlu" in sa:
-        JSONPATCH = JSONPATCH.replace(r"pileup_2017_%(sa)s"%vars(),r"pileup_2017_GluGluHToTauTau_M-125")
-    if "nospinner" in sa and "VBF" in sa:
-        JSONPATCH = JSONPATCH.replace(r"pileup_2017_%(sa)s"%vars(),r"pileup_2017_VBFHToTauTau_M-125")
+    # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\"}}' "%vars());
+    if "WminusHToTauTau_M-125" in sa or "WplusHToTauTau_M-125" in sa or "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
+        JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())
 
     job_num=0
     for FLATJSONPATCH in flatjsons:
