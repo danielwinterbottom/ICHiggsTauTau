@@ -4399,6 +4399,9 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip1 = (ipandsig_1.first).Unit();
+      TVector3 ip2 = (ipandsig_2.first).Unit();
+
       std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
       std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);
       q_tot_1_=0., q_tot_2_=0.;
@@ -4425,9 +4428,9 @@ namespace ic {
         lvec3 = ConvertToLorentz(tau1->vector()); 
         lvec4 = ConvertToLorentz(tau2->vector()); 
 
-        TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        //TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
         lvec1 = TLorentzVector(ip1, 0.);
-        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
@@ -4445,16 +4448,22 @@ namespace ic {
         ic::Tau const *tau;
         ic::Tau const *tau_1;
 
+        TVector3 ip;
+        TVector3 ip_alt;
         if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
           pi = pi_tau1;
           pi0 = pi0_tau1;
           tau = tau2;
           tau_1 = tau1;
+          ip = ip1;
+          ip_alt = ip2;
         } else {
           pi = pi_tau2;
           pi0 = pi0_tau2;
           tau = tau1;
           tau_1 = tau2;
+          ip = ip2;
+          ip_alt = ip1;
         }
         cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv1(
@@ -4466,7 +4475,7 @@ namespace ic {
         lvec3 = ConvertToLorentz(pi->vector()); //pi charge from rho
         lvec4 = ConvertToLorentz(tau->vector()); //pi charge from tau
 
-        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip, 0.);
 
         TLorentzVector lvec3_1 = ConvertToLorentz(pi->vector());
@@ -4477,8 +4486,8 @@ namespace ic {
                 tau_1->svz() - primary_vtx->vz(),
                 0.);
 
-        TVector3 ip1 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec3_1.Vect().Unit())*lvec3_1.Vect().Unit()).Unit();
-        TLorentzVector lvec1_1 = TLorentzVector(ip1, 0.);
+        //TVector3 ip1 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec3_1.Vect().Unit())*lvec3_1.Vect().Unit()).Unit();
+        TLorentzVector lvec1_1 = TLorentzVector(ip_alt, 0.);
 
 
         aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
@@ -4770,7 +4779,16 @@ namespace ic {
               muon1->vz() - refit_vertex->vz(),
               0.);
 
-      TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+      std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
+      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
+      ip_mag_1_ = ipandsig_1.first.Mag();
+      ip_sig_1_ = ipandsig_1.second;
+      ip_mag_2_ = ipandsig_2.first.Mag();
+      ip_sig_2_ = ipandsig_2.second;
+
+
+      TVector3 ip1 = (ipandsig_1.first).Unit();
+      TVector3 ip2 = (ipandsig_2.first).Unit();
       lvec1 = TLorentzVector(ip1, 0.);
       lvec3 = ConvertToLorentz(muon1->vector());
 
@@ -4785,7 +4803,7 @@ namespace ic {
                 0.);
         lvec4 = ConvertToLorentz(tau2->vector()); 
 
-        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
@@ -4815,7 +4833,7 @@ namespace ic {
         
         TLorentzVector lvec4_2 = ConvertToLorentz(tau2->vector());
 
-        TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
         TLorentzVector lvec2_2 = TLorentzVector(ip2, 0.);
 
         aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
@@ -4858,10 +4876,6 @@ namespace ic {
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
           alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
       }
-
-      std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex,pfcands);
-      ip_mag_2_ = ipandsig_2.first.Mag();
-      ip_sig_2_ = ipandsig_2.second;
       
     }
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {
@@ -4912,9 +4926,13 @@ namespace ic {
         if(v->id() == ele1->id()+tau2->id()) refit_vertex = v; 
       }
 
+      //std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
+      //ip_mag_1_ = ipandsig_1.first.Mag();
+      //ip_sig_1_ = ipandsig_1.second;
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
+
 
       if(tau_decay_mode_2_==1){
 

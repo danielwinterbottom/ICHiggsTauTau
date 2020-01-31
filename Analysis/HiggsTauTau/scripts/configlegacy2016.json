@@ -61,7 +61,7 @@
      //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2016/",
      "output_folder" : "/vols/cms/mhh18/Offline/output/SM/12Dec_tauh_SF/leg2016/",
     //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
-    "output_folder" : "output/",
+    //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_leg2016/",
@@ -89,6 +89,7 @@
     "baseline": {
       "tau_scale_mode"    : true,
       "jes_mode"          : 0,
+      "jer_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
@@ -383,6 +384,18 @@
         "muon_es_shift_barrel": 1.004,
         "muon_es_shift_nearendcap": 1.009,
         "muon_es_shift_farendcap": 1.017
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jes_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
       }
     },
     "scale_j_lo": {

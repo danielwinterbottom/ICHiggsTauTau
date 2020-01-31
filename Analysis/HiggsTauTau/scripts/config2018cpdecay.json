@@ -59,19 +59,11 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/24Jan2020_tauh_SF/2018/",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/31Jan2020_tauh_SF/2018/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016/",
-    // "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/SVFit_2016_decays/",
-    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/Oct21_SVFit_2018/",
-    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_newSignals/",
-    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_lepES/",
-    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_lepES_JJH/",
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Jan06_2018_svfit/",
-    // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_2018_WWmissing/",
-    // "svfit_folder"  : "./output/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_svfit/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
@@ -79,7 +71,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -87,12 +79,13 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2018_69p2mb_Cert_314472-325175_100bins.root",
-    "mc_pu_file"    : "input/pileup/2018/pileup_2018_DYJetsToLL-LO.root",
+    "data_pu_file"  : "input/pileup/pu_distributions_data_2018.root",
+    "mc_pu_file"    : "input/pileup/pu_distributions_mc_2018.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
       "jes_mode"          : 0,
+      "jer_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
@@ -387,6 +380,18 @@
         "muon_es_shift_barrel": 1.004,
         "muon_es_shift_nearendcap": 1.009,
         "muon_es_shift_farendcap": 1.017
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jes_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
       }
     },
     "scale_j_lo": {

@@ -157,7 +157,7 @@ def main(args):
 
             # # bjets
             "n_btag(3,0,3)",
-            "n_loose_btag(3,0,3)",
+            # "n_loose_btag(3,0,3)",
             # "bpt_1(17,30,200)",
             # "bpt_2(17,30,200)",
             # "beta_1(12,-4.7,4.7)",
@@ -174,7 +174,7 @@ def main(args):
         # extras += ' --set_alias "inclusive:(wt_btag>0)" '
         # extras += ' --set_alias "inclusive:(n_btag==0 && n_loose_btag==0)" '
         extras += " --cat {} ".format(args.cat)
-        extras += " --add_wt (wt_btag_up/wt_btag) "
+        # extras += " --add_wt (1/wt_btag) "
 
         # if args.cat in ["0jet","boosted","inclusive"]:
         #     extras += ' --set_alias "sel:pzeta>-35" ' 
