@@ -42,7 +42,7 @@ ICPi0SuperClusterProducer::~ICPi0SuperClusterProducer() { delete scs_; }
 
 void ICPi0SuperClusterProducer::produce(edm::Event& event,
                                      const edm::EventSetup& setup) {
-#if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4
+#if (CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4) || CMSSW_MAJOR_VERSION >= 10
   edm::Handle<edm::View<reco::SuperCluster> > sc_handle;
   edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >> eehits_handle;
   edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >> ebhits_handle;

@@ -41,7 +41,7 @@ class ICPi0SuperClusterProducer : public edm::EDProducer {
   edm::InputTag input_taus_;
   std::string branch_;
 
-  #if CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4
+  #if (CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4) || CMSSW_MAJOR_VERSION >= 10
   edm::ESHandle<CaloTopology> theCaloTopo_;
   #endif
 
