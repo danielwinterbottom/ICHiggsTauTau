@@ -103,7 +103,7 @@ TVector3 ImpactParameter::CalculatePCA(double B, std::vector<float> h_param, RMP
 	double x_best = 0.0;
 	ROOT::Math::Minimizer *min = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Combined");
 	ROOT::Math::Functor f(&minuitFunction,1);
-    gErrorIgnoreLevel = kFatal;
+    gErrorIgnoreLevel = kError;
     // min->SetPrintLevel(0); // doesn't work ???
 	min->SetFunction(f);
 	min->SetVariable(0,"x",1e-14, 1e-16);
