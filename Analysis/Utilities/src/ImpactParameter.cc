@@ -8,6 +8,8 @@
 #include "Math/BrentMinimizer1D.h"
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
+#include "TError.h"
+
 
 //typedef ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > RMPoint;
 
@@ -101,6 +103,8 @@ TVector3 ImpactParameter::CalculatePCA(double B, std::vector<float> h_param, RMP
 	double x_best = 0.0;
 	ROOT::Math::Minimizer *min = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Combined");
 	ROOT::Math::Functor f(&minuitFunction,1);
+    gErrorIgnoreLevel = kFatal;
+    // min->SetPrintLevel(0); // doesn't work ???
 	min->SetFunction(f);
 	min->SetVariable(0,"x",1e-14, 1e-16);
 	min->SetTolerance(1e-15);
