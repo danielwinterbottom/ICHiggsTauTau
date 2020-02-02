@@ -148,7 +148,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Oct2_leg2016_MC_102X'
+FILELIST='filelists/Jan24_MC_102X_2016'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -162,17 +162,63 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-        'GluGluToHToTauTau_M-125',
-        'VBFHToTauTau_M-125',
-        'WplusHToTauTau_M-125',
-        'WminusHToTauTau_M-125',
-        'ZHToTauTau_M-125',
-        'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToHToTauTau_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-        'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-        'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+
+      'GluGluHToTauTauUncorrelatedDecay',
+      'GluGluHToTauTauUncorrelatedDecay_Filtered',
+      'GluGluHToWWTo2L2Nu_M-125',
+      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToHToTauTau_M-125',
+      'GluGluToHToTauTau_M125_amcatnloFXFX',
+      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+      'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+      'JJH0MToTauTauPlusOneJets',
+      'JJH0MToTauTauPlusOneJets_Filtered',
+      'JJH0MToTauTauPlusTwoJets',
+      'JJH0MToTauTauPlusTwoJets_Filtered',
+      'JJH0MToTauTauPlusZeroJets',
+      'JJH0MToTauTauPlusZeroJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusOneJets',
+      'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusTwoJets',
+      'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusZeroJets',
+      'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
+      'JJH0PMToTauTauPlusOneJets',
+      'JJH0PMToTauTauPlusOneJets_Filtered',
+      'JJH0PMToTauTauPlusTwoJets',
+      'JJH0PMToTauTauPlusTwoJets_Filtered',
+      'JJH0PMToTauTauPlusZeroJets',
+      'JJH0PMToTauTauPlusZeroJets_Filtered',
+      'JJHiggs0MToTauTau',
+      'JJHiggs0Mf05ph0ToTauTau',
+      'VBFHToTauTauUncorrelatedDecay',
+      'VBFHToTauTauUncorrelatedDecay_Filtered',
+      'VBFHToTauTau_M-125',
+      'VBFHToWWTo2L2Nu_M-125',
+      'VBFHiggs0L1_HToTauTau',
+      'VBFHiggs0L1f05ph0_HToTauTau',
+      'VBFHiggs0M_HToTauTau',
+      'VBFHiggs0Mf05ph0_HToTauTau',
+      'VBFHiggs0PH_HToTauTau',
+      'VBFHiggs0PHf05ph0_HToTauTau',
+      'VBFHiggs0PM_HToTauTau',
+      'WHiggs0L1_HToTauTau',
+      'WminusHToTauTauUncorrelatedDecay',
+      'WminusHToTauTauUncorrelatedDecay_Filtered',
+      'WminusHToTauTau_M-125',
+      'WplusHToTauTauUncorrelatedDecay',
+      'WplusHToTauTauUncorrelatedDecay_Filtered',
+      'WplusHToTauTau_M-125',
+      'ZHToTauTauUncorrelatedDecay',
+      'ZHToTauTauUncorrelatedDecay_Filtered',
+      'ZHToTauTau_M-125',
+      'ZHiggs0L1fZH05ph0_HToTauTau',
+      'ttHiggs0MToTauTau',
+      'ttHiggs0Mf05ph0ToTauTau',
+      'ttHiggs0PMToTauTau',
+
     ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -213,11 +259,11 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             'Tau'+era]
         
 
-  DATAFILELIST="./filelists/Oct2_leg2016_Data_102X"
+  DATAFILELIST="./filelists/Jan06_Data_102X_2016"
 
   for sa in data_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Jan06_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
 
       # if 'TauB' in sa:
@@ -256,16 +302,16 @@ if options.proc_embed or options.proc_all:
 
 
         
-  EMBEDFILELISTZMM="./filelists/Oct2_leg2016_MC_102X"
+  EMBEDFILELISTZMM="./filelists/Jan06_MC_102X_2016"
 
-  EMBEDFILELIST="./filelists/Oct2_leg2016_MC_102X"
+  EMBEDFILELIST="./filelists/Jan06_MC_102X_2016"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Jan06_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     if 'EmbeddingMuMu' in sa:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Oct2_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Jan06_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 10
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')

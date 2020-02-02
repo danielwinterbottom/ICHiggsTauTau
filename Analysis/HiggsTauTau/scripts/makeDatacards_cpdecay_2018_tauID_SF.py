@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --total_jes 
+# ./scripts/makeDatacards_cpdecay_2018_tauID_SF.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'mt,zmm' scripts/params_2018.json -s 'cpdecay' --embedding 
 
 import sys
 from optparse import OptionParser
@@ -138,10 +137,10 @@ extra_channel = {
       "mt" : ' ',
       "zmm" : ' ',
   }
-
+jes_systematics=''
 common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
 
-
+mt_shape_systematics=''
 mt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
 
 
@@ -164,7 +163,7 @@ if SCHEME == 'cpdecay':
 
   # MT variables
   VAR_MT       = "m_vis(10,50,90)"
-  ADD_STRING_MT_GENERAL = '--add_wt=single_l_sf/idisoweight_2  --set_alias "sel:(mt_1<50)" --set_alias "inclusive:(n_bjets==0 && trg_singlemuon&&pt_1>25 '
+  ADD_STRING_MT_GENERAL = '--add_wt=single_l_sf/idisoweight_2  --set_alias "sel:(mt_1<50)" --set_alias "inclusive:(n_bjets==0 && trg_singlemuon&&pt_1>25 && '
   ADD_STRING_MT_MVADM0_Pt20to40 = ' mva_dm_2==0 && pt_2>20 && pt_2<40)"'
   ADD_STRING_MT_MVADM1_Pt20to40 = ' mva_dm_2==1 && pt_2>20 && pt_2<40)"'
   ADD_STRING_MT_MVADM2_Pt20to40 = ' mva_dm_2==2 && pt_2>20 && pt_2<40)"'
@@ -195,24 +194,24 @@ if SCHEME == 'cpdecay':
   
   scheme_mt = [
     ("12",   "inclusive",      "2018_MVADM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM2_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM2_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_MVADM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_Pt20to40),
+   # ("12",   "inclusive",      "2018_MVADM2_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_Pt20to40),
+   # ("12",   "inclusive",      "2018_MVADM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_Pt20to40),
+   # ("12",   "inclusive",      "2018_MVADM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_Pt20to40),
+   # ("12",   "inclusive",      "2018_MVADM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_MVADM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_MVADM2_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_MVADM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_MVADM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_PtMoreThan40),
 
-    ("12",   "inclusive",      "2018_HPSDM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_HPSDM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_Pt20to40),
+   # ("12",   "inclusive",      "2018_HPSDM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_Pt20to40),
+   # ("12",   "inclusive",      "2018_HPSDM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_Pt20to40),
+   # ("12",   "inclusive",      "2018_HPSDM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_Pt20to40),
+   # ("12",   "inclusive",      "2018_HPSDM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_HPSDM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_HPSDM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_PtMoreThan40),
+   # ("12",   "inclusive",      "2018_HPSDM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_PtMoreThan40),
   ]
   scheme_tt = [
   ]
@@ -251,7 +250,7 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
+                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s ' % vars()
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
