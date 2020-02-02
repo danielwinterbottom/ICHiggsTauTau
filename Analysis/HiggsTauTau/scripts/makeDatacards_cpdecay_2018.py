@@ -152,31 +152,28 @@ if not no_shift_systs:
   common_shape_systematics+=' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
 
 if options.regional_jes:
-  #common_shape_systematics += ' --syst_scale_j_full="CMS_scale_j_eta0to5_13TeV" --syst_scale_j_cent="CMS_scale_j_eta0to3_13TeV" --syst_scale_j_hf="CMS_scale_j_eta3to5_13TeV" --syst_scale_j_rbal="CMS_scale_j_RelativeBal_13TeV"  --syst_scale_j_rsamp="CMS_scale_j_RelativeSample_13TeV" '
   common_shape_systematics += ' --syst_scale_j_rbal="CMS_scale_j_RelativeBal_13TeV"  --syst_scale_j_rsamp="CMS_scale_j_RelativeSample_13TeV" '
   common_shape_systematics += ' --syst_scale_j_full_corr="CMS_scale_j_eta0to5_corr_13TeV" --syst_scale_j_cent_corr="CMS_scale_j_eta0to3_corr_13TeV" --syst_scale_j_hf_corr="CMS_scale_j_eta3to5_corr_13TeV" '
   common_shape_systematics += ' --syst_scale_j_full_uncorr="CMS_scale_j_eta0to5_uncorr_13TeV" --syst_scale_j_cent_uncorr="CMS_scale_j_eta0to3_uncorr_13TeV" --syst_scale_j_hf_uncorr="CMS_scale_j_eta3to5_uncorr_13TeV" '
 if options.total_jes:
   common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
 
-em_shape_systematics=' '
-# need to add new QCD uncertainties
-#em_shape_systematics=' --syst_em_qcd_rate_0jet="CMS_em_QCD_0JetRate_13TeV" --syst_em_qcd_rate_1jet="CMS_em_QCD_1JetRate_13TeV" --syst_em_qcd_shape_0jet="CMS_em_QCD_0JetShape_13TeV" --syst_em_qcd_shape_1jet="CMS_em_QCD_1JetShape_13TeV" --syst_em_qcd_extrap="CMS_em_QCD_IsoExtrap_13TeV" --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" '
+em_shape_systematics=' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 
 if not no_shift_systs:
-  em_shape_systematics+=' --syst_tau_scale="CMS_scale_e_13TeV" '
+  em_shape_systematics+=' --syst_tau_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
 
-et_shape_systematics=' --syst_xtrg="CMS_eff_Xtrigger_et_13TeV" '
+et_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 if not no_shift_systs:
-  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
+  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_e_scale="CMS_scale_e_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pi0_13TeV" '
 
-mt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" '
+mt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 if not no_shift_systs:
-  mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+  mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pi0_13TeV" '
 
 tt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" --syst_tau_trg_diff="CMS_eff_t_trg_*DM_13TeV" '
 if not no_shift_systs:
-  tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+  tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pi0_13TeV" '
 
 if options.embedding:
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '

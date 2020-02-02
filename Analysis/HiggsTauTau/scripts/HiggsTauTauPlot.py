@@ -32,12 +32,12 @@ defaults = {
     "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
-    "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"",
+    "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_tau_scale_3prong1pi0":"", "syst_eff_t":"", "syst_tquark":"",
     "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_scale_j_rbal":"",
     "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", 
     "syst_scale_j_full_corr":"", "syst_scale_j_cent_corr":"", "syst_scale_j_hf_corr":"",
     "syst_scale_j_full_uncorr":"", "syst_scale_j_cent_uncorr":"", "syst_scale_j_hf_uncorr":"",
-    "syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"",
+    "syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"", "syst_eff_b_weights":"",
     "norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False,
     "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001,
     "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False,
@@ -142,6 +142,8 @@ parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_1pi", type=str,
     help="If this string is set then the systematic shift due to the 1 prong 1 pi tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_3prong", dest="syst_tau_scale_3prong", type=str,
     help="If this string is set then the systematic shift due to 3 prong tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_3prong1pi0", dest="syst_tau_scale_3prong1pi0", type=str,
+    help="If this string is set then the systematic shift due to 3 prong + 1 pi0 tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tquark", dest="syst_tquark", type=str,
@@ -183,6 +185,8 @@ parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", t
 parser.add_argument("--jes_sources", dest="jes_sources", type=str,
     help="JES sources to process specified by integers seperated by commas. Values seperated by x\':\'y will process all integers from x to y. e.g using --jes_sources=1:3,10 will process sources: 1,2,3,10")
 parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str,
+    help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_eff_b_weights", dest="syst_eff_b_weights", type=str,
     help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str,
     help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
@@ -548,26 +552,26 @@ if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' %
 if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] or options.analysis in ['cpprod']:
   cats['ttbar'] = 'n_jets>0'  
   if options.channel in ['mt','et']: 
-      cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0'
+      cats['0jet'] = '(n_jets==0 && n_bjets==0 &&n_loose_bjets<2)'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0 &&n_loose_bjets<2'
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['dijet_loosemjj_boosted']='%s && mjj<500 && pt_tt>150' % cats['dijet']
       cats['dijet_loosemjj_lowboost']='%s && mjj<500 && pt_tt<150' % cats['dijet']
       cats['dijet_tightmjj_boosted']='%s && mjj>500 && pt_tt>150' % cats['dijet']
       cats['dijet_tightmjj_lowboost']='%s && mjj>500 && pt_tt<150' % cats['dijet']
-      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0 &&n_loose_bjets<2)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   elif options.channel in ['em']:
-      cats['0jet'] = '(n_jets==0 && n_bjets==0)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0 '
+      cats['0jet'] = '(n_jets==0 && n_bjets==0 &&n_loose_bjets<2)'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0 &&n_loose_bjets<2 '
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['dijet_loosemjj_boosted']='%s && mjj<500 && pt_tt>150' % cats['dijet']
       cats['dijet_loosemjj_lowboost']='%s && mjj<500 && pt_tt<150' % cats['dijet']
       cats['dijet_tightmjj_boosted']='%s && mjj>500 && pt_tt>150' % cats['dijet']
       cats['dijet_tightmjj_lowboost']='%s && mjj>500 && pt_tt<150' % cats['dijet']
-      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['dijet'])
+      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0 &&n_loose_bjets<2)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   else:    
     cats['0jet'] = '(n_jets==0)'
@@ -1544,6 +1548,9 @@ if options.syst_tau_scale_1pi != '':
 if options.syst_tau_scale_3prong != '':
     systematics['scale_t_3prong_up'] = ('TSCALE3PRONG_UP' , '_'+options.syst_tau_scale_3prong+'Up', 'wt', ['QCD'], False)
     systematics['scale_t_3prong_down'] = ('TSCALE3PRONG_DOWN' , '_'+options.syst_tau_scale_3prong+'Down', 'wt', ['QCD'], False)
+if options.syst_tau_scale_3prong1pi0 != '':
+    systematics['scale_t_3prong1pi0_up'] = ('TSCALE3PRONG1PI0_UP' , '_'+options.syst_tau_scale_3prong1pi0+'Up', 'wt', ['QCD'], False)
+    systematics['scale_t_3prong1pi0_down'] = ('TSCALE3PRONG1PI0_DOWN' , '_'+options.syst_tau_scale_3prong1pi0+'Down', 'wt', ['QCD'], False)
 if options.syst_efake_0pi_scale != '':
     systematics['scale_efake_0pi_up'] = ('EFAKE0PI_UP' , '_'+options.syst_efake_0pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['scale_efake_0pi_down'] = ('EFAKE0PI_DOWN' , '_'+options.syst_efake_0pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
@@ -1659,6 +1666,9 @@ if options.syst_scale_j_relsamp_year != '':
     systematics['syst_scale_j_relsamp_year_up']   = ('JESRELSAMP_YEAR_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_relsamp_year_down'] = ('JESRELSAMP_YEAR_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
 
+if options.syst_eff_b_weights != '':
+    systematics['syst_b_weights_up'] = ('' , '_'+options.syst_eff_b_weights+'Up', 'wt*wt_btag_up/wt_btag', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
+    systematics['syst_b_weights_down'] = ('' , '_'+options.syst_eff_b_weights+'Down', 'wt*wt_btag_down/wt_btag', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
@@ -2522,7 +2532,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           if ff_syst_weight is not None and 'ff_sub_syst' not in add_name: fake_factor_wt_string = ff_syst_weight+'_1'
           else:
             if options.analysis == 'cpprod': 
-              fake_factor_wt_string = "wt_ff_dmbins_1"
+              fake_factor_wt_string = "wt_ff_us_1"
             else: fake_factor_wt_string = "wt_ff_1"
         else:
           if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
@@ -2561,7 +2571,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             # deep tau tight 2018 anti isolating the subleading tau
             if options.analysis == 'cpprod':
               fake_factor_wt_string_2='0'
-              fake_factor_wt_string_1 = "wt_ff_dmbins_1"
+              fake_factor_wt_string_1 = "wt_ff_us_1"
             else:
               fake_factor_wt_string_2='0'
               fake_factor_wt_string_1 = "wt_ff_1"
@@ -2630,8 +2640,11 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         if options.channel=='tt':
-          if options.analysis == 'cpprod': full_selection_extra = BuildCutString(wt+'*wt_ff_dmbins_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
-          else: full_selection_extra = BuildCutString(wt+'*wt_ff_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          #if options.analysis == 'cpprod': full_selection_extra = BuildCutString(wt+'*wt_ff_us_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+          #else: full_selection_extra = BuildCutString(wt+'*wt_ff_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
+
+          full_selection_extra = BuildCutString(wt, sel, cats_unmodified[cat_name]+'&&'+cats['baseline'], OSSS, 'gen_match_2==6')       
+  
 
           wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples, plot, full_selection_extra)
           ana.nodes[nodename].AddNode(wnode) 
@@ -3246,8 +3259,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         doVVJ=False
         doTTJ=False
         if 'jetFakes' not in samples_to_skip:
-#'*((rho_id_1>=0.5)*1.15+(rho_id_1<0.5)*0.82)*((rho_id_2>=0.5)*1.15+(rho_id_2<0.5)*0.82)'
             GenerateFakeTaus(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
+            #if options.channel == 'tt':
         
         # use existing methods to calculate background due to non-fake taus
         add_fake_factor_selection = "gen_match_2<6"
