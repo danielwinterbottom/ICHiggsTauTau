@@ -146,7 +146,7 @@ if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
 
 
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_prefire="CMS_PreFire_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_ps="CMS_*PS_ggH_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_prefire="CMS_PreFire_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_ps="CMS_*PS_ggH_13TeV" --syst_res_j="CMS_res_j_13TeV" '
 
 if not no_shift_systs:
   common_shape_systematics+=' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '

@@ -33,7 +33,7 @@ defaults = {
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
     "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_tau_scale_3prong1pi0":"", "syst_eff_t":"", "syst_tquark":"",
-    "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_scale_j_rbal":"",
+    "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_res_j":"", "syst_scale_j_rbal":"",
     "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", 
     "syst_scale_j_full_corr":"", "syst_scale_j_cent_corr":"", "syst_scale_j_hf_corr":"",
     "syst_scale_j_full_uncorr":"", "syst_scale_j_cent_uncorr":"", "syst_scale_j_hf_uncorr":"",
@@ -154,6 +154,8 @@ parser.add_argument("--syst_w_fake_rate", dest="syst_w_fake_rate", type=str, def
     help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_res_j", dest="syst_res_j", type=str,
+    help="If this string is set then the jER systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j_corr", dest="syst_scale_j_corr", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j_uncorr", dest="syst_scale_j_uncorr", type=str,
@@ -1586,6 +1588,9 @@ if options.syst_jfake_e != '':
 if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', ['EmbedZTT','jetFakes'], False)
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', ['EmbedZTT','jetFakes'], False)
+if options.syst_res_j != '':
+    systematics['syst_res_j_up'] = ('JER_UP' , '_'+options.syst_res_j+'Up', 'wt', ['EmbedZTT','jetFakes'], False)
+    systematics['syst_res_j_down'] = ('JER_DOWN' , '_'+options.syst_res_j+'Down', 'wt', ['EmbedZTT','jetFakes'], False)
 if options.syst_scale_j_corr != '':
     systematics['syst_scale_j_corr_up'] = ('JES_CORR_UP' , '_'+options.syst_scale_j_corr+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_corr_down'] = ('JES_CORR_DOWN' , '_'+options.syst_scale_j_corr+'Down', 'wt', ['EmbedZTT'], False)
@@ -1895,6 +1900,43 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
         systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
+if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='cpdecay':
+  if options.channel in ['et','mt']:
+    chan = options.channel
+    lt_systs = {}
+    lt_systs['ff_%(chan)s_qcd_syst' % vars()] = 'wt_ff_qcd_syst_' % vars()
+    lt_systs['ff_%(chan)s_wjets_syst' % vars()] = 'wt_ff_wjets_syst_' % vars()
+    lt_systs['ff_%(chan)s_ttbar_syst' % vars()] = 'wt_ff_ttbar_syst_' % vars()
+    for proc in ['qcd','wjets']:
+      lt_systs['ff_%(chan)s_%(proc)s_met_closure_syst' % vars()] = 'wt_ff_%(proc)s_stat_met_' % vars()
+      lt_systs['ff_%(chan)s_%(proc)s_l_pt_closure_syst' % vars()] = 'wt_ff_%(proc)s_stat_l_pt_' % vars()
+      for njet in ['0','1','2']:
+        for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
+          lt_systs[('ff_%(chan)s_%(proc)s_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+    for template_name in lt_systs:
+      print '\'%(template_name)s\',' % vars()
+      weight_name = lt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+  if options.channel in ['tt']:
+    tt_systs={}
+    tt_systs['ff_tt_qcd_met_closure_syst' % vars()] = 'wt_ff_qcd_stat_met_' % vars()
+    tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_qcd_syst_' % vars()
+    for njet in ['0','1','2']:
+      for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
+        tt_systs[('ff_tt_qcd_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+
+    for template_name in tt_systs:
+      weight_name = tt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+  template_name = 'ff_%s_sub_syst' % (options.channel)
+  systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+
 if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='cpprod':
   if options.channel in ['et','mt']:
     lt_systs = {}
@@ -1930,7 +1972,6 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       tt_systs['ff_tt_qcd_stat_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_stat_njets%(njet)s_' % vars()
 
     for template_name in tt_systs:
-      print template_name
       weight_name = tt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
