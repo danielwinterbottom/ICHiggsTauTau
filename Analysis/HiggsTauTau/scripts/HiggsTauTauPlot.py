@@ -1915,16 +1915,30 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
         lt_systs['ff_%(chan)s_%(proc)s_stat_njets%(njet)s_unc2' % vars()] = 'wt_ff_us_%(proc)s_stat_njets%(njet)s_unc2_' % vars() 
  
     for template_name in lt_systs:
-      print template_name
       weight_name = lt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
+  if options.channel in ['tt']:
+    chan = options.channel
+    tt_systs = {}
+    tt_systs['ff_tt_qcd_osss_syst'] = 'wt_ff_us_qcd_syst_osss_'
+
+    for njet in ['0','1','2']:
+      tt_systs['ff_tt_qcd_closure_syst_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_syst_closure_njets%(njet)s' % vars()
+      tt_systs['ff_tt_qcd_stat_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_stat_njets%(njet)s_' % vars()
+      tt_systs['ff_tt_qcd_stat_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_stat_njets%(njet)s_' % vars()
+
+    for template_name in tt_systs:
+      print template_name
+      weight_name = tt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+
   template_name = 'ff_%s_sub_syst' % (options.channel)
   systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-
-        
+  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True) 
       
 elif options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','smsummer16','mvadm2016']:
     processes = ['tt','w','qcd']
