@@ -1914,7 +1914,6 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
         for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
           lt_systs[('ff_%(chan)s_%(proc)s_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
     for template_name in lt_systs:
-      print '\'%(template_name)s\',' % vars()
       weight_name = lt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)

@@ -342,28 +342,28 @@ if SCHEME == 'cpprod_extrapt':
 
 if SCHEME == 'control_plots':
   scheme_mt=[
-    ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50" --do_ff_systs  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "m_vis",  'm_vis(20,0,200)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
-    ("17",   "inclusive",    "m_sv",  'm_sv(20,0,200)', ' --set_alias="sel:mt_1<50" --do_ff_systs --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"   --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(20,0,200)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(20,0,200)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
 
   ]
   scheme_et=scheme_mt
   scheme_tt=[
-    ("17",   "inclusive",    "pt_1",  'pt_1[50,55,60,70,80,90,100,120,140]', ' --do_ff_systs  '),
-    ("17",   "inclusive",    "pt_2",  'pt_2[40,45,50,55,60,70,80,90,100]', ' --do_ff_systs '),
-    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', ' --do_ff_systs '),
-    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', ' --do_ff_systs '),
-    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', ' --do_ff_systs '),
-    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
-    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --do_ff_systs --set_alias="inclusive:(n_jets>1)" '),
-    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --do_ff_systs '),
-    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', ' --do_ff_systs '),
+    ("17",   "inclusive",    "pt_1",  'pt_1[50,55,60,70,80,90,100,120,140]', '   '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[40,45,50,55,60,70,80,90,100]', '  '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', '  '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', '  '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', '  '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', '  --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', '  --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', '  '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', '  '),
 
   ]
   scheme_em=[
@@ -412,6 +412,7 @@ for ch in channels:
         if options.embedding: extra+=' --embedding'
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag\" ' 
         else extra+=' --add_wt=wt_prefire '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:

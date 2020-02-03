@@ -291,6 +291,7 @@ for ch in channels:
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag\" '
         else extra+=' --add_wt=wt_prefire '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
