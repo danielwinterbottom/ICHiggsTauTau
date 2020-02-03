@@ -1894,9 +1894,39 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
         weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
         systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='cpprod':
+  if options.channel in ['et','mt']:
+    lt_systs = {}
+    lt_systs['ff_%s_qcd_osss_syst' % options.channel] = 'wt_ff_us_qcd_syst_osss_'
+    lt_systs['ff_%s_qcd_closure_syst' % options.channel] = 'wt_ff_us_qcd_syst_closure_'
+    lt_systs['ff_%s_wjets_closure_syst' % options.channel] = 'wt_ff_us_wjets_syst_closure_'
+    lt_systs['ff_%s_ttbar_closure_syst' % options.channel] = 'wt_ff_us_ttbar_syst_closure_'
+    lt_systs['ff_%s_wjets_mt_syst_unc1' % options.channel] = 'wt_ff_us_wjets_syst_mt_unc1_'
+    lt_systs['ff_%s_wjets_mt_syst_unc2' % options.channel] = 'wt_ff_us_wjets_syst_mt_unc2_'
+    lt_systs['ff_%s_ttbar_stat_unc1' % options.channel] = 'wt_ff_us_ttbar_stat_unc1_'
+    lt_systs['ff_%s_ttbar_stat_unc2' % options.channel] = 'wt_ff_us_ttbar_stat_unc2_'
+
+
+    chan = options.channel
+    for proc in ['qcd','wjets']:
+      for njet in ['0','1','2']:
+        lt_systs['ff_%(chan)s_%(proc)s_stat_njets%(njet)s_unc1' % vars()] = 'wt_ff_us_%(proc)s_stat_njets%(njet)s_unc1_' % vars()
+        lt_systs['ff_%(chan)s_%(proc)s_stat_njets%(njet)s_unc2' % vars()] = 'wt_ff_us_%(proc)s_stat_njets%(njet)s_unc2_' % vars() 
+ 
+    for template_name in lt_systs:
+      print template_name
+      weight_name = lt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+  template_name = 'ff_%s_sub_syst' % (options.channel)
+  systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
         
       
-if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','smsummer16','mvadm2016']:
+elif options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','smsummer16','mvadm2016']:
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
     njets = ['njet0','njet1']
