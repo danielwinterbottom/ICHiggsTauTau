@@ -61,11 +61,7 @@ defaults = {
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
-    "syst_scale_j_relbal":"", "syst_scale_j_abs":"", "syst_scale_j_abs_year":"",
-    "syst_scale_j_flav":"", "syst_scale_j_bbec1":"", "syst_scale_j_bbec1_year":"",
-    "syst_scale_j_ec2":"", "syst_scale_j_ec2_year":"",
-    "syst_scale_j_hf":"", "syst_scale_j_hf_year":"",
-    "syst_scale_j_relsamp_year":"",
+    "syst_scale_j_regrouped":"",
 
 }
 
@@ -180,6 +176,8 @@ parser.add_argument("--syst_scale_j_hf_uncorr", dest="syst_scale_j_hf_uncorr", t
     help="If this string is set then the regional jet scale systematic is performed with the set string appended to the resulting histogram name. Region = full region (eta>3). 2016/2017 correlated part.")
 parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", type=str,
     help="If this string is set then the jet scale systematic is performed split by source with the set string appended to the resulting histogram name. The string should contrain the substring  \'SOUCE\' which will be replaced by the JES source name")
+parser.add_argument("--syst_scale_j_regrouped", dest="syst_scale_j_regrouped", type=str,
+    help="If this string is set then the set of regrouped jet scale systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--jes_sources", dest="jes_sources", type=str,
     help="JES sources to process specified by integers seperated by commas. Values seperated by x\':\'y will process all integers from x to y. e.g using --jes_sources=1:3,10 will process sources: 1,2,3,10")
 parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str,
@@ -1619,45 +1617,40 @@ if options.syst_scale_j_hf_uncorr != '':
     systematics['syst_scale_j_hf_uncorr_up'] = ('JESHF_UNCORR_UP' , '_'+options.syst_scale_j_hf_uncorr+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_uncorr_down'] = ('JESHF_UNCORR_DOWN' , '_'+options.syst_scale_j_hf_uncorr+'Down', 'wt', ['EmbedZTT'], False)
 ############ Regrouped JEC for full run2
-if options.syst_scale_j_relbal != '':
+if options.syst_scale_j_regrouped != "":
     systematics['syst_scale_j_relbal_up']   = ('JESRBAL_UP' , '_'+options.syst_scale_j_relbal+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_relbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_relbal+'Down', 'wt', ['EmbedZTT'], False)
 
-if options.syst_scale_j_abs != '':
     systematics['syst_scale_j_abs_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_abs+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_abs_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_abs+'Down', 'wt', ['EmbedZTT'], False)
-if options.syst_scale_j_abs_year != '':
+
     systematics['syst_scale_j_abs_year_up']   = ('JESABS_YEAR_UP' , '_'+options.syst_scale_j_abs_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_abs_year_down'] = ('JESABS_YEAR_DOWN' , '_'+options.syst_scale_j_abs_year+'Down', 'wt', ['EmbedZTT'], False)
 
-if options.syst_scale_j_flav != '':
     systematics['syst_scale_j_flav_up']   = ('JESFLAV_UP' , '_'+options.syst_scale_j_flav+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_flav_down'] = ('JESFLAV_DOWN' , '_'+options.syst_scale_j_flav+'Down', 'wt', ['EmbedZTT'], False)
 
-if options.syst_scale_j_bbec1 != '':
     systematics['syst_scale_j_bbec1_up']   = ('JESBBEC1_UP' , '_'+options.syst_scale_j_bbec1+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_bbec1_down'] = ('JESBBEC1_DOWN' , '_'+options.syst_scale_j_bbec1+'Down', 'wt', ['EmbedZTT'], False)
-if options.syst_scale_j_bbec1_year != '':
+
     systematics['syst_scale_j_bbec1_year_up']   = ('JESBBEC1_YEAR_UP' , '_'+options.syst_scale_j_bbec1_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_bbec1_year_down'] = ('JESBBEC1_YEAR_DOWN' , '_'+options.syst_scale_j_bbec1_year+'Down', 'wt', ['EmbedZTT'], False)
 
-if options.syst_scale_j_ec2 != '':
     systematics['syst_scale_j_ec2_up']   = ('JESEC2_UP' , '_'+options.syst_scale_j_ec2+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_ec2_down'] = ('JESEC2_DOWN' , '_'+options.syst_scale_j_ec2+'Down', 'wt', ['EmbedZTT'], False)
-if options.syst_scale_j_ec2_year != '':
+
     systematics['syst_scale_j_ec2_year_up']   = ('JESEC2_YEAR_UP' , '_'+options.syst_scale_j_ec2_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_ec2_year_down'] = ('JESEC2_YEAR_DOWN' , '_'+options.syst_scale_j_ec2_year+'Down', 'wt', ['EmbedZTT'], False)
 
-if options.syst_scale_j_hf != '':
     systematics['syst_scale_j_hf_up']   = ('JESHF_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_down'] = ('JESHF_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)
-if options.syst_scale_j_hf_year != '':
+
     systematics['syst_scale_j_hf_year_up']   = ('JESHF_YEAR_UP' , '_'+options.syst_scale_j_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_hf_year_down'] = ('JESHF_YEAR_DOWN' , '_'+options.syst_scale_j_year+'Down', 'wt', ['EmbedZTT'], False)
-
-if options.syst_scale_j_relsamp_year != '':
+    
     systematics['syst_scale_j_relsamp_year_up']   = ('JESRELSAMP_YEAR_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
     systematics['syst_scale_j_relsamp_year_down'] = ('JESRELSAMP_YEAR_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
+######
 
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
