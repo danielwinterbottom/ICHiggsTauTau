@@ -1715,14 +1715,22 @@ if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dije
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
 if options.syst_qcd_scale != '' and options.era != 'smsummer16':
-    systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', 'wt*wt_qcdscale_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
-    systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', 'wt*wt_qcdscale_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', 'wt*wt_qcdscale_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', 'wt*wt_qcdscale_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
 if options.syst_quarkmass != '':
     systematics['syst_quarkmass_up'] = ('' , '_'+options.syst_quarkmass+'Up', 'wt*wt_quarkmass', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
     systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt*((1./wt_quarkmass-1.)*0.05 + 1.)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
 if options.syst_ps != '':
-    systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-    systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+    if '*PS' in options.syst_ps:
+      hist_name_fsr = hist_name.replace('*PS','PS_FSR')
+      hist_name_isr = hist_name.replace('*PS','PS_ISR')
+      systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*wt_ps_fsr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*wt_ps_fsr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*wt_ps_isr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_isr_down'] = ('' , '_'+hist_name_isr+'Down', 'wt*wt_ps_isr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+    else: 
+      systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
 if options.syst_ue != '':
     systematics['syst_ue_up'] = ('' , '_'+options.syst_ue+'Up', 'wt*wt_ue_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
     systematics['syst_ue_down'] = ('' , '_'+options.syst_ue+'Down', 'wt*wt_ue_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
@@ -1838,6 +1846,12 @@ if options.syst_tau_id_diff != '':
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
         systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
         systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False) 
+    if '*MVADM' in hist_name:
+      for i in [0,1,2,10,11]:
+        hist_name_bini = hist_name.replace('*MVADM','MVADM%(i)i' % vars())
+        systematics['syst_tau_id_diff_mvadm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_mvadm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_id_diff_mvadm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_mvadm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
 
 if options.syst_tau_trg_diff != '':
     hist_name = options.syst_tau_trg_diff
@@ -1846,6 +1860,12 @@ if options.syst_tau_trg_diff != '':
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
         systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
         systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+    if '*MVADM' in hist_name:
+      for i in [0,1,2,10,11]:
+        hist_name_bini = hist_name.replace('*MVADM','MVADM%(i)i' % vars())
+        systematics['syst_tau_trg_diff_mvadm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mvadm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_mvadm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mvadm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
 
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
