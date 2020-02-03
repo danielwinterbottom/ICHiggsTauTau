@@ -59,7 +59,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/31Jan2020_tauh_SF/2018/",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/03Feb2020_tauh_SF/2018/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
