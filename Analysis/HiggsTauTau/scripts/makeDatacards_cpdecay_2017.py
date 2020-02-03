@@ -289,8 +289,8 @@ for ch in channels:
         var     = x[3]
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
-        if options.embedding: extra+=' --embedding'
-        extra+=' --add_wt=wt_prefire '
+        if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag\" '
+        else extra+=' --add_wt=wt_prefire '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:

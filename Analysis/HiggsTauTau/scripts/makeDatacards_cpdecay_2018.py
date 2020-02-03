@@ -280,6 +280,7 @@ for ch in channels:
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if options.embedding: extra+=' --embedding'
+        if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_btag\" '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
