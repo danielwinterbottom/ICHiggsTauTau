@@ -158,7 +158,6 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-
 FILELIST='filelists/Jan24_2018_MC_102X'
 
 signal_mc = [ ]
@@ -334,22 +333,22 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    #data_eras = ['A','B','C','D']
-    data_eras = ['A','B','C']
+    data_eras = ['A','B','C','D']
+    #data_eras = ['A','B','C']
     for chn in channels:
         for era in data_eras:
-            #if 'em' in chn:
-            #    embed_samples+=['EmbeddingElMu'+era]
+            if 'em' in chn:
+                embed_samples+=['EmbeddingElMu'+era]
             if 'et' in chn:
                 embed_samples+=['EmbeddingElTau'+era]
-            #if 'mt' in chn:
-            #    embed_samples+=['EmbeddingMuTau'+era]
-            #if 'tt' in chn:
-            #    embed_samples+=['EmbeddingTauTau'+era]
-            #if 'zmm' in chn:
-            #    embed_samples+=['EmbeddingMuMu'+era]
-            #if 'zee' in chn:
-            #    embed_samples+=['EmbeddingElEl'+era]
+            if 'mt' in chn:
+                embed_samples+=['EmbeddingMuTau'+era]
+            if 'tt' in chn:
+                embed_samples+=['EmbeddingTauTau'+era]
+            if 'zmm' in chn:
+                embed_samples+=['EmbeddingMuMu'+era]
+            if 'zee' in chn:
+                embed_samples+=['EmbeddingElEl'+era]
 
     EMBEDFILELIST="./filelists/Jan06_2018_MC_102X"
 

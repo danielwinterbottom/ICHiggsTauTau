@@ -145,7 +145,7 @@ if options.split_jes:
   jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
 
 
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV"  --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" --syst_prefire="CMS_PreFire_13TeV" '
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV"  --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_*PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" --syst_prefire="CMS_PreFire_13TeV" --syst_res_j="CMS_res_j_13TeV" '
 
 if not no_shift_systs:
   common_shape_systematics+=' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
@@ -161,20 +161,20 @@ if options.total_jes:
 em_shape_systematics=' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" '
 # need to add new QCD uncertainties
 
-#if not no_shift_systs:
-#  em_shape_systematics+=' --syst_tau_scale="CMS_scale_e_13TeV" '
+if not no_shift_systs:
+  em_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
 
 et_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" '
 if not no_shift_systs:
-  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '#--syst_e_scale="CMS_scale_e_13TeV" '
+  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
 
 mt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" '
 if not no_shift_systs:
-  mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+  mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
 
 tt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" --syst_tau_trg_diff="CMS_eff_t_trg_*DM_13TeV" '
 if not no_shift_systs:
-  tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+  tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
 
 if options.embedding:
   common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
@@ -340,6 +340,54 @@ if SCHEME == 'cpprod_extrapt':
   }
   ANA = 'sm'
 
+if SCHEME == 'control_plots':
+  scheme_mt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[20,25,30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"   --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(20,0,200)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(20,0,200)', ' --set_alias="sel:mt_1<50"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+
+  ]
+  scheme_et=scheme_mt
+  scheme_tt=[
+    ("17",   "inclusive",    "pt_1",  'pt_1[50,55,60,70,80,90,100,120,140]', '   '),
+    ("17",   "inclusive",    "pt_2",  'pt_2[40,45,50,55,60,70,80,90,100]', '  '),
+    ("17",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', '  '),
+    ("17",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300]', '  '),
+    ("17",   "inclusive",    "m_vis",  'm_vis(25,0,250)', '  '),
+    ("17",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', '  --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', '  --set_alias="inclusive:(n_jets>1)" '),
+    ("17",   "inclusive",    "n_jets",  'n_jets(4,0,4)', '  '),
+    ("17",   "inclusive",    "m_sv",  'm_sv(30,0,300)', '  '),
+
+  ]
+  scheme_em=[
+    ("19",   "inclusive",    "pt_1",  'pt_1[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "pt_2",  'pt_2[10,15,20,25,30,35,40,45,50,55,60,70,80,90,100]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "met",  'met[0,10,20,30,40,50,60,70,80,90,100]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "pt_tt",  'pt_tt[0,25,50,75,100,125,150,175,200,250,300', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "m_vis",  'm_vis(20,0,200)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "mjj",  'mjj[0,50,100,150,200,250,300,400,500,600,800]', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "sjdphi",  'sjdphi(12,-3.2,3.2)', ' --set_alias="sel:pzeta>-35" --set_alias="inclusive:(n_jets>1&&n_bjets==0&&n_loose_bjets<2)" '), 
+    ("19",   "inclusive",    "n_jets",  'n_jets(4,0,4)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+    ("19",   "inclusive",    "m_sv",  'm_sv(20,0,200)', ' --set_alias="sel:pzeta>-35"  --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2)" '),
+
+  ]
+
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
 
 cat_schemes = {
   'et' : scheme_et,
@@ -362,7 +410,9 @@ for ch in channels:
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if options.embedding: extra+=' --embedding'
-        extra+=' --add_wt=wt_prefire '
+        if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag\" ' 
+        else extra+=' --add_wt=wt_prefire '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
