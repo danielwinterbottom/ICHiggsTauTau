@@ -3034,7 +3034,7 @@ namespace ic {
             auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
             double m_high_pt_cut = 25;
-            if(mc_ == mc::mcleg2016) m_high_pt_cut = 25;
+            if(mc_ == mc::mcleg2016) m_high_pt_cut = 23;
             //double t_high_pt_cut = 32;
             //if(mc_ == mc::mcleg2016) t_high_pt_cut = 22;
 

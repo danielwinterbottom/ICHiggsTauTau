@@ -2685,7 +2685,7 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
    }
    
   
-     //BuildModule(httWeights);
+     BuildModule(httWeights);
      if(channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem){
        HTTStitching httStitching = HTTStitching("HTTStitching")  
          .set_era(era_type)
