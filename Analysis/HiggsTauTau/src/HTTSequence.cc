@@ -2551,14 +2551,13 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
              output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
           httStitching.set_do_w_soup(true);
           httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-          httStitching.SetWInputYields(29514020+57402435, 45283121, 30064264+30374504, 19798117+39501912, 9116657+2073275+18751462);
+          httStitching.SetWInputYields(29514020+57402435, 45171970, 30374504+30064264, 39501912+19798117, 18751462+2073275+9116657);
          }
          if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
            httStitching.set_do_dy_soup(true);
            httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-           httStitching.SetDYInputYields(49748967+96531428, 62280569, 19879279, 5857441, 4197868); 
+           httStitching.SetDYInputYields(58447928+114659635, 63730337, 19879279, 5857441, 4197868); 
          }
-      
       BuildModule(httStitching);   
     }
   }
@@ -4189,15 +4188,14 @@ void HTTSequence::BuildZMMPairs() {
     .set_input_label("muons")
     .set_shift(muon_shift));
  }
- /*if (mu_scale_mode > 0){
+ if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
-      .set_neg_far_endcap(muon_shift_negfarendcap)
-      .set_pos_far_endcap(muon_shift_posfarendcap)
+      .set_far_endcap(muon_shift_farendcap)
       .set_near_endcap(muon_shift_nearendcap)
       .set_barrel(muon_shift_barrel)
       );
- }*/
+ }
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
