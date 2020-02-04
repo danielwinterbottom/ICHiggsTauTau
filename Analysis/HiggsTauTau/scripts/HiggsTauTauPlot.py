@@ -1760,8 +1760,8 @@ if options.syst_res_met != '':
       systematics['syst_res_met_2jet_up'] = ('MET_RES_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_res_met_2jet_down'] = ('MET_RES_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:
-      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
-      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
+      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww', 'W'], False)
+      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','W'], False) 
 if options.syst_scale_met != '':
     hist_name = options.syst_scale_met
     if '$NJET' in hist_name: 
@@ -1777,8 +1777,8 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_2jet_up'] = ('MET_SCALE_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:  
-      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
-      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
+      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww', 'W'], False)
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww', 'W'], False)    
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
     jes_to_process=[]
@@ -2879,8 +2879,9 @@ def NormEmbedToMC(ana,outfile='output.root'):
     for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
     
-def TTBarEmbeddingSyst(ana,outfile,template_name):    
-    nominal_hist = outfile.Get(nodename+'/EmbedZTT')    
+def TTBarEmbeddingSyst(ana,outfile,template_name): 
+    if options.channel == 'zmm': nominal_hist = outfile.Get(nodename+'/EmbedZL')
+    else: nominal_hist = outfile.Get(nodename+'/EmbedZTT')    
     shift_hist = outfile.Get(nodename+'/TTT_embed_syst')
     shift_hist_2 = outfile.Get(nodename+'/VVT_embed_syst')
     shift_hist.Add(shift_hist_2)
@@ -3292,7 +3293,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
-        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
             if 'mvadm' in options.cat:

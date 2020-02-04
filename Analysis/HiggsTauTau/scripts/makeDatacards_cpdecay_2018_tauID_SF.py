@@ -189,7 +189,7 @@ if SCHEME == 'cpdecay':
   ADD_STRING_ZMM_GENERAL = '--add_wt=single_l_sf --set_alias "inclusive:(n_bjets==0 && trg_singlemuon&&pt_1>25)" ' 
   
   scheme_zmm = [
-    ("8",    "inclusive",      "2018_ZMM_inclusive",         VAR_ZMM, ADD_STRING_ZMM_GENERAL ),
+   # ("8",    "inclusive",      "2018_ZMM_inclusive",         VAR_ZMM, ADD_STRING_ZMM_GENERAL ),
   ]
   
   scheme_mt = [
