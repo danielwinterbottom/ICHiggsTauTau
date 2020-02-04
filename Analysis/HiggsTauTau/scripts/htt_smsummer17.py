@@ -133,9 +133,9 @@ os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
-scale = int(math.ceil(float(n_scales*n_channels)/32)
+scale = int(math.ceil(float(n_scales*n_channels)/30)
 )
-scale = int(math.ceil(float(n_scales)/2))
+#scale = int(math.ceil(float(n_scales)/2))
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
