@@ -40,22 +40,22 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 sample_list = [
 #    'DYJetsToLL-2017',
-    'SingleMuonA',
-    'SingleMuonB',
-    'SingleMuonC',
-    'SingleMuonD',
-    'TauA',
-    'TauB',
-    'TauC',
-    'TauD',
-    'EGammaA',
-    'EGammaB',
-    'EGammaC',
-    'EGammaD',
-    'MuonEGA',
-    'MuonEGB',
-    'MuonEGC',
-    'MuonEGD',
+#    'SingleMuonA',
+#    'SingleMuonB',
+#    'SingleMuonC',
+#    'SingleMuonD',
+#    'TauA',
+#    'TauB',
+#    'TauC',
+#    'TauD',
+#    'EGammaA',
+#    'EGammaB',
+#    'EGammaC',
+#    'EGammaD',
+#    'MuonEGA',
+#    'MuonEGB',
+#    'MuonEGC',
+#    'MuonEGD',
 #    'DYJetsToLL',
 #    'DY1JetsToLL-LO',
 #    'DY2JetsToLL-LO',
@@ -92,31 +92,31 @@ sample_list = [
 #    'ZZTo2L2Q',
 #    'ZZTo4L',
 #    'ZZTo4L-ext',
-    'EmbeddingElElB',
-    'EmbeddingElElC',
-    'EmbeddingElElD',
-    'EmbeddingElElA',
-    'EmbeddingElMuB',
-    'EmbeddingElMuC',
-    'EmbeddingElMuD',
-    'EmbeddingElMuA',
-    'EmbeddingElTauB',
-    'EmbeddingElTauC',
-    'EmbeddingElTauD',
-    'EmbeddingElTauA',
-    'EmbeddingMuMuB',
-    'EmbeddingMuMuC',
-    'EmbeddingMuMuD',
-    'EmbeddingMuMuA',
-    'EmbeddingMuTauB',
-    'EmbeddingMuTauC',
-    'EmbeddingMuTauD',
-    'EmbeddingMuTauA',
-    'EmbeddingTauTauB',
-    'EmbeddingTauTauC',
-    'EmbeddingTauTauD',
-    'EmbeddingTauTauA',
-
+#    'EmbeddingElElB',
+#    'EmbeddingElElC',
+#    'EmbeddingElElD',
+#    'EmbeddingElElA',
+#    'EmbeddingElMuB',
+#    'EmbeddingElMuC',
+#    'EmbeddingElMuD',
+#    'EmbeddingElMuA',
+#    'EmbeddingElTauB',
+#    'EmbeddingElTauC',
+#    'EmbeddingElTauD',
+#    'EmbeddingElTauA',
+#    'EmbeddingMuMuB',
+#    'EmbeddingMuMuC',
+#    'EmbeddingMuMuD',
+#    'EmbeddingMuMuA',
+#    'EmbeddingMuTauB',
+#    'EmbeddingMuTauC',
+#    'EmbeddingMuTauD',
+#    'EmbeddingMuTauA',
+#    'EmbeddingTauTauB',
+#    'EmbeddingTauTauC',
+#    'EmbeddingTauTauD',
+#    'EmbeddingTauTauA',
+#
 #    'GluGluHToTauTauUncorrelatedDecay',
 #    'GluGluHToTauTauUncorrelatedDecay_Filtered',
 #    'GluGluHToTauTau_M-125',
@@ -192,9 +192,9 @@ sample_list = [
 #    'ZHiggs0PHToTauTau',
 #    'ZHiggs0PHf05ph0ToTauTau',
 #    'ZHiggs0PMToTauTau',
-#    'ttHiggs0MToTauTau',
-#    'ttHiggs0Mf05ph0ToTauTau',
-#    'ttHiggs0PMToTauTau',
+    'ttHiggs0MToTauTau',
+    'ttHiggs0Mf05ph0ToTauTau',
+    'ttHiggs0PMToTauTau',
 
 	]
 
@@ -214,6 +214,19 @@ subdirs=list_paths(outputf)
 
 nfiles={}
 
+def FindMissingFiles(outf, d, samp, chan):
+  files=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2018_%(chan)s_*'%vars())
+  nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
+  nums.sort()
+  res = [ele for ele in range(max(nums)+1) if ele not in nums]
+
+  if len(res) !=0:
+    print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
+    for x in res: print '%(samp)s_2018_%(chan)s_%(x)i.root' % vars()
+    return False
+  else: 
+    return True
+
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 for sa in sample_list:
@@ -224,9 +237,10 @@ for sa in sample_list:
   for ch in channel:
     if os.path.isfile('%(outputf)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
       if "%(sa)s_2018"%vars() in nfiles or ignore==True:
-        if ignore==True or len(fnmatch.filter(os.listdir('%(outputf)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
+        no_missing_files = FindMissingFiles(outputf,'', sa, ch)
+        if (ignore==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
           if not batch:  
-            print "Hadding %(sa)s_%(ch)s"%vars()
+            exit()
             os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sa)s_2018_%(ch)s_* &> ./haddout.txt'% vars()) 
             os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
             filetext = open("./haddout.txt").read()
@@ -243,7 +257,8 @@ for sa in sample_list:
     for sdir in subdirs:
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
         if "%(sa)s_2018"%vars() in nfiles or ignore==True:
-          if ignore ==True or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
+          no_missing_files = FindMissingFiles(outputf,sdir, sa, ch)
+          if (ignore ==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
