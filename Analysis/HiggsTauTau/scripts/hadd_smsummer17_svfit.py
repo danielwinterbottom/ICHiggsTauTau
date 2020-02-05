@@ -172,6 +172,26 @@ subdirs=list_paths(outputf)
 # subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN']
 # subdirs=[]
 
+def FindMissingFiles(outf, d, samp, chan):
+  no_missing_files=True
+  files=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2017_%(chan)s_*_*_input.root'%vars())
+  last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
+  last_nums = list(set(last_nums))
+  for l in last_nums:
+    ffiles=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2017_%(chan)s_*_%(l)i_input.root'%vars())
+    nums=[]
+    nums = [int(x.split('_')[-3].replace('.root','')) for x in ffiles]
+    nums.sort()
+    res=[]
+    res = [ele for ele in range(max(nums)+1) if ele not in nums]
+
+    if len(res) !=0:
+      print "Some files are missing for sample %(samp)s_2017_%(chan)s! in %(d)s:"%vars()
+      for x in res: print '%(samp)s_2017_%(chan)s_%(x)i_%(l)i_input.root' % vars()
+      no_missing_files =  False
+
+  return no_missing_files
+
 for sa in sample_list:
   sa = 'svfit_'+sa
   command=''
@@ -180,38 +200,43 @@ for sa in sample_list:
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     if glob.glob('%(outputf)s/%(sa)s_2017_%(ch)s_*_*_input.root'%vars()):
-      if not batch:  
-        print "Hadding %(sa)s_%(ch)s"%vars()
-        os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
-        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
-        filetext = open("./haddout.txt").read()
-        if 'Warning' in filetext or 'Error' in filetext:
-          print "Hadd had a problem:"
-          print filetext 
-        else :
-          os.system('rm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
-      else:
-        haddout='haddout_%s.txt' % sa 
-        command+="echo \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ; else \nrm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()
-        # command+="echo \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ; fi\n" % vars()
-    for sdir in subdirs:
-      if glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*_*_input.root'%vars()):
+      no_missing_files = FindMissingFiles(outputf, '', sa, ch)
+      if no_missing_files:
         if not batch:  
-          print "Hadding in subdir %(sdir)s"%vars()
-          print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-          os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
+          print "Hadding %(sa)s_%(ch)s"%vars()
+          os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
           os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
           filetext = open("./haddout.txt").read()
           if 'Warning' in filetext or 'Error' in filetext:
             print "Hadd had a problem:"
             print filetext 
           else :
-            os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
+            os.system('rm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
         else:
-          haddout='haddout_%s_%s.txt' % (sa,sdir)  
-          command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()     
-          # command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ; fi\n" % vars()     
-
+          haddout='haddout_%s.txt' % sa 
+          command+="echo \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ; else \nrm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()
+      else:
+        print "Incorrect number of files for sample %(sa)s_2017_%(ch)s!"%vars()
+    for sdir in subdirs:
+      if glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*_*_input.root'%vars()):
+        no_missing_files = FindMissingFiles(outputf, sdir, sa, ch)
+        if no_missing_files:
+          if not batch:  
+            print "Hadding in subdir %(sdir)s"%vars()
+            print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
+            os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
+            os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
+            filetext = open("./haddout.txt").read()
+            if 'Warning' in filetext or 'Error' in filetext:
+              print "Hadd had a problem:"
+              print filetext 
+            else :
+              os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
+          else:
+            haddout='haddout_%s_%s.txt' % (sa,sdir)  
+            command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()    
+        else: 
+          print "Incorrect number of files for sample %(sa)s_2017_%(ch)s! in %(sdir)s"%vars()
   if batch and command:
     with open(JOB, "a") as file: file.write("\n%s" % command)
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
