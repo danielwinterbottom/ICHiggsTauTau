@@ -75,9 +75,16 @@ dm_bins = {
 }
 
 # choose bins to set to pol1 and pol0 here:
-fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm0_sig_lt3_njets2','mvadm0_sig_gt3_njets1','mvadm0_sig_gt3_njets2','mvadm1_njets0','mvadm2_njets0','mvadm2_njets1','mvadm11_njets1']
-fit_pol1_wjets = ['mvadm0_sig_lt3_njets2','mvadm1_njets0','mvadm2_njets0','mvadm2_njets1','mvadm10_njets0','mvadm11_njets1','dm0_njets2']
-fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3','dm0','dm1']
+#fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm0_sig_lt3_njets2','mvadm0_sig_gt3_njets1','mvadm0_sig_gt3_njets2','mvadm1_njets0','mvadm2_njets0','mvadm2_njets1','mvadm11_njets1']
+#fit_pol1_wjets = ['mvadm0_sig_lt3_njets2','mvadm1_njets0','mvadm2_njets0','mvadm2_njets1','mvadm10_njets0','mvadm11_njets1','dm0_njets2']
+#fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3','dm0','dm1']
+#fit_pol0_qcd   = []
+#fit_pol0_wjets = []
+#fit_pol0_ttbar = []
+
+fit_pol1_qcd   = []
+fit_pol1_wjets = []
+fit_pol1_ttbar = []
 fit_pol0_qcd   = []
 fit_pol0_wjets = []
 fit_pol0_ttbar = []

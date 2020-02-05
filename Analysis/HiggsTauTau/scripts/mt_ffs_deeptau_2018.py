@@ -11,11 +11,11 @@ ROOT.gROOT.SetBatch(1)
 ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='tight')
+parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2018.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/CP_2018_v5/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/FF_2018/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -85,12 +85,12 @@ other_files = [
 
 njets_bins = {
               'inclusive': '(1)',
-              'njets0':'n_jets==0 && trg_singlemuon',
-              'njets1':'n_jets==1 && trg_singlemuon',
-              'njets2':'n_jets>1 && trg_singlemuon',
-              'njets0_crosstrg':'n_jets==0 && trg_singlemuon==0',
-              'njets1_crosstrg':'n_jets==1 && trg_singlemuon==0',
-              'njets2_crosstrg':'n_jets>1 && trg_singlemuon==0'
+              'njets0':'n_jets==0 && trg_singlemuon && pt_1>25',
+              'njets1':'n_jets==1 && trg_singlemuon & pt_1>25',
+              'njets2':'n_jets>1 && trg_singlemuon & pt_1>25',
+              'njets0_crosstrg':'n_jets==0 && (trg_singlemuon && pt_1>25)==0',
+              'njets1_crosstrg':'n_jets==1 && (trg_singlemuon && pt_1>25)==0',
+              'njets2_crosstrg':'n_jets>1 && (trg_singlemuon && pt_1>25)==0'
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -108,11 +108,18 @@ dm_bins = {
 }
 
 # choose bins to set to pol1 and pol0 here:
-fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets2','mvadm1_njets2','dm0_njets2']
-fit_pol1_wjets = ['mvadm11_njets2']
+#fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets2','mvadm1_njets2','dm0_njets2']
+#fit_pol1_wjets = ['mvadm11_njets2']
+#fit_pol1_ttbar = []
+#fit_pol0_qcd   = ['dm10_njets2_crosstrg']
+#fit_pol0_wjets = ['mvadm11_njets2','mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm0_sig_gt3_njets2_crosstrg','mvadm1_njets2_crosstrg','mvadm2_njets2_crosstrg','dm0_njets1_crosstrg','dm0_njets2_crosstrg','dm1_njets2_crosstrg','dm11_njets2_crosstrg']
+#fit_pol0_ttbar = []
+
+fit_pol1_qcd   = []
+fit_pol1_wjets = []
 fit_pol1_ttbar = []
-fit_pol0_qcd   = ['dm10_njets2_crosstrg']
-fit_pol0_wjets = ['mvadm11_njets2','mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm0_sig_gt3_njets2_crosstrg','mvadm1_njets2_crosstrg','mvadm2_njets2_crosstrg','dm0_njets1_crosstrg','dm0_njets2_crosstrg','dm1_njets2_crosstrg','dm11_njets2_crosstrg']
+fit_pol0_qcd   = []
+fit_pol0_wjets = []
 fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
@@ -633,8 +640,8 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 draw_list=[]
 
 # mt plots
-baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
 var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100,140]'
 var2='pt_2[20,30,40,50,60,80]'
@@ -655,8 +662,8 @@ for njetbin in njets_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
