@@ -1618,39 +1618,32 @@ if options.syst_scale_j_hf_uncorr != '':
     systematics['syst_scale_j_hf_uncorr_down'] = ('JESHF_UNCORR_DOWN' , '_'+options.syst_scale_j_hf_uncorr+'Down', 'wt', ['EmbedZTT'], False)
 ############ Regrouped JEC for full run2
 if options.syst_scale_j_regrouped != "":
-    systematics['syst_scale_j_relbal_up']   = ('JESRBAL_UP' , '_'+options.syst_scale_j_relbal+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_relbal_down'] = ('JESRBAL_DOWN' , '_'+options.syst_scale_j_relbal+'Down', 'wt', ['EmbedZTT'], False)
+    hist_name = options.syst_scale_j_regrouped
+    # need dict of syst names and folders of where the shifted trees are found
+    names = ["Absolute", "Absolute_year", "BBEC1", "BBEC1_year", 
+            "EC2", "EC2_year", "FlavorQCD", "HF", "HF_year", 
+            "RelativeBal", "RelativeSample_year"]
+    folders = ["JESABS", "JESABS_YEAR", "JESBBEC1", "JESBBEC1_YEAR", 
+            "JESEC2", "JESEC2_YEAR", "JESFLAV", "JESHF", "JESHF_YEAR", 
+            "JESRBAL", "JESRELSAMP_YEAR"]
+    syst_dict = dict(zip(names, folders))
 
-    systematics['syst_scale_j_abs_up']   = ('JESABS_UP' , '_'+options.syst_scale_j_abs+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_abs_down'] = ('JESABS_DOWN' , '_'+options.syst_scale_j_abs+'Down', 'wt', ['EmbedZTT'], False)
+    replaceYear = ""
+    if options.era == "legacy16": replaceYear = "2016"
+    elif options.era == "cpsummer17": replaceYear = "2017"
+    elif options.era == "cp18": replaceYear = "2018"
+    else: assert ValueError("Regrouped JES only works for full RunII analyses")
 
-    systematics['syst_scale_j_abs_year_up']   = ('JESABS_YEAR_UP' , '_'+options.syst_scale_j_abs_year+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_abs_year_down'] = ('JESABS_YEAR_DOWN' , '_'+options.syst_scale_j_abs_year+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_flav_up']   = ('JESFLAV_UP' , '_'+options.syst_scale_j_flav+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_flav_down'] = ('JESFLAV_DOWN' , '_'+options.syst_scale_j_flav+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_bbec1_up']   = ('JESBBEC1_UP' , '_'+options.syst_scale_j_bbec1+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_bbec1_down'] = ('JESBBEC1_DOWN' , '_'+options.syst_scale_j_bbec1+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_bbec1_year_up']   = ('JESBBEC1_YEAR_UP' , '_'+options.syst_scale_j_bbec1_year+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_bbec1_year_down'] = ('JESBBEC1_YEAR_DOWN' , '_'+options.syst_scale_j_bbec1_year+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_ec2_up']   = ('JESEC2_UP' , '_'+options.syst_scale_j_ec2+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_ec2_down'] = ('JESEC2_DOWN' , '_'+options.syst_scale_j_ec2+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_ec2_year_up']   = ('JESEC2_YEAR_UP' , '_'+options.syst_scale_j_ec2_year+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_ec2_year_down'] = ('JESEC2_YEAR_DOWN' , '_'+options.syst_scale_j_ec2_year+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_hf_up']   = ('JESHF_UP' , '_'+options.syst_scale_j_hf+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_hf_down'] = ('JESHF_DOWN' , '_'+options.syst_scale_j_hf+'Down', 'wt', ['EmbedZTT'], False)
-
-    systematics['syst_scale_j_hf_year_up']   = ('JESHF_YEAR_UP' , '_'+options.syst_scale_j_year+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_hf_year_down'] = ('JESHF_YEAR_DOWN' , '_'+options.syst_scale_j_year+'Down', 'wt', ['EmbedZTT'], False)
-    
-    systematics['syst_scale_j_relsamp_year_up']   = ('JESRELSAMP_YEAR_UP' , '_'+options.syst_scale_j_relsamp_year+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_scale_j_relsamp_year_down'] = ('JESRELSAMP_YEAR_DOWN' , '_'+options.syst_scale_j_relsamp_year+'Down', 'wt', ['EmbedZTT'], False)
-######
+    if "*group" in hist_name:
+        for name, folder in syst_dict.iteritems():
+            if "year" in name: name.replace("year", replaceYear)
+            syst_name = hist_name.replace("*group", name)
+            systematics['syst_scale_j_{}_up'.format(syst_name)] = (
+                "{}_UP".format(folder), "_{}Up".format(syst_name), 
+                "wt", ["EmbedZTT"], False)
+            systematics['syst_scale_j_{}_down'.format(syst_name)] = (
+                "{}_DOWN".format(folder), "_{}Down".format(syst_name), 
+                "wt", ["EmbedZTT"], False)
 
 if options.syst_eff_b != '':
     systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
