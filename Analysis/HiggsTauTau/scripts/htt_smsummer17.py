@@ -133,9 +133,7 @@ os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
-scale = int(math.ceil(float(n_scales*n_channels)/32)
-)
-scale = int(math.ceil(float(n_scales)/2))
+scale = int(math.ceil(float(n_scales*n_channels)/30))
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -148,7 +146,6 @@ flatjsons = []
 #    scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
 #    if scale < 1: scale = 1
 # split into seperate jobs if number of scales is over a value
-scale=6
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
    last = (i+1)*int(math.ceil(total/scale))
@@ -545,11 +542,13 @@ if options.proc_bkg or options.proc_all:
   for sa in central_samples:
       JOB='%s_2017' % (sa)
       PREFIX = FILELIST.split("/")[1]
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_%(sa)s.root\"}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/adow/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\"}}' "%vars());
+      if "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
+          JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())
 
       job_num=0
       for FLATJSONPATCH in flatjsons:
-        nperjob = 20
+        nperjob = 10
         # if 'scale' in FLATJSONPATCH:
         #   nperjob = 10
         # if 'TT' in sa:
@@ -569,8 +568,8 @@ if options.proc_bkg or options.proc_all:
         else: 
           FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>28: nperjob = 10
-        if n_scales*n_channels>56: nperjob=5
+        if n_scales*n_channels>=24: nperjob = 10
+        if n_scales*n_channels>=48: nperjob=5
         # nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -613,10 +612,12 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 10
+        nperjob = 7
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>28: nperjob = 10
-        if n_scales*n_channels>56: nperjob=5
+        if n_scales*n_channels>=24: nperjob = 7
+        if n_scales*n_channels>=48: nperjob=4
+        if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
+          nperjob = int(math.ceil(float(nperjob)/2)) 
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
