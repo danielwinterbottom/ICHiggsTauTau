@@ -215,6 +215,19 @@ subdirs=list_paths(outputf)
 
 nfiles={}
 
+def FindMissingFiles(outf, d, samp, chan):
+  files=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2017_%(chan)s_*'%vars())
+  nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
+  nums.sort()
+  res = [ele for ele in range(max(nums)+1) if ele not in nums]
+
+  if len(res) !=0:
+    print "Some files are missing for sample %(samp)s_2017_%(chan)s! in %(d)s:"%vars()
+    for x in res: print '%(samp)s_2017_%(chan)s_%(x)i.root' % vars()
+    return False
+  else:
+    return True
+
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 for sa in sample_list:
@@ -225,7 +238,8 @@ for sa in sample_list:
   for ch in channel:
     if os.path.isfile('%(outputf)s/%(sa)s_2017_%(ch)s_0.root'%vars()):
       if "%(sa)s_2017"%vars() in nfiles or ignore==True:
-        if ignore==True or len(fnmatch.filter(os.listdir('%(outputf)s'%vars()),'%(sa)s_2017_%(ch)s_*'%vars())) == nfiles["%(sa)s_2017"%vars()]:
+        no_missing_files = FindMissingFiles(outputf,'', sa, ch)
+        if (ignore==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s'%vars()),'%(sa)s_2017_%(ch)s_*'%vars())) == nfiles["%(sa)s_2017"%vars()]:
           if not batch:  
             print "Hadding %(sa)s_%(ch)s"%vars()
             os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2017.root %(outputf)s/%(sa)s_2017_%(ch)s_* &> ./haddout.txt'% vars()) 
@@ -244,7 +258,8 @@ for sa in sample_list:
     for sdir in subdirs:
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars()):
         if "%(sa)s_2017"%vars() in nfiles or ignore==True:
-          if ignore ==True or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2017_%(ch)s_*'%vars())) == nfiles["%(sa)s_2017"%vars()]:
+          no_missing_files = FindMissingFiles(outputf,sdir, sa, ch)
+          if (ignore ==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2017_%(ch)s_*'%vars())) == nfiles["%(sa)s_2017"%vars()]:
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()

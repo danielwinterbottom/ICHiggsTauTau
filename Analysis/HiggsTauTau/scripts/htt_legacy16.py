@@ -127,7 +127,9 @@ os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
-scale = int(math.ceil(float(n_scales*n_channels)/50))
+#scale = int(math.ceil(float(n_scales*n_channels)/50))
+scale = int(math.ceil(float(n_scales*n_channels)/30))
+
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -313,7 +315,7 @@ if options.proc_embed or options.proc_all:
     if 'EmbeddingMuMu' in sa:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/mhassans/Jan06_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
-      nperjob = 10
+      nperjob = 20
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
 
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')  
@@ -322,8 +324,10 @@ if options.proc_embed or options.proc_all:
       if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
       if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
       n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-      if n_scales*n_channels>32: nperjob = 3
-      if n_scales*n_channels>64: nperjob=2
+      #if n_scales*n_channels>32: nperjob = 3
+      #if n_scales*n_channels>64: nperjob=2
+      if n_scales*n_channels>=24: nperjob = 10
+      if n_scales*n_channels>=48: nperjob=5
 
       #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
       if 'EmbeddingMuMu' in sa: nfiles = sum(1 for line in open('%(EMBEDFILELISTZMM)s_%(sa)s.dat' % vars()))
@@ -333,10 +337,11 @@ if options.proc_embed or options.proc_all:
         if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
         job_num+=1
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-      if parajobs: 
-        os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-        PARAJOBSUBMIT = getParaJobSubmit(job_num)
-        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+    if parajobs: 
+      os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+      PARAJOBSUBMIT = getParaJobSubmit(job_num)
+      #os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
+      print '%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars() 
 
 
 
@@ -396,8 +401,6 @@ if options.proc_bkg or options.proc_all:
     'EWKZ2Jets_ZToNuNu-ext1',
     'EWKZ2Jets_ZToNuNu-ext2',
     'ZZTo4L-amcat',
-    'GluGluHToWWTo2L2Nu_M-125',
-    'VBFHToWWTo2L2Nu_M-125',
     ]
 
   for sa in central_samples:
@@ -406,17 +409,19 @@ if options.proc_bkg or options.proc_all:
       job_num=0
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20
+        if sa == 'TT': nperjob = 10
+  
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>32: nperjob = 5
-        if n_scales*n_channels>64: nperjob=3
-        #if sa == 'TT':
-        #  nperjob = 15 
-        #  if n_scales*n_channels>32: nperjob = 7
-        #  if n_scales*n_channels>64: nperjob=3
+        if n_scales*n_channels>=24: nperjob = 10
+        if n_scales*n_channels>=48: nperjob=5
+        if sa == 'TT':
+          nperjob = 15 
+          if n_scales*n_channels>24: nperjob = 5
+          if n_scales*n_channels>48: nperjob = 2
 
         #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -446,8 +451,11 @@ if options.proc_sm or options.proc_all:
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 20
         n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>=28: nperjob = 3
-        if n_scales*n_channels>=56: nperjob=1
+        if n_scales*n_channels>=24: nperjob = 10
+        if n_scales*n_channels>=48: nperjob=5
+
+        if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa:
+          nperjob = int(math.ceil(float(nperjob)/2))
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
