@@ -71,8 +71,9 @@ dm_bins = {
               'mvadm11':'(mva_dm_X==11)'
 }
 
-fit_pol1 = ['mvadm0_sig_lt3_njets2','dm0_njets0','dm0_njets2']
+#fit_pol1 = ['mvadm0_sig_lt3_njets2','dm0_njets0','dm0_njets2']
 
+fit_pol1=[]
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
@@ -532,9 +533,9 @@ def WriteFunctionDM2Jets(fout, subtau=False,aiso=False):
 draw_list=[]
 
 # tt plots
-baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-#baseline_aiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_%(wp)s_1>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+#baseline_aiso2 = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_%(wp)s_1>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
 
 var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200]'
 #var2='pt_2[40,45,50,55,60,65,70,80,90,100,120,140]'
@@ -551,11 +552,11 @@ for njetbin in njets_bins:
     ff_list[name+'_pt_1'] = (var1, cut_iso1, cut_aiso1)
 
 # use measurments in tau2 anti iso region to define uncertainty
-#baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-#baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+#baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+#baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
 
-baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
-baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
@@ -622,7 +623,7 @@ for ff in ff_list:
 # make fractions
 
 if draw or True:
-  #baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
+  #baseline_eitheraiso = 'deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && (deepTauVsJets_%(wp)s_1<0.5 || deepTauVsJets_%(wp)s_2<0.5) && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6' % vars()
   # fractions are currently been produced assuming only lead tau will be anti isolated 
  
   njets_cuts = ['n_jets==0','n_jets==1','n_jets>=2']
@@ -736,8 +737,8 @@ for i in ['mvadm_nosig','mvadm','dm']:
 # closure comparrison to define os/ss corrections and uncertainties
 # pt_2 dependent closure correction
 var='pt_2[40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140]'
-baseline_aiso2_iso = '(mva_dm_1>=0&&mva_dm_2>=0)*(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
-baseline_aiso2_aiso1 = '(mva_dm_1>=0&&mva_dm_2>=0)*(deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
+baseline_aiso2_iso = '(mva_dm_1>=0&&mva_dm_2>=0)*(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
+baseline_aiso2_aiso1 = '(mva_dm_1>=0&&mva_dm_2>=0)*(deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
 
 for i in ['mvadm_nosig','mvadm','dm']:
   met_corr_fit = fout.Get('%(i)s_met_ss_aiso2_closure_qcd_fit' % vars())

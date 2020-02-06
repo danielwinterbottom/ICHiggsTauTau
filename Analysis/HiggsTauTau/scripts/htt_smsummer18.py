@@ -387,10 +387,10 @@ if options.proc_embed or options.proc_all:
                 if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
                 job_num+=1
             file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-            if parajobs:
-                os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-                PARAJOBSUBMIT = getParaJobSubmit(job_num)
-                os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
+        if parajobs:
+            os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+            PARAJOBSUBMIT = getParaJobSubmit(job_num)
+            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
 
 if options.proc_bkg or options.proc_all:

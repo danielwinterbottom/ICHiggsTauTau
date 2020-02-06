@@ -50,9 +50,11 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")),
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
-      do_htxs_(config.getParameter<bool>("includeHTXS")),
-      htxsSrc_(consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification")))
+      do_htxs_(config.getParameter<bool>("includeHTXS"))
 {
+#if CMSSW_MAJOR_VERSION>=10
+       htxsSrc_(consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification"));
+#endif
 #if CMSSW_MAJOR_VERSION >= 7
       consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
 #endif
@@ -195,6 +197,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_good_vertices(vtxs_handle->size());
   }
 
+#if CMSSW_MAJOR_VERSION>=10
   if(do_htxs_){
     edm::Handle<HTXS::HiggsClassification> htxs;
     event.getByToken(htxsSrc_, htxs);
@@ -207,6 +210,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_pt_h(pt_h);
     info_->set_stage1_cat(stage1_cat);
   }
+#endif
 
   edm::Handle<LHEEventProduct> lhe_handle;
   edm::Handle<GenEventInfoProduct> gen_info_handle;
