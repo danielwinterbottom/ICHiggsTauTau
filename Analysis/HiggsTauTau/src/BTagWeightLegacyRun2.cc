@@ -148,7 +148,7 @@ namespace ic {
           p_data *= (1 - sf_l*eff_loose);
         }
 
-        if (!(p_data == 0. && p_mc == 0.)) result[i] = p_data/p_mc;
+        if (p_mc != 0.) result[i] = p_data/p_mc;
         else result[i] = 1.;
 
       }
