@@ -136,7 +136,7 @@ if svfit_mode == 1:
 
 
 #scale = int(math.ceil(float(n_scales*n_channels)/32))
-scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
+scale = int(math.ceil(float(n_scales*n_channels)/30)) # change back later!
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
