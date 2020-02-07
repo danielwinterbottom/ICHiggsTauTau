@@ -2642,7 +2642,7 @@ namespace ic {
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
-    dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
+    dphi_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
     dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
@@ -3698,7 +3698,7 @@ namespace ic {
       } else {
         j1_dm_ = -1;
       }
-      dphi_jtt_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector()));
+      dphi_jtt_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector());
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;

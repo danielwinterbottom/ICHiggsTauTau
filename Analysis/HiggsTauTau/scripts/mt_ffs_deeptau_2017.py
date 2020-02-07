@@ -51,12 +51,12 @@ other_files = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToL
 
 njets_bins = {
               'inclusive': '(1)',
-              'njets0':'n_jets==0 && trg_singlemuon',
-              'njets1':'n_jets==1 && trg_singlemuon',
-              'njets2':'n_jets>1 && trg_singlemuon',
-              'njets0_crosstrg':'n_jets==0 && trg_singlemuon==0',
-              'njets1_crosstrg':'n_jets==1 && trg_singlemuon==0',
-              'njets2_crosstrg':'n_jets>1 && trg_singlemuon==0'
+              'njets0':'n_jets==0 && trg_singlemuon && pt_1>25',
+              'njets1':'n_jets==1 && trg_singlemuon & pt_1>25',
+              'njets2':'n_jets>1 && trg_singlemuon & pt_1>25',
+              'njets0_crosstrg':'n_jets==0 && (trg_singlemuon && pt_1>25)==0',
+              'njets1_crosstrg':'n_jets==1 && (trg_singlemuon && pt_1>25)==0',
+              'njets2_crosstrg':'n_jets>1 && (trg_singlemuon && pt_1>25)==0'
 }
 dm_bins = {
               'inclusive': '(1)',
@@ -74,11 +74,18 @@ dm_bins = {
 }
 
 # choose bins to set to pol1 and pol0 here:
-fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm2_njets2','dm0_njets1','dm1_njets2','dm11_njets0','dm11_njets1']
-fit_pol1_wjets = ['mvadm11_njets2','dm11_njets2']
-fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3','dm0_njets1_crosstrg']
-fit_pol0_qcd   = ['mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm1_njets2_crosstrg','dm11_njets2']
-fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm1njets2_crosstrg','mvadm10_njets2_crosstrg','dm0_njets2_crosstrg','dm10_njets2_crosstrg','dm11_njets2_crosstrg']
+#fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets1','mvadm2_njets2','dm0_njets1','dm1_njets2','dm11_njets0','dm11_njets1']
+#fit_pol1_wjets = ['mvadm11_njets2','dm11_njets2']
+#fit_pol1_ttbar = ['mvadm0_sig_lt3','mvadm0_sig_gt3','dm0_njets1_crosstrg']
+#fit_pol0_qcd   = ['mvadm0_sig_lt3_njets2','mvadm0_sig_lt3_njets2_crosstrg','mvadm1_njets2_crosstrg','dm11_njets2']
+#fit_pol0_wjets = ['mvadm0_sig_lt3_njets1_crosstrg','mvadm0_sig_lt3_njets2_crosstrg','mvadm1njets2_crosstrg','mvadm10_njets2_crosstrg','dm0_njets2_crosstrg','dm10_njets2_crosstrg','dm11_njets2_crosstrg']
+#fit_pol0_ttbar = []
+
+fit_pol1_qcd   = []
+fit_pol1_wjets = []
+fit_pol1_ttbar = []
+fit_pol0_qcd   = []
+fit_pol0_wjets = []
 fit_pol0_ttbar = []
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
@@ -599,8 +606,8 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 draw_list=[]
 
 # mt plots
-baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
 var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100,140]'
 var2='pt_2[20,30,40,50,60,80]'
@@ -621,8 +628,8 @@ for njetbin in njets_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && (trg_mutaucross||trg_singlemuon) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:

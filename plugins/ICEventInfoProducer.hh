@@ -11,8 +11,9 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#if CMSSW_MAJOR_VERSION>=10
 #include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
-
+#endif
 /**
  * @brief Produces an ic::EventInfo object
  *
@@ -67,7 +68,9 @@ class ICEventInfoProducer : public edm::EDProducer {
 
   // HTXS stuff
   bool do_htxs_;
+  #if CMSSW_MAJOR_VERSION>=10
   edm::EDGetTokenT<HTXS::HiggsClassification> htxsSrc_;
+  #endif
 
   edm::EDGetTokenT< double > prefweight_token_;
   edm::EDGetTokenT< double > prefweightup_token_;

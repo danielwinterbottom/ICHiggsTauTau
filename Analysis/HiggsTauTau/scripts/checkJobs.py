@@ -29,7 +29,7 @@ for file_ in files:
         # if "bad_alloc"  not in open("{}/{}".format(path, file_)).read():
         #     print("{}".format(file_.split(".")[0]))
         print("{}".format(file_.split(".")[0]))
-        # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -l h_vmem=24G -q hep.q jobs/{}.sh"
+        # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -l h_vmem=12G -q hep.q jobs/{}.sh"
         # run_command("qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 -q hep.q jobs/{}.sh"
                # .format(file_.split(".")[0]))
         counter += 1
