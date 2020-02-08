@@ -192,6 +192,8 @@ def FindMissingFiles(outf, d, samp, chan):
 
   return no_missing_files
 
+failed=[]
+
 for sa in sample_list:
   sa = 'svfit_'+sa
   command=''
@@ -213,6 +215,7 @@ for sa in sample_list:
           else :
             os.system('rm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
         else:
+          failed.append(sa)
           haddout='haddout_%s.txt' % sa 
           command+="echo \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ; else \nrm %(outputf)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()
       else:
@@ -233,6 +236,7 @@ for sa in sample_list:
             else :
               os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root' %vars())
           else:
+            failed.append(sa)
             haddout='haddout_%s_%s.txt' % (sa,sdir)  
             command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017_input.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*input.root; fi\n" % vars()    
         else: 
@@ -240,4 +244,8 @@ for sa in sample_list:
   if batch and command:
     with open(JOB, "a") as file: file.write("\n%s" % command)
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+
+failed = list(set(failed))
+print 'Summary of samples with failures:'
+for i in failed: print i
 

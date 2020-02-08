@@ -132,13 +132,10 @@ namespace ic {
         double sf_l = sf_loose[i];
         double sf_t = sf_tight[i];
           
-        /*if (csv > tight_wp) {
-          technically need to do 
+        if (csv > tight_wp) {
           p_mc *= eff_tight;
-          p_data *= eff_tight;
-          however this just factors out when doing the ratio in the end
-          so can set both to 1. (or even remove this if statement)
-        }*/
+          p_data *= sf_t*eff_tight;
+        }
         if (csv > loose_wp && csv < tight_wp){
           p_mc *= (eff_loose - eff_tight);
           p_data *= (sf_l*eff_loose - sf_t*eff_tight);
@@ -148,8 +145,9 @@ namespace ic {
           p_data *= (1 - sf_l*eff_loose);
         }
 
-        if (!(p_data == 0. && p_mc == 0.)) result[i] = p_data/p_mc;
+        if (p_mc != 0.) result[i] = p_data/p_mc;
         else result[i] = 1.;
+        if (result[i] < 0) result[i] = 1.;
 
       }
       if (verbose) {

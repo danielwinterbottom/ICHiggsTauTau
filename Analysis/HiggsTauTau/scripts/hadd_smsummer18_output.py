@@ -5,6 +5,7 @@ import os
 from optparse import OptionParser
 import math
 import fnmatch
+import glob
 
 parser = OptionParser()
 
@@ -235,12 +236,12 @@ for sa in sample_list:
     JOB='jobs/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    if os.path.isfile('%(outputf)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
+    #if os.path.isfile('%(outputf)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
+    if glob.glob('%(outputf)s/%(sa)s_2018_%(ch)s_*.root'%vars()):
       if "%(sa)s_2018"%vars() in nfiles or ignore==True:
         no_missing_files = FindMissingFiles(outputf,'', sa, ch)
         if (ignore==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
           if not batch:  
-            exit()
             os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sa)s_2018_%(ch)s_* &> ./haddout.txt'% vars()) 
             os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
             filetext = open("./haddout.txt").read()
@@ -255,7 +256,8 @@ for sa in sample_list:
         else :
           print "Incorrect number of files for sample %(sa)s_2018_%(ch)s!"%vars()
     for sdir in subdirs:
-      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
+      #if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
+      if glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*.root'%vars()):
         if "%(sa)s_2018"%vars() in nfiles or ignore==True:
           no_missing_files = FindMissingFiles(outputf,sdir, sa, ch)
           if (ignore ==True and no_missing_files) or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]:
