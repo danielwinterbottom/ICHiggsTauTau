@@ -34,7 +34,7 @@ def main():
                     channels = ["tt", "mt","et"]
                 else:
                     channels = ["tt", "mt"]
-                ch_validity_thrs = { 'et': 35, 'mt': 32, 'tt': 40 }
+                ch_validity_thrs = { 'et': 35, 'mt': 25, 'tt': 40 }
                 
                 for channel in channels:
                     with PdfPages("outputs/SF_plots_{}Channel_{}_{}DM_{}.pdf".format(channel, year ,DM_type, predSample)) as pdf:
