@@ -125,12 +125,12 @@ namespace ic {
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
       }
-      for (unsigned i = 0; i < sf_tight.size(); i++) {
+      for (unsigned j = 0; j < sf_tight.size(); j++) {
         double p_mc = 1.;
         double p_data = 1.;
 
-        double sf_l = sf_loose[i];
-        double sf_t = sf_tight[i];
+        double sf_l = sf_loose[j];
+        double sf_t = sf_tight[j];
           
         if (csv > tight_wp) {
           p_mc *= eff_tight;
@@ -145,9 +145,9 @@ namespace ic {
           p_data *= (1 - sf_l*eff_loose);
         }
 
-        if (p_mc != 0.) result[i] = p_data/p_mc;
-        else result[i] = 1.;
-        if (result[i] < 0) result[i] = 1.;
+        if (p_mc != 0.) result[j] = p_data/p_mc;
+        else result[j] = 1.;
+        if (result[j] < 0) result[j] = 1.;
 
       }
       if (verbose) {

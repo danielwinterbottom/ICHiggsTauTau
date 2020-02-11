@@ -136,8 +136,10 @@ if svfit_mode == 1:
 
 
 scale = int(math.ceil(float(n_scales*n_channels)/30))
+scale_embed = int(math.ceil(float(n_scales*4)/30))
 #scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
 if scale < 1: scale = 1
+if scale_embed < 1: scale_embed = 1
 
 total = float(len(flatjsonlistdysig))
 flatjsons = []
@@ -157,6 +159,14 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
+flatjsons_embed = []
+for i in range(0,scale_embed):
+   first = i*int(math.ceil(total/scale_embed))
+   last = (i+1)*int(math.ceil(total/scale_embed))
+   temp=''.join(flatjsonlistdysig[first:last])
+   if temp == '': continue
+   temp='job:sequences:all:'+temp
+   flatjsons_embed.append(temp)
 
 FILELIST='filelists/Jan24_2018_MC_102X'
 
@@ -356,7 +366,7 @@ if options.proc_embed or options.proc_all:
         job_num=0
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
-        for FLATJSONPATCH in flatjsons:
+        for FLATJSONPATCH in flatjsons_embed:
             nperjob = 20
             #if 'ElTau' in sa: nperjob = 10
             if 'ElTauD' in sa: nperjob = 100
