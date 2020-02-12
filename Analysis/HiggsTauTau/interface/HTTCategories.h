@@ -209,6 +209,11 @@ class HTTCategories : public ModuleBase {
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
+
+  double newmet_dphi_1_;
+  double newmet_dphi_2_;
+  double newmet_;
+
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
