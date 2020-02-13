@@ -129,6 +129,21 @@ namespace ic {
               ff_ws_us_->function(("ff_mt_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
       }
 
+
+      // load MVA scroes reader for fractions
+      reader_ = new TMVA::Reader();
+      reader_->AddVariable( "pt_tt", &pt_tt_ );
+      reader_->AddVariable( "pt_1", &pt_1_ );
+      reader_->AddVariable( "pt_2", &pt_2_ );
+      reader_->AddVariable( "met", &met_ );
+      reader_->AddVariable( "m_vis", &m_vis_ );
+      reader_->AddVariable( "n_jets", &n_jets_ );
+      reader_->AddVariable( "mjj", &mjj_ );
+      reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
+      reader_->AddVariable( "mt_1", &mt_1_ );
+      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_mt.xml";
+      reader_->BookMVA( "BDT method", xml_file );
+
       return 0;
     }
 
@@ -176,6 +191,19 @@ namespace ic {
               ff_ws_us_->function(("ff_et_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
       }
 
+      // load MVA scroes reader for fractions
+      reader_ = new TMVA::Reader();
+      reader_->AddVariable( "pt_tt", &pt_tt_ );
+      reader_->AddVariable( "pt_1", &pt_1_ );
+      reader_->AddVariable( "pt_2", &pt_2_ );
+      reader_->AddVariable( "met", &met_ );
+      reader_->AddVariable( "m_vis", &m_vis_ );
+      reader_->AddVariable( "n_jets", &n_jets_ );
+      reader_->AddVariable( "mjj", &mjj_ );
+      reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
+      reader_->AddVariable( "mt_1", &mt_1_ );
+      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_et.xml";
+      reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
     }
@@ -376,10 +404,10 @@ namespace ic {
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
     
     // Get all inputs needed by FF 
-    double pt_1_ = lep1->pt();  
-    double pt_2_ = lep2->pt();
-    double m_vis_ = ditau->M();
-    double mt_1_ = MT(lep1, met);
+    pt_1_ = lep1->pt();  
+    pt_2_ = lep2->pt();
+    m_vis_ = ditau->M();
+    mt_1_ = MT(lep1, met);
 
     double m_sv_=-9999;
     if (event->Exists("svfitMass")) {
@@ -388,7 +416,8 @@ namespace ic {
       //m_sv_ = -9999;
       m_sv_ = m_vis_*1.4; // not intended for use in a propper analysis but quick fix for cases when sv fit mas has not been calculated yet. 1.4 factor is roughly the ratio of m_sv/m_vis for QCD/W jets events
     }
-    double pt_tt_ = (ditau->vector() + met->vector()).pt();   
+    pt_tt_ = (ditau->vector() + met->vector()).pt();   
+    met_ = met->pt();   
  
     double iso_1_ = 0;
     if (channel_ == channel::et) {
@@ -412,8 +441,8 @@ namespace ic {
       tau_decaymode_2_ = tau2->decay_mode();  
     }
     
-    double n_jets_ = jets.size();
-    double mjj_ = 0;
+    n_jets_ = (double)jets.size();
+    mjj_ = 0;
     if(n_jets_>1) mjj_ = (jets[0]->vector()+jets[1]->vector()).M();    
 
     double sjdphi_ = -9999;
@@ -613,18 +642,26 @@ namespace ic {
 
           double ipsig = IPAndSignificance(tau, refit_vertex, pfcands).second;
 
-          double mva_dm_2=tau->HasTauID("MVADM2017v1") ? tau->GetTauID("MVADM2017v1") : -1.;
+          mva_dm_2_=tau->HasTauID("MVADM2017v1") ? tau->GetTauID("MVADM2017v1") : -1.;
+
+          // get mva fractions
+          std::vector<float> scores = reader_->EvaluateMulticlass("BDT method");
+          double qcd_score = scores[1];
+          double w_score = scores[0];
+          
+          event->Add("w_frac_score",  w_score);
+          event->Add("qcd_frac_score",  qcd_score);
 
           bool isOS = PairOppSign(ditau);
           double os = 1.;
           if(!isOS) os=0.; 
 
-          auto args = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single,m_vis_};
+          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single,m_vis_};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
           event->Add("wt_ff_1",  ff_nom);
 
-          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,os,met->pt(),iso_1_,pass_single};
-          auto args_w = std::vector<double>{pt_2_,mva_dm_2,ipsig,n_jets_,pt_1_,met->pt(),mt_1_,pass_single,m_vis_};
+          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met->pt(),iso_1_,pass_single};
+          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met->pt(),mt_1_,pass_single,m_vis_};
           ff_nom = fns_["ff_lt_medium_mvadmbins_qcd"]->eval(args_qcd.data());
           event->Add("wt_ff_qcd_1",  ff_nom);
           ff_nom = fns_["ff_lt_medium_mvadmbins_wjets"]->eval(args_w.data());
@@ -722,9 +759,9 @@ namespace ic {
           auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met->pt()};
           double ff_nom = fns_["ff_tt_medium_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
-          double mva_dm_2=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
+          double mva_dm_2_=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
           double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
-          auto args2 = std::vector<double>{pt_2_,mva_dm_2,ipsig2,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           double ff_nom_2 = fns_["ff_tt_medium_mvadmbins"]->eval(args2.data());
           event->Add("wt_ff_2",  ff_nom_2);
  
