@@ -138,6 +138,17 @@ namespace ic {
         sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
+        // do b separate
+        sf_tight[3] = 1.;
+        sf_loose[3] = 1.;
+        sf_tight[4] = 1.;
+        sf_loose[4] = 1.;
+        // do c separate
+        sf_tight[5] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_loose[5] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_tight[6] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_loose[6] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
+
       }
 
       double csv = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") +
