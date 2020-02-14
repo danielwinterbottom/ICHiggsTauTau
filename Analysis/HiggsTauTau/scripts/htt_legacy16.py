@@ -497,6 +497,9 @@ if options.proc_sm or options.proc_all:
     if sa == "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered":
         SIG_FILELIST="filelists/Feb05_MC_102X_2016"
         user = "adow"
+    else:
+        SIG_FILELIST = FILELIST
+        user = "mhassans"
     PREFIX = SIG_FILELIST.split('/')[1]
     # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
@@ -531,7 +534,7 @@ if options.proc_sm or options.proc_all:
               subfile.write(condor_settings)
               subfile.close()
               os.system('condor_submit jobs/{}'.format(subfilename))
-          job_num+=1 
+          job_num+=1
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
     if parajobs: 
       os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
