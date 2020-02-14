@@ -8,7 +8,7 @@
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
 #include <string>
-
+#include "TMVA/Reader.h"
 namespace ic {
 
 class HTTFakeFactorWeights : public ModuleBase {
@@ -51,6 +51,8 @@ class HTTFakeFactorWeights : public ModuleBase {
   std::vector<std::string> systs_mvadm_;
   std::vector<std::string> systs_us_;
 
+  TMVA::Reader *reader_;
+  float met_, pt_1_, pt_2_, mva_dm_2_, mt_1_, m_vis_, pt_tt_, mjj_, n_jets_;
 };
 
 }

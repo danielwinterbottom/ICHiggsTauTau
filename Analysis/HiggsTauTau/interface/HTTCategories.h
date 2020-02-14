@@ -213,6 +213,7 @@ class HTTCategories : public ModuleBase {
   double newmet_dphi_1_;
   double newmet_dphi_2_;
   double newmet_;
+  double qcd_frac_score_, w_frac_score_;
 
   double emu_csv_;
   double emu_dxy_1_;

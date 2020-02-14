@@ -696,6 +696,8 @@ namespace ic {
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
+      outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
+      outtree_->Branch("w_frac_score",             &w_frac_score_);
 
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
@@ -1649,6 +1651,9 @@ namespace ic {
 
     if (event->Exists("flagMETFilter")) flagMETFilter_ = event->Get<bool>("flagMETFilter"); 
     else flagMETFilter_ = false;
+
+    w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
+    qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
