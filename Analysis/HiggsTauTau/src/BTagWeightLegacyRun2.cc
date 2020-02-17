@@ -105,15 +105,15 @@ namespace ic {
         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
         // now do b separate
-        sf_tight[3] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-        sf_loose[3] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-        sf_tight[4] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
-        sf_loose[4] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
-        // now do c separate
-        sf_tight[5] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-        sf_loose[5] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-        sf_tight[6] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-        sf_loose[6] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+        sf_tight[3] = sf_tight[1]; // tight down
+        sf_loose[3] = sf_loose[1]; // loose down
+        sf_tight[4] = sf_tight[2]; // tight up
+        sf_loose[4] = sf_loose[2]; // tight down
+        // now do c and udsg separate
+        sf_tight[5] = sf_tight[0]; // tight central
+        sf_loose[5] = sf_loose[0]; // loose central
+        sf_tight[6] = sf_tight[0]; // tight central
+        sf_loose[6] = sf_loose[0]; // loose central
       } else if(jet_flavour == 4){
         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
@@ -122,15 +122,15 @@ namespace ic {
         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
         // do b separate
-        sf_tight[3] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-        sf_loose[3] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-        sf_tight[4] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-        sf_loose[4] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-        // do c separate
-        sf_tight[5] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-        sf_loose[5] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-        sf_tight[6] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
-        sf_loose[6] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
+        sf_tight[3] = sf_tight[0]; // tight central
+        sf_loose[3] = sf_loose[0]; // loose central
+        sf_tight[4] = sf_tight[0]; // tight central
+        sf_loose[4] = sf_loose[0]; // loose central
+        // do c and udsg separate
+        sf_tight[5] = sf_tight[1]; // tight down
+        sf_loose[5] = sf_loose[1]; // loose down
+        sf_tight[6] = sf_tight[2]; // tight up
+        sf_loose[6] = sf_loose[2]; // loose up
       } else {
         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
@@ -139,16 +139,15 @@ namespace ic {
         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
         // do b separate
-        sf_tight[3] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_loose[3] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_tight[4] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_loose[4] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
-        // do c separate
-        sf_tight[5] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_loose[5] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_tight[6] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
-        sf_loose[6] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
-
+        sf_tight[3] = sf_tight[0]; // tight central
+        sf_loose[3] = sf_loose[0]; // loose central
+        sf_tight[4] = sf_tight[0]; // tight central
+        sf_loose[4] = sf_loose[0]; // loose central
+        // do c and udsg separate
+        sf_tight[5] = sf_tight[1]; // tight down
+        sf_loose[5] = sf_loose[1]; // loose down
+        sf_tight[6] = sf_tight[2]; // tight up
+        sf_loose[6] = sf_loose[2]; // loose up
       }
 
       double csv = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") +
