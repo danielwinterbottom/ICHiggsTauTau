@@ -224,6 +224,13 @@ channel = ['em','et','mt','tt']
 subdirs=['']
 subdirs=+list_paths(outputf)
 
+new_subdirs=[]
+for d in subdirs:
+  if os.listdir('%(outputf)s/%(d)s' % vars()): new_subdirs.append(d)
+subdirs=new_subdirs
+
+print subdirs
+
 def FindMissingFiles(outf, d, samp, chan):
   no_missing_files=True
   files=glob.glob('%(outf)s/%(d)s/%(samp)s_2016_%(chan)s_*_*_input.root'%vars())
