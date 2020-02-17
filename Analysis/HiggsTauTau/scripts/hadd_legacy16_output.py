@@ -5,6 +5,7 @@ import os
 from optparse import OptionParser
 import math
 import fnmatch
+import glob
 
 parser = OptionParser()
 
