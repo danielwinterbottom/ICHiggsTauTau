@@ -196,17 +196,12 @@ sample_list = [
 
 channel = ['em','et','mt','tt']
 
-subdirs=list_paths(outputf)
-
-# subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','JESRSAMP_UP','JESRSAMP_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP','JES_CORR_UP','JES_CORR_DOWN','JES_UNCORR_UP','JES_UNCORR_DOWN','JESFULL_CORR_DOWN','JESFULL_CORR_UP','JESCENT_CORR_UP','JESCENT_CORR_DOWN','JESHF_CORR_UP','JESHF_CORR_DOWN','JESFULL_UNCORR_DOWN','JESFULL_UNCORR_UP','JESCENT_UNCORR_UP','JESCENT_UNCORR_DOWN','JESHF_UNCORR_UP','JESHF_UNCORR_DOWN','JESBBEE1_DOWN','JESBBEE1_UP','JESBBEE1_UNCORR_DOWN','JESBBEE1_UNCORR_UP','JESBBEE1_CORR_DOWN','JESBBEE1_CORR_UP','JESEE2_DOWN','JESEE2_UP','JESEE2_UNCORR_DOWN','JESEE2_UNCORR_UP','JESEE2_CORR_DOWN','JESEE2_CORR_UP']
-# subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN']
-#subdirs = ['MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN']
-# subdirs = ['TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN']
-# subdirs=[]
+subdirs=['']
+subdirs=+list_paths(outputf)
 
 def FindMissingFiles(outf, d, samp, chan):
   no_missing_files=True
-  files=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
+  files=glob.glob('%(outf)s/%(d)s/%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
   last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
   last_nums = list(set(last_nums))
   for l in last_nums:
@@ -236,31 +231,8 @@ for sa in sample_list:
     JOB='jobs/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    if glob.glob('%(outputf)s/%(sa)s_2018_%(ch)s_*_*_input.root'%vars()):
-      no_missing_files = FindMissingFiles(outputf, '', sa, ch)  
-      if no_missing_files:
-        if not batch:  
-          print "Hadding %(sa)s_%(ch)s"%vars()
-          os.system('hadd -f %(outputf)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sa)s_2018_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
-          os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
-          filetext = open("./haddout.txt").read()
-          if 'Warning' in filetext or 'Error' in filetext:
-            print "Hadd had a problem:"
-            print filetext
-            remove=False 
-            failed.append(sa)
-          else :
-            to_remove.append('rm %(outputf)s/%(sa)s_2018_%(ch)s_*input.root' %vars())
-        else:
-          haddout='haddout_%s_%s.txt' % (sa,ch)
-          hadd_dirs.append((haddout, 'rm %(outputf)s/%(sa)s_2018_%(ch)s_*input.root' %vars()))  
-          command+="echo \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sa)s_2018_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()
-      else:
-        failed.append(sa)
-        print "Incorrect number of files for sample %(sa)s_2018_%(ch)s!"%vars()
-        remove=False 
     for sdir in subdirs:
-      if glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*_*_input.root'%vars()):
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0_0_input.root'%vars()):
         no_missing_files = FindMissingFiles(outputf, sdir, sa, ch)
         if no_missing_files:
           if not batch:  
@@ -306,3 +278,4 @@ for sa in sample_list:
 failed = list(set(failed))
 print 'Summary of samples with failures:'
 for i in failed: print i
+
