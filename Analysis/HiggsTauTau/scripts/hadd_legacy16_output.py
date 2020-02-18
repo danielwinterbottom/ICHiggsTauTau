@@ -316,5 +316,6 @@ for sa in sample_list:
         rm_command+=input_file+'\n'
       rm_command+='fi'
       if remove: file.write("\n%s" % rm_command)
+      file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
