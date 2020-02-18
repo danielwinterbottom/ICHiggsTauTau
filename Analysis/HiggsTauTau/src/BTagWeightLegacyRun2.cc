@@ -59,6 +59,11 @@ namespace ic {
     event->Add("btag_evt_weight"+add_name_, btag_evt_weight[0]);
     event->Add("btag_evt_weight_down"+add_name_, btag_evt_weight[1]);
     event->Add("btag_evt_weight_up"+add_name_, btag_evt_weight[2]);
+
+    event->Add("btag_evt_weight_realbtag_down"+add_name_, btag_evt_weight[3]);
+    event->Add("btag_evt_weight_realbtag_up"+add_name_, btag_evt_weight[4]);
+    event->Add("btag_evt_weight_fakebtag_down"+add_name_, btag_evt_weight[5]);
+    event->Add("btag_evt_weight_fakebtag_up"+add_name_, btag_evt_weight[6]);
     return 0;
   }
 
@@ -72,13 +77,13 @@ namespace ic {
   }
 
   std::vector<double> BTagWeightLegacyRun2::EventReweighting(std::vector<PFJet *> const& jets) const {
-    std::vector<double> result = {1.,1.,1.};
+    std::vector<double> result = {1.,1.,1.,1.,1.,1.,1.};
     bool verbose = false;
     double pt = 0.;
     double eta = 0.;
     unsigned jet_flavour = 0;
-    std::vector<double> sf_loose = {1.,1.,1.};
-    std::vector<double> sf_tight = {1.,1.,1.};
+    std::vector<double> sf_loose = {1.,1.,1.,1.,1.,1.,1.};
+    std::vector<double> sf_tight = {1.,1.,1.,1.,1.,1.,1.};
     /*double sf_loose = 1.;
     double sf_tight = 1.;*/
     double eff_loose = 1.;
@@ -93,19 +98,56 @@ namespace ic {
       eff_tight = GetEff(jet_flavour, pt, fabs(eta), "tight");
 
       if(jet_flavour == 5){
-         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-         sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-         sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
-         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
-         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
+        sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+        sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
+        sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
+        sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
+        sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
+        sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
+        // now do b separate
+        sf_tight[3] = sf_tight[1]; // tight down
+        sf_loose[3] = sf_loose[1]; // loose down
+        sf_tight[4] = sf_tight[2]; // tight up
+        sf_loose[4] = sf_loose[2]; // tight down
+        // now do c and udsg separate
+        sf_tight[5] = sf_tight[0]; // tight central
+        sf_loose[5] = sf_loose[0]; // loose central
+        sf_tight[6] = sf_tight[0]; // tight central
+        sf_loose[6] = sf_loose[0]; // loose central
       } else if(jet_flavour == 4){
-         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-         sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
-         sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-         sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
-         sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
-         sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
+        sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
+        sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
+        sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
+        sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
+        sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
+        sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
+        // do b separate
+        sf_tight[3] = sf_tight[0]; // tight central
+        sf_loose[3] = sf_loose[0]; // loose central
+        sf_tight[4] = sf_tight[0]; // tight central
+        sf_loose[4] = sf_loose[0]; // loose central
+        // do c and udsg separate
+        sf_tight[5] = sf_tight[1]; // tight down
+        sf_loose[5] = sf_loose[1]; // loose down
+        sf_tight[6] = sf_tight[2]; // tight up
+        sf_loose[6] = sf_loose[2]; // loose up
+      } else {
+        sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_loose[0] = reader_comb_loose->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_tight[1] = reader_comb_tight->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_loose[1] = reader_comb_loose->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_tight[2] = reader_comb_tight->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
+        sf_loose[2] = reader_comb_loose->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
+        // do b separate
+        sf_tight[3] = sf_tight[0]; // tight central
+        sf_loose[3] = sf_loose[0]; // loose central
+        sf_tight[4] = sf_tight[0]; // tight central
+        sf_loose[4] = sf_loose[0]; // loose central
+        // do c and udsg separate
+        sf_tight[5] = sf_tight[1]; // tight down
+        sf_loose[5] = sf_loose[1]; // loose down
+        sf_tight[6] = sf_tight[2]; // tight up
+        sf_loose[6] = sf_loose[2]; // loose up
       }
 
       double csv = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") +
@@ -125,16 +167,15 @@ namespace ic {
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
       }
-      for (unsigned i = 0; i < sf_tight.size(); i++) {
+      for (unsigned j = 0; j < sf_tight.size(); j++) {
         double p_mc = 1.;
         double p_data = 1.;
 
-        double sf_l = sf_loose[i];
-        double sf_t = sf_tight[i];
+        double sf_l = sf_loose[j];
+        double sf_t = sf_tight[j];
           
         if (csv > tight_wp) {
-          p_mc *= eff_tight;
-          p_data *= sf_t*eff_tight;
+          p_data *= sf_t;
         }
         if (csv > loose_wp && csv < tight_wp){
           p_mc *= (eff_loose - eff_tight);
@@ -145,9 +186,9 @@ namespace ic {
           p_data *= (1 - sf_l*eff_loose);
         }
 
-        if (p_mc != 0.) result[i] = p_data/p_mc;
-        else result[i] = 1.;
-        if (result[i] < 0) result[i] = 1.;
+        if (p_mc != 0.) result[j] = p_data/p_mc;
+        else result[j] = 1.;
+        if (result[j] < 0) result[j] = 1.;
 
       }
       if (verbose) {
