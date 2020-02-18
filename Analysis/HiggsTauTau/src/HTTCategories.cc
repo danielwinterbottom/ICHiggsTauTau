@@ -2480,10 +2480,10 @@ namespace ic {
     wt_btag_down_      = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
     wt_btag_up_        = event->Exists("btag_evt_weight_up") ? event->Get<double>("btag_evt_weight_up") : 1.;
 
-    wt_btag_real_down_ = event->Exists("btag_evt_weight_bbtag_down") ? event->Get<double>("btag_evt_weight_bbtag_down") : 1.;
-    wt_btag_real_up_   = event->Exists("btag_evt_weight_bbtag_up") ? event->Get<double>("btag_evt_weight_bbtag_up") : 1.;
-    wt_btag_fake_down_ = event->Exists("btag_evt_weight_cbtag_down") ? event->Get<double>("btag_evt_weight_cbtag_down") : 1.;
-    wt_btag_fake_up_   = event->Exists("btag_evt_weight_cbtag_up") ? event->Get<double>("btag_evt_weight_cbtag_up") : 1.;
+    wt_btag_real_down_ = event->Exists("btag_evt_weight_realbtag_down") ? event->Get<double>("btag_evt_weight_realbtag_down") : 1.;
+    wt_btag_real_up_   = event->Exists("btag_evt_weight_realbtag_up")   ? event->Get<double>("btag_evt_weight_realbtag_up") : 1.;
+    wt_btag_fake_down_ = event->Exists("btag_evt_weight_fakebtag_down") ? event->Get<double>("btag_evt_weight_fakebtag_down") : 1.;
+    wt_btag_fake_up_   = event->Exists("btag_evt_weight_fakebtag_up")   ? event->Get<double>("btag_evt_weight_fakebtag_up") : 1.;
 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set

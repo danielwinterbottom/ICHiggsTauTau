@@ -60,10 +60,10 @@ namespace ic {
     event->Add("btag_evt_weight_down"+add_name_, btag_evt_weight[1]);
     event->Add("btag_evt_weight_up"+add_name_, btag_evt_weight[2]);
 
-    event->Add("btag_evt_weight_bbtag_down"+add_name_, btag_evt_weight[3]);
-    event->Add("btag_evt_weight_bbtag_up"+add_name_, btag_evt_weight[4]);
-    event->Add("btag_evt_weight_cbtag_down"+add_name_, btag_evt_weight[5]);
-    event->Add("btag_evt_weight_cbtag_up"+add_name_, btag_evt_weight[6]);
+    event->Add("btag_evt_weight_realbtag_down"+add_name_, btag_evt_weight[3]);
+    event->Add("btag_evt_weight_realbtag_up"+add_name_, btag_evt_weight[4]);
+    event->Add("btag_evt_weight_fakebtag_down"+add_name_, btag_evt_weight[5]);
+    event->Add("btag_evt_weight_fakebtag_up"+add_name_, btag_evt_weight[6]);
     return 0;
   }
 
