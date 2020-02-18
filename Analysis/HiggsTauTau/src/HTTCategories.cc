@@ -693,7 +693,11 @@ namespace ic {
       outtree_->Branch("bcsv_2",            &bcsv_2_);
       outtree_->Branch("met_dphi_1",             &met_dphi_1_);
       outtree_->Branch("met_dphi_2",             &met_dphi_2_);
-
+      outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
+      outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
+      outtree_->Branch("newmet",             &newmet_);
+      outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
+      outtree_->Branch("w_frac_score",             &w_frac_score_);
 
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
@@ -1648,6 +1652,9 @@ namespace ic {
     if (event->Exists("flagMETFilter")) flagMETFilter_ = event->Get<bool>("flagMETFilter"); 
     else flagMETFilter_ = false;
 
+    w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
+    qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;
+
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
@@ -2581,6 +2588,24 @@ namespace ic {
     //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
     pt_tt_ = (ditau->vector() + mets->vector()).pt();
 
+    Met* newmet = new Met();
+    Candidate * newlep = new Candidate();
+
+    ROOT::Math::PtEtaPhiEVector newvec;
+
+    //if(channel_==channel::tt) newvec.SetPxPyPzE(lep2->vector().Px(), lep2->vector().Py(),0.,lep2->pt());
+    //else 
+    newvec.SetPxPyPzE(lep1->vector().Px(), lep1->vector().Py(),0.,lep1->pt());
+
+    newlep->set_vector(newvec);
+    newmet->set_vector(mets->vector()+newlep->vector());
+
+    newmet_ = newmet->pt();
+    newmet_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep1->vector()));
+    newmet_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep2->vector()));   
+ 
+
+ 
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
@@ -2651,7 +2676,6 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
-
     event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
     event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
 

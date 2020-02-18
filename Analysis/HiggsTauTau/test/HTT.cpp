@@ -224,6 +224,7 @@ int main(int argc, char* argv[]) {
   }
 
   analysis.RunAnalysis();
-
+ 
+  std::cout << "End of job" << std::endl;
   return 0;
 }
