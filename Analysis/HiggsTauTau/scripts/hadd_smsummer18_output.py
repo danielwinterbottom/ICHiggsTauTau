@@ -208,19 +208,39 @@ with open("%(samplelist)s"%vars(),"r") as inf:
 subdirs=['']
 subdirs+=list_paths(outputf)
 
+new_subdirs=[]
+for d in subdirs:
+  infi=os.listdir('%(outputf)s/%(d)s' % vars())
+  if infi: new_subdirs.append((d,infi))
+subdirs=new_subdirs
+
+print subdirs
+
+
 nfiles={}
 
-def FindMissingFiles(files):
-  nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
-  nums.sort()
-  res = [ele for ele in range(max(nums)+1) if ele not in nums]
 
-  if len(res) !=0:
-    print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
-    for x in res: print '%(samp)s_2018_%(chan)s_%(x)i.root' % vars()
-    return False
-  else:
-    return True
+def FindMissingFiles(outf, d, samp, chan, infiles):
+  no_missing_files=True
+  #infiles=os.listdir('%(outf)s/%(d)s'%vars()
+  files=fnmatch.filter(infiles,'%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
+  #files=glob.glob('%(outf)s/%(d)s/%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
+  last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
+  last_nums = list(set(last_nums))
+  for l in last_nums:
+    ffiles=fnmatch.filter(infiles,'%(samp)s_2018_%(chan)s_*_%(l)i_input.root'%vars())
+    nums=[]
+    nums = [int(x.split('_')[-3].replace('.root','')) for x in ffiles]
+    nums.sort()
+    res=[]
+    res = [ele for ele in range(max(nums)+1) if ele not in nums]
+
+    if len(res) !=0:
+      print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
+      for x in res: print '%(samp)s_2018_%(chan)s_%(x)i_%(l)i_input.root' % vars()
+      no_missing_files =  False
+
+  return no_missing_files
 
 
 for ind in range(0,len(lines)):
@@ -234,13 +254,14 @@ for sa in sample_list:
     JOB='jobs/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    for sdir in subdirs:
-      #if len(files)>0:
+    for jsdir in subdirs:
+      sdir = jsdir[0]
+      infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
         if "%(sa)s_2018"%vars() in nfiles or ignore==True:
-          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*.root'%vars())
-          no_missing_files = FindMissingFiles(files)
-          if no_missing_files and (ignore ==True or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]):
+#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*.root'%vars())
+          no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
+          if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
@@ -280,4 +301,3 @@ for sa in sample_list:
       rm_command+='fi'
       if remove: file.write("\n%s" % rm_command)
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
-
