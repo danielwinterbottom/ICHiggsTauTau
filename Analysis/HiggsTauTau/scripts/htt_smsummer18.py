@@ -395,40 +395,40 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-         'DYJetsToLL',
+#         'DYJetsToLL',
          'DY1JetsToLL-LO',
-         'DY2JetsToLL-LO',
-         'DY3JetsToLL-LO',
-         'DY4JetsToLL-LO',
-         'DYJetsToLL-LO',
-         'DYJetsToLL_M-10-50-LO',
-         'EWKWMinus2Jets',
-         'EWKWPlus2Jets',
-         'EWKZ2Jets',
-         'T-t',
-         'T-tW-ext1',
-         'TTTo2L2Nu',
-         'TTToHadronic',
-         'TTToSemiLeptonic',
-         'Tbar-t',
-         'Tbar-tW-ext1',
-         'W1JetsToLNu-LO',
-         'W2JetsToLNu-LO',
-         'W3JetsToLNu-LO',
-         'W4JetsToLNu-LO',
-         'WGToLNuG',
-         'WJetsToLNu-LO',
-         'WWTo2L2Nu',
-         'WWToLNuQQ',
-         'WZTo1L3Nu',
-         'WZTo2L2Q',
-         'WZTo3LNu',
-         'WZTo3LNu-ext1',
-         'ZZTo2L2Nu-ext1',
-         'ZZTo2L2Nu-ext2',
-         'ZZTo2L2Q',
-         'ZZTo4L',
-         'ZZTo4L-ext',
+#         'DY2JetsToLL-LO',
+#         'DY3JetsToLL-LO',
+#         'DY4JetsToLL-LO',
+#         'DYJetsToLL-LO',
+#         'DYJetsToLL_M-10-50-LO',
+#         'EWKWMinus2Jets',
+#         'EWKWPlus2Jets',
+#         'EWKZ2Jets',
+#         'T-t',
+#         'T-tW-ext1',
+#         'TTTo2L2Nu',
+#         'TTToHadronic',
+#         'TTToSemiLeptonic',
+#         'Tbar-t',
+#         'Tbar-tW-ext1',
+#         'W1JetsToLNu-LO',
+#         'W2JetsToLNu-LO',
+#         'W3JetsToLNu-LO',
+#         'W4JetsToLNu-LO',
+#         'WGToLNuG',
+#         'WJetsToLNu-LO',
+#         'WWTo2L2Nu',
+#         'WWToLNuQQ',
+#         'WZTo1L3Nu',
+#         'WZTo2L2Q',
+#         'WZTo3LNu',
+#         'WZTo3LNu-ext1',
+#         'ZZTo2L2Nu-ext1',
+#         'ZZTo2L2Nu-ext2',
+#         'ZZTo2L2Q',
+#         'ZZTo4L',
+#         'ZZTo4L-ext',
     ]
 
 
@@ -451,7 +451,7 @@ if options.proc_bkg or options.proc_all:
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
 
-            #if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
+            if 'DY' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
