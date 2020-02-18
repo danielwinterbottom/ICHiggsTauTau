@@ -82,9 +82,15 @@ namespace ic {
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_btag_up",        &wt_btag_up_);
       outtree_->Branch("wt_btag_down",      &wt_btag_down_);
+      outtree_->Branch("wt_btag_real_down", &wt_btag_real_down_);
+      outtree_->Branch("wt_btag_real_up",   &wt_btag_real_up_);
+      outtree_->Branch("wt_btag_fake_down", &wt_btag_fake_down_);
+      outtree_->Branch("wt_btag_fake_up",   &wt_btag_fake_up_);
+      //
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       outtree_->Branch("xtrg_sf", &xtrg_sf_);
@@ -2477,9 +2483,14 @@ namespace ic {
 
     
     // Btag weights
-    wt_btag_ = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
-    wt_btag_up_ = event->Exists("btag_evt_weight_up") ? event->Get<double>("btag_evt_weight_up") : 1.;
-    wt_btag_down_ = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
+    wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
+    wt_btag_down_      = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
+    wt_btag_up_        = event->Exists("btag_evt_weight_up") ? event->Get<double>("btag_evt_weight_up") : 1.;
+
+    wt_btag_real_down_ = event->Exists("btag_evt_weight_realbtag_down") ? event->Get<double>("btag_evt_weight_realbtag_down") : 1.;
+    wt_btag_real_up_   = event->Exists("btag_evt_weight_realbtag_up")   ? event->Get<double>("btag_evt_weight_realbtag_up") : 1.;
+    wt_btag_fake_down_ = event->Exists("btag_evt_weight_fakebtag_down") ? event->Get<double>("btag_evt_weight_fakebtag_down") : 1.;
+    wt_btag_fake_up_   = event->Exists("btag_evt_weight_fakebtag_up")   ? event->Get<double>("btag_evt_weight_fakebtag_up") : 1.;
 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
