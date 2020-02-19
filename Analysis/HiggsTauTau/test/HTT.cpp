@@ -206,7 +206,7 @@ int main(int argc, char* argv[]) {
       if(channel_str.find("mt") == channel_str.npos && vars[j].find("scale_mufake")!=std::string::npos) continue;     
       if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_mu_")!=std::string::npos) continue;     
       if(channel_str.find("em") == channel_str.npos && (vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
-      if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos)) continue;
+      if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos || vars[j].find("scale_t_3prong1pi0")!=std::string::npos )) continue;
 
       std::string seq_str = channel_str+"_"+vars[j];
       Json::Value js_merged = js["sequence"];
