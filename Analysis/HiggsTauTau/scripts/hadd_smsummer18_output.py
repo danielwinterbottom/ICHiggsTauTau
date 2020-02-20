@@ -219,28 +219,19 @@ print subdirs
 
 nfiles={}
 
+
 def FindMissingFiles(outf, d, samp, chan, infiles):
-  no_missing_files=True
-  #infiles=os.listdir('%(outf)s/%(d)s'%vars()
-  files=fnmatch.filter(infiles,'%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
-  #files=glob.glob('%(outf)s/%(d)s/%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
-  last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
-  last_nums = list(set(last_nums))
-  for l in last_nums:
-    ffiles=fnmatch.filter(infiles,'%(samp)s_2018_%(chan)s_*_%(l)i_input.root'%vars())
-    nums=[]
-    nums = [int(x.split('_')[-3].replace('.root','')) for x in ffiles]
-    nums.sort()
-    res=[]
-    res = [ele for ele in range(max(nums)+1) if ele not in nums]
+  files=fnmatch.filter(infiles,'%(samp)s_2018_%(chan)s_*'%vars())
+  nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
+  nums.sort()
+  res = [ele for ele in range(max(nums)+1) if ele not in nums]
 
-    if len(res) !=0:
-      print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
-      for x in res: print '%(samp)s_2018_%(chan)s_%(x)i_%(l)i_input.root' % vars()
-      no_missing_files =  False
-
-  return no_missing_files
-
+  if len(res) !=0:
+    print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
+    for x in res: print '%(samp)s_2018_%(chan)s_%(x)i.root' % vars()
+    return False
+  else:
+    return True
 
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
@@ -299,4 +290,5 @@ for sa in sample_list:
         rm_command+=input_file+'\n'
       rm_command+='fi'
       if remove: file.write("\n%s" % rm_command)
+      file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
