@@ -44,6 +44,9 @@ class HTTFakeFactorWeights : public ModuleBase {
   TH1D *ff_hist_dm1_;
   TH1D *ff_hist_dm10_;
 
+  TH2D *ff_fracs_qcd_;
+  TH2D *ff_fracs_wjets_;
+
   std::shared_ptr<RooWorkspace> ff_ws_;
   std::shared_ptr<RooWorkspace> ff_ws_us_;
 
