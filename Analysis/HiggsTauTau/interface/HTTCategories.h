@@ -82,6 +82,10 @@ class HTTCategories : public ModuleBase {
   double wt_btag_;
   double wt_btag_up_;
   double wt_btag_down_;
+  double wt_btag_real_up_;
+  double wt_btag_real_down_;
+  double wt_btag_fake_up_;
+  double wt_btag_fake_down_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;

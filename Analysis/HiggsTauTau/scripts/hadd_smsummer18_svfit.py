@@ -197,15 +197,23 @@ sample_list = [
 channel = ['em','et','mt','tt']
 
 subdirs=['']
-subdirs=+list_paths(outputf)
+subdirs+=list_paths(outputf)
 
-def FindMissingFiles(outf, d, samp, chan):
+new_subdirs=[]
+for d in subdirs:
+  infi=os.listdir('%(outputf)s/%(d)s' % vars())
+  if infi: new_subdirs.append((d,infi))
+subdirs=new_subdirs
+
+print subdirs
+
+def FindMissingFiles(outf, d, samp, chan,infiles):
   no_missing_files=True
-  files=glob.glob('%(outf)s/%(d)s/%(samp)s_2018_%(chan)s_*_*_input.root'%vars())
+  files=fnmatch.filter(infiles,'%(samp)s_2016_%(chan)s_*_*_input.root'%vars()) 
   last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
   last_nums = list(set(last_nums))
   for l in last_nums:
-    ffiles=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2018_%(chan)s_*_%(l)i_input.root'%vars()) 
+    ffiles=fnmatch.filter(infiles,'%(samp)s_2016_%(chan)s_*_%(l)i_input.root'%vars()) 
     nums=[]
     nums = [int(x.split('_')[-3].replace('.root','')) for x in ffiles]
     nums.sort()
@@ -213,8 +221,8 @@ def FindMissingFiles(outf, d, samp, chan):
     res = [ele for ele in range(max(nums)+1) if ele not in nums]
 
     if len(res) !=0:
-      print "Some files are missing for sample %(samp)s_2018_%(chan)s! in %(d)s:"%vars()
-      for x in res: print '%(samp)s_2018_%(chan)s_%(x)i_%(l)i_input.root' % vars()
+      print "Some files are missing for sample %(samp)s_2016_%(chan)s! in %(d)s:"%vars()
+      for x in res: print '%(samp)s_2016_%(chan)s_%(x)i_%(l)i_input.root' % vars()
       no_missing_files =  False
 
   return no_missing_files
@@ -231,14 +239,16 @@ for sa in sample_list:
     JOB='jobs/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    for sdir in subdirs:
-      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0_0_input.root'%vars()):
-        no_missing_files = FindMissingFiles(outputf, sdir, sa, ch)
+    for jsdir in subdirs:
+      sdir = jsdir[0]
+      infiles=jsdir[1]
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_0_0_input.root'%vars()):
+        no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles)
         if no_missing_files:
           if not batch:  
             print "Hadding in subdir %(sdir)s"%vars()
             print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-            os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
+            os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
             os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
             filetext = open("./haddout.txt").read()
             if 'Warning' in filetext or 'Error' in filetext:
@@ -247,14 +257,14 @@ for sa in sample_list:
               remove=False 
               failed.append(sa) 
             else :
-              to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root' %vars())
+              to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())
           else:
             haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir) 
-            hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root' %vars())) 
-            command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()    
+            hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())) 
+            command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()    
         else:
             failed.append(sa)
-            print "Incorrect number of files for sample %(sa)s_2018_%(ch)s! in %(sdir)s"%vars()
+            print "Incorrect number of files for sample %(sa)s_2016_%(ch)s! in %(sdir)s"%vars()
             remove=False 
 
   if batch and command:
@@ -272,6 +282,7 @@ for sa in sample_list:
         rm_command+=input_file+'\n'
       rm_command+='fi'
       if remove: file.write("\n%s" % rm_command)
+      file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
 

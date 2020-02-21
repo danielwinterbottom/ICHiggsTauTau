@@ -165,15 +165,23 @@ sample_list = [
 channel = ['em','et','mt','tt']
 
 subdirs=['']
-subdirs=+list_paths(outputf)
+subdirs+=list_paths(outputf)
 
-def FindMissingFiles(outf, d, samp, chan):
+new_subdirs=[]
+for d in subdirs:
+  infi=os.listdir('%(outputf)s/%(d)s' % vars())
+  if infi: new_subdirs.append((d,infi))
+subdirs=new_subdirs
+
+print subdirs
+
+def FindMissingFiles(outf, d, samp, chan,infiles):
   no_missing_files=True
-  files=glob.glob('%(outf)s/%(d)s/%(samp)s_2017_%(chan)s_*_*_input.root'%vars())
+  files=fnmatch.filter(infiles,'%(samp)s_2017_%(chan)s_*_*_input.root'%vars()) 
   last_nums = [int(x.split('_')[-2].replace('.root','')) for x in files]
   last_nums = list(set(last_nums))
   for l in last_nums:
-    ffiles=fnmatch.filter(os.listdir('%(outf)s/%(d)s'%vars()),'%(samp)s_2017_%(chan)s_*_%(l)i_input.root'%vars()) 
+    ffiles=fnmatch.filter(infiles,'%(samp)s_2017_%(chan)s_*_%(l)i_input.root'%vars()) 
     nums=[]
     nums = [int(x.split('_')[-3].replace('.root','')) for x in ffiles]
     nums.sort()
@@ -199,9 +207,11 @@ for sa in sample_list:
     JOB='jobs/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    for sdir in subdirs:
+    for jsdir in subdirs:
+      sdir = jsdir[0]
+      infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0_0_input.root'%vars()):
-        no_missing_files = FindMissingFiles(outputf, sdir, sa, ch)
+        no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles)
         if no_missing_files:
           if not batch:  
             print "Hadding in subdir %(sdir)s"%vars()
@@ -240,10 +250,12 @@ for sa in sample_list:
         rm_command+=input_file+'\n'
       rm_command+='fi'
       if remove: file.write("\n%s" % rm_command)
+      file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
 
 failed = list(set(failed))
 print 'Summary of samples with failures:'
 for i in failed: print i
+
 
