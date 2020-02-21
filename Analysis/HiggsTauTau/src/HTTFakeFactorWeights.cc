@@ -51,19 +51,18 @@ namespace ic {
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
-      systs_mvadm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down"};
+      systs_mvadm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_met_up","_qcd_met_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
-      systs_dm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down"};
-
+      systs_dm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_met_up","_qcd_met_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
       systs_us_ = {"","_qcd_stat_njets0_up","_qcd_stat_njets0_down","_qcd_stat_njets1_up","_qcd_stat_njets1_down","_qcd_stat_njets2_up","_qcd_stat_njets2_down","_qcd_syst_closure_njets0_up","_qcd_syst_closure_njets0_down","_qcd_syst_closure_njets1_up","_qcd_syst_closure_njets1_down","_qcd_syst_closure_njets2_up","_qcd_syst_closure_njets2_down","_qcd_syst_osss_up","_qcd_syst_osss_down"};
 
       for(auto s : systs_mvadm_) {
         fns_["ff_tt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_tt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met")));
+              ff_ws_->function(("ff_tt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met_var_qcd")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_tt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_tt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,pt_2,os,met"))); 
+              ff_ws_->function(("ff_tt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,pt_2,os,met_var_qcd"))); 
       }
 
       // load us groups fake factors
@@ -86,32 +85,40 @@ namespace ic {
     }
 
     if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16||strategy_==strategy::cpdecays17) && (channel_==channel::mt)) {
+      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018.root").c_str());
+      ff_fracs_qcd_ = (TH2D*)f_fracs.Get("QCD");
+      ff_fracs_wjets_ = (TH2D*)f_fracs.Get("W");
+      ff_fracs_qcd_->SetDirectory(0);
+      ff_fracs_wjets_->SetDirectory(0);
+      f_fracs.Close();
+
+
       TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
-      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_up","_wjets_stat_met_down","_wjets_stat_l_pt_up","_wjets_stat_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_l_pt_up","_qcd_stat_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
 
-      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_up","_wjets_stat_met_down","_wjets_stat_l_pt_up","_wjets_stat_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_l_pt_up","_qcd_stat_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
+              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met,mt,m_iso,pass_single,mvis")));
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_dmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met,m_iso,pass_single")));
+            ff_ws_->function("ff_mt_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_dmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,met,mt,pass_single,mvis")));
+            ff_ws_->function("ff_mt_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met,m_iso,pass_single")));
+            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met,mt,pass_single,mvis")));
+            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
 
       // load us groups fake factors
       
@@ -142,6 +149,7 @@ namespace ic {
       reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
       reader_->AddVariable( "mt_1", &mt_1_ );
       std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_mt.xml";
+      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_mt.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
@@ -149,31 +157,38 @@ namespace ic {
 
  
     if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16||strategy_==strategy::cpdecays17) && (channel_==channel::et)) {
+
+      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018.root").c_str());
+      ff_fracs_qcd_ = (TH2D*)f_fracs.Get("QCD");
+      ff_fracs_wjets_ = (TH2D*)f_fracs.Get("W");
+      ff_fracs_qcd_->SetDirectory(0);
+      ff_fracs_wjets_->SetDirectory(0);
+      f_fracs.Close();
       TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
 
-      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_up","_wjets_stat_met_down","_wjets_stat_l_pt_up","_wjets_stat_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_l_pt_up","_qcd_stat_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
-      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_up","_wjets_stat_met_down","_wjets_stat_l_pt_up","_wjets_stat_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_met_up","_qcd_stat_met_down","_qcd_stat_l_pt_up","_qcd_stat_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met,mt,e_iso,pass_single,mvis")));
+              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met,mt,e_iso,pass_single,mvis")));
+              ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_dmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_et_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met,e_iso,pass_single")));
+            ff_ws_->function("ff_et_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
       fns_["ff_lt_medium_dmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_et_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,e_pt,met,mt,pass_single,mvis")));
+            ff_ws_->function("ff_et_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,e_p,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met,e_iso,pass_single")));
+            ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met,mt,pass_single,mvis")));
+            ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
 
       // load us groups fake factors
 
@@ -203,6 +218,7 @@ namespace ic {
       reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
       reader_->AddVariable( "mt_1", &mt_1_ );
       std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_et.xml";
+      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_et.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
@@ -409,6 +425,15 @@ namespace ic {
     m_vis_ = ditau->M();
     mt_1_ = MT(lep1, met);
 
+    double met_var_qcd = met->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(met->vector(),lep2->vector()))/pt_2_;
+
+    Met* newmet = new Met();
+    ROOT::Math::PtEtaPhiEVector newvec;
+    newvec.SetPxPyPzE(lep1->vector().Px(), lep1->vector().Py(),0.,lep1->pt());
+    newmet->set_vector(met->vector()+newvec);
+
+    double met_var_w = newmet->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep2->vector()))/pt_2_;
+
     double m_sv_=-9999;
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
@@ -608,7 +633,7 @@ namespace ic {
 
           std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
           std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
           ic::Vertex* refit_vertex = vertex_vec[0];
           for(unsigned i=0; i<refit_vertex_vec.size();++i) {
             Vertex * v = refit_vertex_vec[i];
@@ -652,27 +677,31 @@ namespace ic {
           event->Add("w_frac_score",  w_score);
           event->Add("qcd_frac_score",  qcd_score);
 
+          double w_frac = ff_fracs_wjets_->GetBinContent(ff_fracs_wjets_->FindBin(qcd_score,w_score));
+          double qcd_frac = ff_fracs_qcd_->GetBinContent(ff_fracs_qcd_->FindBin(qcd_score,w_score));
+          double ttbar_frac = 1. - w_frac - qcd_frac;
+
           bool isOS = PairOppSign(ditau);
           double os = 1.;
-          if(!isOS) os=0.; 
-
-          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met->pt(),mt_1_, iso_1_,pass_single,m_vis_};
+          if(!isOS) os=0.;
+ 
+          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
           event->Add("wt_ff_1",  ff_nom);
 
-          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met->pt(),iso_1_,pass_single};
-          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met->pt(),mt_1_,pass_single,m_vis_};
+          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_qcd,iso_1_,pass_single};
+          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
           ff_nom = fns_["ff_lt_medium_mvadmbins_qcd"]->eval(args_qcd.data());
           event->Add("wt_ff_qcd_1",  ff_nom);
           ff_nom = fns_["ff_lt_medium_mvadmbins_wjets"]->eval(args_w.data());
           event->Add("wt_ff_wjets_1",  ff_nom);
 
-          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met->pt(),mt_1_,iso_1_,pass_single,m_vis_};
+          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_,iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
           ff_nom = fns_["ff_lt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
 
-          auto args_dm_qcd = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met->pt(),iso_1_,pass_single};
-          auto args_dm_w = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,met->pt(),mt_1_,pass_single,m_vis_};
+          auto args_dm_qcd = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};
+          auto args_dm_w = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
 
           ff_nom = fns_["ff_lt_medium_dmbins_qcd"]->eval(args_dm_qcd.data());
           event->Add("wt_ff_dmbins_qcd_1",  ff_nom);
@@ -742,7 +771,7 @@ namespace ic {
 
           std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
           std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
           ic::Vertex* refit_vertex = vertex_vec[0];
           for(auto v : refit_vertex_vec) {
             if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
@@ -756,20 +785,20 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.;
 
-          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met->pt()};
+          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met_var_qcd};
           double ff_nom = fns_["ff_tt_medium_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
           double mva_dm_2_=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
           double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
-          auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met_var_qcd}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           double ff_nom_2 = fns_["ff_tt_medium_mvadmbins"]->eval(args2.data());
           event->Add("wt_ff_2",  ff_nom_2);
  
 
-          auto args_dm = std::vector<double>{pt_1_,tau_decaymode_1_,n_jets_,pt_2_,os,met->pt()};
+          auto args_dm = std::vector<double>{pt_1_,tau_decaymode_1_,n_jets_,pt_2_,os,met_var_qcd};
           ff_nom = fns_["ff_tt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
-          auto args_dm_2 = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,0.,met->pt()}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          auto args_dm_2 = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,0.,met_var_qcd}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           ff_nom_2 = fns_["ff_tt_medium_dmbins"]->eval(args_dm_2.data());
           event->Add("wt_ff_dmbins_2",  ff_nom_2);
 
