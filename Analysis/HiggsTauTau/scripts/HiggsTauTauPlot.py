@@ -3395,11 +3395,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               GenerateZTT(ana, '_mvaa1'+add_name, ztt_samples, plot, wt, sel, cat_mvaa1, z_sels, not options.do_ss)
               GenerateZTT(ana, '_mvapi'+add_name, ztt_samples, plot, wt, sel, cat_mvapi, z_sels, not options.do_ss)
               GenerateZTT(ana, '_mvanotrho'+add_name, ztt_samples, plot, wt, sel, cat_mvanotrho, z_sels, not options.do_ss)
-        if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
+        if 'ZTT' not in samples_to_skip and options.embedding:
             GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
-        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
             if 'mvadm' in options.cat:
