@@ -2,6 +2,8 @@ import ROOT
 from ROOT import TGraphAsymmErrors
 import UserCode.ICHiggsTauTau.plotting as plotting
 import math
+import matplotlib as mpl
+mpl.use('Agg') # to fix X11 error in ssh mode
 from matplotlib import pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 from sklearn.gaussian_process.kernels import Matern, ConstantKernel
@@ -131,14 +133,14 @@ def main():
                             ax.set_xlim([ 20, min(400, plt.xlim()[1]) ])
 
                             ax_ratio.set_xlabel("$p_T$ (GeV)", fontsize=12)
-                            ax_ratio.set_ylabel("Data/MC SF", fontsize=12)
+                            ax_ratio.set_ylabel("Data/"+predSample[0].capitalize()+predSample[1:]+" SF", fontsize=12)
                             ax_ratio.set_ylim([0.5, 1.49])
 
                             validity_plt = ax.plot( [ ch_validity_thrs[channel] ] * 2, ax.get_ylim(), 'r--' )
                             ax_ratio.plot( [ ch_validity_thrs[channel] ] * 2, ax_ratio.get_ylim(), 'r--' )
 
                             ax.legend([ plt_data, plt_MC, plt_data_fitted[0], plt_MC_fitted[0], validity_plt[0] ],
-                                                      [ "Data", "MC", "Data fitted", "MC fitted", "Validity range"], fontsize=12, loc='lower right')
+                                                      [ "Data", predSample[0].capitalize()+predSample[1:], "Data fitted", predSample[0].capitalize()+predSample[1:]+" fitted", "Validity range"], fontsize=12, loc='lower right')
                             ax.set_xscale('log')
                             formatter = ScalarFormatter()
                             formatter.set_scientific(False)
