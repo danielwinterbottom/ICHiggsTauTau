@@ -14,6 +14,9 @@ from scipy import interpolate
 #explanation on page 5 of:
 #https://indico.cern.ch/event/868279/contributions/3668554/attachments/1959280/3255645/2019-12-09_Tau_trigger_SF_for_DeepTau.pdf
 
+#But this code should be mainly based on:
+#https://indico.cern.ch/event/868279/contributions/3668554/attachments/1959280/3266317/2019-12-17_Tau_trigger_SF_for_DeepTau.pdf
+
 def CleanHist(hist_pass, hist_total):
     hist_pass.ClearUnderflowAndOverflow()
     hist_total.ClearUnderflowAndOverflow()
