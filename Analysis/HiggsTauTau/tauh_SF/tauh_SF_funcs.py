@@ -11,6 +11,9 @@ import scipy
 import numpy as np
 from scipy import interpolate
 
+#explanation on page 5 of:
+#https://indico.cern.ch/event/868279/contributions/3668554/attachments/1959280/3255645/2019-12-09_Tau_trigger_SF_for_DeepTau.pdf
+
 def CleanHist(hist_pass, hist_total):
     hist_pass.ClearUnderflowAndOverflow()
     hist_total.ClearUnderflowAndOverflow()
@@ -127,12 +130,12 @@ class FitResults:
         eff.y_error_low = np.sqrt(eff.y_error_low ** 2 + delta ** 2)
         eff.y_error_high = np.sqrt(eff.y_error_high ** 2 + delta ** 2)
         eff.y = new_y
-        yerr = np.maximum(eff.y_error_low, eff.y_error_high)
+        yerr = np.maximum(eff.y_error_low, eff.y_error_high)# max of the two error bars in asymmetric errors. So the final fitting is conservative as we just use yerr
         
-        self.pt_start_flat = eff.x[-1]
+        self.pt_start_flat = eff.x[-1] 
         best_chi2_ndof = float('inf')
-        for n in range(1, N):
-            flat_eff, residuals, _, _, _ = np.polyfit(eff.x[N-n-1:], eff.y[N-n-1:], 0, w=1/yerr[N-n-1:], full=True)
+        for n in range(1, N): # starting n from highest pt (=N) to 0, (N-n, N) is fitted by pol0. If the best fit (lowest chi2/ndof) happens at i then (i,N) is called high_pt and (0,i) is called low_pt
+            flat_eff, residuals, _, _, _ = np.polyfit(eff.x[N-n-1:], eff.y[N-n-1:], 0, w=1/yerr[N-n-1:], full=True) # see np.polyfit online. y_err is used for sigma.
             chi2_ndof = residuals[0] / n
             #print(n, chi2_ndof)
             if (chi2_ndof > 0 and chi2_ndof < best_chi2_ndof) or eff.x[N-n-1] + eff.x_error_high[N-n-1] >= 100:
@@ -145,8 +148,8 @@ class FitResults:
         low_pt = eff.x <= self.pt_start_flat
         high_pt = eff.x >= self.pt_start_flat
 
-        self.gp_high = GaussianProcessRegressor(kernel=kernel_high, alpha=yerr[high_pt] ** 2, n_restarts_optimizer=10)
-        self.gp_high.fit(np.atleast_2d(eff.x[high_pt]).T, eff.y[high_pt])
+        self.gp_high = GaussianProcessRegressor(kernel=kernel_high, alpha=yerr[high_pt] ** 2, n_restarts_optimizer=10) #if alpha is measurement variance (as it is now), it is similar to adding WhiteNoise kernel and keep alpha~0. Whitenoise means uncorrelated errors (=diagonal cov matrix=errors of each point is its standard deviation) 
+        self.gp_high.fit(np.atleast_2d(eff.x[high_pt]).T, eff.y[high_pt]) #make it 2d (such as n->(1,n)), and T for transpose. Fit!
         self.gp_low = GaussianProcessRegressor(kernel=kernel_low, alpha=np.append([0], yerr[low_pt] ** 2),
                                                n_restarts_optimizer=10)
         self.gp_low.fit(np.atleast_2d(np.append([10], eff.x[low_pt])).T, np.append([0], eff.y[low_pt]))
@@ -168,12 +171,12 @@ class FitResults:
         self.sigma_pred = np.where(x_pred < eff.x[-1], sigma_pred, outer_sigma )
 
     def Predict(self, x_pred):
-        y_pred_high, sigma_high = self.gp_high.predict(np.atleast_2d(x_pred).T, return_std=True)
+        y_pred_high, sigma_high = self.gp_high.predict(np.atleast_2d(x_pred).T, return_std=True) #'high' means high_pt region
         y_pred_low, sigma_low = self.gp_low.predict(np.atleast_2d(x_pred).T, return_std=True)
         return self.ApplyStep(x_pred, [ [y_pred_low, y_pred_high], [sigma_low, sigma_high] ], self.pt_start_flat)
 
     def ApplyStep(self, x_pred, functions, x0, x1 = None):
-        step = (np.tanh(0.1*(x_pred - x0)) + 1) / 2
+        step = (np.tanh(0.1*(x_pred - x0)) + 1) / 2 # to smooth the transition point between low and high pt regions
         if x1 is not None:
             step *= (np.tanh(0.1*(x1 - x_pred)) + 1) / 2
         step = np.where(step > 0.999, 1, step)
