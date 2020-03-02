@@ -24,7 +24,13 @@ for j in jobs:
   finished = False
   if exists:
     with open(log) as f:
-      finished = 'End of job' in f.read()
+      #finished = 'End of job' in f.read()
+      for line in f.readlines():
+        if 'End of job' in line: finished = True
+        if 'error flushing file' in line: 
+          finished = False
+          break
+      #finished = 'End of job' in f.read() and 'error flushing file' not in f.read()
 
   if not exists or not finished:
     n_failed+=1
@@ -39,7 +45,7 @@ for j in jobs:
     }
     subfile.write(condor_settings)
     subfile.close()
-    #os.system('condor_submit jobs/{}'.format(subfilename))
+    os.system('condor_submit jobs/{}'.format(subfilename))
 
 
 print '%(n_failed)i jobs out of %(n_total)i failed' % vars()
