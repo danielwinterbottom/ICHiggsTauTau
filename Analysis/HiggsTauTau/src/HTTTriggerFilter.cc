@@ -370,7 +370,7 @@ namespace ic {
           alt_leg1_filter =  "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
           high_leg_pt = 19.;
         }
-        if (run >= 271036 && run <= 284044 ) {
+        if (run >= 271036 && run <= 284044 ) {//2016
           alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";

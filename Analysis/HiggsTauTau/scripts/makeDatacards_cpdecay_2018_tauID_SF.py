@@ -162,10 +162,10 @@ if SCHEME == 'cpdecay':
   
 
   # MT variables
-  VAR_MT       = "m_vis(10,50,90)"
+  VAR_MT       = "m_vis(15,50,200)"
   #+++++++++add wt_btag later++++++++++
-  #ADD_STRING_MT_GENERAL = '--add_wt=\"(single_l_sf/idisoweight_2)*wt_btag\"  --set_alias=\"sel:(mt_1<50)\" --set_alias=\"inclusive:(n_bjets==0&&trg_singlemuon&&pt_1>25&&'
-  ADD_STRING_MT_GENERAL = '--add_wt=\"single_l_sf/idisoweight_2\"  --set_alias=\"sel:(mt_1<50)\" --set_alias=\"inclusive:(trg_singlemuon&&pt_1>25&&'
+  ADD_STRING_MT_GENERAL = '--add_wt=\"(single_l_sf/idisoweight_2)*wt_btag\"  --set_alias=\"sel:(mt_1<50)\" --set_alias=\"inclusive:(n_bjets==0&&trg_singlemuon&&pt_1>25&&'
+  #ADD_STRING_MT_GENERAL = '--add_wt=\"single_l_sf/idisoweight_2\"  --set_alias=\"sel:(mt_1<50)\" --set_alias=\"inclusive:(trg_singlemuon&&pt_1>25&&'
   ADD_STRING_MT_MVADM0_Pt20to40 = 'mva_dm_2==0&&pt_2>20&&pt_2<40)\"'
   ADD_STRING_MT_MVADM1_Pt20to40 = 'mva_dm_2==1&&pt_2>20&&pt_2<40)\"'
   ADD_STRING_MT_MVADM2_Pt20to40 = 'mva_dm_2==2&&pt_2>20&&pt_2<40)\"'
@@ -189,8 +189,8 @@ if SCHEME == 'cpdecay':
   # ZMM variables
   VAR_ZMM       = "m_vis(1,70,120)"
   #+++++++++add wt_btag later++++++++++
-  #ADD_STRING_ZMM_GENERAL = '--add_wt=\"wt_btag\"  --set_alias="inclusive:(n_bjets==0&&trg_singlemuon&&pt_1>25)"' 
-  ADD_STRING_ZMM_GENERAL = '' 
+  ADD_STRING_ZMM_GENERAL = '--add_wt=\"wt_btag\"  --set_alias="inclusive:(n_bjets==0&&trg_singlemuon&&pt_1>25)"' 
+  #ADD_STRING_ZMM_GENERAL = '' 
   
   scheme_zmm = [
     ("8",    "inclusive",      "2018_ZMM_inclusive",         VAR_ZMM, ADD_STRING_ZMM_GENERAL ),

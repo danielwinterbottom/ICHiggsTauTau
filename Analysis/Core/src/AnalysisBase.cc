@@ -33,7 +33,7 @@ AnalysisBase::AnalysisBase(std::string const& analysis_name,
       retry_attempts_(1),
       timings_(false) {}
 
-AnalysisBase::~AnalysisBase() { ; }
+AnalysisBase::~AnalysisBase() {std::cout << "End of job" << std::endl;}
 
 void AnalysisBase::AddModule(ic::ModuleBase* module_ptr) {
   AddModule("default", module_ptr);
