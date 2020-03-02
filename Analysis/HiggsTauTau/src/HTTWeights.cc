@@ -1813,35 +1813,35 @@ namespace ic {
           } else tau_sf_1 = 1.0;
         } else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && !is_embedded_){
           auto args_dm_1 = std::vector<double>{decay_mode_1};
-          tau_sf_1 = (gen_match_2==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_1.data()) : 1.0;
-          tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm11_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm11_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm0_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm0_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm1_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm1_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm10_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm10_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm11_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm11_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_1.data()) : 1.0;
+          tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm11_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm0_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm0_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm1_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm10_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm11_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
 
         }
         else if ((mc_==mc::mc2017 || mc_==mc::mc2018 || mc_ == mc::mcleg2016) && is_embedded_) {
           auto args_dm_1 = std::vector<double>{decay_mode_1};
-          tau_sf_1 = (gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_1.data()) : 1.0;
-          tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm11_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm0_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm1_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm10_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
-          tau_sf_dm11_down*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_1.data()) : 1.0;
+          tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm0_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm1_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm10_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
+          tau_sf_dm11_down*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm11_down"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
 
-          if(gen_match_2==5) {
-            if (decay_mode_2==0)       tau_sf_2*=0.975;
-            else if (decay_mode_2==1)  tau_sf_2*=0.975*1.051;
-            else if (decay_mode_2==5||decay_mode_2==6) tau_sf_2*=pow(0.975,2);
-            else if (decay_mode_2==10) tau_sf_2*=pow(0.975,3);
-            else if (decay_mode_2==11) tau_sf_2*=pow(0.975,3)*1.051;
+          if(gen_match_1==5) {
+            if (decay_mode_1==0)       tau_sf_1*=0.975;
+            else if (decay_mode_1==1)  tau_sf_1*=0.975*1.051;
+            else if (decay_mode_1==5||decay_mode_1==6) tau_sf_1*=pow(0.975,2);
+            else if (decay_mode_1==10) tau_sf_1*=pow(0.975,3);
+            else if (decay_mode_1==11) tau_sf_1*=pow(0.975,3)*1.051;
           }
 
         }
@@ -2523,7 +2523,7 @@ namespace ic {
             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
             auto args_4 = std::vector<double>{t_pt,t_dm};
 
-            double t_mvadm = tau->HasTauID("MVADM2017v1");
+            double t_mvadm = tau->GetTauID("MVADM2017v1");
             auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
             double ele_xtrg = 1.;
@@ -3030,7 +3030,7 @@ namespace ic {
             auto args_2 = std::vector<double>{pt,m_signed_eta};  
             auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
             auto args_4 = std::vector<double>{t_pt,t_dm};
-            double t_mvadm = tau->HasTauID("MVADM2017v1");
+            double t_mvadm = tau->GetTauID("MVADM2017v1");
             auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
             double m_high_pt_cut = 25;
@@ -3712,8 +3712,8 @@ namespace ic {
           auto args_2_1 = std::vector<double>{pt_1,dm_1};
           auto args_2_2 = std::vector<double>{pt_2,dm_2};
 
-          double mvadm_1 = tau1->HasTauID("MVADM2017v1");
-          double mvadm_2 = tau2->HasTauID("MVADM2017v1");
+          double mvadm_1 = tau1->GetTauID("MVADM2017v1");
+          double mvadm_2 = tau2->GetTauID("MVADM2017v1");
 
           auto args_mvadm_1 = std::vector<double>{pt_1,mvadm_1};
           auto args_mvadm_2 = std::vector<double>{pt_2,mvadm_2};
@@ -3742,15 +3742,6 @@ namespace ic {
             tau2_trg_ic_mvadm = fns_["t_trg_35_ic_mvadm_ratio"]->eval(args_mvadm_2.data());
           }
 
-          double tau_trg_ic = tau1_trg_ic*tau2_trg_ic;
-          double tau_trg_ic_mvadm = tau1_trg_ic_mvadm*tau2_trg_ic_mvadm;
-
-          tau_trg_ic = (tau1_trg*tau2_trg==0) ? tau_trg_ic : tau_trg_ic/(tau1_trg*tau2_trg);
-          tau_trg_ic_mvadm = (tau1_trg*tau2_trg==0) ? tau_trg_ic_mvadm : tau_trg_ic_mvadm/(tau1_trg*tau2_trg);
-
-          event->Add("wt_tau_trg_ic",tau_trg_ic);
-          event->Add("wt_tau_trg_mvadm",tau_trg_ic_mvadm);
-
           double tau_trg_dm0_up=1;
           double tau_trg_dm1_up=1;
           double tau_trg_dm10_up=1;
@@ -3772,6 +3763,17 @@ namespace ic {
           double tau_trg_mvadm11_down=1;
 
           double trg_tot = (tau1_trg*tau2_trg)/(tau1_trg_mc*tau2_trg_mc);
+
+
+          double tau_trg_ic = tau1_trg_ic*tau2_trg_ic;
+          double tau_trg_ic_mvadm = tau1_trg_ic_mvadm*tau2_trg_ic_mvadm;
+
+          tau_trg_ic = (trg_tot==0) ? tau_trg_ic : tau_trg_ic/trg_tot;
+          tau_trg_ic_mvadm = (trg_tot==0) ? tau_trg_ic_mvadm : tau_trg_ic_mvadm/trg_tot;
+
+          event->Add("wt_tau_trg_ic",tau_trg_ic);
+          event->Add("wt_tau_trg_mvadm",tau_trg_ic_mvadm);
+
           bool do_wts = !(tau1_trg==0 || tau2_trg==0 || tau1_trg_mc==0 || tau2_trg_mc==0);
 
           if(is_embedded_ && do_wts){

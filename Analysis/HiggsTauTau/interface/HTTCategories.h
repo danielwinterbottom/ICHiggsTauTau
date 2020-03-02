@@ -696,6 +696,8 @@ class HTTCategories : public ModuleBase {
   double wt_ff_qcd_met_down_2_;
   double wt_ff_qcd_met_up_1_;
   double wt_ff_qcd_met_up_2_;
+  double wt_ff_ttbar_met_up_1_;
+  double wt_ff_ttbar_met_down_1_;
   double wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_1_;
   double wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_down_2_;
   double wt_ff_qcd_stat_njet0_mvadm0_sig_gt3_up_1_;
@@ -818,6 +820,7 @@ class HTTCategories : public ModuleBase {
   double wt_ff_wjets_syst_up_2_; 
   double wt_ff_qcd_1_;
   double wt_ff_wjets_1_;
+  double wt_ff_ttbar_1_;
   double wt_ff_dmbins_qcd_1_;
   double wt_ff_dmbins_wjets_1_;
   double wt_ff_dmbins_ttbar_syst_up_1_;

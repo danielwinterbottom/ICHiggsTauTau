@@ -92,6 +92,26 @@ namespace ic {
       ff_fracs_wjets_->SetDirectory(0);
       f_fracs.Close();
 
+      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_ss.root").c_str());
+      ff_fracs_qcd_ss_ = (TH2D*)f_fracs_ss.Get("QCD");
+      ff_fracs_wjets_ss_ = (TH2D*)f_fracs_ss.Get("W");
+      ff_fracs_qcd_ss_->SetDirectory(0);
+      ff_fracs_wjets_ss_->SetDirectory(0);
+      f_fracs_ss.Close();
+
+      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_aiso.root").c_str());
+      ff_fracs_qcd_aiso_ = (TH2D*)f_fracs_aiso.Get("QCD");
+      ff_fracs_wjets_aiso_ = (TH2D*)f_fracs_aiso.Get("W");
+      ff_fracs_qcd_aiso_->SetDirectory(0);
+      ff_fracs_wjets_aiso_->SetDirectory(0);
+      f_fracs_aiso.Close();
+
+      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_highmt.root").c_str());
+      ff_fracs_qcd_highmt_ = (TH2D*)f_fracs_highmt.Get("QCD");
+      ff_fracs_wjets_highmt_ = (TH2D*)f_fracs_highmt.Get("W");
+      ff_fracs_qcd_highmt_->SetDirectory(0);
+      ff_fracs_wjets_highmt_->SetDirectory(0);
+      f_fracs_highmt.Close();
 
       TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -100,16 +120,16 @@ namespace ic {
       systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
 
-      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down","_ttbar_met_up","_ttbar_met_down"};
 
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_dmbins_qcd"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
@@ -118,7 +138,9 @@ namespace ic {
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
+            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis,WpT")));
+      fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
       // load us groups fake factors
       
@@ -150,6 +172,7 @@ namespace ic {
       reader_->AddVariable( "mt_1", &mt_1_ );
       std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_mt.xml";
       if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_mt.xml";
+      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2017_mt.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
@@ -168,8 +191,29 @@ namespace ic {
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
+      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_ss.root").c_str());
+      ff_fracs_qcd_ss_ = (TH2D*)f_fracs_ss.Get("QCD");
+      ff_fracs_wjets_ss_ = (TH2D*)f_fracs_ss.Get("W");
+      ff_fracs_qcd_ss_->SetDirectory(0);
+      ff_fracs_wjets_ss_->SetDirectory(0);
+      f_fracs_ss.Close();
 
-      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down"};
+      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_aiso.root").c_str());
+      ff_fracs_qcd_aiso_ = (TH2D*)f_fracs_aiso.Get("QCD");
+      ff_fracs_wjets_aiso_ = (TH2D*)f_fracs_aiso.Get("W");
+      ff_fracs_qcd_aiso_->SetDirectory(0);
+      ff_fracs_wjets_aiso_->SetDirectory(0);
+      f_fracs_aiso.Close();
+
+      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_highmt.root").c_str());
+      ff_fracs_qcd_highmt_ = (TH2D*)f_fracs_highmt.Get("QCD");
+      ff_fracs_wjets_highmt_ = (TH2D*)f_fracs_highmt.Get("W");
+      ff_fracs_qcd_highmt_->SetDirectory(0);
+      ff_fracs_wjets_highmt_->SetDirectory(0);
+      f_fracs_highmt.Close();
+
+
+      systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_mvadm0_sig_lt3_up","_wjets_stat_njet0_mvadm0_sig_lt3_down","_wjets_stat_njet1_mvadm0_sig_lt3_up","_wjets_stat_njet1_mvadm0_sig_lt3_down","_wjets_stat_njet2_mvadm0_sig_lt3_up","_wjets_stat_njet2_mvadm0_sig_lt3_down","_wjets_stat_njet0_mvadm0_sig_gt3_up","_wjets_stat_njet0_mvadm0_sig_gt3_down","_wjets_stat_njet1_mvadm0_sig_gt3_up","_wjets_stat_njet1_mvadm0_sig_gt3_down","_wjets_stat_njet2_mvadm0_sig_gt3_up","_wjets_stat_njet2_mvadm0_sig_gt3_down","_wjets_stat_njet0_mvadm1_up","_wjets_stat_njet0_mvadm1_down","_wjets_stat_njet1_mvadm1_up","_wjets_stat_njet1_mvadm1_down","_wjets_stat_njet2_mvadm1_up","_wjets_stat_njet2_mvadm1_down","_wjets_stat_njet0_mvadm2_up","_wjets_stat_njet0_mvadm2_down","_wjets_stat_njet1_mvadm2_up","_wjets_stat_njet1_mvadm2_down","_wjets_stat_njet2_mvadm2_up","_wjets_stat_njet2_mvadm2_down","_wjets_stat_njet0_mvadm10_up","_wjets_stat_njet0_mvadm10_down","_wjets_stat_njet1_mvadm10_up","_wjets_stat_njet1_mvadm10_down","_wjets_stat_njet2_mvadm10_up","_wjets_stat_njet2_mvadm10_down","_wjets_stat_njet0_mvadm11_up","_wjets_stat_njet0_mvadm11_down","_wjets_stat_njet1_mvadm11_up","_wjets_stat_njet1_mvadm11_down","_wjets_stat_njet2_mvadm11_up","_wjets_stat_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_mvadm0_sig_lt3_up","_qcd_stat_njet0_mvadm0_sig_lt3_down","_qcd_stat_njet1_mvadm0_sig_lt3_up","_qcd_stat_njet1_mvadm0_sig_lt3_down","_qcd_stat_njet2_mvadm0_sig_lt3_up","_qcd_stat_njet2_mvadm0_sig_lt3_down","_qcd_stat_njet0_mvadm0_sig_gt3_up","_qcd_stat_njet0_mvadm0_sig_gt3_down","_qcd_stat_njet1_mvadm0_sig_gt3_up","_qcd_stat_njet1_mvadm0_sig_gt3_down","_qcd_stat_njet2_mvadm0_sig_gt3_up","_qcd_stat_njet2_mvadm0_sig_gt3_down","_qcd_stat_njet0_mvadm1_up","_qcd_stat_njet0_mvadm1_down","_qcd_stat_njet1_mvadm1_up","_qcd_stat_njet1_mvadm1_down","_qcd_stat_njet2_mvadm1_up","_qcd_stat_njet2_mvadm1_down","_qcd_stat_njet0_mvadm2_up","_qcd_stat_njet0_mvadm2_down","_qcd_stat_njet1_mvadm2_up","_qcd_stat_njet1_mvadm2_down","_qcd_stat_njet2_mvadm2_up","_qcd_stat_njet2_mvadm2_down","_qcd_stat_njet0_mvadm10_up","_qcd_stat_njet0_mvadm10_down","_qcd_stat_njet1_mvadm10_up","_qcd_stat_njet1_mvadm10_down","_qcd_stat_njet2_mvadm10_up","_qcd_stat_njet2_mvadm10_down","_qcd_stat_njet0_mvadm11_up","_qcd_stat_njet0_mvadm11_down","_qcd_stat_njet1_mvadm11_up","_qcd_stat_njet1_mvadm11_down","_qcd_stat_njet2_mvadm11_up","_qcd_stat_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down","_ttbar_met_up","_ttbar_met_down"};
 
       systs_dm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_njet0_dm0_up","_wjets_stat_njet0_dm0_down","_wjets_stat_njet1_dm0_up","_wjets_stat_njet1_dm0_down","_wjets_stat_njet2_dm0_up","_wjets_stat_njet2_dm0_down","_wjets_stat_njet0_dm1_up","_wjets_stat_njet0_dm1_down","_wjets_stat_njet1_dm1_up","_wjets_stat_njet1_dm1_down","_wjets_stat_njet2_dm1_up","_wjets_stat_njet2_dm1_down","_wjets_stat_njet0_dm10_up","_wjets_stat_njet0_dm10_down","_wjets_stat_njet1_dm10_up","_wjets_stat_njet1_dm10_down","_wjets_stat_njet2_dm10_up","_wjets_stat_njet2_dm10_down","_wjets_stat_njet0_dm11_up","_wjets_stat_njet0_dm11_down","_wjets_stat_njet1_dm11_up","_wjets_stat_njet1_dm11_down","_wjets_stat_njet2_dm11_up","_wjets_stat_njet2_dm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_njet0_dm0_up","_qcd_stat_njet0_dm0_down","_qcd_stat_njet1_dm0_up","_qcd_stat_njet1_dm0_down","_qcd_stat_njet2_dm0_up","_qcd_stat_njet2_dm0_down","_qcd_stat_njet0_dm1_up","_qcd_stat_njet0_dm1_down","_qcd_stat_njet1_dm1_up","_qcd_stat_njet1_dm1_down","_qcd_stat_njet2_dm1_up","_qcd_stat_njet2_dm1_down","_qcd_stat_njet0_dm10_up","_qcd_stat_njet0_dm10_down","_qcd_stat_njet1_dm10_up","_qcd_stat_njet1_dm10_down","_qcd_stat_njet2_dm10_up","_qcd_stat_njet2_dm10_down","_qcd_stat_njet0_dm11_up","_qcd_stat_njet0_dm11_down","_qcd_stat_njet1_dm11_up","_qcd_stat_njet1_dm11_down","_qcd_stat_njet2_dm11_up","_qcd_stat_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
@@ -189,6 +233,8 @@ namespace ic {
             ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
+      fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
+            ff_ws_->function("ff_et_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
       // load us groups fake factors
 
@@ -219,6 +265,7 @@ namespace ic {
       reader_->AddVariable( "mt_1", &mt_1_ );
       std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_et.xml";
       if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_et.xml";
+      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2017_et.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
@@ -426,6 +473,7 @@ namespace ic {
     mt_1_ = MT(lep1, met);
 
     double met_var_qcd = met->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(met->vector(),lep2->vector()))/pt_2_;
+    double met_var_qcd_tt = met->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(met->vector(),lep1->vector()))/pt_1_;
 
     Met* newmet = new Met();
     ROOT::Math::PtEtaPhiEVector newvec;
@@ -433,6 +481,7 @@ namespace ic {
     newmet->set_vector(met->vector()+newvec);
 
     double met_var_w = newmet->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep2->vector()))/pt_2_;
+    double WpT = newmet->pt();
 
     double m_sv_=-9999;
     if (event->Exists("svfitMass")) {
@@ -642,32 +691,33 @@ namespace ic {
 
           double pass_single = 1.;
           if(channel_==channel::mt) {
-            bool trg_singlemuon;
-            if (!event->Exists("trg_singlemuon")) trg_singlemuon = true;
-            else  trg_singlemuon = event->Get<bool>("trg_singlemuon"); 
+            //bool trg_singlemuon;
+            //if (!event->Exists("trg_singlemuon")) trg_singlemuon = true;
+            //else  trg_singlemuon = event->Get<bool>("trg_singlemuon"); 
             if(strategy_==strategy::legacy16) {
-              if(!(pt_1_>23&&trg_singlemuon)) pass_single=0.;
+              if(pt_1_<23) pass_single=0.;
             } else {
-              if(!(pt_1_>25&&trg_singlemuon)) pass_single=0.;
+              if(pt_1_<25) pass_single=0.;
             }
           }
 
           if(channel_==channel::et) {
-            bool trg_singleelectron;
-            if (!event->Exists("trg_singleelectron")) trg_singleelectron = true;
-            else  trg_singleelectron = event->Get<bool>("trg_singleelectron");
+            //bool trg_singleelectron;
+            //if (!event->Exists("trg_singleelectron")) trg_singleelectron = true;
+            //else  trg_singleelectron = event->Get<bool>("trg_singleelectron");
             if(era_ == era::data_2017) {
-              if(!(pt_1_>28&&trg_singleelectron)) pass_single=0.;
+              if(pt_1_<28) pass_single=0.;
             } else if(era_ == era::data_2018) {
-              if(!(pt_1_>33&&trg_singleelectron)) pass_single=0.;
+              if(pt_1_<33) pass_single=0.;
             }
+            if(era_ == era::data_2016) pass_single=1.;
           }
-          if(era_ == era::data_2016) pass_single=1.;
 
 
           double ipsig = IPAndSignificance(tau, refit_vertex, pfcands).second;
 
           mva_dm_2_=tau->HasTauID("MVADM2017v1") ? tau->GetTauID("MVADM2017v1") : -1.;
+          bool isOS = PairOppSign(ditau);
 
           // get mva fractions
           std::vector<float> scores = reader_->EvaluateMulticlass("BDT method");
@@ -679,22 +729,45 @@ namespace ic {
 
           double w_frac = ff_fracs_wjets_->GetBinContent(ff_fracs_wjets_->FindBin(qcd_score,w_score));
           double qcd_frac = ff_fracs_qcd_->GetBinContent(ff_fracs_qcd_->FindBin(qcd_score,w_score));
+
+          if(!isOS) {
+            w_frac = ff_fracs_wjets_ss_->GetBinContent(ff_fracs_wjets_ss_->FindBin(qcd_score,w_score));
+            qcd_frac = ff_fracs_qcd_ss_->GetBinContent(ff_fracs_qcd_ss_->FindBin(qcd_score,w_score));
+            if(w_frac==0. && qcd_frac==0.) qcd_frac = 1.;
+          }
+          if(iso_1_>0.15) {
+            w_frac = ff_fracs_wjets_aiso_->GetBinContent(ff_fracs_wjets_aiso_->FindBin(qcd_score,w_score));
+            qcd_frac = ff_fracs_qcd_aiso_->GetBinContent(ff_fracs_qcd_aiso_->FindBin(qcd_score,w_score));
+            if(w_frac==0. && qcd_frac==0.) qcd_frac = 1.;
+          }
+          if(mt_1_>70) {
+            w_frac = ff_fracs_wjets_highmt_->GetBinContent(ff_fracs_wjets_highmt_->FindBin(qcd_score,w_score));
+            qcd_frac = ff_fracs_qcd_highmt_->GetBinContent(ff_fracs_qcd_highmt_->FindBin(qcd_score,w_score));
+            if(w_frac==0. && qcd_frac==0.) w_frac = 1.;
+          }
+
           double ttbar_frac = 1. - w_frac - qcd_frac;
 
-          bool isOS = PairOppSign(ditau);
           double os = 1.;
           if(!isOS) os=0.;
  
           auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
+          if(channel_==channel::mt) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
           event->Add("wt_ff_1",  ff_nom);
 
-          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_qcd,iso_1_,pass_single};
+          auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};
           auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
+          if(channel_==channel::mt) args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_,WpT};
           ff_nom = fns_["ff_lt_medium_mvadmbins_qcd"]->eval(args_qcd.data());
+
           event->Add("wt_ff_qcd_1",  ff_nom);
           ff_nom = fns_["ff_lt_medium_mvadmbins_wjets"]->eval(args_w.data());
           event->Add("wt_ff_wjets_1",  ff_nom);
+
+          //auto args_ttbar = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,met_var_w};
+          //ff_nom = fns_["ff_lt_medium_mvadmbins_ttbar"]->eval(args_ttbar.data());
+          //event->Add("wt_ff_ttbar_1",  ff_nom);
 
           auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_,iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
           ff_nom = fns_["ff_lt_medium_dmbins"]->eval(args_dm.data());
@@ -785,20 +858,20 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.;
 
-          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met_var_qcd};
+          auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met_var_qcd_tt};
           double ff_nom = fns_["ff_tt_medium_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
           double mva_dm_2_=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
           double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
-          auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met_var_qcd}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met_var_qcd_tt}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           double ff_nom_2 = fns_["ff_tt_medium_mvadmbins"]->eval(args2.data());
           event->Add("wt_ff_2",  ff_nom_2);
  
 
-          auto args_dm = std::vector<double>{pt_1_,tau_decaymode_1_,n_jets_,pt_2_,os,met_var_qcd};
+          auto args_dm = std::vector<double>{pt_1_,tau_decaymode_1_,n_jets_,pt_2_,os,met_var_qcd_tt};
           ff_nom = fns_["ff_tt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
-          auto args_dm_2 = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,0.,met_var_qcd}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
+          auto args_dm_2 = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,0.,met_var_qcd_tt}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           ff_nom_2 = fns_["ff_tt_medium_dmbins"]->eval(args_dm_2.data());
           event->Add("wt_ff_dmbins_2",  ff_nom_2);
 

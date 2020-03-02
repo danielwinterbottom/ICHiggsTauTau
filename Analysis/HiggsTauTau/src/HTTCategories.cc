@@ -224,6 +224,7 @@ namespace ic {
           if(do_ff_systematics_){
             outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
             outtree_->Branch("wt_ff_wjets_1"  , &wt_ff_wjets_1_);
+            outtree_->Branch("wt_ff_ttbar_1"  , &wt_ff_ttbar_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_1"  , &wt_ff_dmbins_qcd_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_1"  , &wt_ff_dmbins_wjets_1_);
             outtree_->Branch("wt_ff_wjets_syst_up_1"  , &wt_ff_wjets_syst_up_1_);
@@ -234,6 +235,8 @@ namespace ic {
             outtree_->Branch("wt_ff_qcd_syst_down_1"  , &wt_ff_qcd_syst_down_1_);
             outtree_->Branch("wt_ff_qcd_met_up_1"  , &wt_ff_qcd_met_up_1_);
             outtree_->Branch("wt_ff_qcd_met_down_1"  , &wt_ff_qcd_met_down_1_);
+            outtree_->Branch("wt_ff_ttbar_met_up_1"  , &wt_ff_ttbar_met_up_1_);
+            outtree_->Branch("wt_ff_ttbar_met_down_1"  , &wt_ff_ttbar_met_down_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_syst_up_1"  , &wt_ff_dmbins_qcd_syst_up_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_syst_down_1"  , &wt_ff_dmbins_qcd_syst_down_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_met_up_1"  , &wt_ff_dmbins_qcd_met_up_1_);
@@ -1811,7 +1814,8 @@ namespace ic {
         if(event->Exists("wt_ff_dmbins_1")) wt_ff_dmbins_1_ = event->Get<double>("wt_ff_dmbins_1");
         if(event->Exists("wt_ff_dmbins_2")) wt_ff_dmbins_2_ = event->Get<double>("wt_ff_dmbins_2");
         if(event->Exists("wt_ff_qcd_1")) wt_ff_qcd_1_ = event->Get<double>("wt_ff_qcd_1");
-        if(event->Exists("wt_ff_wjets_1")) wt_ff_wjets_1_ = event->Get<double>("wt_ff_wjets_1");
+	if(event->Exists("wt_ff_wjets_1")) wt_ff_wjets_1_ = event->Get<double>("wt_ff_wjets_1");
+        if(event->Exists("wt_ff_ttbar_1")) wt_ff_ttbar_1_ = event->Get<double>("wt_ff_ttbar_1");
         if(event->Exists("wt_ff_dmbins_qcd_1")) wt_ff_dmbins_qcd_1_ = event->Get<double>("wt_ff_dmbins_qcd_1");
         if(event->Exists("wt_ff_dmbins_wjets_1")) wt_ff_dmbins_wjets_1_ = event->Get<double>("wt_ff_dmbins_wjets_1");
 
@@ -1967,6 +1971,8 @@ namespace ic {
           wt_ff_qcd_syst_down_1_ = event->Exists("wt_ff_qcd_syst_down_1") ? event->Get<double>("wt_ff_qcd_syst_down_1") : 0.0;
           wt_ff_qcd_met_up_1_ = event->Exists("wt_ff_qcd_met_up_1") ? event->Get<double>("wt_ff_qcd_met_up_1") : 0.0;
           wt_ff_qcd_met_down_1_ = event->Exists("wt_ff_qcd_met_down_1") ? event->Get<double>("wt_ff_qcd_met_down_1") : 0.0;
+          wt_ff_qcd_met_up_1_ = event->Exists("wt_ff_ttbar_met_up_1") ? event->Get<double>("wt_ff_ttbar_met_up_1") : 0.0;
+          wt_ff_qcd_met_down_1_ = event->Exists("wt_ff_ttbar_met_down_1") ? event->Get<double>("wt_ff_ttbar_met_down_1") : 0.0;
           wt_ff_qcd_l_pt_up_1_ = event->Exists("wt_ff_qcd_l_pt_up_1") ? event->Get<double>("wt_ff_qcd_l_pt_up_1") : 0.0;
           wt_ff_qcd_l_pt_down_1_ = event->Exists("wt_ff_qcd_l_pt_down_1") ? event->Get<double>("wt_ff_qcd_l_pt_down_1") : 0.0;
           wt_ff_dmbins_qcd_syst_up_1_ = event->Exists("wt_ff_dmbins_qcd_syst_up_1") ? event->Get<double>("wt_ff_dmbins_qcd_syst_up_1") : 0.0;
