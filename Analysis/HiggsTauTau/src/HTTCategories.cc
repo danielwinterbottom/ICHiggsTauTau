@@ -4501,15 +4501,15 @@ namespace ic {
           pi0 = pi0_tau1;
           tau = tau2;
           tau_1 = tau1;
-          ip = ip1;
-          ip_alt = ip2;
+          ip = ip2;
+          ip_alt = ip1;
         } else {
           pi = pi_tau2;
           pi0 = pi0_tau2;
           tau = tau1;
           tau_1 = tau2;
-          ip = ip2;
-          ip_alt = ip1;
+          ip = ip1;
+          ip_alt = ip2;
         }
         cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv1(
@@ -4583,14 +4583,18 @@ namespace ic {
 
         cp_channel_=2;
 
+        TVector3 ip;
+
         ic::Tau const *tau_1;
         std::vector<ic::PFCandidate*> a1_daughters;
         if(tau_decay_mode_1_>=10) {
           a1_daughters  = GetA1(tau1, pfcands).first;
           tau_1 = tau2;
+          ip = ip2;
         } else {
           a1_daughters  = GetA1(tau2, pfcands).first;
           tau_1 = tau1;
+          ip = ip1;
         }
 
         TLorentzVector pvtosv1(
@@ -4600,7 +4604,8 @@ namespace ic {
                 0.);
         lvec3 = ConvertToLorentz(tau_1->vector()); //pi charge from tau
 
-        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+
         lvec1 = TLorentzVector(ip, 0.);
 
         if (a1_daughters.size()>2){
