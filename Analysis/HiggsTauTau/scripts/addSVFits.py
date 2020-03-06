@@ -52,6 +52,7 @@ def main(args):
         df = pd.DataFrame()
         dfs = []
         for index, svfit_file in enumerate(svfit_files):
+            print(svfit_file)
             f = uproot.open(svfit_file)["svfit"]
             df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
                 namedecode="utf-8").set_index(["event","run","lumi"])
@@ -119,7 +120,7 @@ def main(args):
             outmass[0]     = mass
             mass_err       = mass_err_dict.pop((event, run, lumi))
             outmass_err[0] = mass_err
-        except KeyError: 
+        except KeyError:
             outmass[0]     = -9999.
             outmass_err[0] = -9999.
 
