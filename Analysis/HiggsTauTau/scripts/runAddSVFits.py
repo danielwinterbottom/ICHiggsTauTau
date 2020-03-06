@@ -44,10 +44,12 @@ def main(args):
     subdirs = [""]
 
     qsub_command = (
-        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0 '
+        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0'
         ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
-        ' channel="{}",year="{}"'
+        'channel="{}",year="{}"'
         )
+    print(qsub_command)
+    assert False
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
