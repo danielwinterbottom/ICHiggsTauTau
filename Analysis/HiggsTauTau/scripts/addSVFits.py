@@ -40,12 +40,21 @@ def load_files(filelist):
 def main(args):
 
     # Open file with svfits/fastMTTs
-    f = uproot.open("{}/svfit_{}_{}_{}_output.root".format(args.svfit_path, args.intree, args.channel, args.year))["svfit"]
-    df = f.pandas.df(["event","run","lumi","svfit_mass"], namedecode="utf-8").set_index(["event","run","lumi"])
+    f = uproot.open(
+        "{}/svfit_{}_{}_{}_output.root".format(
+            args.svfit_path, args.intree, args.channel, args.year
+            )
+        )["svfit"]
+    df = f.pandas.df(["event","run","lumi","svfit_mass"],
+        namedecode="utf-8").set_index(["event","run","lumi"])
     d = df.to_dict()["svfit_mass"]
 
     # Open file to annotate
-    file_ = ROOT.TFile.Open("{}/{}_{}_{}.root".format(args.path, args.intree, args.channel, args.year), "UPDATE")
+    file_ = ROOT.TFile.Open(
+        "{}/{}_{}_{}.root".format(
+            args.path, args.intree, args.channel, args.year
+            ), 
+        "UPDATE")
     if file_ == None:
         logger.fatal("File %s is not existent.", args.intree)
         raise Exception
@@ -53,9 +62,7 @@ def main(args):
 
 
     outmass = array("d", [-999])
-    outbranch = tree.Branch("{}".format(
-        args.tag), outmass, "{}/D".format(
-            args.tag))
+    outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
     mass = None
 
