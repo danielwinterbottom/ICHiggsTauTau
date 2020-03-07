@@ -11,13 +11,14 @@
 #include "TVector3.h"
 #include <Math/SMatrix.h>
 
-typedef ROOT::Math::SMatrix<float,3,3, ROOT::Math::MatRepStd< float, 3, 3 >> CovMatrix;
+typedef ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> CovMatrix;
 
 class IpCorrection {
 
  public:
-  IpCorrection(TString fileName);
+  IpCorrection();
   ~IpCorrection();
+  void Init(TString fileName);
   double correctIp(int coordinate, double ip, double eta);
   double correctIp(int coordinate, double ip, double ipgen, double eta);
   TVector3 correctIp(TVector3 ip, TVector3 ipgen, double eta);

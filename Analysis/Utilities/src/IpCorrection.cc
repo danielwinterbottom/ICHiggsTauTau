@@ -1,6 +1,7 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/IpCorrection.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IpCorrection.h"
+IpCorrection::IpCorrection(){}
 
-IpCorrection::IpCorrection(TString fileName) {
+void IpCorrection::Init(TString fileName) {
 
   file = new TFile(fileName);
   if (file->IsZombie()) {
@@ -8,7 +9,7 @@ IpCorrection::IpCorrection(TString fileName) {
     exit(-1);
   }
   TH1D * etaBinsH = (TH1D*)file->Get("etaBinsH");
-
+  etaBinsH->SetDirectory(0);
   if (etaBinsH==NULL) {
     std::cout << "IpCorrection : histogram etaBinsH does not exists " << std::endl;
     exit(-1);
@@ -27,7 +28,9 @@ IpCorrection::IpCorrection(TString fileName) {
       TString histNameData = IpNames[i] + EtaNames[j] + "_data";
       TString histNameMC   = IpNames[i] + EtaNames[j] + "_mc";
       histIpData[i][j] = (TH1D*)file->Get(histNameData);
+      histIpData[i][j]->SetDirectory(0);
       histIpMC[i][j]   = (TH1D*)file->Get(histNameMC);
+      histIpMC[i][j]->SetDirectory(0);
       if (histIpData[i][j]==NULL) {
 	std::cout << "ipCorrection: histogram " << histNameData << " does not exist" << std::endl;
 	exit(-1);
@@ -44,7 +47,9 @@ IpCorrection::IpCorrection(TString fileName) {
       TString histNameData = IpErrNames[i] + EtaNames[j] + "_data";
       TString histNameMC   = IpErrNames[i] + EtaNames[j] + "_mc";
       histErrData[i][j] = (TH1D*)file->Get(histNameData);
+      histErrData[i][j]->SetDirectory(0);
       histErrMC[i][j]   = (TH1D*)file->Get(histNameMC);
+      histErrMC[i][j]->SetDirectory(0);
       if (histErrData[i][j]==NULL) {
 	std::cout << "ipCorrection: histogram " << histNameData << " does not exist" << std::endl;
 	exit(-1);
@@ -56,10 +61,10 @@ IpCorrection::IpCorrection(TString fileName) {
     }
   }
 
+  file->Close();
 }
 
 IpCorrection::~IpCorrection() {
-  file->Close();
 }
 
 double IpCorrection::correctIp(int coor, double ip, double ipgen, double eta) {
@@ -81,7 +86,7 @@ CovMatrix IpCorrection::correctIpCov(CovMatrix ipCovariance, double eta) {
     err[i] = applyQuantileMapping(histMC,histData,TMath::Sqrt(ipCovariance(i,i)));
     err[i] /= TMath::Sqrt(ipCovariance(i,i));
   }
-  ROOT::Math::SMatrix<float,3,3, ROOT::Math::MatRepStd< float, 3, 3 >> ipCovCorrected;
+  ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ipCovCorrected;
   for (int i=0; i<3; ++i) {
     for (int j=0; j<3; ++j) {
       ipCovCorrected(i,j) = err[i]*err[j]*ipCovariance(i,j);
