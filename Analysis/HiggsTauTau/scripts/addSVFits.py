@@ -6,6 +6,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 import logging
 from array import array
 import argparse
+import glob
 
 logger = logging.getLogger("addSVFits.py")
 logger.setLevel(logging.DEBUG)
@@ -40,14 +41,42 @@ def load_files(filelist):
 def main(args):
 
     # Open file with svfits/fastMTTs
-    f = uproot.open(
-        "{}/svfit_{}_{}_{}_output.root".format(
+    # First check if multiple svfit output files
+    svfit_files = glob.glob(
+        "{}/svfit_{}_{}_{}_*_output.root".format(
             args.svfit_path, args.intree, args.channel, args.year
-            )
-        )["svfit"]
-    df = f.pandas.df(["event","run","lumi","svfit_mass"],
-        namedecode="utf-8").set_index(["event","run","lumi"])
-    d = df.to_dict()["svfit_mass"]
+    ))
+
+    # If there are then proceed with looping over all
+    if len(svfit_files) > 0:
+        df = pd.DataFrame()
+        dfs = []
+        for index, svfit_file in enumerate(svfit_files):
+            print(svfit_file)
+            f = uproot.open(svfit_file)["svfit"]
+            df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+                namedecode="utf-8").set_index(["event","run","lumi"])
+            dfs.append(df_tmp)
+        df = pd.concat(dfs)
+
+        # Make sure df shape is non-zero
+        assert df.shape[0] is not 0
+
+    else:
+        f = uproot.open(
+            "{}/svfit_{}_{}_{}_output.root".format(
+                args.svfit_path, args.intree, args.channel, args.year
+        ))["svfit"]
+        df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+            namedecode="utf-8").set_index(["event","run","lumi"])
+
+        # Make sure df shape is non-zero
+        assert df.shape[0] is not 0
+
+    # Use these two dictionaries to retrieve mass and error on mass given 
+    # event, run, lumi numbers (indices)
+    mass_dict = df.to_dict()["svfit_mass"]
+    mass_err_dict  = df.to_dict()["svfit_mass_err"]
 
     # Open file to annotate
     file_ = ROOT.TFile.Open(
@@ -60,31 +89,46 @@ def main(args):
         raise Exception
     tree = file_.Get("ntuple")
 
+    # Check number of events is same in svfit file and ntuple file
+    assert tree.GetEntries() == df.shape[0]
 
+    # Branches to write out to file_
     outmass = array("d", [-999])
     outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
+    outmass_err = array("d", [-999])
+    outbranch_err = tree.Branch(
+        "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
+    )
+
     mass = None
+    mass_err = None
 
     for i_event in range(tree.GetEntries()):
         tree.GetEntry(i_event)
 
         event = int(getattr(tree, "event"))
-        run = int(getattr(tree, "run"))
-        lumi = int(getattr(tree, "lumi"))
+        run   = int(getattr(tree, "run"))
+        lumi  = int(getattr(tree, "lumi"))
 
         # print(event, lumi, run)
 
-        outmass[0] = -999.
+        outmass[0]     = -9999.
+        outmass_err[0] = -9999.
         try:
-            mass = d.pop((event, run, lumi))
-            outmass[0] = mass
-        except KeyError: outmass[0] = -999.
+            mass           = mass_dict.pop((event, run, lumi))
+            outmass[0]     = mass
+            mass_err       = mass_err_dict.pop((event, run, lumi))
+            outmass_err[0] = mass_err
+        except KeyError:
+            outmass[0]     = -9999.
+            outmass_err[0] = -9999.
 
         if i_event % 10000 == 0:
             logger.debug('Currently on event {}'.format(i_event))
 
         outbranch.Fill()
+        outbranch_err.Fill()
 
     logger.debug("Finished looping over events")
 

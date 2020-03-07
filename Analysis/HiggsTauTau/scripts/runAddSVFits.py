@@ -37,7 +37,7 @@ def main(args):
     sample_list = {}
     with open("scripts/sample_list_{}.yaml".format(args.year), "r") as f:
         try:
-            sample_list = yaml.load(f)
+            sample_list = yaml.safe_load(f)
         except yaml.YAMLError as exc:
             print exc
 
@@ -48,8 +48,6 @@ def main(args):
         ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
         'channel="{}",year="{}"'
         )
-    print(qsub_command)
-    assert False
 
     for key, samples in sample_list.iteritems():
         for sample in samples:

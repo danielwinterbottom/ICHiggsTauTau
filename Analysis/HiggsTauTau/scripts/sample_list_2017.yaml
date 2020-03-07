@@ -1,62 +1,51 @@
 samples:
     - DY1JetsToLL-LO
+    - DY1JetsToLL-LO-ext
     - DY2JetsToLL-LO
+    - DY2JetsToLL-LO-ext
     - DY3JetsToLL-LO
+    - DY3JetsToLL-LO-ext
     - DY4JetsToLL-LO
     - DYJetsToLL
-    - DYJetsToLL-LO-ext1
-    - DYJetsToLL-LO-ext2
+    - DYJetsToLL-LO 
+    - DYJetsToLL-LO-ext1 
+    - DYJetsToLL-ext
     - DYJetsToLL_M-10-50-LO
-    - EWKWMinus2Jets_WToLNu
-    - EWKWMinus2Jets_WToLNu-ext1
-    - EWKWMinus2Jets_WToLNu-ext2
-    - EWKWPlus2Jets_WToLNu
-    - EWKWPlus2Jets_WToLNu-ext1
-    - EWKWPlus2Jets_WToLNu-ext2
-    - EWKZ2Jets_ZToLL
-    - EWKZ2Jets_ZToLL-ext1
-    - EWKZ2Jets_ZToLL-ext2
-    - EWKZ2Jets_ZToNuNu
-    - EWKZ2Jets_ZToNuNu-ext1
-    - EWKZ2Jets_ZToNuNu-ext2
+    - DYJetsToLL_M-10-50-LO-ext1
+    - EWKWMinus2Jets
+    - EWKWPlus2Jets
+    - EWKZ2Jets
     - EmbeddingElMuB
     - EmbeddingElMuC
     - EmbeddingElMuD
     - EmbeddingElMuE
     - EmbeddingElMuF
-    - EmbeddingElMuG
-    - EmbeddingElMuH
     - EmbeddingElTauB
     - EmbeddingElTauC
     - EmbeddingElTauD
     - EmbeddingElTauE
     - EmbeddingElTauF
-    - EmbeddingElTauG
-    - EmbeddingElTauH
     - EmbeddingMuTauB
     - EmbeddingMuTauC
     - EmbeddingMuTauD
     - EmbeddingMuTauE
     - EmbeddingMuTauF
-    - EmbeddingMuTauG
-    - EmbeddingMuTauH
     - EmbeddingTauTauB
     - EmbeddingTauTauC
     - EmbeddingTauTauD
     - EmbeddingTauTauE
     - EmbeddingTauTauF
-    - EmbeddingTauTauG
-    - EmbeddingTauTauH
     - GluGluHToTauTauUncorrelatedDecay
     - GluGluHToTauTauUncorrelatedDecay_Filtered
+    - GluGluHToTauTau_M-125
+    - GluGluHToTauTau_M-125-ext
     - GluGluHToWWTo2L2Nu_M-125
     - GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX
-    - GluGluToHToTauTau_M-125
+    - GluGluToHToTauTau_M-125-nospinner
+    - GluGluToHToTauTau_M-125-nospinner-filter
     - GluGluToHToTauTau_M125_amcatnloFXFX
     - GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX
-    - GluGluToMaxmixHToTauTau_M125_amcatnloFXFX
     - GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX
-    - GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX
     - JJH0MToTauTauPlusOneJets
     - JJH0MToTauTauPlusOneJets_Filtered
     - JJH0MToTauTauPlusTwoJets
@@ -77,91 +66,91 @@ samples:
     - JJH0PMToTauTauPlusZeroJets_Filtered
     - JJHiggs0MToTauTau
     - JJHiggs0Mf05ph0ToTauTau
+    - JJHiggs0PMToTauTau
     - MuonEGB
     - MuonEGC
     - MuonEGD
     - MuonEGE
     - MuonEGF
-    - MuonEGG
-    - MuonEGH
-    - QCDMuEnrichedPt15
     - SingleElectronB
     - SingleElectronC
     - SingleElectronD
     - SingleElectronE
     - SingleElectronF
-    - SingleElectronG
-    - SingleElectronH
     - SingleMuonB
     - SingleMuonC
     - SingleMuonD
     - SingleMuonE
     - SingleMuonF
-    - SingleMuonG
-    - SingleMuonH
     - T-t
     - T-tW
-    - TT
+    - TTTo2L2Nu
+    - TTToHadronic
+    - TTToSemiLeptonic
     - TauB
     - TauC
     - TauD
     - TauE
     - TauF
-    - TauG
-    - TauH
     - Tbar-t
     - Tbar-tW
     - VBFHToTauTauUncorrelatedDecay
     - VBFHToTauTauUncorrelatedDecay_Filtered
     - VBFHToTauTau_M-125
+    - VBFHToTauTau_M-125-nospinner
+    - VBFHToTauTau_M-125-nospinner-filter
     - VBFHToWWTo2L2Nu_M-125
-    - VBFHiggs0L1_HToTauTau
-    - VBFHiggs0L1f05ph0_HToTauTau
-    - VBFHiggs0M_HToTauTau
-    - VBFHiggs0Mf05ph0_HToTauTau
-    - VBFHiggs0PH_HToTauTau
-    - VBFHiggs0PHf05ph0_HToTauTau
-    - VBFHiggs0PM_HToTauTau
+    - VBFHiggs0L1ToTauTau
+    - VBFHiggs0L1ZgToTauTau
+    - VBFHiggs0L1Zgf05ph0ToTauTau
+    - VBFHiggs0L1f05ph0ToTauTau
+    - VBFHiggs0MToTauTau
+    - VBFHiggs0Mf05ph0ToTauTau
+    - VBFHiggs0PHToTauTau
+    - VBFHiggs0PHf05ph0ToTauTau
+    - VBFHiggs0PMToTauTau
     - VVTo2L2Nu
-    - VVTo2L2Nu-ext1
     - W1JetsToLNu-LO
     - W2JetsToLNu-LO
-    - W2JetsToLNu-LO-ext
-    - W3JetsToLNu-LO
-    - W3JetsToLNu-LO-ext
+    - W3JetsToLNu-LO 
     - W4JetsToLNu-LO
-    - W4JetsToLNu-LO-ext1
-    - W4JetsToLNu-LO-ext2
-    - WGToLNuG-ext1
-    - WGToLNuG-ext2
-    - WGToLNuG-ext3
-    - WGstarToLNuEE
-    - WGstarToLNuMuMu
-    - WHiggs0L1_HToTauTau
-    - WJetsToLNu
+    - WGToLNuG
+    - WHiggs0L1ToTauTau
+    - WHiggs0L1f05ph0ToTauTau
+    - WHiggs0MToTauTau
+    - WHiggs0Mf05ph0ToTauTau
+    - WHiggs0PHToTauTau
+    - WHiggs0PHf05ph0ToTauTau
+    - WHiggs0PMToTauTau
     - WJetsToLNu-LO
     - WJetsToLNu-LO-ext
-    - WJetsToLNu-ext
-    - WWTo1L1Nu2Q
+    - WWTo1L1Nu2Q 
+    - WWTo2L2Nu
     - WWToLNuQQ
-    - WWToLNuQQ-ext
-    - WZJToLLLNu
     - WZTo1L1Nu2Q
     - WZTo1L3Nu
     - WZTo2L2Q
-    - WminusHToTauTauUncorrelatedDecay
+    - WZTo3LNu
     - WminusHToTauTauUncorrelatedDecay_Filtered
-    - WminusHToTauTau_M-125
+    - WminusHToTauTau_M-125 
     - WplusHToTauTauUncorrelatedDecay
     - WplusHToTauTauUncorrelatedDecay_Filtered
-    - WplusHToTauTau_M-125
-    - ZHToTauTauUncorrelatedDecay
+    - WplusHToTauTau_M-125 
     - ZHToTauTauUncorrelatedDecay_Filtered
     - ZHToTauTau_M-125
-    - ZHiggs0L1fZH05ph0_HToTauTau
+    - ZHiggs0L1ToTauTau
+    - ZHiggs0L1ZgToTauTau
+    - ZHiggs0L1Zgf05ph0ToTauTau
+    - ZHiggs0L1f05ph0ToTauTau
+    - ZHiggs0MToTauTau
+    - ZHiggs0Mf05ph0ToTauTau
+    - ZHiggs0PHToTauTau
+    - ZHiggs0PHf05ph0ToTauTau
+    - ZHiggs0PMToTauTau
+    - ZZTo2L2Nu
     - ZZTo2L2Q
     - ZZTo4L
-    - ZZTo4L-amcat
+    - ZZTo4L-ext
     - ttHiggs0MToTauTau
     - ttHiggs0Mf05ph0ToTauTau
     - ttHiggs0PMToTauTau
