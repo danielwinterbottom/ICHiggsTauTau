@@ -1807,7 +1807,7 @@ namespace ic {
     wt_tau_trg_ic_ =     (event->Exists("wt_tau_trg_ic")) ?    event->Get<double>("wt_tau_trg_ic") : 1.;
     wt_tau_trg_mvadm_ =     (event->Exists("wt_tau_trg_mvadm")) ?    event->Get<double>("wt_tau_trg_mvadm") : 1.;
 
-    wt_tau_id_mvadm_                  = (event->Exists("wt_tau_id_mvadm")) ? event->Get<double>("wt_tau_id_mvadm") : 0.0;
+    wt_tau_id_mvadm_                  = (event->Exists("wt_tau_id_mvadm")) ? event->Get<double>("wt_tau_id_mvadm") : 1.0;
     wt_tau_id_lowpt_mvadm0_up_     = (event->Exists("wt_tau_id_lowpt_mvadm0_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm0_up") : 1.0;
     wt_tau_id_lowpt_mvadm1_up_     = (event->Exists("wt_tau_id_lowpt_mvadm1_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm1_up") : 1.0;
     wt_tau_id_lowpt_mvadm2_up_     = (event->Exists("wt_tau_id_lowpt_mvadm2_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm2_up") : 1.0;
