@@ -29,14 +29,15 @@ def main():
         for year in years:
             for predSample in predSamples:
                 if DM_type=='mva':
-                    DM_nums=[0, 1, 2, 10, 11]
+                    DM_nums=['1_NoHPS0', '2_NoHPS0', 0, 1, 2, 10, 11]
                 if DM_type=='HPS':
                     DM_nums=[0, 1, 10, 11]
                 if(year!=2016):
                     channels = ["tt", "mt","et"]
+                    ch_validity_thrs = { 'et': 35, 'mt': 32, 'tt': 40 }
                 else:
                     channels = ["tt", "mt"]
-                ch_validity_thrs = { 'et': 35, 'mt': 25, 'tt': 40 }
+                    ch_validity_thrs = { 'et': 35, 'mt': 25, 'tt': 40 }
                 
                 for channel in channels:
                     with PdfPages("outputs/SF_plots_{}Channel_{}_{}DM_{}.pdf".format(channel, year ,DM_type, predSample)) as pdf:
