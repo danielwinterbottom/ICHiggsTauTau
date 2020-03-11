@@ -29,6 +29,9 @@ def parse_arguments():
             help="What channel to run for")
     parser.add_argument("--year", default="2016",
             help="What year to run for")
+    parser.add_argument("--check_values_only", default=False, 
+            action='store_true',
+            help="Check for non-zero SVFit values?")
 
     return parser.parse_args()
 
@@ -63,30 +66,32 @@ def main(args):
         # Open file with svfits/fastMTTs
         # First check if multiple svfit output files
         svfit_files = glob.glob(
-            "{}/{}/svfit_{}_{}_{}_*_output.root".format(
+            "{}/{}/svfit_{}_{}_{}*_output.root".format(
                 args.svfit_path, syst_folder, 
                 args.intree, args.channel, args.year,
         ))
+        print(svfit_files)
 
         if len(svfit_files) is 0:
-            # Double-check that this subdirectory svfit file is actually
+            # NOTE: Double-check that this subdirectory svfit file is actually
             # not required! Otherwise implies missing files!
             print((
                 "No svfit file found for subdirectory {0} "
                 "file {1}, \n use nominal svfit file".format(syst_folder, args.intree)
             ))
+            # Fall back to nominal svfit file if no subdirectory file
             svfit_files = glob.glob(
-                "{}/svfit_{}_{}_{}_*_output.root".format(
+                "{}/svfit_{}_{}_{}*_output.root".format(
                     args.svfit_path,
                     args.intree, args.channel, args.year,
             ))
 
-        # If there are then proceed with looping over all
+        # If there are multiple files then proceed with looping over all
         if len(svfit_files) > 0:
             df = pd.DataFrame()
             dfs = []
             for index, svfit_file in enumerate(svfit_files):
-                print(svfit_file)
+                # print(svfit_file)
                 f = uproot.open(svfit_file)["svfit"]
                 df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
                     namedecode="utf-8").set_index(["event","run","lumi"])
@@ -104,6 +109,20 @@ def main(args):
 
         # Make sure df shape is non-zero
         assert df.shape[0] is not 0
+
+        # Check for non-zero values in SVFit files
+        if args.check_values_only:
+            df_check = df.loc[df.eval("svfit_mass < 0."),:]
+            if not df_check.empty:
+                print((
+                    "Found {} out of {} events with svfit "
+                    "below 0 in subdir/file {}/{}/!\n"
+                    .format(
+                        df_check.shape[0], df.shape[0], 
+                        syst_folder, args.intree
+                    )
+                ))
+            continue
 
         # Use these two dictionaries to retrieve mass and error on mass given 
         # event, run, lumi numbers (indices)
@@ -154,8 +173,8 @@ def main(args):
                 mass_err       = mass_err_dict.pop((event, run, lumi))
                 outmass_err[0] = mass_err
             except KeyError:
-                outmass[0]     = -9999.
-                outmass_err[0] = -9999.
+                outmass[0]     = -2.
+                outmass_err[0] = -2.
 
             if i_event % 10000 == 0:
                 logger.debug('Currently on event {}'.format(i_event))
