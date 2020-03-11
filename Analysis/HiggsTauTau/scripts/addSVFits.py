@@ -40,103 +40,136 @@ def load_files(filelist):
 
 def main(args):
 
-    # Open file with svfits/fastMTTs
-    # First check if multiple svfit output files
-    svfit_files = glob.glob(
-        "{}/svfit_{}_{}_{}_*_output.root".format(
-            args.svfit_path, args.intree, args.channel, args.year
-    ))
+    syst_folders = [
+        '',
+        'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
+        'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
+        'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
+        'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
+        'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
+        'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
+        'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
+        'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
+        'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
+        'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
+        'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
+        'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
+        'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
+        'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
+        'JER_UP','JER_DOWN',
+    ]
 
-    # If there are then proceed with looping over all
-    if len(svfit_files) > 0:
-        df = pd.DataFrame()
-        dfs = []
-        for index, svfit_file in enumerate(svfit_files):
-            print(svfit_file)
-            f = uproot.open(svfit_file)["svfit"]
-            df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+    for syst_folder in syst_folders:
+        # Open file with svfits/fastMTTs
+        # First check if multiple svfit output files
+        svfit_files = glob.glob(
+            "{}/{}/svfit_{}_{}_{}_*_output.root".format(
+                args.svfit_path, syst_folder, 
+                args.intree, args.channel, args.year,
+        ))
+
+        if len(svfit_files) is 0:
+            # Double-check that this subdirectory svfit file is actually
+            # not required! Otherwise implies missing files!
+            print((
+                "No svfit file found for subdirectory {0} "
+                "file {1}, \n use nominal svfit file".format(syst_folder, args.intree)
+            ))
+            svfit_files = glob.glob(
+                "{}/svfit_{}_{}_{}_*_output.root".format(
+                    args.svfit_path,
+                    args.intree, args.channel, args.year,
+            ))
+
+        # If there are then proceed with looping over all
+        if len(svfit_files) > 0:
+            df = pd.DataFrame()
+            dfs = []
+            for index, svfit_file in enumerate(svfit_files):
+                print(svfit_file)
+                f = uproot.open(svfit_file)["svfit"]
+                df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+                    namedecode="utf-8").set_index(["event","run","lumi"])
+                dfs.append(df_tmp)
+            df = pd.concat(dfs)
+
+        else:
+            f = uproot.open(
+                "{}/{}/svfit_{}_{}_{}_output.root".format(
+                    args.svfit_path, syst_folder,
+                    args.intree, args.channel, args.year
+            ))["svfit"]
+            df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
                 namedecode="utf-8").set_index(["event","run","lumi"])
-            dfs.append(df_tmp)
-        df = pd.concat(dfs)
 
         # Make sure df shape is non-zero
         assert df.shape[0] is not 0
 
-    else:
-        f = uproot.open(
-            "{}/svfit_{}_{}_{}_output.root".format(
-                args.svfit_path, args.intree, args.channel, args.year
-        ))["svfit"]
-        df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
-            namedecode="utf-8").set_index(["event","run","lumi"])
+        # Use these two dictionaries to retrieve mass and error on mass given 
+        # event, run, lumi numbers (indices)
+        mass_dict = df.to_dict()["svfit_mass"]
+        mass_err_dict  = df.to_dict()["svfit_mass_err"]
 
-        # Make sure df shape is non-zero
-        assert df.shape[0] is not 0
+        # Open file to annotate
+        file_ = ROOT.TFile.Open(
+            "{}/{}/{}_{}_{}.root".format(
+                args.path, syst_folder,
+                args.intree, args.channel, args.year
+                ), 
+            "UPDATE")
+        if file_ == None:
+            logger.fatal("File %s is not existent.", args.intree)
+            raise Exception
+        tree = file_.Get("ntuple")
 
-    # Use these two dictionaries to retrieve mass and error on mass given 
-    # event, run, lumi numbers (indices)
-    mass_dict = df.to_dict()["svfit_mass"]
-    mass_err_dict  = df.to_dict()["svfit_mass_err"]
+        # Check number of events is same in svfit file and ntuple file
+        assert tree.GetEntries() == df.shape[0]
 
-    # Open file to annotate
-    file_ = ROOT.TFile.Open(
-        "{}/{}_{}_{}.root".format(
-            args.path, args.intree, args.channel, args.year
-            ), 
-        "UPDATE")
-    if file_ == None:
-        logger.fatal("File %s is not existent.", args.intree)
-        raise Exception
-    tree = file_.Get("ntuple")
+        # Branches to write out to file_
+        outmass = array("d", [-999])
+        outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
-    # Check number of events is same in svfit file and ntuple file
-    assert tree.GetEntries() == df.shape[0]
+        outmass_err = array("d", [-999])
+        outbranch_err = tree.Branch(
+            "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
+        )
 
-    # Branches to write out to file_
-    outmass = array("d", [-999])
-    outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
+        mass = None
+        mass_err = None
 
-    outmass_err = array("d", [-999])
-    outbranch_err = tree.Branch(
-        "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
-    )
+        for i_event in range(tree.GetEntries()):
+            tree.GetEntry(i_event)
 
-    mass = None
-    mass_err = None
+            event = int(getattr(tree, "event"))
+            run   = int(getattr(tree, "run"))
+            lumi  = int(getattr(tree, "lumi"))
 
-    for i_event in range(tree.GetEntries()):
-        tree.GetEntry(i_event)
+            # print(event, lumi, run)
 
-        event = int(getattr(tree, "event"))
-        run   = int(getattr(tree, "run"))
-        lumi  = int(getattr(tree, "lumi"))
-
-        # print(event, lumi, run)
-
-        outmass[0]     = -9999.
-        outmass_err[0] = -9999.
-        try:
-            mass           = mass_dict.pop((event, run, lumi))
-            outmass[0]     = mass
-            mass_err       = mass_err_dict.pop((event, run, lumi))
-            outmass_err[0] = mass_err
-        except KeyError:
             outmass[0]     = -9999.
             outmass_err[0] = -9999.
+            try:
+                mass           = mass_dict.pop((event, run, lumi))
+                outmass[0]     = mass
+                mass_err       = mass_err_dict.pop((event, run, lumi))
+                outmass_err[0] = mass_err
+            except KeyError:
+                outmass[0]     = -9999.
+                outmass_err[0] = -9999.
 
-        if i_event % 10000 == 0:
-            logger.debug('Currently on event {}'.format(i_event))
+            if i_event % 10000 == 0:
+                logger.debug('Currently on event {}'.format(i_event))
 
-        outbranch.Fill()
-        outbranch_err.Fill()
+            outbranch.Fill()
+            outbranch_err.Fill()
 
-    logger.debug("Finished looping over events")
+        logger.debug("Finished looping over events")
 
-    # Write everything to file
-    file_.Write("ntuple",ROOT.TObject.kWriteDelete)
-    file_.Close()
+        # Write everything to file
+        file_.Write("ntuple",ROOT.TObject.kWriteDelete)
+        file_.Close()
 
-    logger.debug("Closed file")
+        logger.debug("Closed file")
 
 if __name__ == "__main__":
     args = parse_arguments()
