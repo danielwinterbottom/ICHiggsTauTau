@@ -1335,9 +1335,11 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016',
 if options.era in ['cpsummer17','tauid2017']:
 
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
+        ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
     # ztt_samples = ['DYJetsToLL','DYJetsToLL-ext'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu', 'WWTo2L2Nu']#, 'ZZTo2L2Nu', 'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
 
     wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
     #wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','EWKWMinus2Jets','EWKWPlus2Jets']
@@ -1482,12 +1484,15 @@ if options.analysis in ['cpdecay']:
     sm_samples = {
         'ggH_ph_htt' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
         'qqH_ph_htt' : 'VBFHToTauTau_M-125',
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "ggH_old_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_old_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "ggH_old_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
+        "qqH_old_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_old_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "qqH_old_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay",
         "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
