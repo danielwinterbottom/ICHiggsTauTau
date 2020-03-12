@@ -1083,6 +1083,15 @@ class HTTCategories : public ModuleBase {
 
   unsigned ngenjets_;
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
+  double ipx_1_;
+  double ipy_1_;
+  double ipz_1_;
+  double ipx_2_;
+  double ipy_2_;
+  double ipz_2_;
+  double pvx_;
+  double pvy_;
+  double pvz_;
   double q_tot_1_, q_tot_2_;
 
   double looseiso_wt_;
