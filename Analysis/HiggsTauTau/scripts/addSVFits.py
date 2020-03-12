@@ -45,7 +45,7 @@ def load_files(filelist):
 def main(args):
 
     syst_folders = [
-        #'',
+        '',
         'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
         'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
         'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
