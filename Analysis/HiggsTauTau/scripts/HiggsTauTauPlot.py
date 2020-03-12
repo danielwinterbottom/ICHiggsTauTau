@@ -1475,6 +1475,21 @@ if options.analysis in ['cpdecay']:
     sm_samples = {
        'ggH_ph_htt' : 'GluGluToHToTauTau_M-125',
        'qqH_ph_htt' : 'VBFHToTauTau_M-125',
+       "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
+       "ZH_ph_htt": 'ZHToTauTau_M-125', 
+
     }
 
 # for 2017
@@ -1482,16 +1497,20 @@ if options.analysis in ['cpdecay']:
     sm_samples = {
         'ggH_ph_htt' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
         'qqH_ph_htt' : 'VBFHToTauTau_M-125',
-        "ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
         "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
+        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt": 'ZHToTauTau_M-125', 
     }
 
   if options.era == 'cp18':
@@ -1499,18 +1518,20 @@ if options.analysis in ['cpdecay']:
         # test CP in decay samples
         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "ggH_sm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
         "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
         "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt": 'ZHToTauTau_M-125',  
     }
 
 

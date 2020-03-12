@@ -389,7 +389,8 @@
   },
   "ZHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.05542,
-    "evt": 1793988
+    "evt": 1793988,
+    "eff": 0.2514
   },
   "ZHToTauTau_M-125": {
     "xs": 0.05542,
