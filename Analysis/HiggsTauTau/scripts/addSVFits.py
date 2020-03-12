@@ -45,7 +45,7 @@ def load_files(filelist):
 def main(args):
 
     syst_folders = [
-        '',
+        #'',
         'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
         'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
         'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
@@ -111,7 +111,7 @@ def main(args):
             df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
 
         # Make sure df shape is non-zero
-        assert df.shape[0] is not 0
+        df = df.loc[~df.index.duplicated() ,:]  
 
         # Check for non-zero values in SVFit files
         if args.check_values_only:
@@ -151,10 +151,33 @@ def main(args):
         tree = file_.Get("ntuple")
 
         # Check number of events is same in svfit file and ntuple file
-        assert tree.GetEntries() == df.shape[0]
+        #assert tree.GetEntries() == df.shape[0]
+        if tree.GetEntries() != df.shape[0]:
+          print ('WARNING: A different number of svfit enries were detected for file "{}/{}/{}_{}_{}.root'.format(
+                  args.path, syst_folder,
+                  args.intree, args.channel, args.year))
+          print ('(number of svfit ouputs, number of tree entries) = ({}, {})'.format(df.shape[0], tree.GetEntries()))
+
+        print args.tag
+       # print tree.GetListOfBranches().FindObject(args.tag)
+
+ 
+        #old_branch = tree.GetBranch('wt_ps_fsr_down')
+        #tree.GetListOfBranches().Remove(old_branch)
+        #tree.Fill()
+
+       # if tree.GetListOfBranches().FindObject(args.tag): 
+       #   # delete older branch if it exists
+       #   print('branch already exists, removing old version')
+       #   old_branch = tree.GetBranch(args.tag)
+       #   tree.GetListOfBranches().Remove(old_branch)
+
 
         # Branches to write out to file_
         outmass = array("d", [-999])
+
+        if tree.GetListOfBranches().FindObject(args.tag):
+           tree.SetBranchStatus(args.tag,0)
         outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
         #outmass_err = array("d", [-999])

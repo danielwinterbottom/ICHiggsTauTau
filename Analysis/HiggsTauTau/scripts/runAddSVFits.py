@@ -58,8 +58,11 @@ def main(args):
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-            # if sample in [
-            #     "WWToLNuQQ",]:
+            #if sample not in [
+            #  'TauE',
+            #]: continue
+
+            print sample
 
             for subdir in subdirs:
                 #print("{}/{}_{}_{}.root".format(
@@ -77,7 +80,7 @@ def main(args):
                     print( qsub_command.format(sample, args.svfit_path,
                         args.path, args.tag, args.channel, args.year)
                         + ' ./scripts/batch_addSVFits.sh'
-)
+                    )
 
 if __name__ == "__main__":
     args = parse_arguments()
