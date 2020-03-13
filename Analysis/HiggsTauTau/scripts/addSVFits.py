@@ -158,33 +158,16 @@ def main(args):
                   args.intree, args.channel, args.year))
           print ('(number of svfit ouputs, number of tree entries) = ({}, {})'.format(df.shape[0], tree.GetEntries()))
 
-        print args.tag
-       # print tree.GetListOfBranches().FindObject(args.tag)
-
- 
-        #old_branch = tree.GetBranch('wt_ps_fsr_down')
-        #tree.GetListOfBranches().Remove(old_branch)
-        #tree.Fill()
-
-       # if tree.GetListOfBranches().FindObject(args.tag): 
-       #   # delete older branch if it exists
-       #   print('branch already exists, removing old version')
-       #   old_branch = tree.GetBranch(args.tag)
-       #   tree.GetListOfBranches().Remove(old_branch)
-
-
         # Branches to write out to file_
         outmass = array("d", [-999])
 
         if tree.GetListOfBranches().FindObject(args.tag):
-           tree.SetBranchStatus(args.tag,0)
-        outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
-        tree.SetBranchStatus(args.tag,1)
+           outbranch = tree.GetBranch(args.tag)
+           tree.SetBranchAddress(args.tag,outmass);
+        else: 
+          outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
-        #outmass_err = array("d", [-999])
-        #outbranch_err = tree.Branch(
-        #    "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
-        #)
+        newtree = tree.CloneTree(0)
 
         mass = None
         mass_err = None
@@ -209,16 +192,19 @@ def main(args):
                 outmass[0]     = -2.
                 #outmass_err[0] = -2.
 
+
             if i_event % 10000 == 0:
                 logger.debug('Currently on event {}'.format(i_event))
 
-            outbranch.Fill()
+            newtree.Fill()
+            #outbranch.Fill()
             #outbranch_err.Fill()
 
         logger.debug("Finished looping over events")
 
         # Write everything to file
-        file_.Write("ntuple",ROOT.TObject.kWriteDelete)
+        file_.cd()
+        newtree.Write('ntuple',ROOT.TObject.kWriteDelete)
         file_.Close()
 
         logger.debug("Closed file")
