@@ -14,18 +14,18 @@ mkdir -p -v $1/TSCALE3PRONG_UP
 mkdir -p -v $1/TSCALE3PRONG_DOWN
 mkdir -p -v $1/TSCALE3PRONG1PI0_UP
 mkdir -p -v $1/TSCALE3PRONG1PI0_DOWN
-mkdir -p -v $1/TSCALE_UP_1
-mkdir -p -v $1/TSCALE_DOWN_1
-mkdir -p -v $1/TSCALE_UP_2
-mkdir -p -v $1/TSCALE_DOWN_2
-mkdir -p -v $1/TSCALE_UP_3
-mkdir -p -v $1/TSCALE_DOWN_3
-mkdir -p -v $1/TSCALE_UP_0.5
-mkdir -p -v $1/TSCALE_DOWN_0.5
-mkdir -p -v $1/TSCALE_UP_1.5
-mkdir -p -v $1/TSCALE_DOWN_1.5
-mkdir -p -v $1/TSCALE_UP_2.5
-mkdir -p -v $1/TSCALE_DOWN_2.5
+#mkdir -p -v $1/TSCALE_UP_1
+#mkdir -p -v $1/TSCALE_DOWN_1
+#mkdir -p -v $1/TSCALE_UP_2
+#mkdir -p -v $1/TSCALE_DOWN_2
+#mkdir -p -v $1/TSCALE_UP_3
+#mkdir -p -v $1/TSCALE_DOWN_3
+#mkdir -p -v $1/TSCALE_UP_0.5
+#mkdir -p -v $1/TSCALE_DOWN_0.5
+#mkdir -p -v $1/TSCALE_UP_1.5
+#mkdir -p -v $1/TSCALE_DOWN_1.5
+#mkdir -p -v $1/TSCALE_UP_2.5
+#mkdir -p -v $1/TSCALE_DOWN_2.5
 # mkdir -p -v $1/BTAG_UP
 # mkdir -p -v $1/BTAG_DOWN
 # mkdir -p -v $1/BFAKE_UP

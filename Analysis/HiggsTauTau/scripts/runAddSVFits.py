@@ -43,27 +43,41 @@ def main(args):
 
     subdirs = [""]
 
+#    qsub_command = (
+#        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0'
+#        ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
+#        'channel="{}",year="{}"'
+#        )
+
     qsub_command = (
-        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0'
+        'qsub -e svfitout/ -o svfitout/ -cwd -V -l h_rt=3:0:0'
         ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
         'channel="{}",year="{}"'
         )
 
+
     for key, samples in sample_list.iteritems():
         for sample in samples:
-            # if sample in [
-            #     "WWToLNuQQ",]:
+            #if sample not in [
+            #  'TauE',
+            #]: continue
+
+            print sample
 
             for subdir in subdirs:
-                print("{}/{}_{}_{}.root".format(
-                    args.path, sample, args.channel, args.year
-                ))
+                #print("{}/{}_{}_{}.root".format(
+                #    args.path, sample, args.channel, args.year
+                #))
                 if glob.glob("{}/{}_{}_{}.root".format(
                     args.path, sample, args.channel, args.year
                     )):
 
                     run_command(
                         qsub_command.format(sample, args.svfit_path, 
+                        args.path, args.tag, args.channel, args.year)
+                        + ' ./scripts/batch_addSVFits.sh'
+                    )
+                    print( qsub_command.format(sample, args.svfit_path,
                         args.path, args.tag, args.channel, args.year)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
