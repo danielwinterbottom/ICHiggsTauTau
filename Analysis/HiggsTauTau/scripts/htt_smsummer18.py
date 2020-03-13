@@ -177,14 +177,14 @@ if options.proc_sm or options.proc_all:
       'GluGluHToTauTauUncorrelatedDecay_Filtered',
       'GluGluHToTauTau_M-125',
       'GluGluHToWWTo2L2Nu_M-125',
-      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToHToTauTau_M-125-nospinner-filter',
-      'GluGluToHToTauTau_M-125-nospinner',
-      'GluGluToHToTauTau_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+      #'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToHToTauTau_M-125-nospinner-filter',
+      #'GluGluToHToTauTau_M-125-nospinner',
+      #'GluGluToHToTauTau_M125_amcatnloFXFX',
+      #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+      #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
       'JJH0MToTauTauPlusOneJets',
       'JJH0MToTauTauPlusOneJets_Filtered',
       'JJH0MToTauTauPlusTwoJets',
@@ -208,12 +208,12 @@ if options.proc_sm or options.proc_all:
       'JJHiggs0PMToTauTau',
       'VBFHToTauTauUncorrelatedDecay',
       'VBFHToTauTauUncorrelatedDecay_Filtered',
-      'VBFHToTauTau_M-125-MM-filter',
-      'VBFHToTauTau_M-125-PS-filter',
-      'VBFHToTauTau_M-125-SM-filter',
+      #'VBFHToTauTau_M-125-MM-filter',
+      #'VBFHToTauTau_M-125-PS-filter',
+      #'VBFHToTauTau_M-125-SM-filter',
       'VBFHToTauTau_M-125-ext1',
-      'VBFHToTauTau_M-125-nospinner-filter',
-      'VBFHToTauTau_M-126-nospinner',
+      #'VBFHToTauTau_M-125-nospinner-filter',
+      #'VBFHToTauTau_M-126-nospinner',
       'VBFHToWWTo2L2Nu_M-125',
       'VBFHiggs0L1ToTauTau',
       'VBFHiggs0L1ZgToTauTau',
@@ -529,7 +529,7 @@ if options.mg_signal or options.proc_sm:
                 if n_scales*n_channels>=48: nperjob=5
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
-                  nperjob = int(math.ceil(float(nperjob)/2)) 
+                  nperjob = int(math.ceil(float(nperjob)/5)) 
  
                 #if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

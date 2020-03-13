@@ -38,15 +38,18 @@ def checkJobs(year, to_check):
 
     counter = 0
     for file_ in files:
-        if "Closed file" not in open("{}/{}".format(path, file_)).read():
+        #print "{}/{}".format(path, file_)
+        #if "Closed file" not in open("{}/{}".format(path, file_)).read():
+        if "End of job" not in open("{}/{}".format(path, file_)).read():
+           
             print((file_.split(".")[0]))
             counter += 1
         if "WARNING: A different number of svfit enries were detected for file" in open("{}/{}".format(path, file_)).read(): jobs_with_warnings.append(file_)
 
     print("{} incomplete files".format(counter))
 
-print('jobs with warnings:')
-for x in jobs_with_warnings: print x
+    print('jobs with warnings:')
+    for x in jobs_with_warnings: print x
 
 if __name__ == "__main__":
     checkJobs(**vars(parse_arguments()))

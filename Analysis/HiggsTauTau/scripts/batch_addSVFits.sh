@@ -12,5 +12,5 @@ ulimit -c 0
 
 inputNumber=$(printf "%04d\n" $((SGE_TASK_ID-1)))
 
-python $dir/scripts/addSVFits.py --intree $input --svfit_path $svfit_path --path $path --tag $tag --channel $channel --year $year &> jobs/${input}_${channel}_${year}_svfit.log
+python $dir/scripts/addSVFits.py --intree $input --svfit_path $svfit_path --path $path --tag $tag --channel $channel --year $year &> jobs/${input}_${channel}_${year}_${extra}_svfit.log
 

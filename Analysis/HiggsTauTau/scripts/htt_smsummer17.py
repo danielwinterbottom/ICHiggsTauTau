@@ -172,12 +172,12 @@ if options.proc_sm or options.proc_all:
         "GluGluHToTauTauUncorrelatedDecay_Filtered",
         "GluGluHToTauTau_M-125",
         "GluGluHToTauTau_M-125-ext",
-        "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX",
-        "GluGluToHToTauTau_M-125-nospinner",
-        "GluGluToHToTauTau_M-125-nospinner-filter",
-        "GluGluToHToTauTau_M125_amcatnloFXFX",
-        "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX",
-        "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        #"GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        #"GluGluToHToTauTau_M-125-nospinner",
+        #"GluGluToHToTauTau_M-125-nospinner-filter",
+        #"GluGluToHToTauTau_M125_amcatnloFXFX",
+        #"GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        #"GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX",
         "JJH0MToTauTauPlusOneJets",
         "JJH0MToTauTauPlusOneJets_Filtered",
         "JJH0MToTauTauPlusTwoJets",
@@ -202,8 +202,8 @@ if options.proc_sm or options.proc_all:
         "VBFHToTauTauUncorrelatedDecay",
         "VBFHToTauTauUncorrelatedDecay_Filtered",
         "VBFHToTauTau_M-125",
-        "VBFHToTauTau_M-125-nospinner",
-        "VBFHToTauTau_M-125-nospinner-filter",
+        #"VBFHToTauTau_M-125-nospinner",
+        #"VBFHToTauTau_M-125-nospinner-filter",
         "VBFHiggs0L1ToTauTau",
         "VBFHiggs0L1ZgToTauTau",
         "VBFHiggs0L1Zgf05ph0ToTauTau",
@@ -407,7 +407,7 @@ if options.proc_bkg or options.proc_all:
       "DY3JetsToLL-LO",
       "DY3JetsToLL-LO-ext",
       "DY4JetsToLL-LO",
-      "DYJetsToLL",
+      #"DYJetsToLL",
       "DYJetsToLL-LO", # buggy PU
       "DYJetsToLL-LO-ext1", # buggy PU
       "DYJetsToLL-ext",
@@ -515,7 +515,10 @@ if options.mg_signal or options.proc_sm:
         if n_scales*n_channels>=24: nperjob = 7
         if n_scales*n_channels>=48: nperjob=4
         if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
-          nperjob = int(math.ceil(float(nperjob)/2)) 
+          nperjob = int(math.ceil(float(nperjob)/5))
+
+        nperjob=1
+ 
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

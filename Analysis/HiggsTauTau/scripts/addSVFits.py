@@ -46,21 +46,21 @@ def main(args):
 
     syst_folders = [
         '',
-        'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
-        'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
-        'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
-        'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
-        'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
-        'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
-        'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
-        'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
-        'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
-        'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
-        'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
-        'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
-        'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
-        'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
-        'JER_UP','JER_DOWN',
+        #'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
+        #'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
+        #'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
+        #'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
+        #'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
+        #'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
+        #'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
+        #'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
+        #'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
+        #'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
+        #'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
+        #'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
+        #'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
+        #'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
+        #'JER_UP','JER_DOWN',
     ]
 
     for syst_folder in syst_folders:
@@ -72,6 +72,7 @@ def main(args):
                 args.intree, args.channel, args.year,
         ))
         print(svfit_files)
+
 
         if len(svfit_files) is 0:
             # NOTE: Double-check that this subdirectory svfit file is actually
@@ -101,14 +102,16 @@ def main(args):
             df = pd.concat(dfs)
 
         else:
-            f = uproot.open(
-                "{}/{}/svfit_{}_{}_{}_output.root".format(
-                    args.svfit_path, syst_folder,
-                    args.intree, args.channel, args.year
-            ))["svfit"]
-            #df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
-            #    namedecode="utf-8").set_index(["event","run","lumi"])
-            df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
+            #f = uproot.open(
+            #    "{}/{}/svfit_{}_{}_{}_output.root".format(
+            #        args.svfit_path, syst_folder,
+            #        args.intree, args.channel, args.year
+            #))["svfit"]
+            ##df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+            ##    namedecode="utf-8").set_index(["event","run","lumi"])
+            #df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
+#            df = pd.DataFrame()
+            df = pd.DataFrame(columns = ["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
 
         # Make sure df shape is non-zero
         df = df.loc[~df.index.duplicated() ,:]  
@@ -209,7 +212,7 @@ def main(args):
 
         logger.debug("Closed file")
 
-    logger.debug("End of job")
+    print "End of job"
 
 if __name__ == "__main__":
     args = parse_arguments()
