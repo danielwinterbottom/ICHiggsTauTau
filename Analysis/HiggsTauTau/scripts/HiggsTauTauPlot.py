@@ -748,7 +748,7 @@ if options.channel == 'tt':
     cats["inclusive_pipi"]     = "(tau_decay_mode_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5)"
 
     cats["inclusive_mvarhorho"]       = "(tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==1 && mva_dm_2==1)"
-    cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
     cats["inclusive_mvaa1rho"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_2==1 && tau_decay_mode_2==10 && mva_dm_2==10))"
     cats["inclusive_mvaa1pi"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
     cats["inclusive_mvaa1a1"]     = "(tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==10 && mva_dm_2==10)"
@@ -1419,9 +1419,9 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['cp18']:
 
-    #ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 #    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    ztt_samples = ['DYJetsToLL'] # NL0 filelists
+    #ztt_samples = ['DYJetsToLL'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = [
             'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
@@ -1915,11 +1915,12 @@ if options.syst_tau_id_diff != '':
         systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False) 
     if '*MVADM' in hist_name:
       for i in [0,1,2,10,11]:
-        hist_name_bini = hist_name.replace('*MVADM','MVADM%(i)i' % vars())
         if options.channel != 'tt':
+          hist_name_bini = hist_name.replace('*MVADM','pTlow_MVADM%(i)i' % vars())
           systematics['syst_tau_id_diff_lowpt_mvadm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_lowpt_mvadm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
           systematics['syst_tau_id_diff_lowpt_mvadm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_lowpt_mvadm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
 
+        hist_name_bini = hist_name.replace('*MVADM','pThigh_MVADM%(i)i' % vars())
         systematics['syst_tau_id_diff_highpt_mvadm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_highpt_mvadm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
         systematics['syst_tau_id_diff_highpt_mvadm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_highpt_mvadm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
 

@@ -219,28 +219,28 @@ if SCHEME == 'cpdecay':
   scheme_et = [
   ]
   scheme_mt = [
-   # ("17",   "higgs_mvaMuPi",  "2017_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuA1",  "2017_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "zttEmbed",       "2017_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "jetFakes",       "2017_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuPi",  "2018_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2018_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2018_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuA1",  "2018_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "zttEmbed",       "2018_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "jetFakes",       "2018_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
 
   ]
 
 
   scheme_tt = [
-    ("17",   "higgs_mvarhorho",    "2017_higgs_Rho_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvarho0a1",    "2017_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvaa1a1",    "2017_higgs_A1_A1",  VAR1, ' '),
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaA1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
+    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho",  VAR1, ' '),
+    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho",  VAR1, ' '),
+    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1",  VAR1, ' '),
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaother",    "2018_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
   ]
   scheme_em = [

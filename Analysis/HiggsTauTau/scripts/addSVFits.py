@@ -179,6 +179,7 @@ def main(args):
         if tree.GetListOfBranches().FindObject(args.tag):
            tree.SetBranchStatus(args.tag,0)
         outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
+        tree.SetBranchStatus(args.tag,1)
 
         #outmass_err = array("d", [-999])
         #outbranch_err = tree.Branch(
@@ -221,6 +222,8 @@ def main(args):
         file_.Close()
 
         logger.debug("Closed file")
+
+    logger.debug("End of job")
 
 if __name__ == "__main__":
     args = parse_arguments()

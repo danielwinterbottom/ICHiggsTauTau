@@ -237,7 +237,7 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR6, ' '),
     ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR5, ' '),
     ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaA1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
     ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
     ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
