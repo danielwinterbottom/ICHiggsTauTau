@@ -1,0 +1,434 @@
+{
+  "DY1JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 146280395,
+    "eff": 0.8945133259
+  },
+  "DY2JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 146280395,
+    "eff": 0.896292924531
+  },
+  "DY3JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 146280395,
+    "eff": 0.897582820105
+  },
+  "DY4JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 146280395,
+    "eff": 0.888140841474
+  },
+  "DYJetsToLL-LO-ext1": {
+    "xs": 6077.22,
+    "evt": 146280395
+  },
+  "DYJetsToLL-LO-ext2": {
+    "xs": 6077.22,
+    "evt": 146280395
+  },
+  "DYJetsToLL": {
+    "xs": 6077.22,
+    "evt": 80924255
+  },
+  "DYJetsToLL_M-10-50-LO": {
+    "xs": 18610,
+    "evt": 35114961
+  },
+  "EWKWMinus2Jets_WToLNu-ext1": {
+    "xs": 20.25,
+    "evt": 4782075
+  },
+  "EWKWMinus2Jets_WToLNu-ext2": {
+    "xs": 20.25,
+    "evt": 4782075
+  },
+  "EWKWMinus2Jets_WToLNu": {
+    "xs": 20.25,
+    "evt": 4782075
+  },
+  "EWKWPlus2Jets_WToLNu-ext1": {
+    "xs": 25.62,
+    "evt": 4848395
+  },
+  "EWKWPlus2Jets_WToLNu-ext2": {
+    "xs": 25.62,
+    "evt": 4848395
+  },
+  "EWKWPlus2Jets_WToLNu": {
+    "xs": 25.62,
+    "evt": 4848395
+  },
+  "EWKZ2Jets_ZToLL-ext1": {
+    "xs": 3.987,
+    "evt": 999451
+  },
+  "EWKZ2Jets_ZToLL-ext2": {
+    "xs": 3.987,
+    "evt": 999451
+  },
+  "EWKZ2Jets_ZToLL": {
+    "xs": 3.987,
+    "evt": 999451
+  },
+  "T-t": {
+    "xs": 136.02,
+    "evt": 67105876
+  },
+  "T-tW": {
+    "xs": 35.6,
+    "evt": 6952830
+  },
+  "TT": {
+    "xs": 831.76,
+    "evt": 74885019
+  },
+  "Tbar-t": {
+    "xs": 80.95,
+    "evt": 38811017
+  },
+  "Tbar-tW": {
+    "xs": 35.6,
+    "evt": 6933094
+  },
+  "VVTo2L2Nu": {
+    "xs": 11.95,
+    "evt": 5942142
+  },
+  "VVTo2L2Nu-ext1": {
+    "xs": 11.95,
+    "evt": 5942142
+  },
+  "W1JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.57054496824
+  },
+  "W2JetsToLNu-LO-ext": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.84257620237
+  },
+  "W2JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.84257620237
+  },
+  "W3JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.94120389384
+  },
+  "W3JetsToLNu-LO-ext": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.94120389384
+  },
+  "W4JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.94084559823
+  },
+  "W4JetsToLNu-LO-ext1": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.94084559823
+  },
+  "W4JetsToLNu-LO-ext2": {
+    "xs": 61526.7,
+    "evt": 173252475,
+    "eff": 1.94084559823
+  },
+  "WGToLNuG-ext1": {
+    "xs": 489,
+    "evt": 17643995
+  },
+  "WGToLNuG-ext2": {
+    "xs": 489,
+    "evt": 17643995
+  },
+  "WGToLNuG-ext3": {
+    "xs": 489,
+    "evt": 17643995
+  },
+  "WGstarToLNuEE": {
+    "xs": 3.526,
+    "evt": 2149729
+  },
+  "WGstarToLNuMuMu": {
+    "xs": 2.793,
+    "evt": 2218596
+  },
+  "WJetsToLNu-LO-ext": {
+    "xs": 61526.7,
+    "evt": 173252475
+  },
+  "WJetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 173252475
+  },
+  "WJetsToLNu": {
+    "xs": 61526.7,
+    "evt": 340992581
+  },
+  "WJetsToLNu-ext": {
+    "xs": 61526.7,
+    "evt": 340992581
+  },
+  "WWTo1L1Nu2Q": {
+    "xs": 49.997,
+    "evt": 3267135
+  },
+  "WZJToLLLNu": {
+    "xs": 4.708,
+    "evt": 1214919
+  },
+  "WZTo1L1Nu2Q": {
+    "xs": 10.71,
+    "evt": 14109151
+  },
+  "WZTo1L3Nu": {
+    "xs": 3.05,
+    "evt": 942046
+  },
+  "WZTo2L2Q": {
+    "xs": 5.595,
+    "evt": 15879472
+  },
+  "ZZTo2L2Q": {
+    "xs": 3.22,
+    "evt": 9762305
+  },
+  "ZZTo4L-amcat": {
+    "xs": 1.212,
+    "evt": 7391100
+  },
+  "ZZTo4L": {
+    "xs": 1.212,
+    "evt": 7391100
+  },
+  "GluGluHToTauTauUncorrelatedDecay": {
+    "xs": 3.045966,
+    "evt": 496400
+  },
+  "GluGluHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 3.045966,
+    "evt": 20156550
+  },
+  "GluGluHToWWTo2L2Nu_M-125": {
+    "xs": 1.001,
+    "evt": 492200
+  },
+  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 4691218
+  },
+  "GluGluToHToTauTau_M-125": {
+    "xs": 3.045966,
+    "evt": 9673200
+  },
+  "GluGluToHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1612810
+  },
+  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 6274155
+  },
+  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1728080
+  },
+  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 5672804
+  },
+  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
+    "xs": 3.045966,
+    "evt": 1751196
+  },
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 3.045966,
+    "evt": 233532
+  },
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 2401956
+  },
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 3.045966,
+    "evt": 325365
+  },
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 6210732
+  },
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 3.045966,
+    "evt": 410323
+  },
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 759960
+  },
+  "JJH0Mf05ph0ToTauTauPlusOneJets": {
+    "xs": 3.045966,
+    "evt": 211773
+  },
+  "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 2256298
+  },
+  "JJH0Mf05ph0ToTauTauPlusTwoJets": {
+    "xs": 3.045966,
+    "evt": 333260
+  },
+  "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 2480423
+  },
+  "JJH0Mf05ph0ToTauTauPlusZeroJets": {
+    "xs": 3.045966,
+    "evt": 387606
+  },
+  "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 808237
+  },
+  "JJH0PMToTauTauPlusOneJets": {
+    "xs": 3.045966,
+    "evt": 225268
+  },
+  "JJH0PMToTauTauPlusOneJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 2336201
+  },
+  "JJH0PMToTauTauPlusTwoJets": {
+    "xs": 3.045966,
+    "evt": 325666
+  },
+  "JJH0PMToTauTauPlusTwoJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 5980573
+  },
+  "JJH0PMToTauTauPlusZeroJets": {
+    "xs": 3.045966,
+    "evt": 414515
+  },
+  "JJH0PMToTauTauPlusZeroJets_Filtered": {
+    "xs": 3.045966,
+    "evt": 748221
+  },
+  "VBFHToTauTauUncorrelatedDecay": {
+    "xs": 0.2371,
+    "evt": 495968
+  },
+  "VBFHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.2371,
+    "evt": 18642002
+  },
+  "VBFHToTauTau_M-125": {
+    "xs": 0.2371,
+    "evt": 1497048
+  },
+  "VBFHToWWTo2L2Nu_M-125": {
+    "xs": 0.0858,
+    "evt": 498440
+  },
+  "VBFHiggs0L1_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 972000
+  },
+  "VBFHiggs0L1f05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 995200
+  },
+  "VBFHiggs0M_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 952800
+  },
+  "VBFHiggs0Mf05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 948400
+  },
+  "VBFHiggs0PH_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 912000
+  },
+  "VBFHiggs0PHf05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 958400
+  },
+  "VBFHiggs0PM_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 998600
+  },
+  "WHiggs0L1_HToTauTau": {
+    "xs": 0.08606,
+    "evt": 970200
+  },
+  "WminusHToTauTauUncorrelatedDecay": {
+    "xs": 0.03340,
+    "evt": 93034
+  },
+  "WminusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.03340,
+    "evt": 1806535
+  },
+  "WminusHToTauTau_M-125": {
+    "xs": 0.03340,
+    "evt": 420456
+  },
+  "WplusHToTauTauUncorrelatedDecay": {
+    "xs": 0.05266,
+    "evt": 93870
+  },
+  "WplusHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05266,
+    "evt": 2618818
+  },
+  "WplusHToTauTau_M-125": {
+    "xs": 0.05266,
+    "evt": 411462
+  },
+  "ZHToTauTauUncorrelatedDecay": {
+    "xs": 0.05542,
+    "evt": 93690
+  },
+  "ZHToTauTauUncorrelatedDecay_Filtered": {
+    "xs": 0.05542,
+    "evt": 3389603
+  },
+  "ZHToTauTau_M-125": {
+    "xs": 0.05542,
+    "evt": 563177
+  },
+  "ZHiggs0L1fZH05ph0_HToTauTau": {
+    "xs": 0.05542,
+    "evt": 950200
+  },
+  "ttHiggs0MToTauTau": {
+    "xs": 0.0318,
+    "evt": 1500000
+  },
+  "ttHiggs0Mf05ph0ToTauTau": {
+    "xs": 0.0318,
+    "evt": 1208800
+  },
+  "ttHiggs0PMToTauTau": {
+    "xs": 0.0318,
+    "evt": 1499400
+  },
+  "SingleElectron": {
+    "lumi": 35920
+  },
+  "SingleMuon": {
+    "lumi": 35920
+  },
+  "Tau": {
+    "lumi": 35920
+  },
+  "MuonEG": {
+    "lumi": 35920
+  }
+}

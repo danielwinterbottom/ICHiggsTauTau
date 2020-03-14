@@ -2940,6 +2940,28 @@ namespace ic {
       return std::make_pair(ip, sig);
   }
 
+  std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> IPAndCov(ic::Tau const *tau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands) {
+      std::vector<float> h_param = {};
+      //ic::Tau  *tau = const_cast<Tau*>(intau);
+      for(auto i :  tau->track_params()) h_param.push_back(i);
+      double B = tau->bfield();
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(tau->svx(),tau->svy(),tau->svz());
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
+      std::vector<ic::PFCandidate*> charged_cands = GetTauHads(tau, pfcands, 0);
+
+      ImpactParameter IP;
+      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv);
+
+      ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = tau->track_params_covariance();
+      SMatrixSym3D SigmaPrV = vertex->covariance();
+
+      ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
+
+      return std::make_pair(ip, ip_cov);
+  }
+
+
+
   std::pair<TVector3,double> IPAndSignificanceMuon(ic::Muon const *muon, ic::Vertex *vertex) {
       std::vector<float> h_param = {};
       ////ic::Muon  *muon = const_cast<Muon*>(inmuon);
@@ -2968,5 +2990,22 @@ namespace ic {
       return std::make_pair(ip, sig);
   }
 
+  std::pair<TVector3, ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> IPAndCovMuon(ic::Muon const *muon, ic::Vertex *vertex) {
+      std::vector<float> h_param = {};
+      ////ic::Muon  *muon = const_cast<Muon*>(inmuon);
+      for(auto i :  muon->track_params()) h_param.push_back(i);
+      double B = muon->bfield();
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > ref(muon->vx(),muon->vy(),muon->vz());
+      ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float> > pv(vertex->vx(),vertex->vy(),vertex->vz());
+
+      ImpactParameter IP;
+      TVector3 ip = IP.CalculatePCA(B, h_param, ref, pv);
+      ROOT::Math::SMatrix<double,5,5, ROOT::Math::MatRepSym<double,5>> helixCov = muon->track_params_covariance();
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SigmaPrV = vertex->covariance();
+
+      ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ip_cov = IP.CalculatePCACovariance(helixCov, SigmaPrV);
+
+      return std::make_pair(ip, ip_cov);
+  }
 
 } //namespace

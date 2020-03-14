@@ -7,6 +7,7 @@ import logging
 from array import array
 import argparse
 import glob
+import os
 
 logger = logging.getLogger("addSVFits.py")
 logger.setLevel(logging.DEBUG)
@@ -93,8 +94,9 @@ def main(args):
             for index, svfit_file in enumerate(svfit_files):
                 # print(svfit_file)
                 f = uproot.open(svfit_file)["svfit"]
-                df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
-                    namedecode="utf-8").set_index(["event","run","lumi"])
+#                df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+#                    namedecode="utf-8").set_index(["event","run","lumi"])
+                df_tmp = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
                 dfs.append(df_tmp)
             df = pd.concat(dfs)
 
@@ -104,8 +106,9 @@ def main(args):
                     args.svfit_path, syst_folder,
                     args.intree, args.channel, args.year
             ))["svfit"]
-            df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
-                namedecode="utf-8").set_index(["event","run","lumi"])
+            #df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+            #    namedecode="utf-8").set_index(["event","run","lumi"])
+            df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
 
         # Make sure df shape is non-zero
         assert df.shape[0] is not 0
@@ -127,18 +130,24 @@ def main(args):
         # Use these two dictionaries to retrieve mass and error on mass given 
         # event, run, lumi numbers (indices)
         mass_dict = df.to_dict()["svfit_mass"]
-        mass_err_dict  = df.to_dict()["svfit_mass_err"]
+        #mass_err_dict  = df.to_dict()["svfit_mass_err"]
 
         # Open file to annotate
+        if not os.path.isfile("{}/{}/{}_{}_{}.root".format(
+                args.path, syst_folder,
+                args.intree, args.channel, args.year
+                )): continue
         file_ = ROOT.TFile.Open(
             "{}/{}/{}_{}_{}.root".format(
                 args.path, syst_folder,
                 args.intree, args.channel, args.year
                 ), 
             "UPDATE")
+        print file_
         if file_ == None:
             logger.fatal("File %s is not existent.", args.intree)
-            raise Exception
+            #raise Exception
+            continue
         tree = file_.Get("ntuple")
 
         # Check number of events is same in svfit file and ntuple file
@@ -148,10 +157,10 @@ def main(args):
         outmass = array("d", [-999])
         outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
-        outmass_err = array("d", [-999])
-        outbranch_err = tree.Branch(
-            "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
-        )
+        #outmass_err = array("d", [-999])
+        #outbranch_err = tree.Branch(
+        #    "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
+        #)
 
         mass = None
         mass_err = None
@@ -166,21 +175,21 @@ def main(args):
             # print(event, lumi, run)
 
             outmass[0]     = -9999.
-            outmass_err[0] = -9999.
+            #outmass_err[0] = -9999.
             try:
                 mass           = mass_dict.pop((event, run, lumi))
                 outmass[0]     = mass
-                mass_err       = mass_err_dict.pop((event, run, lumi))
-                outmass_err[0] = mass_err
+                #mass_err       = mass_err_dict.pop((event, run, lumi))
+                #outmass_err[0] = mass_err
             except KeyError:
                 outmass[0]     = -2.
-                outmass_err[0] = -2.
+                #outmass_err[0] = -2.
 
             if i_event % 10000 == 0:
                 logger.debug('Currently on event {}'.format(i_event))
 
             outbranch.Fill()
-            outbranch_err.Fill()
+            #outbranch_err.Fill()
 
         logger.debug("Finished looping over events")
 

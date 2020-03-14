@@ -97,7 +97,7 @@ def main(args):
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
-        # extras += ' --ratio_range 0.01,1.99 '
+        extras += ' --ratio_range 0.01,1.99 '
         # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
         extras += " --add_wt (wt_tau_trg_mvadm) "
 

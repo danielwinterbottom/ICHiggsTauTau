@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "TRandom3.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IpCorrection.h"
 
 #include <string>
 
@@ -1136,9 +1137,38 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_mvadm10_down_;
   double wt_tau_trg_mvadm11_down_;
 
+  double wt_tau_id_mvadm_;
+  double wt_tau_id_lowpt_mvadm0_up_;
+  double wt_tau_id_lowpt_mvadm1_up_;
+  double wt_tau_id_lowpt_mvadm2_up_;
+  double wt_tau_id_lowpt_mvadm10_up_;
+  double wt_tau_id_lowpt_mvadm11_up_;
+  double wt_tau_id_highpt_mvadm0_up_;
+  double wt_tau_id_highpt_mvadm1_up_;
+  double wt_tau_id_highpt_mvadm2_up_;
+  double wt_tau_id_highpt_mvadm10_up_;
+  double wt_tau_id_highpt_mvadm11_up_;
+  double wt_tau_id_lowpt_mvadm0_down_;
+  double wt_tau_id_lowpt_mvadm1_down_;
+  double wt_tau_id_lowpt_mvadm2_down_;
+  double wt_tau_id_lowpt_mvadm10_down_;
+  double wt_tau_id_lowpt_mvadm11_down_;
+  double wt_tau_id_highpt_mvadm0_down_;
+  double wt_tau_id_highpt_mvadm1_down_;
+  double wt_tau_id_highpt_mvadm2_down_;
+  double wt_tau_id_highpt_mvadm10_down_;
+  double wt_tau_id_highpt_mvadm11_down_;
 
   double wt_mg_nnlops_;
   double wt_ph_nnlops_;
+
+  double ip_sig_1_raw_;
+  double ip_sig_2_raw_;
+  double ip_sig_1_up_;
+  double ip_sig_2_up_;
+  double ip_sig_1_down_;
+  double ip_sig_2_down_;
+
 
  public:
   HTTCategories(std::string const& name);
@@ -1149,10 +1179,7 @@ class HTTCategories : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-
-
-
-
+  IpCorrection ipCorrector = IpCorrection();
 
 };
 

@@ -201,7 +201,8 @@
   },
   "GluGluHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 3.045966,
-    "evt": 20156550
+    "evt": 20156550,
+    "eff": 0.2455 
   },
   "GluGluHToWWTo2L2Nu_M-125": {
     "xs": 1.001,
@@ -313,7 +314,8 @@
   },
   "VBFHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.2371,
-    "evt": 18642002
+    "evt": 18642002,
+    "eff": 0.2727
   },
   "VBFHToTauTau_M-125": {
     "xs": 0.2371,
@@ -361,7 +363,8 @@
   },
   "WminusHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.03340,
-    "evt": 1806535
+    "evt": 1806535,
+    "evt": 0.2596
   },
   "WminusHToTauTau_M-125": {
     "xs": 0.03340,
@@ -373,7 +376,8 @@
   },
   "WplusHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.05266,
-    "evt": 2618818
+    "evt": 2618818,
+    "eff": 0.2425
   },
   "WplusHToTauTau_M-125": {
     "xs": 0.05266,
@@ -385,7 +389,8 @@
   },
   "ZHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.05542,
-    "evt": 3389603
+    "evt": 3389603,
+    "eff": 0.2546
   },
   "ZHToTauTau_M-125": {
     "xs": 0.05542,

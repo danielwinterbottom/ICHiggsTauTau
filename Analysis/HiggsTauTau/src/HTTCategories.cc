@@ -69,6 +69,22 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
+    if (!is_data_) {
+      // initialize IP corrector
+      std::string cmsswBase = (getenv ("CMSSW_BASE"));
+      TString ip_corr_filename = "";
+      if(is_embedded_) {
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2017.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2018.root";
+      } else {
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2017.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2018.root";
+      }
+      ipCorrector.Init(ip_corr_filename);
+    }
+
 
     rand = new TRandom3(0);
     if (fs_ && write_tree_) {
@@ -120,13 +136,44 @@ namespace ic {
       outtree_->Branch("ip_sig_1", &ip_sig_1_);
       outtree_->Branch("ip_sig_2", &ip_sig_2_);
 
+      outtree_->Branch("ip_sig_1_raw",&ip_sig_1_raw_);
+      outtree_->Branch("ip_sig_2_raw",&ip_sig_2_raw_);
+      outtree_->Branch("ip_sig_1_up",&ip_sig_1_up_);
+      outtree_->Branch("ip_sig_2_up",&ip_sig_2_up_);
+      outtree_->Branch("ip_sig_1_down",&ip_sig_1_down_);
+      outtree_->Branch("ip_sig_2_down",&ip_sig_2_down_);
+
       outtree_->Branch("q_tot_1", &q_tot_1_);
       outtree_->Branch("q_tot_2", &q_tot_2_);
       //end of temp gen stuff
       // add temporary tau trg effs
       outtree_->Branch("tau1_trgeff_mc", &tau1_trgeff_mc_);
       outtree_->Branch("tau2_trgeff_mc", &tau2_trgeff_mc_);
+      outtree_->Branch("wt_tau_id_mvadm", & wt_tau_id_mvadm_);
+      outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
+      outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
       if(!systematic_shift_){
+
+        outtree_->Branch("wt_tau_id_lowpt_mvadm0_up", &wt_tau_id_lowpt_mvadm0_up_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm1_up", &wt_tau_id_lowpt_mvadm1_up_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm2_up", &wt_tau_id_lowpt_mvadm2_up_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm10_up", &wt_tau_id_lowpt_mvadm10_up_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm11_up", &wt_tau_id_lowpt_mvadm11_up_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm0_up", &wt_tau_id_highpt_mvadm0_up_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm1_up", &wt_tau_id_highpt_mvadm1_up_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm2_up", &wt_tau_id_highpt_mvadm2_up_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm10_up", &wt_tau_id_highpt_mvadm10_up_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm11_up", &wt_tau_id_highpt_mvadm11_up_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm0_down", &wt_tau_id_lowpt_mvadm0_down_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm1_down", &wt_tau_id_lowpt_mvadm1_down_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm2_down", &wt_tau_id_lowpt_mvadm2_down_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm10_down", &wt_tau_id_lowpt_mvadm10_down_);
+        outtree_->Branch("wt_tau_id_lowpt_mvadm11_down", &wt_tau_id_lowpt_mvadm11_down_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm0_down", &wt_tau_id_highpt_mvadm0_down_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm1_down", &wt_tau_id_highpt_mvadm1_down_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm2_down", &wt_tau_id_highpt_mvadm2_down_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm10_down", &wt_tau_id_highpt_mvadm10_down_);
+        outtree_->Branch("wt_tau_id_highpt_mvadm11_down", &wt_tau_id_highpt_mvadm11_down_);
 
         outtree_->Branch("wt_tau_id_dm0_up", &wt_tau_id_dm0_up_);
         outtree_->Branch("wt_tau_id_dm1_up", &wt_tau_id_dm1_up_);
@@ -155,8 +202,6 @@ namespace ic {
         outtree_->Branch("wt_tau_trg_dm10_down", &wt_tau_trg_dm10_down_);
         outtree_->Branch("wt_tau_trg_dm11_down", &wt_tau_trg_dm11_down_);
 
-        outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
-        outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
         outtree_->Branch("wt_tau_trg_mvadm0_up",    &wt_tau_trg_mvadm0_up_);
         outtree_->Branch("wt_tau_trg_mvadm1_up",    &wt_tau_trg_mvadm1_up_);
         outtree_->Branch("wt_tau_trg_mvadm2_up",    &wt_tau_trg_mvadm2_up_);
@@ -1793,6 +1838,28 @@ namespace ic {
 
     wt_tau_trg_ic_ =     (event->Exists("wt_tau_trg_ic")) ?    event->Get<double>("wt_tau_trg_ic") : 1.;
     wt_tau_trg_mvadm_ =     (event->Exists("wt_tau_trg_mvadm")) ?    event->Get<double>("wt_tau_trg_mvadm") : 1.;
+
+    wt_tau_id_mvadm_                  = (event->Exists("wt_tau_id_mvadm")) ? event->Get<double>("wt_tau_id_mvadm") : 1.0;
+    wt_tau_id_lowpt_mvadm0_up_     = (event->Exists("wt_tau_id_lowpt_mvadm0_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm0_up") : 1.0;
+    wt_tau_id_lowpt_mvadm1_up_     = (event->Exists("wt_tau_id_lowpt_mvadm1_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm1_up") : 1.0;
+    wt_tau_id_lowpt_mvadm2_up_     = (event->Exists("wt_tau_id_lowpt_mvadm2_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm2_up") : 1.0;
+    wt_tau_id_lowpt_mvadm10_up_    = (event->Exists("wt_tau_id_lowpt_mvadm10_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm10_up") : 1.0;
+    wt_tau_id_lowpt_mvadm11_up_    = (event->Exists("wt_tau_id_lowpt_mvadm11_up")) ? event->Get<double>("wt_tau_id_lowpt_mvadm11_up") : 1.0;
+    wt_tau_id_highpt_mvadm0_up_    = (event->Exists("wt_tau_id_highpt_mvadm0_up")) ? event->Get<double>("wt_tau_id_highpt_mvadm0_up") : 1.0;
+    wt_tau_id_highpt_mvadm1_up_    = (event->Exists("wt_tau_id_highpt_mvadm1_up")) ? event->Get<double>("wt_tau_id_highpt_mvadm1_up") : 1.0;
+    wt_tau_id_highpt_mvadm2_up_    = (event->Exists("wt_tau_id_highpt_mvadm2_up")) ? event->Get<double>("wt_tau_id_highpt_mvadm2_up") : 1.0;
+    wt_tau_id_highpt_mvadm10_up_   = (event->Exists("wt_tau_id_highpt_mvadm10_up")) ? event->Get<double>("wt_tau_id_highpt_mvadm10_up") : 1.0;
+    wt_tau_id_highpt_mvadm11_up_   = (event->Exists("wt_tau_id_highpt_mvadm11_up")) ? event->Get<double>("wt_tau_id_highpt_mvadm11_up") : 1.0;
+    wt_tau_id_lowpt_mvadm0_down_   = (event->Exists("wt_tau_id_lowpt_mvadm0_down")) ? event->Get<double>("wt_tau_id_lowpt_mvadm0_down") : 1.0;
+    wt_tau_id_lowpt_mvadm1_down_   = (event->Exists("wt_tau_id_lowpt_mvadm1_down")) ? event->Get<double>("wt_tau_id_lowpt_mvadm1_down") : 1.0;
+    wt_tau_id_lowpt_mvadm2_down_   = (event->Exists("wt_tau_id_lowpt_mvadm2_down")) ? event->Get<double>("wt_tau_id_lowpt_mvadm2_down") : 1.0;
+    wt_tau_id_lowpt_mvadm10_down_  = (event->Exists("wt_tau_id_lowpt_mvadm10_down")) ? event->Get<double>("wt_tau_id_lowpt_mvadm10_down") : 1.0;
+    wt_tau_id_lowpt_mvadm11_down_  = (event->Exists("wt_tau_id_lowpt_mvadm11_down")) ? event->Get<double>("wt_tau_id_lowpt_mvadm11_down") : 1.0;
+    wt_tau_id_highpt_mvadm0_down_  = (event->Exists("wt_tau_id_highpt_mvadm0_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm0_down") : 1.0;
+    wt_tau_id_highpt_mvadm1_down_  = (event->Exists("wt_tau_id_highpt_mvadm1_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm1_down") : 1.0;
+    wt_tau_id_highpt_mvadm2_down_  = (event->Exists("wt_tau_id_highpt_mvadm2_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm2_down") : 1.0;
+    wt_tau_id_highpt_mvadm10_down_ = (event->Exists("wt_tau_id_highpt_mvadm10_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm10_down") : 1.0;
+    wt_tau_id_highpt_mvadm11_down_ = (event->Exists("wt_tau_id_highpt_mvadm11_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm11_down") : 1.0;
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
@@ -4435,6 +4502,11 @@ namespace ic {
     ipx_2_ = -9999.;
     ipy_2_ = -9999.;
     ipz_2_ = -9999.;
+    TVector3 ipgen1(0.,0.,0.);
+    TVector3 ipgen2(0.,0.,0.);
+
+    if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
+    if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -4487,6 +4559,67 @@ namespace ic {
       ip_sig_1_ = ipandsig_1.second;
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
+
+      // add this part for the mt channel as well!!!!!
+      if(!is_data_) {
+
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCov(tau1, refit_vertex, pfcands);
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+
+        TVector3 ip_corrected_1 = ipCorrector.correctIp(
+                         ipandsig_1.first,
+                         ipgen1,
+                         fabs(lep1->eta())
+        );
+
+        TVector3 ip_corrected_2 = ipCorrector.correctIp(
+                         ipandsig_2.first,
+                         ipgen2,
+                         fabs(lep2->eta())
+        );
+
+      
+        // Correct IP covariance matrix
+        CovMatrix cov_corrected_1 = ipCorrector.correctIpCov(
+                    ipandcov_1.second, 
+                    fabs(lep1->eta())
+        );
+
+        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+                    ipandcov_2.second,
+                    fabs(lep2->eta())
+        );
+
+        ROOT::Math::SVector<double, 3> ip_svec_1;
+        ip_svec_1(0) = ip_corrected_1.X();
+        ip_svec_1(1) = ip_corrected_1.Y();
+        ip_svec_1(2) = ip_corrected_1.Z();
+        ip_svec_1 = ip_svec_1.Unit();
+        ip_sig_1_ = ip_corrected_1.Mag()/sqrt(ROOT::Math::Dot( ip_svec_1, cov_corrected_1 * ip_svec_1));
+
+        ROOT::Math::SVector<double, 3> ip_svec_2;
+        ip_svec_2(0) = ip_corrected_2.X();
+        ip_svec_2(1) = ip_corrected_2.Y();
+        ip_svec_2(2) = ip_corrected_2.Z();
+        ip_svec_2 = ip_svec_2.Unit();
+        ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
+
+        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+
+      } else {
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+        ip_sig_1_up_= ip_sig_1_;
+        ip_sig_2_up_= ip_sig_2_;
+        ip_sig_1_down_= ip_sig_1_;
+        ip_sig_2_down_= ip_sig_2_;
+      }
 
       TVector3 ip1 = (ipandsig_1.first).Unit();
       TVector3 ip2 = (ipandsig_2.first).Unit();
@@ -4544,15 +4677,15 @@ namespace ic {
           pi0 = pi0_tau1;
           tau = tau2;
           tau_1 = tau1;
-          ip = ip1;
-          ip_alt = ip2;
+          ip = ip2;
+          ip_alt = ip1;
         } else {
           pi = pi_tau2;
           pi0 = pi0_tau2;
           tau = tau1;
           tau_1 = tau2;
-          ip = ip2;
-          ip_alt = ip1;
+          ip = ip1;
+          ip_alt = ip2;
         }
         cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv1(
@@ -4626,14 +4759,18 @@ namespace ic {
 
         cp_channel_=2;
 
+        TVector3 ip;
+
         ic::Tau const *tau_1;
         std::vector<ic::PFCandidate*> a1_daughters;
         if(tau_decay_mode_1_>=10) {
           a1_daughters  = GetA1(tau1, pfcands).first;
           tau_1 = tau2;
+          ip = ip2;
         } else {
           a1_daughters  = GetA1(tau2, pfcands).first;
           tau_1 = tau1;
+          ip = ip1;
         }
 
         TLorentzVector pvtosv1(
@@ -4643,7 +4780,8 @@ namespace ic {
                 0.);
         lvec3 = ConvertToLorentz(tau_1->vector()); //pi charge from tau
 
-        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+//        TVector3 ip = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+
         lvec1 = TLorentzVector(ip, 0.);
 
         if (a1_daughters.size()>2){

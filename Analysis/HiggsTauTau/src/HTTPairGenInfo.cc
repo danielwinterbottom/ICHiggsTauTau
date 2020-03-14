@@ -8,7 +8,29 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/format.hpp"
 
+
+
 namespace ic {
+
+TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
+
+  TVector3 pvtosv(
+           t->vtx().vx() - h->vtx().vx(),
+           t->vtx().vy() - h->vtx().vy(),
+           t->vtx().vz() - h->vtx().vz()
+           );
+
+  TVector3 momenta(
+                  t->vector().Px(),
+                  t->vector().Py(),
+                  t->vector().Pz()
+                  );
+
+  double projection=pvtosv*momenta/momenta.Mag2();
+  TVector3 gen_ip=pvtosv-momenta*projection;
+
+  return gen_ip;
+}
 
   HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name), channel_(channel::mt) {
     ditau_label_ = "ditau";
@@ -56,6 +78,12 @@ namespace ic {
     double gen_match_undecayed_1_eta = -1;
     double gen_match_undecayed_2_eta = -1;
     double gen_met=0.;
+
+    TVector3 gen_ip_1(0.,0.,0.);
+    TVector3 gen_ip_2(0.,0.,0.);
+    bool foundboson=false;
+    GenParticle *h = new GenParticle();
+
     ROOT::Math::PtEtaPhiEVector neutrinos; 
  
     for (unsigned i=0; i < particles.size(); ++i){
@@ -66,6 +94,9 @@ namespace ic {
       if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
+
+      if(status_flags_start[IsLastCopy] && (abs(particles[i]->pdgid()) == 23 || abs(particles[i]->pdgid()) == 24 || abs(particles[i]->pdgid()) == 25 || abs(particles[i]->pdgid()) == 35 || abs(particles[i]->pdgid()) == 6) ) {h = particles[i]; foundboson=true; }
+
     }
 
     gen_met=neutrinos.Pt();
@@ -114,6 +145,28 @@ namespace ic {
      DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : leptonsize = 0;
    }
 
+   // get gen IP for candidate 1
+   if (leptonsize==0&&tausize==0 && foundboson) {
+     gen_ip_1.SetXYZ(0.,0.,0.);
+   } else if(leptonsize!=0) {
+     GenParticle *t = leading_lepton_match.at(0).second;
+     TVector3 gen_ip_1 = GenIP(h,t);
+   } else if (tausize!=0) {
+     std::vector<std::size_t> daughter_ids = leading_tau_match.at(0).second->constituents();
+     bool found=false;
+     for (auto id: daughter_ids) {
+       for(auto p: particles) {
+         if(p->id() == id && p->charge()!=0) {
+           TVector3 gen_ip_1 = GenIP(h,p);
+           found=true;
+           break; 
+         }
+       }
+       if (found) break;
+     } 
+   }
+
+
    if(leptonsize==0&&tausize==0) gen_match_1 = mcorigin::fake;
    if(leptonsize!=0) {
       std::vector<bool> status_flags = leading_lepton_match.at(0).second->statusFlags();
@@ -155,6 +208,28 @@ namespace ic {
    if(leptonsize!=0&&tausize!=0){
      DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second) < DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second) ? tausize=0 : leptonsize = 0;
    }
+
+   // get gen IP for candidate 2
+   if (leptonsize==0&&tausize==0 && foundboson) {
+     gen_ip_2.SetXYZ(0.,0.,0.);
+   } else if(leptonsize!=0) {
+     GenParticle *t = subleading_lepton_match.at(0).second;
+     TVector3 gen_ip_2 = GenIP(h,t);
+   } else if (tausize!=0) {
+     std::vector<std::size_t> daughter_ids = subleading_tau_match.at(0).second->constituents();
+     bool found=false;
+     for (auto id: daughter_ids) {
+       for(auto p: particles) {
+         if(p->id() == id && p->charge()!=0) {
+           TVector3 gen_ip_2 = GenIP(h,p);
+           found=true;
+           break;
+         }
+       }
+       if (found) break;
+     }
+   }
+
 
    if(leptonsize==0&&tausize==0) gen_match_2 = mcorigin::fake;
    if(leptonsize!=0) {
@@ -204,6 +279,10 @@ namespace ic {
    event->Add("gen_match_undecayed_2_eta", gen_match_undecayed_2_eta);
    event->Add("tauFlag1", tauFlag1);
    event->Add("tauFlag2", tauFlag2);
+
+   event->Add("gen_ip_1", gen_ip_1);
+
+   event->Add("gen_ip_2", gen_ip_2);
 
     if(ngenjets_){
       //Get gen-jets collection, filter Higgs decay products and add Njets variable to event

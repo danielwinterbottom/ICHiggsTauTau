@@ -482,8 +482,8 @@ elif options.channel == 'zee':
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 if options.analysis == 'cpdecay':
-  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0'
+  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 '#&& (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -1366,9 +1366,9 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['cp18']:
 
-    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    #ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 #    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    #ztt_samples = ['DYJetsToLL'] # NL0 filelists
+    ztt_samples = ['DYJetsToLL'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = [
             'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
@@ -1477,6 +1477,21 @@ if options.analysis in ['cpdecay']:
     sm_samples = {
        'ggH_ph_htt' : 'GluGluToHToTauTau_M-125',
        'qqH_ph_htt' : 'VBFHToTauTau_M-125',
+       "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
+       "ZH_ph_htt": 'ZHToTauTau_M-125', 
+
     }
 
 # for 2017
@@ -1484,19 +1499,20 @@ if options.analysis in ['cpdecay']:
     sm_samples = {
         'ggH_ph_htt' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
         'qqH_ph_htt' : 'VBFHToTauTau_M-125',
-        "ggH_old_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_old_ps_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_old_mm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_old_sm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_old_ps_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_old_mm_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay",
-        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay",
-        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay",
         "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        
+        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
+        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt": 'ZHToTauTau_M-125', 
     }
 
   if options.era == 'cp18':
@@ -1504,18 +1520,20 @@ if options.analysis in ['cpdecay']:
         # test CP in decay samples
         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "ggH_sm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_ps_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "ggH_mm_old_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-        "qqH_sm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_ps_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
-        "qqH_mm_old_htt": "VBFHToTauTau_M-125-nospinner-filter",
         "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
         "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
         "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
+        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt": 'ZHToTauTau_M-125',  
     }
 
 
@@ -2741,11 +2759,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           full_selection_extra = BuildCutString(wt, sel, cats_unmodified[cat_name]+'&&'+cats['baseline'], OSSS, 'gen_match_2==6')       
   
 
-          wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples, plot, full_selection_extra)
+          wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, plot, full_selection_extra)
           ana.nodes[nodename].AddNode(wnode) 
-          ttnode = ana.SummedFactory('TTfakes'+add_name, top_samples, plot, full_selection_extra)
-          ana.nodes[nodename].AddNode(ttnode)
-      
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = '',processes=['ggH','qqH','ZH','WminusH','WplusH']):
     if get_os:
