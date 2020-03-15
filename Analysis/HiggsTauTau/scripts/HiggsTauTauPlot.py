@@ -2000,8 +2000,8 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
   template_name = 'ff_%s_sub_syst' % (options.channel)
-  systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   '1',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', '1', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
 
 if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='cpprod' and options.do_ff_systs:
@@ -2683,8 +2683,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         OSSS = '!os'
         
     sub_wt=''
-    if 'ff_sub_syst' in add_name and 'Up' in add_name: sub_wt='*1.1'
-    if 'ff_sub_syst' in add_name and 'Down' in add_name: sub_wt='*0.9'
+    if 'sub_syst' in add_name and 'Up' in add_name: sub_wt='*1.1'
+    if 'sub_syst' in add_name and 'Down' in add_name: sub_wt='*0.9'
         
     # Select data from anti-isolated region
     if options.channel != "tt":
@@ -2701,7 +2701,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
-          if ff_syst_weight is not None and 'ff_sub_syst' not in add_name: fake_factor_wt_string = ff_syst_weight+'_1'
+          if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = ff_syst_weight+'_1'
           else:
             if options.analysis == 'cpprod': 
               fake_factor_wt_string = "wt_ff_us_1"
@@ -2735,7 +2735,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
         ff_cat_1_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_1
         ff_cat_2_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_2
-        if ff_syst_weight is not None and 'ff_sub_syst' not in add_name: 
+        if ff_syst_weight is not None and 'sub_syst' not in add_name: 
             fake_factor_wt_string_1 = ff_syst_weight+'_1'
             fake_factor_wt_string_2 = ff_syst_weight+'_2'
         else:
@@ -2818,8 +2818,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           full_selection_extra = BuildCutString(wt, sel, cats_unmodified[cat_name]+'&&'+cats['baseline'], OSSS, 'gen_match_2==6')       
   
 
-          wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, plot, full_selection_extra)
-          ana.nodes[nodename].AddNode(wnode) 
+          #wnode = ana.SummedFactory('Wfakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, plot, full_selection_extra)
+#          ana.nodes[nodename].AddNode(wnode) 
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = '',processes=['ggH','qqH','ZH','WminusH','WplusH']):
     if get_os:
@@ -3447,6 +3447,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016']: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+
+        if 'W' not in samples_to_skip and options.channel=='tt' and options.analysis in ['cpprod','cpdecay'] and 'VV' not in samples_to_skip and 'ZTT' not in samples_to_skip:
+            GenerateW(ana, 'fakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel+'&&gen_match_1!=6&&gen_match_2==6', cat, cat_data, 8, qcd_os_ss_ratio, not options.do_ss)
     else:
         method = options.method
         if options.method == 18:

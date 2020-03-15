@@ -78,15 +78,15 @@ def main(args):
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-            if sample not in [
-              #'DYJetsToLL-LO-ext1',
-              #'ZHToTauTauUncorrelatedDecay_Filtered',
-              #'TTToHadronic',
-              #'WplusHToTauTauUncorrelatedDecay_Filtered',
-              'VBFHToTauTauUncorrelatedDecay_Filtered',
-              'GluGluHToTauTauUncorrelatedDecay_Filtered',
+           # if sample not in [
+           #   'DYJetsToLL-LO-ext1',
+           #   #'ZHToTauTauUncorrelatedDecay_Filtered',
+           #   #'TTToHadronic',
+           #   #'WplusHToTauTauUncorrelatedDecay_Filtered',
+           #   #'VBFHToTauTauUncorrelatedDecay_Filtered',
+           #   #'GluGluHToTauTauUncorrelatedDecay_Filtered',
 
-            ]: continue
+           # ]: continue
 
             print sample
 
