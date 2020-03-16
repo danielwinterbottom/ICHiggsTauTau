@@ -364,7 +364,7 @@
   "WminusHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.03340,
     "evt": 1806535,
-    "evt": 0.2596
+    "eff": 0.2596
   },
   "WminusHToTauTau_M-125": {
     "xs": 0.03340,
