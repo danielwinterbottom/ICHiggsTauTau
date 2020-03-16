@@ -54,7 +54,9 @@ def main(args):
 
             # taus/leptons
             # "m_vis(25,20,250)",
-            # "m_sv(25,50,300)",
+            # # "m_sv(25,50,300)",
+            # "svfit_mass(25,50,300)",
+            "svfit_mass_err(10,0,100)",
             # "pt_tt(30,0,300)",
             # "pt_1(20,40,140)",
             # "pt_2(12,40,100)",
@@ -66,7 +68,7 @@ def main(args):
             # "mva_dm_1(11,0,11)",
             # "met(20,0,200)",
 
-            # jets
+            # # jets
             # "sjdphi(12,-3.2,3.2)",
             # "n_jets(5,0,5)",
             # "mjj(15,0,1500)",
@@ -78,8 +80,10 @@ def main(args):
 
             # "svfit_mass_test(25,50,300)",
 
-            # # bjets
+            # bjets
             # "n_bjets(3,0,3)",
+            # "n_btag(3,0,3)",
+            # "n_loose_btag(3,0,3)",
             # "bpt_1(17,30,200)",
             # "bpt_2(17,30,200)",
             # "beta_1(12,-4.7,4.7)",
@@ -95,6 +99,7 @@ def main(args):
         extras += " --cat {} ".format(args.cat)
         extras += ' --ratio_range 0.01,1.99 '
         # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
+        extras += " --add_wt (wt_tau_trg_mvadm) "
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
@@ -206,7 +211,7 @@ def main(args):
             # "pt_2(18,10,100)",
             # "jpt_1(14,30,100)",
             # "jlrm_1(20,-1,1)",
-            # "n_jets(7,0,7)",
+            # "n_jets(4,0,4)",
             # "n_lowpt_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
             # "m_sv(20,0,200)",
@@ -223,31 +228,35 @@ def main(args):
 
             # "((dphi_jtt<0.)*(dphi_jtt+{0})+(dphi_jtt>0)*(dphi_jtt-{0}))(41,-1., 1.)".format(np.pi),
             "shifted_dphi_jtt(81,-3.142,3.142)",
-            "shifted_dphi_jtt_smear(81,-3.142,3.142)",
-            # "smear_jet_delta(81,-3.142,3.142)",
-            # "dphi_jtt_smear(121,-3.142,3.142)",
-            # "dphi_jtt(121,-3.142,3.142)",
+            # "shifted_dphi_jtt_smear(81,-3.142,3.142)",
+            # "smear_jet_delta(21,-0.5,0.5)",
+            # "dphi_jtt_smear(81,-3.142,3.142)",
+            # "dphi_jtt(81,-3.142,3.142)",
             # "smear_jet_delta(41,-1.,1.)",
             # "((dphi_jtt<0.)*(dphi_jtt+2*{0})+(dphi_jtt>0)*(dphi_jtt)-{0})(41,-1., 1.)".format(np.pi),
             # "dphi_jtt_smear(101,-3.142,3.142)",
             # "((dphi_jtt_smear<0.)*(dphi_jtt_smear+2*{0})+(dphi_jtt_smear>0)*(dphi_jtt_smear)-{0})(41,-1., 1.)".format(np.pi),
+
             # "residual_pt(20,0,200)",
             # "residual_phi(20,-3.142,3.142)",
-            # "dphi_residual_tt(20,-3.142,3.142)",
+            # "dphi_residual_tt(81,-3.142,3.142)",
             # "gen_jpt_1(14,30,100)",
             # "gen_jphi_1(20,-3.142,3.142)",
             # "jdphi_gen_reco(50,-0.1,0.1)",
-            # "jpt20_sum_(14,30,100)",
-            # "jphi20_sum_(20,-3.142,3.142)",
+            # "jpt20_sum(14,30,100)",
+            # "shifted_dphi_j20tt(81,-3.142,3.142)",
+            # "shifted_dphi_j20tt_smear(81,-3.142,3.142)",
 
             ]
         # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 )" '
-        # extras += ('--set_alias "inclusive:('
-        #     'm_vis>70 && m_vis<110 && pt_tt>50'
-        #     ' && (jpt_1/pt_tt)>0.8 && (jpt_1/pt_tt)<1.2'
-        #     ' && n_jets==1'
+        extras += ('--set_alias "inclusive:('
+            'm_vis>70 && m_vis<110 && pt_tt>50'
+            ' && (jpt_1/pt_tt)>0.8 && (jpt_1/pt_tt)<1.2'
+            # ' && n_jets==1'
+            ' && n_lowpt_jets==1'
             # ' && fabs(jeta_1>{}) && fabs(jeta_1<{}) '.format(args.eta_lo, args.eta_hi)
-            # ')" ')
+            ')" ')
+        # extras += " --datacard {}_dynlo ".format(args.cat)
         method = "8"
 
 
@@ -323,7 +332,7 @@ def main(args):
                             # custom_extras = ' --set_alias "inclusive:(n_jets>=2 && n_bjets==0)" '
                         # else:
                         #     custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
-                    if var.split("(")[0] in ["n_bjets"]:
+                    if var.split("(")[0] in ["n_bjets", "n_btag", "n_loose_btag"]:
                         custom_extras = ' --set_alias "inclusive:(1)" '
                     elif var.split("(")[0] in ["bpt_1","beta_1"]:
                         custom_extras = ' --set_alias "inclusive:(n_bjets>=1)" '

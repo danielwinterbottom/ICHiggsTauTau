@@ -1333,6 +1333,38 @@ namespace ic {
       synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/D");
       synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
 
+      // acoplanarity angles
+      if (channel_ == channel::mt) {
+        // 00: mu + pi (IP)
+        // 01: mu + rho/a1 (DP)
+        synctree_->Branch("acotautau_00",      & aco_angle_6_, "acotautau_00/D");
+        synctree_->Branch("acotautau_01",      & aco_angle_5_, "acotautau_01/D");
+      }
+      else if (channel_ == channel::tt) {
+        // 00: rho + pi (IP)
+        // 01: rho + rho (DP)
+        synctree_->Branch("acotautau_00",      & aco_angle_6_, "acotautau_00/D");
+        synctree_->Branch("acotautau_01",      & aco_angle_1_, "acotautau_01/D");
+      }
+
+      // IP variables
+      synctree_->Branch("ip_sig_1", &ip_sig_1_);
+      synctree_->Branch("ip_sig_2", &ip_sig_2_);
+      synctree_->Branch("ip_mag_1", &ip_mag_1_);
+      synctree_->Branch("ip_mag_2", &ip_mag_2_);
+      // CHECK THAT THIS IS CORRECT
+      synctree_->Branch("ipx_1", &ipx_1_);
+      synctree_->Branch("ipy_1", &ipy_1_);
+      synctree_->Branch("ipz_1", &ipz_1_);
+      synctree_->Branch("ipx_2", &ipx_2_);
+      synctree_->Branch("ipy_2", &ipy_2_);
+      synctree_->Branch("ipz_2", &ipz_2_);
+
+      // refitted vertex parameters
+      synctree_->Branch("pvx", &pvx_);
+      synctree_->Branch("pvy", &pvy_);
+      synctree_->Branch("pvz", &pvz_);
+
       // deep tau IDs in same format as agreed with CP in production analyis
       
 
@@ -4460,11 +4492,21 @@ namespace ic {
     mvadm_pi_2_ = event->Exists("mvadm_pi_2") ? event->Get<float>("mvadm_pi_2") : 0.0;
     mvadm_3pipi0_2_ = event->Exists("mvadm_3pipi0_2") ? event->Get<float>("mvadm_3pipi0_2") : 0.0;
 
+    // initalise here to add to sync
+    pvx_   = -9999.;
+    pvy_   = -9999.;
+    pvz_   = -9999.;
+    ipx_1_ = -9999.;
+    ipy_1_ = -9999.;
+    ipz_1_ = -9999.;
+    ipx_2_ = -9999.;
+    ipy_2_ = -9999.;
+    ipz_2_ = -9999.;
     TVector3 ipgen1(0.,0.,0.);
     TVector3 ipgen2(0.,0.,0.);
 
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
-    if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_1");
+    if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -4920,6 +4962,19 @@ namespace ic {
         //aco_angle_1_ = aco_angle_mod_;
       }
 
+      // save IP for sync 
+      ipx_1_ = ip1.X();
+      ipy_1_ = ip1.Y();
+      ipz_1_ = ip1.Z();
+      ipx_2_ = ip2.X();
+      ipy_2_ = ip2.Y();
+      ipz_2_ = ip2.Z();
+
+      // primary vertex
+      pvx_ = primary_vtx->vx();
+      pvy_ = primary_vtx->vy();
+      pvz_ = primary_vtx->vz();
+
     }
     else if (channel_ == channel::mt && event->ExistsInTree("pfCandidates")) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
@@ -5061,6 +5116,19 @@ namespace ic {
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
           alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
       }
+     
+      // save IP for sync 
+      ipx_1_ = ip1.X();
+      ipy_1_ = ip1.Y();
+      ipz_1_ = ip1.Z();
+      ipx_2_ = ip2.X();
+      ipy_2_ = ip2.Y();
+      ipz_2_ = ip2.Z();
+
+      // primary vertex
+      pvx_ = primary_vtx->vx();
+      pvy_ = primary_vtx->vy();
+      pvz_ = primary_vtx->vz();
       
     }
     else if (channel_ == channel::et && event->ExistsInTree("pfCandidates")) {

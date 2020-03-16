@@ -133,7 +133,7 @@ os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
-scale = int(math.ceil(float(n_scales*n_channels)/30))
+scale = int(math.ceil(float(n_scales*n_channels)/10))
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -510,7 +510,7 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 7
+        nperjob = 2
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         if n_scales*n_channels>=24: nperjob = 7
         if n_scales*n_channels>=48: nperjob=4

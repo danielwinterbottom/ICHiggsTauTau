@@ -46,6 +46,12 @@ def checkJobs(year, to_check):
             counter += 1
         if "WARNING: A different number of svfit enries were detected for file" in open("{}/{}".format(path, file_)).read(): jobs_with_warnings.append(file_)
 
+            if resubmit:
+                run_command(
+                    "qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0"
+                    + " -l h_vmem=24G -q hep.q -pe hep.pe 2"
+                    + " jobs/{}.sh".format(file_.split(".")[0])
+
     print("{} incomplete files".format(counter))
 
     print('jobs with warnings:')
