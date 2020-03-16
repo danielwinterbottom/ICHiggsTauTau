@@ -1732,7 +1732,7 @@ if options.syst_scale_j_regrouped != "":
 
     if "*group" in hist_name:
         for name, folder in syst_dict.iteritems():
-            if "year" in name: name.replace("year", replaceYear)
+            if "year" in name: name=name.replace("year", replaceYear)
             syst_name = hist_name.replace("*group", name)
             systematics['syst_scale_j_{}_up'.format(syst_name)] = (
                 "{}_UP".format(folder), "_{}Up".format(syst_name), 
@@ -1797,8 +1797,8 @@ if options.syst_quarkmass != '':
     systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt*((1./wt_quarkmass-1.)*0.05 + 1.)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
 if options.syst_ps != '':
     if '*PS' in options.syst_ps:
-      hist_name_fsr = hist_name.replace('*PS','PS_FSR')
-      hist_name_isr = hist_name.replace('*PS','PS_ISR')
+      hist_name_fsr = options.syst_ps.replace('*PS','PS_FSR')
+      hist_name_isr = options.syst_ps.replace('*PS','PS_ISR')
       systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*wt_ps_fsr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
       systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*wt_ps_fsr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
       systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*wt_ps_isr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
