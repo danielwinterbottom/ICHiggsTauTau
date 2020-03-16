@@ -756,9 +756,15 @@ if options.channel == 'tt':
     cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2>=1.5))"
     cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
 
-    mva_ggh                = '(svfit_mass>100&&svfit_mass<150)'
-    mva_jetFakes           = '(svfit_mass>150)'
-    mva_zttEmbed           = '(svfit_mass<100)'
+    #mva_ggh                = '(svfit_mass>100&&svfit_mass<150)'
+    #mva_jetFakes           = '(svfit_mass>150)'
+    #mva_zttEmbed           = '(svfit_mass<100)'
+
+    cut_string = "IC_15Mar2020_test"
+    mva_ggh      = '({}_max_index==0)'.format(cut_string)
+    mva_jetFakes = '({}_max_index==1)'.format(cut_string)
+    mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
+
 
     cats['higgs_mvarhorho']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvarhorho"])
     cats['zttEmbed_mvarhorho']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvarhorho"])
