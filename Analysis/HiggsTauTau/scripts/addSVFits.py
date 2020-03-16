@@ -46,21 +46,21 @@ def main(args):
 
     syst_folders = [
         '',
-        'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
-        'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
-        'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
-        'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
-        'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
-        'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
-        'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
-        'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
-        'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
-        'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
-        'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
-        'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
-        'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
-        'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
-        'JER_UP','JER_DOWN',
+        #'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
+        #'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
+        #'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
+        #'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
+        #'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
+        #'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
+        #'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
+        #'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
+        #'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
+        #'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
+        #'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
+        #'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
+        #'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
+        #'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
+        #'JER_UP','JER_DOWN',
     ]
 
     for syst_folder in syst_folders:
@@ -72,6 +72,7 @@ def main(args):
                 args.intree, args.channel, args.year,
         ))
         print(svfit_files)
+
 
         if len(svfit_files) is 0:
             # NOTE: Double-check that this subdirectory svfit file is actually
@@ -101,17 +102,19 @@ def main(args):
             df = pd.concat(dfs)
 
         else:
-            f = uproot.open(
-                "{}/{}/svfit_{}_{}_{}_output.root".format(
-                    args.svfit_path, syst_folder,
-                    args.intree, args.channel, args.year
-            ))["svfit"]
-            #df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
-            #    namedecode="utf-8").set_index(["event","run","lumi"])
-            df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
+            #f = uproot.open(
+            #    "{}/{}/svfit_{}_{}_{}_output.root".format(
+            #        args.svfit_path, syst_folder,
+            #        args.intree, args.channel, args.year
+            #))["svfit"]
+            ##df = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
+            ##    namedecode="utf-8").set_index(["event","run","lumi"])
+            #df = f.pandas.df(["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
+#            df = pd.DataFrame()
+            df = pd.DataFrame(columns = ["event","run","lumi","svfit_mass"]).set_index(["event","run","lumi"])
 
         # Make sure df shape is non-zero
-        assert df.shape[0] is not 0
+        df = df.loc[~df.index.duplicated() ,:]  
 
         # Check for non-zero values in SVFit files
         if args.check_values_only:
@@ -151,16 +154,23 @@ def main(args):
         tree = file_.Get("ntuple")
 
         # Check number of events is same in svfit file and ntuple file
-        assert tree.GetEntries() == df.shape[0]
+        #assert tree.GetEntries() == df.shape[0]
+        if tree.GetEntries() != df.shape[0]:
+          print ('WARNING: A different number of svfit enries were detected for file "{}/{}/{}_{}_{}.root'.format(
+                  args.path, syst_folder,
+                  args.intree, args.channel, args.year))
+          print ('(number of svfit ouputs, number of tree entries) = ({}, {})'.format(df.shape[0], tree.GetEntries()))
 
         # Branches to write out to file_
         outmass = array("d", [-999])
-        outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
 
-        #outmass_err = array("d", [-999])
-        #outbranch_err = tree.Branch(
-        #    "{}_err".format(args.tag), outmass_err, "{}_err/D".format(args.tag)
-        #)
+        if tree.GetListOfBranches().FindObject(args.tag):
+           outbranch = tree.GetBranch(args.tag)
+           tree.SetBranchAddress(args.tag,outmass);
+        else: 
+          outbranch = tree.Branch(args.tag, outmass, "{}/D".format(args.tag))
+
+        newtree = tree.CloneTree(0)
 
         mass = None
         mass_err = None
@@ -185,19 +195,24 @@ def main(args):
                 outmass[0]     = -2.
                 #outmass_err[0] = -2.
 
+
             if i_event % 10000 == 0:
                 logger.debug('Currently on event {}'.format(i_event))
 
-            outbranch.Fill()
+            newtree.Fill()
+            #outbranch.Fill()
             #outbranch_err.Fill()
 
         logger.debug("Finished looping over events")
 
         # Write everything to file
-        file_.Write("ntuple",ROOT.TObject.kWriteDelete)
+        file_.cd()
+        newtree.Write('ntuple',ROOT.TObject.kWriteDelete)
         file_.Close()
 
         logger.debug("Closed file")
+
+    print "End of job"
 
 if __name__ == "__main__":
     args = parse_arguments()

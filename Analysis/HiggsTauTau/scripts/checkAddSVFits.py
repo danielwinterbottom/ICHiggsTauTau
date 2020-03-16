@@ -22,6 +22,8 @@ def parse_arguments():
 
     return parser.parse_args()
 
+jobs_with_warnings = []
+
 def checkJobs(year, to_check):
     path = "./jobs"
     files = [
@@ -36,9 +38,13 @@ def checkJobs(year, to_check):
 
     counter = 0
     for file_ in files:
-        if "Closed file" not in open("{}/{}".format(path, file_)).read():
+        #print "{}/{}".format(path, file_)
+        #if "Closed file" not in open("{}/{}".format(path, file_)).read():
+        if "End of job" not in open("{}/{}".format(path, file_)).read():
+           
             print((file_.split(".")[0]))
             counter += 1
+        if "WARNING: A different number of svfit enries were detected for file" in open("{}/{}".format(path, file_)).read(): jobs_with_warnings.append(file_)
 
             if resubmit:
                 run_command(
@@ -48,5 +54,9 @@ def checkJobs(year, to_check):
 
     print("{} incomplete files".format(counter))
 
+    print('jobs with warnings:')
+    for x in jobs_with_warnings: print x
+
 if __name__ == "__main__":
     checkJobs(**vars(parse_arguments()))
+

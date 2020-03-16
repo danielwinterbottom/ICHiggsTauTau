@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --no_shift_systs 
+#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --total_jes 
 
 import sys
 from optparse import OptionParser
@@ -107,7 +107,7 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
-YEAR=2017
+YEAR=2016
 if "year" in configmap:
   YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
@@ -200,47 +200,47 @@ if SCHEME == 'cpdecay':
  
   # TT variables
 
-  VAR1 ="IC_Nov13_tauspinner_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_Nov13_tauspinner_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_Nov13_tauspinner_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
+  VAR1 ="IC_12Mar2020_test_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_12Mar2020_test_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_12Mar2020_test_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_12Mar2020_test_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_12Mar2020_test_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_12Mar2020_test_max_score[0.,0.7,0.8,0.9]"
 
-  VAR1 ="svfit_mass,aco_angle_1[50,100,150,150,200],(14,0,6.28319)"
-  VAR5 ="svfit_mass,aco_angle_5[50,100,150,150,200],(14,0,6.28319)"
-  VAR6 ="svfit_mass,aco_angle_6[50,100,150,150,200],(14,0,6.28319)"
-  VAR_H_TT_Other  = "svfit_mass[50,100,150,150,200]"
-  VAR_ZTTEMBED_TT = "svfit_mass[50,100,150,150,200]"
-  VAR_JETFAKES_TT = "svfit_mass[50,100,150,150,200]"
+#  VAR1 ="svfit_mass,aco_angle_1[50,100,150,150,200],(14,0,6.28319)"
+#  VAR5 ="svfit_mass,aco_angle_5[50,100,150,150,200],(14,0,6.28319)"
+#  VAR6 ="svfit_mass,aco_angle_6[50,100,150,150,200],(14,0,6.28319)"
+#  VAR_H_TT_Other  = "svfit_mass[50,100,150,150,200]"
+#  VAR_ZTTEMBED_TT = "svfit_mass[50,100,150,150,200]"
+#  VAR_JETFAKES_TT = "svfit_mass[50,100,150,150,200]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
   scheme_et = [
   ]
   scheme_mt = [
-   # ("17",   "higgs_mvaMuPi",  "2017_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuA1",  "2017_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "zttEmbed",       "2017_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "jetFakes",       "2017_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuPi",  "2016_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2016_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2016_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuA1",  "2016_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "zttEmbed",       "2016_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "jetFakes",       "2016_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
 
   ]
 
 
   scheme_tt = [
-    ("17",   "higgs_mvarhorho",    "2017_higgs_Rho_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvarho0a1",    "2017_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvaa1a1",    "2017_higgs_A1_A1",  VAR1, ' '),
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
+    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR1, ' '),
+    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
+    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR1, ' '),
+    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR1, ' '),
+    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaother",    "2016_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
   ]
   scheme_em = [

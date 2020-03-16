@@ -180,61 +180,85 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
 
-      # 'GluGluHToTauTauUncorrelatedDecay',
-      # 'GluGluHToTauTauUncorrelatedDecay_Filtered',
-      # 'GluGluHToWWTo2L2Nu_M-125',
-      # 'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      # 'GluGluToHToTauTau_M-125',
-      # 'GluGluToHToTauTau_M125_amcatnloFXFX',
-      # 'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      # 'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-      # 'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      # 'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
-      # 'JJH0MToTauTauPlusOneJets',
-      # 'JJH0MToTauTauPlusOneJets_Filtered',
-      # 'JJH0MToTauTauPlusTwoJets',
-      # 'JJH0MToTauTauPlusTwoJets_Filtered',
-      # 'JJH0MToTauTauPlusZeroJets',
-      # 'JJH0MToTauTauPlusZeroJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusOneJets',
-      # 'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusTwoJets',
-      # 'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusZeroJets',
-      # 'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
-      # 'JJH0PMToTauTauPlusOneJets',
-      # 'JJH0PMToTauTauPlusOneJets_Filtered',
-      # 'JJH0PMToTauTauPlusTwoJets',
-      # 'JJH0PMToTauTauPlusTwoJets_Filtered',
-      # 'JJH0PMToTauTauPlusZeroJets',
-      # 'JJH0PMToTauTauPlusZeroJets_Filtered',
-      # 'JJHiggs0MToTauTau',
-      # 'JJHiggs0Mf05ph0ToTauTau',
-      # 'VBFHToTauTauUncorrelatedDecay',
-      'VBFHToTauTauUncorrelatedDecay_Filtered',
-      # 'VBFHToTauTau_M-125',
-      # 'VBFHToWWTo2L2Nu_M-125',
-      # 'VBFHiggs0L1_HToTauTau',
-      # 'VBFHiggs0L1f05ph0_HToTauTau',
-      # 'VBFHiggs0M_HToTauTau',
-      # 'VBFHiggs0Mf05ph0_HToTauTau',
-      # 'VBFHiggs0PH_HToTauTau',
-      # 'VBFHiggs0PHf05ph0_HToTauTau',
-      # 'VBFHiggs0PM_HToTauTau',
-      # 'WHiggs0L1_HToTauTau',
-      # 'WminusHToTauTauUncorrelatedDecay',
-      # 'WminusHToTauTauUncorrelatedDecay_Filtered',
-      # 'WminusHToTauTau_M-125',
-      # 'WplusHToTauTauUncorrelatedDecay',
-      # 'WplusHToTauTauUncorrelatedDecay_Filtered',
-      # 'WplusHToTauTau_M-125',
-      # 'ZHToTauTauUncorrelatedDecay',
-      # 'ZHToTauTauUncorrelatedDecay_Filtered',
-      # 'ZHToTauTau_M-125',
-      # 'ZHiggs0L1fZH05ph0_HToTauTau',
-      # 'ttHiggs0MToTauTau',
-      # 'ttHiggs0Mf05ph0ToTauTau',
-      # 'ttHiggs0PMToTauTau',
+######## resubmitted ones
+
+#      GluGluHToTauTauUncorrelatedDecay_Filtered_2016-100
+#      GluGluToHToTauTau_M-125_2016-7
+#      JJH0Mf05ph0ToTauTauPlusOneJets_Filtered_2016-11
+#      JJH0MToTauTauPlusOneJets_Filtered_2016-0
+#      JJH0MToTauTauPlusTwoJets_Filtered_2016
+#      JJH0PMToTauTauPlusTwoJets_Filtered
+#      JJH0PMToTauTauPlusOneJets_Filtered_2016-27.sh
+#      VBFHiggs0L1f05ph0_HToTauTau_2016-0.sh
+#      VBFHiggs0L1_HToTauTau_2016-0.sh
+#      VBFHiggs0Mf05ph0_HToTauTau_2016-0.sh
+#      VBFHiggs0M_HToTauTau_2016-0.sh
+#      VBFHiggs0PHf05ph0_HToTauTau_2016-0.sh
+#      VBFHiggs0PH_HToTauTau_2016-0.sh
+#      VBFHToTauTau_M-125_2016-0.sh
+#      VBFHToTauTauUncorrelatedDecay_Filtered_2016-102.sh
+#      WHiggs0L1_HToTauTau_2016-0.sh
+#      WminusHToTauTauUncorrelatedDecay_Filtered_2016-16.sh
+#      WplusHToTauTauUncorrelatedDecay_Filtered_2016-15.sh
+#      ZHiggs0L1fZH05ph0_HToTauTau_2016-0.sh
+#      ZHToTauTauUncorrelatedDecay_Filtered_2016-28.sh
+
+######## end resubmitted ones
+
+      'GluGluHToTauTauUncorrelatedDecay_Filtered',
+      #'GluGluHToWWTo2L2Nu_M-125',
+      #'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToHToTauTau_M-125',
+      #'GluGluToHToTauTau_M125_amcatnloFXFX',
+      #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
+      #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
+      #'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
+      #'JJH0MToTauTauPlusOneJets',
+      #'JJH0MToTauTauPlusOneJets_Filtered',
+      #'JJH0MToTauTauPlusTwoJets',
+      #'JJH0MToTauTauPlusTwoJets_Filtered',
+      #'JJH0MToTauTauPlusZeroJets',
+      #'JJH0MToTauTauPlusZeroJets_Filtered',
+      #'JJH0Mf05ph0ToTauTauPlusOneJets',
+      #'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
+      #'JJH0Mf05ph0ToTauTauPlusTwoJets',
+      #'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
+      #'JJH0Mf05ph0ToTauTauPlusZeroJets',
+      #'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
+      #'JJH0PMToTauTauPlusOneJets',
+      #'JJH0PMToTauTauPlusOneJets_Filtered',
+      #'JJH0PMToTauTauPlusTwoJets',
+      #'JJH0PMToTauTauPlusTwoJets_Filtered',
+      #'JJH0PMToTauTauPlusZeroJets',
+      #'JJH0PMToTauTauPlusZeroJets_Filtered',
+      #'JJHiggs0MToTauTau',
+      #'JJHiggs0Mf05ph0ToTauTau',
+      #'VBFHToTauTauUncorrelatedDecay',
+      #'VBFHToTauTauUncorrelatedDecay_Filtered',
+      #'VBFHToTauTau_M-125',
+      #'VBFHToWWTo2L2Nu_M-125',
+      #'VBFHiggs0L1_HToTauTau',
+      #'VBFHiggs0L1f05ph0_HToTauTau',
+      #'VBFHiggs0M_HToTauTau',
+      #'VBFHiggs0Mf05ph0_HToTauTau',
+      #'VBFHiggs0PH_HToTauTau',
+      #'VBFHiggs0PHf05ph0_HToTauTau',
+      #'VBFHiggs0PM_HToTauTau',
+      #'WHiggs0L1_HToTauTau',
+      #'WminusHToTauTauUncorrelatedDecay',
+      #'WminusHToTauTauUncorrelatedDecay_Filtered',
+      #'WminusHToTauTau_M-125',
+      #'WplusHToTauTauUncorrelatedDecay',
+      #'WplusHToTauTauUncorrelatedDecay_Filtered',
+      #'WplusHToTauTau_M-125',
+      #'ZHToTauTauUncorrelatedDecay',
+      #'ZHToTauTauUncorrelatedDecay_Filtered',
+      #'ZHToTauTau_M-125',
+      #'ZHiggs0L1fZH05ph0_HToTauTau',
+      #'ttHiggs0MToTauTau',
+      #'ttHiggs0Mf05ph0ToTauTau',
+      #'ttHiggs0PMToTauTau',
 
     ]
 
@@ -415,13 +439,13 @@ if options.proc_bkg or options.proc_all:
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q', 
-    # 'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
-    # 'WWToLNuQQ-ext',
+    #'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
+    #'WWToLNuQQ-ext',
     'WZTo2L2Q',
     'WZTo1L3Nu',
     'WZTo1L1Nu2Q',
     'WZJToLLLNu',
-    # 'ZZTo4L', # use amcat one below
+    #'ZZTo4L', # use amcat one below
     'Tbar-tW',
     'T-tW',
     'Tbar-t',
@@ -516,7 +540,10 @@ if options.proc_sm or options.proc_all:
         if n_scales*n_channels>=48: nperjob=5
 
         if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa:
-          nperjob = int(math.ceil(float(nperjob)/2))
+          nperjob = int(math.ceil(float(nperjob)/5))
+
+        nperjob = min(2,nperjob)
+        print nperjob
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

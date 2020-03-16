@@ -43,6 +43,25 @@ def main(args):
 
     subdirs = [""]
 
+    subdirs = [
+        '',
+        'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
+        'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
+        'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
+        'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
+        'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
+        'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
+        'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
+        'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
+        'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
+        'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
+        'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
+        'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
+        'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
+        'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
+        'JER_UP','JER_DOWN',
+    ]
+
 
 #    qsub_command = (
 #        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0'
@@ -53,21 +72,21 @@ def main(args):
     qsub_command = (
         'qsub -e svfitout/ -o svfitout/ -cwd -V -l h_rt=3:0:0'
         ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
-        'channel="{}",year="{}"'
+        'channel="{}",year="{}",extra="{}"'
         )
 
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-            if sample not in [
-              #'DYJetsToLL-LO-ext1',
-              #'ZHToTauTauUncorrelatedDecay_Filtered',
-              #'TTToHadronic',
-              #'WplusHToTauTauUncorrelatedDecay_Filtered',
-              'VBFHToTauTauUncorrelatedDecay_Filtered',
-              'GluGluHToTauTauUncorrelatedDecay_Filtered',
+           # if sample not in [
+           #   'DYJetsToLL-LO-ext1',
+           #   #'ZHToTauTauUncorrelatedDecay_Filtered',
+           #   #'TTToHadronic',
+           #   #'WplusHToTauTauUncorrelatedDecay_Filtered',
+           #   #'VBFHToTauTauUncorrelatedDecay_Filtered',
+           #   #'GluGluHToTauTauUncorrelatedDecay_Filtered',
 
-            ]: continue
+           # ]: continue
 
             print sample
 
@@ -76,16 +95,16 @@ def main(args):
                 #    args.path, sample, args.channel, args.year
                 #))
                 if glob.glob("{}/{}_{}_{}.root".format(
-                    args.path, sample, args.channel, args.year
+                    args.path+'/'+subdir+'/', sample, args.channel, args.year
                     )):
 
                     run_command(
-                        qsub_command.format(sample, args.svfit_path, 
-                        args.path, args.tag, args.channel, args.year)
+                        qsub_command.format(sample, args.svfit_path+'/'+subdir+'/', 
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
-                    print( qsub_command.format(sample, args.svfit_path,
-                        args.path, args.tag, args.channel, args.year)
+                    print( qsub_command.format(sample, args.svfit_path+'/'+subdir+'/',
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
 

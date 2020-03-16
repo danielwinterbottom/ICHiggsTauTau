@@ -58,10 +58,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/new_t_trg_2016/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan24_2016_ttonly/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
-    "output_folder" : "output/",
+    // "output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/fastMTT_leg2016/",
@@ -390,7 +390,7 @@
     "res_j_lo": {
       "baseline": {
         "addit_output_folder" : "JER_DOWN",
-        "jes_mode" : 1
+        "jer_mode" : 1
       }
     },
     "res_j_hi": {
