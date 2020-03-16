@@ -40,6 +40,12 @@ def checkJobs(year, to_check):
             print((file_.split(".")[0]))
             counter += 1
 
+            if resubmit:
+                run_command(
+                    "qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0"
+                    + " -l h_vmem=24G -q hep.q -pe hep.pe 2"
+                    + " jobs/{}.sh".format(file_.split(".")[0])
+
     print("{} incomplete files".format(counter))
 
 if __name__ == "__main__":

@@ -133,7 +133,7 @@ os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
-scale = int(math.ceil(float(n_scales*n_channels)/30))
+scale = int(math.ceil(float(n_scales*n_channels)/10))
 if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
@@ -168,77 +168,77 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
-        "GluGluHToTauTauUncorrelatedDecay",
-        "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "GluGluHToTauTau_M-125",
-        "GluGluHToTauTau_M-125-ext",
-        "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX",
-        "GluGluToHToTauTau_M-125-nospinner",
-        "GluGluToHToTauTau_M-125-nospinner-filter",
-        "GluGluToHToTauTau_M125_amcatnloFXFX",
-        "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX",
-        "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX",
-        "JJH0MToTauTauPlusOneJets",
-        "JJH0MToTauTauPlusOneJets_Filtered",
-        "JJH0MToTauTauPlusTwoJets",
-        "JJH0MToTauTauPlusTwoJets_Filtered",
-        "JJH0MToTauTauPlusZeroJets",
-        "JJH0MToTauTauPlusZeroJets_Filtered",
-        "JJH0Mf05ph0ToTauTauPlusOneJets",
-        "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered",
-        "JJH0Mf05ph0ToTauTauPlusTwoJets",
-        "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered",
-        "JJH0Mf05ph0ToTauTauPlusZeroJets",
-        "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered",
-        "JJH0PMToTauTauPlusOneJets",
-        "JJH0PMToTauTauPlusOneJets_Filtered",
-        "JJH0PMToTauTauPlusTwoJets",
-        "JJH0PMToTauTauPlusTwoJets_Filtered",
-        "JJH0PMToTauTauPlusZeroJets",
-        "JJH0PMToTauTauPlusZeroJets_Filtered",
-        "JJHiggs0MToTauTau",
-        "JJHiggs0Mf05ph0ToTauTau",
-        "JJHiggs0PMToTauTau",
-        "VBFHToTauTauUncorrelatedDecay",
+        # "GluGluHToTauTauUncorrelatedDecay",
+        # "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        # "GluGluHToTauTau_M-125",
+        # "GluGluHToTauTau_M-125-ext",
+        # "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        # "GluGluToHToTauTau_M-125-nospinner",
+        # "GluGluToHToTauTau_M-125-nospinner-filter",
+        # "GluGluToHToTauTau_M125_amcatnloFXFX",
+        # "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        # "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX",
+        # "JJH0MToTauTauPlusOneJets",
+        # "JJH0MToTauTauPlusOneJets_Filtered",
+        # "JJH0MToTauTauPlusTwoJets",
+        # "JJH0MToTauTauPlusTwoJets_Filtered",
+        # "JJH0MToTauTauPlusZeroJets",
+        # "JJH0MToTauTauPlusZeroJets_Filtered",
+        # "JJH0Mf05ph0ToTauTauPlusOneJets",
+        # "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered",
+        # "JJH0Mf05ph0ToTauTauPlusTwoJets",
+        # "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered",
+        # "JJH0Mf05ph0ToTauTauPlusZeroJets",
+        # "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered",
+        # "JJH0PMToTauTauPlusOneJets",
+        # "JJH0PMToTauTauPlusOneJets_Filtered",
+        # "JJH0PMToTauTauPlusTwoJets",
+        # "JJH0PMToTauTauPlusTwoJets_Filtered",
+        # "JJH0PMToTauTauPlusZeroJets",
+        # "JJH0PMToTauTauPlusZeroJets_Filtered",
+        # "JJHiggs0MToTauTau",
+        # "JJHiggs0Mf05ph0ToTauTau",
+        # "JJHiggs0PMToTauTau",
+        # "VBFHToTauTauUncorrelatedDecay",
         "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "VBFHToTauTau_M-125",
-        "VBFHToTauTau_M-125-nospinner",
-        "VBFHToTauTau_M-125-nospinner-filter",
-        "VBFHiggs0L1ToTauTau",
-        "VBFHiggs0L1ZgToTauTau",
-        "VBFHiggs0L1Zgf05ph0ToTauTau",
-        "VBFHiggs0L1f05ph0ToTauTau",
-        "VBFHiggs0MToTauTau",
-        "VBFHiggs0Mf05ph0ToTauTau",
-        "VBFHiggs0PHToTauTau",
-        "VBFHiggs0PHf05ph0ToTauTau",
-        "VBFHiggs0PMToTauTau",
-        "WHiggs0L1ToTauTau",
-        "WHiggs0L1f05ph0ToTauTau",
-        "WHiggs0MToTauTau",
-        "WHiggs0Mf05ph0ToTauTau",
-        "WHiggs0PHToTauTau",
-        "WHiggs0PHf05ph0ToTauTau",
-        "WHiggs0PMToTauTau",
-        "WminusHToTauTauUncorrelatedDecay_Filtered",
-        "WminusHToTauTau_M-125", # buggy PU
-        "WplusHToTauTauUncorrelatedDecay",
-        "WplusHToTauTauUncorrelatedDecay_Filtered",
-        "WplusHToTauTau_M-125", # buggy PU
-        "ZHToTauTauUncorrelatedDecay_Filtered",
-        "ZHToTauTau_M-125",
-        "ZHiggs0L1ToTauTau",
-        "ZHiggs0L1ZgToTauTau",
-        "ZHiggs0L1Zgf05ph0ToTauTau",
-        "ZHiggs0L1f05ph0ToTauTau",
-        "ZHiggs0MToTauTau",
-        "ZHiggs0Mf05ph0ToTauTau",
-        "ZHiggs0PHToTauTau",
-        "ZHiggs0PHf05ph0ToTauTau",
-        "ZHiggs0PMToTauTau",
-        "ttHiggs0MToTauTau",
-        "ttHiggs0Mf05ph0ToTauTau",
-        "ttHiggs0PMToTauTau",
+        # "VBFHToTauTau_M-125",
+        # "VBFHToTauTau_M-125-nospinner",
+        # "VBFHToTauTau_M-125-nospinner-filter",
+        # "VBFHiggs0L1ToTauTau",
+        # "VBFHiggs0L1ZgToTauTau",
+        # "VBFHiggs0L1Zgf05ph0ToTauTau",
+        # "VBFHiggs0L1f05ph0ToTauTau",
+        # "VBFHiggs0MToTauTau",
+        # "VBFHiggs0Mf05ph0ToTauTau",
+        # "VBFHiggs0PHToTauTau",
+        # "VBFHiggs0PHf05ph0ToTauTau",
+        # "VBFHiggs0PMToTauTau",
+        # "WHiggs0L1ToTauTau",
+        # "WHiggs0L1f05ph0ToTauTau",
+        # "WHiggs0MToTauTau",
+        # "WHiggs0Mf05ph0ToTauTau",
+        # "WHiggs0PHToTauTau",
+        # "WHiggs0PHf05ph0ToTauTau",
+        # "WHiggs0PMToTauTau",
+        # "WminusHToTauTauUncorrelatedDecay_Filtered",
+        # "WminusHToTauTau_M-125", # buggy PU
+        # "WplusHToTauTauUncorrelatedDecay",
+        # "WplusHToTauTauUncorrelatedDecay_Filtered",
+        # "WplusHToTauTau_M-125", # buggy PU
+        # "ZHToTauTauUncorrelatedDecay_Filtered",
+        # "ZHToTauTau_M-125",
+        # "ZHiggs0L1ToTauTau",
+        # "ZHiggs0L1ZgToTauTau",
+        # "ZHiggs0L1Zgf05ph0ToTauTau",
+        # "ZHiggs0L1f05ph0ToTauTau",
+        # "ZHiggs0MToTauTau",
+        # "ZHiggs0Mf05ph0ToTauTau",
+        # "ZHiggs0PHToTauTau",
+        # "ZHiggs0PHf05ph0ToTauTau",
+        # "ZHiggs0PMToTauTau",
+        # "ttHiggs0MToTauTau",
+        # "ttHiggs0Mf05ph0ToTauTau",
+        # "ttHiggs0PMToTauTau",
         
         ]
    # signal_mc += [
@@ -510,12 +510,12 @@ if options.mg_signal or options.proc_sm:
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-        nperjob = 7
+        nperjob = 2
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>=24: nperjob = 7
-        if n_scales*n_channels>=48: nperjob=4
-        if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
-          nperjob = int(math.ceil(float(nperjob)/2)) 
+        if n_scales*n_channels>=24: nperjob = 2
+        # if n_scales*n_channels>=48: nperjob=2
+        # if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
+        #   nperjob = int(math.ceil(float(nperjob)/2)) 
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())

@@ -133,6 +133,11 @@ sample_list = [
     "SingleMuonD",
     "SingleMuonE",
     "SingleMuonF",
+    "TauB",
+    "TauC",
+    "TauD",
+    "TauE",
+    "TauF",
     "T-t",
     "T-tW",
     "TTTo2L2Nu",
@@ -203,7 +208,8 @@ sample_list = [
 	]
 
 
-channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
+# channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
+channel = ['tt']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
