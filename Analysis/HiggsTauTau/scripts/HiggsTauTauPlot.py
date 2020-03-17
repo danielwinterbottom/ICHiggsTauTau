@@ -1731,9 +1731,12 @@ if options.syst_scale_j_regrouped != "":
     else: assert ValueError("Regrouped JES only works for full RunII analyses")
 
     if "*group" in hist_name:
+        print(hist_name)
         for name, folder in syst_dict.iteritems():
-            if "year" in name: name.replace("year", replaceYear)
+            if "year" in name:
+                name = name.replace("year", replaceYear)
             syst_name = hist_name.replace("*group", name)
+            print(syst_name)
             systematics['syst_scale_j_{}_up'.format(syst_name)] = (
                 "{}_UP".format(folder), "_{}Up".format(syst_name), 
                 "wt", ["EmbedZTT"], False)
