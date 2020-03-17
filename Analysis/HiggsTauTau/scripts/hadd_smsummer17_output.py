@@ -210,6 +210,9 @@ with open("%(samplelist)s"%vars(),"r") as inf:
 subdirs=['']
 subdirs+=list_paths(outputf)
 
+
+#subdirs=['','MUSCALE_UP','MUSCALE_DOWN']
+
 new_subdirs=[]
 for d in subdirs:
   infi=os.listdir('%(outputf)s/%(d)s' % vars())

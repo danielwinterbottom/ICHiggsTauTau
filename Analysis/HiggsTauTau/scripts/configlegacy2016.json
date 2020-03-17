@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Jan24_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tt"],
+    "channels":      ["zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -58,7 +58,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/new_t_trg_2016/",
+    "output_folder" : "/vols/cms/mhh18/Offline/output/SM/02March2020_tauh_SF/2016/",
     // "output_folder" : "/vols/cms/mhh18/Offline/output/SM/Sep19_2016legacy_MC_Data_validation",
     //"output_folder" : "/vols/cms/akd116/Offline/output/SM/2019/Nov11_leg2016/",
     //"output_folder" : "output/",

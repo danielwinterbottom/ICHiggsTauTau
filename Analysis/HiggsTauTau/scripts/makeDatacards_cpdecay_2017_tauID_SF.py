@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# ./scripts/makeDatacards_cpdecay_2018_tauID_SF.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'mt,zmm' scripts/params_2018.json -s 'cpdecay' --embedding 
+# ./scripts/makeDatacards_cpdecay_2017_tauID_SF.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'mt,zmm' scripts/params_2017.json -s 'cpdecay' --embedding 
 
 import sys
 from optparse import OptionParser
@@ -106,7 +106,7 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
-YEAR=2018
+YEAR=2017
 if "year" in configmap:
   YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
@@ -183,7 +183,6 @@ if SCHEME == 'cpdecay':
   ADD_STRING_MT_HPSDM1_PtMoreThan40 =   'tau_decay_mode_2==1&&pt_2>40)\"'
   ADD_STRING_MT_HPSDM10_PtMoreThan40 =  'tau_decay_mode_2==10&&pt_2>40)\"'
   ADD_STRING_MT_HPSDM11_PtMoreThan40 =  'tau_decay_mode_2==11&&pt_2>40)\"'
-  
 
   ADD_STRING_MT_MVADM1_NoHPS0_Pt20to40 = 'mva_dm_2==1&&tau_decay_mode_2!=0&&pt_2>20&&pt_2<40)\"'
   ADD_STRING_MT_MVADM2_NoHPS0_Pt20to40 = 'mva_dm_2==2&&tau_decay_mode_2!=0&&pt_2>20&&pt_2<40)\"'
@@ -195,34 +194,35 @@ if SCHEME == 'cpdecay':
   ADD_STRING_ZMM_GENERAL = '--add_wt=\"wt_btag\"  --set_alias="inclusive:(n_bjets==0&&trg_singlemuon&&pt_1>25)"' 
   
   scheme_zmm = [
-    ("8",    "inclusive",      "2018_ZMM_inclusive",         VAR_ZMM, ADD_STRING_ZMM_GENERAL ),
+    ("8",    "inclusive",      "2017_ZMM_inclusive",         VAR_ZMM, ADD_STRING_ZMM_GENERAL ),
   ]
   
   scheme_mt = [
-    ("12",   "inclusive",      "2018_MVADM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM2_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM2_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM2_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM0_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM2_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM10_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM11_PtMoreThan40),
 
-    ("12",   "inclusive",      "2018_HPSDM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_Pt20to40),
-    ("12",   "inclusive",      "2018_HPSDM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_PtMoreThan40),
-    ("12",   "inclusive",      "2018_HPSDM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_PtMoreThan40),
-    
-    ("12",   "inclusive",      "2018_MVADM1_NoHPS0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_NoHPS0_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM2_NoHPS0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_NoHPS0_Pt20to40),
-    ("12",   "inclusive",      "2018_MVADM1_NoHPS0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_NoHPS0_PtMoreThan40),
-    ("12",   "inclusive",      "2018_MVADM2_NoHPS0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_NoHPS0_PtMoreThan40),
+    ("12",   "inclusive",      "2017_HPSDM0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_Pt20to40),
+    ("12",   "inclusive",      "2017_HPSDM1_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_Pt20to40),
+    ("12",   "inclusive",      "2017_HPSDM10_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_Pt20to40),
+    ("12",   "inclusive",      "2017_HPSDM11_Pt20to40",      VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_Pt20to40),
+    ("12",   "inclusive",      "2017_HPSDM0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM0_PtMoreThan40),
+    ("12",   "inclusive",      "2017_HPSDM1_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM1_PtMoreThan40),
+    ("12",   "inclusive",      "2017_HPSDM10_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM10_PtMoreThan40),
+    ("12",   "inclusive",      "2017_HPSDM11_PtMoreThan40",  VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_HPSDM11_PtMoreThan40),
+
+    ("12",   "inclusive",      "2017_MVADM1_NoHPS0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_NoHPS0_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM2_NoHPS0_Pt20to40",       VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_NoHPS0_Pt20to40),
+    ("12",   "inclusive",      "2017_MVADM1_NoHPS0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM1_NoHPS0_PtMoreThan40),
+    ("12",   "inclusive",      "2017_MVADM2_NoHPS0_PtMoreThan40",   VAR_MT,  ADD_STRING_MT_GENERAL + ADD_STRING_MT_MVADM2_NoHPS0_PtMoreThan40),
+
   ]
   scheme_tt = [
   ]

@@ -136,6 +136,7 @@ if svfit_mode == 1:
 
 
 scale = int(math.ceil(float(n_scales*n_channels)/30))
+scale = int(math.ceil(float(n_scales*4)/30))
 #scale = int(math.ceil(float(n_scales*n_channels)/8)) # change back later!
 if scale < 1: scale = 1
 
@@ -345,8 +346,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['A','B','C','D']
-    #data_eras = ['A','B','C']
+    data_eras = ['A','B','C','D'] 
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -390,6 +390,11 @@ if options.proc_embed or options.proc_all:
               nperjob = 300
               if n_scales*n_channels>=28: nperjob = 150
               if n_scales*n_channels>=56: nperjob=75
+
+
+            if ('MuTau' in sa) and (not 'MuTauD' in sa):                
+                nperjob = int(math.ceil(float(nperjob)/2))  
+            
             if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/5))  
             if 'ElTau' in sa and 'ElTauD' not in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))

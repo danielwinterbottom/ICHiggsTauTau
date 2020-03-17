@@ -227,12 +227,14 @@ sample_list = [
     ]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
 subdirs=['']
 subdirs+=list_paths(outputf)
+
+
+#subdirs=['','MUSCALE_UP','MUSCALE_DOWN']
 
 new_subdirs=[]
 for d in subdirs:

@@ -143,7 +143,8 @@ if svfit_mode == 1:
     os.system("bash scripts/make_output_folder.sh {}".format(svfit_folder))
   
 #scale = int(math.ceil(float(n_scales*n_channels)/50))
-scale = int(math.ceil(float(n_scales*n_channels)/30))
+#scale = int(math.ceil(float(n_scales*n_channels)/30))
+scale = int(math.ceil(float(n_scales*4)/30))
 
 if scale < 1: scale = 1
 
