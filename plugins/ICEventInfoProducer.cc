@@ -53,7 +53,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_htxs_(config.getParameter<bool>("includeHTXS"))
 {
 #if CMSSW_MAJOR_VERSION>=10
-       htxsSrc_(consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification"));
+       consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification"));
 #endif
 #if CMSSW_MAJOR_VERSION >= 7
       consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
