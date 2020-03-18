@@ -254,6 +254,48 @@ if SCHEME == 'cpdecay':
   }
   ANA = 'sm'
 
+if SCHEME == 'ip_uncert':
+
+  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+
+  ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
+
+  scheme_et = [
+  ]
+  scheme_mt = [
+
+  ]
+
+
+  scheme_tt = [
+    ("17",   "higgs_mvapipi_up",    "2016_higgs_Pi_Pi_UP",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_up",    "2016_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_up",    "2016_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_up",    "2016_higgs_Pi_A1_Mixed_UP",  VAR5, ' '),
+
+    ("17",   "higgs_mvapipi_down",    "2016_higgs_Pi_Pi_DOWN",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_down",    "2016_higgs_Pi_Rho_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_down",    "2016_higgs_Pi_0A1_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_down",    "2016_higgs_Pi_A1_Mixed_DOWN",  VAR5, ' '),
+
+  ]
+  scheme_em = [
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
+
 
 cat_schemes = {
   'et' : scheme_et,
@@ -338,5 +380,5 @@ for ch in channels:
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        #os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 

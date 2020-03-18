@@ -756,6 +756,16 @@ if options.channel == 'tt':
     cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2>=1.5))"
     cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
 
+    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_up"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_up>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_up"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==0 && ip_sig_2_up>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_up"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2_up>=1.5))"
+
+    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_down"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_down>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_down"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_down"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2_down>=1.5))"
+
     #mva_ggh                = '(svfit_mass>100&&svfit_mass<150)'
     #mva_jetFakes           = '(svfit_mass>150)'
     #mva_zttEmbed           = '(svfit_mass<100)'
@@ -798,6 +808,15 @@ if options.channel == 'tt':
     cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}))'\
             .format(mva_ggh, cats["higgs_mvarhorho"], cats["higgs_mvapirho"], cats["higgs_mvaa1rho"], cats["higgs_mvaa1pi"], cats["higgs_mvaa1a1"], cats["higgs_mvapipi"], cats["higgs_mvapi0a1"], cats["higgs_mvarho0a1"])
 
+    cats['higgs_mvapirho_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapirho_up"])
+    cats['higgs_mvaa1pi_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa1pi_up"])
+    cats['higgs_mvapipi_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapipi_up"])
+    cats['higgs_mvapi0a1_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapi0a1_up"])
+
+    cats['higgs_mvapirho_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapirho_down"])
+    cats['higgs_mvaa1pi_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa1pi_down"])
+    cats['higgs_mvapipi_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapipi_down"])
+    cats['higgs_mvapi0a1_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapi0a1_down"])
 
 ########################## old below ##########################
 #
@@ -2768,6 +2787,9 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             wt_1=fake_factor_wt_string_1
             wt_2=fake_factor_wt_string_2
             
+
+        if options.analysis in ['cpprod', 'cpdecay']:
+          fake_factor_wt_string_2='0'
 
     
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
