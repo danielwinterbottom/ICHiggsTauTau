@@ -271,7 +271,7 @@ electronLabel = cms.InputTag("slimmedElectrons")
 process.icElectronSequence = cms.Sequence()
 
 # electron smear and scale
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+from EgammaUser.EgammaPostRecoTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        # applyEnergyCorrections=True,
                        # applyVIDOnCorrectedEgamma=True,
@@ -801,6 +801,7 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 runMetCorAndUncFromMiniAOD (
         process,
         isData = (bool(isData) or bool(isEmbed)),
+        isEmbeddedSample=bool(isEmbed),
         fixEE2017 = True,
         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
@@ -810,6 +811,7 @@ from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAO
 makePuppiesFromMiniAOD( process, True );
 runMetCorAndUncFromMiniAOD(process,
                            isData=(bool(isData) or bool(isEmbed)),
+                           isEmbeddedSample=bool(isEmbed),
                            metType="Puppi",
                            postfix="PuppiModifiedMET",
                            jetFlavor="AK4PFPuppi",
