@@ -207,12 +207,21 @@ if SCHEME == 'cpdecay':
   VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
 
-#  VAR1 ="svfit_mass,aco_angle_1[50,100,150,150,200],(14,0,6.28319)"
-#  VAR5 ="svfit_mass,aco_angle_5[50,100,150,150,200],(14,0,6.28319)"
-#  VAR6 ="svfit_mass,aco_angle_6[50,100,150,150,200],(14,0,6.28319)"
-#  VAR_H_TT_Other  = "svfit_mass[50,100,150,150,200]"
-#  VAR_ZTTEMBED_TT = "svfit_mass[50,100,150,150,200]"
-#  VAR_JETFAKES_TT = "svfit_mass[50,100,150,150,200]"
+
+  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.6,0.8],(6,0,6.28319)"
+  #VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.65,0.75,0.85],(14,0,6.28319)" # could use even more bins (20)!
+  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.65,0.75,0.85],(16,0,6.28319)" # could use even more bins (20)!
+  VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
+
+  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+
+
+
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -230,19 +239,31 @@ if SCHEME == 'cpdecay':
 
 
   scheme_tt = [
-    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR1, ' '),
-    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR_RHORHO, ' '),
+    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR_A1A1, ' '),
+    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR_PIPI, ' '),
+    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "inclusive_mvaa10a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1A1, ' '),
+    ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1",  VAR_0A1A1, ' '),
+    #("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR1, ' '),
+    #("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
+    #("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR1, ' '),
+    #("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR1, ' '),
+    #("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR6, ' '),
+    #("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    #("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    #("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR5, ' '),
     ("17",   "higgs_mvaother",    "2016_higgs_other",  VAR_H_TT_Other, ' '),
     ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
   ]
+
+
   scheme_em = [
   ]
   bkg_schemes = {
@@ -335,7 +356,7 @@ for ch in channels:
                 run_command(qsub_command
                         .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
                         + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra="{}"'.format(extra)
+                        + ' -v extra="\'{}\'"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
 
@@ -380,5 +401,5 @@ for ch in channels:
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        #os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 
