@@ -78,15 +78,16 @@ def main(args):
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-           # if sample not in [
+            if sample not in [
            #   'DYJetsToLL-LO-ext1',
-           #   #'ZHToTauTauUncorrelatedDecay_Filtered',
+              'ZHToTauTauUncorrelatedDecay_Filtered',
            #   #'TTToHadronic',
-           #   #'WplusHToTauTauUncorrelatedDecay_Filtered',
-           #   #'VBFHToTauTauUncorrelatedDecay_Filtered',
-           #   #'GluGluHToTauTauUncorrelatedDecay_Filtered',
+              'WplusHToTauTauUncorrelatedDecay_Filtered',
+              'WminusHToTauTauUncorrelatedDecay_Filtered',
+              'VBFHToTauTauUncorrelatedDecay_Filtered',
+              'GluGluHToTauTauUncorrelatedDecay_Filtered',
 
-           # ]: continue
+            ]: continue
 
             print sample
 
@@ -107,6 +108,13 @@ def main(args):
                         args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
+                    f = open('jobs/%s_%s_%s_%s_svfit.sh' % (sample, args.channel, args.year , subdir ),'w')
+                    f.write( qsub_command.format(sample, args.svfit_path+'/'+subdir+'/',
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
+                        + ' ./scripts/batch_addSVFits.sh'
+                    )
+                    f.close()
+                    os.system('chmod 755 jobs/%s_%s_%s_%s_svfit.sh' % (sample, args.channel, args.year , subdir ))
 
 if __name__ == "__main__":
     args = parse_arguments()
