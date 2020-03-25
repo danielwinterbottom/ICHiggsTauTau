@@ -109,6 +109,8 @@
       "embedtau_3prong0pi0_es_shift": 1.0,
       "embedtau_3prong1pi0_es_shift" : 1.0,
       "elec_es_shift"     : 1.0,
+      "elec_es_shift_barrel": 0.9967, 
+      "elec_es_shift_endcap": 0.9944, 
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -349,8 +351,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_DOWN",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 0.99,
-        "elec_es_shift_endcap": 0.975,
+        "elec_es_shift_barrel": 0.9917,
+        "elec_es_shift_endcap": 0.9819,
         "e_unc_mode": 1
       }
     },
@@ -358,8 +360,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_UP",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 1.01,
-        "elec_es_shift_endcap": 1.025,
+        "elec_es_shift_barrel": 1.0017,
+        "elec_es_shift_endcap": 1.0069,
         "e_unc_mode": 2
       }
     },

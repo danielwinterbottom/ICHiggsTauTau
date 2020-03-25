@@ -3498,16 +3498,6 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
-  
-  //if(e_scale_mode >0 && !is_data && is_embedded){
-  //  BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-  //      .set_input_label(js["electrons"].asString())
-  //      .set_shift(elec_shift_barrel)
-  //      .set_shift_endcap(elec_shift_endcap)
-  //      .set_strategy(strategy_type)
-  //      .set_channel(channel::em)
-  //      .set_moriond_corrections(moriond_tau_scale));
-  //}
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -3546,12 +3536,22 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
@@ -3949,12 +3949,22 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -4085,12 +4095,22 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
