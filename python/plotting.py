@@ -3822,7 +3822,7 @@ def HTTPlotUnrolled(nodename,
         for signal_scheme in sig_schemes:
             sighist = R.TH1F()  
             sig_scheme = sig_schemes[signal_scheme]
-            for i in sig_scheme[1]: 
+            for i in sig_scheme[1]:
                 h = infile.Get(nodename+'/'+i+signal_mass).Clone()
                 if sighist.GetEntries() == 0: 
                     sighist = h

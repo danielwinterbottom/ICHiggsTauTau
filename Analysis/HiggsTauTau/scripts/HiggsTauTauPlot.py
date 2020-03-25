@@ -482,8 +482,8 @@ elif options.channel == 'zee':
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 if options.analysis == 'cpdecay':
-  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 '#&& (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
+  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -748,27 +748,15 @@ if options.channel == 'tt':
     cats["inclusive_pipi"]     = "(tau_decay_mode_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5)"
 
 
-    cats["inclusive_mvapirho_temp"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_up"]     = "((mva_dm_1==10 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_up"]     = "(mva_dm_1==0 && ip_sig_1_up>=1.5 && ip_sig_2_up>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_up"]     = "((mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_up>=1.5))"
 
-#    cats["inclusive_mvarhorho"]       = "(tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==1 && mva_dm_2==1)"
-#    cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
-#    cats["inclusive_mvaa1rho"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_2==1 && tau_decay_mode_2==10 && mva_dm_2==10))"
-#    cats["inclusive_mvaa1pi"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
-#    cats["inclusive_mvaa1a1"]     = "(tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==10 && mva_dm_2==10)"
-#    cats["inclusive_mvapipi"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0)"
-#    cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2>=1.5))"
-#    cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
-#    cats["inclusive_mvaa10a1"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_2==2 && tau_decay_mode_2==10 && mva_dm_2==10))"
-
-    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
-    cats["inclusive_mvaa1pi_up"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_up>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
-    cats["inclusive_mvapipi_up"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==0 && ip_sig_2_up>=1.5 && mva_dm_2==0)"
-    cats["inclusive_mvapi0a1_up"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2_up>=1.5))"
-
-    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
-    cats["inclusive_mvaa1pi_down"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1_down>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
-    cats["inclusive_mvapipi_down"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==0 && ip_sig_2_down>=1.5 && mva_dm_2==0)"
-    cats["inclusive_mvapi0a1_down"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2_down>=1.5))"
+    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_down"]     = "((mva_dm_1==10 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_down"]     = "(mva_dm_1==0 && ip_sig_1_down>=1.5 && ip_sig_2_down>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_down"]     = "((mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_down>=1.5))"
 
     cats["inclusive_mvarhorho"]       = "(tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==1 && mva_dm_2==1)"
     cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2>=1.5 && mva_dm_2==0) || (ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"

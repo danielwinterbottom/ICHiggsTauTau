@@ -205,6 +205,25 @@ namespace ic {
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }
 
+    if (do_nnlops_weights_){
+
+      // Retrieve file with TGraphs of weights
+      std::string file = "input/ggh_weights/NNLOPS_reweight.root";
+      ggh_weights_ = new TFile(file.c_str());
+      ggh_weights_->cd();
+      ggh_mg_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
+      ggh_mg_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
+      ggh_mg_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_2jet");
+      ggh_mg_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_3jet");
+
+      ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
+      ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
+      ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
+      ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
+
+      ggh_weights_->Close();
+   }
+
     if(scalefactor_file_!="" && (mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016)) {
       // putting new definitions of all function here for full run2 analyses to avoid the mess/confusion 
       // for now just for 2018 but will update for 2017 and 2016 legacy soon
@@ -1658,8 +1677,13 @@ namespace ic {
             //  //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
             //  top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
             //}
-            if (mc_ == mc::summer16_80X || mc_ == mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016){
+            if (mc_ == mc::summer16_80X && !(mc_ == mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016)){
               top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
+            }
+            if(mc_ == mc::mc2017 || mc_ == mc::mc2018 || mc_ == mc::mcleg2016) {
+              pt = std::min(pt, 472.);
+              double a = 0.088, b = -0.00087, c = 9.2e-07;
+              top_wt *= std::exp(a + b * pt + c * pt*pt); 
             }
           }
         }
@@ -2500,24 +2524,19 @@ namespace ic {
       double wt_mg_nnlops = 1.;
       double wt_ph_nnlops = 1.;
 
-      // Retrieve file with TGraphs of weights
-      std::string file = "input/ggh_weights/NNLOPS_reweight.root";
-      ggh_weights_ = new TFile(file.c_str());
-      ggh_weights_->cd();
-      ggh_mg_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_0jet");
-      ggh_mg_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_1jet");
-      ggh_mg_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_2jet");
-      ggh_mg_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_mcatnlo_3jet");
-
-      ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
-      ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
-      ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
-      ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
-
       // Get n_jets30 and higgs pt from eventinfo (produced with rivet)
       // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/SignalModelingTools
       unsigned n_jets30 = eventInfo->n_jets30();
       double pt_h = eventInfo->pt_h();
+      if(pt_h==0 && n_jets30==0){
+        n_jets30 = event->Exists("ngenjets") ? event->Get<unsigned>("ngenjets") : -1;
+        std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+        for(unsigned i=0; i<gen_particles.size(); ++i){
+          unsigned genID = std::fabs(gen_particles[i]->pdgid());
+          if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]) pt_h = gen_particles[i]->vector().Pt();
+        }
+      }
+
       if (n_jets30      == 0) wt_mg_nnlops = ggh_mg_0jet_->Eval(std::min(pt_h, 125.));
       else if (n_jets30 == 1) wt_mg_nnlops = ggh_mg_1jet_->Eval(std::min(pt_h, 625.));
       else if (n_jets30 == 2) wt_mg_nnlops = ggh_mg_2jet_->Eval(std::min(pt_h, 800.));
