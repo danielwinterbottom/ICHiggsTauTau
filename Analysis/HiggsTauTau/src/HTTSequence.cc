@@ -545,6 +545,16 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
  }
+
+tau_shift_func_1prong0pi0 = "";
+tau_shift_func_1prong1pi0 = "";
+tau_shift_func_3prong0pi0 = "";
+tau_shift_func_3prong1pi0 = "";
+if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
+if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
+if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
+if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+
  alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
 
@@ -4720,25 +4730,29 @@ void HTTSequence::BuildTauSelection(){
     .set_input_label("genmatched_taus_1prong0pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_1prong0pi0") 
-    .set_shift(tau_shift_1prong0pi0));
+    .set_shift(tau_shift_1prong0pi0)
+    .set_shift_func(tau_shift_func_1prong0pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
     .set_input_label("genmatched_taus_1prong1pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_1prong1pi0") 
-    .set_shift(tau_shift_1prong1pi0));
+    .set_shift(tau_shift_1prong1pi0)
+    .set_shift_func(tau_shift_func_1prong1pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
     .set_input_label("genmatched_taus_3prong0pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_3prong0pi0") 
-    .set_shift(tau_shift_3prong0pi0));
+    .set_shift(tau_shift_3prong0pi0)
+    .set_shift_func(tau_shift_func_3prong0pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
     .set_input_label("genmatched_taus_3prong1pi0")
     .set_save_shifts(true)
     .set_shift_label("scales_taues_3prong1pi0")
-    .set_shift(tau_shift_3prong1pi0));
+    .set_shift(tau_shift_3prong1pi0)
+    .set_shift_func(tau_shift_func_3prong1pi0));
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
