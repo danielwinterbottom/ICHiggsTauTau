@@ -513,6 +513,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  }
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+ std::cout << "---\n" << elec_shift_barrel << std::endl;
  tau_shift_1prong0pi0 = 1.0;
  tau_shift_1prong1pi0 = 1.0;
  tau_shift_3prong0pi0 = 1.0;
@@ -3797,13 +3798,6 @@ void HTTSequence::BuildEMPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str); 
  ic::mc mc_type = String2MC(mc_str);
 
- /*if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
-   BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
-      .set_input_label("muons")
-      .set_shift_label("muon_scales")
-      .set_shift(muon_shift));
- }*/
-
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
@@ -3895,25 +3889,6 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiency")
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
 }
-
-
-
- if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::legacy16 &&  strategy_type != strategy::cpdecays16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18){
-   BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-        .set_shift(tau_shift));
- }
-
- if(tau_scale_mode >0 && !is_data && (strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)){
-    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-        .set_shift(elec_shift_barrel)
-        .set_shift_endcap(elec_shift_endcap)
-        .set_strategy(strategy_type)
-        .set_channel(channel::em)
-        .set_moriond_corrections(moriond_tau_scale));
- }
-
   if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));
   }
@@ -3956,6 +3931,8 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
     );
   }
   if(!is_data && is_embedded){
+    std::cout << "!!!!!!!!!!!\n" << elec_shift_barrel << std::endl;
+
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_shift(elec_shift_barrel)

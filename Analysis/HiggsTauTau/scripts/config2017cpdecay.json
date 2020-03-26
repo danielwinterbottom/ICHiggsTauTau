@@ -115,11 +115,13 @@
       "tau_1prong1pi0_es_shift": 0.998,
       "tau_3prong0pi0_es_shift": 1.001,
       "tau_3prong1pi0_es_shift" : 0.999,
-      "embedtau_1prong1pi0_es_shift": 1.0,  
-      "embedtau_1prong0pi0_es_shift": 1.0,
-      "embedtau_3prong0pi0_es_shift": 1.0,
-      "embedtau_3prong1pi0_es_shift" : 1.0,
+      "embedtau_1prong1pi0_es_shift": 0.988,  
+      "embedtau_1prong0pi0_es_shift": 0.9996,
+      "embedtau_3prong0pi0_es_shift": 0.9925,
+      "embedtau_3prong1pi0_es_shift" : 0.9925,
       "elec_es_shift"     : 1.0,
+      "elec_es_shift_barrel": 0.9995,
+      "elec_es_shift_endcap": 0.9887,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -214,9 +216,7 @@
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
-        "max_extra_muons": 1,
-        "elec_es_shift_barrel": 1.0,
-        "elec_es_shift_endcap": 1.0
+        "max_extra_muons": 1
       }
     },
     "zmm": {
@@ -263,56 +263,56 @@
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
          "tau_1prong0pi0_es_shift" : 1.015,
-         "embedtau_1prong0pi0_es_shift": 1.015
+         "embedtau_1prong0pi0_es_shift": 1.0037
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
          "tau_1prong0pi0_es_shift" : 0.999,
-         "embedtau_1prong0pi0_es_shift": 0.985
+         "embedtau_1prong0pi0_es_shift": 0.9954
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
          "tau_1prong1pi0_es_shift" : 1.006,
-         "embedtau_1prong1pi0_es_shift" : 1.015
+         "embedtau_1prong1pi0_es_shift" : 0.9932
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
          "tau_1prong1pi0_es_shift" : 0.99,
-         "embedtau_1prong1pi0_es_shift" : 0.985 
+         "embedtau_1prong1pi0_es_shift" : 0.9859 
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
          "tau_3prong0pi0_es_shift" : 1.01,
-         "embedtau_3prong0pi0_es_shift" : 1.015
+         "embedtau_3prong0pi0_es_shift" : 0.9969
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
          "tau_3prong0pi0_es_shift" : 0.992,
-         "embedtau_3prong0pi0_es_shift" : 0.985
+         "embedtau_3prong0pi0_es_shift" : 0.9879
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
          "tau_3prong1pi0_es_shift" : 1.009,
-         "embedtau_3prong1pi0_es_shift" : 1.015
+         "embedtau_3prong1pi0_es_shift" : 0.9969
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
          "tau_3prong1pi0_es_shift" : 0.989,
-         "embedtau_3prong1pi0_es_shift" : 0.985
+         "embedtau_3prong1pi0_es_shift" : 0.9879
       }
     },
     "scale_efake_0pi_lo": {
@@ -372,8 +372,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_DOWN",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 0.99,
-        "elec_es_shift_endcap": 0.975,
+        "elec_es_shift_barrel": 0.9879,
+        "elec_es_shift_endcap": 0.9762,
         "e_unc_mode": 1
       }
     },
@@ -381,8 +381,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_UP",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 1.01,
-        "elec_es_shift_endcap": 1.025,
+        "elec_es_shift_barrel": 0.9969,
+        "elec_es_shift_endcap": 1.0012,
         "e_unc_mode": 2
       }
     },
