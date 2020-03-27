@@ -561,6 +561,55 @@ if(do_met_filters){
     }));
 }
 
+if((era_type == era::data_2016 || era_type == era::data_2017) && !is_embedded && !is_data) {
+  TH2F prefire_hist; 
+  if(era_type == era::data_2016) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
+  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
+  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
+    .set_prefire_hist(new TH2F(prefire_hist)));
+}
+
+BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
+
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+if (era_type == era::data_2016) {
+  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+} else if (era_type == era::data_2017) {
+  jetIDFilter.set_predicate(bind(PFJetID2017, _1));
+} else if (era_type == era::data_2018) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
+}
+BuildModule(jetIDFilter);
+
+// Apply loose PUJID universally
+BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+  .set_input_label(jets_label)
+  .set_predicate([=](PFJet const* jet) {
+    return  PileupJetID(jet, pu_id_training, false, true);
+  })
+);
+
+if (era_type == era::data_2017) {
+  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
+    .set_input_label(jets_label)
+    .set_predicate([=](PFJet const* jet) {
+      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
+        fabs(jet->eta()) > 3.139 ||
+        fabs(jet->eta()) < 2.65 ;
+    })
+  );
+}
+
+// nominal JER
+if (!is_data && !is_embedded) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+   );
+}
+
 bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos);
 BuildModule(HTTPairGenInfo("HTTPairGenInfo")
   .set_fs(fs.get())
@@ -569,21 +618,17 @@ BuildModule(HTTPairGenInfo("HTTPairGenInfo")
   .set_channel(channel)
   .set_ngenjets(do_ngenjets));
 
-TH2D z_pt_weights;
 std::string scalefactor_file;
 std::string scalefactor_file_ggh;
 if(era_type == era::data_2016) {
-   z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
 }
 if(era_type == era::data_2017) {
-   z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2017new.root","/","zptmass_histo");
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
 if(era_type == era::data_2018) {
-   z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/Zpt2018new.root","/","zptmass_histo");
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
@@ -594,12 +639,9 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_mc(mc_type)
  .set_do_tau_id_weights(!is_data)
  .set_do_tau_id_sf(!is_data)
- .set_do_jlepton_fake(false)
  .set_do_em_qcd_weights(true)
  .set_ditau_label("ditau")
  .set_jets_label(jets_label)
- .set_do_single_lepton_trg(true)
- .set_do_cross_trg(false)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
  .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
@@ -607,7 +649,6 @@ httWeights.set_strategy(strategy_type);
 httWeights.set_scalefactor_file_ggh(scalefactor_file_ggh);
 httWeights.set_scalefactor_file(scalefactor_file);
 httWeights.set_is_embedded(is_embedded);
-httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
 if (!is_data ) {
   httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
   if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
@@ -652,7 +693,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(70548058, 51017448, 23174717, 14351015, 10062198); // correspond to params Jan24
+      httStitching.SetWInputYields(70548058, 51017448, 23174717, 14351015, 10062198); 
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -667,7 +708,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482); // correspond to params Jan24
+      httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482);
     }
   }
   BuildModule(httStitching);   
@@ -688,37 +729,6 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
       );
 }   
 
-if((era_type == era::data_2016 || era_type == era::data_2017) && !is_embedded && !is_data) {
-  TH2F prefire_hist; 
-  if(era_type == era::data_2016) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
-  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
-  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
-    .set_prefire_hist(new TH2F(prefire_hist)));
-}
-
-BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
-
-SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-.set_input_label(jets_label);
-if (era_type == era::data_2016) {
-  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
-} else if (era_type == era::data_2017) {
-  jetIDFilter.set_predicate(bind(PFJetID2017, _1));
-} else if (era_type == era::data_2018) {
-  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
-}
-BuildModule(jetIDFilter);
-
-if (era_type == era::data_2017) {
-  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
-    .set_input_label(jets_label)
-    .set_predicate([=](PFJet const* jet) {
-      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
-        fabs(jet->eta()) > 3.139 ||
-        fabs(jet->eta()) < 2.65 ;
-    })
-  );
-}
 
 BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
   .set_input_label(jets_label)
@@ -727,8 +737,8 @@ BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
 
 // from here all jet and met recoil uncertainties should be run in a loop
 
-// JER
-if (!is_data && !is_embedded) {
+// shifted JER 
+if (jer_mode>0 && !is_data && !is_embedded) {
    BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
      .set_input_label(jets_label)
      .set_jer_shift_mode(jer_mode)
@@ -763,15 +773,6 @@ if (jes_mode > 0 && !is_data ){
    );
  
 }
-
-// Apply loose PUJID universally
-BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
-  .set_input_label(jets_label)
-  .set_predicate([=](PFJet const* jet) {
-    return  PileupJetID(jet, pu_id_training, false, true);
-  })
-);
-
 
 if(js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
@@ -896,8 +897,6 @@ BuildModule(svFitTest);
 
 
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
-bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
-bool do_sm_scale_wts = true; 
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -906,31 +905,18 @@ BuildModule(HTTCategories("HTTCategories")
     .set_ditau_label("ditau")
     .set_met_label(met_label)
     .set_jets_label(jets_label)
-    .set_kinfit_mode(kinfit_mode)
-    .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-    .set_tau_id_study(js["tau_id_study"].asBool())
-    .set_qcd_study(js["qcd_study"].asBool())
-    .set_optimisation_study(js["optimisation_study"].asBool())
-    .set_mass_shift(mass_shift)
-    .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
-    .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
-    .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool())
     .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-    .set_ff_categories(js["baseline"]["ff_categories"].asString())
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
     .set_do_qcd_scale_wts(do_qcd_scale_wts_)
     .set_do_mssm_higgspt(do_mssm_higgspt)
-    .set_do_sm_scale_wts(do_sm_scale_wts||output_name.find("JJH")!=output_name.npos) 
-    .set_do_sm_ps_wts(do_sm_scale_wts||output_name.find("JJH")!=output_name.npos)
     .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample)
     .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
 
 
