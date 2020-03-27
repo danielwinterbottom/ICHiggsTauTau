@@ -49,6 +49,9 @@ parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
+parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
+                  help="Process signal MSSM mc samples")
+
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
 
@@ -253,6 +256,9 @@ if options.proc_sm or options.proc_all:
       'ttHiggs0PMToTauTau',
 
     ]
+
+if options.proc_mssm or options.proc_all:
+    # SUSY signals
 
 
 
