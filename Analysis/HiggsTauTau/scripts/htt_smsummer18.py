@@ -259,6 +259,14 @@ if options.proc_sm or options.proc_all:
 
 if options.proc_mssm or options.proc_all:
     # SUSY signals
+    M_GluGluBBH = [90,100,110,120,130,140,160,180,300,350,500,700,800,900,1000,1400,1600,2000,2300,2600,2900,3200,3500]
+    for mass in M_GluGluBBH:
+	# add GluGluBBH samples
+
+    M_GluGluH = [80,90,100,110,120,130,160,180,200,250,300,400,450,600,700,800,1200,1400,1500,1600,1800,2000,2600,2900,3200]
+    for mass in M_GluGluH:
+	# add GluGluH samples
+
 
 
 
