@@ -494,8 +494,6 @@ if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_i
       .set_strategy(strategy_type)
       .set_is_data(is_data)
       .set_is_embedded(is_embedded)
-      .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-      .set_do_singlelepton(js["do_singlelepton"].asBool())
       .set_do_singletau(js["do_singletau"].asBool())
       .set_do_filter(false)
       .set_pair_label("ditau"));

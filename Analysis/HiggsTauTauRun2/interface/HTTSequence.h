@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Core/interface/ModuleBase.h"
 #include "Utilities/interface/json.h"
-#include "HiggsTauTau/interface/HTTConfig.h"
+#include "HiggsTauTauRun2/interface/HTTConfig.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
 namespace ic {
