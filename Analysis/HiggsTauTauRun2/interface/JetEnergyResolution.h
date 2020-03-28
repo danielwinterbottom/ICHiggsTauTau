@@ -6,6 +6,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include <string>
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
@@ -20,6 +21,8 @@ class JetEnergyResolution : public ModuleBase {
   CLASS_MEMBER(JetEnergyResolution, unsigned, jer_shift_mode)
   CLASS_MEMBER(JetEnergyResolution, std::string, input_label)
   CLASS_MEMBER(JetEnergyResolution, bool, EENoiseFix)
+  CLASS_MEMBER(JetEnergyResolution, bool, shift_met)
+  CLASS_MEMBER(JetEnergyResolution, std::string, met_label)
 
  public:
   JetEnergyResolution(std::string const& name);
@@ -29,12 +32,15 @@ class JetEnergyResolution : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 };
 
 template <class T>
 JetEnergyResolution<T>::JetEnergyResolution(std::string const& name) : ModuleBase(name) {
   input_label_ = "pfJetsPFlow";
   EENoiseFix_ = false;
+  shift_met_ = false;
+  met_label_ = "pfMET";
 }
 
 template <class T>
@@ -70,7 +76,11 @@ int JetEnergyResolution<T>::Execute(TreeEvent *event) {
     vec[i]->set_vector(vec[i]->vector() * shift);
     if(!skipJet) after += vec[i]->vector();
   }
-  event->Add("jer_shift", after-before);
+  if (shift_met_) {
+    Met * met = event->GetPtr<Met>(met_label_);
+    this->CorrectMETForShift(met, after-before);
+  }
+  else event->Add("jer_shift", after-before);
   std::sort(vec.begin(), vec.end(), bind(&T::pt, _1) > bind(&T::pt, _2));
   
   return 0;
@@ -84,6 +94,15 @@ int JetEnergyResolution<T>::PostAnalysis() {
 template <class T>
 void JetEnergyResolution<T>::PrintInfo() {
   ;
+}
+
+template <class T>
+void JetEnergyResolution<T>::CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
+  double metx = met->vector().px() - shift.px();
+  double mety = met->vector().py() - shift.py();
+  double metet = sqrt(metx*metx + mety*mety);
+  ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+  met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
 }
 
 }
