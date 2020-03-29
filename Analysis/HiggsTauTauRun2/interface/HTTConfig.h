@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTConfig_h
-#define ICHiggsTauTau_HiggsTauTau_HTTConfig_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_HTTConfig_h
+#define ICHiggsTauTau_HiggsTauTauRun2_HTTConfig_h
 
 
 #include <vector>

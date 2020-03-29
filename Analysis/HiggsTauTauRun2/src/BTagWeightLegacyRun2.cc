@@ -19,7 +19,6 @@ namespace ic {
   }
 
   int BTagWeightLegacyRun2::PreAnalysis() {
-
     std::string name = "btag_calib";
     if(ProductExists(name) && ProductExists(name+"_reader_comb_tight") && ProductExists(name+"_reader_comb_loose")){
       std::cout << "Getting BTagCalibration and BTagCalibrationReader objects from products." << std::endl;
@@ -56,14 +55,14 @@ namespace ic {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<double> btag_evt_weight = EventReweighting(embed_jets);
-    event->Add("btag_evt_weight"+add_name_, btag_evt_weight[0]);
-    event->Add("btag_evt_weight_down"+add_name_, btag_evt_weight[1]);
-    event->Add("btag_evt_weight_up"+add_name_, btag_evt_weight[2]);
+    event->ForceAdd("btag_evt_weight"+add_name_, btag_evt_weight[0]);
+    event->ForceAdd("btag_evt_weight_down"+add_name_, btag_evt_weight[1]);
+    event->ForceAdd("btag_evt_weight_up"+add_name_, btag_evt_weight[2]);
 
-    event->Add("btag_evt_weight_realbtag_down"+add_name_, btag_evt_weight[3]);
-    event->Add("btag_evt_weight_realbtag_up"+add_name_, btag_evt_weight[4]);
-    event->Add("btag_evt_weight_fakebtag_down"+add_name_, btag_evt_weight[5]);
-    event->Add("btag_evt_weight_fakebtag_up"+add_name_, btag_evt_weight[6]);
+    event->ForceAdd("btag_evt_weight_realbtag_down"+add_name_, btag_evt_weight[3]);
+    event->ForceAdd("btag_evt_weight_realbtag_up"+add_name_, btag_evt_weight[4]);
+    event->ForceAdd("btag_evt_weight_fakebtag_down"+add_name_, btag_evt_weight[5]);
+    event->ForceAdd("btag_evt_weight_fakebtag_up"+add_name_, btag_evt_weight[6]);
     return 0;
   }
 

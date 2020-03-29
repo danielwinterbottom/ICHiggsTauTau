@@ -30,7 +30,7 @@ class BTagCheck : public ModuleBase {
   BTagCalibrationReader* reader_incl;
   BTagCalibrationReader* reader_mujets;
   BTagCalibrationReader* reader_comb;
-//      BTagCalibration calib("csvv2","UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/btag_sf/CSVv2.csv");
+//      BTagCalibration calib("csvv2","UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/btag_sf/CSVv2.csv");
  //   BTagCalibrationReader reader(&calib, BTagEntry::OP_MEDIUM, "comb","central");
 
   TTree* outtree_;

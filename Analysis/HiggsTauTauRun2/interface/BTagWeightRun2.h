@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_BTagWeight_h
-#define ICHiggsTauTau_HiggsTauTau_BTagWeight_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_BTagWeight_h
+#define ICHiggsTauTau_HiggsTauTauRun2_BTagWeight_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

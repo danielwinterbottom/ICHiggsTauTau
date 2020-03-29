@@ -195,15 +195,6 @@ int SVFitTest::Execute(TreeEvent *event) {
   std::size_t objects_hash = ObjectsHash(&c1, &c2, &met);
   // add pt_tt and m_vis here to check zpt reweighting with reco variables
   // need to add these to the event before the HTTWeights
-  CompositeCandidate const* ditau = dilepton.at(0);
-  double pt_tt_ = -9999.;
-  double m_vis_ = -9999.;
-  if(channel_ == channel::zmm) {
-    pt_tt_ = (ditau->vector()).pt(); 
-    m_vis_ = ditau->M(); 
-  }
-  event->Add("pt_tt", pt_tt_);
-  event->Add("m_vis", m_vis_);
 
 
  bool dilepton_veto_ = false;
@@ -430,7 +421,7 @@ bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 if ( channel_ == channel::zmm || channel_ == channel::zee ) lepton_veto_ = extraelec_veto_ || extramuon_veto_;
 
 bool preselect_evt = pass_presel&&!lepton_veto_;
-event->Add("pass_preselection",preselect_evt||!do_preselection_);
+event->ForceAdd("pass_preselection",preselect_evt||!do_preselection_);
 
 
 if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
@@ -489,7 +480,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             if (it->second < 1.) {
               if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << it->second << std::endl;
             } 
-            event->Add("svfitMass", (double)it->second);
+            event->ForceAdd("svfitMass", (double)it->second);
         } else {
           fail_state = true;
         }
@@ -504,7 +495,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             if (it->second.second < 1.) {
               if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
             } else {
-              event->Add("svfitMass", it->second.second);
+              event->ForceAdd("svfitMass", it->second.second);
             }
           }
         } else {
@@ -520,9 +511,9 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             if ((std::get<1>(it->second)).M() < 1.) {
               if(verbose_) std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
             } else {
-              event->Add("svfitMass", (std::get<1>(it->second)).M());
-              event->Add("svfitHiggs", std::get<1>(it->second));
-              event->Add("svfitMT", std::get<2>(it->second));
+              event->ForceAdd("svfitMass", (std::get<1>(it->second)).M());
+              event->ForceAdd("svfitHiggs", std::get<1>(it->second));
+              event->ForceAdd("svfitMT", std::get<2>(it->second));
               p4_map.erase(it);
             }
           }
@@ -533,7 +524,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
     if (fail_state) {
       if (fail_mode_ == 0) {
         if(verbose_) std::cout << "Warning, SVFitTest mass not found!" << std::endl;
-        event->Add("svfitMass", double(-100.0));
+        event->ForceAdd("svfitMass", double(-100.0));
       } else if (fail_mode_ == 1) {
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;
@@ -583,21 +574,21 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
         if(legacy_svfit_){
           std::cout << "Calculating mass on-the-fly" << std::endl;
           if (decay_mode_ == 0) {
-            event->Add("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met, MC_));
           } else {
-            event->Add("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met, MC_));
           }
         } else {
           std::cout << "On-the-fly mass calculation not supported!" << std::endl;
           throw;
          /* if (decay_mode_ == 0) {
-            event->Add("svfitMass", SVFitService::SVFitMassMuHad(&c1, &c2, dm2_, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassMuHad(&c1, &c2, dm2_, &met, MC_));
           } else if (decay_mode_ == 1){
-            event->Add("svfitMass", SVFitService::SVFitMassEleMu(&c1, &c2, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassEleMu(&c1, &c2, &met, MC_));
           } else if (decay_mode_ == 2){
-            event->Add("svfitMass", SVFitService::SVFitMassEleHad(&c1, &c2, dm2_, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassEleHad(&c1, &c2, dm2_, &met, MC_));
           } else if (decay_mode_ == 3){
-            event->Add("svfitMass", SVFitService::SVFitMassHadHad(&c1, dm1_, &c2, dm2_, &met, MC_));
+            event->ForceAdd("svfitMass", SVFitService::SVFitMassHadHad(&c1, dm1_, &c2, dm2_, &met, MC_));
           }*/
         }
       }

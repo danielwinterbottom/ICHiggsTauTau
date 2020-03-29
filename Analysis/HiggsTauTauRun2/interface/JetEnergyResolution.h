@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_JetEnergyResolution_h
-#define ICHiggsTauTau_HiggsTauTau_JetEnergyResolution_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_JetEnergyResolution_h
+#define ICHiggsTauTau_HiggsTauTauRun2_JetEnergyResolution_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -80,7 +80,7 @@ int JetEnergyResolution<T>::Execute(TreeEvent *event) {
     Met * met = event->GetPtr<Met>(met_label_);
     this->CorrectMETForShift(met, after-before);
   }
-  else event->Add("jer_shift", after-before);
+  else event->ForceAdd("jer_shift", after-before);
   std::sort(vec.begin(), vec.end(), bind(&T::pt, _1) > bind(&T::pt, _2));
   
   return 0;

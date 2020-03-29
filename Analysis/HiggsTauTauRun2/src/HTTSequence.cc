@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
+#include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 //boost
 #include <boost/format.hpp>
@@ -61,7 +62,7 @@
 
 namespace ic {
 
-HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json, Json::Value const& unmod_json) {
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos || output_name.find("EWKW")!=output_name.npos || output_name.find("EWKZ")!=output_name.npos || output_name.find("VBFH")!=output_name.npos || output_name.find("GluGluH")!=output_name.npos || output_name.find("ZHiggs")!=output_name.npos || output_name.find("WHiggs")!=output_name.npos || output_name.find("JJH")!=output_name.npos);
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
@@ -90,6 +91,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
 
 
   js = json;
+  unmod_js = unmod_json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
   jer_mode=json["baseline"]["jer_mode"].asUInt();
@@ -605,6 +607,7 @@ if (!is_data && !is_embedded) {
      .set_input_label(jets_label)
      .set_jer_shift_mode(jer_mode)
      .set_EENoiseFix(era_type == era::data_2017)
+     .set_shift_met(false)
    );
 }
 
@@ -720,7 +723,7 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
       .set_jets_label(jets_label)
       .set_strategy(strategy_type)
       .set_categories(js["baseline"]["ff_categories"].asString())
-      .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
+      .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool() && addit_output_folder=="")
       .set_ff_file(js["baseline"]["ff_file"].asString())
       .set_fracs_file(js["baseline"]["ff_fracs_file"].asString())
       .set_is_embedded(is_embedded)
@@ -733,190 +736,246 @@ BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
   .set_reference_label("ditau")
   .set_min_dr(0.5));
 
-// from here all jet and met recoil uncertainties should be run in a loop
-
-// shifted JER 
-if (jer_mode>0 && !is_data && !is_embedded) {
-   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-     .set_input_label(jets_label)
-     .set_jer_shift_mode(jer_mode)
-     .set_EENoiseFix(era_type == era::data_2017)
-   );
+std::vector<std::string> jet_met_uncerts = {""};
+if(true) {
+  jet_met_uncerts = {"","scale_met_lo","scale_met_hi","res_met_lo","res_met_hi","scale_j_relbal_lo","scale_j_relbal_hi","scale_j_abs_lo","scale_j_abs_hi","scale_j_abs_year_lo","scale_j_abs_year_hi","scale_j_flav_lo","scale_j_flav_hi","scale_j_bbec1_lo","scale_j_bbec1_hi","scale_j_bbec1_year_lo","scale_j_bbec1_year_hi","scale_j_ec2_lo","scale_j_ec2_hi","scale_j_ec2_year_lo","scale_j_ec2_year_hi","scale_j_hf_lo","scale_j_hf_hi","scale_j_hf_year_lo","scale_j_hf_year_hi","scale_j_relsamp_year_lo","scale_j_relsamp_year_hi","res_j_lo","res_j_hi"};
 }
 
-if (jes_mode > 0 && !is_data ){
-  std::string jes_input_file  = "";
-  std::string jes_input_set  = "";
-  if (era_type == era::data_2016) {
-    jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
-    jes_input_set  = "Total";
+std::cout << "!!!!!!!!!!!!!" << std::endl;
+for (auto uncert : jet_met_uncerts) {
+  // from here all jet and met recoil uncertainties should be run in a loop
+
+  int jer_mode_ = jer_mode;
+  int jes_mode_ = jes_mode;
+  int metscale_mode_ = metscale_mode;
+  int metres_mode_ = metres_mode;
+ 
+  if (uncert != "") {
+    // if we are doing a JET/MET shift then reset the modes
+    if(uncert.find("scale_j")!=std::string::npos) jes_mode_ = unmod_js["sequences"][uncert]["baseline"]["jes_mode"].asUInt();
+    if(uncert.find("res_j")!=std::string::npos) jer_mode_ = unmod_js["sequences"][uncert]["baseline"]["jer_mode"].asUInt();
+    if(uncert.find("res_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
+    if(uncert.find("scale_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
+    ;
   }
-  if (era_type == era::data_2017) {
-    jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
-    jes_input_set  = "Total";
-  }
-  if (era_type == era::data_2018) {
-    jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
-    jes_input_set  = "Total";
+  std::cout << uncert << "    " << jes_mode_ << std::endl; 
+
+  // first make a deep copy of the jets and the met - we will need to delete these after we are finished with them  
+
+  std::string shift_jets_label = jets_label+"_uncert_"+uncert; 
+  std::string shift_met_label = met_label+"_uncert_"+uncert; 
+  BuildModule(CopyCollection<PFJet>("CopyJetsForUncert_"+uncert,jets_label,shift_jets_label,true));
+
+  BuildModule(GenericModule("CopyMetForUncert_"+uncert)
+    .set_function([=](ic::TreeEvent *event){
+       Met* met = event->GetPtr<Met>(met_label);
+       Met *met_copy = new Met(*met);
+       event->Add(shift_met_label,met_copy);
+       return 0;
+    }));
+
+  if (jer_mode_>0 && !is_data && !is_embedded) {
+     BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+       .set_input_label(shift_jets_label)
+       .set_met_label(shift_met_label)
+       .set_jer_shift_mode(jer_mode_)
+       .set_EENoiseFix(era_type == era::data_2017)
+       .set_shift_met(!do_recoil)
+     );
   }
   
-  if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
- 
-  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-    .set_input_label(jets_label)
-    .set_jes_shift_mode(jes_mode)
-    .set_uncert_file(jes_input_file)
-    .set_uncert_set(jes_input_set)
-    .set_EENoiseFix(era_type == era::data_2017)
-   );
- 
-}
+  if (jes_mode_ > 0 && !is_data ){
+    std::string jes_input_file  = "";
+    std::string jes_input_set  = "";
+    if (era_type == era::data_2016) {
+      jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2017) {
+      jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2018) {
+      jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    
+    if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
+   
+    std::string jes_input_set_ = jes_input_set;
 
-if(js["do_btag_eff"].asBool()){
-   BuildModule(BTagCheck("BTagCheck")
-    .set_fs(fs.get())
-    .set_channel(channel)
-    .set_era(era_type)
-    .set_strategy(strategy_type)
-    .set_do_legacy(false)
-    .set_use_deep_csv(use_deep_csv)
-    .set_wp_to_check(wp_to_check)
-    .set_jet_label(jets_label));
-}
-
-if(!is_data){
-  TH2F bbtag_eff;
-  TH2F cbtag_eff;
-  TH2F othbtag_eff;
-  TH2F bbtag_eff_alt;
-  TH2F cbtag_eff_alt;
-  TH2F othbtag_eff_alt;
-
-  if (era_type == era::data_2016){
-    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
-    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
-    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
-
-    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
-    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
-    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
-  } else if (era_type == era::data_2017) {
-    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
-    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
-    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
-
-    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
-    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
-    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
-  } else if (era_type == era::data_2018) {
-    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_b");
-    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_c");
-    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_oth");
-
-    bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
-    cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
-    othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
+    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+      .set_input_label(shift_jets_label)
+      .set_met_label(shift_met_label)
+      .set_jes_shift_mode(jes_mode_)
+      .set_uncert_file(jes_input_file)
+      .set_uncert_set(jes_input_set_)
+      .set_EENoiseFix(era_type == era::data_2017)
+      .set_shift_met(!do_recoil)
+     );
+   
   }
-
-  BuildModule(BTagWeightLegacyRun2("BTagWeightLegacyRun2")
-   .set_channel(channel)
-   .set_era(era_type)
-   .set_strategy(strategy_type)
-   .set_jet_label(jets_label)
-   .set_bbtag_eff(new TH2F(bbtag_eff))
-   .set_cbtag_eff(new TH2F(cbtag_eff))
-   .set_othbtag_eff(new TH2F(othbtag_eff))
-   .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
-   .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-   .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)));
-}
-
-if(usePFMET && do_recoil){ 
-  BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
-   .set_sample(output_name)
-   .set_channel(channel)
-   .set_mc(mc_type)
-   .set_met_label(met_label)
-   .set_jets_label(jets_label)
-   .set_strategy(strategy_type)
-   .set_use_quantile_map(false)
-   .set_met_scale_mode(metscale_mode)
-   .set_met_res_mode(metres_mode)
-   .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
-}
-
-if(!usePFMET){
-  unsigned njets_mode = js["njets_mode"].asUInt();
-
-  BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrector")
-   .set_sample(output_name)
-   .set_channel(channel)
-   .set_mc(mc_type)
-   .set_met_label(met_label)
-   .set_jets_label(jets_label)
-   .set_strategy(strategy_type)
-   .set_use_quantile_map(true) // use quantile mapping now
-   .set_use_puppimet(true) 
-   .set_met_scale_mode(metscale_mode)
-   .set_met_res_mode(metres_mode)
-   .set_store_boson_pt(js["make_sync_ntuple"].asBool())
-   .set_njets_mode(njets_mode)
-   .set_do_recoil(do_recoil)
-   );
-}
-
-int mode = new_svfit_mode==1 && (js["baseline"]["jes_mode"].asUInt() > 0 || js["baseline"]["jer_mode"].asUInt() > 0) && do_recoil ? 0 : new_svfit_mode;
-
-SVFitTest svFitTest  = SVFitTest("SVFitTest")
-  .set_channel(channel)
-  .set_strategy(strategy_type)
-  .set_mc(mc_type)
-  .set_outname(svfit_override == "" ? output_name : svfit_override)
-  .set_run_mode(mode)
-  .set_fail_mode(0)
-  .set_require_inputs_match(false)
-  .set_split(40000)
-  .set_dilepton_label("ditau")
-  .set_met_label(met_label)
-  .set_fullpath(svfit_folder)
-  .set_legacy_svfit(true)
-  .set_do_preselection(false)
-  .set_MC(true)
-  .set_do_light(true)
-  .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
- svFitTest.set_legacy_svfit(false);
- svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
- svFitTest.set_read_svfit_mt(true);
- svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
- svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
- svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
-
-BuildModule(svFitTest);
-
-
-bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
-BuildModule(HTTCategories("HTTCategories")
-    .set_fs(fs.get())
+  
+  if(js["do_btag_eff"].asBool()){
+     BuildModule(BTagCheck("BTagCheck")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_do_legacy(false)
+      .set_use_deep_csv(use_deep_csv)
+      .set_wp_to_check(wp_to_check)
+      .set_jet_label(shift_jets_label));
+  }
+  
+  if(!is_data){
+    TH2F bbtag_eff;
+    TH2F cbtag_eff;
+    TH2F othbtag_eff;
+    TH2F bbtag_eff_alt;
+    TH2F cbtag_eff_alt;
+    TH2F othbtag_eff_alt;
+  
+    if (era_type == era::data_2016){
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2017) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_Winter2017_v2.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2018) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_v1.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
+    }
+  
+    BuildModule(BTagWeightLegacyRun2("BTagWeightLegacyRun2")
+     .set_channel(channel)
+     .set_era(era_type)
+     .set_strategy(strategy_type)
+     .set_jet_label(shift_jets_label)
+     .set_bbtag_eff(new TH2F(bbtag_eff))
+     .set_cbtag_eff(new TH2F(cbtag_eff))
+     .set_othbtag_eff(new TH2F(othbtag_eff))
+     .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
+     .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
+     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)));
+  }
+  
+  if(usePFMET && do_recoil){ 
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(shift_met_label)
+     .set_jets_label(shift_jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode_)
+     .set_met_res_mode(metres_mode_)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+  }
+  
+  if(!usePFMET){
+    unsigned njets_mode = js["njets_mode"].asUInt();
+  
+    BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(shift_met_label)
+     .set_jets_label(shift_jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(true) // use quantile mapping now
+     .set_use_puppimet(true) 
+     .set_met_scale_mode(metscale_mode_)
+     .set_met_res_mode(metres_mode_)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool())
+     .set_njets_mode(njets_mode)
+     .set_do_recoil(do_recoil)
+     );
+  }
+  
+  int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
+  
+  SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
-    .set_era(era_type)
     .set_strategy(strategy_type)
-    .set_ditau_label("ditau")
-    .set_met_label(met_label)
-    .set_jets_label(jets_label)
-    .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-    .set_is_embedded(is_embedded)
-    .set_is_data(is_data)
-    .set_systematic_shift(addit_output_folder!="")
-    //Good to avoid accidentally overwriting existing output files when syncing
-    .set_write_tree(!js["make_sync_ntuple"].asBool())
-    .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
-    .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-    .set_do_mssm_higgspt(do_mssm_higgspt)
-    .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-    .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
+    .set_mc(mc_type)
+    .set_outname(svfit_override == "" ? output_name : svfit_override)
+    .set_run_mode(mode)
+    .set_fail_mode(0)
+    .set_require_inputs_match(false)
+    .set_split(40000)
+    .set_dilepton_label("ditau")
+    .set_met_label(shift_met_label)
+    .set_fullpath(svfit_folder)
+    .set_legacy_svfit(true)
+    .set_do_preselection(false)
+    .set_MC(true)
+    .set_do_light(true)
+    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
+   svFitTest.set_legacy_svfit(false);
+   svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
+   svFitTest.set_read_svfit_mt(true);
+   svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
+   svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
+   svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
+  
+  BuildModule(svFitTest);
+  
+  
+  bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
+  BuildModule(HTTCategories("HTTCategories")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_ditau_label("ditau")
+      .set_met_label(shift_met_label)
+      .set_jets_label(shift_jets_label)
+      .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+      .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
+      .set_is_embedded(is_embedded)
+      .set_is_data(is_data)
+      .set_systematic_shift(addit_output_folder!="")
+      //Good to avoid accidentally overwriting existing output files when syncing
+      .set_write_tree(!js["make_sync_ntuple"].asBool())
+      .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
+      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
+      .set_do_qcd_scale_wts(do_qcd_scale_wts_)
+      .set_do_mssm_higgspt(do_mssm_higgspt)
+      .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
+      .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
 
+  // now we need to delete the deep copies of the jet and met collections
+  BuildModule(GenericModule("DeleteCopiedJetMET")
+    .set_function([=](ic::TreeEvent *event){
+       Met* met = event->GetPtr<Met>(shift_met_label);
+       delete met;
+       event->Remove(shift_met_label);
+       std::vector<PFJet*> & jets = event->GetPtrVec<PFJet>(shift_jets_label);
+       for (auto j : jets) delete j;
+       jets.clear();
+       event->Remove(shift_jets_label);
+       return 0;
+    }));
+
+  
+} // end of loop over jet met uncertainties
 
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;

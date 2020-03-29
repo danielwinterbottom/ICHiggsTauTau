@@ -46,20 +46,20 @@ namespace ic {
     std::string process_file;
     std::string syst_file;
     if (strategy_ ==strategy::fall15){
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
-      syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
+      syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/MEtSys.root";
     } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
       if(met_label_ == "pfMET"){
-          process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
+          process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/PFMEtSys_2016.root";
     } else if (strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17) {
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/Type1_PFMET_2017.root";
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root";
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/Type1_PFMET_2017.root";
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/PFMEtSys_2017.root";
     } else if (strategy_ == strategy::cpdecays18) {
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2018.root";
-      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2017.root"; // update when available
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/TypeI-PFMet_Run2018.root";
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/PFMEtSys_2017.root"; // update when available
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -141,8 +141,8 @@ namespace ic {
   if(store_boson_pt_){
     if(!event->ExistsInEvent("genpX")) event->Add("genpX", genpX);
     if(!event->ExistsInEvent("genpY")) event->Add("genpY", genpY);
-    if(!event->ExistsInEvent("vispX")) event->Add("vispX", vispX);
-    if(!event->ExistsInEvent("vispY")) event->Add("vispY", vispY);
+    event->ForceAdd("vispX", vispX);
+    event->ForceAdd("vispY", vispY);
   }
 
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);

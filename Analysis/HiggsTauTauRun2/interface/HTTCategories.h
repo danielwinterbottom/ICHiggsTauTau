@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTCategories_h
-#define ICHiggsTauTau_HiggsTauTau_HTTCategories_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_HTTCategories_h
+#define ICHiggsTauTau_HiggsTauTauRun2_HTTCategories_h
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

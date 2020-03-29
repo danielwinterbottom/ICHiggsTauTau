@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_TagAndProbe_h
-#define ICHiggsTauTau_HiggsTauTau_TagAndProbe_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_TagAndProbe_h
+#define ICHiggsTauTau_HiggsTauTauRun2_TagAndProbe_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

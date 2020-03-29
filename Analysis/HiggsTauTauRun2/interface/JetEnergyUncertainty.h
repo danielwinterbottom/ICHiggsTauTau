@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_JetEnergyUncertainty_h
-#define ICHiggsTauTau_HiggsTauTau_JetEnergyUncertainty_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_JetEnergyUncertainty_h
+#define ICHiggsTauTau_HiggsTauTauRun2_JetEnergyUncertainty_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -106,7 +106,7 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       if(!skipJet) after+=vec[i]->vector();
 
     }
-    event->Add("jes_shift", after-before);
+    event->ForceAdd("jes_shift", after-before);
   } else if (sum_uncerts_){
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);

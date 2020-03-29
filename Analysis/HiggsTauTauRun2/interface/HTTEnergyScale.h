@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTEnergyScale_h
-#define ICHiggsTauTau_HiggsTauTau_HTTEnergyScale_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_HTTEnergyScale_h
+#define ICHiggsTauTau_HiggsTauTauRun2_HTTEnergyScale_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

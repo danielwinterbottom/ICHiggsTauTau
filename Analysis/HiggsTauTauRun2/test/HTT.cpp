@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
       
   for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
 
-  AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree",
+  AnalysisBase analysis("HiggsTauTauRun2", files, "icEventProducer/EventTree",
                         js["job"]["max_events"].asInt64());
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(false); //just for 2018 right now as some files broke on dcache?
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
 
       // std::cout << js_merged;
-      seqs[seq_str] = ic::HTTSequence(channel_str,std::to_string(offset),js_merged);
+      seqs[seq_str] = ic::HTTSequence(channel_str,std::to_string(offset),js_merged, js);
       seqs[seq_str].BuildSequence();
       ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
       for (auto m : seq_run) {

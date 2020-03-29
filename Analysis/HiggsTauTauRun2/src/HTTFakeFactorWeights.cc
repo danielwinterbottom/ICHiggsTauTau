@@ -47,7 +47,7 @@ namespace ic {
     if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) category_names_ = {"inclusive"};
 
     if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays17 ) && channel_==channel::tt) {
-      TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+ff_file_).c_str());
+      TFile f((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+ff_file_).c_str());
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
@@ -70,7 +70,7 @@ namespace ic {
       std::string us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2016.root";
       if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2017.root";
       if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2018.root";
-      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+us_file_).c_str());
+      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+us_file_).c_str());
 
       ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_us.Close();
@@ -85,28 +85,28 @@ namespace ic {
     }
 
     if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16||strategy_==strategy::cpdecays17) && (channel_==channel::mt)) {
-      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018.root").c_str());
+      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_mt_2018.root").c_str());
       ff_fracs_qcd_ = (TH2D*)f_fracs.Get("QCD");
       ff_fracs_wjets_ = (TH2D*)f_fracs.Get("W");
       ff_fracs_qcd_->SetDirectory(0);
       ff_fracs_wjets_->SetDirectory(0);
       f_fracs.Close();
 
-      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_ss.root").c_str());
+      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_mt_2018_ss.root").c_str());
       ff_fracs_qcd_ss_ = (TH2D*)f_fracs_ss.Get("QCD");
       ff_fracs_wjets_ss_ = (TH2D*)f_fracs_ss.Get("W");
       ff_fracs_qcd_ss_->SetDirectory(0);
       ff_fracs_wjets_ss_->SetDirectory(0);
       f_fracs_ss.Close();
 
-      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_aiso.root").c_str());
+      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_mt_2018_aiso.root").c_str());
       ff_fracs_qcd_aiso_ = (TH2D*)f_fracs_aiso.Get("QCD");
       ff_fracs_wjets_aiso_ = (TH2D*)f_fracs_aiso.Get("W");
       ff_fracs_qcd_aiso_->SetDirectory(0);
       ff_fracs_wjets_aiso_->SetDirectory(0);
       f_fracs_aiso.Close();
 
-      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_mt_2018_highmt.root").c_str());
+      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_mt_2018_highmt.root").c_str());
       ff_fracs_qcd_highmt_ = (TH2D*)f_fracs_highmt.Get("QCD");
       ff_fracs_wjets_highmt_ = (TH2D*)f_fracs_highmt.Get("W");
       ff_fracs_qcd_highmt_->SetDirectory(0);
@@ -170,18 +170,17 @@ namespace ic {
       reader_->AddVariable( "mjj", &mjj_ );
       reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
       reader_->AddVariable( "mt_1", &mt_1_ );
-      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_mt.xml";
-      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_mt.xml";
-      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2017_mt.xml";
+      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2018_mt.xml";
+      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2016_mt.xml";
+      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2017_mt.xml";
       reader_->BookMVA( "BDT method", xml_file );
-
       return 0;
     }
 
  
     if((strategy_ == strategy::cpdecays18 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::legacy16||strategy_==strategy::cpdecays17) && (channel_==channel::et)) {
 
-      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018.root").c_str());
+      TFile f_fracs((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_et_2018.root").c_str());
       ff_fracs_qcd_ = (TH2D*)f_fracs.Get("QCD");
       ff_fracs_wjets_ = (TH2D*)f_fracs.Get("W");
       ff_fracs_qcd_->SetDirectory(0);
@@ -191,21 +190,21 @@ namespace ic {
       ff_ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
 
-      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_ss.root").c_str());
+      TFile f_fracs_ss((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_et_2018_ss.root").c_str());
       ff_fracs_qcd_ss_ = (TH2D*)f_fracs_ss.Get("QCD");
       ff_fracs_wjets_ss_ = (TH2D*)f_fracs_ss.Get("W");
       ff_fracs_qcd_ss_->SetDirectory(0);
       ff_fracs_wjets_ss_->SetDirectory(0);
       f_fracs_ss.Close();
 
-      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_aiso.root").c_str());
+      TFile f_fracs_aiso((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_et_2018_aiso.root").c_str());
       ff_fracs_qcd_aiso_ = (TH2D*)f_fracs_aiso.Get("QCD");
       ff_fracs_wjets_aiso_ = (TH2D*)f_fracs_aiso.Get("W");
       ff_fracs_qcd_aiso_->SetDirectory(0);
       ff_fracs_wjets_aiso_->SetDirectory(0);
       f_fracs_aiso.Close();
 
-      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/mva_fract_et_2018_highmt.root").c_str());
+      TFile f_fracs_highmt((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/mva_fract_et_2018_highmt.root").c_str());
       ff_fracs_qcd_highmt_ = (TH2D*)f_fracs_highmt.Get("QCD");
       ff_fracs_wjets_highmt_ = (TH2D*)f_fracs_highmt.Get("W");
       ff_fracs_qcd_highmt_->SetDirectory(0);
@@ -263,9 +262,9 @@ namespace ic {
       reader_->AddVariable( "mjj", &mjj_ );
       reader_->AddVariable( "mva_dm_2", &mva_dm_2_ );
       reader_->AddVariable( "mt_1", &mt_1_ );
-      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2018_et.xml";
-      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2016_et.xml";
-      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/fractions_2017_et.xml";
+      std::string xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2018_et.xml";
+      if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2016_et.xml";
+      if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2017_et.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
       return 0;
@@ -274,15 +273,15 @@ namespace ic {
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string ff_file_name;
-      if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
+      if(strategy_ == strategy::mssmsummer16) ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
       if(strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16){
-        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/Jet2TauFakesFiles2016/"+ff_file_;
       }
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17){
-        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/Jet2TauFakesFilesNew/"+ff_file_;
       }
       if(strategy_ == strategy::cpdecays18){
-        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles2018New/"+ff_file_;
+        ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/Jet2TauFakesFiles2018New/"+ff_file_;
       }
 
       ff_file_name = baseDir + ff_file_name;

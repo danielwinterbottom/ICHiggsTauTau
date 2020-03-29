@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_EffectiveEvents_h
-#define ICHiggsTauTau_HiggsTauTau_EffectiveEvents_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_EffectiveEvents_h
+#define ICHiggsTauTau_HiggsTauTauRun2_EffectiveEvents_h
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

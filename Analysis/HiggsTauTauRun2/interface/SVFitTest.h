@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_SVFitTest_h
-#define ICHiggsTauTau_HiggsTauTau_SVFitTest_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_SVFitTest_h
+#define ICHiggsTauTau_HiggsTauTauRun2_SVFitTest_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

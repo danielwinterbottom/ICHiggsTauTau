@@ -62,15 +62,15 @@ namespace ic {
     TString filename_odd  = "";
     if (era_ == era::data_2017) {
       filename_even = (std::string)getenv("CMSSW_BASE") +
-          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold1_sm_tt_tauspinner_2017_xgb.xml"; // apply to even here
+          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/MVA/multi_fold1_sm_tt_tauspinner_2017_xgb.xml"; // apply to even here
       filename_odd  = (std::string)getenv("CMSSW_BASE") +
-          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold0_sm_tt_tauspinner_2017_xgb.xml"; // apply to odd
+          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/MVA/multi_fold0_sm_tt_tauspinner_2017_xgb.xml"; // apply to odd
     } 
     else if (era_ == era::data_2018) {
       filename_even = (std::string)getenv("CMSSW_BASE") +
-          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold1_sm_tt_tauspinner_2018_xgb.xml"; // apply to even here
+          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/MVA/multi_fold1_sm_tt_tauspinner_2018_xgb.xml"; // apply to even here
       filename_odd  = (std::string)getenv("CMSSW_BASE") +
-          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/MVA/multi_fold0_sm_tt_tauspinner_2018_xgb.xml"; // apply to odd
+          "/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/MVA/multi_fold0_sm_tt_tauspinner_2018_xgb.xml"; // apply to odd
     }
 
     reader_even_->AddVariable( "dijetpt", & var0_ );

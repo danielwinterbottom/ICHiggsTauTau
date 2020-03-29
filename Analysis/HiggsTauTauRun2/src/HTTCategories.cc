@@ -57,13 +57,13 @@ namespace ic {
       std::string cmsswBase = (getenv ("CMSSW_BASE"));
       TString ip_corr_filename = "";
       if(is_embedded_) {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2017.root";
-        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_embed_2018.root";
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2018.root";
       } else {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2017.root";
-        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2018.root";
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2018.root";
       }
       ipCorrector.Init(ip_corr_filename);
     }
@@ -83,12 +83,14 @@ namespace ic {
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
       // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
-      outtree_->Branch("wt_btag_up",        &wt_btag_up_);
-      outtree_->Branch("wt_btag_down",      &wt_btag_down_);
-      outtree_->Branch("wt_btag_real_down", &wt_btag_real_down_);
-      outtree_->Branch("wt_btag_real_up",   &wt_btag_real_up_);
-      outtree_->Branch("wt_btag_fake_down", &wt_btag_fake_down_);
-      outtree_->Branch("wt_btag_fake_up",   &wt_btag_fake_up_);
+      if(!systematic_shift_) {
+        outtree_->Branch("wt_btag_up",        &wt_btag_up_);
+        outtree_->Branch("wt_btag_down",      &wt_btag_down_);
+        outtree_->Branch("wt_btag_real_down", &wt_btag_real_down_);
+        outtree_->Branch("wt_btag_real_up",   &wt_btag_real_up_);
+        outtree_->Branch("wt_btag_fake_down", &wt_btag_fake_down_);
+        outtree_->Branch("wt_btag_fake_up",   &wt_btag_fake_up_);
+      }
       //
       outtree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       outtree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
@@ -109,12 +111,14 @@ namespace ic {
       outtree_->Branch("ip_sig_1", &ip_sig_1_);
       outtree_->Branch("ip_sig_2", &ip_sig_2_);
 
-      outtree_->Branch("ip_sig_1_raw",&ip_sig_1_raw_);
-      outtree_->Branch("ip_sig_2_raw",&ip_sig_2_raw_);
-      outtree_->Branch("ip_sig_1_up",&ip_sig_1_up_);
-      outtree_->Branch("ip_sig_2_up",&ip_sig_2_up_);
-      outtree_->Branch("ip_sig_1_down",&ip_sig_1_down_);
-      outtree_->Branch("ip_sig_2_down",&ip_sig_2_down_);
+      if(!systematic_shift_) {
+        outtree_->Branch("ip_sig_1_raw",&ip_sig_1_raw_);
+        outtree_->Branch("ip_sig_2_raw",&ip_sig_2_raw_);
+        outtree_->Branch("ip_sig_1_up",&ip_sig_1_up_);
+        outtree_->Branch("ip_sig_2_up",&ip_sig_2_up_);
+        outtree_->Branch("ip_sig_1_down",&ip_sig_1_down_);
+        outtree_->Branch("ip_sig_2_down",&ip_sig_2_down_);
+      }
 
       outtree_->Branch("q_tot_1", &q_tot_1_);
       outtree_->Branch("q_tot_2", &q_tot_2_);
@@ -124,7 +128,6 @@ namespace ic {
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       if(!systematic_shift_){
-
         outtree_->Branch("wt_tau_id_lowpt_mvadm0_up", &wt_tau_id_lowpt_mvadm0_up_);
         outtree_->Branch("wt_tau_id_lowpt_mvadm1_up", &wt_tau_id_lowpt_mvadm1_up_);
         outtree_->Branch("wt_tau_id_lowpt_mvadm2_up", &wt_tau_id_lowpt_mvadm2_up_);
@@ -190,9 +193,11 @@ namespace ic {
       }
      
       outtree_->Branch("wt_prefire", &wt_prefire_);
-      outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
-      outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
-  
+      if(!systematic_shift_) {
+        outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
+        outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
+      }
+
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -211,9 +216,9 @@ namespace ic {
         if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
           outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
-
+          outtree_->Branch("wt_ff_us_1"  , &wt_ff_us_1_);
  
-          if(do_ff_systematics_){
+          if(do_ff_systematics_ && !systematic_shift_){
             outtree_->Branch("wt_ff_qcd_1"  , &wt_ff_qcd_1_);
             outtree_->Branch("wt_ff_wjets_1"  , &wt_ff_wjets_1_);
             outtree_->Branch("wt_ff_ttbar_1"  , &wt_ff_ttbar_1_);
@@ -632,20 +637,22 @@ namespace ic {
 
       if (channel_ == channel::em) {
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
-        outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
-        outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
-        outtree_->Branch("wt_em_qcd_njets0_unc1_up",    &wt_em_qcd_njets0_unc1_up_);
-        outtree_->Branch("wt_em_qcd_njets0_unc1_down",  &wt_em_qcd_njets0_unc1_down_);
-        outtree_->Branch("wt_em_qcd_njets0_unc2_up",    &wt_em_qcd_njets0_unc2_up_);
-        outtree_->Branch("wt_em_qcd_njets0_unc2_down",  &wt_em_qcd_njets0_unc2_down_);
-        outtree_->Branch("wt_em_qcd_njets1_unc1_up",    &wt_em_qcd_njets1_unc1_up_);
-        outtree_->Branch("wt_em_qcd_njets1_unc1_down",  &wt_em_qcd_njets1_unc1_down_);
-        outtree_->Branch("wt_em_qcd_njets1_unc2_up",    &wt_em_qcd_njets1_unc2_up_);
-        outtree_->Branch("wt_em_qcd_njets1_unc2_down",  &wt_em_qcd_njets1_unc2_down_);
-        outtree_->Branch("wt_em_qcd_njets2_unc1_up",    &wt_em_qcd_njets2_unc1_up_);
-        outtree_->Branch("wt_em_qcd_njets2_unc1_down",  &wt_em_qcd_njets2_unc1_down_);
-        outtree_->Branch("wt_em_qcd_njets2_unc2_up",    &wt_em_qcd_njets2_unc2_up_);
-        outtree_->Branch("wt_em_qcd_njets2_unc2_down",  &wt_em_qcd_njets2_unc2_down_);
+        if(!systematic_shift_) {
+          outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
+          outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
+          outtree_->Branch("wt_em_qcd_njets0_unc1_up",    &wt_em_qcd_njets0_unc1_up_);
+          outtree_->Branch("wt_em_qcd_njets0_unc1_down",  &wt_em_qcd_njets0_unc1_down_);
+          outtree_->Branch("wt_em_qcd_njets0_unc2_up",    &wt_em_qcd_njets0_unc2_up_);
+          outtree_->Branch("wt_em_qcd_njets0_unc2_down",  &wt_em_qcd_njets0_unc2_down_);
+          outtree_->Branch("wt_em_qcd_njets1_unc1_up",    &wt_em_qcd_njets1_unc1_up_);
+          outtree_->Branch("wt_em_qcd_njets1_unc1_down",  &wt_em_qcd_njets1_unc1_down_);
+          outtree_->Branch("wt_em_qcd_njets1_unc2_up",    &wt_em_qcd_njets1_unc2_up_);
+          outtree_->Branch("wt_em_qcd_njets1_unc2_down",  &wt_em_qcd_njets1_unc2_down_);
+          outtree_->Branch("wt_em_qcd_njets2_unc1_up",    &wt_em_qcd_njets2_unc1_up_);
+          outtree_->Branch("wt_em_qcd_njets2_unc1_down",  &wt_em_qcd_njets2_unc1_down_);
+          outtree_->Branch("wt_em_qcd_njets2_unc2_up",    &wt_em_qcd_njets2_unc2_up_);
+          outtree_->Branch("wt_em_qcd_njets2_unc2_down",  &wt_em_qcd_njets2_unc2_down_);
+        }
       }
  
       outtree_->Branch("jet_flav_1", &jet_flav_1_);
@@ -667,8 +674,6 @@ namespace ic {
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
-        //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
-        //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
@@ -1463,7 +1468,7 @@ namespace ic {
     mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

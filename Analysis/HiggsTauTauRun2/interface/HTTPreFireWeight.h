@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTPreFireWeight_h
-#define ICHiggsTauTau_HiggsTauTau_HTTPreFireWeight_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_HTTPreFireWeight_h
+#define ICHiggsTauTau_HiggsTauTauRun2_HTTPreFireWeight_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

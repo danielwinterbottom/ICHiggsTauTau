@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTSequence_h
-#define ICHiggsTauTau_HiggsTauTau_HTTSequence_h
+#ifndef ICHiggsTauTau_HiggsTauTauRun2_HTTSequence_h
+#define ICHiggsTauTau_HiggsTauTauRun2_HTTSequence_h
 
 #include <vector>
 #include <set>
@@ -19,6 +19,7 @@ class HTTSequence {
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
   std::string channel_str, var_str, strategy_str, era_str, mc_str;
   Json::Value js;
+  Json::Value unmod_js;
   double tau_pt, lead_tau_pt, tau_eta, tau_iso, tau_dz;
   double elec_pt, elec_eta, elec_dxy, elec_dz;
   double muon_pt, muon_eta, muon_dxy, muon_dz;
@@ -45,7 +46,7 @@ class HTTSequence {
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
-  HTTSequence(std::string & chan, std::string postf, Json::Value const& js);
+  HTTSequence(std::string & chan, std::string postf, Json::Value const& js, Json::Value const& unmod_js);
   HTTSequence() = default;
   ~HTTSequence();
   ModuleSequence* getSequence(){return &seq;}
