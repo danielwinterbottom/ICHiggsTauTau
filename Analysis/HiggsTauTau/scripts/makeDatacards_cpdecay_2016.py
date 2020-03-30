@@ -356,7 +356,7 @@ for ch in channels:
                 run_command(qsub_command
                         .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
                         + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra="\'{}\'"'.format(extra)
+                        + ' -v extra="{}"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding 
 
 import sys
 from optparse import OptionParser
