@@ -73,7 +73,6 @@ def main(args):
         ))
         print(svfit_files)
 
-
         if len(svfit_files) is 0:
             # NOTE: Double-check that this subdirectory svfit file is actually
             # not required! Otherwise implies missing files!
