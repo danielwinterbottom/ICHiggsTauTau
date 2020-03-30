@@ -259,13 +259,19 @@ if options.proc_sm or options.proc_all:
 
 if options.proc_mssm or options.proc_all:
     # SUSY signals
-    M_GluGluBBH = [90,100,110,120,130,140,160,180,300,350,500,700,800,900,1000,1400,1600,2000,2300,2600,2900,3200,3500]
+    M_GluGluBBH = ['90','100','110','120','130','140','160','180','300','350','500','700','800','900','1000',
+		   '1400','1600','2000','2300','2600','2900','3200','3500']
     for mass in M_GluGluBBH:
 	# add GluGluBBH samples
+	signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
 
-    M_GluGluH = [80,90,100,110,120,130,160,180,200,250,300,400,450,600,700,800,1200,1400,1500,1600,1800,2000,2600,2900,3200]
+
+    M_GluGluH = ['80','90','100','110','120','130','160','180','200','250','300','400','450','600','700','800',
+		 '1200','1400','1500','1600','1800','2000','2600','2900','3200']
     for mass in M_GluGluH:
 	# add GluGluH samples
+	signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
+
 
 
 
@@ -519,9 +525,9 @@ if options.proc_bkg or options.proc_all:
 if options.mg_signal or options.proc_sm:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
-        user='dwinterb'
+        user='guttley'
         SIG_FILELIST = FILELIST
-        SIG_DIR = 'Jan24_MC_102X_2018'
+        SIG_DIR = 'Jan24_MC_102X_2018_1'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:
