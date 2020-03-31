@@ -62,7 +62,7 @@
     // "output_folder"  : "/vols/cms/dw515/Offline/output/SM/Jan24_2017_ttonly/",
     // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2020/Jan24_genforPU/",
     // "output_folder"  : "/vols/cms/akd116/Offline/output/SM/2020/Mar02_2017/",
-    "output_folder" : "./output/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2017_SUSY/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     // "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2019/May07_2017_SVFit/",
