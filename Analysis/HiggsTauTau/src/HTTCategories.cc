@@ -152,6 +152,8 @@ namespace ic {
       outtree_->Branch("wt_tau_id_mvadm", & wt_tau_id_mvadm_);
       outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
       outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
+      outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
+      outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       if(!systematic_shift_){
 
         outtree_->Branch("wt_tau_id_lowpt_mvadm0_up", &wt_tau_id_lowpt_mvadm0_up_);
@@ -218,8 +220,6 @@ namespace ic {
         outtree_->Branch("wt_ue_up", & wt_ue_up_);
         outtree_->Branch("wt_ue_down", & wt_ue_down_);
 
-        outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
-        outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       }
      
       if(strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
@@ -1070,6 +1070,8 @@ namespace ic {
         outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
       }
         
+      outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+      outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -1077,8 +1079,6 @@ namespace ic {
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
-        outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
-        outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
@@ -3724,6 +3724,10 @@ namespace ic {
     if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+
+
+      t1_cov_00_ = muon1->track_params_covariance()[0][0];
+
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
@@ -4560,6 +4564,9 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip_corrected_1 = ipandsig_1.first;
+      TVector3 ip_corrected_2 = ipandsig_2.first;
+
       // add this part for the mt channel as well!!!!!
       if(!is_data_) {
 
@@ -4569,13 +4576,13 @@ namespace ic {
         std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCov(tau1, refit_vertex, pfcands);
         std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
 
-        TVector3 ip_corrected_1 = ipCorrector.correctIp(
+        ip_corrected_1 = ipCorrector.correctIp(
                          ipandsig_1.first,
                          ipgen1,
                          fabs(lep1->eta())
         );
 
-        TVector3 ip_corrected_2 = ipCorrector.correctIp(
+        ip_corrected_2 = ipCorrector.correctIp(
                          ipandsig_2.first,
                          ipgen2,
                          fabs(lep2->eta())
@@ -4621,8 +4628,11 @@ namespace ic {
         ip_sig_2_down_= ip_sig_2_;
       }
 
-      TVector3 ip1 = (ipandsig_1.first).Unit();
-      TVector3 ip2 = (ipandsig_2.first).Unit();
+      //TVector3 ip1 = (ipandsig_1.first).Unit();
+      //TVector3 ip2 = (ipandsig_2.first).Unit();
+
+      TVector3 ip1 = ip_corrected_1.Unit();
+      TVector3 ip2 = ip_corrected_2.Unit();
 
       std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
       std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);

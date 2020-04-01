@@ -482,8 +482,8 @@ elif options.channel == 'zee':
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 if options.analysis == 'cpdecay':
-  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 '#&& (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
+  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -748,14 +748,26 @@ if options.channel == 'tt':
     cats["inclusive_a1a1"]     = "(tau_decay_mode_1==10 && tau_decay_mode_2==10)"
     cats["inclusive_pipi"]     = "(tau_decay_mode_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5)"
 
+
+    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_up"]     = "((mva_dm_1==10 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_up"]     = "(mva_dm_1==0 && ip_sig_1_up>=1.5 && ip_sig_2_up>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_up"]     = "((mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_up>=1.5))"
+
+    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1pi_down"]     = "((mva_dm_1==10 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
+    cats["inclusive_mvapipi_down"]     = "(mva_dm_1==0 && ip_sig_1_down>=1.5 && ip_sig_2_down>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1_down"]     = "((mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_down>=1.5))"
+
     cats["inclusive_mvarhorho"]       = "(tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==1 && mva_dm_2==1)"
-    cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
-    cats["inclusive_mvaa1rho"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_2==1 && tau_decay_mode_2==10 && mva_dm_2==10))"
-    cats["inclusive_mvaa1pi"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
-    cats["inclusive_mvaa1a1"]     = "(tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==10 && mva_dm_2==10)"
-    cats["inclusive_mvapipi"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0)"
-    cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2>=1.5))"
+    cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2>=1.5 && mva_dm_2==0) || (ip_sig_1>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvaa1rho"]     = "((mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_2==1 && mva_dm_2==10))"
+    cats["inclusive_mvaa1pi"]     = "((mva_dm_1==10 && ip_sig_2>=1.5 && mva_dm_2==0) || (ip_sig_1>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
+    cats["inclusive_mvaa1a1"]     = "(mva_dm_1==10 && mva_dm_2==10)"
+    cats["inclusive_mvapipi"]     = "(mva_dm_1==0 && ip_sig_1>=1.5 && ip_sig_2>=1.5 && mva_dm_2==0)"
+    cats["inclusive_mvapi0a1"]     = "((mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2>=1.5))"
     cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
+    cats["inclusive_mvaa10a1"]     = "((mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_2==2 && mva_dm_2==10))"
 
     # without IP sig cut
     # cats["inclusive_rhorho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
@@ -809,13 +821,25 @@ if options.channel == 'tt':
     cats['zttEmbed_mvarho0a1']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvarho0a1"])
     cats['jetFakes_mvarho0a1']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_mvarho0a1"])
 
+
+    cats['higgs_mvaa10a1']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa10a1"])
+
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
     cats['jetFakes']   = '({})'.format(mva_jetFakes)
 
-    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}))'\
-            .format(mva_ggh, cats["higgs_mvarhorho"], cats["higgs_mvapirho"], cats["higgs_mvaa1rho"], cats["higgs_mvaa1pi"], cats["higgs_mvaa1a1"], cats["higgs_mvapipi"], cats["higgs_mvapi0a1"], cats["higgs_mvarho0a1"])
+    cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}||{}))'\
+            .format(mva_ggh, cats["higgs_mvarhorho"], cats["higgs_mvapirho"], cats["higgs_mvaa1rho"], cats["higgs_mvaa1pi"], cats["higgs_mvaa1a1"], cats["higgs_mvapipi"], cats["higgs_mvapi0a1"], cats["higgs_mvarho0a1"], cats["higgs_mvaa10a1"])
 
+    cats['higgs_mvapirho_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapirho_up"])
+    cats['higgs_mvaa1pi_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa1pi_up"])
+    cats['higgs_mvapipi_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapipi_up"])
+    cats['higgs_mvapi0a1_up']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapi0a1_up"])
+
+    cats['higgs_mvapirho_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapirho_down"])
+    cats['higgs_mvaa1pi_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa1pi_down"])
+    cats['higgs_mvapipi_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapipi_down"])
+    cats['higgs_mvapi0a1_down']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapi0a1_down"])
 
 ########################## old below ##########################
 #
@@ -2332,21 +2356,22 @@ def GetTTJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top
   return ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection)
 
 def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True, doTTT=True, doTTJ=True):
+  wt_=wt#+"*wt_tquark_down"
   if doTTT:
-      ttt_node = GetTTTNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ttt_node = GetTTTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
       ana.nodes[nodename].AddNode(ttt_node)
       if split_taus:
-       ttt_node_rho = GetTTTNode(ana, '_rho'+add_name, samples, plot, wt, sel+'&&tauFlag_2==1', cat, top_sels, get_os)
+       ttt_node_rho = GetTTTNode(ana, '_rho'+add_name, samples, plot, wt_, sel+'&&tauFlag_2==1', cat, top_sels, get_os)
        ana.nodes[nodename].AddNode(ttt_node_rho)
-       ttt_node_a1 = GetTTTNode(ana, '_a1'+add_name, samples, plot, wt, sel+'&&tauFlag_2==2', cat, top_sels, get_os)
+       ttt_node_a1 = GetTTTNode(ana, '_a1'+add_name, samples, plot, wt_, sel+'&&tauFlag_2==2', cat, top_sels, get_os)
        ana.nodes[nodename].AddNode(ttt_node_a1)
-       ttt_node_pi = GetTTTNode(ana, '_pi'+add_name, samples, plot, wt, sel+'&&tauFlag_2==0', cat, top_sels, get_os)
+       ttt_node_pi = GetTTTNode(ana, '_pi'+add_name, samples, plot, wt_, sel+'&&tauFlag_2==0', cat, top_sels, get_os)
        ana.nodes[nodename].AddNode(ttt_node_pi)
-       ttt_node_other = GetTTTNode(ana, '_other'+add_name, samples, plot, wt, sel+'&&(tauFlag_2<0 || tauFlag_2>2)', cat, top_sels, get_os)
+       ttt_node_other = GetTTTNode(ana, '_other'+add_name, samples, plot, wt_, sel+'&&(tauFlag_2<0 || tauFlag_2>2)', cat, top_sels, get_os)
        ana.nodes[nodename].AddNode(ttt_node_other)
 
   if doTTJ:
-      ttj_node = GetTTJNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ttj_node = GetTTJNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
       ana.nodes[nodename].AddNode(ttj_node)
 
 def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
@@ -2764,6 +2789,10 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         if ff_syst_weight is not None and 'sub_syst' not in add_name: 
             fake_factor_wt_string_1 = ff_syst_weight+'_1'
             fake_factor_wt_string_2 = ff_syst_weight+'_2'
+
+            if options.analysis in ['cpprod','cpdecay']:
+              fake_factor_wt_string_2='0'
+
         else:
           if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18"]:
             # deep tau tight 2018 anti isolating the subleading tau
@@ -2786,13 +2815,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             wt_1=fake_factor_wt_string_1
             wt_2=fake_factor_wt_string_2
             
-
     
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
         full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2_data, OSSS, '')
      
         if options.ff_ss_closure:
           # usual OS FF
+
+
           ff_total_node = SummedNode('jetFakes_pre'+add_name)
           f1_total_node = SummedNode('data')
           f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
@@ -2800,6 +2830,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           f2_total_node = SummedNode('total_bkg')
           f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
           f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+
           #ana.nodes[nodename].AddNode(SubtractNode('jetFakes_pre'+add_name, f1_total_node, f2_total_node))
 
           # FF for SS data
@@ -2909,7 +2940,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
         for name in weights:
             if key.split("_")[1] == name:
                 non_cp=False
-                weight=wt+"*"+weights[name]
+                weight=wt+"*"+weights[name]#+"*wt_ph_nnlops"
                 full_selection = BuildCutString(weight, sel, cat, OSSS)
                 name = key
 

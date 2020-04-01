@@ -324,6 +324,9 @@ namespace ic {
       if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
       if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
 
+      // 1005 = up
+      // 1009 = down 
+
       // For MG5 samples:
       //  <weight MUF="1.0" MUR="2.0" PDF="292200" id="1002"> MUR=2.0  </weight>
       //  <weight MUF="1.0" MUR="0.5" PDF="292200" id="1003"> MUR=0.5  </weight>

@@ -1709,7 +1709,7 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)&&!is_data&&channel != channel::wmnu){
 
-  bool do_ngenjets = (output_name.find("JJH")!=output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
+  bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos || output_name.find("GluGluToHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTau_M125_amcatnloFXFX") != output_name.npos || output_name.find("GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX") != output_name.npos) && output_name.find("SUSY") == output_name.npos && (strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18);
 
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
@@ -2501,8 +2501,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
     .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-    //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
-    .set_do_nnlops_weights(false);
+    .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
+    //.set_do_nnlops_weights(false);
     httWeights.set_strategy(strategy_type);
     httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5_1.root");
     httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2016_MGggh.root");
@@ -2580,8 +2580,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
      .set_do_ps_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
-     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
-     .set_do_nnlops_weights(false);
+     .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos || output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
+     //.set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2017.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");
@@ -2659,8 +2659,8 @@ if((strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer
      .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
      .set_do_quarkmass_higgspt(do_ggH_stitch||output_name.find("JJH")!=output_name.npos)
      .set_do_ps_weights(do_ggH_stitch || output_name.find("JJH")!=output_name.npos)
-     //.set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos);
-     .set_do_nnlops_weights(false);
+     .set_do_nnlops_weights(do_ggH_stitch||output_name.find("JJH")!=output_name.npos || output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
+     //.set_do_nnlops_weights(false);
      httWeights.set_strategy(strategy_type);
      httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_legacy_2018.root");
      httWeights.set_scalefactor_file_ggh("input/ggh_weights/htt_scalefactors_2017_MGggh.root");

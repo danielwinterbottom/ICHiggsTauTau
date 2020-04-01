@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding 
 
 import sys
 from optparse import OptionParser
@@ -214,13 +214,16 @@ if SCHEME == 'cpdecay':
   VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
 
+  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
+  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
+  VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
 
-#  VAR1 ="svfit_mass,aco_angle_1[50,100,150,150,200],(14,0,6.28319)"
-#  VAR5 ="svfit_mass,aco_angle_5[50,100,150,150,200],(14,0,6.28319)"
-#  VAR6 ="svfit_mass,aco_angle_6[50,100,150,150,200],(14,0,6.28319)"
-#  VAR_H_TT_Other  = "svfit_mass[50,100,150,150,200]"
-#  VAR_ZTTEMBED_TT = "svfit_mass[50,100,150,150,200]"
-#  VAR_JETFAKES_TT = "svfit_mass[50,100,150,150,200]"
+  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -238,17 +241,67 @@ if SCHEME == 'cpdecay':
 
 
   scheme_tt = [
-    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
-    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho",  VAR1, ' '),
-    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1",  VAR1, ' '),
-    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho",  VAR_RHORHO, ' '),
+    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1",  VAR_A1A1, ' '),
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR_PIPI, ' '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1",  VAR_0A1A1, ' '),
+    #("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho",  VAR1, ' '),
+    #("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
+    #("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho",  VAR1, ' '),
+    #("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1",  VAR1, ' '),
+    #("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
+    #("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    #("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    #("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
     ("17",   "higgs_mvaother",    "2018_higgs_other",  VAR_H_TT_Other, ' '),
     ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
+
+  ]
+  scheme_em = [
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
+if SCHEME == 'ip_uncert':
+
+  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+
+  ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
+
+  scheme_et = [
+  ]
+  scheme_mt = [
+
+  ]
+
+
+  scheme_tt = [
+    ("17",   "higgs_mvapipi_up",    "2018_higgs_Pi_Pi_UP",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_up",    "2018_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_up",    "2018_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_up",    "2018_higgs_Pi_A1_Mixed_UP",  VAR5, ' '),
+
+    ("17",   "higgs_mvapipi_down",    "2018_higgs_Pi_Pi_DOWN",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_down",    "2018_higgs_Pi_Rho_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_down",    "2018_higgs_Pi_0A1_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_down",    "2018_higgs_Pi_A1_Mixed_DOWN",  VAR5, ' '),
 
   ]
   scheme_em = [
