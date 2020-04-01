@@ -263,7 +263,7 @@ cat_schemes = {
   'tt' : scheme_tt
 }
 
-qsub_command = 'qsub -e ./err -o /dev/null -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command = 'qsub -e /dev/null -o /dev/null -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:
@@ -338,6 +338,6 @@ for ch in channels:
         os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
-        os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        os.system('hadd -f %(output_folder)s/datacards/%(YEAR)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 

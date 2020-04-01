@@ -52,30 +52,34 @@ def main(args):
 
         plot_vars = [
 
-            # taus/leptons
-            # "m_vis(25,20,250)",
-            # # "m_sv(25,50,300)",
-            # "svfit_mass(25,50,300)",
-            "svfit_mass_err(10,0,100)",
-            # "pt_tt(30,0,300)",
-            # "pt_1(20,40,140)",
-            # "pt_2(12,40,100)",
-            # "eta_1(12,-2.3,2.3)",
-            # "eta_2(12,-2.3,2.3)",
-            # "tau_decay_mode_2(11,0,11)",
-            # "tau_decay_mode_1(11,0,11)",
-            # "mva_dm_2(11,0,11)",
-            # "mva_dm_1(11,0,11)",
-            # "met(20,0,200)",
+            # # taus/leptons
+            "m_vis(25,20,250)",
+            # # # # "m_sv(25,50,300)",
+            "svfit_mass(25,50,300)",
+            # # "IC_15Mar2020_max_score[0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]",
+            # # # "IC_15Mar2020_max_index[0,1,2,3]",
+            # # # "svfit_mass_err(10,0,100)",
+            "pt_tt(30,0,300)",
+            "pt_vis(30,0,300)",
+            "pt_1(20,40,140)",
+            "pt_2(12,40,100)",
+            # # "eta_1(12,-2.3,2.3)",
+            # # "eta_2(12,-2.3,2.3)",
+            # # "tau_decay_mode_2(11,0,11)",
+            # # "tau_decay_mode_1(11,0,11)",
+            "mva_dm_2(12,0,12)",
+            "mva_dm_1(12,0,12)",
+            "met(20,0,200)",
 
-            # # jets
-            # "sjdphi(12,-3.2,3.2)",
-            # "n_jets(5,0,5)",
-            # "mjj(15,0,1500)",
-            # "jdeta(25,0,5)",
-            # "jeta_1(12,-4.7,4.7)",
-            # "jeta_2(12,-4.7,4.7)",
-            # "jpt_1(17,30,200)",
+            # # # jets
+            # # "sjdphi(12,-3.2,3.2)",
+            "n_jets(5,0,5)",
+            "mjj(15,0,1500)",
+            "jdeta(25,0,5)",
+            # # "jeta_1(12,-4.7,4.7)",
+            # # "jeta_2(12,-4.7,4.7)",
+            "jpt_1(17,30,200)",
+            # "dijetpt(20,0,200)",
             # "jpt_2(17,40,200)",
 
             # "svfit_mass_test(25,50,300)",
@@ -97,9 +101,10 @@ def main(args):
         method = "8" if args.ff == False else "17"
 
         extras += " --cat {} ".format(args.cat)
-        extras += ' --ratio_range 0.01,1.99 '
+        # extras += ' --ratio_range 0.01,1.99 '
         # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
-        extras += " --add_wt (wt_tau_trg_mvadm) "
+        extras += ' --add_wt "(wt_tau_trg_mvadm*wt_tau_id_mvadm)" '
+        # extras += ' --set_alias "inclusive:(svfit_mass>0)" '
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
@@ -291,6 +296,7 @@ def main(args):
         config = " scripts/plot_{}_2017.cfg ".format(args.analysis)
     elif args.era == "2016":
         config = " scripts/plot_{}_leg2016.cfg ".format(args.analysis)
+
 
     commands = []
 

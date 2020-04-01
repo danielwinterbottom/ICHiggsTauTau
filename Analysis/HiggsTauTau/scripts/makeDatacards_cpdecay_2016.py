@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_leg2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --no_shift_systs 
+#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_leg2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding --total_jes 
 
 import sys
 from optparse import OptionParser
@@ -207,6 +207,8 @@ if SCHEME == 'cpdecay':
   VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
 
+  VAR_BDT = "IC_15Mar2020_max_score[0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]"
+
 #  VAR1 ="svfit_mass,aco_angle_1[50,100,150,150,200],(14,0,6.28319)"
 #  VAR5 ="svfit_mass,aco_angle_5[50,100,150,150,200],(14,0,6.28319)"
 #  VAR6 ="svfit_mass,aco_angle_6[50,100,150,150,200],(14,0,6.28319)"
@@ -242,6 +244,15 @@ if SCHEME == 'cpdecay':
     ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
+    # ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho_bdt", VAR_BDT, ' '),
+    # ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed_bdt",  VAR_BDT, ' '),
+    # ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed_bdt",  VAR_BDT, ' '),
+
   ]
   scheme_em = [
   ]
@@ -262,7 +273,7 @@ cat_schemes = {
   'tt' : scheme_tt
 }
 
-qsub_command = 'qsub -e ./err -o /dev/null -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command = 'qsub -e /dev/null -o /dev/null -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:
@@ -337,6 +348,6 @@ for ch in channels:
         os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
-        os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        os.system('hadd -f %(output_folder)s/datacards/%(YEAR)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 

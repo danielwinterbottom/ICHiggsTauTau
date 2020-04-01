@@ -740,6 +740,7 @@ if options.channel in ["mt","et"]:
 if options.channel == 'tt':
 
 # start fresh here
+    # with IP sig cut 
     cats["inclusive_rhorho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
     cats["inclusive_pirho"]       = "((tau_decay_mode_1==1 && tau_decay_mode_2==0 && ip_sig_2>=1.5) || (tau_decay_mode_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1))"
     cats["inclusive_a1rho"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
@@ -755,6 +756,23 @@ if options.channel == 'tt':
     cats["inclusive_mvapipi"]     = "(tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5 && mva_dm_2==0)"
     cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0 && ip_sig_2>=1.5))"
     cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
+
+    # without IP sig cut
+    # cats["inclusive_rhorho"]       = "(tau_decay_mode_1==1 && tau_decay_mode_2==1)"
+    # cats["inclusive_pirho"]       = "((tau_decay_mode_1==1 && tau_decay_mode_2==0 ) || (tau_decay_mode_1==0 &&  tau_decay_mode_2==1))"
+    # cats["inclusive_a1rho"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==1) || (tau_decay_mode_1==1 && tau_decay_mode_2==10))"
+    # cats["inclusive_a1pi"]     = "((tau_decay_mode_1==10 && tau_decay_mode_2==0 ) || (tau_decay_mode_1==0 &&  tau_decay_mode_2==10))"
+    # cats["inclusive_a1a1"]     = "(tau_decay_mode_1==10 && tau_decay_mode_2==10)"
+    # cats["inclusive_pipi"]     = "(tau_decay_mode_1==0 &&  tau_decay_mode_2==0 )"
+
+    # cats["inclusive_mvarhorho"]       = "(tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==1 && mva_dm_2==1)"
+    # cats["inclusive_mvapirho"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && tau_decay_mode_2==0 &&  && mva_dm_2==0) || (tau_decay_mode_1==0 &&  mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    # cats["inclusive_mvaa1rho"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==1 && mva_dm_2==1) || (tau_decay_mode_1==1 && mva_dm_2==1 && tau_decay_mode_2==10 && mva_dm_2==10))"
+    # cats["inclusive_mvaa1pi"]     = "((tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==0 &&  && mva_dm_2==0) || (tau_decay_mode_1==0 &&  mva_dm_2==0 && tau_decay_mode_2==10 && mva_dm_2==10))"
+    # cats["inclusive_mvaa1a1"]     = "(tau_decay_mode_1==10 && mva_dm_1==10 && tau_decay_mode_2==10 && mva_dm_2==10)"
+    # cats["inclusive_mvapipi"]     = "(tau_decay_mode_1==0 && mva_dm_1==0  && tau_decay_mode_2==0  && mva_dm_2==0)"
+    # cats["inclusive_mvapi0a1"]     = "((tau_decay_mode_1==0 && mva_dm_1==0 &&  tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && tau_decay_mode_2==0 && mva_dm_2==0))"
+    # cats["inclusive_mvarho0a1"]     = "(tau_decay_mode_1==1 && tau_decay_mode_2==1 && ((mva_dm_1==1&&mva_dm_2==2) || (mva_dm_1==2&&mva_dm_2==1) || (mva_dm_1==2&&mva_dm_2==2)))"
 
     #mva_ggh                = '(svfit_mass>100&&svfit_mass<150)'
     #mva_jetFakes           = '(svfit_mass>150)'

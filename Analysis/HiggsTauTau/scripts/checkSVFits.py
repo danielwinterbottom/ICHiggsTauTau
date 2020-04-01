@@ -6,17 +6,36 @@ import glob
 import os
 
 file_names = []
-channels = ["mt"]#,"et","tt","em"]
-years = ["2018"]
+channels = ["tt"]#,"et","mt","em"]
+years = ["2017"]
 # subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN']
 # subdirs = ['','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN']
 # subdirs = ['JES_UP']
-subdirs = ['']
+# subdirs = ['']
+subdirs = [
+    '',
+    'TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN',
+    'TSCALE3PRONG_UP','TSCALE3PRONG_DOWN',
+    'TSCALE3PRONG1PI0_DOWN','TSCALE3PRONG1PI0_UP',
+    'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 
+    'EFAKE0PI_UP', 'EFAKE0PI_DOWN','EFAKE1PI_UP','EFAKE1PI_DOWN',
+    'MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN',
+    'METUNCL_UP','METUNCL_DOWN','MUSCALE_UP','MUSCALE_DOWN',
+    'ESCALE_UP','ESCALE_DOWN','JESRBAL_DOWN','JESRBAL_UP',
+    'JESABS_DOWN','JESABS_UP','JESABS_YEAR_DOWN','JESABS_YEAR_UP',
+    'JESFLAV_DOWN','JESFLAV_UP','JESBBEC1_DOWN','JESBBEC1_UP',
+    'JESBBEC1_YEAR_DOWN','JESBBEC1_YEAR_UP','JESEC2_DOWN','JESEC2_UP',
+    'JESEC2_YEAR_DOWN','JESEC2_YEAR_UP','JESHF_DOWN','JESHF_UP',
+    'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
+    'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
+    'JER_UP','JER_DOWN',
+]
 
 for dir_ in subdirs:
     filenames = glob.glob("{}/{}/svfit_*_output.root".format(sys.argv[1],dir_))
-    svfitfiles = [x.split("svfit_")[1][0:-20] for x in filenames]
+    # svfitfiles = [x.split("svfit_")[1][0:-20] for x in filenames]
     # filenames = glob.glob("{}/{}/*.root".format(sys.argv[1],dir_))
+    svfitfiles = [x.split("svfit_")[1].split("_{}".format(channels[0]))[0] for x in filenames]
     if sys.argv[2] == "svfit":
         for file_name in svfitfiles:
             for year in years:
@@ -50,7 +69,7 @@ for f in file_names:
     # if "Embed" not in f:
     if sys.argv[2] == "svfit":
         try:
-            tree = uproot.open("{}".format(f))["svfit"]
+            tree = uproot.open(f)["svfit"]
             df = tree.pandas.df("svfit_mass", namedecode="utf-8")
             # print(df[df["svfit_mass"] < 0])
             if not df[df["svfit_mass"] < 0].empty:
@@ -61,7 +80,7 @@ for f in file_names:
 
     elif sys.argv[2] == "ntuple":
         try:
-            tree = uproot.open("{}".format(f))["ntuple"]
+            tree = uproot.open(f)["ntuple"]
             df = tree.pandas.df("svfit_mass", namedecode="utf-8")
             if not df[df["svfit_mass"] < 0].empty:
                 print("Found {} out of {} events with svfit below 0 in {}!\n".format(df[df["svfit_mass"] < 0].shape[0], df.shape[0], f))
