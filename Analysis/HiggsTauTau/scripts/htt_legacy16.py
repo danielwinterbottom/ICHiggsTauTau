@@ -57,6 +57,9 @@ parser.add_option("--qcd", dest="proc_qcd", action='store_true', default=False,
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
+parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
+                  help="Process signal MSSM mc samples")
+
 parser.add_option("--extra_signal_profile", dest="extra_signal_profile", action='store_true', default=False,
                   help="Process extra signal H->hh mc samples for profiling")
 
@@ -261,6 +264,18 @@ if options.proc_sm or options.proc_all:
       #'ttHiggs0PMToTauTau',
 
     ]
+
+if options.proc_mssm or options.proc_all:
+
+    M_GluGluBBH = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
+    for mass in M_GluGluBBH:
+        signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
+
+
+    M_GluGluH = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
+    for mass in M_GluGluH:
+        signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
+
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
     with open(CONFIG,"r") as input:
@@ -513,9 +528,9 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
-if options.proc_sm or options.proc_all:
+if options.proc_sm or options.proc_all or options.proc_mssm:
   SIG_FILELIST = FILELIST
-  user = "mhassans"
+  user = "guttley"
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
     if sa == "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered":
