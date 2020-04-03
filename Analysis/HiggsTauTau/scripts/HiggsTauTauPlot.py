@@ -3451,6 +3451,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     doZL  = 'ZL'  not in samples_to_skip
     doZJ  = 'ZJ'  not in samples_to_skip
     
+    zll_samples=list(ztt_samples)
+    if options.analysis in ['cpdecay']: zll_samples+=ewkz_samples
+
     # produce template for observed data
     if do_data:
         if options.do_ss:
@@ -3479,7 +3482,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
+            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
@@ -3519,7 +3522,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
@@ -4228,6 +4231,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hist.SetName(hist_name.replace('minus',''))
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
-      
+
+
 outfile.Close()
 
