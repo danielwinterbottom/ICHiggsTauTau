@@ -5029,6 +5029,17 @@ namespace ic {
               muon1->vz() - refit_vertex->vz(),
               0.);
 
+      // old
+      //std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
+      //std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
+      //ip_mag_1_ = ipandsig_1.first.Mag();
+      //ip_sig_1_ = ipandsig_1.second;
+      //ip_mag_2_ = ipandsig_2.first.Mag();
+      //ip_sig_2_ = ipandsig_2.second;
+      //
+
+      ////// add corrected IP here
+      //
       std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
       ip_mag_1_ = ipandsig_1.first.Mag();
@@ -5036,9 +5047,79 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip_corrected_1 = ipandsig_1.first;
+      TVector3 ip_corrected_2 = ipandsig_2.first;
 
-      TVector3 ip1 = (ipandsig_1.first).Unit();
-      TVector3 ip2 = (ipandsig_2.first).Unit();
+      // add this part for the mt channel as well!!!!!
+      if(!is_data_) {
+
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovMuon(muon1, refit_vertex);
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+
+        ip_corrected_1 = ipCorrector.correctIp(
+                         ipandsig_1.first,
+                         ipgen1,
+                         fabs(lep1->eta())
+        );
+
+        ip_corrected_2 = ipCorrector.correctIp(
+                         ipandsig_2.first,
+                         ipgen2,
+                         fabs(lep2->eta())
+        );
+
+      
+        // Correct IP covariance matrix
+        CovMatrix cov_corrected_1 = ipCorrector.correctIpCov(
+                    ipandcov_1.second, 
+                    fabs(lep1->eta())
+        );
+
+        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+                    ipandcov_2.second,
+                    fabs(lep2->eta())
+        );
+
+        ROOT::Math::SVector<double, 3> ip_svec_1;
+        ip_svec_1(0) = ip_corrected_1.X();
+        ip_svec_1(1) = ip_corrected_1.Y();
+        ip_svec_1(2) = ip_corrected_1.Z();
+        ip_svec_1 = ip_svec_1.Unit();
+        ip_sig_1_ = ip_corrected_1.Mag()/sqrt(ROOT::Math::Dot( ip_svec_1, cov_corrected_1 * ip_svec_1));
+
+        ROOT::Math::SVector<double, 3> ip_svec_2;
+        ip_svec_2(0) = ip_corrected_2.X();
+        ip_svec_2(1) = ip_corrected_2.Y();
+        ip_svec_2(2) = ip_corrected_2.Z();
+        ip_svec_2 = ip_svec_2.Unit();
+        ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
+
+        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+
+      } else {
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+        ip_sig_1_up_= ip_sig_1_;
+        ip_sig_2_up_= ip_sig_2_;
+        ip_sig_1_down_= ip_sig_1_;
+        ip_sig_2_down_= ip_sig_2_;
+      }
+
+      //TVector3 ip1 = (ipandsig_1.first).Unit();
+      //TVector3 ip2 = (ipandsig_2.first).Unit();
+      //
+      TVector3 ip1 = ip_corrected_1.Unit();
+      TVector3 ip2 = ip_corrected_2.Unit();
+
+      //
+      //
+
       lvec1 = TLorentzVector(ip1, 0.);
       lvec3 = ConvertToLorentz(muon1->vector());
 
