@@ -392,6 +392,6 @@ for ch in channels:
         os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
-        os.system('hadd -f %(output_folder)s/datacards/%(YEAR)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 
