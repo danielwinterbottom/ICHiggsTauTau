@@ -24,6 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
+    "do_jetmet_uncerts": true,
     "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,
@@ -64,7 +65,7 @@
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_ttonly/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_svfit_output/",
+    "svfit_folder"  : "svfit_output/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
     "mela_mode" : 0,
@@ -72,7 +73,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -386,7 +387,7 @@
     "res_j_lo": {
       "baseline": {
         "addit_output_folder" : "JER_DOWN",
-        "jes_mode" : 1
+        "jer_mode" : 1
       }
     },
     "res_j_hi": {

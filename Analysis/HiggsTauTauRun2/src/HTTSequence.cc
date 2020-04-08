@@ -737,28 +737,48 @@ BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
   .set_min_dr(0.5));
 
 std::vector<std::string> jet_met_uncerts = {""};
-if(true) {
-  jet_met_uncerts = {"","scale_met_lo","scale_met_hi","res_met_lo","res_met_hi","scale_j_relbal_lo","scale_j_relbal_hi","scale_j_abs_lo","scale_j_abs_hi","scale_j_abs_year_lo","scale_j_abs_year_hi","scale_j_flav_lo","scale_j_flav_hi","scale_j_bbec1_lo","scale_j_bbec1_hi","scale_j_bbec1_year_lo","scale_j_bbec1_year_hi","scale_j_ec2_lo","scale_j_ec2_hi","scale_j_ec2_year_lo","scale_j_ec2_year_hi","scale_j_hf_lo","scale_j_hf_hi","scale_j_hf_year_lo","scale_j_hf_year_hi","scale_j_relsamp_year_lo","scale_j_relsamp_year_hi","res_j_lo","res_j_hi"};
+if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="") { // only loop for nominal case
+  jet_met_uncerts = {"","scale_met_lo","scale_met_hi","res_met_lo","res_met_hi","scale_j_relbal_lo","scale_j_relbal_hi","scale_j_abs_lo","scale_j_abs_hi","scale_j_abs_year_lo","scale_j_abs_year_hi","scale_j_flav_lo","scale_j_flav_hi","scale_j_bbec1_lo","scale_j_bbec1_hi","scale_j_bbec1_year_lo","scale_j_bbec1_year_hi","scale_j_ec2_lo","scale_j_ec2_hi","scale_j_ec2_year_lo","scale_j_ec2_year_hi","scale_j_hf_lo","scale_j_hf_hi","scale_j_hf_year_lo","scale_j_hf_year_hi","scale_j_relsamp_year_lo","scale_j_relsamp_year_hi","res_j_lo","res_j_hi","met_uncl_lo","met_uncl_hi"};
 }
 
-std::cout << "!!!!!!!!!!!!!" << std::endl;
-for (auto uncert : jet_met_uncerts) {
+for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
+  std::string uncert = jet_met_uncerts[i];
   // from here all jet and met recoil uncertainties should be run in a loop
 
   int jer_mode_ = jer_mode;
   int jes_mode_ = jes_mode;
   int metscale_mode_ = metscale_mode;
   int metres_mode_ = metres_mode;
- 
+  int metuncl_mode_ = 0;
+
+  std::string svfit_folder_ = svfit_folder; 
+  std::string add_dir = ""; 
   if (uncert != "") {
     // if we are doing a JET/MET shift then reset the modes
     if(uncert.find("scale_j")!=std::string::npos) jes_mode_ = unmod_js["sequences"][uncert]["baseline"]["jes_mode"].asUInt();
     if(uncert.find("res_j")!=std::string::npos) jer_mode_ = unmod_js["sequences"][uncert]["baseline"]["jer_mode"].asUInt();
     if(uncert.find("res_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("scale_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
-    ;
+    if(uncert.find("met_uncl")!=std::string::npos) metuncl_mode_ = unmod_js["sequences"][uncert]["baseline"]["metuncl_mode"].asUInt();
+
+    std::string add_dir = unmod_js["sequences"][uncert]["baseline"]["addit_output_folder"].asString(); 
+ 
+    fs_vec.push_back(std::make_shared<fwlite::TFileService>(
+       (output_folder+"/"+add_dir+"/"+output_name).c_str()));
+ 
+    if(new_svfit_mode > 0){
+      if(!((jes_mode_ && do_recoil) || (jer_mode_ > 0 && do_recoil))) svfit_folder_=svfit_folder+add_dir+"/";
+    }
+
+  } else {
+      fs_vec.push_back(fs);
   }
-  std::cout << uncert << "    " << jes_mode_ << std::endl; 
+
+  //if processing a sample with no recoil correction uncertainties then skip the recoil uncertainties
+  if(!do_recoil && (metscale_mode_>0||metres_mode_>0)) continue;
+  //if processing a sample with recoil correction uncertainties then skip the unclustered energy uncertainty
+  if(do_recoil && metuncl_mode_>0) continue;
+
 
   // first make a deep copy of the jets and the met - we will need to delete these after we are finished with them  
 
@@ -773,6 +793,20 @@ for (auto uncert : jet_met_uncerts) {
        event->Add(shift_met_label,met_copy);
        return 0;
     }));
+
+  if(metuncl_mode_>0) {
+    std::string shift_type = "NoShift";
+    if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+    if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+    BuildModule(GenericModule("MetUnclusteredEnergyShift")
+      .set_function([=](ic::TreeEvent *event){
+         Met* met = event->GetPtr<Met>(shift_met_label);
+         double pt = met->GetShiftedMet(shift_type).pt();
+         double phi = met->GetShiftedMet(shift_type).phi();
+         met->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+         return 0;
+      }));
+  }
 
   if (jer_mode_>0 && !is_data && !is_embedded) {
      BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
@@ -910,6 +944,7 @@ for (auto uncert : jet_met_uncerts) {
   }
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
+  std::cout << mode << std::endl;
   
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
@@ -922,7 +957,7 @@ for (auto uncert : jet_met_uncerts) {
     .set_split(40000)
     .set_dilepton_label("ditau")
     .set_met_label(shift_met_label)
-    .set_fullpath(svfit_folder)
+    .set_fullpath(svfit_folder_)
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
@@ -940,7 +975,7 @@ for (auto uncert : jet_met_uncerts) {
   
   bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
   BuildModule(HTTCategories("HTTCategories")
-      .set_fs(fs.get())
+      .set_fs(fs_vec[i].get())
       .set_channel(channel)
       .set_era(era_type)
       .set_strategy(strategy_type)
@@ -951,11 +986,11 @@ for (auto uncert : jet_met_uncerts) {
       .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
       .set_is_embedded(is_embedded)
       .set_is_data(is_data)
-      .set_systematic_shift(addit_output_folder!="")
+      .set_systematic_shift(addit_output_folder!="" && i==0)
       //Good to avoid accidentally overwriting existing output files when syncing
       .set_write_tree(!js["make_sync_ntuple"].asBool())
       .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-      .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
+      .set_do_ff_systematics(i==0 && js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
       .set_do_qcd_scale_wts(do_qcd_scale_wts_)
       .set_do_mssm_higgspt(do_mssm_higgspt)
       .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())

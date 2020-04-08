@@ -24,6 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
+    "do_jetmet_uncerts": false,
     "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,
@@ -409,7 +410,7 @@
     "res_j_lo": {
       "baseline": {
         "addit_output_folder" : "JER_DOWN",
-        "jes_mode" : 1
+        "jer_mode" : 1
       }
     },
     "res_j_hi": {

@@ -16,6 +16,7 @@ namespace ic {
 class HTTSequence {
  private:
   std::shared_ptr<fwlite::TFileService> fs;
+  std::vector<std::shared_ptr<fwlite::TFileService>> fs_vec;
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
   std::string channel_str, var_str, strategy_str, era_str, mc_str;
   Json::Value js;
