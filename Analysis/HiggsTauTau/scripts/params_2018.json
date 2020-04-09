@@ -188,77 +188,86 @@
     "xs": 3.045966,
     "evt": 1846632
   },
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 1.6366,
+    "evt": 393237
+  },
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.6366,
+    "evt": 777811,
+    "eff": 0.2389
+  },
   "JJH0MToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 236215
+    "xs": 0.9313,
+    "evt": 222988
   },
   "JJH0MToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 2661153
+    "xs": 0.9313,
+    "evt": 1826063,
+    "eff": 0.2437
   },
   "JJH0MToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 395052
+    "xs": 0.4781,
+    "evt": 331942
   },
   "JJH0MToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 6957571
+    "xs": 0.4781,
+    "evt": 6848373,
+    "eff": 0.2895
   },
   "JJH0MToTauTauPlusZeroJets": {
-    "xs": 3.045966,
+    "xs": 1.6503,
     "evt": 406797
   },
   "JJH0MToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 830022
+    "xs": 1.6503,
+    "evt": 830022,
+    "eff": 0.2389
   },
-  "JJH0Mf05ph0ToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 830022
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 0.9359,
+    "evt": 236215
   },
-  "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 2078196
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 0.9359,
+    "evt": 2661153,
+    "eff": 0.2438
   },
-  "JJH0Mf05ph0ToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 327857
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 0.4598,
+    "evt": 395052
   },
-  "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 6151600
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.4598,
+    "evt": 6957571,
+    "eff": 0.2906
   },
-  "JJH0Mf05ph0ToTauTauPlusZeroJets": {
-    "xs": 3.045966,
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 1.6364,
     "evt": 393531
   },
-  "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 738217
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.6364,
+    "evt": 738217,
+    "eff": 0.2389
   },
-  "JJH0PMToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 222988
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 0.9354,
+    "evt": 1
   },
-  "JJH0PMToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 1826063
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 0.9354,
+    "evt": 2078196,
+    "eff": 0.2436
   },
-  "JJH0PMToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 331942
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 0.4742,
+    "evt": 327857
   },
-  "JJH0PMToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 6848373
-  },
-  "JJH0PMToTauTauPlusZeroJets": {
-    "xs": 3.045966,
-    "evt": 393237
-  },
-  "JJH0PMToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 777811
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.4742,
+    "evt": 6151600,
+    "eff": 0.2900
   },
   "VBFHToTauTauUncorrelatedDecay": {
     "xs": 0.2371,
@@ -388,48 +397,48 @@
     "evt": 3523410
   },
   "ZHToTauTauUncorrelatedDecay_Filtered": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 2912545,
     "eff": 0.2513
   },
   "ZHToTauTau_M-125": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 4372788
   },
   "ZHiggs0L1ToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 965600
   },
   "ZHiggs0L1ZgToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 953600
   },
   "ZHiggs0L1Zgf05ph0ToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 991900
   },
   "ZHiggs0L1f05ph0ToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 955810
   },
   "ZHiggs0MToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 995700
   },
   "ZHiggs0Mf05ph0ToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 1000000
   },
   "ZHiggs0PHToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 966800
   },
   "ZHiggs0PHf05ph0ToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 972800
   },
   "ZHiggs0PMToTauTau": {
-    "xs": 0.0227088,
+    "xs": 0.05542,
     "evt": 979000
   },
   "ttHiggs0MToTauTau": {

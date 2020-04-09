@@ -208,77 +208,86 @@
     "xs": 3.045966,
     "evt": 5329008
   },
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 1.6366,
+    "evt": 408848
+  },
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.6366,
+    "evt": 791533,
+    "eff": 0.2389
+  },
   "JJH0MToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 227671
+    "xs": 0.9313,
+    "evt": 172365
   },
   "JJH0MToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 2042123
+    "xs": 0.9313,
+    "evt": 2200353,
+    "eff": 0.2437
   },
   "JJH0MToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 94906
+    "xs": 0.4781,
+    "evt": 198867
   },
   "JJH0MToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 6263640
+    "xs": 0.4781,
+    "evt": 5542699,
+    "eff": 0.2895
   },
   "JJH0MToTauTauPlusZeroJets": {
-    "xs": 3.045966,
+    "xs": 1.6503,
     "evt": 41824
   },
   "JJH0MToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 713122
+    "xs": 1.6503,
+    "evt": 713122,
+    "eff": 0.2389
   },
-  "JJH0Mf05ph0ToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 214939
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 0.9359,
+    "evt": 227671
   },
-  "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 1933890
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 0.9359,
+    "evt": 2042123,
+    "eff": 0.2438
   },
-  "JJH0Mf05ph0ToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 126432
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 0.4598,
+    "evt": 94906
   },
-  "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 1398396
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.4598,
+    "evt": 6263640,
+    "eff": 0.2906
   },
-  "JJH0Mf05ph0ToTauTauPlusZeroJets": {
-    "xs": 3.045966,
+  "JJH0MToTauTauPlusZeroJets": {
+    "xs": 1.6364,
     "evt": 116175
   },
-  "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 611880
+  "JJH0MToTauTauPlusZeroJets_Filtered": {
+    "xs": 1.6364,
+    "evt": 611880,
+    "eff": 0.2389
   },
-  "JJH0PMToTauTauPlusOneJets": {
-    "xs": 3.045966,
-    "evt": 172365
+  "JJH0MToTauTauPlusOneJets": {
+    "xs": 0.9354,
+    "evt": 214939
   },
-  "JJH0PMToTauTauPlusOneJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 2200353
+  "JJH0MToTauTauPlusOneJets_Filtered": {
+    "xs": 0.9354,
+    "evt": 1933890,
+    "eff": 0.2436
   },
-  "JJH0PMToTauTauPlusTwoJets": {
-    "xs": 3.045966,
-    "evt": 198867
+  "JJH0MToTauTauPlusTwoJets": {
+    "xs": 0.4742,
+    "evt": 126432
   },
-  "JJH0PMToTauTauPlusTwoJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 5542699
-  },
-  "JJH0PMToTauTauPlusZeroJets": {
-    "xs": 3.045966,
-    "evt": 408848
-  },
-  "JJH0PMToTauTauPlusZeroJets_Filtered": {
-    "xs": 3.045966,
-    "evt": 791533
+  "JJH0MToTauTauPlusTwoJets_Filtered": {
+    "xs": 0.4742,
+    "evt": 1398396,
+    "eff": 0.2900
   },
   "VBFHToTauTauUncorrelatedDecay": {
     "xs": 0.2371,
