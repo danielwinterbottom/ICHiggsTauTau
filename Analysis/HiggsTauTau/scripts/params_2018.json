@@ -188,29 +188,29 @@
     "xs": 3.045966,
     "evt": 1846632
   },
-  "JJH0MToTauTauPlusZeroJets": {
+  "JJH0PMToTauTauPlusZeroJets": {
     "xs": 1.6366,
     "evt": 393237
   },
-  "JJH0MToTauTauPlusZeroJets_Filtered": {
+  "JJH0PMToTauTauPlusZeroJets_Filtered": {
     "xs": 1.6366,
     "evt": 777811,
     "eff": 0.2389
   },
-  "JJH0MToTauTauPlusOneJets": {
+  "JJH0PMToTauTauPlusOneJets": {
     "xs": 0.9313,
     "evt": 222988
   },
-  "JJH0MToTauTauPlusOneJets_Filtered": {
+  "JJH0PMToTauTauPlusOneJets_Filtered": {
     "xs": 0.9313,
     "evt": 1826063,
     "eff": 0.2437
   },
-  "JJH0MToTauTauPlusTwoJets": {
+  "JJH0PMToTauTauPlusTwoJets": {
     "xs": 0.4781,
     "evt": 331942
   },
-  "JJH0MToTauTauPlusTwoJets_Filtered": {
+  "JJH0PMToTauTauPlusTwoJets_Filtered": {
     "xs": 0.4781,
     "evt": 6848373,
     "eff": 0.2895
@@ -242,29 +242,29 @@
     "evt": 6957571,
     "eff": 0.2906
   },
-  "JJH0MToTauTauPlusZeroJets": {
+  "JJH0Mf05ph0ToTauTauPlusZeroJets": {
     "xs": 1.6364,
     "evt": 393531
   },
-  "JJH0MToTauTauPlusZeroJets_Filtered": {
+  "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
     "xs": 1.6364,
     "evt": 738217,
     "eff": 0.2389
   },
-  "JJH0MToTauTauPlusOneJets": {
+  "JJH0Mf05ph0ToTauTauPlusOneJets": {
     "xs": 0.9354,
     "evt": 1
   },
-  "JJH0MToTauTauPlusOneJets_Filtered": {
+  "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
     "xs": 0.9354,
     "evt": 2078196,
     "eff": 0.2436
   },
-  "JJH0MToTauTauPlusTwoJets": {
+  "JJH0Mf05ph0ToTauTauPlusTwoJets": {
     "xs": 0.4742,
     "evt": 327857
   },
-  "JJH0MToTauTauPlusTwoJets_Filtered": {
+  "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
     "xs": 0.4742,
     "evt": 6151600,
     "eff": 0.2900

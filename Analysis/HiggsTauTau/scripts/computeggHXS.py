@@ -1,4 +1,4 @@
-year=2018
+year=2016
 
 if year == 2017: year_ = 2018
 else: year_ = year
@@ -66,31 +66,31 @@ for x in ['0PM', '0M', '0Mf05ph0']:
   print 'JJH%(x)sToTauTauPlusTwoJets %(xs2_new).4f' % vars()
   print 'JJH%(x)sToTauTauPlusTwoJets_Filtered %(xs2_new).4f' % vars()
 
-  out+='  \"JJH0MToTauTauPlusZeroJets\": {\n' %vars()
+  out+='  \"JJH%(x)sToTauTauPlusZeroJets\": {\n' %vars()
   out+='    \"xs\": %(xs0_new).4f,\n' % vars()
   out+='    \"evt\": %(evt0)i\n' % vars()
   out+='  },\n'
-  out+='  \"JJH0MToTauTauPlusZeroJets_Filtered\": {\n' % vars()
+  out+='  \"JJH%(x)sToTauTauPlusZeroJets_Filtered\": {\n' % vars()
   out+='    \"xs\": %(xs0_new).4f,\n' % vars()
   out+='    \"evt\": %(evt0_filt)i,\n' % vars() 
   out+='    \"eff\": %(eff0).4f\n' % vars()
   out+='  },\n'
 
-  out+='  \"JJH0MToTauTauPlusOneJets\": {\n' %vars()
+  out+='  \"JJH%(x)sToTauTauPlusOneJets\": {\n' %vars()
   out+='    \"xs\": %(xs1_new).4f,\n' % vars()
   out+='    \"evt\": %(evt1)i\n' % vars()
   out+='  },\n'
-  out+='  \"JJH0MToTauTauPlusOneJets_Filtered\": {\n' % vars()
+  out+='  \"JJH%(x)sToTauTauPlusOneJets_Filtered\": {\n' % vars()
   out+='    \"xs\": %(xs1_new).4f,\n' % vars()
   out+='    \"evt\": %(evt1_filt)i,\n' % vars()
   out+='    \"eff\": %(eff1).4f\n' % vars()
   out+='  },\n'
 
-  out+='  \"JJH0MToTauTauPlusTwoJets\": {\n' %vars()
+  out+='  \"JJH%(x)sToTauTauPlusTwoJets\": {\n' %vars()
   out+='    \"xs\": %(xs2_new).4f,\n' % vars()
   out+='    \"evt\": %(evt2)i\n' % vars()
   out+='  },\n'
-  out+='  \"JJH0MToTauTauPlusTwoJets_Filtered\": {\n' % vars()
+  out+='  \"JJH%(x)sToTauTauPlusTwoJets_Filtered\": {\n' % vars()
   out+='    \"xs\": %(xs2_new).4f,\n' % vars()
   out+='    \"evt\": %(evt2_filt)i,\n' % vars()
   out+='    \"eff\": %(eff2).4f\n' % vars()
