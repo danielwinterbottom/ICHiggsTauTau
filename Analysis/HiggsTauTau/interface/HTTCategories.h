@@ -1175,6 +1175,7 @@ class HTTCategories : public ModuleBase {
   double t2_cov_00_, t2_cov_11_, t2_cov_22_, t2_cov_33_, t2_cov_44_;
   double pv_cov_00_, pt_cov_11_, pv_cov_22_;
   double pv_x_, pv_y_, pv_z_;
+  bool use_refitted_vertex_;
 
 
  public:

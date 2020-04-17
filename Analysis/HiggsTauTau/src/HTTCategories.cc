@@ -1365,6 +1365,9 @@ namespace ic {
       synctree_->Branch("pvy", &pvy_);
       synctree_->Branch("pvz", &pvz_);
 
+      // bool for refitted vertex
+      synctree_->Branch("use_refitted_vertex", & use_refitted_vertex_);
+
       // deep tau IDs in same format as agreed with CP in production analyis
       
 
@@ -4553,8 +4556,12 @@ namespace ic {
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
+      use_refitted_vertex_ = false;
       for(auto v : refit_vertex_vec) {
-        if(v->id() == tau1->id()+tau2->id()) refit_vertex = v; 
+        if(v->id() == tau1->id()+tau2->id()) {
+          refit_vertex = v; 
+          use_refitted_vertex_ = true;
+        }
       }
 
       std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(tau1, refit_vertex, pfcands);
@@ -4567,7 +4574,6 @@ namespace ic {
       TVector3 ip_corrected_1 = ipandsig_1.first;
       TVector3 ip_corrected_2 = ipandsig_2.first;
 
-      // add this part for the mt channel as well!!!!!
       if(!is_data_) {
 
         ip_sig_1_raw_= ip_sig_1_;
@@ -5050,7 +5056,6 @@ namespace ic {
       TVector3 ip_corrected_1 = ipandsig_1.first;
       TVector3 ip_corrected_2 = ipandsig_2.first;
 
-      // add this part for the mt channel as well!!!!!
       if(!is_data_) {
 
         ip_sig_1_raw_= ip_sig_1_;
