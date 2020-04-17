@@ -27,6 +27,7 @@ JJH0MToTauTauPlusTwoJets_Filtered  6957571
 JJH0MToTauTauPlusZeroJets  406797
 JJH0MToTauTauPlusZeroJets_Filtered  830022
 JJH0Mf05ph0ToTauTauPlusOneJets_Filtered  2078196
+JJH0Mf05ph0ToTauTauPlusOneJets  1
 JJH0Mf05ph0ToTauTauPlusTwoJets  327857
 JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered  6151600
 JJH0Mf05ph0ToTauTauPlusZeroJets  393531
