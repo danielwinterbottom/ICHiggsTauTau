@@ -27,9 +27,9 @@ def run_command(command):
     return out, err
 
 parser = OptionParser()
-parser.add_option("-p","--parameterfile", dest="params", type='string',default='',
+parser.add_option("-p","--parameterfile", dest="params", type='string',default='scripts/params_leg2016.json',
                   help="Specify the parameter file containing the luminosity and cross section information - can be used to override config file.")
-parser.add_option("--cfg", dest="config", type='string',
+parser.add_option("--cfg", dest="config", type='string', default='scripts/plot_cpdecays_leg2016.cfg',
                   help="The config file that will be passed to HiggsTauTauPlot.py. Parameter file, input folder and signal scheme taken from this cfg file unless overriden by command line options")
 parser.add_option("-i","--input", dest="folder", type='string', default='',
                   help="The input folder, containing the output of HTT - can be used to override config file")
@@ -43,7 +43,7 @@ parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme", type='string', default='',
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='cpdecay',
                   help="datacard scheme - can be used to override config file")
 parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
@@ -196,7 +196,10 @@ if options.no_shape_systs:
       "zmm" : ' '
   }
 
+print SCHEME
+
 if SCHEME == 'cpdecay':
+
  
   # TT variables
 
@@ -206,7 +209,6 @@ if SCHEME == 'cpdecay':
   VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
   VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
   VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-
 
   VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.6,0.8],(6,0,6.28319)"
   #VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.65,0.75,0.85],(14,0,6.28319)" # could use even more bins (20)!
@@ -219,9 +221,6 @@ if SCHEME == 'cpdecay':
 
   VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
   VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-
-
-
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -247,22 +246,42 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
     ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
     ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    ("17",   "inclusive_mvaa10a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1A1, ' '),
     ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1",  VAR_0A1A1, ' '),
-    #("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR1, ' '),
-    #("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR1, ' '),
-    #("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR1, ' '),
-    #("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR1, ' '),
-    #("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR6, ' '),
-    #("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    #("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    #("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR5, ' '),
+
     ("17",   "higgs_mvaother",    "2016_higgs_other",  VAR_H_TT_Other, ' '),
     ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
-  ]
+    ("17",   "zttEmbed_mvarhorho",    "2016_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
+    ("17",   "zttEmbed_mvarho0a1",    "2016_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    ("17",   "zttEmbed_mvaa1rho",    "2016_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "zttEmbed_mvaa1a1",    "2016_zttEmbed_A1_A1",  VAR_A1A1, ' '),
+    ("17",   "zttEmbed_mvapipi",    "2016_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
+    ("17",   "zttEmbed_mvapirho",    "2016_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    ("17",   "zttEmbed_mvapi0a1",    "2016_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    ("17",   "zttEmbed_mvaa1pi",    "2016_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "zttEmbed_mvaa10a1",    "2016_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
+  
+    ("17",   "jetFakes_mvarhorho",    "2016_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
+    ("17",   "jetFakes_mvarho0a1",    "2016_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    ("17",   "jetFakes_mvaa1rho",    "2016_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "jetFakes_mvaa1a1",    "2016_jetFakes_A1_A1",  VAR_A1A1, ' '),
+    ("17",   "jetFakes_mvapipi",    "2016_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
+    ("17",   "jetFakes_mvapirho",    "2016_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    ("17",   "jetFakes_mvapi0a1",    "2016_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    ("17",   "jetFakes_mvaa1pi",    "2016_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "jetFakes_mvaa10a1",    "2016_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
 
+    #("17",   "inclusive_mvarhorho",    "2016_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
+    #("17",   "inclusive_mvarho0a1",    "2016_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
+    #("17",   "inclusive_mvaa1rho",    "2016_SS_A1_Rho",  VAR_A1RHO, ' --do_ss '),
+    #("17",   "inclusive_mvaa1a1",    "2016_SS_A1_A1",  VAR_A1A1, ' --do_ss '),
+    #("17",   "inclusive_mvapipi",    "2016_SS_Pi_Pi",  VAR_PIPI, ' --do_ss '),
+    #("17",   "inclusive_mvapirho",    "2016_SS_Pi_Rho_Mixed",  VAR_PIRHO, ' --do_ss '),
+    #("17",   "inclusive_mvapi0a1",    "2016_SS_Pi_0A1_Mixed",  VAR_PI0A1, ' --do_ss '),
+    #("17",   "inclusive_mvaa1pi",    "2016_SS_Pi_A1_Mixed",  VAR_PIA1, ' --do_ss '),
+    #("17",   "inclusive_mvaa10a1",    "2016_SS_A1_0A1",  VAR_0A1A1, ' --do_ss '),
+  ]
 
   scheme_em = [
   ]
@@ -316,14 +335,15 @@ if SCHEME == 'ip_uncert':
   }
   ANA = 'sm'
 
-
-
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
   'em' : scheme_em,
   'tt' : scheme_tt
 }
+
+
+
 
 qsub_command = 'qsub -e ./err -o /dev/null -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
@@ -356,7 +376,7 @@ for ch in channels:
                 run_command(qsub_command
                         .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
                         + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra="\'{}\'"'.format(extra)
+                        + ' -v extra="{}"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
 
