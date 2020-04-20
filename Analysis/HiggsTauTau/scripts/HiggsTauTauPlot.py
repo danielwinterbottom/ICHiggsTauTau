@@ -1575,7 +1575,8 @@ if options.analysis in ['cpdecay']:
        "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
        "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
        "ZH_ph_htt*": 'ZHToTauTau_M-125', 
-
+       "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
 # for 2017
@@ -1596,7 +1597,9 @@ if options.analysis in ['cpdecay']:
         "ZH_ps_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
         "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
         "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-        "ZH_ph_htt*": 'ZHToTauTau_M-125', 
+        "ZH_ph_htt*": 'ZHToTauTau_M-125',
+        "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered", 
     }
 
   if options.era == 'cp18':
@@ -1618,6 +1621,8 @@ if options.analysis in ['cpdecay']:
         "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
         "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
         "ZH_ph_htt*": 'ZHToTauTau_M-125',  
+        "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
 
@@ -2909,7 +2914,7 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
 # for CP signals
 # need to multiply by the weights wt_cp_sm/ps/mm
 def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
-    weights = {"sm": "wt_cp_sm*wt_ph_nnlops", "ps": "wt_cp_ps*wt_ph_nnlops", "mm": "wt_cp_mm*wt_ph_nnlops"}
+    weights = {"sm": "wt_cp_sm*wt_ph_nnlops", "ps": "wt_cp_ps*wt_ph_nnlops", "mm": "wt_cp_mm*wt_ph_nnlops", "flat": "wt_ph_nnlops"}
     if get_os: 
         OSSS = 'os'
     else: 
@@ -2921,7 +2926,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
         for name in weights:
             if key.split("_")[1] == name:
                 non_cp=False
-                weight=wt+"*"+weights[name]#+"*wt_ph_nnlops"
+                weight=wt+"*"+weights[name]
                 full_selection = BuildCutString(weight, sel, cat, OSSS)
                 name = key
 
@@ -2930,7 +2935,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
                   for i in sm_samples[key]:
                     sample_names.append(i.replace('*',mass))
                 else: sample_names = [sm_samples[key].replace('*',mass)]
-                ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
+                ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
                 #ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
         if non_cp:
              full_selection = BuildCutString(wt, sel, cat, OSSS)
@@ -2942,7 +2947,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
                for i in sm_samples[key]:
                  sample_names.append(i.replace('*',mass))
              else: sample_names = [sm_samples[key].replace('*',mass)]
-             ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
+             ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
 
 
@@ -3478,6 +3483,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
+            if do_data: GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:

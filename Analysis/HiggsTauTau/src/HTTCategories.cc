@@ -4511,7 +4511,7 @@ namespace ic {
 
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
-
+ 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
@@ -4614,10 +4614,10 @@ namespace ic {
         ip_svec_2 = ip_svec_2.Unit();
         ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
 
-        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
-        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
-        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
-        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_1_down_= ip_sig_1_ -0.25*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.25*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.25*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.25*(ip_sig_2_-ip_sig_2_raw_);
 
       } else {
         ip_sig_1_raw_= ip_sig_1_;
