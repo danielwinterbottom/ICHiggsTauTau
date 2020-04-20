@@ -54,8 +54,8 @@ def checkJobs(year, to_check):
 
     print("{} incomplete files".format(counter))
 
-    print('jobs with warnings:')
-    for x in jobs_with_warnings: print x
+    #print('jobs with warnings:')
+    #for x in jobs_with_warnings: print x
 
 if __name__ == "__main__":
     checkJobs(**vars(parse_arguments()))

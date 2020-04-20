@@ -460,6 +460,36 @@ if SCHEME == 'control_plots':
   }
   ANA = 'sm'
 
+if SCHEME == 'sync':
+  VAR_MVIS = 'm_vis(20,0,200)'
+  VAR_DIJET = 'm_vis,sjdphi(20,0,200),(8,-3.2,3.2)'
+  ADD_STRING_MT = ' ' #' --set_alias "sel:(mt_1<50)" '
+  scheme_et = [
+  ]
+  scheme_mt = [
+    ("17",   "inclusive",  "inclusive",        VAR_MVIS,   ' --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2&&pt_2>30)" '),
+    ("17",   "inclusive",  "0jet",        VAR_MVIS,   ' --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2&&pt_2>30&&n_jets==0)" '),
+    ("17",   "inclusive",  "boosted",        VAR_MVIS,   ' --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2&&pt_2>30&&(n_jets==1||(n_jets>1&&mjj<300)))" '),
+    ("17",   "inclusive",  "vbf",        VAR_DIJET,   ' --set_alias="inclusive:(n_bjets==0&&n_loose_bjets<2&&pt_2>30&&n_jets>1&&mjj>300)" '),
+
+  ]
+  scheme_tt = [
+    ("17",   "inclusive",  "inclusive",        VAR_MVIS,   ' --set_alias="inclusive:(pt_1>40)" '),
+    ("17",   "inclusive",  "0jet",        VAR_MVIS,   ' --set_alias="inclusive:(pt_1>40&&n_jets==0)" '),
+    ("17",   "inclusive",  "boosted",        VAR_MVIS,   ' --set_alias="inclusive:(pt_1>40&&(n_jets==1||(n_jets>1&&jdeta<2.5)))" '),
+    ("17",   "inclusive",  "vbf",        VAR_DIJET,   ' --set_alias="inclusive:(pt_1>40&&n_jets>1&&jdeta>2.5)" '),
+  ]
+  scheme_em = [
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
+
 
 cat_schemes = {
   'et' : scheme_et,
@@ -482,8 +512,8 @@ for ch in channels:
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
         if options.embedding: extra+=' --embedding '
-        if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_btag\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
+        if ch in ['em','et','mt'] and SCHEME != 'sync': extra+=' --add_wt=\"wt_btag\" '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'sync': extra+=' --do_ff_systs '
 
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 

@@ -210,7 +210,7 @@ int HTTWeights::PreAnalysis() {
     fns_["t_trg_35_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_pog_deeptau_medium_ditau_ratio")->functor(w_->argSet("t_pt,t_dm")));
     fns_["t_trg_35_embed_ratio"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_mediumDeepTau_ditau_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+        w_->function("t_trg_mediumDeepTau_ditau_embed_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
     fns_["t_trg_35_embed"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_ditau_embed")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 

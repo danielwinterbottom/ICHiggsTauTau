@@ -748,12 +748,12 @@ if options.channel == 'tt':
     cats["inclusive_pipi"]     = "(tau_decay_mode_1==0 && ip_sig_1>=1.5 && tau_decay_mode_2==0 && ip_sig_2>=1.5)"
 
 
-    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvapirho_up"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
     cats["inclusive_mvaa1pi_up"]     = "((mva_dm_1==10 && ip_sig_2_up>=1.5 && mva_dm_2==0) || (ip_sig_1_up>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
     cats["inclusive_mvapipi_up"]     = "(mva_dm_1==0 && ip_sig_1_up>=1.5 && ip_sig_2_up>=1.5 && mva_dm_2==0)"
     cats["inclusive_mvapi0a1_up"]     = "((mva_dm_1==0 && ip_sig_1_up>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_up>=1.5))"
 
-    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
+    cats["inclusive_mvapirho_down"]       = "((tau_decay_mode_1==1 && mva_dm_1==1 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down>=1.5 && mva_dm_1==0 && tau_decay_mode_2==1 && mva_dm_2==1))"
     cats["inclusive_mvaa1pi_down"]     = "((mva_dm_1==10 && ip_sig_2_down>=1.5 && mva_dm_2==0) || (ip_sig_1_down>=1.5 && mva_dm_2==0 && mva_dm_2==10))"
     cats["inclusive_mvapipi_down"]     = "(mva_dm_1==0 && ip_sig_1_down>=1.5 && ip_sig_2_down>=1.5 && mva_dm_2==0)"
     cats["inclusive_mvapi0a1_down"]     = "((mva_dm_1==0 && ip_sig_1_down>=1.5 && tau_decay_mode_2==1 && mva_dm_2==2) || (tau_decay_mode_1==1 && mva_dm_1==2 && mva_dm_2==0 && ip_sig_2_down>=1.5))"
@@ -805,6 +805,9 @@ if options.channel == 'tt':
 
 
     cats['higgs_mvaa10a1']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa10a1"])
+
+    cats['zttEmbed_mvaa10a1']      = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvaa10a1"])
+    cats['jetFakes_mvaa10a1']      = '({} && {})'.format(mva_jetFakes, cats["inclusive_mvaa10a1"])
 
     cats['higgs']      = '({})'.format(mva_ggh)
     cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
@@ -1496,7 +1499,7 @@ if options.era in ['cp18']:
 if options.method==0: ztt_samples+=ewkz_samples
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
-if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'}
+if options.era in ["smsummer16"]: sm_samples = { 'ggH_htt*' : 'GluGluToHToTauTau_M-*', 'qqH_htt*' : 'VBFHToTauTau_M-*', 'WplusH_htt*' : 'WplusHToTauTau_M-*', 'WminusH_htt*' : 'WminusHToTauTau_M-*', 'ZH_htt*' : 'ZHToTauTau_M-*'}
 
 
 if options.analysis in ['cpprod']: 
@@ -1504,55 +1507,51 @@ if options.analysis in ['cpprod']:
   if options.era == 'legacy16':
     sm_samples = { 
 
-         'ggH_ph_htt' : 'GluGluToHToTauTau_M-125', 
-         'qqH_htt' : 'VBFHToTauTau_M-125',
-         'WplusH_htt': 'WplusHToTauTau_M-125',
-         'WminusH_htt': 'WminusHToTauTau_M-125',
-         'ZH_htt': 'ZHToTauTau_M-125',
-         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX'] , 
-         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX'], 
-         'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX'],
+         'ggh*_powheg' : 'GluGluToHToTauTau_M-125', 
+         'vbf*_powheg' : 'VBFHToTauTau_M-125',
+         'wplush*_powheg': 'WplusHToTauTau_M-125',
+         'wminush*_powheg': 'WminusHToTauTau_M-125',
+         'zh*_powheg': 'ZHToTauTau_M-125',
+         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
     }
 
 # 2017
 
   if options.era == 'cpsummer17':
     sm_samples = {
-         'ggH_ph_htt' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
-         'qqH_htt' : 'VBFHToTauTau_M-125',
-         'WplusH_htt': 'WplusHToTauTau_M-125',
-         'WminusH_htt': 'WminusHToTauTau_M-125',
-         'ZH_htt': 'ZHToTauTau_M-*',
-         'ggHsm_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
-         'ggHmm_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ZHps_htt' : 'ZHiggs0MToTauTau',
-         'ZHsm_htt' : 'ZHiggs0PMToTauTau',
-         'ZHmm_htt' : 'ZHiggs0Mf05ph0ToTauTau',
-         'qqHsm_htt' : 'VBFHiggs0PMToTauTau',
-         'qqHps_htt' :'VBFHiggs0MToTauTau',
-         'qqHmm_htt' : 'VBFHiggs0Mf05ph0ToTauTau',
-         'WHps_htt' :'WHiggs0MToTauTau',
-         'WHmm_htt' : 'WHiggs0Mf05ph0ToTauTau',
-         'WHsm_htt' : 'WHiggs0PMToTauTau',
+         'ggh*_powheg' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
+         'vbf*_powheg' : 'VBFHToTauTau_M-125',
+         'wplush*_powheg': 'WplusHToTauTau_M-125',
+         'wminush*_powheg': 'WminusHToTauTau_M-125',
+         'zh*_powheg': 'ZHToTauTau_M-125',
+         'ZHps_htt*' : 'ZHiggs0MToTauTau',
+         'ZHsm_htt*' : 'ZHiggs0PMToTauTau',
+         'ZHmm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
+         'qqHsm_htt*' : 'VBFHiggs0PMToTauTau',
+         'qqHps_htt*' :'VBFHiggs0MToTauTau',
+         'qqHmm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
+         'WHps_htt*' :'WHiggs0MToTauTau',
+         'WHmm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
+         'WHsm_htt*' : 'WHiggs0PMToTauTau',
+         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
     }
 
 # 2018
 
   if options.era == 'cp18':
     sm_samples = {
-         'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
-         'qqH_htt' : 'VBFHToTauTau_M-125-ext1',
-         'WplusH_htt': 'WplusHToTauTau_M-125',
-         'WminusH_htt': 'WminusHToTauTau_M-125',
-         'ZH_htt': 'ZHToTauTau_M-125',
-         'ggHsm_old_htt' : ['GluGluToHToTauTau_M*_amcatnloFXFX','GluGluToHToTauTauPlusTwoJets_M*_amcatnloFXFX'] ,
-         'ggHmm_old_htt' : ['GluGluToMaxmixHToTauTau_M*_amcatnloFXFX','GluGluToMaxmixHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         'ggHps_old_htt' : ['GluGluToPseudoscalarHToTauTau_M*_amcatnloFXFX','GluGluToPseudoscalarHToTauTauPlusTwoJets_M*_amcatnloFXFX'],
-         #"ggH_sm_htt": "GluGluToHToTauTau_M-125-nospinner-filter",
-         'ggHsm_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'ggHmm_htt' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'ggHps_htt' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets'],
+         'ggh*_powheg' : 'GluGluHToTauTau_M-125',
+         'vbf*_powheg' : 'VBFHToTauTau_M-125-ext1',
+         'wplush*_powheg': 'WplusHToTauTau_M-125',
+         'wminush*_powheg': 'WminusHToTauTau_M-125',
+         'zh*_powheg': 'ZHToTauTau_M-125',
+         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
     }
 
 
@@ -1560,69 +1559,74 @@ if options.analysis in ['cpdecay']:
 
   if options.era == 'legacy16':
     sm_samples = {
-       'ggH_ph_htt' : 'GluGluToHToTauTau_M-125',
-       'qqH_ph_htt' : 'VBFHToTauTau_M-125',
-       "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-       "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-       "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-       "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-       "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-       "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-       "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-       "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-       "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-       "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-       "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-       "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-       "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
-       "ZH_ph_htt": 'ZHToTauTau_M-125', 
-
+       'ggH_ph_htt*' : 'GluGluToHToTauTau_M-125',
+       'qqH_ph_htt*' : 'VBFHToTauTau_M-125',
+       "qqH_sm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_ps_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_mm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_sm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_ps_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "ggH_mm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "WH_sm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_ps_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "WH_mm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+       "ZH_sm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_ps_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+       "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
+       "ZH_ph_htt*": 'ZHToTauTau_M-125', 
+       "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
 # for 2017
   if options.era == 'cpsummer17':
     sm_samples = {
-        'ggH_ph_htt' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
-        'qqH_ph_htt' : 'VBFHToTauTau_M-125',
-        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
-        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-        "ZH_ph_htt": 'ZHToTauTau_M-125', 
+        'ggH_ph_htt*' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
+        'qqH_ph_htt*' : 'VBFHToTauTau_M-125',
+        "qqH_sm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_sm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered", 
+        "WH_sm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt*": 'ZHToTauTau_M-125',
+        "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered", 
     }
 
   if options.era == 'cp18':
     sm_samples = {
         # test CP in decay samples
-        'ggH_ph_htt' : 'GluGluHToTauTau_M-125',
-        'qqH_ph_htt' : 'VBFHToTauTau_M-125-ext1',
-        "qqH_sm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "qqH_ps_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "qqH_mm_htt": "VBFHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_sm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_ps_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "ggH_mm_htt": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-        "WH_sm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "WH_ps_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "WH_mm_htt" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
-        "ZH_sm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "ZH_ps_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "ZH_mm_htt": 'ZHToTauTauUncorrelatedDecay_Filtered',
-        "WH_ph_htt": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-        "ZH_ph_htt": 'ZHToTauTau_M-125',  
+        'ggH_ph_htt*' : 'GluGluHToTauTau_M-125',
+        'qqH_ph_htt*' : 'VBFHToTauTau_M-125-ext1',
+        "qqH_sm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_ps_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_mm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_sm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_ps_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "ggH_mm_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "WH_sm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_ps_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "WH_mm_htt*" : ['WplusHToTauTauUncorrelatedDecay_Filtered','WminusHToTauTauUncorrelatedDecay_Filtered'],
+        "ZH_sm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_ps_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
+        "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+        "ZH_ph_htt*": 'ZHToTauTau_M-125',  
+        "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
 
-if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
+if options.analysis == 'mssm': sm_samples = { 'ggH*' : 'GluGluToHToTauTau_M-*', 'qqH*' : 'VBFHToTauTau_M-*', 'WplusH*' : 'WplusHToTauTau_M-*', 'WminusH*' : 'WminusHToTauTau_M-*', 'ZH*' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
 mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
@@ -1814,25 +1818,25 @@ if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dije
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
 if options.syst_qcd_scale != '' and options.era != 'smsummer16':
-    systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', 'wt*wt_qcdscale_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
-    systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', 'wt*wt_qcdscale_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', 'wt*wt_qcdscale_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*'], False)
+    systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', 'wt*wt_qcdscale_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*'], False)
 if options.syst_quarkmass != '':
-    systematics['syst_quarkmass_up'] = ('' , '_'+options.syst_quarkmass+'Up', 'wt*wt_quarkmass', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
-    systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt*((1./wt_quarkmass-1.)*0.05 + 1.)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt'], False)
+    systematics['syst_quarkmass_up'] = ('' , '_'+options.syst_quarkmass+'Up', 'wt*wt_quarkmass', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*'], False)
+    systematics['syst_quarkmass_down'] = ('' , '_'+options.syst_quarkmass+'Down', 'wt*((1./wt_quarkmass-1.)*0.05 + 1.)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*'], False)
 if options.syst_ps != '':
     if '*PS' in options.syst_ps:
       hist_name_fsr = options.syst_ps.replace('*PS','PS_FSR')
       hist_name_isr = options.syst_ps.replace('*PS','PS_ISR')
-      systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*wt_ps_fsr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-      systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*wt_ps_fsr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-      systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*wt_ps_isr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-      systematics['syst_ps_isr_down'] = ('' , '_'+hist_name_isr+'Down', 'wt*wt_ps_isr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*wt_ps_fsr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*wt_ps_fsr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*wt_ps_isr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_isr_down'] = ('' , '_'+hist_name_isr+'Down', 'wt*wt_ps_isr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
     else: 
-      systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-      systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+      systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
 if options.syst_ue != '':
-    systematics['syst_ue_up'] = ('' , '_'+options.syst_ue+'Up', 'wt*wt_ue_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
-    systematics['syst_ue_down'] = ('' , '_'+options.syst_ue+'Down', 'wt*wt_ue_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt','ggHsm_jhu_htt','ggHps_jhu_htt','ggHmm_jhu_htt'], False)
+    systematics['syst_ue_up'] = ('' , '_'+options.syst_ue+'Up', 'wt*wt_ue_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+    systematics['syst_ue_down'] = ('' , '_'+options.syst_ue+'Down', 'wt*wt_ue_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
 if options.syst_tau_id_dm0 != '':
     systematics['syst_tau_id_dm0_up'] = ('' , '_'+options.syst_tau_id_dm0+'Up', 'wt*wt_tau_id_dm0_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_tau_id_dm0_down'] = ('' , '_'+options.syst_tau_id_dm0+'Down', 'wt*wt_tau_id_dm0_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
@@ -2879,7 +2883,7 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
                   for i in sm_samples[key]: 
                     sample_names.append(i.replace('*',mass))
                 else: sample_names = [sm_samples[key].replace('*',mass)]
-                ana.nodes[nodename].AddNode(ana.SummedFactory(key+add_str+add_name, sample_names, plot, full_selection))
+                ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',add_str)+add_name, sample_names, plot, full_selection))
             
 def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
     if get_os:
@@ -2910,7 +2914,7 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
 # for CP signals
 # need to multiply by the weights wt_cp_sm/ps/mm
 def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
-    weights = {"sm": "wt_cp_sm", "ps": "wt_cp_ps", "mm": "wt_cp_mm"}
+    weights = {"sm": "wt_cp_sm*wt_ph_nnlops", "ps": "wt_cp_ps*wt_ph_nnlops", "mm": "wt_cp_mm*wt_ph_nnlops", "flat": "wt_ph_nnlops"}
     if get_os: 
         OSSS = 'os'
     else: 
@@ -2922,7 +2926,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
         for name in weights:
             if key.split("_")[1] == name:
                 non_cp=False
-                weight=wt+"*"+weights[name]#+"*wt_ph_nnlops"
+                weight=wt+"*"+weights[name]
                 full_selection = BuildCutString(weight, sel, cat, OSSS)
                 name = key
 
@@ -2931,7 +2935,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
                   for i in sm_samples[key]:
                     sample_names.append(i.replace('*',mass))
                 else: sample_names = [sm_samples[key].replace('*',mass)]
-                ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
+                ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
                 #ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample, plot, full_selection))
         if non_cp:
              full_selection = BuildCutString(wt, sel, cat, OSSS)
@@ -2943,7 +2947,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
                for i in sm_samples[key]:
                  sample_names.append(i.replace('*',mass))
              else: sample_names = [sm_samples[key].replace('*',mass)]
-             ana.nodes[nodename].AddNode(ana.SummedFactory(key+mass+add_name, sample_names, plot, full_selection))
+             ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
 
 
@@ -3451,6 +3455,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     doZL  = 'ZL'  not in samples_to_skip
     doZJ  = 'ZJ'  not in samples_to_skip
     
+    zll_samples=list(ztt_samples)
+    if options.analysis in ['cpdecay']: zll_samples+=ewkz_samples
+
     # produce template for observed data
     if do_data:
         if options.do_ss:
@@ -3476,10 +3483,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
+            if do_data: GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
+            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
@@ -3519,7 +3527,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
@@ -4220,7 +4228,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
   hists_to_add = []
   for key in directory.GetListOfKeys():
     hist_name = key.GetName()  
-    if 'WminusH' in hist_name:
+    if 'wminush' in hist_name.lower():
       hist_to_add_name = hist_name.replace('minus', 'plus')  
       hist = directory.Get(hist_name).Clone()
       hist_to_add = directory.Get(hist_to_add_name).Clone()
@@ -4228,6 +4236,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hist.SetName(hist_name.replace('minus',''))
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
-      
+
+
 outfile.Close()
 

@@ -1,4 +1,4 @@
-# python scripts/runAddSVFits.py --path /vols/cms/akd116/Offline/output/SM/2019/CP_2018_v5/ --svfit_path /vols/cms/akd116/Offline/output/SM/2019/2018_nominalSVFit/ --year 2018 --tag svfit_mass --channel tt
+#python scripts/runAddSVFitsNew.py --path /vols/cms/dw515/Offline/output/SM/Mar27_2018/ --svfit_path /vols/cms/dw515/Offline/output/SM/Jan24_2018_svfit/ --year 2018 --tag svfit_mass --channel tt
 
 import glob
 import yaml
@@ -78,16 +78,11 @@ def main(args):
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-            if sample not in [
-           #   'DYJetsToLL-LO-ext1',
-              'ZHToTauTauUncorrelatedDecay_Filtered',
-           #   #'TTToHadronic',
-              'WplusHToTauTauUncorrelatedDecay_Filtered',
-              'WminusHToTauTauUncorrelatedDecay_Filtered',
-              'VBFHToTauTauUncorrelatedDecay_Filtered',
-              'GluGluHToTauTauUncorrelatedDecay_Filtered',
-
-            ]: continue
+           # if sample not in [
+           #   'VBFHToTauTauUncorrelatedDecay_Filtered',
+           #   'GluGluHToTauTauUncorrelatedDecay_Filtered',
+           #
+           # ]: continue
 
             print sample
 
