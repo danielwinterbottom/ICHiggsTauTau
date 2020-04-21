@@ -944,7 +944,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   }
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
-  std::cout << mode << std::endl;
   
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)

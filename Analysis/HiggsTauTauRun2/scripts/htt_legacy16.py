@@ -469,7 +469,7 @@ if options.proc_bkg or options.proc_all:
       user = 'mhassans'
       PREFIX='Jan24_MC_102X_2016'
       if sa.startswith('TTTo'):
-        BKG_FILELIST = 'Mar20_2016_MC_102X'
+        BKG_FILELIST = './filelists/Mar20_2016_MC_102X'
         user='dwinterb'
         PREFIX='Mar20_MC_102X_2016'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(BKG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
@@ -517,7 +517,7 @@ if options.proc_bkg or options.proc_all:
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_all:
-  SIG_FILELIST = 'Mar20_2016_MC_102X'
+  SIG_FILELIST = './filelists/Mar20_2016_MC_102X'
   user = "dwinterb"
   for sa in signal_mc:
     JOB='%s_2016' % (sa)

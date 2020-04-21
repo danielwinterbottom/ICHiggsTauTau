@@ -496,7 +496,7 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.mg_signal or options.proc_sm:
-  SIG_FILELIST = 'Mar20_2017_MC_102X'
+  SIG_FILELIST = './filelists/Mar20_2017_MC_102X'
   PREFIX = 'Mar20_MC_102X_2017'
   for sa in signal_mc:
     user='dwinterb'
