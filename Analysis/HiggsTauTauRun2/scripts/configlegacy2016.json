@@ -152,7 +152,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_et_lite_2016.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2016.root",
         "ff_fracs_file" : ""
           }
     },

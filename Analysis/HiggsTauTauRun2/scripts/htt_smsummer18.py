@@ -72,11 +72,19 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
+parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
+                  help="Do JES, JER, and MET uncertainties")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
+
+jetuncert_string=''
+if options.jetmetuncerts:
+  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+else:
+  jetuncert_string='\\"do_jetmet_uncerts\\": false'
 
 def getParaJobSubmit(N):
     if not options.submit: return 'true'
@@ -148,6 +156,12 @@ flatjsons = []
 #    flatjsonlistdysig.remove(i)
 #    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
 #    if scale < 1: scale = 1
+if options.jetmetuncerts:
+# when we do the jet met uncertainties we do not want to run additional systematics in the same job 
+  for i in flatjsonlistdysig:
+    if 'default' in i:
+      flatjsons.append('job:sequences:all:'+i)
+      flatjsonlistdysig.remove(i)
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
@@ -177,21 +191,13 @@ if options.proc_sm or options.proc_all:
       'GluGluHToTauTauUncorrelatedDecay_Filtered',
       'GluGluHToTauTau_M-125',
       'GluGluHToWWTo2L2Nu_M-125',
-      #'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      #'GluGluToHToTauTau_M-125-nospinner-filter',
-      #'GluGluToHToTauTau_M-125-nospinner',
-      #'GluGluToHToTauTau_M125_amcatnloFXFX',
-      #'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      #'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-      #'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-      #'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
       'JJH0MToTauTauPlusOneJets',
       'JJH0MToTauTauPlusOneJets_Filtered',
       'JJH0MToTauTauPlusTwoJets',
       'JJH0MToTauTauPlusTwoJets_Filtered',
       'JJH0MToTauTauPlusZeroJets',
       'JJH0MToTauTauPlusZeroJets_Filtered',
-      'JJH0Mf05ph0ToTauTauPlusOneJets.dat',
+      'JJH0Mf05ph0ToTauTauPlusOneJets',
       'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
       'JJH0Mf05ph0ToTauTauPlusTwoJets',
       'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
@@ -203,17 +209,9 @@ if options.proc_sm or options.proc_all:
       'JJH0PMToTauTauPlusTwoJets_Filtered',
       'JJH0PMToTauTauPlusZeroJets',
       'JJH0PMToTauTauPlusZeroJets_Filtered',
-      'JJHiggs0MToTauTau',
-      'JJHiggs0Mf05ph0ToTauTau',
-      'JJHiggs0PMToTauTau',
       'VBFHToTauTauUncorrelatedDecay',
       'VBFHToTauTauUncorrelatedDecay_Filtered',
-      #'VBFHToTauTau_M-125-MM-filter',
-      #'VBFHToTauTau_M-125-PS-filter',
-      #'VBFHToTauTau_M-125-SM-filter',
       'VBFHToTauTau_M-125-ext1',
-      #'VBFHToTauTau_M-125-nospinner-filter',
-      #'VBFHToTauTau_M-126-nospinner',
       'VBFHToWWTo2L2Nu_M-125',
       'VBFHiggs0L1ToTauTau',
       'VBFHiggs0L1ZgToTauTau',
@@ -230,7 +228,7 @@ if options.proc_sm or options.proc_all:
       'WHiggs0Mf05ph0ToTauTau',
       'WHiggs0PHToTauTau',
       'WHiggs0PHf05ph0ToTauTau',
-      'WHiggs0PMToTauTau.dat',
+      'WHiggs0PMToTauTau',
       'WminusHToTauTauUncorrelatedDecay',
       'WminusHToTauTauUncorrelatedDecay_Filtered',
       'WminusHToTauTau_M-125',
@@ -248,9 +246,6 @@ if options.proc_sm or options.proc_all:
       'ZHiggs0PHToTauTau',
       'ZHiggs0PHf05ph0ToTauTau',
       'ZHiggs0PMToTauTau',
-      'ttHiggs0MToTauTau',
-      'ttHiggs0Mf05ph0ToTauTau',
-      'ttHiggs0PMToTauTau',
 
     ]
 
@@ -362,12 +357,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Jan06_2018_MC_102X"
+    EMBEDFILELIST="./filelists/Mar20_2018_MC_102X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Mar20_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             #if 'ElTau' in sa: nperjob = 10
@@ -459,8 +454,8 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan24_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan24_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        print JSONPATCH
         job_num=0
         for FLATJSONPATCH in flatjsons:
             #nperjob = 40
@@ -476,8 +471,8 @@ if options.proc_bkg or options.proc_all:
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
 
-            #if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
-            #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
+            if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
+
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -506,15 +501,10 @@ if options.mg_signal or options.proc_sm:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
         user='dwinterb'
-        SIG_FILELIST = FILELIST
-        SIG_DIR = 'Jan24_MC_102X_2018'
+        SIG_FILELIST = 'Mar20_2018_MC_102X'
+        SIG_DIR = 'Mar20_MC_102X_2018'
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-        if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-            # use input/pileup/2018/pileup_2018_DYJetsToLL-2017.root in this case
-            # for the 2017 MG ggH signal samples
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2018/pileup_2018_DYJetsToLL-LO.root\",\"trg_in_mc\":false}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
         job_num=0
         for FLATJSONPATCH in flatjsons:
@@ -530,8 +520,9 @@ if options.mg_signal or options.proc_sm:
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/5)) 
+
+                if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
  
-                #if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                     os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
                     if not parajobs and not options.condor:
