@@ -150,14 +150,14 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
      gen_ip_1.SetXYZ(0.,0.,0.);
    } else if(leptonsize!=0) {
      GenParticle *t = leading_lepton_match.at(0).second;
-     TVector3 gen_ip_1 = GenIP(h,t);
+     gen_ip_1 = GenIP(h,t);
    } else if (tausize!=0) {
      std::vector<std::size_t> daughter_ids = leading_tau_match.at(0).second->constituents();
      bool found=false;
      for (auto id: daughter_ids) {
        for(auto p: particles) {
          if(p->id() == id && p->charge()!=0) {
-           TVector3 gen_ip_1 = GenIP(h,p);
+           gen_ip_1 = GenIP(h,p);
            found=true;
            break; 
          }
@@ -214,14 +214,14 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
      gen_ip_2.SetXYZ(0.,0.,0.);
    } else if(leptonsize!=0) {
      GenParticle *t = subleading_lepton_match.at(0).second;
-     TVector3 gen_ip_2 = GenIP(h,t);
+     gen_ip_2 = GenIP(h,t);
    } else if (tausize!=0) {
      std::vector<std::size_t> daughter_ids = subleading_tau_match.at(0).second->constituents();
      bool found=false;
      for (auto id: daughter_ids) {
        for(auto p: particles) {
          if(p->id() == id && p->charge()!=0) {
-           TVector3 gen_ip_2 = GenIP(h,p);
+           gen_ip_2 = GenIP(h,p);
            found=true;
            break;
          }

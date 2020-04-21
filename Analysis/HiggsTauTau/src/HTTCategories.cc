@@ -83,6 +83,7 @@ namespace ic {
         else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/ip_corrs/ip_2018.root";
       }
       ipCorrector.Init(ip_corr_filename);
+      std::cout << ip_corr_filename << std::endl;
     }
 
 
@@ -1359,6 +1360,13 @@ namespace ic {
       synctree_->Branch("ipx_2", &ipx_2_);
       synctree_->Branch("ipy_2", &ipy_2_);
       synctree_->Branch("ipz_2", &ipz_2_);
+
+      synctree_->Branch("gen_ipx_1", &gen_ipx_1_);
+      synctree_->Branch("gen_ipy_1", &gen_ipy_1_);
+      synctree_->Branch("gen_ipz_1", &gen_ipz_1_);
+      synctree_->Branch("gen_ipx_2", &gen_ipx_2_);
+      synctree_->Branch("gen_ipy_2", &gen_ipy_2_);
+      synctree_->Branch("gen_ipz_2", &gen_ipz_2_);
 
       // refitted vertex parameters
       synctree_->Branch("pvx", &pvx_);
@@ -4512,6 +4520,15 @@ namespace ic {
     TVector3 ipgen1(0.,0.,0.);
     TVector3 ipgen2(0.,0.,0.);
 
+    gen_ipx_1_ = -9999.;
+    gen_ipy_1_ = -9999.;
+    gen_ipz_1_ = -9999.;
+    gen_ipx_2_ = -9999.;
+    gen_ipy_2_ = -9999.;
+    gen_ipz_2_ = -9999.;
+
+    use_refitted_vertex_ = false;
+
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
@@ -4556,7 +4573,6 @@ namespace ic {
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
-      use_refitted_vertex_ = false;
       for(auto v : refit_vertex_vec) {
         if(v->id() == tau1->id()+tau2->id()) {
           refit_vertex = v; 
@@ -4986,6 +5002,14 @@ namespace ic {
       ipy_2_ = ip2.Y();
       ipz_2_ = ip2.Z();
 
+      // gen IP
+      gen_ipx_1_ = ipgen1.X();
+      gen_ipy_1_ = ipgen1.Y();
+      gen_ipz_1_ = ipgen1.Z();
+      gen_ipx_2_ = ipgen2.X();
+      gen_ipy_2_ = ipgen2.Y();
+      gen_ipz_2_ = ipgen2.Z();
+
       // primary vertex
       pvx_ = primary_vtx->vx();
       pvy_ = primary_vtx->vy();
@@ -5024,7 +5048,10 @@ namespace ic {
       ic::Vertex* refit_vertex = new ic::Vertex();
       if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
-        if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
+        if(v->id() == muon1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        }
       }
 
       auto primary_vtx = refit_vertex;
@@ -5220,6 +5247,14 @@ namespace ic {
       ipx_2_ = ip2.X();
       ipy_2_ = ip2.Y();
       ipz_2_ = ip2.Z();
+
+      // gen IP
+      gen_ipx_1_ = ipgen1.X();
+      gen_ipy_1_ = ipgen1.Y();
+      gen_ipz_1_ = ipgen1.Z();
+      gen_ipx_2_ = ipgen2.X();
+      gen_ipy_2_ = ipgen2.Y();
+      gen_ipz_2_ = ipgen2.Z();
 
       // primary vertex
       pvx_ = primary_vtx->vx();

@@ -1423,12 +1423,12 @@ BuildModule(jetIDFilter);
 }
 
 // Apply loose PUJID universally
-BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
-  .set_input_label(jets_label)
-  .set_predicate([=](PFJet const* jet) {
-    return  PileupJetID(jet, pu_id_training, false, true);
-  })
-);
+//BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+//  .set_input_label(jets_label)
+//  .set_predicate([=](PFJet const* jet) {
+//    return  PileupJetID(jet, pu_id_training, false, true);
+//  })
+//);
 
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
