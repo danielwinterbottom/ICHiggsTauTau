@@ -807,10 +807,20 @@ namespace ic {
       synctree_->Branch("ipy_2", &ipy_2_);
       synctree_->Branch("ipz_2", &ipz_2_);
 
+      synctree_->Branch("gen_ipx_1", &gen_ipx_1_);
+      synctree_->Branch("gen_ipy_1", &gen_ipy_1_);
+      synctree_->Branch("gen_ipz_1", &gen_ipz_1_);
+      synctree_->Branch("gen_ipx_2", &gen_ipx_2_);
+      synctree_->Branch("gen_ipy_2", &gen_ipy_2_);
+      synctree_->Branch("gen_ipz_2", &gen_ipz_2_);
+
       // refitted vertex parameters
       synctree_->Branch("pvx", &pvx_);
       synctree_->Branch("pvy", &pvy_);
       synctree_->Branch("pvz", &pvz_);
+
+      // bool for refitted vertex
+      synctree_->Branch("use_refitted_vertex", & use_refitted_vertex_);
 
       synctree_->Branch("tDeepTau2017v2p1VSjetraw_1",      &iso_1_);
       synctree_->Branch("tDeepTau2017v2p1VSjetraw_2",      &iso_2_);
@@ -2049,6 +2059,16 @@ namespace ic {
     ipx_2_ = -9999.;
     ipy_2_ = -9999.;
     ipz_2_ = -9999.;
+
+    gen_ipx_1_ = -9999.;
+    gen_ipy_1_ = -9999.;
+    gen_ipz_1_ = -9999.;
+    gen_ipx_2_ = -9999.;
+    gen_ipy_2_ = -9999.;
+    gen_ipz_2_ = -9999.;
+
+    use_refitted_vertex_ = false;
+
     TVector3 ipgen1(0.,0.,0.);
     TVector3 ipgen2(0.,0.,0.);
 
@@ -2085,7 +2105,10 @@ namespace ic {
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
-        if(v->id() == tau1->id()+tau2->id()) refit_vertex = v; 
+        if(v->id() == tau1->id()+tau2->id()) {
+          refit_vertex = v; 
+          use_refitted_vertex_ = true;
+        }
       }
 
       std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(tau1, refit_vertex, pfcands);
@@ -2159,9 +2182,11 @@ namespace ic {
         ip_sig_2_down_= ip_sig_2_;
       }
 
+      // uncorrected IP
       //TVector3 ip1 = (ipandsig_1.first).Unit();
       //TVector3 ip2 = (ipandsig_2.first).Unit();
 
+      // corrected IP
       TVector3 ip1 = ip_corrected_1.Unit();
       TVector3 ip2 = ip_corrected_2.Unit();
 
@@ -2474,6 +2499,14 @@ namespace ic {
       ipy_2_ = ip2.Y();
       ipz_2_ = ip2.Z();
 
+      // gen IP
+      gen_ipx_1_ = ipgen1.X();
+      gen_ipy_1_ = ipgen1.Y();
+      gen_ipz_1_ = ipgen1.Z();
+      gen_ipx_2_ = ipgen2.X();
+      gen_ipy_2_ = ipgen2.Y();
+      gen_ipz_2_ = ipgen2.Z();
+
       // primary vertex
       pvx_ = primary_vtx->vx();
       pvy_ = primary_vtx->vy();
@@ -2506,7 +2539,10 @@ namespace ic {
       ic::Vertex* refit_vertex = new ic::Vertex();
       if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
-        if(v->id() == muon1->id()+tau2->id())refit_vertex = v;
+        if(v->id() == muon1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        }
       }
 
       auto primary_vtx = refit_vertex;
@@ -2524,9 +2560,77 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip_corrected_1 = ipandsig_1.first;
+      TVector3 ip_corrected_2 = ipandsig_2.first;
 
-      TVector3 ip1 = (ipandsig_1.first).Unit();
-      TVector3 ip2 = (ipandsig_2.first).Unit();
+      if(!is_data_) {
+
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovMuon(muon1, refit_vertex);
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+
+        ip_corrected_1 = ipCorrector.correctIp(
+                         ipandsig_1.first,
+                         ipgen1,
+                         fabs(lep1->eta())
+        );
+
+        ip_corrected_2 = ipCorrector.correctIp(
+                         ipandsig_2.first,
+                         ipgen2,
+                         fabs(lep2->eta())
+        );
+
+
+        // Correct IP covariance matrix
+        CovMatrix cov_corrected_1 = ipCorrector.correctIpCov(
+                    ipandcov_1.second, 
+                    fabs(lep1->eta())
+        );
+
+        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+                    ipandcov_2.second,
+                    fabs(lep2->eta())
+        );
+
+        ROOT::Math::SVector<double, 3> ip_svec_1;
+        ip_svec_1(0) = ip_corrected_1.X();
+        ip_svec_1(1) = ip_corrected_1.Y();
+        ip_svec_1(2) = ip_corrected_1.Z();
+        ip_svec_1 = ip_svec_1.Unit();
+        ip_sig_1_ = ip_corrected_1.Mag()/sqrt(ROOT::Math::Dot( ip_svec_1, cov_corrected_1 * ip_svec_1));
+
+        ROOT::Math::SVector<double, 3> ip_svec_2;
+        ip_svec_2(0) = ip_corrected_2.X();
+        ip_svec_2(1) = ip_corrected_2.Y();
+        ip_svec_2(2) = ip_corrected_2.Z();
+        ip_svec_2 = ip_svec_2.Unit();
+        ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
+
+        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+
+      } else {
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+        ip_sig_1_up_= ip_sig_1_;
+        ip_sig_2_up_= ip_sig_2_;
+        ip_sig_1_down_= ip_sig_1_;
+        ip_sig_2_down_= ip_sig_2_;
+      }
+
+      // uncorrected IP
+      //TVector3 ip1 = (ipandsig_1.first).Unit();
+      //TVector3 ip2 = (ipandsig_2.first).Unit();
+      
+      // corrected IP
+      TVector3 ip1 = ip_corrected_1.Unit();
+      TVector3 ip2 = ip_corrected_2.Unit();
+
       lvec1 = TLorentzVector(ip1, 0.);
       lvec3 = ConvertToLorentz(muon1->vector());
 
@@ -2618,6 +2722,14 @@ namespace ic {
       ipx_2_ = ip2.X();
       ipy_2_ = ip2.Y();
       ipz_2_ = ip2.Z();
+
+      // gen IP
+      gen_ipx_1_ = ipgen1.X();
+      gen_ipy_1_ = ipgen1.Y();
+      gen_ipz_1_ = ipgen1.Z();
+      gen_ipx_2_ = ipgen2.X();
+      gen_ipy_2_ = ipgen2.Y();
+      gen_ipz_2_ = ipgen2.Z();
 
       // primary vertex
       pvx_ = primary_vtx->vx();
