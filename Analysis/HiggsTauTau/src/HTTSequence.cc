@@ -513,6 +513,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  }
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+ std::cout << "---\n" << elec_shift_barrel << std::endl;
  tau_shift_1prong0pi0 = 1.0;
  tau_shift_1prong1pi0 = 1.0;
  tau_shift_3prong0pi0 = 1.0;
@@ -544,6 +545,16 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
  }
+
+tau_shift_func_1prong0pi0 = "";
+tau_shift_func_1prong1pi0 = "";
+tau_shift_func_3prong0pi0 = "";
+tau_shift_func_3prong1pi0 = "";
+if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
+if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
+if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
+if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+
  alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
 
@@ -3498,16 +3509,6 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
-  
-  //if(e_scale_mode >0 && !is_data && is_embedded){
-  //  BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-  //      .set_input_label(js["electrons"].asString())
-  //      .set_shift(elec_shift_barrel)
-  //      .set_shift_endcap(elec_shift_endcap)
-  //      .set_strategy(strategy_type)
-  //      .set_channel(channel::em)
-  //      .set_moriond_corrections(moriond_tau_scale));
-  //}
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -3546,12 +3547,22 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
@@ -3797,13 +3808,6 @@ void HTTSequence::BuildEMPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str); 
  ic::mc mc_type = String2MC(mc_str);
 
- /*if (mu_scale_mode > 0 && strategy_type == strategy::smsummer16 && is_embedded && muon_shift!=1.0){
-   BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
-      .set_input_label("muons")
-      .set_shift_label("muon_scales")
-      .set_shift(muon_shift));
- }*/
-
  if (mu_scale_mode > 0){
    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
       .set_input_label("muons")
@@ -3895,25 +3899,6 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiency")
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
 }
-
-
-
- if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15 && strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16 && strategy_type != strategy::cpsummer16 && strategy_type != strategy::legacy16 &&  strategy_type != strategy::cpdecays16 && strategy_type != strategy::cpsummer17 && strategy_type != strategy::cpdecays17 && strategy_type != strategy::cpdecays18){
-   BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-        .set_shift(tau_shift));
- }
-
- if(tau_scale_mode >0 && !is_data && (strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18)){
-    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
-        .set_shift(elec_shift_barrel)
-        .set_shift_endcap(elec_shift_endcap)
-        .set_strategy(strategy_type)
-        .set_channel(channel::em)
-        .set_moriond_corrections(moriond_tau_scale));
- }
-
   if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));
   }
@@ -3949,12 +3934,24 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
         return ElecID(e);
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    std::cout << "!!!!!!!!!!!\n" << elec_shift_barrel << std::endl;
+
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -4085,12 +4082,22 @@ void HTTSequence::BuildZEEPairs() {
         return ElecID(e) ;
       }));
 
-  if (strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) {
+  if ((strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18 || strategy_type == strategy::legacy16) && !is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
         .set_input_label(js["electrons"].asString())
         .set_e_unc_mode(e_unc_mode)
     );
   }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
@@ -4723,25 +4730,29 @@ void HTTSequence::BuildTauSelection(){
     .set_input_label("genmatched_taus_1prong0pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_1prong0pi0") 
-    .set_shift(tau_shift_1prong0pi0));
+    .set_shift(tau_shift_1prong0pi0)
+    .set_shift_func(tau_shift_func_1prong0pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
     .set_input_label("genmatched_taus_1prong1pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_1prong1pi0") 
-    .set_shift(tau_shift_1prong1pi0));
+    .set_shift(tau_shift_1prong1pi0)
+    .set_shift_func(tau_shift_func_1prong1pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
     .set_input_label("genmatched_taus_3prong0pi0")
     .set_save_shifts(true) 
     .set_shift_label("scales_taues_3prong0pi0") 
-    .set_shift(tau_shift_3prong0pi0));
+    .set_shift(tau_shift_3prong0pi0)
+    .set_shift_func(tau_shift_func_3prong0pi0));
 
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
     .set_input_label("genmatched_taus_3prong1pi0")
     .set_save_shifts(true)
     .set_shift_label("scales_taues_3prong1pi0")
-    .set_shift(tau_shift_3prong1pi0));
+    .set_shift(tau_shift_3prong1pi0)
+    .set_shift_func(tau_shift_func_3prong1pi0));
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0

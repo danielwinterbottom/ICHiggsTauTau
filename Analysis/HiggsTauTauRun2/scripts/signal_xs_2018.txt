@@ -1,0 +1,14 @@
+JJH0MToTauTauPlusZeroJets         1.959e+01  2.389e-01
+JJH0MToTauTauPlusOneJets          1.111e+01  2.438e-01
+JJH0MToTauTauPlusTwoJets          5.458e+00  2.906e-01
+JJH0PMToTauTauPlusZeroJets        1.940e+01  2.389e-01
+JJH0PMToTauTauPlusOneJets         1.104e+01  2.437e-01
+JJH0PMToTauTauPlusTwoJets         5.667e+00  2.895e-01
+JJH0Mf05ph0ToTauTauPlusZeroJets   3.903e+01  2.389e-01
+JJH0Mf05ph0ToTauTauPlusOneJets    2.231e+01  2.436e-01    
+JJH0Mf05ph0ToTauTauPlusTwoJets    1.131e+01  2.900e-01
+GluGluHToTauTauUncorrelatedDecay  2.146e+01  2.446e-01
+VBFHToTauTauUncorrelatedDecay     3.861e+00  2.695e-01
+WminusHToTauTauUncorrelatedDecay  5.412e-01  2.567e-01
+WplusHToTauTauUncorrelatedDecay   8.670e-01  2.397e-01
+ZHToTauTauUncorrelatedDecay       7.891e-01  2.512e-01
