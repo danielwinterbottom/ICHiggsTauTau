@@ -217,13 +217,14 @@ namespace ic {
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
+              //ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            //ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
+            //ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
             ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            //ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
+            //ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
             ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
@@ -240,9 +241,9 @@ namespace ic {
       systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_low_up","_qcd_syst_closure_low_down","_wjets_syst_closure_low_up","_wjets_syst_closure_low_down","_ttbar_syst_closure_low_up","_ttbar_syst_closure_low_down","_qcd_syst_closure_high_up","_qcd_syst_closure_high_down","_wjets_syst_closure_high_up","_wjets_syst_closure_high_down","_ttbar_syst_closure_high_up","_ttbar_syst_closure_high_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
 
 
-      for(auto s : systs_us_) {        
+      for(auto s : systs_us_) {   
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,mvis,pfmt")));
+              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,pfmt")));
       }
 
       // load MVA scroes reader for fractions
