@@ -603,6 +603,13 @@ class HTTCategories : public ModuleBase {
   double ipx_2_;
   double ipy_2_;
   double ipz_2_;
+  double gen_ipx_1_;
+  double gen_ipy_1_;
+  double gen_ipz_1_;
+  double gen_ipx_2_;
+  double gen_ipy_2_;
+  double gen_ipz_2_;
+  bool use_refitted_vertex_;
   double pvx_;
   double pvy_;
   double pvz_;
