@@ -611,13 +611,20 @@ if (!is_data && !is_embedded) {
    );
 }
 
-bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos);
-BuildModule(HTTPairGenInfo("HTTPairGenInfo")
-  .set_fs(fs.get())
-  .set_write_plots(false)
-  .set_ditau_label("ditau")
-  .set_channel(channel)
-  .set_ngenjets(do_ngenjets));
+BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  .set_input_label(jets_label)
+  .set_reference_label("ditau")
+  .set_min_dr(0.5));
+
+if(!is_data) {
+  bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos);
+  BuildModule(HTTPairGenInfo("HTTPairGenInfo")
+    .set_fs(fs.get())
+    .set_write_plots(false)
+    .set_ditau_label("ditau")
+    .set_channel(channel)
+    .set_ngenjets(do_ngenjets));
+}
 
 std::string scalefactor_file;
 std::string scalefactor_file_ggh;
@@ -729,12 +736,6 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
       .set_is_embedded(is_embedded)
       );
 }   
-
-
-BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-  .set_input_label(jets_label)
-  .set_reference_label("ditau")
-  .set_min_dr(0.5));
 
 std::vector<std::string> jet_met_uncerts = {""};
 if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="") { // only loop for nominal case

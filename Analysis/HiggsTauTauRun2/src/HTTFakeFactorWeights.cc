@@ -119,7 +119,7 @@ namespace ic {
 
       systs_mvadm_ = {"","_wjets_syst_up","_wjets_syst_down","_wjets_met_up","_wjets_met_down","_wjets_l_pt_up","_wjets_l_pt_down","_wjets_stat_unc1_njet0_mvadm0_sig_lt3_up","_wjets_stat_unc2_njet0_mvadm0_sig_lt3_up","_wjets_stat_unc1_njet0_mvadm0_sig_lt3_down","_wjets_stat_unc2_njet0_mvadm0_sig_lt3_down","_wjets_stat_unc1_njet1_mvadm0_sig_lt3_up","_wjets_stat_unc2_njet1_mvadm0_sig_lt3_up","_wjets_stat_unc1_njet1_mvadm0_sig_lt3_down","_wjets_stat_unc2_njet1_mvadm0_sig_lt3_down","_wjets_stat_unc1_njet2_mvadm0_sig_lt3_up","_wjets_stat_unc2_njet2_mvadm0_sig_lt3_up","_wjets_stat_unc1_njet2_mvadm0_sig_lt3_down","_wjets_stat_unc2_njet2_mvadm0_sig_lt3_down","_wjets_stat_unc1_njet0_mvadm0_sig_gt3_up","_wjets_stat_unc2_njet0_mvadm0_sig_gt3_up","_wjets_stat_unc1_njet0_mvadm0_sig_gt3_down","_wjets_stat_unc2_njet0_mvadm0_sig_gt3_down","_wjets_stat_unc1_njet1_mvadm0_sig_gt3_up","_wjets_stat_unc2_njet1_mvadm0_sig_gt3_up","_wjets_stat_unc1_njet1_mvadm0_sig_gt3_down","_wjets_stat_unc2_njet1_mvadm0_sig_gt3_down","_wjets_stat_unc1_njet2_mvadm0_sig_gt3_up","_wjets_stat_unc2_njet2_mvadm0_sig_gt3_up","_wjets_stat_unc1_njet2_mvadm0_sig_gt3_down","_wjets_stat_unc2_njet2_mvadm0_sig_gt3_down","_wjets_stat_unc1_njet0_mvadm1_up","_wjets_stat_unc2_njet0_mvadm1_up","_wjets_stat_unc1_njet0_mvadm1_down","_wjets_stat_unc2_njet0_mvadm1_down","_wjets_stat_unc1_njet1_mvadm1_up","_wjets_stat_unc2_njet1_mvadm1_up","_wjets_stat_unc1_njet1_mvadm1_down","_wjets_stat_unc2_njet1_mvadm1_down","_wjets_stat_unc1_njet2_mvadm1_up","_wjets_stat_unc2_njet2_mvadm1_up","_wjets_stat_unc1_njet2_mvadm1_down","_wjets_stat_unc2_njet2_mvadm1_down","_wjets_stat_unc1_njet0_mvadm2_up","_wjets_stat_unc2_njet0_mvadm2_up","_wjets_stat_unc1_njet0_mvadm2_down","_wjets_stat_unc2_njet0_mvadm2_down","_wjets_stat_unc1_njet1_mvadm2_up","_wjets_stat_unc2_njet1_mvadm2_up","_wjets_stat_unc1_njet1_mvadm2_down","_wjets_stat_unc2_njet1_mvadm2_down","_wjets_stat_unc1_njet2_mvadm2_up","_wjets_stat_unc2_njet2_mvadm2_up","_wjets_stat_unc1_njet2_mvadm2_down","_wjets_stat_unc2_njet2_mvadm2_down","_wjets_stat_unc1_njet0_mvadm10_up","_wjets_stat_unc2_njet0_mvadm10_up","_wjets_stat_unc1_njet0_mvadm10_down","_wjets_stat_unc2_njet0_mvadm10_down","_wjets_stat_unc1_njet1_mvadm10_up","_wjets_stat_unc2_njet1_mvadm10_up","_wjets_stat_unc1_njet1_mvadm10_down","_wjets_stat_unc2_njet1_mvadm10_down","_wjets_stat_unc1_njet2_mvadm10_up","_wjets_stat_unc2_njet2_mvadm10_up","_wjets_stat_unc1_njet2_mvadm10_down","_wjets_stat_unc2_njet2_mvadm10_down","_wjets_stat_unc1_njet0_mvadm11_up","_wjets_stat_unc2_njet0_mvadm11_up","_wjets_stat_unc1_njet0_mvadm11_down","_wjets_stat_unc2_njet0_mvadm11_down","_wjets_stat_unc1_njet1_mvadm11_up","_wjets_stat_unc2_njet1_mvadm11_up","_wjets_stat_unc1_njet1_mvadm11_down","_wjets_stat_unc2_njet1_mvadm11_down","_wjets_stat_unc1_njet2_mvadm11_up","_wjets_stat_unc2_njet2_mvadm11_up","_wjets_stat_unc1_njet2_mvadm11_down","_wjets_stat_unc2_njet2_mvadm11_down","_qcd_syst_up","_qcd_syst_down","_qcd_met_up","_qcd_met_down","_qcd_l_pt_up","_qcd_l_pt_down","_qcd_stat_unc1_njet0_mvadm0_sig_lt3_up","_qcd_stat_unc2_njet0_mvadm0_sig_lt3_up","_qcd_stat_unc1_njet0_mvadm0_sig_lt3_down","_qcd_stat_unc2_njet0_mvadm0_sig_lt3_down","_qcd_stat_unc1_njet1_mvadm0_sig_lt3_up","_qcd_stat_unc2_njet1_mvadm0_sig_lt3_up","_qcd_stat_unc1_njet1_mvadm0_sig_lt3_down","_qcd_stat_unc2_njet1_mvadm0_sig_lt3_down","_qcd_stat_unc1_njet2_mvadm0_sig_lt3_up","_qcd_stat_unc2_njet2_mvadm0_sig_lt3_up","_qcd_stat_unc1_njet2_mvadm0_sig_lt3_down","_qcd_stat_unc2_njet2_mvadm0_sig_lt3_down","_qcd_stat_unc1_njet0_mvadm0_sig_gt3_up","_qcd_stat_unc2_njet0_mvadm0_sig_gt3_up","_qcd_stat_unc1_njet0_mvadm0_sig_gt3_down","_qcd_stat_unc2_njet0_mvadm0_sig_gt3_down","_qcd_stat_unc1_njet1_mvadm0_sig_gt3_up","_qcd_stat_unc2_njet1_mvadm0_sig_gt3_up","_qcd_stat_unc1_njet1_mvadm0_sig_gt3_down","_qcd_stat_unc2_njet1_mvadm0_sig_gt3_down","_qcd_stat_unc1_njet2_mvadm0_sig_gt3_up","_qcd_stat_unc2_njet2_mvadm0_sig_gt3_up","_qcd_stat_unc1_njet2_mvadm0_sig_gt3_down","_qcd_stat_unc2_njet2_mvadm0_sig_gt3_down","_qcd_stat_unc1_njet0_mvadm1_up","_qcd_stat_unc2_njet0_mvadm1_up","_qcd_stat_unc1_njet0_mvadm1_down","_qcd_stat_unc2_njet0_mvadm1_down","_qcd_stat_unc1_njet1_mvadm1_up","_qcd_stat_unc2_njet1_mvadm1_up","_qcd_stat_unc1_njet1_mvadm1_down","_qcd_stat_unc2_njet1_mvadm1_down","_qcd_stat_unc1_njet2_mvadm1_up","_qcd_stat_unc2_njet2_mvadm1_up","_qcd_stat_unc1_njet2_mvadm1_down","_qcd_stat_unc2_njet2_mvadm1_down","_qcd_stat_unc1_njet0_mvadm2_up","_qcd_stat_unc2_njet0_mvadm2_up","_qcd_stat_unc1_njet0_mvadm2_down","_qcd_stat_unc2_njet0_mvadm2_down","_qcd_stat_unc1_njet1_mvadm2_up","_qcd_stat_unc2_njet1_mvadm2_up","_qcd_stat_unc1_njet1_mvadm2_down","_qcd_stat_unc2_njet1_mvadm2_down","_qcd_stat_unc1_njet2_mvadm2_up","_qcd_stat_unc2_njet2_mvadm2_up","_qcd_stat_unc1_njet2_mvadm2_down","_qcd_stat_unc2_njet2_mvadm2_down","_qcd_stat_unc1_njet0_mvadm10_up","_qcd_stat_unc2_njet0_mvadm10_up","_qcd_stat_unc1_njet0_mvadm10_down","_qcd_stat_unc2_njet0_mvadm10_down","_qcd_stat_unc1_njet1_mvadm10_up","_qcd_stat_unc2_njet1_mvadm10_up","_qcd_stat_unc1_njet1_mvadm10_down","_qcd_stat_unc2_njet1_mvadm10_down","_qcd_stat_unc1_njet2_mvadm10_up","_qcd_stat_unc2_njet2_mvadm10_up","_qcd_stat_unc1_njet2_mvadm10_down","_qcd_stat_unc2_njet2_mvadm10_down","_qcd_stat_unc1_njet0_mvadm11_up","_qcd_stat_unc2_njet0_mvadm11_up","_qcd_stat_unc1_njet0_mvadm11_down","_qcd_stat_unc2_njet0_mvadm11_down","_qcd_stat_unc1_njet1_mvadm11_up","_qcd_stat_unc2_njet1_mvadm11_up","_qcd_stat_unc1_njet1_mvadm11_down","_qcd_stat_unc2_njet1_mvadm11_down","_qcd_stat_unc1_njet2_mvadm11_up","_qcd_stat_unc2_njet2_mvadm11_up","_qcd_stat_unc1_njet2_mvadm11_down","_qcd_stat_unc2_njet2_mvadm11_down","_ttbar_syst_up","_ttbar_syst_down","_ttbar_met_up","_ttbar_met_down"};
 
-      systs_dm_ = {};
+      systs_dm_ = {""};
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
@@ -129,10 +129,6 @@ namespace ic {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
-      fns_["ff_lt_medium_dmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
-      fns_["ff_lt_medium_dmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,m_pt,,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
@@ -149,11 +145,11 @@ namespace ic {
 
       ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_low_up","_qcd_syst_closure_low_down","_wjets_syst_closure_low_up","_wjets_syst_closure_low_down","_ttbar_syst_closure_low_up","_ttbar_syst_closure_low_down","_qcd_syst_closure_high_up","_qcd_syst_closure_high_down","_wjets_syst_closure_high_up","_wjets_syst_closure_high_down","_ttbar_syst_closure_high_up","_ttbar_syst_closure_high_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
 
       for(auto s : systs_us_) {
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_mt_medium"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
+              ff_ws_us_->function(("ff_mt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,m_pt,pfmt")));
       }
 
 
@@ -216,20 +212,19 @@ namespace ic {
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+//              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
-      fns_["ff_lt_medium_dmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_qcd")->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
-      fns_["ff_lt_medium_dmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_dmbins_wjets")->functor(ff_ws_->argSet("pt,dm,njets,e_p,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
+            //ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
+            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
+            //ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
+            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
@@ -238,15 +233,16 @@ namespace ic {
       std::string us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2016.root";
       if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2017.root";
       if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2018.root";
-      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/"+us_file_).c_str());
+      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+us_file_).c_str());
 
       ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_up","_qcd_syst_closure_down","_wjets_syst_closure_up","_wjets_syst_closure_down","_ttbar_syst_closure_up","_ttbar_syst_closure_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
+      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_low_up","_qcd_syst_closure_low_down","_wjets_syst_closure_low_up","_wjets_syst_closure_low_down","_ttbar_syst_closure_low_up","_ttbar_syst_closure_low_down","_qcd_syst_closure_high_up","_qcd_syst_closure_high_down","_wjets_syst_closure_high_up","_wjets_syst_closure_high_down","_ttbar_syst_closure_high_up","_ttbar_syst_closure_high_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down"};
 
-      for(auto s : systs_us_) {
+
+      for(auto s : systs_us_) {        
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_mt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,mvis,pfmt")));
+              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,mvis,pfmt")));
       }
 
       // load MVA scroes reader for fractions
@@ -766,23 +762,15 @@ namespace ic {
           //ff_nom = fns_["ff_lt_medium_mvadmbins_ttbar"]->eval(args_ttbar.data());
           //event->Add("wt_ff_ttbar_1",  ff_nom);
 
-          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_,iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
+          auto args_dm = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_, pt_1_, os, met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
           ff_nom = fns_["ff_lt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
-
-          auto args_dm_qcd = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};
-          auto args_dm_w = std::vector<double>{pt_2_,tau_decaymode_2_,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
-
-          ff_nom = fns_["ff_lt_medium_dmbins_qcd"]->eval(args_dm_qcd.data());
-          event->Add("wt_ff_dmbins_qcd_1",  ff_nom);
-          ff_nom = fns_["ff_lt_medium_dmbins_wjets"]->eval(args_dm_w.data());
-          event->Add("wt_ff_dmbins_wjets_1",  ff_nom);
 
           // us groups FFs
           std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
           Met const* pfmet = pfMet_vec.at(0);
           double pfmt_1 = MT(lep1, pfmet);
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,m_vis_,pfmt_1};
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1};
           double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
           event->Add("wt_ff_us_1",  ff_us_nom);
 
