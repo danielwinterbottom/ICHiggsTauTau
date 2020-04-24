@@ -213,8 +213,6 @@ if options.no_shape_systs:
       "tt" : ' ',
   }
 
-print SCHEME
-
 if SCHEME == 'cpdecay':
 
  
