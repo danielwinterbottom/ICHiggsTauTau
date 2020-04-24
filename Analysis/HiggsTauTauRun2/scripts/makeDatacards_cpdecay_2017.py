@@ -340,7 +340,7 @@ cat_schemes = {
 }
 
 qsub_command = (
-    'qsub -e ./err -o /dev/null -cwd -V -q hep.q '
+    'qsub -e /dev/null -o /dev/null -cwd -V -q hep.q '
     ' -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 )
 
