@@ -386,26 +386,6 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-            elif jes_systematics and not options.no_shape_systs and options.batch:
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes1,jes_sources=1:9 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes2,jes_sources=10:18 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes3,jes_sources=19:27 ./scripts/batch_datacards_jes.sh'
-                        )
-
     if not options.batch:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
         os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
