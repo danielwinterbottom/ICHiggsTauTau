@@ -220,20 +220,31 @@ if SCHEME == 'cpdecay':
   VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
+  VAR_JETFAKES_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
 
-  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
-  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
+  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
+
+  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+
+  # merge bins after seeing SM/PS stat unc.(28 April 2020) 
+  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
   VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
-  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
-  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
-
-  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -361,8 +372,8 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+                print('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars())
+                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra)s --ratio_range 0,2 --log_y --no_plot ' % vars())
@@ -374,21 +385,6 @@ for ch in channels:
                         + ' -v extra="{}"'.format(extra)
                         + ' ./scripts/batch_datacards.sh'
                         )
-
-            if jes_systematics and not options.no_shape_systs and not options.batch:
-              # have to do this to avoid using too much memory...
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes1'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=1:9' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes2'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=10:18' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes3'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=19:27' % vars())
 
             elif jes_systematics and not options.no_shape_systs and options.batch:
                 run_command(qsub_command
