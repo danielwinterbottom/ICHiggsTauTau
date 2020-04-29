@@ -1081,9 +1081,9 @@ namespace ic {
     wt_ue_up_    = event->Exists("wt_ue_up") ? event->Get<double>("wt_ue_up") : 1.0;
     wt_ue_down_  = event->Exists("wt_ue_down") ? event->Get<double>("wt_ue_down") : 1.0;
 
-    wt_prefire_ = event->Exists("wt_prefire") ? event->Get<double>("wt_prefire") : 1.0;
-    wt_prefire_up_ = event->Exists("wt_prefire_up") ? event->Get<double>("wt_prefire_up") : 1.0;
-    wt_prefire_down_ = event->Exists("wt_prefire_down") ? event->Get<double>("wt_prefire_down") : 1.0;
+    wt_prefire_ = eventInfo->weight_defined("wt_prefire") ? eventInfo->weight("wt_prefire") : 1.0;
+    wt_prefire_up_ = eventInfo->weight_defined("wt_prefire_up") ? eventInfo->weight("wt_prefire_up") : 1.0;
+    wt_prefire_down_ = eventInfo->weight_defined("wt_prefire_down") ? eventInfo->weight("wt_prefire_down") : 1.0;
 
     wt_tau_id_extra_ = event->Exists("wt_tau_id_extra") ? event->Get<double>("wt_tau_id_extra") : 1.0;
     wt_mg_nnlops_ = event->Exists("wt_mg_nnlops") ? event->Get<double>("wt_mg_nnlops") : 1.0;

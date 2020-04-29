@@ -33,26 +33,26 @@ w = ROOT.RooWorkspace('w')
 
 # get fractions
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2016_et/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017_et/' % vars()
 
-histsToWrap = [(loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_os_qcd' % vars(), 'et_%(wp)s_fracs_njets0_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_os_qcd' % vars(), 'et_%(wp)s_fracs_njets1_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_os_qcd' % vars(), 'et_%(wp)s_fracs_njets2_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets0_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets1_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets2_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_os_wjets' % vars(), 'et_%(wp)s_fracs_njets0_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_os_wjets' % vars(), 'et_%(wp)s_fracs_njets1_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_os_wjets' % vars(), 'et_%(wp)s_fracs_njets2_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets0_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets1_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets2_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets0_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets1_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets2_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets0_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets1_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
-               (loc + 'fakefactor_fits_et_%(wp)s_2016.root:et_fracs_njets2_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets2_ss_ttbar' % vars())
+histsToWrap = [(loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_os_qcd' % vars(), 'et_%(wp)s_fracs_njets0_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_os_qcd' % vars(), 'et_%(wp)s_fracs_njets1_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_os_qcd' % vars(), 'et_%(wp)s_fracs_njets2_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets0_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets1_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_ss_qcd' % vars(), 'et_%(wp)s_fracs_njets2_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_os_wjets' % vars(), 'et_%(wp)s_fracs_njets0_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_os_wjets' % vars(), 'et_%(wp)s_fracs_njets1_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_os_wjets' % vars(), 'et_%(wp)s_fracs_njets2_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets0_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets1_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_ss_wjets' % vars(), 'et_%(wp)s_fracs_njets2_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets0_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets1_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_os_ttbar' % vars(), 'et_%(wp)s_fracs_njets2_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets0_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets1_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_et_%(wp)s_2017.root:et_fracs_njets2_ss_ttbar' % vars(), 'et_%(wp)s_fracs_njets2_ss_ttbar' % vars())
               ]
 
 for task in histsToWrap:
@@ -65,17 +65,17 @@ for i in ['qcd','wjets','ttbar']:
   w.factory('expr::et_%(wp)s_fracs_%(i)s("(@0!=0)*((@1==0)*(@2)+(@1==1)*@3+(@1>1)*(@4))+(@0==0)*((@1==0)*(@5)+(@1==1)*@6+(@1>1)*(@7))", os[1],njets[0],et_%(wp)s_fracs_njets0_os_%(i)s,et_%(wp)s_fracs_njets1_os_%(i)s,et_%(wp)s_fracs_njets2_os_%(i)s,et_%(wp)s_fracs_njets0_ss_%(i)s,et_%(wp)s_fracs_njets1_ss_%(i)s,et_%(wp)s_fracs_njets2_ss_%(i)s)' % vars())
 
 
-xtrg_pt=25 # change this pT cut depending on what pT range uses cross trigger
+xtrg_pt=28 # change this pT cut depending on what pT range uses cross trigger
 
 # load all TF1's needed to define fake factors
 w.factory('expr::pt_bounded100("max(min(99.9,@0),30)",pt[0])' % vars())
 w.factory('expr::mvis_bounded250("min(249.9,@0)",mvis[0])' % vars())
 w.factory('expr::l_pt_bounded120("min(119.9,@0)",e_pt[%(xtrg_pt)s])' % vars()) # change me for et channel!!
 
-f = ROOT.TFile('us_fakefactors/ff_files_et_2016/uncorrected_fakefactors_et.root')
+f = ROOT.TFile('us_fakefactors/ff_files_et_2017/uncorrected_fakefactors_et.root')
 func = f.Get('rawFF_et_qcd_0jetSSloose')
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_et_2016/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_et_2017/' % vars()
 
 # raw fake factors
 
@@ -106,7 +106,7 @@ w.factory('expr::closure_met_et_w("(@0==0)*@1 + (@0>0)",njets[0], closure_met_et
 # get l pt closures for single and cross trigger
 
 for proc in ['qcd','w','ttmc']:
-  for x in ['30to40', '40to50', 'gt50']:
+  for x in ['30to40', '40to50', 'gt50', '30to40_xtrg', '40to50_xtrg', 'gt50_xtrg']:
 
     name = 'closure_lpt_taupt%(x)s_et_%(proc)s' % vars()
     func = fclosure.Get(name)
@@ -133,7 +133,7 @@ for proc in ['qcd','w']:
     w.factory('expr::rawFF_et_%(proc)s%(uncert)s("(@0==0)*@1+(@0==1)*@2+(@0>1)*@3", njets[0], rawFF_et_%(proc)s_0jet%(uncert)s, rawFF_et_%(proc)s_1jet%(uncert)s, rawFF_et_%(proc)s_2jet%(uncert)s)' % vars())
 
 for proc in ['qcd','w','ttmc']:
-  w.factory('expr::closure_l_pt_et_%(proc)s("(@0<%(xtrg_pt).1f)*((@1<40)*@2 + (@1>=40 && @1<50)*@3 + (@1>=50)*@4) + (@0>=%(xtrg_pt).1f)*((@1<40)*@5 + (@1>=40 && @1<50)*@6 + (@1>=50)*@7)", l_pt_bounded120, pt, closure_lpt_taupt30to40_et_%(proc)s, closure_lpt_taupt40to50_et_%(proc)s, closure_lpt_tauptgt50_et_%(proc)s, closure_lpt_taupt30to40_et_%(proc)s, closure_lpt_taupt40to50_et_%(proc)s, closure_lpt_tauptgt50_et_%(proc)s )' % vars())
+  w.factory('expr::closure_l_pt_et_%(proc)s("(@0<%(xtrg_pt).1f)*((@1<40)*@2 + (@1>=40 && @1<50)*@3 + (@1>=50)*@4) + (@0>=%(xtrg_pt).1f)*((@1<40)*@5 + (@1>=40 && @1<50)*@6 + (@1>=50)*@7)", l_pt_bounded120, pt, closure_lpt_taupt30to40_xtrg_et_%(proc)s, closure_lpt_taupt40to50_xtrg_et_%(proc)s, closure_lpt_tauptgt50_xtrg_et_%(proc)s, closure_lpt_taupt30to40_et_%(proc)s, closure_lpt_taupt40to50_et_%(proc)s, closure_lpt_tauptgt50_et_%(proc)s )' % vars())
 
 # apply corrections to raw fake factors
 
@@ -199,7 +199,7 @@ for i in ['up','down']:
   w.factory('expr::ff_et_%(wp)s_us_ttbar_syst_closure_high_%(i)s("@0*@3 + @1*@4 + @2*@5", et_%(wp)s_fracs_wjets, et_%(wp)s_fracs_qcd, et_%(wp)s_fracs_ttbar, ff_et_%(wp)s_wjets, ff_et_%(wp)s_qcd, ff_et_%(wp)s_ttbar_l_pt_high_%(i)s)' % vars())
 
 w.Print()
-w.writeToFile('fakefactors_us_ws_et_lite_2016.root')
+w.writeToFile('fakefactors_us_ws_et_lite_2017.root')
 w.Delete()
 
 
@@ -211,26 +211,26 @@ w = ROOT.RooWorkspace('w')
 
 # get fractions
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2016_mt/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017_mt/' % vars()
 
-histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets0_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets1_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
-               (loc + 'fakefactor_fits_mt_%(wp)s_2016.root:mt_fracs_njets2_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
+histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_qcd' % vars(), 'mt_%(wp)s_fracs_njets2_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets0_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets1_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_wjets' % vars(), 'mt_%(wp)s_fracs_njets2_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_os_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets0_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets1_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets2_ss_ttbar' % vars(), 'mt_%(wp)s_fracs_njets2_ss_ttbar' % vars())
               ]
 
 for task in histsToWrap:
@@ -243,17 +243,17 @@ for i in ['qcd','wjets','ttbar']:
   w.factory('expr::mt_%(wp)s_fracs_%(i)s("(@0!=0)*((@1==0)*(@2)+(@1==1)*@3+(@1>1)*(@4))+(@0==0)*((@1==0)*(@5)+(@1==1)*@6+(@1>1)*(@7))", os[1],njets[0],mt_%(wp)s_fracs_njets0_os_%(i)s,mt_%(wp)s_fracs_njets1_os_%(i)s,mt_%(wp)s_fracs_njets2_os_%(i)s,mt_%(wp)s_fracs_njets0_ss_%(i)s,mt_%(wp)s_fracs_njets1_ss_%(i)s,mt_%(wp)s_fracs_njets2_ss_%(i)s)' % vars())
 
 
-xtrg_pt=23 # change this pT cut depending on what pT range uses cross trigger
+xtrg_pt=25 # change this pT cut depending on what pT range uses cross trigger
 
 # load all TF1's needed to define fake factors
 w.factory('expr::pt_bounded100("max(min(99.9,@0),30)",pt[0])' % vars())
 w.factory('expr::mvis_bounded250("min(249.9,@0)",mvis[0])' % vars())
 w.factory('expr::l_pt_bounded120("min(119.9,@0)",m_pt[%(xtrg_pt)s])' % vars()) # change me for et channel!!
 
-f = ROOT.TFile('us_fakefactors/ff_files_mt_2016/uncorrected_fakefactors_mt.root')
+f = ROOT.TFile('us_fakefactors/ff_files_mt_2017/uncorrected_fakefactors_mt.root')
 func = f.Get('rawFF_mt_qcd_0jetSSloose')
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_mt_2016/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_mt_2017/' % vars()
 
 # raw fake factors
 
@@ -377,7 +377,7 @@ for i in ['up','down']:
   w.factory('expr::ff_mt_%(wp)s_us_ttbar_syst_closure_high_%(i)s("@0*@3 + @1*@4 + @2*@5", mt_%(wp)s_fracs_wjets, mt_%(wp)s_fracs_qcd, mt_%(wp)s_fracs_ttbar, ff_mt_%(wp)s_wjets, ff_mt_%(wp)s_qcd, ff_mt_%(wp)s_ttbar_l_pt_high_%(i)s)' % vars())
 
 w.Print()
-w.writeToFile('fakefactors_us_ws_mt_lite_2016.root')
+w.writeToFile('fakefactors_us_ws_mt_lite_2017.root')
 w.Delete()
 
 
@@ -391,7 +391,7 @@ w = ROOT.RooWorkspace('w')
 w.factory('expr::pt_bounded1000("max(min(999.9,@0),40)",pt[40])' % vars())
 w.factory('expr::pt_bounded80("max(min(79.9,@0),30)",pt[40])' % vars())
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_tt_2016/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/us_fakefactors/ff_files_tt_2017/' % vars()
 
 # raw fake factors
 
@@ -456,5 +456,5 @@ w.factory('expr::ff_tt_%(wp)s_us_qcd_syst_osss_up("(@0<90)*(@3/@2)*@1 + (@0>=90)
 w.factory('expr::ff_tt_%(wp)s_us_qcd_syst_osss_down("2*@0-@1", ff_tt_%(wp)s_us, ff_tt_%(wp)s_us_qcd_syst_osss_up)' % vars())
 
 w.Print()
-w.writeToFile('fakefactors_us_ws_tt_lite_2016.root')
+w.writeToFile('fakefactors_us_ws_tt_lite_2017.root')
 w.Delete() 

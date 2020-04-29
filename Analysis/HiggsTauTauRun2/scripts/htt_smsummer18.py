@@ -200,7 +200,7 @@ if options.proc_sm or options.proc_all:
       'JJH0Mf05ph0ToTauTauPlusOneJets',
       'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
       'JJH0Mf05ph0ToTauTauPlusTwoJets',
-      'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
+     'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
       'JJH0Mf05ph0ToTauTauPlusZeroJets',
       'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
       'JJH0PMToTauTauPlusOneJets',
@@ -340,22 +340,22 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['A','B','C','D']
-    #data_eras = ['A','B','C']
+    #data_eras = ['A','B','C','D']
+    data_eras = ['A','B','C']
     for chn in channels:
         for era in data_eras:
-            if 'em' in chn:
-                embed_samples+=['EmbeddingElMu'+era]
+            #if 'em' in chn:
+            #    embed_samples+=['EmbeddingElMu'+era]
             if 'et' in chn:
                 embed_samples+=['EmbeddingElTau'+era]
             if 'mt' in chn:
                 embed_samples+=['EmbeddingMuTau'+era]
-            if 'tt' in chn:
-                embed_samples+=['EmbeddingTauTau'+era]
-            if 'zmm' in chn:
-                embed_samples+=['EmbeddingMuMu'+era]
-            if 'zee' in chn:
-                embed_samples+=['EmbeddingElEl'+era]
+            #if 'tt' in chn:
+            #    embed_samples+=['EmbeddingTauTau'+era]
+            #if 'zmm' in chn:
+            #    embed_samples+=['EmbeddingMuMu'+era]
+            #if 'zee' in chn:
+            #    embed_samples+=['EmbeddingElEl'+era]
 
     EMBEDFILELIST="./filelists/Mar20_2018_MC_102X"
 
@@ -365,6 +365,9 @@ if options.proc_embed or options.proc_all:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Mar20_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
+            if 'ElTau' or 'MuTau' in sa: nperjob = 10
+            if 'MuTau' in sa: nperjob = 5
+            if 'MuTauA' in sa or 'MuTauC' in sa: nperjob = 3
             if 'ElTauD' in sa: nperjob = 200
             if 'ElMuD' in sa: nperjob = 200
             if 'MuTauD' in sa: nperjob = 200
@@ -422,9 +425,9 @@ if options.proc_bkg or options.proc_all:
          'EWKZ2Jets',
          'T-t',
          'T-tW-ext1',
-         'TTTo2L2Nu',
+      #   'TTTo2L2Nu',
          'TTToHadronic',
-         'TTToSemiLeptonic',
+      #   'TTToSemiLeptonic',
          'Tbar-t',
          'Tbar-tW-ext1',
          'W1JetsToLNu-LO',
@@ -455,7 +458,8 @@ if options.proc_bkg or options.proc_all:
         for FLATJSONPATCH in flatjsons:
             #nperjob = 40
             nperjob=20
-            if sa == 'T-t' or sa == 'ZZTo4L-ext' or sa == 'ZZTo2L2Nu-ext2' or sa == 'Tbar-t' or sa.startswith('TTTo'): nperjob = 100
+            if sa == 'T-t' or sa == 'ZZTo4L-ext' or sa == 'ZZTo2L2Nu-ext2' or sa == 'Tbar-t' or sa.startswith('TTToHad'): nperjob = 100
+            if sa.startswith('TTTo2L'): nperjob = 15
             if 'DY' not in sa and 'EWKZ' not in sa:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
             if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
