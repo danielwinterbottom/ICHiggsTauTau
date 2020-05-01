@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding 
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --no_shift_systs --output_folder datacards
+#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --output_folder datacards
 
 import sys
 from optparse import OptionParser
@@ -121,6 +121,12 @@ if not options.params == "":
 if not options.year == "":
   YEAR=options.year
 no_shift_systs = options.no_shift_systs
+
+# create separate output folder for scheme and year
+output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
+os.system('mkdir {}'.format(output_folder))
+os.system('mkdir {}/{}'.format(output_folder, SCHEME))
+os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
 
 ########## Set up schemes and options
 
@@ -386,6 +392,30 @@ if SCHEME == 'ip_uncert':
   ]
   ANA = 'sm'
 
+if SCHEME == 'control':
+
+
+    m_vis      = "m_vis(25,50,300)"
+    svfit_mass = "svfit_mass(25,50,300)"
+    pt_1       = "pt_1(20,40,140)"
+    pt_2       = "pt_2(12,40,100)"
+
+    # one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
+    # two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
+
+    scheme_et = [
+    ]
+    scheme_mt = [
+
+    ]
+
+    scheme_tt = [
+        ("17", "inclusive", "2018_m_vis", m_vis, ' '),
+        ("17", "inclusive", "2018_svfit_mass", svfit_mass, ' '),
+        ("17", "inclusive", "2018_pt_1", pt_1, ' '),
+        ("17", "inclusive", "2018_pt_2", pt_2, ' '),
+    ]
+    ANA = 'sm'
 
 cat_schemes = {
   'et' : scheme_et,
@@ -415,9 +445,9 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars())
+                print('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars())
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
+                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra)s --ratio_range 0,2 --log_y --no_plot ' % vars())
 
@@ -431,9 +461,8 @@ for ch in channels:
 
     if not options.batch:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
-
+        # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
