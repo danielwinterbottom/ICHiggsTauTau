@@ -160,16 +160,13 @@ sample_list = [
      'EmbeddingTauTauG',
      'EmbeddingTauTauH',
 
+     'TTTo2L2Nu',
+     'TTToHadronic',
+     'TTToSemiLeptonic',
      'GluGluHToTauTauUncorrelatedDecay',
      'GluGluHToTauTauUncorrelatedDecay_Filtered',
      'GluGluHToWWTo2L2Nu_M-125',
-     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
      'GluGluToHToTauTau_M-125',
-     'GluGluToHToTauTau_M125_amcatnloFXFX',
-     'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-     'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-     'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-     'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
      'JJH0MToTauTauPlusOneJets',
      'JJH0MToTauTauPlusOneJets_Filtered',
      'JJH0MToTauTauPlusTwoJets',
@@ -188,8 +185,6 @@ sample_list = [
      'JJH0PMToTauTauPlusTwoJets_Filtered',
      'JJH0PMToTauTauPlusZeroJets',
      'JJH0PMToTauTauPlusZeroJets_Filtered',
-     'JJHiggs0MToTauTau',
-     'JJHiggs0Mf05ph0ToTauTau',
      'VBFHToTauTauUncorrelatedDecay',
      'VBFHToTauTauUncorrelatedDecay_Filtered',
      'VBFHToTauTau_M-125',
@@ -202,6 +197,12 @@ sample_list = [
      'VBFHiggs0PHf05ph0_HToTauTau',
      'VBFHiggs0PM_HToTauTau',
      'WHiggs0L1_HToTauTau',
+     'WHiggs0L1fWH05ph0',
+     'WHiggs0M',
+     'WHiggs0MfWH05ph0',
+     'WHiggs0PH',
+     'WHiggs0PHfWH05ph0',
+     'WHiggs0PM',
      'WminusHToTauTauUncorrelatedDecay',
      'WminusHToTauTauUncorrelatedDecay_Filtered',
      'WminusHToTauTau_M-125',
@@ -211,10 +212,13 @@ sample_list = [
      'ZHToTauTauUncorrelatedDecay',
      'ZHToTauTauUncorrelatedDecay_Filtered',
      'ZHToTauTau_M-125',
+     'ZHiggs0L1',
      'ZHiggs0L1fZH05ph0_HToTauTau',
-     'ttHiggs0MToTauTau',
-     'ttHiggs0Mf05ph0ToTauTau',
-     'ttHiggs0PMToTauTau',
+     'ZHiggs0M',
+     'ZHiggs0MfZH05ph0',
+     'ZHiggs0PH',
+     'ZHiggs0PHfZH05ph0',
+     'ZHiggs0PM',
 
 	]
 
@@ -229,28 +233,28 @@ for d in subdirs:
   if infi: new_subdirs.append((d,infi))
 subdirs=new_subdirs
 
-print subdirs
+#print subdirs
 
 failed = []
 
 for sa in sample_list:
-  remove=True
-  to_remove=[]
-  hadd_dirs=[]
   sa = 'svfit_'+sa
-  command=''
-  if batch:
-    JOB='jobs/hadd_%s.sh' % sa
-    os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
+    remove=True
+    to_remove=[]
+    hadd_dirs=[]
+    command=''
+    if batch:
+      JOB='jobs/hadd_%s_%s.sh' % (sa,ch)
+      os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
-      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0_0_input.root'%vars()):
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_0_0_input.root'%vars()):
         if not batch:  
           print "Hadding in subdir %(sdir)s"%vars()
           print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-          os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
+          os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./haddout.txt'% vars()) 
           os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
           filetext = open("./haddout.txt").read()
           if 'Warning' in filetext or 'Error' in filetext:
@@ -259,14 +263,18 @@ for sa in sample_list:
             remove=False 
             failed.append(sa) 
           else :
-            to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root' %vars())
+            to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())
         else:
           haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir) 
-          command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root; fi\n" % vars()    
+          command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root; fi\n" % vars()    
 
-  if batch and command:
-    with open(JOB, "a") as file: 
-      file.write("\n%s" % command)
-      file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s.log' % vars())
-    os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+    if batch and command:
+      with open(JOB, "a") as file: 
+        file.write("\n%s" % command)
+        file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s_%(ch)s.log' % vars())
+      os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
+  if not batch and remove:
+    # if all channels and systematics were hadded sucsessfully then remove the input files
+    for x in to_remove:
+      os.system(x)

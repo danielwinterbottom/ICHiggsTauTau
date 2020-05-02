@@ -1,6 +1,6 @@
 COUNT=0
 TOTAL=0
-for i in $(ls jobs/*2018*.sh); do 
+for i in $(ls jobs/*.sh); do 
   if [[ $i = *"parajob_"* ]]; then continue; fi
   if [[ $i = *"hadd_"* ]]; then continue; fi 
   (( TOTAL++ ))
@@ -16,8 +16,10 @@ source /vols/grid/cms/setup.sh' $job
     fi
     echo $job
     (( COUNT++ ))
-    #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
-   # qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
+    if [[ $1 != "" ]]; then
+      qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
+      #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
+    fi
   fi; 
 done
 echo $COUNT jobs out of $TOTAL failed
