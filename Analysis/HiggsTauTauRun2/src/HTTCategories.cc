@@ -535,6 +535,7 @@ namespace ic {
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
+      outtree_->Branch("aco_sign", &aco_sign_);
       outtree_->Branch("lead_pt_1", &lead_pt_1_);
       outtree_->Branch("lead_pt_2", &lead_pt_2_);
       outtree_->Branch("alpha1_1", &alpha1_1_);
@@ -1829,6 +1830,19 @@ namespace ic {
       dz_2_ = muon2->dz_vertex();
     }
 
+    Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+    Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+    if (tau1) {
+      tau_decay_mode_1_ = tau1->decay_mode();
+    } else {
+      tau_decay_mode_1_ = 0;
+    }
+    if (tau2) {
+      tau_decay_mode_2_ = tau2->decay_mode();
+    } else {
+      tau_decay_mode_2_ = 0;
+    }
+
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
@@ -2233,6 +2247,7 @@ namespace ic {
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
@@ -2289,6 +2304,7 @@ namespace ic {
 
 
         aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
         if (cp_sign_<0) {
           if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
           else                    aco_angle_5_ = aco_angle_5_-M_PI;
@@ -2315,6 +2331,7 @@ namespace ic {
         y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
 
         aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
         if (cp_sign_<0) {
           if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
@@ -2357,6 +2374,7 @@ namespace ic {
             lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
             aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+            aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
             double cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
 
@@ -2413,6 +2431,7 @@ namespace ic {
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
 
             aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+            aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
             Candidate* rho_1  = new Candidate();
             Candidate* rho_2  = new Candidate();
@@ -2469,6 +2488,7 @@ namespace ic {
           lvec4 = ConvertToLorentz(a1_daughters_2[1]->vector()); //pi charge from rho
 
           aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+          aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
           double yrho_1_ = YRho(std::vector<Candidate*>({a1_daughters_1[0],a1_daughters_1[1]}),TVector3());
           double yrho_2_ = YRho(std::vector<Candidate*>({a1_daughters_2[0],a1_daughters_2[1]}),TVector3());
@@ -2660,6 +2680,7 @@ namespace ic {
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
@@ -2689,6 +2710,7 @@ namespace ic {
         TLorentzVector lvec2_2 = TLorentzVector(ip2, 0.);
 
         aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
         if (cp_sign_<0) {
           if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
           else                    aco_angle_5_ = aco_angle_5_-M_PI;
@@ -2714,6 +2736,7 @@ namespace ic {
             lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
             aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+            aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
             double cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
 
@@ -2774,7 +2797,10 @@ namespace ic {
       std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
       for(auto v : refit_vertex_vec) {
-        if(v->id() == ele1->id()+tau2->id()) refit_vertex = v; 
+        if(v->id() == ele1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        } 
       }
 
       //std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
