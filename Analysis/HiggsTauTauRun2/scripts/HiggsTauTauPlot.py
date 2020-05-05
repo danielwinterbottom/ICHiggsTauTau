@@ -61,7 +61,7 @@ defaults = {
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
-    "syst_scale_j_regrouped":"",
+    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"",
 
 }
 
@@ -140,6 +140,8 @@ parser.add_argument("--syst_tau_scale_3prong", dest="syst_tau_scale_3prong", typ
     help="If this string is set then the systematic shift due to 3 prong tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_3prong1pi0", dest="syst_tau_scale_3prong1pi0", type=str,
     help="If this string is set then the systematic shift due to 3 prong + 1 pi0 tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_grouped", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tquark", dest="syst_tquark", type=str,
@@ -1666,6 +1668,26 @@ if options.syst_tau_scale_3prong != '':
 if options.syst_tau_scale_3prong1pi0 != '':
     systematics['scale_t_3prong1pi0_up'] = ('TSCALE3PRONG1PI0_UP' , '_'+options.syst_tau_scale_3prong1pi0+'Up', 'wt', ['QCD'], False)
     systematics['scale_t_3prong1pi0_down'] = ('TSCALE3PRONG1PI0_DOWN' , '_'+options.syst_tau_scale_3prong1pi0+'Down', 'wt', ['QCD'], False)
+### group TES
+if options.syst_tau_scale_grouped != "":
+    hist_name = options.syst_tau_scale_grouped
+    syst_dict = {
+        '0pi': ['1prong','TSCALE0PI'],
+        '1pi': ['1prong1pizero','TSCALE1PI'],
+        '3prong': ['3prong','TSCALE3PRONG'],
+        '3prong1pi0': ['3prong1pizero','TSCALE3PRONG1PI0'],
+    }
+    for name, values in syst_dict.iteritems():
+        syst_name = hist_name.replace("*group", values[0])
+        systematics["scale_t_{}_up".format(name)] = (
+            "{}_UP".format(values[1]), "_{}Up".format(syst_name), 
+            "wt", ["QCD"], False
+        )
+        systematics["scale_t_{}_down".format(name)] = (
+            "{}_DOWN".format(values[1]), "_{}Down".format(syst_name), 
+            "wt", ["QCD"], False
+        )
+##
 if options.syst_efake_0pi_scale != '':
     systematics['scale_efake_0pi_up'] = ('EFAKE0PI_UP' , '_'+options.syst_efake_0pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
     systematics['scale_efake_0pi_down'] = ('EFAKE0PI_DOWN' , '_'+options.syst_efake_0pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
