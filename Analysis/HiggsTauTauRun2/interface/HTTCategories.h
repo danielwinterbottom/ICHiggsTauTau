@@ -233,6 +233,7 @@ class HTTCategories : public ModuleBase {
   int tauFlag_1_;
   int tauFlag_2_;
 
+  double aco_sign_;
   double aco_angle_1_;
   double aco_angle_2_;
   double aco_angle_3_;

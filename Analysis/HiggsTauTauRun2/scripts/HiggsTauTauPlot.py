@@ -737,6 +737,9 @@ if options.channel in ["mt","et"]:
     cats["higgs_mvaMuRho"] = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_murho"])
     cats["higgs_mvaMuA1"]  = "{} && {} && n_bjets==0".format(cats["higgs"],cats["mva_mua1"])
 
+    cats["inclusive_mupi"]  = "(tau_decay_mode_2==0)"
+    cats["inclusive_murho"] = "(tau_decay_mode_2==1)"
+
 if options.channel == 'tt':
 
 # start fresh here
