@@ -877,7 +877,7 @@ namespace ic {
       wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
     }
 
-    std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    /*std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
     std::vector<std::vector<GenParticle*>> a1_daughters;
@@ -1118,7 +1118,7 @@ namespace ic {
         if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
         else                   aco_angle_1_ -= M_PI;
       }  
-    }
+    }*/
     
 
     // =========================
