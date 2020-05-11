@@ -1974,20 +1974,24 @@ namespace ic {
         std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
         bool has_tau_daughter = false;
         bool has_lepton_daughter = false;
-        unsigned count_pi0 =  0, count_pi = 0, count_tot = 0;
+        unsigned count_pi0 =  0, count_pi = 0, count_tot = 0, count_k = 0, count_rho = 0;
         for (unsigned j = 0; j < daughters.size(); ++j) {
           if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
           if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
           unsigned pdgId = abs(daughters[j]->pdgid());
           if(pdgId == 111) count_pi0++;
           if(pdgId == 211) count_pi++;
+          if(pdgId == 213) count_rho++;
+          if(pdgId == 321) count_k++;
           if(pdgId!=12&&pdgId!=14&&pdgId!=16) count_tot++;
         }
         if (has_tau_daughter) continue;
         if (has_lepton_daughter && !include_leptonic) continue;
         int tauFlag = -1;
         if(count_tot==1 && count_pi==1 && count_pi0==0) tauFlag=0;
+        if(count_tot==1 && count_pi==0 && count_k==1 && count_pi0==0) tauFlag=20;
         if(count_tot==2 && count_pi==1 && count_pi0==1) tauFlag=1; 
+        if(count_tot==2 && count_rho==1) tauFlag=21; 
         if(count_tot==3 && count_pi==1 && count_pi0==2) tauFlag=2;
         if(count_tot==3 && count_pi==3 && count_pi0==0) tauFlag=10;
         if(count_tot==4 && count_pi==3 && count_pi0==1) tauFlag=11;
