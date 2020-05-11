@@ -965,7 +965,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     .set_do_light(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
    svFitTest.set_legacy_svfit(false);
-   svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
+   //svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
+   svFitTest.set_do_preselection(false); // this is done elsewhere
    svFitTest.set_read_svfit_mt(true);
    svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
    svFitTest.set_read_all(js["read_all_svfit_files"].asBool());

@@ -57,7 +57,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Muon const* muon  = dynamic_cast<Muon const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
-      iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+      iso_1_ = PF04IsolationVal(muon, 0.5, 0);
       pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5); 
   }
   if(channel_ == channel::em) { 
