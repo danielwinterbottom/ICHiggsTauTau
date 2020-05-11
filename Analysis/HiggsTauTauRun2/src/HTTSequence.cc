@@ -561,13 +561,13 @@ if(do_met_filters){
     }));
 }
 
-if((era_type == era::data_2016 || era_type == era::data_2017) && !is_embedded && !is_data) {
-  TH2F prefire_hist; 
-  if(era_type == era::data_2016) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
-  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
-  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
-    .set_prefire_hist(new TH2F(prefire_hist)));
-}
+//if((era_type == era::data_2016 || era_type == era::data_2017) && !is_embedded && !is_data) { // we now use the value stored on the miniAOD
+//  TH2F prefire_hist; 
+//  if(era_type == era::data_2016) prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2016BtoH.root","/","L1prefiring_jetpt_2016BtoH");
+//  else prefire_hist = GetFromTFile<TH2F>("input/prefire/L1prefiring_jetpt_2017BtoF.root","/","L1prefiring_jetpt_2017BtoF");
+//  BuildModule(HTTPreFireWeight<PFJet>("HTTPreFireWeight")
+//    .set_prefire_hist(new TH2F(prefire_hist)));
+//}
 
 BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
@@ -757,6 +757,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (uncert != "") {
     // if we are doing a JET/MET shift then reset the modes
     if(uncert.find("scale_j")!=std::string::npos) jes_mode_ = unmod_js["sequences"][uncert]["baseline"]["jes_mode"].asUInt();
+    if(uncert.find("scale_j")!=std::string::npos) alt_jes_input_set = unmod_js["sequences"][uncert]["baseline"]["jes_input_set"].asString();
     if(uncert.find("res_j")!=std::string::npos) jer_mode_ = unmod_js["sequences"][uncert]["baseline"]["jer_mode"].asUInt();
     if(uncert.find("res_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("scale_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();

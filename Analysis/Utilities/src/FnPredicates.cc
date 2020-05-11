@@ -2522,6 +2522,29 @@ namespace ic {
     return out_vec;
   }
 
+  double IPAcoSign(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+
+    n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();
+    n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+
+    double sign;
+    sign = p4.Vect().Unit().Dot(n1.Cross(n2));
+
+    return sign;
+  }
+
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
 

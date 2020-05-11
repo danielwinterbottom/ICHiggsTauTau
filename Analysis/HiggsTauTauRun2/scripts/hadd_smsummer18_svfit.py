@@ -35,7 +35,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 #JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=9:0:0"'
 
 sample_list = [
-    'DYJetsToLL-2018',
+#    'DYJetsToLL-2018',
     'SingleMuonA',
     'SingleMuonB',
     'SingleMuonC',
@@ -206,20 +206,20 @@ for d in subdirs:
   if infi: new_subdirs.append((d,infi))
 subdirs=new_subdirs
 
-print subdirs
+#print subdirs
 
 failed = []
 
 for sa in sample_list:
-  remove=True
-  to_remove=[]
-  hadd_dirs=[]
   sa = 'svfit_'+sa
-  command=''
-  if batch:
-    JOB='jobs/hadd_%s.sh' % sa
-    os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
+    remove=True
+    to_remove=[]
+    hadd_dirs=[]
+    command=''
+    if batch:
+      JOB='jobs/hadd_%s_%s.sh' % (sa,ch)
+      os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
@@ -241,11 +241,13 @@ for sa in sample_list:
           haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir) 
           command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018_input.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*input.root; fi\n" % vars()    
 
-  if batch and command:
-    with open(JOB, "a") as file: 
-      file.write("\n%s" % command)
-      file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s.log' % vars())
-    os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+    if batch and command:
+      with open(JOB, "a") as file: 
+        file.write("\n%s" % command)
+        file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s_%(ch)s.log' % vars())
+      os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
-
-
+  if not batch and remove:
+    # if all channels and systematics were hadded sucsessfully then remove the input files
+    for x in to_remove:
+      os.system(x)

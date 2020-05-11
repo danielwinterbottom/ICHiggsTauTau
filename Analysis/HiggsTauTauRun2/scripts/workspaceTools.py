@@ -9,6 +9,85 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
 
+def SplitUncert(h):
+  minbin=1
+  minval=h.GetBinError(1)/h.GetBinContent(1)
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) <=0.: continue
+    e = h.GetBinError(i)/h.GetBinContent(i)
+    if e<minval:
+      minbin=i
+      minval = e
+
+  uncert1_up = h.Clone()
+  uncert1_down = h.Clone()
+  uncert2_up = h.Clone()
+  uncert2_down = h.Clone()
+
+  uncert1_up.SetName(h.GetName()+'_uncert1_up')
+  uncert1_down.SetName(h.GetName()+'_uncert1_down')
+  uncert2_up.SetName(h.GetName()+'_uncert2_up')
+  uncert2_down.SetName(h.GetName()+'_uncert2_down')
+
+  for i in range(1,h.GetNbinsX()+1):
+    nom = h.GetBinContent(i)
+
+    uncert1_up.SetBinError(i,0.)
+    uncert1_down.SetBinError(i,0.)
+    up1 = nom*(1.+minval)
+    down1 = 2*nom - up1
+    uncert1_up.SetBinContent(i,min(up1,2*nom)) # don't allow uncertainties larger than 100%
+    uncert1_down.SetBinContent(i,max(down1,0.)) # don't allow negative values for the uncertainty
+
+    e = h.GetBinError(i)/h.GetBinContent(i)
+    up2 = (1.+math.sqrt(e**2-minval**2))*nom
+    down2 = 2*nom - up2
+
+    if i < minbin:
+      temp=up2
+      up2 = down2
+      down2 = temp
+
+    uncert2_up.SetBinContent(i,min(up2,2*nom)) # don't allow uncertainties larger than 100%
+    uncert2_down.SetBinContent(i,max(down2,0.)) # don't allow negative values for the uncertainty
+
+  ## temp - make some plots visualising the uncertainties for cross checks
+  #uncert1_up.SetFillStyle(0)
+  #uncert1_down.SetFillStyle(0)
+  #uncert2_up.SetFillStyle(0)
+  #uncert2_down.SetFillStyle(0)
+
+  #uncert1_up.SetLineColor(ROOT.kRed)
+  #uncert1_down.SetLineColor(ROOT.kGreen)  
+  #uncert2_up.SetLineColor(ROOT.kBlue)
+  #uncert2_down.SetLineColor(ROOT.kPink)
+  #
+  #
+  #c1 = ROOT.TCanvas()
+  #if 'pt_1' in h.GetName():
+  #  h.GetXaxis().SetRangeUser(40.1,100)
+  #else: h.GetXaxis().SetRangeUser(40.1,100)
+  #h.GetYaxis().SetTitle('FF')
+  #h.GetXaxis().SetTitle('p_{T} (GeV)')
+  #h.SetMaximum(h.GetMaximum()+0.1)
+  ##h.SetMinimum(h.GetMinimum()*0.5)
+  #h.Draw('e2')
+  #uncert1_up.Draw('histsame')
+  #uncert1_down.Draw('histsame')
+  #uncert2_up.Draw('histsame')
+  #uncert2_down.Draw('histsame')
+  #leg = ROOT.TLegend(0.65,0.6,0.88,0.85)
+  #leg.SetTextSize(0.04)
+  #leg.AddEntry(uncert1_up,'uncert. 1 up','l')
+  #leg.AddEntry(uncert1_down,'uncert. 1 down','l')
+  #leg.AddEntry(uncert2_up,'uncert. 2 up','l')
+  #leg.AddEntry(uncert2_down,'uncert. 2 down','l') 
+  #leg.AddEntry(h,'nominal','l')
+  #leg.AddEntry(h,'total uncert.','f')
+  #leg.Draw()
+  #c1.Print('syst_combs/'+h.GetName()+'.pdf')
+
+  return (uncert1_up, uncert1_down, uncert2_up, uncert2_down)
 
 def TGraphAsymmErrorsToTH1D(graph):
     nbins = graph.GetN()
@@ -169,9 +248,11 @@ def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
 
 # wrap TF1
 
-def SafeWrapFunc(wsp, fvars, func, name=None):
+def SafeWrapFunc(wsp, fvars, func_, name=None):
     if name is None:
-        name = func.GetName()
+        name = func_.GetName()
+    func = func_.Clone()
+    func.SetName(name)
     f_arglist = ROOT.RooArgList()
     #f_vars = []
 

@@ -199,7 +199,9 @@ class HTTGenAnalysis : public ModuleBase {
   double p_aco_angle_4_;
   double dR1_, dR2_;
 
-
+  double aco_sign_;
+  double aco_sign_smear_;
+  double aco_angle_smear_;
   double aco_angle_1_;
   double aco_angle_2_;
   double aco_angle_3_;

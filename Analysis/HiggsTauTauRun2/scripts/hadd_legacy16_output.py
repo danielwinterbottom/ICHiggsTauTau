@@ -41,6 +41,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+
      'WJetsToLNu-LO',
      'WJetsToLNu-LO-ext',
      'W1JetsToLNu-LO',
@@ -167,16 +168,13 @@ sample_list = [
      'EmbeddingTauTauG',
      'EmbeddingTauTauH',
 
+     'TTTo2L2Nu',
+     'TTToHadronic',
+     'TTToSemiLeptonic',
      'GluGluHToTauTauUncorrelatedDecay',
      'GluGluHToTauTauUncorrelatedDecay_Filtered',
      'GluGluHToWWTo2L2Nu_M-125',
-     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
      'GluGluToHToTauTau_M-125',
-     'GluGluToHToTauTau_M125_amcatnloFXFX',
-     'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-     'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
-     'GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-     'GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX',
      'JJH0MToTauTauPlusOneJets',
      'JJH0MToTauTauPlusOneJets_Filtered',
      'JJH0MToTauTauPlusTwoJets',
@@ -195,8 +193,6 @@ sample_list = [
      'JJH0PMToTauTauPlusTwoJets_Filtered',
      'JJH0PMToTauTauPlusZeroJets',
      'JJH0PMToTauTauPlusZeroJets_Filtered',
-     'JJHiggs0MToTauTau',
-     'JJHiggs0Mf05ph0ToTauTau',
      'VBFHToTauTauUncorrelatedDecay',
      'VBFHToTauTauUncorrelatedDecay_Filtered',
      'VBFHToTauTau_M-125',
@@ -209,6 +205,12 @@ sample_list = [
      'VBFHiggs0PHf05ph0_HToTauTau',
      'VBFHiggs0PM_HToTauTau',
      'WHiggs0L1_HToTauTau',
+     'WHiggs0L1fWH05ph0',
+     'WHiggs0M',
+     'WHiggs0MfWH05ph0',
+     'WHiggs0PH',
+     'WHiggs0PHfWH05ph0',
+     'WHiggs0PM',
      'WminusHToTauTauUncorrelatedDecay',
      'WminusHToTauTauUncorrelatedDecay_Filtered',
      'WminusHToTauTau_M-125',
@@ -218,11 +220,13 @@ sample_list = [
      'ZHToTauTauUncorrelatedDecay',
      'ZHToTauTauUncorrelatedDecay_Filtered',
      'ZHToTauTau_M-125',
+     'ZHiggs0L1',
      'ZHiggs0L1fZH05ph0_HToTauTau',
-     'ttHiggs0MToTauTau',
-     'ttHiggs0Mf05ph0ToTauTau',
-     'ttHiggs0PMToTauTau',
-
+     'ZHiggs0M',
+     'ZHiggs0MfZH05ph0',
+     'ZHiggs0PH',
+     'ZHiggs0PHfZH05ph0',
+     'ZHiggs0PM',
 
     ]
 
@@ -240,8 +244,7 @@ for d in subdirs:
   if infi: new_subdirs.append((d,infi))
 subdirs=new_subdirs
 
-print subdirs
-
+#print subdirs
 
 nfiles={}
 
@@ -262,20 +265,19 @@ def FindMissingFiles(outf, d, samp, chan, infiles):
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 for sa in sample_list:
-  remove=True
-  to_remove=[]
-  hadd_dirs=[]
-  command=''
-  if batch:
-    JOB='jobs/hadd_%s.sh' % sa
-    os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
+    remove=True
+    to_remove=[]
+    hadd_dirs=[]
+    command=''
+    if batch:
+      JOB='jobs/hadd_%s_%s.sh' % (sa, ch)
+      os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_0.root'%vars()):
         if "%(sa)s_2016"%vars() in nfiles or ignore==True:
-#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*.root'%vars())
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
           if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2016_%(ch)s_*'%vars())) == nfiles["%(sa)s_2016"%vars()]):
             if not batch:  
@@ -293,29 +295,35 @@ for sa in sample_list:
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())) 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
+              #command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars() # to be used if you want to only delete all files at the end of the hadding 
+              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*; fi\n" % vars() 
           else :
             print "Incorrect number of files for sample %(sa)s_2016_%(ch)s! in %(sdir)s"%vars()
             remove=False
 
+    if batch and command:
+      with open(JOB, "a") as file: 
+        file.write("\n%s" % command)
+        file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
+      os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+
+   # if batch and command:  # to be used if you want to only delete all files at the end of the hadding
+   #   with open(JOB, "a") as file: 
+   #     file.write("\n%s" % command)
+   #     rm_command = 'y=1\n' % vars()
+   #     for i in hadd_dirs:
+   #       hadd_file  = i[0]
+   #       rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
+   #     rm_command+='if [ $y == 1 ]; then\n'
+   #     for i in hadd_dirs:
+   #       input_file = i[1]
+   #       rm_command+=input_file+'\n'
+   #     rm_command+='fi'
+   #     if remove: file.write("\n%s" % rm_command)
+   #     file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
+   #   os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+
   if not batch and remove:
     # if all channels and systematics were hadded sucsessfully then remove the input files
-    for x in to_remove: 
+    for x in to_remove:
       os.system(x)
-
-  if batch and command:
-    with open(JOB, "a") as file: 
-      file.write("\n%s" % command)
-      rm_command = 'y=1\n' % vars()
-      for i in hadd_dirs:
-        hadd_file  = i[0]
-        rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
-      rm_command+='if [ $y == 1 ]; then\n'
-      for i in hadd_dirs:
-        input_file = i[1]
-        rm_command+=input_file+'\n'
-      rm_command+='fi'
-      if remove: file.write("\n%s" % rm_command)
-      file.write('\nEnd of job')
-    os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
-

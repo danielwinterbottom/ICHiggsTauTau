@@ -237,56 +237,6 @@ if SCHEME == 'cpdecay':
   VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
   VAR_JETFAKES_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
 
-  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
-  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
-
-  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-
-  # stage 2 merging
-
-  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(6,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
-
-  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-
-  # stage 3 merging
-
-  #VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  #VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(12,0,6.28319)" # could use even more bins (20)!
-  #VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  #VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  #VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(12,0,6.28319)" # could use even more bins!
-  #VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(6,0,6.28319)" # could use even more bins (24)!
-  #VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
-
-  #VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  #VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-
-  # stage 4 merging
-
-  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
-
-  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-
   # merge bins after seeing SM/PS stat unc.(28 April 2020) 
   VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
   VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"

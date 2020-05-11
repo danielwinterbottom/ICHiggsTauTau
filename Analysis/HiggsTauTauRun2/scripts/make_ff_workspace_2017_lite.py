@@ -9,7 +9,7 @@ import re
 
 cmssw_base = subprocess.check_output('echo $CMSSW_BASE', shell=True).replace('\n','')
 
-wsptools = imp.load_source('wsptools', '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/workspaceTools.py' % vars())
+wsptools = imp.load_source('wsptools', '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/workspaceTools.py' % vars())
 
 def GetFromTFile(str):
     f = ROOT.TFile(str.split(':')[0])
@@ -36,7 +36,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017_mt_ip0p5/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2017_mt_ip0p5/' % vars()
 
   histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_mt_%(wp)s_2017.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -455,7 +455,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/mvadm_ff_deeptauV2p1_2017_tt_ip0p5/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2017_tt_ip0p5/' % vars()
  
   histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_tt_%(wp)s_2017.root:tt_fracs_njets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_os_qcd' % vars()),

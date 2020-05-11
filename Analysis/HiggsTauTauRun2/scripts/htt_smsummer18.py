@@ -187,29 +187,29 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 if options.proc_sm or options.proc_all:
     signal_mc += [
 
-      # 'GluGluHToTauTauUncorrelatedDecay',
-      # 'GluGluHToTauTauUncorrelatedDecay_Filtered',
-      # 'GluGluHToTauTau_M-125',
-      # 'GluGluHToWWTo2L2Nu_M-125',
-      # 'JJH0MToTauTauPlusOneJets',
-      # 'JJH0MToTauTauPlusOneJets_Filtered',
-      # 'JJH0MToTauTauPlusTwoJets',
-      # 'JJH0MToTauTauPlusTwoJets_Filtered',
-      # 'JJH0MToTauTauPlusZeroJets',
-      # 'JJH0MToTauTauPlusZeroJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusOneJets',
-      # 'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusTwoJets',
-      # 'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
-      # 'JJH0Mf05ph0ToTauTauPlusZeroJets',
-      # 'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
-      # 'JJH0PMToTauTauPlusOneJets',
-      # 'JJH0PMToTauTauPlusOneJets_Filtered',
-      # 'JJH0PMToTauTauPlusTwoJets',
-      # 'JJH0PMToTauTauPlusTwoJets_Filtered',
-      # 'JJH0PMToTauTauPlusZeroJets',
-      # 'JJH0PMToTauTauPlusZeroJets_Filtered',
-      # 'VBFHToTauTauUncorrelatedDecay',
+      'GluGluHToTauTauUncorrelatedDecay',
+      'GluGluHToTauTauUncorrelatedDecay_Filtered',
+      'GluGluHToTauTau_M-125',
+      'GluGluHToWWTo2L2Nu_M-125',
+      'JJH0MToTauTauPlusOneJets',
+      'JJH0MToTauTauPlusOneJets_Filtered',
+      'JJH0MToTauTauPlusTwoJets',
+      'JJH0MToTauTauPlusTwoJets_Filtered',
+      'JJH0MToTauTauPlusZeroJets',
+      'JJH0MToTauTauPlusZeroJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusOneJets',
+      'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusTwoJets',
+     'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
+      'JJH0Mf05ph0ToTauTauPlusZeroJets',
+      'JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered',
+      'JJH0PMToTauTauPlusOneJets',
+      'JJH0PMToTauTauPlusOneJets_Filtered',
+      'JJH0PMToTauTauPlusTwoJets',
+      'JJH0PMToTauTauPlusTwoJets_Filtered',
+      'JJH0PMToTauTauPlusZeroJets',
+      'JJH0PMToTauTauPlusZeroJets_Filtered',
+      'VBFHToTauTauUncorrelatedDecay',
       'VBFHToTauTauUncorrelatedDecay_Filtered',
       # 'VBFHToTauTau_M-125-ext1',
       # 'VBFHToWWTo2L2Nu_M-125',
@@ -341,7 +341,6 @@ if options.proc_embed or options.proc_all:
 
     embed_samples = []
     data_eras = ['A','B','C','D']
-    #data_eras = ['A','B','C']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -365,6 +364,9 @@ if options.proc_embed or options.proc_all:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Mar20_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
+            if 'ElTau' or 'MuTau' in sa: nperjob = 5
+            if 'MuTau' in sa: nperjob = 2
+            if 'MuTauA' in sa or 'MuTauC' in sa: nperjob = 2
             if 'ElTauD' in sa: nperjob = 200
             if 'ElMuD' in sa: nperjob = 200
             if 'MuTauD' in sa: nperjob = 200
@@ -455,7 +457,8 @@ if options.proc_bkg or options.proc_all:
         for FLATJSONPATCH in flatjsons:
             #nperjob = 40
             nperjob=20
-            if sa == 'T-t' or sa == 'ZZTo4L-ext' or sa == 'ZZTo2L2Nu-ext2' or sa == 'Tbar-t' or sa.startswith('TTTo'): nperjob = 100
+            if sa == 'T-t' or sa == 'ZZTo4L-ext' or sa == 'ZZTo2L2Nu-ext2' or sa == 'Tbar-t' or sa.startswith('TTToHad'): nperjob = 100
+            if sa.startswith('TTTo2L'): nperjob = 10
             if 'DY' not in sa and 'EWKZ' not in sa:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
             if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
