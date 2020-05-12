@@ -1,5 +1,5 @@
 DY1JetsToLL-LO 6077.22
-DY1JetsToLL-LO-ext-ext 6077.22
+DY1JetsToLL-LO-ext 6077.22
 DY2JetsToLL-LO 6077.22
 DY2JetsToLL-LO-ext 6077.22
 DY3JetsToLL-LO 6077.22
@@ -30,10 +30,7 @@ WJetsToLNu-LO 61526.7
 WJetsToLNu-LO-ext 61526.7
 WWTo1L1Nu2Q 49.997
 WWTo2L2Nu 10.48
-WWTo4Q 45.2
-WWTo4Q-ext 45.2
 WWToLNuQQ 49.997
-WWToLNuQQ-ext 49.997
 WZTo1L1Nu2Q 10.71
 WZTo1L3Nu 3.05
 WZTo2L2Q 5.595
@@ -47,12 +44,6 @@ GluGluHToTauTauUncorrelatedDecay 3.045966
 GluGluHToTauTauUncorrelatedDecay_Filtered 3.045966
 GluGluHToTauTau_M-125 3.045966
 GluGluHToTauTau_M-125-ext 3.045966
-GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToHToTauTau_M-125-nospinner 3.045966
-GluGluToHToTauTau_M-125-nospinner-filter 3.045966
-GluGluToHToTauTau_M125_amcatnloFXFX 3.045966
-GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
 JJH0PMToTauTauPlusZeroJets 1.6366
 JJH0PMToTauTauPlusZeroJets_Filtered 1.6366
 JJH0PMToTauTauPlusOneJets 0.9313

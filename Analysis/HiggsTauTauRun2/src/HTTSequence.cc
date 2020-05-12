@@ -713,7 +713,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     if(era_type == era::data_2017) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(97502567,75523396,10016760,6887893,4317756);
-    }
+    } 
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482);

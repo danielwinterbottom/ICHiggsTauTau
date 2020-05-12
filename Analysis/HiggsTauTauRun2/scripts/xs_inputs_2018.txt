@@ -38,14 +38,6 @@ GluGluHToTauTauUncorrelatedDecay 3.045966
 GluGluHToTauTauUncorrelatedDecay_Filtered 3.045966
 GluGluHToTauTau_M-125 3.045966
 GluGluHToWWTo2L2Nu_M-125 1.001
-GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToHToTauTau_M-125-nospinner-filter 3.045966
-GluGluToHToTauTau_M-125-nospinner 3.045966
-GluGluToHToTauTau_M125_amcatnloFXFX 3.045966
-GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToMaxmixHToTauTau_M125_amcatnloFXFX 3.045966
-GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX 3.045966
 JJH0PMToTauTauPlusZeroJets 1.6366
 JJH0PMToTauTauPlusZeroJets_Filtered 1.6366
 JJH0PMToTauTauPlusOneJets 0.9313
@@ -70,8 +62,6 @@ VBFHToTauTau_M-125-MM-filter 0.2371
 VBFHToTauTau_M-125-PS-filter 0.2371
 VBFHToTauTau_M-125-SM-filter 0.2371
 VBFHToTauTau_M-125-ext1 0.2371
-VBFHToTauTau_M-125-nospinner-filter 0.2371
-VBFHToTauTau_M-126-nospinner 0.2371
 VBFHToWWTo2L2Nu_M-125 0.0858
 WminusHToTauTauUncorrelatedDecay 0.03340656
 WminusHToTauTauUncorrelatedDecay_Filtered 0.03340656

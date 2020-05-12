@@ -57,13 +57,7 @@ ZZTo4L 1.212
 GluGluHToTauTauUncorrelatedDecay 3.045966
 GluGluHToTauTauUncorrelatedDecay_Filtered 3.045966
 GluGluHToWWTo2L2Nu_M-125 1.001
-GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
 GluGluToHToTauTau_M-125 3.045966
-GluGluToHToTauTau_M125_amcatnloFXFX 3.045966
-GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToMaxmixHToTauTau_M125_amcatnloFXFX 3.045966
-GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX 3.045966
-GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX 3.045966
 JJH0PMToTauTauPlusZeroJets 1.6335
 JJH0PMToTauTauPlusZeroJets_Filtered 1.6335
 JJH0PMToTauTauPlusOneJets 0.9020

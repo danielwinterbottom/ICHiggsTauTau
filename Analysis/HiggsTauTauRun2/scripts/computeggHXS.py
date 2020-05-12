@@ -1,4 +1,4 @@
-year=2016
+year=2017
 
 if year == 2017: year_ = 2018
 else: year_ = year
@@ -56,6 +56,11 @@ for x in ['0PM', '0M', '0Mf05ph0']:
   xs0_new = xs*xs0/xs_nlo
   xs1_new = xs*xs1/xs_nlo
   xs2_new = xs*xs2/xs_nlo
+
+  if x == '0Mf05ph0':
+    xs0_new*=2
+    xs1_new*=2
+    xs2_new*=2
 
   print 'JJH%(x)sToTauTauPlusZeroJets %(xs0_new).4f' % vars()
   print 'JJH%(x)sToTauTauPlusZeroJets_Filtered %(xs0_new).4f' % vars()
