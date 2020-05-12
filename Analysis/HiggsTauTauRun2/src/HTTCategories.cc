@@ -535,7 +535,9 @@ namespace ic {
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
+      outtree_->Branch("aco_angle_rand", &aco_angle_rand_);
       outtree_->Branch("aco_sign", &aco_sign_);
+      outtree_->Branch("aco_sign_rand", &aco_sign_rand_);
       outtree_->Branch("lead_pt_1", &lead_pt_1_);
       outtree_->Branch("lead_pt_2", &lead_pt_2_);
       outtree_->Branch("alpha1_1", &alpha1_1_);
@@ -2250,6 +2252,14 @@ namespace ic {
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_6_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+        }
+
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
 
@@ -2310,6 +2320,19 @@ namespace ic {
           if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
           else                    aco_angle_5_ = aco_angle_5_-M_PI;
         }
+
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_5_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+          if (cp_sign_<0) {
+            if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+            else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+          }
+        }
+
         aco_angle_6_ = IPAcoAngle(lvec1_1, lvec2, lvec3_1, lvec4,false);
         if (cp_sign_<0) {
           if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
@@ -2337,6 +2360,18 @@ namespace ic {
         if (cp_sign_<0) {
           if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
           else                   aco_angle_1_ -= M_PI;
+        }
+
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_1_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+          if (cp_sign_<0) {
+            if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+            else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+          }
         } 
 
         alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
@@ -2382,6 +2417,18 @@ namespace ic {
             if (cp_sign_<0) {
               if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
               else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+            if(event_ % 2) {
+              aco_angle_rand_ = aco_angle_5_;
+              aco_sign_rand_ = aco_sign_;
+            } else {
+              aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+              aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+              if (cp_sign_<0) {
+                if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+                else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+              }
             }
 
             TLorentzVector lvec5 = ConvertToLorentz(a1_daughters[2]->vector());
@@ -2462,6 +2509,18 @@ namespace ic {
           else                   aco_angle_2_ -= M_PI;
         }
 
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_1_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+          if (cp_sign_1_<0) {
+            if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+            else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+          }
+        }
+
         alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
         alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
 
@@ -2517,6 +2576,18 @@ namespace ic {
           if (cp_sign_4_<0) {
             if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
             else                   aco_angle_4_ -= M_PI;
+          }
+
+          if(event_ % 2) {
+            aco_angle_rand_ = aco_angle_1_;
+            aco_sign_rand_ = aco_sign_;
+          } else {
+            aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+            aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+            if (cp_sign_1_<0) {
+              if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+              else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+            }
           }
 
           alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
@@ -2683,6 +2754,14 @@ namespace ic {
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_6_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+        }
+
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
       }
@@ -2721,6 +2800,19 @@ namespace ic {
           if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
           else                    aco_angle_6_ = aco_angle_6_-M_PI;
         }
+
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_5_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+          if (cp_sign_<0) {
+            if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+            else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+          }
+        }
+
         alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
         alpha1_2_ = AlphaAngle(lvec4_2.Vect(), ip2);
         alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
@@ -2744,6 +2836,18 @@ namespace ic {
             if (cp_sign_<0) {
               if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
               else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+            if(event_ % 2) {
+              aco_angle_rand_ = aco_angle_5_;
+              aco_sign_rand_ = aco_sign_;
+            } else {
+              aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+              aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+              if (cp_sign_<0) {
+                if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+                else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+              }
             }
 
           }

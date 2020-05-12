@@ -1520,6 +1520,13 @@ if options.analysis in ['cpprod']:
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'qqH_htt*' : 'VBFHToTauTau_M-125',
+         'WplusH_htt*': 'WplusHToTauTau_M-125',
+         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
 # 2017
@@ -1531,18 +1538,25 @@ if options.analysis in ['cpprod']:
          'wplush*_powheg': 'WplusHToTauTau_M-125',
          'wminush*_powheg': 'WminusHToTauTau_M-125',
          'zh*_powheg': 'ZHToTauTau_M-125',
-         'ZHps_htt*' : 'ZHiggs0MToTauTau',
-         'ZHsm_htt*' : 'ZHiggs0PMToTauTau',
-         'ZHmm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
-         'qqHsm_htt*' : 'VBFHiggs0PMToTauTau',
-         'qqHps_htt*' :'VBFHiggs0MToTauTau',
-         'qqHmm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
-         'WHps_htt*' :'WHiggs0MToTauTau',
-         'WHmm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
-         'WHsm_htt*' : 'WHiggs0PMToTauTau',
+         #'ZHps_htt*' : 'ZHiggs0MToTauTau',
+         #'ZHsm_htt*' : 'ZHiggs0PMToTauTau',
+         #'ZHmm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
+         #'qqHsm_htt*' : 'VBFHiggs0PMToTauTau',
+         #'qqHps_htt*' :'VBFHiggs0MToTauTau',
+         #'qqHmm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
+         #'WHps_htt*' :'WHiggs0MToTauTau',
+         #'WHmm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
+         #'WHsm_htt*' : 'WHiggs0PMToTauTau',
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'qqH_htt*' : 'VBFHToTauTau_M-125',
+         'WplusH_htt*': 'WplusHToTauTau_M-125',
+         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
 # 2018
@@ -1557,6 +1571,13 @@ if options.analysis in ['cpprod']:
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
+         'WplusH_htt*': 'WplusHToTauTau_M-125',
+         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
 
@@ -1825,8 +1846,6 @@ if options.syst_z_mjj != '' and options.cat in ['vbf','dijet','dijet_lowboost','
     systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125', 'ggH_hww', 'qqH_hww','EmbedZTT'], False)
     systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125', 'ggH_hww', 'qqH_hww','EmbedZTT'], False)
 if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dijet','dijet_lowboost','dijet_boosted',
-            # 'ggh_lowMjj','qqh_lowMjj','misc_lowMjj','qcd_lowMjj','qqh_lowMjj','tt_lowMjj','zll_lowMjj','ztt_lowMjj','fake_lowMjj','jetFakes_lowMjj','zttEmbed_lowMjj',
-            # 'ggh_highMjj','ggh_boosted_highMjj','qqh_boosted_highMjj','ggh_tight_highMjj','ggh_loose_highMjj','ggh_loose_boost_highMjj','ggh_tight_boost_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj','jetFakes_highMjj','zttEmbed_highMjj','jetFakes_tight_highMjj','jetFakes_loose_highMjj'
             ] and options.channel in ['em','et','mt','tt'] and options.era == 'smsummer16': 
     if "Mjj" not in options.cat:
         weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
@@ -1835,7 +1854,6 @@ if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf','dije
         weight_up = 'wt*wt_scale_%s_boosted' % (options.channel)
         weight_down = 'wt*(2-wt_scale_%s_boosted)' % (options.channel)
     if options.cat in ['dijet','dijet_lowboost','dijet_boosted',
-            # 'ggh_highMjj','ggh_boosted_highMjj','qqh_boosted_highMjj','ggh_tight_highMjj','ggh_loose_highMjj','ggh_loose_boost_highMjj','ggh_tight_boost_highMjj','qqh_highMjj','misc_highMjj','qcd_highMjj','qqh_highMjj','tt_highMjj','zll_highMjj','ztt_highMjj','fake_highMjj','jetFakes_highMjj','zttEmbed_highMjj','jetFakes_tight_highMjj','jetFakes_loose_highMjj'
             ]:
       weight_up = 'wt*wt_scale_%s_vbf' % (options.channel)
       weight_down = 'wt*(2-wt_scale_%s_vbf)' % (options.channel)
@@ -2041,7 +2059,9 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       lt_systs['ff_%(chan)s_%(proc)s_l_pt_closure_syst' % vars()] = 'wt_ff_%(proc)s_l_pt_' % vars()
       for njet in ['0','1','2']:
         for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
-          lt_systs[('ff_%(chan)s_%(proc)s_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+          #lt_systs[('ff_%(chan)s_%(proc)s_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+          lt_systs[('ff_%(chan)s_%(proc)s_stat_unc1_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_unc1_njet%(njet)s_mvadm%(dm)s_' % vars()
+          lt_systs[('ff_%(chan)s_%(proc)s_stat_unc2_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_%(proc)s_stat_unc2_njet%(njet)s_mvadm%(dm)s_' % vars()
     for template_name in lt_systs:
       weight_name = lt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
@@ -2053,7 +2073,9 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_qcd_syst_' % vars()
     for njet in ['0','1','2']:
       for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
-        tt_systs[('ff_tt_qcd_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+        #tt_systs[('ff_tt_qcd_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
+        tt_systs[('ff_tt_qcd_stat_unc1_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_unc1_njet%(njet)s_mvadm%(dm)s_' % vars()
+        tt_systs[('ff_tt_qcd_stat_unc2_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_unc2_njet%(njet)s_mvadm%(dm)s_' % vars()
 
     for template_name in tt_systs:
       weight_name = tt_systs[template_name]
@@ -2067,16 +2089,19 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
 
 if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='cpprod' and options.do_ff_systs:
   if options.channel in ['et','mt']:
+
     lt_systs = {}
     lt_systs['ff_%s_qcd_osss_syst' % options.channel] = 'wt_ff_us_qcd_syst_osss_'
-    lt_systs['ff_%s_qcd_closure_syst' % options.channel] = 'wt_ff_us_qcd_syst_closure_'
-    lt_systs['ff_%s_wjets_closure_syst' % options.channel] = 'wt_ff_us_wjets_syst_closure_'
-    lt_systs['ff_%s_ttbar_closure_syst' % options.channel] = 'wt_ff_us_ttbar_syst_closure_'
+    lt_systs['ff_%s_qcd_closure_high_syst' % options.channel] = 'wt_ff_us_qcd_syst_closure_high_'
+    lt_systs['ff_%s_wjets_closure_high_syst' % options.channel] = 'wt_ff_us_wjets_syst_closure_high_'
+    lt_systs['ff_%s_ttbar_closure_high_syst' % options.channel] = 'wt_ff_us_ttbar_syst_closure_high_'
+    lt_systs['ff_%s_qcd_closure_low_syst' % options.channel] = 'wt_ff_us_qcd_syst_closure_low_'
+    lt_systs['ff_%s_wjets_closure_low_syst' % options.channel] = 'wt_ff_us_wjets_syst_closure_low_'
+    lt_systs['ff_%s_ttbar_closure_low_syst' % options.channel] = 'wt_ff_us_ttbar_syst_closure_low_'
     lt_systs['ff_%s_wjets_mt_syst_unc1' % options.channel] = 'wt_ff_us_wjets_syst_mt_unc1_'
     lt_systs['ff_%s_wjets_mt_syst_unc2' % options.channel] = 'wt_ff_us_wjets_syst_mt_unc2_'
     lt_systs['ff_%s_ttbar_stat_unc1' % options.channel] = 'wt_ff_us_ttbar_stat_unc1_'
     lt_systs['ff_%s_ttbar_stat_unc2' % options.channel] = 'wt_ff_us_ttbar_stat_unc2_'
-
 
     chan = options.channel
     for proc in ['qcd','wjets']:
@@ -2974,6 +2999,43 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
              else: sample_names = [sm_samples[key].replace('*',mass)]
              ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
+def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
+    weights = {"sm": "wt_cp_prod_sm*(wt_cp_prod_sm!=0)", "ps": "wt_cp_prod_ps*(wt_cp_prod_sm!=0)", "mm": "wt_cp_prod_mm*(wt_cp_prod_sm!=0)"}#, "flat": "(wt_cp_prod_sm!=0)"}
+    if get_os:
+        OSSS = 'os'
+    else:
+        OSSS = '!os'
+    if options.gen_signal:
+        OSSS='1'
+    for key, sample in sm_samples.iteritems():
+        non_cp = True
+        if 'ggH_sm' in key or 'ggH_ps' in key or 'ggH_mm' in key: non_cp=False
+        if not non_cp:
+          for name in weights: 
+            tname = key.replace('*',mass)+add_name
+            if 'ggH_'+name not in tname: tname=key.replace('*',mass)+'_reweightedto_'+name+add_name
+            non_cp=False
+            weight=wt+"*"+weights[name]
+            if 'ggH_mm' in key: weight+='*2' # change MM to 2 times SM cross section to make life easier when combining reweighted templates
+            full_selection = BuildCutString(weight, sel, cat, OSSS)
+            name = key
+
+            sample_names=[]
+            if isinstance(sm_samples[key], (list,)):
+              for i in sm_samples[key]:
+                sample_names.append(i.replace('*',mass))
+            else: sample_names = [sm_samples[key].replace('*',mass)]
+            ana.nodes[nodename].AddNode(ana.SummedFactory(tname, sample_names, plot, full_selection))
+        if non_cp:
+             full_selection = BuildCutString(wt, sel, cat, OSSS)
+             name = key
+
+             sample_names=[]
+             if isinstance(sm_samples[key], (list,)):
+               for i in sm_samples[key]:
+                 sample_names.append(i.replace('*',mass))
+             else: sample_names = [sm_samples[key].replace('*',mass)]
+             ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
 
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
@@ -3612,6 +3674,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             for proc in sm_samples:
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
             if options.analysis == 'cpdecay' and options.sm_masses!="": GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
+            elif options.analysis == 'cpprod' and options.sm_masses!="": GenerateReweightedCPProdSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
             else: GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''

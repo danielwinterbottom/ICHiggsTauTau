@@ -29,7 +29,7 @@ def checkJobs(year, to_check):
     files = [
         f for f in os.listdir(path) \
         if os.path.isfile(os.path.join(path, f)) \
-        and f.endswith("svfit.log") and "{}".format(year) in f \
+        and f.endswith("svfit.sh") and "{}".format(year) in f \
     ]
     if to_check is not None:
         files = [x for x in files if to_check in x]
@@ -39,17 +39,20 @@ def checkJobs(year, to_check):
     counter = 0
     for file_ in files:
         #print "{}/{}".format(path, file_)
-        #if "Closed file" not in open("{}/{}".format(path, file_)).read():
-        if "End of job" not in open("{}/{}".format(path, file_)).read():
+        #if "Closed file" not in open("{}/{}".format(path, file_)).read(): 
+        file_log_=file_.replace('.sh','.log')
+        exists=os.path.isfile(os.path.join(path, file_log_)) 
+        if not exists or "End of job" not in open("{}/{}".format(path, file_log_)).read():
            
             print((file_.split(".")[0]))
             counter += 1
 
-            resubmit=False#True
+            resubmit=False
+            #resubmit=True
             if resubmit:
-              os.system("{}/{}".format(path, file_.replace('.log','.sh'))) 
+              os.system("{}/{}".format(path, file_)) 
 
-        if "WARNING: A different number of svfit enries were detected for file" in open("{}/{}".format(path, file_)).read(): jobs_with_warnings.append(file_)
+        if exists and "WARNING: A different number of svfit enries were detected for file" in open("{}/{}".format(path, file_log_)).read(): jobs_with_warnings.append(file_log_)
 
 
     print("{} incomplete files".format(counter))

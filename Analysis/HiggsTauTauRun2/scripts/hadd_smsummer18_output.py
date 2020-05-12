@@ -263,8 +263,9 @@ for sa in sample_list:
                 print "Hadd had a problem:"
                 print filetext 
                 remove=False
-              else :
+              else:
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())
+                os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())) 
@@ -296,7 +297,7 @@ for sa in sample_list:
    #     file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
    #   os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
-  if not batch and remove:
-    # if all channels and systematics were hadded sucsessfully then remove the input files
-    for x in to_remove:
-      os.system(x)
+  #if not batch and remove:
+  #  # if all channels and systematics were hadded sucsessfully then remove the input files
+  #  for x in to_remove:
+  #    os.system(x)

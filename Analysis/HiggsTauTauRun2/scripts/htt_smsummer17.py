@@ -418,7 +418,6 @@ if options.proc_bkg or options.proc_all:
       "EWKWMinus2Jets",
       "EWKWPlus2Jets",
       "EWKZ2Jets",
-      "GluGluHToWWTo2L2Nu_M-125",
       "T-t",
       "T-tW",
       "TTTo2L2Nu",
