@@ -145,7 +145,7 @@
   },
   "GluGluHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 3.045966,
-    "evt": 20050291,
+    "evt": 20199729,
     "eff": 0.2446
   },
   "GluGluHToTauTau_M-125": {
@@ -275,7 +275,7 @@
   },
   "VBFHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.2371,
-    "evt": 24034325,
+    "evt": 23949215,
     "eff": 0.2513
   },
   "VBFHToTauTau_M-125-MM-filter": {
@@ -398,7 +398,7 @@
   },
   "ZHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 0.05542,
-    "evt": 2912545,
+    "evt": 2908733,
     "eff": 0.2513
   },
   "ZHToTauTau_M-125": {
