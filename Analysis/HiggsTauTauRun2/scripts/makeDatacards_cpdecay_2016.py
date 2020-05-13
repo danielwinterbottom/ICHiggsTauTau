@@ -204,7 +204,6 @@ if not no_shift_systs:
 if options.embedding:
     common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
-
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
       "mt" : ' '+common_shape_systematics+ ' '+mt_shape_systematics,
@@ -379,7 +378,7 @@ cat_schemes = {
 }
 
 qsub_command = (
-    'qsub -e /dev/null -o /dev/null -cwd -V -q hep.q '
+    'qsub -e /dev/null -o /dev/null -cwd -V -l h_vmem=12G -q hep.q '
     ' -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 )
 

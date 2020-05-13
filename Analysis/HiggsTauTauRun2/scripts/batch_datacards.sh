@@ -6,6 +6,7 @@ eval `scramv1 runtime -sh`
 source $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/setup_libs.sh
 
 ulimit -c 0
+ulimit -s unlimited
 
 var_=${var//\'}
 
