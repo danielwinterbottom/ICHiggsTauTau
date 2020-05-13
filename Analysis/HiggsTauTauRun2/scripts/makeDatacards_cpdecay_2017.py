@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --no_shift_systs --output_folder datacards
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --output_folder datacards
+#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser
@@ -223,34 +222,34 @@ if SCHEME == 'cpdecay':
  
   # TT variables
 
-  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9,1.0]"
-  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
-  VAR_JETFAKES_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
+  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
 
-  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
-  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
+  # VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
+  # VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  # VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  # VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  # VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
 
-  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  # VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
 
   # merge bins after seeing SM/PS stat unc.(28 April 2020) 
-  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -318,12 +317,12 @@ if SCHEME == 'cpdecay':
 
 if SCHEME == 'ip_uncert':
 
-  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 

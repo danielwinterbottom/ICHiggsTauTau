@@ -777,7 +777,8 @@ if options.channel == 'tt':
     #mva_jetFakes           = '(svfit_mass>150)'
     #mva_zttEmbed           = '(svfit_mass<100)'
 
-    cut_string = "IC_15Mar2020"
+    # cut_string = "IC_15Mar2020"
+    cut_string = "IC_11May2020"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
     mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
