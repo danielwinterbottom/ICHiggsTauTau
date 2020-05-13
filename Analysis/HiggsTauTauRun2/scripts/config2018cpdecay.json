@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","em","tt"],
+    "channels":     ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,8 +60,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Apr21_2018/",
-    //"output_folder" : "output/",
+    // "output_folder" : "/vols/cms/dw515/Offline/output/SM/Apr21_2018/",
+    // "output_folder" : "/vols/cms/akd116/Offline/output/SM/2020/Apr26_2018_gen_cpdecays/",
+    "output_folder" : "/vols/cms/akd116/Offline/output/SM/2020/May04_2018_effective_2/",
+    // "output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr21_2018_svfit/",
@@ -72,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,

@@ -4,7 +4,7 @@ import os
 
 file_names = {}
 channels = ['mt']
-years = ['2018']
+years = ['2016']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
         continue
