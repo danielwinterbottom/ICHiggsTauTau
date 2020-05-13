@@ -330,10 +330,19 @@ if SCHEME == 'ip_uncert':
 
   scheme_tt = [
 
-    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
+
+    ("17",   "zttEmbed_up",    "2017_zttEmbed_UP",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes_up",    "2017_jetFakes_UP",  VAR_JETFAKES_TT, ' '),
+
+    ("17",   "zttEmbed_down",    "2017_zttEmbed_DOWN",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes_down",    "2017_jetFakes_DOWN",  VAR_JETFAKES_TT, ' '),
+
+    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
 
     ("17",   "higgs_mvapipi_up",    "2017_higgs_Pi_Pi_UP",  VAR6, ' '),
     ("17",   "higgs_mvapirho_up",    "2017_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
