@@ -217,34 +217,34 @@ if SCHEME == 'cpdecay':
  
   # TT variables
 
-  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9,1.0]"
-  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
-  VAR_JETFAKES_TT = "IC_15Mar2020_max_score(7,0.3,1.0)"
+  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
 
-  # VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
-  # VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
+  # VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
+  # VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  # VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  # VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  # VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
 
-  # VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  # VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
 
   # merge bins after seeing SM/PS stat unc.(28 April 2020) 
-  VAR_PIPI ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_PIRHO ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_PIA1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_PI0A1 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_RHORHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_0A1RHO ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_0A1A1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -312,12 +312,12 @@ if SCHEME == 'cpdecay':
 
 if SCHEME == 'ip_uncert':
 
-  VAR1 ="IC_15Mar2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_15Mar2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_15Mar2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_15Mar2020_max_score[0.,0.7,0.8,0.9]"
+  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -329,6 +329,12 @@ if SCHEME == 'ip_uncert':
 
 
   scheme_tt = [
+
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
+
     ("17",   "higgs_mvapipi_up",    "2017_higgs_Pi_Pi_UP",  VAR6, ' '),
     ("17",   "higgs_mvapirho_up",    "2017_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
     ("17",   "higgs_mvapi0a1_up",    "2017_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
@@ -367,7 +373,7 @@ for ch in channels:
         if options.embedding: extra+=' --embedding'
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
         else: extra+=' --add_wt=\"wt_prefire*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert': extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:
