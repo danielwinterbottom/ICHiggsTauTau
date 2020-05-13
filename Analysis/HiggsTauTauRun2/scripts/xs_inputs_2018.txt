@@ -58,9 +58,6 @@ JJH0Mf05ph0ToTauTauPlusTwoJets 0.4742
 JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered 0.4742
 VBFHToTauTauUncorrelatedDecay 0.2371
 VBFHToTauTauUncorrelatedDecay_Filtered 0.2371
-VBFHToTauTau_M-125-MM-filter 0.2371
-VBFHToTauTau_M-125-PS-filter 0.2371
-VBFHToTauTau_M-125-SM-filter 0.2371
 VBFHToTauTau_M-125-ext1 0.2371
 VBFHToWWTo2L2Nu_M-125 0.0858
 WminusHToTauTauUncorrelatedDecay 0.03340656

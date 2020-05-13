@@ -1399,7 +1399,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
 
-      if(!event->Get<double>("genpT") || !event->Get<double>("genM")) {
+      if(!event->Exists("genpT") || !event->Exists("genM")) {
 
         std::vector<GenParticle *> sel_gen_parts;
         std::vector<GenParticle *> parts;
