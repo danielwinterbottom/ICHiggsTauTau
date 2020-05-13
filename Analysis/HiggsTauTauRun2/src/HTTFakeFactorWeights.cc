@@ -149,7 +149,7 @@ namespace ic {
 
       for(auto s : systs_us_) {
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_mt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,m_pt,pfmt")));
+              ff_ws_us_->function(("ff_mt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,m_pt,pfmt,met")));
       }
 
 
@@ -243,7 +243,7 @@ namespace ic {
 
       for(auto s : systs_us_) {   
         fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,pfmt")));
+              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,pfmt,met")));
       }
 
       // load MVA scroes reader for fractions
@@ -771,7 +771,7 @@ namespace ic {
           std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
           Met const* pfmet = pfMet_vec.at(0);
           double pfmt_1 = MT(lep1, pfmet);
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1};
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet->pt()};
           double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
           event->Add("wt_ff_us_1",  ff_us_nom);
 

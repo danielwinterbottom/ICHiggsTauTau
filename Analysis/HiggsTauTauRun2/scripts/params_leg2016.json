@@ -79,6 +79,18 @@
     "xs": 831.76,
     "evt": 74885019
   },
+  "TTTo2L2Nu": {
+    "xs": 88.29,
+    "evt": 67312164
+  },
+  "TTToHadronic": {
+    "xs": 377.96,
+    "evt": 67963984
+  },
+  "TTToSemiLeptonic": {
+    "xs": 365.34,
+    "evt": 106736180
+  },
   "Tbar-t": {
     "xs": 80.95,
     "evt": 38811017
@@ -97,35 +109,35 @@
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W2JetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W2JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W3JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W3JetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W4JetsToLNu-LO-ext1": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "W4JetsToLNu-LO-ext2": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "WGToLNuG-ext1": {
     "xs": 489,
@@ -149,19 +161,19 @@
   },
   "WJetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 173252475
+    "evt": 86916455
   },
   "WJetsToLNu": {
     "xs": 61526.7,
-    "evt": 340992581
+    "evt": 178695240
   },
   "WJetsToLNu-ext": {
     "xs": 61526.7,
-    "evt": 340992581
+    "evt": 178695240
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
@@ -202,39 +214,15 @@
   "GluGluHToTauTauUncorrelatedDecay_Filtered": {
     "xs": 3.045966,
     "evt": 20156550,
-    "eff": 0.2455 
+    "eff": 0.2455
   },
   "GluGluHToWWTo2L2Nu_M-125": {
     "xs": 1.001,
     "evt": 492200
   },
-  "GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 4691218
-  },
   "GluGluToHToTauTau_M-125": {
     "xs": 3.045966,
     "evt": 9673200
-  },
-  "GluGluToHToTauTau_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 1612810
-  },
-  "GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 6274155
-  },
-  "GluGluToMaxmixHToTauTau_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 1728080
-  },
-  "GluGluToPseudoscalarHToTauTauPlusTwoJets_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 5672804
-  },
-  "GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX": {
-    "xs": 3.045966,
-    "evt": 1751196
   },
   "JJH0PMToTauTauPlusZeroJets": {
     "xs": 1.6335,
@@ -260,7 +248,7 @@
   },
   "JJH0PMToTauTauPlusTwoJets_Filtered": {
     "xs": 0.5104,
-    "evt": 5980573,
+    "evt": 5867664,
     "eff": 0.2923
   },
   "JJH0MToTauTauPlusZeroJets": {
@@ -291,30 +279,30 @@
     "eff": 0.2950
   },
   "JJH0Mf05ph0ToTauTauPlusZeroJets": {
-    "xs": 1.6632,
+    "xs": 3.3263,
     "evt": 387606
   },
   "JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered": {
-    "xs": 1.6632,
+    "xs": 3.3263,
     "evt": 808237,
     "eff": 0.2387
   },
   "JJH0Mf05ph0ToTauTauPlusOneJets": {
-    "xs": 0.8879,
-    "evt": 211773
+    "xs": 1.7758,
+    "evt": 228562
   },
   "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
-    "xs": 0.8879,
+    "xs": 1.7758,
     "evt": 2256298,
     "eff": 0.2443
   },
   "JJH0Mf05ph0ToTauTauPlusTwoJets": {
-    "xs": 0.4949,
+    "xs": 0.9898,
     "evt": 333260
   },
   "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
-    "xs": 0.4949,
-    "evt": 2480423,
+    "xs": 0.9898,
+    "evt": 6877107,
     "eff": 0.2926
   },
   "VBFHToTauTauUncorrelatedDecay": {
@@ -333,38 +321,6 @@
   "VBFHToWWTo2L2Nu_M-125": {
     "xs": 0.0858,
     "evt": 498440
-  },
-  "VBFHiggs0L1_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 972000
-  },
-  "VBFHiggs0L1f05ph0_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 995200
-  },
-  "VBFHiggs0M_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 952800
-  },
-  "VBFHiggs0Mf05ph0_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 948400
-  },
-  "VBFHiggs0PH_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 912000
-  },
-  "VBFHiggs0PHf05ph0_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 958400
-  },
-  "VBFHiggs0PM_HToTauTau": {
-    "xs": 0.2371,
-    "evt": 998600
-  },
-  "WHiggs0L1_HToTauTau": {
-    "xs": 0.08606,
-    "evt": 970200
   },
   "WminusHToTauTauUncorrelatedDecay": {
     "xs": 0.03340,
@@ -405,21 +361,101 @@
     "xs": 0.05542,
     "evt": 563177
   },
+  "ttHiggs0MToTauTau": {
+    "xs": 0.0318,
+    "evt": 563177
+  },
+  "ttHiggs0Mf05ph0ToTauTau": {
+    "xs": 0.0318,
+    "evt": 563177
+  },
+  "ttHiggs0PMToTauTau": {
+    "xs": 0.0318,
+    "evt": 563177
+  },
+  "VBFHiggs0L1_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 972000
+  },
+  "VBFHiggs0L1f05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 995200
+  },
+  "VBFHiggs0M_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 952800
+  },
+  "VBFHiggs0Mf05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 948400
+  },
+  "VBFHiggs0PH_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 912000
+  },
+  "VBFHiggs0PHf05ph0_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 958400
+  },
+  "VBFHiggs0PM_HToTauTau": {
+    "xs": 0.2371,
+    "evt": 998600
+  },
+  "WHiggs0L1_HToTauTau": {
+    "xs": 0.08606,
+    "evt": 970200
+  },
+  "WHiggs0L1fWH05ph0": {
+    "xs": 0.08606,
+    "evt": 990200
+  },
+  "WHiggs0M": {
+    "xs": 0.08606,
+    "evt": 490000
+  },
+  "WHiggs0MfWH05ph0": {
+    "xs": 0.08606,
+    "evt": 993800
+  },
+  "WHiggs0PH": {
+    "xs": 0.08606,
+    "evt": 974800
+  },
+  "WHiggs0PHfWH05ph0": {
+    "xs": 0.08606,
+    "evt": 964800
+  },
+  "WHiggs0PM": {
+    "xs": 0.08606,
+    "evt": 1000000
+  },
+  "ZHiggs0L1": {
+    "xs": 0.05542,
+    "evt": 829600
+  },
   "ZHiggs0L1fZH05ph0_HToTauTau": {
     "xs": 0.05542,
     "evt": 950200
   },
-  "ttHiggs0MToTauTau": {
-    "xs": 0.0318,
-    "evt": 1500000
+  "ZHiggs0M": {
+    "xs": 0.05542,
+    "evt": 962800
   },
-  "ttHiggs0Mf05ph0ToTauTau": {
-    "xs": 0.0318,
-    "evt": 1208800
+  "ZHiggs0MfZH05ph0": {
+    "xs": 0.05542,
+    "evt": 998400
   },
-  "ttHiggs0PMToTauTau": {
-    "xs": 0.0318,
-    "evt": 1499400
+  "ZHiggs0PH": {
+    "xs": 0.05542,
+    "evt": 910800
+  },
+  "ZHiggs0PHfZH05ph0": {
+    "xs": 0.05542,
+    "evt": 970400
+  },
+  "ZHiggs0PM": {
+    "xs": 0.05542,
+    "evt": 988000
   },
   "SingleElectron": {
     "lumi": 35920

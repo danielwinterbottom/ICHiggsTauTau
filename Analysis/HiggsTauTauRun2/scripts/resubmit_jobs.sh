@@ -6,8 +6,7 @@ for i in $(ls jobs/*.sh); do
   (( TOTAL++ ))
   job=$i
   i=${job//.sh/".log"}
-  #if [[ ! -e $i ]]; then continue; fi;    
-  if grep -q "End of job" $i; then
+  if grep -q "End of job" $i && ! grep -q "Disk quota exceeded" $i; then
     continue;
   else 
     if ! grep -q /vols/grid/cms/setup.sh $job; then

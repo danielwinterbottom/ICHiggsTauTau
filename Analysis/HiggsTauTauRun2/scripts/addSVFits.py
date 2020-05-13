@@ -98,7 +98,7 @@ def main(args):
             df = pd.DataFrame()
             dfs = []
             for index, svfit_file in enumerate(svfit_files):
-                # print(svfit_file)
+                #print(svfit_file)
                 f = uproot.open(svfit_file)["svfit"]
 #                df_tmp = f.pandas.df(["event","run","lumi","svfit_mass","svfit_mass_err"],
 #                    namedecode="utf-8").set_index(["event","run","lumi"])
@@ -156,6 +156,9 @@ def main(args):
             logger.fatal("File %s is not existent.", args.intree)
             #raise Exception
             continue
+        if not file_.GetListOfKeys().Contains('ntuple'):
+         print ('WARNING: no ntuple tree found in file')
+         continue
         tree = file_.Get("ntuple")
 
         # Check number of events is same in svfit file and ntuple file
@@ -163,6 +166,7 @@ def main(args):
         if tree.GetEntries() != df.shape[0]:
           print ('WARNING: A different number of svfit enries were detected for file "{}/{}/{}_{}_{}.root'.format(
                   args.path, syst_folder,
+
                   args.intree, args.channel, args.year))
           print ('(number of svfit ouputs, number of tree entries) = ({}, {})'.format(df.shape[0], tree.GetEntries()))
 

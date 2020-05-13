@@ -78,11 +78,9 @@ def main(args):
 
     for key, samples in sample_list.iteritems():
         for sample in samples:
-           # if sample not in [
-           #   'VBFHToTauTauUncorrelatedDecay_Filtered',
-           #   'GluGluHToTauTauUncorrelatedDecay_Filtered',
-           #
-           # ]: continue
+            #if sample not in [
+             #'TTTo2L2Nu',
+            #]: continue
 
             print sample
 

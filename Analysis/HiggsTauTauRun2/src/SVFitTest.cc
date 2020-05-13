@@ -316,6 +316,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         antimu_2_ = lagainstMuonTight3_2;
         if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
          if(mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5); // when using the deeptau ID we also want all taus passing the loosest WP to pass the preselection
+      //pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5);
     }
     if(channel_ == channel::em && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");

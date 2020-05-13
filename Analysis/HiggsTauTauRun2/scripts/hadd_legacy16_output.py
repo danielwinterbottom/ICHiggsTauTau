@@ -292,6 +292,7 @@ for sa in sample_list:
                 remove=False
               else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())
+                os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())) 
