@@ -25,5 +25,6 @@ for f in file_names:
     else:
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])
         tree = input_file.Get("effective")
-        entries = tree.GetEntries('wt>0') - tree.GetEntries('wt<0')
+        if 'JJH' in f and 'Higgs' not in f: entries = tree.GetEntries('wt>0&&wt_cp_prod_sm!=0') - tree.GetEntries('wt<0&&wt_cp_prod_sm!=0') 
+        else: entries = tree.GetEntries('wt>0') - tree.GetEntries('wt<0')
         print("{}  {}".format(f,entries))

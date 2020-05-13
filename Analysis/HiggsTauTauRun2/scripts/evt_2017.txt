@@ -1,6 +1,5 @@
-DY1JetsToLL-LO  42044031
 DY1JetsToLL-LO-ext  33479365
-DY1JetsToLL-LO  44079174
+DY1JetsToLL-LO  42044031
 DY2JetsToLL-LO  88795
 DY2JetsToLL-LO-ext  9927965
 DY3JetsToLL-LO  5740168
@@ -26,13 +25,13 @@ JJH0MToTauTauPlusTwoJets_Filtered  6745220
 JJH0MToTauTauPlusZeroJets  420074
 JJH0MToTauTauPlusZeroJets_Filtered  795483
 JJH0Mf05ph0ToTauTauPlusOneJets  245072
-JJH0Mf05ph0ToTauTauPlusOneJets_Filtered  2516829
+JJH0Mf05ph0ToTauTauPlusOneJets_Filtered  2481986
 JJH0Mf05ph0ToTauTauPlusTwoJets  387746
 JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered  1708452
 JJH0Mf05ph0ToTauTauPlusZeroJets  386259
 JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered  824296
-JJH0PMToTauTauPlusOneJets  227103
-JJH0PMToTauTauPlusOneJets_Filtered  2230104
+JJH0PMToTauTauPlusOneJets  223820
+JJH0PMToTauTauPlusOneJets_Filtered  2196865
 JJH0PMToTauTauPlusTwoJets  363762
 JJH0PMToTauTauPlusTwoJets_Filtered  6296270
 JJH0PMToTauTauPlusZeroJets  408848
