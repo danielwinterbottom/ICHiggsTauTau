@@ -328,6 +328,12 @@ if SCHEME == 'ip_uncert':
 
 
   scheme_tt = [
+
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR5, ' '),
+
     ("17",   "higgs_mvapipi_up",    "2018_higgs_Pi_Pi_UP",  VAR6, ' '),
     ("17",   "higgs_mvapirho_up",    "2018_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
     ("17",   "higgs_mvapi0a1_up",    "2018_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
@@ -389,7 +395,7 @@ for ch in channels:
         if options.embedding: extra+=' --embedding'
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_btag*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
         if ch in ['tt']: extra+=' --add_wt=\"wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18']: extra+=' --do_ff_systs '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert': extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:

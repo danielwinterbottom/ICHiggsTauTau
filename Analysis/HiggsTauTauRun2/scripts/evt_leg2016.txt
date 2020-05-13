@@ -25,7 +25,7 @@ GluGluToHToTauTau_M-125  9673200
 JJH0MToTauTauPlusOneJets  233532
 JJH0MToTauTauPlusOneJets_Filtered  2401956
 JJH0MToTauTauPlusTwoJets  325365
-JJH0MToTauTauPlusTwoJets_Filtered  6210732
+JJH0MToTauTauPlusTwoJets_Filtered  6210690
 JJH0MToTauTauPlusZeroJets  410323
 JJH0MToTauTauPlusZeroJets_Filtered  759960
 JJH0Mf05ph0ToTauTauPlusOneJets  228562
@@ -37,7 +37,7 @@ JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered  808237
 JJH0PMToTauTauPlusOneJets  225268
 JJH0PMToTauTauPlusOneJets_Filtered  2336201
 JJH0PMToTauTauPlusTwoJets  325666
-JJH0PMToTauTauPlusTwoJets_Filtered  5867664
+JJH0PMToTauTauPlusTwoJets_Filtered  5867577
 JJH0PMToTauTauPlusZeroJets  414515
 JJH0PMToTauTauPlusZeroJets_Filtered  748221
 T-t  67105876

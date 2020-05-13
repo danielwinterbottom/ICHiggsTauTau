@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpprod_2016.py --cfg=scripts/plot_cpprod_leg2016.cfg -c 'em,et,mt,tt' scripts/params_leg2016.json -s 'cpprod' --embedding --total_jes
+#./scripts/makeDatacards_cpprod_2016.py  -c 'em,et,mt,tt' --embedding --output_folder cpprodcard2016 
 
 import sys
 from optparse import OptionParser
@@ -26,9 +26,9 @@ def run_command(command):
     return out, err
 
 parser = OptionParser()
-parser.add_option("-p","--parameterfile", dest="params", type='string',default='',
+parser.add_option("-p","--parameterfile", dest="params", type='string',default='scripts/params_leg2016.json',
                   help="Specify the parameter file containing the luminosity and cross section information - can be used to override config file.")
-parser.add_option("--cfg", dest="config", type='string',
+parser.add_option("--cfg", dest="config", type='string', default='scripts/plot_cpprod_leg2016.cfg',
                   help="The config file that will be passed to HiggsTauTauPlot.py. Parameter file, input folder and signal scheme taken from this cfg file unless overriden by command line options")
 parser.add_option("-i","--input", dest="folder", type='string', default='',
                   help="The input folder, containing the output of HTT - can be used to override config file")
@@ -42,7 +42,7 @@ parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme", type='string', default='',
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='cpprod_extrapt',
                   help="datacard scheme - can be used to override config file")
 parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
@@ -265,58 +265,28 @@ if SCHEME == 'cpprod':
 
 
 if SCHEME == 'cpprod_extrapt':
-  
-#  var_0jet_lt = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-#  var_0jet_em = 'm_sv[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-#
-#  var_0jet_tt = 'm_sv[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
-#
-#
-#  var_boosted = 'pt_tt,m_sv[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
-#  var_boosted_tt = 'pt_tt,m_sv[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
-#
-#  var_dijet = 'm_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-#  var_tt_ti_hi='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#  var_tt_lo_hi='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#  var_et_lo_hi='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#  var_et_ti_hi='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-#
-#  var_tt_lo_lo='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#  var_mt_lo_lo='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#  var_et_lo_lo='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-#  var_em_lo_lo='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-#  var_em_lo_hi='m_sv,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-#
-#  var_tt_ti_lo='m_sv,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
-#  var_mt_ti_lo='m_sv,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-#  var_et_ti_lo='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-#  var_em_ti_lo='m_sv,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
-  VAR_0JET_LT = 'm_vis[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_EM = 'm_vis[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_LT = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_TT = 'svfit_mass[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
 
-  VAR_0JET_TT = 'm_vis[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
+  VAR_BOOSTED = 'pt_tt,svfit_mass[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,svfit_mass[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
 
-
-  VAR_BOOSTED = 'pt_tt,m_vis[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,m_vis[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
-
-  VAR_DIJET = 'm_vis,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_TT_LO_HI='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_HI='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_HI='m_vis,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_LO_LO='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_MT_LO_LO='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_LO='m_vis,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_LO='m_vis,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_HI='m_vis,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_TI_LO='m_vis,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
-  VAR_MT_TI_LO='m_vis,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_LO='m_vis,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_TI_LO='m_vis,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_DIJET =  'svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_TT_TI_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_TT_LO_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_HI='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_TT_LO_LO='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_MT_LO_LO='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_ET_LO_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_LO_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_LO_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
+  VAR_TT_TI_LO='svfit_mass,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
+  VAR_MT_TI_LO='svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+  VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
   sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))>50)'
 
@@ -440,8 +410,8 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+                print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
+                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra)s --no_plot' % vars())
@@ -456,15 +426,15 @@ for ch in channels:
 
             if jes_systematics and not options.no_shape_systs and not options.batch:
               # have to do this to avoid using too much memory...
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes1'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=1:9' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes2'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=10:18' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
                     ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes3'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=19:27' % vars())

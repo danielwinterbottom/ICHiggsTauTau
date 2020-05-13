@@ -409,7 +409,6 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>32&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2)'
-          # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>25 && pt_2>30)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
           cats['baseline_loosemu'] = '(iso_1<0.15 && antiele_2 && antimu_loose_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -426,9 +425,9 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
           cats['fail'] = 'mva_olddm_tight_2<0.5 && pzeta>-25'
         if options.era in ['cpsummer16','cpdecay16',"legacy16"]:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron && fabs(wt<2))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<28)||(trg_singleelectron&&pt_1>28)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_2>35&&pt_1<28)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
         
@@ -486,6 +485,11 @@ elif options.channel == 'zee':
 if options.analysis == 'cpdecay':
   if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
   if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
+
+if options.analysis == 'cpprod':
+  if options.channel in ['mt','et']: cats['baseline'] += ' && pt_2>30'
+  if options.channel in ['tt']: cats['baseline'] += ' && pt_1>50'
+  cats['baseline'] = cats['baseline'].replace('deepTauVsEle_vvloose_2','deepTauVsEle_vvvloose_2').replace('deepTauVsEle_vvloose_1','deepTauVsEle_vvvloose_1')
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -777,7 +781,6 @@ if options.channel == 'tt':
     #mva_jetFakes           = '(svfit_mass>150)'
     #mva_zttEmbed           = '(svfit_mass<100)'
 
-    # cut_string = "IC_15Mar2020"
     cut_string = "IC_11May2020"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
@@ -1371,7 +1374,8 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
     #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
-    top_samples = ['TT']
+    #top_samples = ['TT']
+    top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
     if options.channel == 'mt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
@@ -1384,7 +1388,6 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
 if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016','mvadm2016']:
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     if options.era == "legacy16":
-        top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
         vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
