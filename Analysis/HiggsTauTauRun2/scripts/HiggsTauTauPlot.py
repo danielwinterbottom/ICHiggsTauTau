@@ -484,7 +484,7 @@ elif options.channel == 'zee':
 
 if options.analysis == 'cpdecay':
   if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40'
 
 if options.analysis == 'cpprod':
   if options.channel in ['mt','et']: cats['baseline'] += ' && pt_2>30'
@@ -818,9 +818,17 @@ if options.channel == 'tt':
     cats['zttEmbed_mvaa10a1']      = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvaa10a1"])
     cats['jetFakes_mvaa10a1']      = '({} && {})'.format(mva_jetFakes, cats["inclusive_mvaa10a1"])
 
-    cats['higgs']      = '({})'.format(mva_ggh)
-    cats['zttEmbed']   = '({})'.format(mva_zttEmbed)
-    cats['jetFakes']   = '({})'.format(mva_jetFakes)
+    cats['higgs']      = '({} && (mva_dm_1==0&&ip_sig_1<1.5)==0 && (mva_dm_2==0&&ip_sig_2<1.5)==0)'.format(mva_ggh)
+    cats['zttEmbed']   = '({} && (mva_dm_1==0&&ip_sig_1<1.5)==0 && (mva_dm_2==0&&ip_sig_2<1.5)==0)'.format(mva_zttEmbed)
+    cats['jetFakes']   = '({} && (mva_dm_1==0&&ip_sig_1<1.5)==0 && (mva_dm_2==0&&ip_sig_2<1.5)==0)'.format(mva_jetFakes)
+
+    cats['higgs_up']      = '({} && (mva_dm_1==0&&ip_sig_1_up<1.5)==0 && (mva_dm_2==0&&ip_sig_2_up<1.5)==0)'.format(mva_ggh)
+    cats['zttEmbed_up']   = '({} && (mva_dm_1==0&&ip_sig_1_up<1.5)==0 && (mva_dm_2==0&&ip_sig_2_up<1.5)==0)'.format(mva_zttEmbed)
+    cats['jetFakes_up']   = '({} && (mva_dm_1==0&&ip_sig_1_up<1.5)==0 && (mva_dm_2==0&&ip_sig_2_up<1.5)==0)'.format(mva_jetFakes)
+
+    cats['higgs_down']      = '({} && (mva_dm_1==0&&ip_sig_1_down<1.5)==0 && (mva_dm_2==0&&ip_sig_2_down<1.5)==0)'.format(mva_ggh)
+    cats['zttEmbed_down']   = '({} && (mva_dm_1==0&&ip_sig_1_down<1.5)==0 && (mva_dm_2==0&&ip_sig_2_down<1.5)==0)'.format(mva_zttEmbed)
+    cats['jetFakes_down']   = '({} && (mva_dm_1==0&&ip_sig_1_down<1.5)==0 && (mva_dm_2==0&&ip_sig_2_down<1.5)==0)'.format(mva_jetFakes)
 
     cats['higgs_mvaother']    = '({} && !({}||{}||{}||{}||{}||{}||{}||{}||{}))'\
             .format(mva_ggh, cats["higgs_mvarhorho"], cats["higgs_mvapirho"], cats["higgs_mvaa1rho"], cats["higgs_mvaa1pi"], cats["higgs_mvaa1a1"], cats["higgs_mvapipi"], cats["higgs_mvapi0a1"], cats["higgs_mvarho0a1"], cats["higgs_mvaa10a1"])
@@ -1529,8 +1537,7 @@ if options.analysis in ['cpprod']:
          'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
-         'WplusH_htt*': 'WplusHToTauTau_M-125',
-         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
@@ -1559,8 +1566,7 @@ if options.analysis in ['cpprod']:
          'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
-         'WplusH_htt*': 'WplusHToTauTau_M-125',
-         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
@@ -1580,8 +1586,7 @@ if options.analysis in ['cpprod']:
          'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
-         'WplusH_htt*': 'WplusHToTauTau_M-125',
-         'WminusH_htt*': 'WminusHToTauTau_M-125',
+         'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
     }
 
