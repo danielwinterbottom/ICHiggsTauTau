@@ -409,7 +409,7 @@ if options.proc_bkg or options.proc_all:
       "DY3JetsToLL-LO",
       "DY3JetsToLL-LO-ext",
       "DY4JetsToLL-LO",
-      #"DYJetsToLL",
+      "DYJetsToLL",
       "DYJetsToLL-LO", # buggy PU
       "DYJetsToLL-LO-ext1", # buggy PU
       "DYJetsToLL-ext",

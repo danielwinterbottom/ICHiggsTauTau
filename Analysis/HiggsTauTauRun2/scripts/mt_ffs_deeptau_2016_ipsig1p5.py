@@ -473,7 +473,8 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'SIR')
+    if 'Erf' in func: fitresult = h.Fit("f1",'S')
+    else: fitresult = h.Fit("f1",'SI') 
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)

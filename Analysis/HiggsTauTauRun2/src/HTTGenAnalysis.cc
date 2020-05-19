@@ -233,6 +233,11 @@ namespace ic {
       outtree_->Branch("reco_pvx", &reco_pvx_);
       outtree_->Branch("reco_pvy", &reco_pvy_);
       outtree_->Branch("reco_pvz", &reco_pvz_);
+
+      outtree_->Branch("reco_bs_pvx", &reco_bs_pvx_);
+      outtree_->Branch("reco_bs_pvy", &reco_bs_pvy_);
+      outtree_->Branch("reco_bs_pvz", &reco_bs_pvz_);
+
       outtree_->Branch("gen_pvx",  &gen_pvx_);
       outtree_->Branch("gen_pvy",  &gen_pvy_);
       outtree_->Branch("gen_pvz",  &gen_pvz_);
@@ -1711,6 +1716,27 @@ std::cout << k1.Dot(k2) << std::endl;
 
 
     }
+
+//    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
+//    std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("verticesBS"); 
+//    std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); 
+//
+// 
+//    reco_pvx_ = vertex_vec[0]->vx();
+//    reco_pvy_ = vertex_vec[0]->vy();
+//    reco_pvz_ = vertex_vec[0]->vz();
+//    if(vertex_bs_vec.size()) {
+//      reco_bs_pvx_ = vertex_bs_vec[0]->vx();
+//      reco_bs_pvy_ = vertex_bs_vec[0]->vy();
+//      reco_bs_pvz_ = vertex_bs_vec[0]->vz();
+//    } else {
+//      reco_bs_pvx_ = vertex_vec[0]->vx();
+//      reco_bs_pvy_ = vertex_vec[0]->vy();
+//      reco_bs_pvz_ = vertex_vec[0]->vz();
+//    }
+//    gen_pvx_ = gen_vertices[0]->vx();
+//    gen_pvy_ = gen_vertices[0]->vy();
+//    gen_pvz_ = gen_vertices[0]->vz();
 
     if(fs_) outtree_->Fill();
     return 0;
