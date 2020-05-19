@@ -233,6 +233,7 @@ if SCHEME == 'cpdecay':
   VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_H_TT        = "IC_11May2020_max_score(7,0.3,1.0)"
   VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
   VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
 
@@ -272,7 +273,9 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
     ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
     ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1",  VAR_0A1A1, ' '),
+
     # ("17",   "higgs_mvaother",    "2018_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "higgs",       "2018_higgs",     VAR_H_TT, ' '),
     ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
