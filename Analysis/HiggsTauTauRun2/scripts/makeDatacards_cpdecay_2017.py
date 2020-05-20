@@ -372,9 +372,12 @@ if SCHEME == 'control':
     svfit_mass = "svfit_mass(25,50,300)"
     pt_1       = "pt_1(20,40,140)"
     pt_2       = "pt_2(12,40,100)"
+    n_jets      = "n_jets(5,0,5)"
+    met        = "met(20,0,200)"
+    mjj        = "mjj(20,0,500)"
 
-    # one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
-    # two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
+    one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
+    two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
 
     scheme_et = [
     ]
@@ -383,10 +386,13 @@ if SCHEME == 'control':
     ]
 
     scheme_tt = [
-        ("17", "inclusive", "2018_m_vis", m_vis, ' '),
-        ("17", "inclusive", "2018_svfit_mass", svfit_mass, ' '),
-        ("17", "inclusive", "2018_pt_1", pt_1, ' '),
-        ("17", "inclusive", "2018_pt_2", pt_2, ' '),
+        ("17", "inclusive", "{}_m_vis".format(YEAR),      m_vis, ' '),
+        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
+        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
+        ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
+        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
+        ("17", "inclusive", "{}_met".format(YEAR),        met, ' '),
+        ("17", "inclusive", "{}_mjj".format(YEAR),        mjj, two_jet),
     ]
     ANA = 'sm'
 
