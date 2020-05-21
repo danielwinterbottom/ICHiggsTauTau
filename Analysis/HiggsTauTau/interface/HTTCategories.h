@@ -1169,6 +1169,13 @@ class HTTCategories : public ModuleBase {
   double ip_sig_1_down_;
   double ip_sig_2_down_;
 
+  double t1_0_, t1_1_, t1_2_, t1_3_, t1_4_;
+  double t2_0_, t2_1_, t2_2_, t2_3_, t2_4_;
+  double t1_cov_00_, t1_cov_11_, t1_cov_22_, t1_cov_33_, t1_cov_44_;
+  double t2_cov_00_, t2_cov_11_, t2_cov_22_, t2_cov_33_, t2_cov_44_;
+  double pv_cov_00_, pt_cov_11_, pv_cov_22_;
+  double pv_x_, pv_y_, pv_z_;
+
 
  public:
   HTTCategories(std::string const& name);

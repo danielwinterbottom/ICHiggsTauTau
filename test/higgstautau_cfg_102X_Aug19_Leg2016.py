@@ -806,6 +806,7 @@ from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
                            isData=bool(isData) or bool(isEmbed),
+                           isEmbeddedSample=bool(isEmbed),
                            postfix="ModifiedMET",
                            )
 
@@ -814,6 +815,7 @@ from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAO
 makePuppiesFromMiniAOD( process, True );
 runMetCorAndUncFromMiniAOD(process,
                            isData=(bool(isData) or bool(isEmbed)),
+                           isEmbeddedSample=bool(isEmbed),
                            metType="Puppi",
                            postfix="PuppiModifiedMET",
                            jetFlavor="AK4PFPuppi",
