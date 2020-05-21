@@ -73,7 +73,6 @@ def main(args):
         ))
         print(svfit_files)
 
-
         if len(svfit_files) is 0:
             # NOTE: Double-check that this subdirectory svfit file is actually
             # not required! Otherwise implies missing files!
@@ -81,12 +80,18 @@ def main(args):
                 "No svfit file found for subdirectory {0} "
                 "file {1}, \n use nominal svfit file".format(syst_folder, args.intree)
             ))
-            # Fall back to nominal svfit file if no subdirectory file
+            # Fall back to nominal svfit file if no subdirectory file assume this is one directory up from nominal directory
             svfit_files = glob.glob(
-                "{}/svfit_{}_{}_{}*_output.root".format(
-                    args.svfit_path,
+                "{}/{}/../svfit_{}_{}_{}*_output.root".format(
+                    args.svfit_path, syst_folder,
                     args.intree, args.channel, args.year,
             ))
+
+            #svfit_files = glob.glob(
+            #    "{}/svfit_{}_{}_{}*_output.root".format(
+            #        args.svfit_path,
+            #        args.intree, args.channel, args.year,
+            #))
 
         # If there are multiple files then proceed with looping over all
         if len(svfit_files) > 0:

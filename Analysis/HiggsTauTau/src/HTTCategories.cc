@@ -3724,6 +3724,10 @@ namespace ic {
     if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+
+
+      t1_cov_00_ = muon1->track_params_covariance()[0][0];
+
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
@@ -4507,7 +4511,7 @@ namespace ic {
 
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
-
+ 
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
@@ -4560,6 +4564,9 @@ namespace ic {
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip_corrected_1 = ipandsig_1.first;
+      TVector3 ip_corrected_2 = ipandsig_2.first;
+
       // add this part for the mt channel as well!!!!!
       if(!is_data_) {
 
@@ -4569,13 +4576,13 @@ namespace ic {
         std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCov(tau1, refit_vertex, pfcands);
         std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
 
-        TVector3 ip_corrected_1 = ipCorrector.correctIp(
+        ip_corrected_1 = ipCorrector.correctIp(
                          ipandsig_1.first,
                          ipgen1,
                          fabs(lep1->eta())
         );
 
-        TVector3 ip_corrected_2 = ipCorrector.correctIp(
+        ip_corrected_2 = ipCorrector.correctIp(
                          ipandsig_2.first,
                          ipgen2,
                          fabs(lep2->eta())
@@ -4607,10 +4614,10 @@ namespace ic {
         ip_svec_2 = ip_svec_2.Unit();
         ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
 
-        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
-        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
-        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
-        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_1_down_= ip_sig_1_ -0.25*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.25*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.25*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.25*(ip_sig_2_-ip_sig_2_raw_);
 
       } else {
         ip_sig_1_raw_= ip_sig_1_;

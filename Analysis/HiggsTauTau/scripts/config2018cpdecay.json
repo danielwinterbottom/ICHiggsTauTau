@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt"],
+    "channels":     ["et","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,8 +60,8 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/CP_2018_newFF_newsmear/",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan06_2018/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_ttonly/",
+    "output_folder" : "output/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_ttonly/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Jan24_2018_svfit_output/",
@@ -72,7 +72,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -100,15 +100,17 @@
       "efaketau_1pi_es_shift_endcap": 0.985,
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
-      "tau_1prong0pi0_es_shift": 0.987,
-      "tau_1prong1pi0_es_shift": 0.995,
+      "tau_1prong0pi0_es_shift": 0.984,
+      "tau_1prong1pi0_es_shift": 0.996,
       "tau_3prong0pi0_es_shift": 0.988,
-      "tau_3prong1pi0_es_shift": 0.988,
-      "embedtau_1prong1pi0_es_shift": 1.0, 
-      "embedtau_1prong0pi0_es_shift": 1.0,
-      "embedtau_3prong0pi0_es_shift": 1.0,
-      "embedtau_3prong1pi0_es_shift" : 1.0,
+      "tau_3prong1pi0_es_shift": 0.996,
+      "embedtau_1prong1pi0_es_shift": 0.9943, 
+      "embedtau_1prong0pi0_es_shift": 0.9967,
+      "embedtau_3prong0pi0_es_shift": 0.9926,
+      "embedtau_3prong1pi0_es_shift": 0.9926,
       "elec_es_shift"     : 1.0,
+      "elec_es_shift_barrel": 0.9967,
+      "elec_es_shift_endcap": 0.9944,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -191,9 +193,7 @@
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
-        "max_extra_muons": 1,
-        "elec_es_shift_barrel": 1.0,
-        "elec_es_shift_endcap": 1.0
+        "max_extra_muons": 1
       }
     },
     "zmm": {
@@ -239,56 +239,56 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : 0.998,
-         "embedtau_1prong0pi0_es_shift": 1.015
+         "tau_shift_func_1prong0pi0": "0.9840 + (0.0090 + (0.0300-0.0090)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_1prong0pi0_es_shift": 1.0006
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : 0.976,
-         "embedtau_1prong0pi0_es_shift": 0.985
+         "tau_shift_func_1prong0pi0": "0.9840 - (0.0090 + (0.0300-0.0090)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_1prong0pi0_es_shift": 0.9928
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.004,
-         "embedtau_1prong1pi0_es_shift" : 1.015
+         "tau_shift_func_1prong1pi0": "0.9960 + (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_1prong1pi0_es_shift" : 0.998
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 0.986,
-         "embedtau_1prong1pi0_es_shift" : 0.985
+         "tau_shift_func_1prong1pi0": "0.9960 - (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_1prong1pi0_es_shift" : 0.9912
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 0.996,
-         "embedtau_3prong0pi0_es_shift" : 1.015
+         "tau_shift_func_3prong0pi0": "0.9880 + (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_3prong0pi0_es_shift" : 0.9958
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.980,
-         "embedtau_3prong0pi0_es_shift" : 0.985
+         "tau_shift_func_3prong0pi0": "0.9880 - (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_3prong0pi0_es_shift" : 0.9894
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_3prong1pi0_es_shift" : 0.996,
-         "embedtau_3prong1pi0_es_shift" : 1.015
+         "tau_shift_func_3prong1pi0": "0.9960 + (0.0120 + (0.0390-0.0120)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "embedtau_3prong1pi0_es_shift" : 0.9948
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_3prong1pi0_es_shift" : 0.980,
+         "tau_shift_func_3prong1pi0": "0.9960 - (0.0120 + (0.0390-0.0120)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.985
       }
     },
@@ -349,8 +349,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_DOWN",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 0.99,
-        "elec_es_shift_endcap": 0.975,
+        "elec_es_shift_barrel": 0.9917,
+        "elec_es_shift_endcap": 0.9819,
         "e_unc_mode": 1
       }
     },
@@ -358,8 +358,8 @@
       "baseline": {
         "addit_output_folder" : "ESCALE_UP",
         "e_scale_mode": true,
-        "elec_es_shift_barrel": 1.01,
-        "elec_es_shift_endcap": 1.025,
+        "elec_es_shift_barrel": 1.0017,
+        "elec_es_shift_endcap": 1.0069,
         "e_unc_mode": 2
       }
     },

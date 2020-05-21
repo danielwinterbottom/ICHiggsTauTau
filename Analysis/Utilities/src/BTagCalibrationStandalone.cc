@@ -324,7 +324,6 @@ void BTagCalibration::readCSV(std::istream &s)
   if (line.find("OperatingPoint") == std::string::npos) {
     addEntry(BTagEntry(line));
   }
-
   while (getline(s,line)) {
     line = BTagEntry::trimStr(line);
     if (line.empty()) {  // skip empty lines
