@@ -1,5 +1,5 @@
 from CRABClient.UserUtilities import config
-from CRABClient.UserUtilities import getUsernameFromSiteDB
+from CRABClient.UserUtilities import getUsernameFromCRIC
 
 config = config()
 
@@ -17,7 +17,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 
 config.Site.whitelist   = ['T2_*','T1_*','T3_*']

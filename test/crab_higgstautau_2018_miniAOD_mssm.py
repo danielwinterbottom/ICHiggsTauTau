@@ -1,11 +1,11 @@
 from CRABClient.UserUtilities import config
-from CRABClient.UserUtilities import getUsernameFromSiteDB
+from CRABClient.UserUtilities import getUsernameFromCRIC
 from multiprocessing import Process
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan24_MC_102X_2018'
+config.General.workArea='May21_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
@@ -15,10 +15,10 @@ cfgParams = ['isData=0', 'globalTag=102X_upgrade2018_realistic_v20','doHT=0']
 config.JobType.allowUndistributedCMSSW = True
 #config.Data.unitsPerJob = 1
 #config.Data.splitting = 'FileBased'
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/guttley/{}/'.format(config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 config.Data.ignoreLocality = True

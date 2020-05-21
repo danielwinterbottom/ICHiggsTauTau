@@ -1,5 +1,5 @@
 from CRABClient.UserUtilities import config
-from CRABClient.UserUtilities import getUsernameFromSiteDB
+from CRABClient.UserUtilities import getUsernameFromCRIC
 
 config = config()
 
@@ -19,8 +19,7 @@ config.JobType.allowUndistributedCMSSW = True
 #config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-#config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
-config.Data.outLFNDirBase='/store/user/dwinterb/{}/'.format(config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 
