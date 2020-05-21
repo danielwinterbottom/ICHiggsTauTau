@@ -4,7 +4,7 @@ from CRABClient.UserUtilities import getUsernameFromSiteDB
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_Data_102X_2016'
+config.General.workArea='May21_Data_102X_2016'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'

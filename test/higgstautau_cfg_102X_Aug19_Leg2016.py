@@ -8,7 +8,7 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #root://xrootd.unl.edu/
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv3/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/40000/A213C0BD-282C-E911-B894-141877411FCD.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv3/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/40000/C026A575-142C-E911-84FD-14187741278B.root', parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_mcRun2_asymptotic_v3', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
@@ -68,7 +68,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -223,6 +223,15 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 ### refit PV excluding tau decay products tracks
 
 import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
+import VertexRefit.TauRefit.MiniAODRefitVertexProducer_cfi as vertexfit
+
+process.refitOfflineSlimmedPrimaryVerticesBSWithAllTracks = vertexfit.MiniAODRefitVertexBSProducer.clone()
+process.icBSVertexProducer = producers.icVertexProducer.clone(
+    branch  = cms.string("verticesBS"),
+    input = cms.InputTag("refitOfflineSlimmedPrimaryVerticesBSWithAllTracks"),
+    firstVertexOnly = cms.bool(True)
+)
+
 process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
 process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
@@ -247,6 +256,8 @@ process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
   process.icGenVertexProducer+
+  process.refitOfflineSlimmedPrimaryVerticesBSWithAllTracks+
+  process.icBSVertexProducer+
   process.refitOfflineSlimmedPrimaryVertices+
   process.refitOfflineSlimmedPrimaryVerticesBS+
   process.icRefitVertexProducer+
@@ -629,14 +640,34 @@ if not (isData or isEmbed):
     process,
     jetSource = cms.InputTag("slimmedJets"),
     labelName = "UpdatedJEC",
-    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
+    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+    ],
   )
 else:
  updateJetCollection(
    process,
    jetSource = cms.InputTag("slimmedJets"),
    labelName = "UpdatedJEC",
-   jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None')
+   jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   btagDiscriminators = [
+     'pfDeepFlavourJetTags:probb',
+     'pfDeepFlavourJetTags:probbb',
+     'pfDeepFlavourJetTags:problepb',
+     'pfDeepFlavourJetTags:probc',
+     'pfDeepFlavourJetTags:probuds',
+     'pfDeepFlavourJetTags:probg'
+   ],
   )
 
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
@@ -781,13 +812,18 @@ else:
 
 process.icPFJetSequence = cms.Sequence()
 
-
 process.icPFJetSequence += cms.Sequence(
     process.patJetCorrFactorsUpdatedJEC+
     process.updatedPatJetsUpdatedJEC+
+    process.pfImpactParameterTagInfosUpdatedJEC+
+    process.pfInclusiveSecondaryVertexFinderTagInfosUpdatedJEC+
+    process.pfDeepCSVTagInfosUpdatedJEC+
+    process.pfDeepFlavourTagInfosUpdatedJEC+
+    process.pfDeepFlavourJetTagsUpdatedJEC+
+    process.patJetCorrFactorsTransientCorrectedUpdatedJEC+
+    process.updatedPatJetsTransientCorrectedUpdatedJEC+
     process.selectedUpdatedPatJetsUpdatedJEC+
     process.selectedSlimmedJetsAK4+
-    process.unpackedTracksAndVertices+
     # process.icPFJetProducerFromPat +
     process.slimmedJetsSmeared+
     process.slimmedJetsSmearedDown+
