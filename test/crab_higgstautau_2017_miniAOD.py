@@ -1,12 +1,13 @@
 from CRABClient.UserUtilities import config
-from CRABClient.UserUtilities import getUsernameFromSiteDB
+from CRABClient.UserUtilities import getUsernameFromCRIC
+
 from multiprocessing import Process
 import os
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan24_MC_102X_2017'
+config.General.workArea='May21_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -18,7 +19,7 @@ config.JobType.allowUndistributedCMSSW = True
 config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 # config.Data.inputDBS = 'phys03'
 config.Data.ignoreLocality = True
@@ -121,7 +122,6 @@ if __name__ == '__main__':
     tasks.append(('VBFHiggs0PHToTauTau','/VBFHiggs0PHToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0PHf05ph0ToTauTau','/VBFHiggs0PHf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
     tasks.append(('VBFHiggs0PMToTauTau','/VBFHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
-    tasks.append(('VVTo2L2Nu', '/VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
     tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM'))
     tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
     tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM')) # no updated version
@@ -169,11 +169,14 @@ if __name__ == '__main__':
     tasks.append(('ttHiggs0Mf05ph0ToTauTau','/ttHiggs0Mf05ph0ToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
     tasks.append(('ttHiggs0PMToTauTau','/ttHiggs0PMToTauTau_M125_13TeV_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
 
-    # # private samples
-    # tasks.append(('VBFHToTauTau_M-125-MM-filter','/VBFHToTauTau_M125_13TeV_powheg_pythia8_MM-filter-v2/dwinterb-StoreResults_VBFHToTauTau_M125_13TeV_powheg_pythia8_MM_filter_v2_miniAOD-v1/USER'))
-    # tasks.append(('GluGluToPseudoscalarHToTauTau_M125_amcatnloFXFX', '/GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToPseudoscalarHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_-v1/USER'))
-    # tasks.append(('GluGluToMaxmixHToTauTau_M125_amcatnloFXFX', '/GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/dwinterb-StoreResults_GluGluToMaxmixHToTauTau_M125_13TeV_amcatnloFXFX_pythia8_2017_MiniAO-v1/USER'))
-
+    tasks.append(('VVTo2L2Nu','/VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('ggZH_HToTauTau_ZToLL','/ggZH_HToTauTau_ZToLL_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('ggZH_HToTauTau_ZToNuNu','/ggZH_HToTauTau_ZToNuNu_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('ggZH_HToTauTau_ZToQQ','/ggZH_HToTauTau_ZToQQ_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'))
+    tasks.append(('ttHToTauTau','/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('HWminusJ_HToWW','/HWminusJ_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('HWplusJ_HToWW','/HWplusJ_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
+    tasks.append(('GluGluZH_HToWW','/GluGluZH_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'))
 
     for task in tasks:
         print task[0]
@@ -208,7 +211,7 @@ if __name__ == '__main__':
             if 'mcatnloFXFX' in task[0]:
                 config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','includenpNLO=True','includeHTXS=True']
             else: 
-                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True']
+                config.JobType.pyCfgParams = cfgParams + ['LHEWeights=True','tauSpinner=True','includeHTXS=True']
         else: 
             config.JobType.pyCfgParams = cfgParams 
 
