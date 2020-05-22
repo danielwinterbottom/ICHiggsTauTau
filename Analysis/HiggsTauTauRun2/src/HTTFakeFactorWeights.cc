@@ -212,22 +212,22 @@ namespace ic {
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-//              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+//              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));   
+              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
               //ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
             //ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
-            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
+            ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
             //ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
-            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
+            ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis,WpT")));
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
+            ff_ws_->function("ff_et_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
       // load us groups fake factors
 
@@ -745,14 +745,13 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.;
  
-          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
-          if(channel_==channel::mt) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
+          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
+          if(channel_==channel::et) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,-1,-1,-1};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
           event->Add("wt_ff_1",  ff_nom);
 
           auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};
-          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
-          if(channel_==channel::mt) args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_,WpT};
+          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_,WpT};
           ff_nom = fns_["ff_lt_medium_mvadmbins_qcd"]->eval(args_qcd.data());
 
           event->Add("wt_ff_qcd_1",  ff_nom);
