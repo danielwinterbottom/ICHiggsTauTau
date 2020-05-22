@@ -434,6 +434,13 @@ def CalculateFakeFactors(num,denum):
 
 def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+  if h.GetEntries()==0: 
+    f2 = ROOT.TF1(h.GetName()+'_fit',"pol0",20,200)
+    f2.SetParameter(0,0.)
+    for i in range(1,h_uncert.GetNbinsX()+1): 
+      h_uncert.SetBinError(i,1.)
+      h_uncert.SetBinContent(i,0.)
+    return (f2, h_uncert, h)
   f1 = ROOT.TF1("f1","landau",20,200)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,200)
