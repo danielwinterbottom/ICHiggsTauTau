@@ -131,7 +131,7 @@ cmsenv
 # which will make setting up subsequent release areas a lot faster.
 </pre><p>This command will have created two remote repositories, <code>official-cmssw</code> and <code>my-cmssw</code>. It will also have created and switched to a new branch, <code>from-CMSSW_X_Y_Z</code>. An additional remote can be added which provides the pre-configured branches shared by the group: </p><pre class="fragment">git remote add ic-cmssw git@github.com:danielwinterbottom/cmssw.git
 # fetch from the ic-cmssw remote repository and merge the from-CMSSW_X_Y_Z into your own local branch.
-git pull ic-cmssw from-CMSSW_10_2_18
+git pull ic-cmssw from-CMSSW_10_2_19
 # Check which branch you actually need to merge in here. Descriptive names are useful, e.g. "higgstautau_from-CMSSW_5_3_7"
 
 # At this point, if you run 'ls' you will not see any new packages in the release area.
