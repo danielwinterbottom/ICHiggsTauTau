@@ -423,9 +423,6 @@ namespace ic {
     std::string btag_label       = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     std::string btag_label_extra = "";
     double btag_wp (1.0);
-    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
-      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
-    };
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
     if (era_ == era::data_2017) {
@@ -438,6 +435,10 @@ namespace ic {
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
+
+    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
+    };
     if (era_ == era::data_2017 || era_ == era::data_2018) {
       if (event->Exists("retag_result")) {
         auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
@@ -748,6 +749,7 @@ namespace ic {
           auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
           if(channel_==channel::et) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,-1,-1,-1};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
+
           event->Add("wt_ff_1",  ff_nom);
 
           auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};

@@ -440,6 +440,7 @@ w.Print()
 w.writeToFile('fakefactors_ws_et_lite_2016.root')
 w.Delete()
 
+exit()
 
 ################################################
 ### mt channel ####

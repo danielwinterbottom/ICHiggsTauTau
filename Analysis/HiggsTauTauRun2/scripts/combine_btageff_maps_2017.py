@@ -81,7 +81,7 @@ for ch in channels:
     tot_b.Add(tot_b_semilep)
     tot_b.Add(tot_b_lep)
 
-    btag_c = btag_b_had.Clone()
+    btag_c = btag_c_had.Clone()
     btag_c.Add(btag_c_semilep)
     btag_c.Add(btag_c_lep)
 

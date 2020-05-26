@@ -725,6 +725,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
 if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
+      .set_era(era_type)
       .set_ditau_label("ditau")
       .set_met_label(met_label)
       .set_jets_label(jets_label)
