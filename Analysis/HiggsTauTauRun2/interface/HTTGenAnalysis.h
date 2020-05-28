@@ -262,6 +262,10 @@ class HTTGenAnalysis : public ModuleBase {
   double reco_pvx_;
   double reco_pvy_;
   double reco_pvz_;
+
+  double reco_bs_pvx_;
+  double reco_bs_pvy_;
+  double reco_bs_pvz_;
   double gen_pvx_;
   double gen_pvy_;
   double gen_pvz_;

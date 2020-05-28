@@ -1,22 +1,22 @@
 from CRABClient.UserUtilities import config
-from CRABClient.UserUtilities import getUsernameFromSiteDB
+from CRABClient.UserUtilities import getUsernameFromCRIC
 
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jan06_MC_102X_2017'
+config.General.workArea='May21_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=102XMINIAOD','isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v12']
+config.JobType.pyCfgParams = ['isData=0', 'isEmbed=1','globalTag=102X_dataRun2_v12']
 config.JobType.maxMemoryMB = 2500
 config.JobType.allowUndistributedCMSSW = True
 
 config.Data.unitsPerJob = 10000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromSiteDB(), config.General.workArea)
+config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
 config.Data.allowNonValidInputDataset = True
 config.Data.inputDBS='phys03'
 config.Data.ignoreLocality = True

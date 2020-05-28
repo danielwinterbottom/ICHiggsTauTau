@@ -73,7 +73,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(5000)
+    input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -218,6 +218,15 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 
 ### refit PV excluding tau decay products tracks
 
+import VertexRefit.TauRefit.MiniAODRefitVertexProducer_cfi as vertexfit
+
+process.refitOfflineSlimmedPrimaryVerticesBSWithAllTracks = vertexfit.MiniAODRefitVertexBSProducer.clone()
+process.icBSVertexProducer = producers.icVertexProducer.clone(
+    branch  = cms.string("verticesBS"),
+    input = cms.InputTag("refitOfflineSlimmedPrimaryVerticesBSWithAllTracks"),
+    firstVertexOnly = cms.bool(True)
+)
+
 import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
 process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
@@ -243,6 +252,8 @@ process.icRefitVertexProducerBS = producers.icRefitVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer+
   process.icGenVertexProducer+
+  process.refitOfflineSlimmedPrimaryVerticesBSWithAllTracks+
+  process.icBSVertexProducer+
   process.refitOfflineSlimmedPrimaryVertices+
   process.refitOfflineSlimmedPrimaryVerticesBS+
   process.icRefitVertexProducer+
@@ -617,35 +628,39 @@ process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
 #Reapply JECs:
 if not (isData or isEmbed):
-    updateJetCollection(
-        process,
-        jetSource = cms.InputTag("slimmedJets"),
-        # pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        # svSource = cms.InputTag('slimmedSecondaryVertices'),
-        labelName = "UpdatedJEC",
-        jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
-        # btagDiscriminators = [
-        #    'pfDeepFlavourJetTags:probb',
-        #    'pfDeepFlavourJetTags:probbb',
-        #    'pfDeepFlavourJetTags:problepb'
-        #    ],
-        # postfix='NewDFTraining'
-        )
+  updateJetCollection(
+    process,
+    jetSource = cms.InputTag("slimmedJets"),
+    labelName = "UpdatedJEC",
+    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+    ],
+  )
 else:
-    updateJetCollection(
-        process,
-        jetSource = cms.InputTag("slimmedJets"), #patSmearedJets
-        # pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        # svSource = cms.InputTag('slimmedSecondaryVertices'),
-        labelName = "UpdatedJEC",
-        jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None'),
-        # btagDiscriminators = [
-        #    'pfDeepFlavourJetTags:probb',
-        #    'pfDeepFlavourJetTags:probbb',
-        #    'pfDeepFlavourJetTags:problepb'
-        #    ],
-        # postfix='NewDFTraining'
-        )
+ updateJetCollection(
+   process,
+   jetSource = cms.InputTag("slimmedJets"),
+   labelName = "UpdatedJEC",
+   jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   btagDiscriminators = [
+     'pfDeepFlavourJetTags:probb',
+     'pfDeepFlavourJetTags:probbb',
+     'pfDeepFlavourJetTags:problepb',
+     'pfDeepFlavourJetTags:probc',
+     'pfDeepFlavourJetTags:probuds',
+     'pfDeepFlavourJetTags:probg'
+   ],
+  )
 
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
     src = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
@@ -795,9 +810,15 @@ process.icPFJetSequence = cms.Sequence()
 process.icPFJetSequence += cms.Sequence(
     process.patJetCorrFactorsUpdatedJEC+
     process.updatedPatJetsUpdatedJEC+
+    process.pfImpactParameterTagInfosUpdatedJEC+
+    process.pfInclusiveSecondaryVertexFinderTagInfosUpdatedJEC+
+    process.pfDeepCSVTagInfosUpdatedJEC+
+    process.pfDeepFlavourTagInfosUpdatedJEC+
+    process.pfDeepFlavourJetTagsUpdatedJEC+
+    process.patJetCorrFactorsTransientCorrectedUpdatedJEC+
+    process.updatedPatJetsTransientCorrectedUpdatedJEC+
     process.selectedUpdatedPatJetsUpdatedJEC+
     process.selectedSlimmedJetsAK4+
-    #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
     # process.icPFJetProducerFromPat +
     process.slimmedJetsSmeared+
     process.slimmedJetsSmearedDown+

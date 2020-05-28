@@ -1531,11 +1531,11 @@ if options.analysis in ['cpprod']:
          'wminush*_powheg': 'WminusHToTauTau_M-125',
          'zh*_powheg': 'ZHToTauTau_M-125',
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
@@ -1560,11 +1560,11 @@ if options.analysis in ['cpprod']:
          #'WHmm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
          #'WHsm_htt*' : 'WHiggs0PMToTauTau',
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
@@ -1580,11 +1580,11 @@ if options.analysis in ['cpprod']:
          'wminush*_powheg': 'WminusHToTauTau_M-125',
          'zh*_powheg': 'ZHToTauTau_M-125',
          'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'ggH_mm_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'ggH_ps_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+         'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
@@ -1675,30 +1675,30 @@ systematics = OrderedDict()
 if not options.no_default: systematics['default'] = ('','', 'wt', [], False)
 
 if options.syst_e_scale != '':
-    systematics['scale_e_up'] = ('ESCALE_UP' , '_'+options.syst_e_scale+'Up', 'wt', [], False)
-    systematics['scale_e_down'] = ('ESCALE_DOWN' , '_'+options.syst_e_scale+'Down', 'wt', [], False)
+    systematics['scale_e_up'] = ('ESCALE_UP' , '_'+options.syst_e_scale+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_e_down'] = ('ESCALE_DOWN' , '_'+options.syst_e_scale+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_mu_scale != '':
     # systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['jetFakes','ZTT','ZJ','ZLL','ZL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)
     # systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['jetFakes','ZLL','ZL','ZTT','ZLL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)    
 
-    systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',[], False)
-    systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', [], False)
+    systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['QCD','jetFakes'], False)
+    systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['QCD','jetFakes'], False)
 
 if options.syst_tau_scale != '':
     systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', ['jetFakes'], False)
     systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', ['jetFakes'], False)
 if options.syst_tau_scale_0pi != '':
-    systematics['scale_t_0pi_up'] = ('TSCALE0PI_UP' , '_'+options.syst_tau_scale_0pi+'Up', 'wt', ['QCD'], False)
-    systematics['scale_t_0pi_down'] = ('TSCALE0PI_DOWN' , '_'+options.syst_tau_scale_0pi+'Down', 'wt', ['QCD'], False)
+    systematics['scale_t_0pi_up'] = ('TSCALE0PI_UP' , '_'+options.syst_tau_scale_0pi+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_0pi_down'] = ('TSCALE0PI_DOWN' , '_'+options.syst_tau_scale_0pi+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_tau_scale_1pi != '':
-    systematics['scale_t_1pi_up'] = ('TSCALE1PI_UP' , '_'+options.syst_tau_scale_1pi+'Up', 'wt', ['QCD'], False)
-    systematics['scale_t_1pi_down'] = ('TSCALE1PI_DOWN' , '_'+options.syst_tau_scale_1pi+'Down', 'wt', ['QCD'], False)
+    systematics['scale_t_1pi_up'] = ('TSCALE1PI_UP' , '_'+options.syst_tau_scale_1pi+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_1pi_down'] = ('TSCALE1PI_DOWN' , '_'+options.syst_tau_scale_1pi+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_tau_scale_3prong != '':
-    systematics['scale_t_3prong_up'] = ('TSCALE3PRONG_UP' , '_'+options.syst_tau_scale_3prong+'Up', 'wt', ['QCD'], False)
-    systematics['scale_t_3prong_down'] = ('TSCALE3PRONG_DOWN' , '_'+options.syst_tau_scale_3prong+'Down', 'wt', ['QCD'], False)
+    systematics['scale_t_3prong_up'] = ('TSCALE3PRONG_UP' , '_'+options.syst_tau_scale_3prong+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_3prong_down'] = ('TSCALE3PRONG_DOWN' , '_'+options.syst_tau_scale_3prong+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_tau_scale_3prong1pi0 != '':
-    systematics['scale_t_3prong1pi0_up'] = ('TSCALE3PRONG1PI0_UP' , '_'+options.syst_tau_scale_3prong1pi0+'Up', 'wt', ['QCD'], False)
-    systematics['scale_t_3prong1pi0_down'] = ('TSCALE3PRONG1PI0_DOWN' , '_'+options.syst_tau_scale_3prong1pi0+'Down', 'wt', ['QCD'], False)
+    systematics['scale_t_3prong1pi0_up'] = ('TSCALE3PRONG1PI0_UP' , '_'+options.syst_tau_scale_3prong1pi0+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_3prong1pi0_down'] = ('TSCALE3PRONG1PI0_DOWN' , '_'+options.syst_tau_scale_3prong1pi0+'Down', 'wt', ['QCD','jetFakes'], False)
 ### group TES
 if options.syst_tau_scale_grouped != "":
     hist_name = options.syst_tau_scale_grouped
@@ -1820,10 +1820,10 @@ if options.syst_scale_j_regrouped != "":
             syst_name = hist_name.replace("*group", name)
             systematics['syst_scale_j_{}_up'.format(syst_name)] = (
                 "{}_UP".format(folder), "_{}Up".format(syst_name), 
-                "wt", ["EmbedZTT"], False)
+                "wt", ["EmbedZTT",'jetFakes','QCD'], False)
             systematics['syst_scale_j_{}_down'.format(syst_name)] = (
                 "{}_DOWN".format(folder), "_{}Down".format(syst_name), 
-                "wt", ["EmbedZTT"], False)
+                "wt", ["EmbedZTT",'jetFakes','QCD'], False)
 
 if options.syst_eff_b_weights != '':
     systematics['syst_b_weights_up'] = ('' , '_'+options.syst_eff_b_weights+'Up', 'wt*wt_btag_up/wt_btag', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
@@ -1880,10 +1880,10 @@ if options.syst_ps != '':
     if '*PS' in options.syst_ps:
       hist_name_fsr = options.syst_ps.replace('*PS','PS_FSR')
       hist_name_isr = options.syst_ps.replace('*PS','PS_ISR')
-      systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*wt_ps_fsr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
-      systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*wt_ps_fsr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
-      systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*wt_ps_isr_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
-      systematics['syst_ps_isr_down'] = ('' , '_'+hist_name_isr+'Down', 'wt*wt_ps_isr_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_fsr_up'] = ('' , '_'+hist_name_fsr+'Up', 'wt*min(wt_ps_fsr_up,10)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_fsr_down'] = ('' , '_'+hist_name_fsr+'Down', 'wt*min(wt_ps_fsr_down,10)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_isr_up'] = ('' , '_'+hist_name_isr+'Up', 'wt*min(wt_ps_isr_up,10)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
+      systematics['syst_ps_isr_down'] = ('' , '_'+hist_name_isr+'Down', 'wt*min(wt_ps_isr_down,10)', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
     else: 
       systematics['syst_ps_up'] = ('' , '_'+options.syst_ps+'Up', 'wt*wt_ps_up', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
       systematics['syst_ps_down'] = ('' , '_'+options.syst_ps+'Down', 'wt*wt_ps_down', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','ggH_ph_htt*','ggHsm_jhu_htt*','ggHps_jhu_htt*','ggHmm_jhu_htt*'], False)
@@ -2130,7 +2130,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs['ff_tt_qcd_osss_syst'] = 'wt_ff_us_qcd_syst_osss_'
 
     for njet in ['0','1','2']:
-      tt_systs['ff_tt_qcd_closure_syst_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_syst_closure_njets%(njet)s' % vars()
+      tt_systs['ff_tt_qcd_closure_syst_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_syst_closure_njets%(njet)s_' % vars()
       tt_systs['ff_tt_qcd_stat_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_stat_njets%(njet)s_' % vars()
       tt_systs['ff_tt_qcd_stat_njets%(njet)s' % vars()] = 'wt_ff_us_qcd_stat_njets%(njet)s_' % vars()
 
@@ -3026,7 +3026,7 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
             if 'ggH_'+name not in tname: tname=key.replace('*',mass)+'_reweightedto_'+name+add_name
             non_cp=False
             weight=wt+"*"+weights[name]
-            if 'ggH_mm' in key: weight+='*2' # change MM to 2 times SM cross section to make life easier when combining reweighted templates
+            #if 'ggH_mm' in key: weight+='*2' # change MM to 2 times SM cross section to make life easier when combining reweighted templates - this is now done in XS file so not needed!!
             full_selection = BuildCutString(weight, sel, cat, OSSS)
             name = key
 
@@ -3657,8 +3657,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016'] and options.method!=0: 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016'] and options.channel == 'em':
-            GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
+        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016'] and options.channel == 'em':
+        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
         if options.method==0 and options.channel=='tt':
             sel_mod = sel
             if True in ['baseline_aisotau1' in x for x in options.set_alias]: sel_mod =sel+'&&(gen_match_1!=6)'

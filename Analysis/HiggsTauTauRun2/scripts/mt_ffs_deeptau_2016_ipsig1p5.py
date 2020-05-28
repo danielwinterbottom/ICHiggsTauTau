@@ -67,12 +67,12 @@ dm_bins = {
               'dm0':'(tau_decay_mode_2==0)',
               'dm1':'(tau_decay_mode_2==1)',
               'dm10':'(tau_decay_mode_2==10)',
-              'dm11':'(tau_decay_mode_2==11)',
+              'dm11': '(tau_decay_mode_2==11)',
               'mvadm0':'(mva_dm_2==0)',
               'mvadm0_sig_gt3':'(mva_dm_2==0&&ip_sig_2>=1.5)',
               'mvadm0_sig_lt3':'(mva_dm_2==0&&ip_sig_2<1.5)',
-              'mvadm1':'(mva_dm_2==1)',
-              'mvadm2':'(mva_dm_2==2)',
+              'mvadm1':'(mva_dm_2==1&&tau_decay_mode_2==1)',
+              'mvadm2':'(mva_dm_2==2&&tau_decay_mode_2==1)',
               'mvadm10':'(mva_dm_2==10)',
               'mvadm11':'(mva_dm_2==11)'
 }
@@ -473,7 +473,8 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'SIR')
+    if 'Erf' in func: fitresult = h.Fit("f1",'S')
+    else: fitresult = h.Fit("f1",'SI') 
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -678,8 +679,8 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 draw_list=[]
 
 # mt plots
-baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0' % vars()
+baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0' % vars()
 
 var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100,140]'
 var2='pt_2[20,30,40,50,60,80]'
@@ -700,8 +701,8 @@ for njetbin in njets_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
-baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0' % vars()
+baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<23)||(trg_singlemuon&&pt_1>23)) && wt<2 && n_bjets==0 && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:

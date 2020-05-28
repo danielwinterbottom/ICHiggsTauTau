@@ -148,7 +148,7 @@ void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es)
       std::string const& line = *iLt;
       if (line.find("<weightgroup")  != std::string::npos) record = true;
       if (line.find("</weightgroup") != std::string::npos) record = false;
-      if (record) lhe_weight_labels_.push_back(line);
+      if (record || true) lhe_weight_labels_.push_back(line);
     }
   }
 }

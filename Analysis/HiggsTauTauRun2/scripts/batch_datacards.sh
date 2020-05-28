@@ -10,4 +10,4 @@ ulimit -s unlimited
 
 var_=${var//\'}
 
-python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py  --no_plot --cfg=$CFG --channel=$ch --method=$cat_num --cat=$cat_str --year=$YEAR --outputfolder=$output_folder --datacard=$dc --paramfile=$PARAMS --folder=$FOLDER $BLIND --var=$var_ $extra &> test.out
+python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py  --no_plot --cfg=$CFG --channel=$ch --method=$cat_num --cat=$cat_str --year=$YEAR --outputfolder=$output_folder --datacard=$dc --paramfile=$PARAMS --folder=$FOLDER $BLIND --var=$var_ $extra &> card_output_$ch"_"$dc"_"$YEAR".out"

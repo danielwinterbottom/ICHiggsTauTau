@@ -287,11 +287,11 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'  
 
-  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))>50)'
+  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))<50)'
 
   scheme_et = [
     ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  '),
+    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
     ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_ET_LO_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
     ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
     ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_ET_TI_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
@@ -493,7 +493,7 @@ cat_schemes = {
   'tt' : scheme_tt
 }
 
-qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_vmem=24G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:
@@ -515,10 +515,10 @@ for ch in channels:
         if not options.hadd:
             if not options.batch:
                 print 'python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars()
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra)s --no_plot' % vars())
+#                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
+#                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
+#                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
+#                    ' --var="%(var)s" %(extra)s --no_plot' % vars())
 
             else:
                 run_command(qsub_command

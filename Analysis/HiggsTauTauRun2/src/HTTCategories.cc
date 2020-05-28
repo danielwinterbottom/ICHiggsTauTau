@@ -1258,8 +1258,6 @@ namespace ic {
         wt_ff_qcd_syst_down_1_ = event->Exists("wt_ff_qcd_syst_down_1") ? event->Get<double>("wt_ff_qcd_syst_down_1") : 0.0;
         wt_ff_qcd_met_up_1_ = event->Exists("wt_ff_qcd_met_up_1") ? event->Get<double>("wt_ff_qcd_met_up_1") : 0.0;
         wt_ff_qcd_met_down_1_ = event->Exists("wt_ff_qcd_met_down_1") ? event->Get<double>("wt_ff_qcd_met_down_1") : 0.0;
-        wt_ff_qcd_met_up_1_ = event->Exists("wt_ff_ttbar_met_up_1") ? event->Get<double>("wt_ff_ttbar_met_up_1") : 0.0;
-        wt_ff_qcd_met_down_1_ = event->Exists("wt_ff_ttbar_met_down_1") ? event->Get<double>("wt_ff_ttbar_met_down_1") : 0.0;
         wt_ff_qcd_l_pt_up_1_ = event->Exists("wt_ff_qcd_l_pt_up_1") ? event->Get<double>("wt_ff_qcd_l_pt_up_1") : 0.0;
         wt_ff_qcd_l_pt_down_1_ = event->Exists("wt_ff_qcd_l_pt_down_1") ? event->Get<double>("wt_ff_qcd_l_pt_down_1") : 0.0;
         wt_ff_qcd_stat_unc1_njet0_mvadm0_sig_lt3_up_1_ = event->Exists("wt_ff_qcd_stat_unc1_njet0_mvadm0_sig_lt3_up_1") ? event->Get<double>("wt_ff_qcd_stat_unc1_njet0_mvadm0_sig_lt3_up_1") : 0.0; 
@@ -1505,7 +1503,7 @@ namespace ic {
     } else{ 
       ic::erase_if_not(bjets, filterBTagSumTight);
     } 
-    
+
     // Btag weights
     wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
     wt_btag_down_      = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
