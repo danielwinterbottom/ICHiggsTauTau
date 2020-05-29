@@ -2,6 +2,26 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PolarimetricA1.h"
 
+TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
+
+  TVector3 pvtosv(
+           t->vtx().vx() - h->vtx().vx(),
+           t->vtx().vy() - h->vtx().vy(),
+           t->vtx().vz() - h->vtx().vz()
+           );
+
+  TVector3 momenta(
+                  t->vector().Px(),
+                  t->vector().Py(),
+                  t->vector().Pz()
+                  );
+
+  double projection=pvtosv*momenta/momenta.Mag2();
+  TVector3 gen_ip=pvtosv-momenta*projection;
+
+  return gen_ip;
+}
+
 std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
   if(p.daughters().size() == 0){
     unsigned ID = std::fabs(p.pdgid());
@@ -102,7 +122,8 @@ namespace ic {
 
       outtree_->Branch("fakea1_dR", &fakea1_dR_);
       outtree_->Branch("rho_dR", &rho_dR_);
-      outtree_->Branch("tauFlag", &tauFlag);
+      outtree_->Branch("tauFlag_1", &tauFlag_1_);
+      outtree_->Branch("tauFlag_2", &tauFlag_2_);
 
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -246,6 +267,8 @@ namespace ic {
       outtree_->Branch("wt_ps_isr_down" , &wt_ps_isr_down_ );
       outtree_->Branch("wt_ps_fsr_up" , &wt_ps_fsr_up_ );
       outtree_->Branch("wt_ps_fsr_down" , &wt_ps_fsr_down_ );
+
+      outtree_->Branch("count_taus" , &count_taus_ );
       
     }
     count_ee_ = 0;
@@ -279,7 +302,7 @@ namespace ic {
  
     wt_ = eventInfo->total_weight();
 
-
+    //std::cout << "================event " << event_ << "===================" << std::endl;
 
     wt_cp_sm_=0.0; 
     wt_cp_ps_=0.0; 
@@ -435,8 +458,8 @@ namespace ic {
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
            higgs_eta = gen_particles[i]->eta();
-           wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.006;
-           wt_topmass_2_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
+           //wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.006;
+           //wt_topmass_2_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
 
       
@@ -653,7 +676,7 @@ namespace ic {
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
       mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
-      wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
+      //wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       if(!(channel_str_ == "zmm")){
         mt_1_ = MT(&lep1, &met);
@@ -829,8 +852,8 @@ namespace ic {
     /*   wt_ps_up_ =  ps_3jet_up_  .GetBinContent(ps_3jet_up_  .FindBin(HiggsPt_)); */
     /*   wt_ps_down_ =  ps_3jet_down_.GetBinContent(ps_3jet_down_.FindBin(HiggsPt_)); */
     /* } */
-    wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); 
-    wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); 
+    //wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); 
+    //wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); 
 
 
     std::vector<PileupInfo *> puInfo;
@@ -859,6 +882,251 @@ namespace ic {
       wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
     }
 
+    /*std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
+    std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
+    std::vector<std::vector<GenParticle*>> a1_daughters;
+    std::vector<std::vector<GenParticle*>> fakea1_daughters;
+    std::vector<std::vector<GenParticle*>> charged_daughters;
+    std::vector<std::vector<GenParticle*>> a1_2_daughters;
+    std::vector<Candidate*> tau_rhos;
+    std::vector<GenParticle*> pi_daughters;
+    std::vector<GenParticle*> kaon_daughters;
+    count_taus_=0;   
+    for (unsigned i = 0; i < gen_particles.size(); ++i) {
+      if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy] 
+        && gen_particles[i]->statusFlags()[FromHardProcess]){
+
+        GenParticle* tau = gen_particles[i];
+        ++count_taus_; //expect two taus for tt channel
+        bool foundRho = false;
+        bool foundPi = false;
+        bool foundLep = false;
+        bool foundA1 = false;
+        bool foundA1_2 = false;
+        bool found3Pi1P0 = false;
+        bool foundK = false;
+        unsigned count_pi0 = 0;
+        unsigned count_pi = 0;
+        unsigned count_K = 0;
+        unsigned count_hadr = 0;
+        unsigned count_gamma =0;
+        unsigned count_lep=0;
+        unsigned count_charged=0;
+
+        std::pair<GenParticle*,GenParticle*> rho = std::make_pair(new GenParticle(), new GenParticle());
+        std::pair<GenParticle*,GenParticle*> prho = std::make_pair(new GenParticle(), new GenParticle());
+        //std::pair<GenParticle*,GenParticle*> lep = std::make_pair(new GenParticle(), new GenParticle());
+        std::vector<GenParticle*> charged_vec = {};
+        std::vector<GenParticle*> a1 = {};
+        std::vector<GenParticle*> fakea1 = {};
+        std::vector<GenParticle*> a1_2 = {};
+        GenParticle* pi = new GenParticle();
+        GenParticle* kaon = new GenParticle();
+        std::vector<int> daughters = gen_particles[i]->daughters();
+        charged_vec.push_back(gen_particles[i]);
+        for (unsigned d : daughters){
+          unsigned daughter_id = fabs(gen_particles[d]->pdgid());
+          int daughter_charge = gen_particles[d]->charge();
+          if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
+          if(daughter_id == 11 || daughter_id == 13) {
+            ++count_lep;
+            //lep.first = gen_particles[d];
+            pi = gen_particles[d];
+            //lep.second = tau;
+            prho.first = pi;
+            prho.second = tau;
+
+            continue;
+          }
+          ++count_hadr;
+          if(daughter_charge!=0) {
+            ++count_charged;
+            charged_vec.push_back(gen_particles[d]);
+          }
+          if (daughter_id == 22) {
+            ++count_gamma;
+            continue;
+          }
+          if (daughter_id == 211) {
+            //for (auto d: daughters) 
+            //    std::cout << "daughter Ids: " << gen_particles[d]->pdgid() << std::endl;
+            ++count_pi;
+            //std::cout << "pi charge  " << gen_particles[d]->vector() << std::endl;
+            rho.first = gen_particles[d];
+            pi = gen_particles[d];
+            prho.first = pi;
+            prho.second = tau;
+            a1.push_back(gen_particles[d]);
+            fakea1.push_back(gen_particles[d]);
+            a1_2.push_back(gen_particles[d]);
+            continue;
+          }
+          //if (daughter_id == 130 || daughter_id == 310 
+          //        || daughter_id == 311 || daughter_id == 321) {
+          if (daughter_id == 321) { // K^\pm
+            //std::cout << "found 321 kaon" << std::endl;
+            //for (auto d: daughters) 
+            //    std::cout << "daughter Ids: " << gen_particles[d]->pdgid() << std::endl;
+            ++count_K;
+            kaon = gen_particles[d];
+            prho.first = kaon;
+            prho.second = tau;
+            continue;
+          }
+          if (daughter_id == 111) {
+            ++count_pi0;
+            rho.second = gen_particles[d];
+            a1_2.push_back(gen_particles[d]); 
+            fakea1.push_back(gen_particles[d]);
+            //std::cout << "pi zero " << gen_particles[d]->vector() << std::endl;
+            continue;
+          }
+          if (daughter_id == 213) {
+            //std::cout << "found 213 rho " << daughter_id << std::endl;
+            //for (auto d: daughters) 
+            //    std::cout << "daughter Ids: " << gen_particles[d]->pdgid() << std::endl;
+            count_pi0 = 0;
+            count_pi = 0;
+            count_K = 0;
+            count_hadr=0;
+            count_gamma=0;
+            std::vector<int> gdaughters = gen_particles[d]->daughters(); 
+            for (unsigned g : gdaughters){
+              unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
+              ++count_hadr;
+              if (gdaughter_id == 22) {
+                ++count_gamma;
+                continue;
+              }
+              if (gdaughter_id == 211) {
+                ++count_pi;
+                rho.first = gen_particles[g];
+                continue;
+              }
+              if (gdaughter_id == 111) {
+                ++count_pi0;
+                rho.second = gen_particles[g];
+                continue;
+              }
+            }
+            foundRho = true;
+            break;
+          }
+        }
+        foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1 && count_K==0);
+        foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0 && count_K==0);
+        foundLep = count_lep==1;
+        foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
+        found3Pi1P0 = found3Pi1P0 || (count_hadr-count_gamma==4 && count_pi==3 && count_pi0==1);
+        foundA1_2 = foundA1_2 || (count_hadr-count_gamma==3 && count_pi==1 && count_pi0==2);
+        foundK = count_K==1 && count_pi0==0 && count_pi==0;
+        if (foundK) {
+          kaon_daughters.push_back(kaon);
+          prho_daughters.push_back(prho);
+        }
+        if(foundRho) {
+          rho_daughters.push_back(rho);
+          Candidate * tauvis = new Candidate();
+          tauvis->set_vector(rho.first->vector()+rho.second->vector());
+          tau_rhos.push_back(tauvis);
+        }
+        if((foundPi || foundLep)) {
+          prho_daughters.push_back(prho);
+          pi_daughters.push_back(pi);
+        }
+        //if(foundLep) {
+        //  //l_daughters.push_back(lep);
+        //  prho_daughters.push_back(prho);
+        //  pi_daughters.push_back(pi);
+        //}
+        if(foundA1){
+          a1_daughters.push_back(a1);
+        }
+        if(found3Pi1P0){
+          fakea1_daughters.push_back(fakea1);
+        }
+        if(count_charged==3) {
+          charged_daughters.push_back(charged_vec);
+        }
+
+        if(foundA1_2){
+          a1_2_daughters.push_back(a1_2); 
+        }
+      }
+    }
+
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+    TVector3 ip;
+    if (rho_daughters.size()==1 && pi_daughters.size()==1){
+        cp_channel_=2;
+        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+        ip = GenIP(pi_daughters[0], prho_daughters[0].second);
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
+
+        lvec2 = TLorentzVector(ip, 0.);
+    }
+    else if (rho_daughters.size()==1 && kaon_daughters.size()==1){
+        cp_channel_=12;
+        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+        ip = GenIP(kaon_daughters[0], prho_daughters[0].second);
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(kaon_daughters[0]->vector()); //pi charge from tau
+
+        lvec2 = TLorentzVector(ip, 0.);
+    }
+    
+    else if (rho_daughters.size()==2){
+        cp_channel_=3;  
+        if(rho_daughters[1].first->charge()<0) {
+          lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());   
+          lvec2 = ConvertToLorentz(rho_daughters[1].second->vector());
+          lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());   
+          lvec4 = ConvertToLorentz(rho_daughters[1].first->vector());
+        } else {
+          lvec1 = ConvertToLorentz(rho_daughters[1].second->vector());
+          lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
+          lvec3 = ConvertToLorentz(rho_daughters[1].first->vector());
+          lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
+        }
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3())*
+                    YRho(std::vector<GenParticle*>(
+                    {rho_daughters[1].first, rho_daughters[1].second}),TVector3());
+    }
+    if(cp_channel_==2 || cp_channel_==5 || cp_channel_==12){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      if (cp_sign_1_>0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }  
+    }
+
+    if(cp_channel_==1 || cp_channel_==11) {
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+    }
+
+    if(cp_channel_!=-1 && cp_channel_==3){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+
+      if (cp_sign_1_>0) {
+        if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
+        else                   aco_angle_1_ -= M_PI;
+      }  
+    }*/
+    
+
+    // =========================
     
     std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
@@ -869,6 +1137,7 @@ namespace ic {
     std::vector<std::vector<GenParticle*>> a1_2_daughters;
     std::vector<Candidate*> tau_rhos;
     std::vector<GenParticle*> pi_daughters;
+    std::vector<GenParticle*> kaon_daughters;
     unsigned count_taus=0;   
     for (unsigned i = 0; i < gen_particles.size(); ++i) {
       if(std::fabs(gen_particles[i]->pdgid()) == 15 && gen_particles[i]->statusFlags()[IsLastCopy]){
@@ -896,10 +1165,13 @@ namespace ic {
         std::vector<GenParticle*> fakea1 = {};
         std::vector<GenParticle*> a1_2 = {};
         GenParticle* pi = new GenParticle();
+        GenParticle* kaon = new GenParticle();
         std::vector<int> daughters = gen_particles[i]->daughters();
         charged_vec.push_back(gen_particles[i]);
+        std::cout << "tau: " << gen_particles[i] << std::endl;
         for (unsigned d : daughters){
           unsigned daughter_id = fabs(gen_particles[d]->pdgid());
+          std::cout << "ID in other function: " << gen_particles[d]->pdgid() << std::endl;
           int daughter_charge = gen_particles[d]->charge();
           if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
           ++count_hadr;
@@ -933,9 +1205,13 @@ namespace ic {
             a1_2.push_back(gen_particles[d]);
             continue;
           }
-          if (daughter_id == 130 || daughter_id == 310 
-                  || daughter_id == 311 || daughter_id == 321) {
+          //if (daughter_id == 130 || daughter_id == 310 
+          //        || daughter_id == 311 || daughter_id == 321) {
+          if (daughter_id == 321) { // K^\pm
             ++count_K;
+            kaon = gen_particles[d];
+            prho.first = kaon;
+            prho.second = tau;
             continue;
           }
           if (daughter_id == 111) {
@@ -982,6 +1258,10 @@ namespace ic {
         foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
         found3Pi1P0 = found3Pi1P0 || (count_hadr-count_gamma==4 && count_pi==3 && count_pi0==1);
         foundA1_2 = foundA1_2 || (count_hadr-count_gamma==3 && count_pi==1 && count_pi0==2);
+        if (count_hadr==1 && count_K==1 && count_pi0==0 && count_pi==0) {
+          kaon_daughters.push_back(kaon);
+          prho_daughters.push_back(prho);
+        }
         if(foundRho) {
           rho_daughters.push_back(rho);
           Candidate * tauvis = new Candidate();
@@ -1378,6 +1658,35 @@ namespace ic {
         TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip, 0.);
     }
+    else if (rho_daughters.size()==1 && kaon_daughters.size()==1){
+        cp_channel_=12;
+        cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+
+        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
+        //  reco_pvx_ = vertex_vec[0]->vx();
+        //  reco_pvy_ = vertex_vec[0]->vy();
+        //  reco_pvz_ = vertex_vec[0]->vz();
+        //}
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+        TLorentzVector pvtosv(
+                kaon_daughters[0]->vtx().vx() - prho_daughters[0].second->vtx().vx(), 
+                kaon_daughters[0]->vtx().vy() - prho_daughters[0].second->vtx().vy(), 
+                kaon_daughters[0]->vtx().vz() - prho_daughters[0].second->vtx().vz(), 
+                0.);
+
+        lvec1 = ConvertToLorentz(rho_daughters[0].second->vector()); //pi zero from rho
+        lvec3 = ConvertToLorentz(rho_daughters[0].first->vector()); //pi charge from rho
+        lvec4 = ConvertToLorentz(kaon_daughters[0]->vector()); //pi charge from tau
+
+        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip, 0.);
+    }
 
 //    else if (rho_daughters.size()==1 && l_daughters.size()==1){
 //        cp_channel_=5;
@@ -1479,7 +1788,7 @@ namespace ic {
         Ediff_2_ = (rho_daughters[1].first->vector().E() - rho_daughters[1].second->vector().E())/
             (rho_daughters[1].first->vector().E() + rho_daughters[1].second->vector().E());
     }
-    if(cp_channel_==2 || cp_channel_==5){
+    if(cp_channel_==2 || cp_channel_==5 || cp_channel_==12){
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
       if (cp_sign_1_>0) {
         if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
@@ -1487,7 +1796,7 @@ namespace ic {
       }  
     }
 
-    if(cp_channel_==1) {
+    if(cp_channel_==1 || cp_channel_==11) {
       aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
     }
 
@@ -1748,6 +2057,7 @@ std::cout << k1.Dot(k2) << std::endl;
     std::cout << "mm count = " << count_mm_ << std::endl;
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
+    std::cout << "count taus = " << count_taus_ << std::endl;
 
     return 0;
   }

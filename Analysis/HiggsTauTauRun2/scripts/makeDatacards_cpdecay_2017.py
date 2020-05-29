@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --no_shift_systs 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --total_jes 
+#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser
@@ -122,6 +121,12 @@ if not options.year == "":
   YEAR=options.year
 no_shift_systs = options.no_shift_systs
 
+# create separate output folder for scheme and year
+output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
+os.system('mkdir {}'.format(output_folder))
+os.system('mkdir {}/{}'.format(output_folder, SCHEME))
+os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
+
 ########## Set up schemes and options
 
 #### Always apply these options:
@@ -221,6 +226,7 @@ if SCHEME == 'cpdecay':
   VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_H_TT        = "IC_11May2020_max_score(7,0.3,1.0)"
   VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
   VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
 
@@ -272,29 +278,30 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
     ("17",   "higgs_mvaa10a1",    "2017_higgs_A1_0A1",  VAR_0A1A1, ' '),
 
-    ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
+    # ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "higgs",       "2017_higgs",     VAR_H_TT, ' '),
     ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "zttEmbed_mvarhorho",    "2017_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
-    ("17",   "zttEmbed_mvarho0a1",    "2017_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    ("17",   "zttEmbed_mvaa1rho",    "2017_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
-    ("17",   "zttEmbed_mvaa1a1",    "2017_zttEmbed_A1_A1",  VAR_A1A1, ' '),
-    ("17",   "zttEmbed_mvapipi",    "2017_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
-    ("17",   "zttEmbed_mvapirho",    "2017_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    ("17",   "zttEmbed_mvapi0a1",    "2017_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    ("17",   "zttEmbed_mvaa1pi",    "2017_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    ("17",   "zttEmbed_mvaa10a1",    "2017_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
+    # ("17",   "zttEmbed_mvarhorho",    "2017_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
+    # ("17",   "zttEmbed_mvarho0a1",    "2017_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    # ("17",   "zttEmbed_mvaa1rho",    "2017_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
+    # ("17",   "zttEmbed_mvaa1a1",    "2017_zttEmbed_A1_A1",  VAR_A1A1, ' '),
+    # ("17",   "zttEmbed_mvapipi",    "2017_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
+    # ("17",   "zttEmbed_mvapirho",    "2017_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    # ("17",   "zttEmbed_mvapi0a1",    "2017_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    # ("17",   "zttEmbed_mvaa1pi",    "2017_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    # ("17",   "zttEmbed_mvaa10a1",    "2017_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
   
-    ("17",   "jetFakes_mvarhorho",    "2017_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
-    ("17",   "jetFakes_mvarho0a1",    "2017_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    ("17",   "jetFakes_mvaa1rho",    "2017_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
-    ("17",   "jetFakes_mvaa1a1",    "2017_jetFakes_A1_A1",  VAR_A1A1, ' '),
-    ("17",   "jetFakes_mvapipi",    "2017_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
-    ("17",   "jetFakes_mvapirho",    "2017_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    ("17",   "jetFakes_mvapi0a1",    "2017_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    ("17",   "jetFakes_mvaa1pi",    "2017_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    ("17",   "jetFakes_mvaa10a1",    "2017_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
+    # ("17",   "jetFakes_mvarhorho",    "2017_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
+    # ("17",   "jetFakes_mvarho0a1",    "2017_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    # ("17",   "jetFakes_mvaa1rho",    "2017_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
+    # ("17",   "jetFakes_mvaa1a1",    "2017_jetFakes_A1_A1",  VAR_A1A1, ' '),
+    # ("17",   "jetFakes_mvapipi",    "2017_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
+    # ("17",   "jetFakes_mvapirho",    "2017_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    # ("17",   "jetFakes_mvapi0a1",    "2017_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    # ("17",   "jetFakes_mvaa1pi",    "2017_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    # ("17",   "jetFakes_mvaa10a1",    "2017_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
 
     #("17",   "inclusive_mvarhorho",    "2017_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
     #("17",   "inclusive_mvarho0a1",    "2017_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
@@ -359,6 +366,36 @@ if SCHEME == 'ip_uncert':
   ]
   ANA = 'sm'
 
+if SCHEME == 'control':
+
+    m_vis      = "m_vis(25,50,300)"
+    svfit_mass = "svfit_mass(25,50,300)"
+    pt_1       = "pt_1(20,40,140)"
+    pt_2       = "pt_2(12,40,100)"
+    n_jets      = "n_jets(5,0,5)"
+    met        = "met(20,0,200)"
+    mjj        = "mjj(20,0,500)"
+
+    one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
+    two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
+
+    scheme_et = [
+    ]
+    scheme_mt = [
+
+    ]
+
+    scheme_tt = [
+        ("17", "inclusive", "{}_m_vis".format(YEAR),      m_vis, ' '),
+        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
+        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
+        ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
+        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
+        ("17", "inclusive", "{}_met".format(YEAR),        met, ' '),
+        ("17", "inclusive", "{}_mjj".format(YEAR),        mjj, two_jet),
+    ]
+    ANA = 'sm'
+
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
@@ -366,7 +403,7 @@ cat_schemes = {
 }
 
 qsub_command = (
-    'qsub -e /dev/null -o /dev/null -cwd -V -q hep.q '
+    'qsub -e /dev/null -o /dev/null -cwd -V -l h_vmem=12G -q hep.q '
     ' -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 )
 
@@ -387,9 +424,9 @@ for ch in channels:
 
         if not options.hadd:
             if not options.batch:
-                print('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars())
+                print('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s --datacard=%(dc)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --var="%(var)s" %(extra)s --no_plot' % vars())
                 os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
+                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s --datacard=%(dc)s'
                     ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
                     ' --var="%(var)s" %(extra)s --ratio_range 0,2 --log_y --no_plot ' % vars())
 
@@ -403,9 +440,9 @@ for ch in channels:
 
     if not options.batch:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 

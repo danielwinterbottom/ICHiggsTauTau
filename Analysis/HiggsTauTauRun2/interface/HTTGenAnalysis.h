@@ -53,6 +53,7 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned count_mm_;
   unsigned count_mt_;
   unsigned count_tt_;
+  unsigned count_taus_;
   
   bool passed_;
   double pt_1_;
@@ -271,7 +272,8 @@ class HTTGenAnalysis : public ModuleBase {
 
   double fakea1_dR_ = -1;
   double rho_dR_ = -1;
-  double tauFlag = -1;
+  double tauFlag_1_ = -1;
+  double tauFlag_2_ = -1;
 
   double largest_gen_mjj_=-9999;
 
