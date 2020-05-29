@@ -624,6 +624,9 @@ int HTTWeights::PreAnalysis() {
     fns_["t_deeptauid_mvadm_embed_medium"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_mvadm_embed_medium")->functor(w_->argSet("t_pt,t_mvadm")));
 
+    fns_["t_deeptauid_mvadm_medium_tightvsele"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_mvadm_medium_tightvsele")->functor(w_->argSet("t_pt,t_mvadm")));
+
     fns_["t_deeptauid_mvadm_medium_lowpt_mvadm0_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_mvadm_medium_lowpt_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
     fns_["t_deeptauid_mvadm_medium_lowpt_mvadm1_up"] = std::shared_ptr<RooFunctor>(
@@ -1044,6 +1047,9 @@ int HTTWeights::Execute(TreeEvent *event) {
         event->Add("wt_tau_id_pt_bin5_down",tau_sf_2_bin5_down);
 
         double tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium"]->eval(args_mvadm.data()) : 1.0;
+        if(channel_== channel::et) {
+          tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_tightvsele"]->eval(args_mvadm.data()) : 1.0;
+        }
 
         double tau_sf_mvadm_2_lowpt_mvadm0_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium_lowpt_mvadm0_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
         double tau_sf_mvadm_2_lowpt_mvadm1_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium_lowpt_mvadm1_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
