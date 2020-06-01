@@ -42,6 +42,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
+    std::cout << boost::format(param_fmt()) % "met_res_mode"    % met_res_mode_;
+    std::cout << boost::format(param_fmt()) % "met_scale_mode"  % met_scale_mode_;
     std::cout << boost::format(param_fmt()) % "use_puppimet"    % use_puppimet_;
     std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
 
@@ -199,7 +201,7 @@ namespace ic {
     correctedMety = Mety;
   }
     
-  //Apply systematic shifts to MET if requested  
+  //Apply systematic shifts to MET if requested 
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
     if((njets_mode_==1 && njets!=0) || (njets_mode_==2 && njets!=1) || (njets_mode_==3 && njets<2)) return 0;
     float met_Shift_x, met_Shift_y;

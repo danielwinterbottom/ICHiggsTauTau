@@ -35,15 +35,15 @@ int PreselectionFilter::Execute(TreeEvent *event) {
   Candidate const* lep1 = dilepton.at(0)->GetCandidate("lepton1");
   Candidate const* lep2 = dilepton.at(0)->GetCandidate("lepton2");
 
-  bool dilepton_veto_ = false;
+  //bool dilepton_veto_ = false;
   bool extraelec_veto_ = false;
   bool extramuon_veto_ = false;
   double iso_1_ = 0;
   double iso_2_ = 0; 
   bool pass_presel = false;
 
-  if(channel_ == channel::et) { 
-      if(event->Exists("dielec_veto"))  dilepton_veto_ = event->Get<bool>("dielec_veto");
+  if(channel_ == channel::et) {
+      //if(event->Exists("dielec_veto"))  dilepton_veto_ = event->Get<bool>("dielec_veto");
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -52,7 +52,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5); 
   }
   if(channel_ == channel::mt) { 
-      if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+      //if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Muon const* muon  = dynamic_cast<Muon const*>(lep1);
@@ -97,7 +97,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
     
   if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
     
-  bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+  bool lepton_veto_ = extraelec_veto_ || extramuon_veto_;
   if ( channel_ == channel::zmm || channel_ == channel::zee ) lepton_veto_ = extraelec_veto_ || extramuon_veto_;
 
   bool preselect_evt = pass_presel&&!lepton_veto_;
