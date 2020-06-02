@@ -583,12 +583,12 @@ if (era_type == era::data_2016) {
 BuildModule(jetIDFilter);
 
 // Apply loose PUJID universally
-BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
-  .set_input_label(jets_label)
-  .set_predicate([=](PFJet const* jet) {
-    return  PileupJetID(jet, pu_id_training, false, true);
-  })
-);
+//BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+//  .set_input_label(jets_label)
+//  .set_predicate([=](PFJet const* jet) {
+//    return  PileupJetID(jet, pu_id_training, false, true);
+//  })
+//);
 
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
@@ -760,9 +760,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     if(uncert.find("scale_j")!=std::string::npos) jes_mode_ = unmod_js["sequences"][uncert]["baseline"]["jes_mode"].asUInt();
     if(uncert.find("scale_j")!=std::string::npos) alt_jes_input_set = unmod_js["sequences"][uncert]["baseline"]["jes_input_set"].asString();
     if(uncert.find("res_j")!=std::string::npos) jer_mode_ = unmod_js["sequences"][uncert]["baseline"]["jer_mode"].asUInt();
-    if(uncert.find("res_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
-    if(uncert.find("scale_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
+    if(uncert.find("res_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
+    if(uncert.find("scale_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("met_uncl")!=std::string::npos) metuncl_mode_ = unmod_js["sequences"][uncert]["baseline"]["metuncl_mode"].asUInt();
+
 
     std::string add_dir = unmod_js["sequences"][uncert]["baseline"]["addit_output_folder"].asString(); 
  
@@ -2059,6 +2060,8 @@ void HTTSequence::BuildTauSelection(){
       .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
 
    HTTFilter<CompositeCandidate> vetoElecPairFilter = HTTFilter<CompositeCandidate>("VetoElecPairFilter")
+      .set_veto_name("dielec_veto")
+      .set_no_filter(true)
       .set_input_label("elec_veto_pairs").set_min(0).set_max(0)
       .set_predicate([=](CompositeCandidate const* c) {
         return  c->DeltaR("elec1", "elec2") > 0.15 &&

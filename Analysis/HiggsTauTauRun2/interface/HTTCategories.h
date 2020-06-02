@@ -109,6 +109,7 @@ class HTTCategories : public ModuleBase {
   float trigweight_2_;
   double xtrg_sf_;
   double single_l_sf_;
+  double et_trg_;
   double xtrg_notrig_;
   double OR_notrig_;
   float idisoweight_1_;

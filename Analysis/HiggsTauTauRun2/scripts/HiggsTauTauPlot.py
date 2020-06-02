@@ -430,6 +430,7 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_2>35&&pt_1<28)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -781,7 +782,7 @@ if options.channel == 'tt':
     #mva_jetFakes           = '(svfit_mass>150)'
     #mva_zttEmbed           = '(svfit_mass<100)'
 
-    cut_string = "IC_11May2020"
+    cut_string = "IC_PUJIDCheck"
     mva_ggh      = '({}_max_index==0)'.format(cut_string)
     mva_jetFakes = '({}_max_index==1)'.format(cut_string)
     mva_zttEmbed = '({}_max_index==2)'.format(cut_string)
@@ -1595,8 +1596,8 @@ if options.analysis in ['cpdecay']:
 
   if options.era == 'legacy16':
     sm_samples = {
-       'ggH_ph_htt*' : 'GluGluToHToTauTau_M-125',
-       'qqH_ph_htt*' : 'VBFHToTauTau_M-125',
+       #'ggH_ph_htt*' : 'GluGluToHToTauTau_M-125',
+       #'qqH_ph_htt*' : 'VBFHToTauTau_M-125',
        "qqH_sm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
        "qqH_ps_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
        "qqH_mm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
@@ -1609,10 +1610,10 @@ if options.analysis in ['cpdecay']:
        "ZH_sm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
        "ZH_ps_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
        "ZH_mm_htt*": 'ZHToTauTauUncorrelatedDecay_Filtered',
-       "WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
-       "ZH_ph_htt*": 'ZHToTauTau_M-125', 
-       "ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
-       "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
+       #"WH_ph_htt*": ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'], 
+       #"ZH_ph_htt*": 'ZHToTauTau_M-125', 
+       #"ggH_flat_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       #"qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
 # for 2017
@@ -1987,8 +1988,8 @@ if options.syst_em_qcd != '' and options.channel == 'em':
           systematics['syst_em_qcd_njets%(j)i_unc%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_em_qcd_njets%(j)i_unc%(i)i_down' % vars(), ['ZLL','TT','TTJ','TTT','ZTT','ZL','ZJ','VVT','VVJ','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)  
 
 if options.syst_prefire != '':
-    systematics['syst_prefire_up'] = ('' , '_'+options.syst_prefire+'Up', 'wt*wt_prefire_up', ['QCD','jetFakes','EmbedZTT'], False)
-    systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down', ['QCD','jetFakes','EmbedZTT'], False)
+    systematics['syst_prefire_up'] = ('' , '_'+options.syst_prefire+'Up', 'wt*wt_prefire_up/wt_prefire', ['QCD','jetFakes','EmbedZTT'], False)
+    systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down/wt_prefire', ['QCD','jetFakes','EmbedZTT'], False)
 
 if options.syst_tau_id_diff != '':
     hist_name = options.syst_tau_id_diff
