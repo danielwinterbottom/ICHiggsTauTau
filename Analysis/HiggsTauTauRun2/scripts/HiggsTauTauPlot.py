@@ -1472,9 +1472,9 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['cp18']:
 
-    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-#    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    #ztt_samples = ['DYJetsToLL'] # NL0 filelists
+    # ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    ztt_samples = ['DYJetsToLL'] # NL0 filelists
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = [
             'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
