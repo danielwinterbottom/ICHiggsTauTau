@@ -398,8 +398,7 @@ if options.proc_embed or options.proc_all:
     if parajobs: 
       os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
       PARAJOBSUBMIT = getParaJobSubmit(job_num)
-      #os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
-      print '%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars() 
+      os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
 
 
