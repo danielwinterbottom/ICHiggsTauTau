@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/May21_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt"],
+    "channels":     ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -32,7 +32,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : false,
+    "get_effective" : true,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "do_vbftrg" : false,
@@ -61,9 +61,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/May30_2018/",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/May11_2018_pfMET/",
-    //"output_folder" : "output/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/May30_2018/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/May21_2018_effective/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr21_2018_svfit/",
@@ -75,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,

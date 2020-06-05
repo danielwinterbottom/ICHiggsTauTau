@@ -172,7 +172,7 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-FILELIST='filelists/Jan24_2018_MC_102X'
+FILELIST='filelists/May21_2018_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -284,7 +284,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
 
-    DATAFILELIST="./filelists/Jan06_2018_Data_102X"
+    DATAFILELIST="./filelists/May21_2018_Data_102X"
 
     if options.calc_lumi:
         for sa in data_samples:
@@ -306,9 +306,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Jan06_2018_Data_102X"
+            DATAFILELIST="./filelists/May21_2018_Data_102X"
             JOB='%s_2018' % (sa)
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May21_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
       
@@ -356,12 +356,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Mar20_2018_MC_102X"
+    EMBEDFILELIST="./filelists/May21_2018_MC_102X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Mar20_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May21_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             if 'ElTau' or 'MuTau' in sa: nperjob = 5
@@ -412,47 +412,47 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-         'DYJetsToLL',
-         'DY1JetsToLL-LO',
-         'DY2JetsToLL-LO',
-         'DY3JetsToLL-LO',
-         'DY4JetsToLL-LO',
+        # 'DYJetsToLL',
+        # 'DY1JetsToLL-LO',
+        # 'DY2JetsToLL-LO',
+        # 'DY3JetsToLL-LO',
+        # 'DY4JetsToLL-LO',
          'DYJetsToLL-LO',
-         'DYJetsToLL_M-10-50-LO',
-         'EWKWMinus2Jets',
-         'EWKWPlus2Jets',
-         'EWKZ2Jets',
-         'T-t',
-         'T-tW-ext1',
-         'TTTo2L2Nu',
-         'TTToHadronic',
-         'TTToSemiLeptonic',
-         'Tbar-t',
-         'Tbar-tW-ext1',
-         'W1JetsToLNu-LO',
-         'W2JetsToLNu-LO',
-         'W3JetsToLNu-LO',
-         'W4JetsToLNu-LO',
-         'WGToLNuG',
-         'WJetsToLNu-LO',
-         'WWTo2L2Nu',
-         'WWToLNuQQ',
-         'WZTo1L3Nu',
-         'WZTo2L2Q',
-         'WZTo3LNu',
-         'WZTo3LNu-ext1',
-         'ZZTo2L2Nu-ext1',
-         'ZZTo2L2Nu-ext2',
-         'ZZTo2L2Q',
-         'ZZTo4L',
-         'ZZTo4L-ext',
-         'WZTo1L1Nu2Q', #don't forget cross section and params for this one!
+        # 'DYJetsToLL_M-10-50-LO',
+        # 'EWKWMinus2Jets',
+        # 'EWKWPlus2Jets',
+        # 'EWKZ2Jets',
+        # 'T-t',
+        # 'T-tW-ext1',
+        # 'TTTo2L2Nu',
+        # 'TTToHadronic',
+        # 'TTToSemiLeptonic',
+        # 'Tbar-t',
+        # 'Tbar-tW-ext1',
+        # 'W1JetsToLNu-LO',
+        # 'W2JetsToLNu-LO',
+        # 'W3JetsToLNu-LO',
+        # 'W4JetsToLNu-LO',
+        # 'WGToLNuG',
+        # 'WJetsToLNu-LO',
+        # 'WWTo2L2Nu',
+        # 'WWToLNuQQ',
+        # 'WZTo1L3Nu',
+        # 'WZTo2L2Q',
+        # 'WZTo3LNu',
+        # 'WZTo3LNu-ext1',
+        # 'ZZTo2L2Nu-ext1',
+        # 'ZZTo2L2Nu-ext2',
+        # 'ZZTo2L2Q',
+        # 'ZZTo4L',
+        # 'ZZTo4L-ext',
+        # 'WZTo1L1Nu2Q', #don't forget cross section and params for this one!
     ]
 
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan24_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May21_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         job_num=0
         for FLATJSONPATCH in flatjsons:
             #nperjob = 40
@@ -498,11 +498,11 @@ if options.proc_bkg or options.proc_all:
             os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
 if options.mg_signal or options.proc_sm:
-    SIG_FILELIST = './filelists/Mar20_2018_MC_102X'
+    SIG_FILELIST = './filelists/May21_2018_MC_102X'
     for sa in signal_mc:
         user='dwinterb'
-        SIG_FILELIST = './filelists/Mar20_2018_MC_102X'
-        SIG_DIR = 'Mar20_MC_102X_2018'
+        SIG_FILELIST = './filelists/May21_2018_MC_102X'
+        SIG_DIR = 'May21_MC_102X_2018'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
