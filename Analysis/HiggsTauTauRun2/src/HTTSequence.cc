@@ -719,7 +719,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     } 
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(100043797, 68852083, 20441071, 5646595, 2812482);
+      httStitching.SetDYInputYields(100043797, 68838168, 20441071, 5646595, 2812482);
 
     }
   }
