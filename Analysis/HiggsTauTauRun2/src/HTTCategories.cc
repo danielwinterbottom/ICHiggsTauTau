@@ -683,6 +683,7 @@ namespace ic {
         outtree_->Branch("tau_dm_1", &tau_dm_1_);
         outtree_->Branch("tau_pt_1", &tau_pt_1_);
       }
+      outtree_->Branch("use_refitted_vertex", & use_refitted_vertex_);
 
       outtree_->Branch("q_1", &q_1_);
       outtree_->Branch("q_2", &q_2_);
@@ -2133,14 +2134,20 @@ namespace ic {
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //ic::Vertex* refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == tau1->id()+tau2->id()) {
+      //    refit_vertex = v; 
+      //    use_refitted_vertex_ = true;
+      //  }
+      //}
+      
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("verticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == tau1->id()+tau2->id()) {
-          refit_vertex = v; 
-          use_refitted_vertex_ = true;
-        }
+      if(refit_vertex_vec.size()>0) {
+        use_refitted_vertex_ = true;
+        refit_vertex = refit_vertex_vec[0];
       }
 
       std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(tau1, refit_vertex, pfcands);
@@ -2642,14 +2649,20 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-      ic::Vertex* refit_vertex = new ic::Vertex();
-      if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == muon1->id()+tau2->id()) {
-          refit_vertex = v;
-          use_refitted_vertex_ = true;
-        }
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //ic::Vertex* refit_vertex = new ic::Vertex();
+      //if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == muon1->id()+tau2->id()) {
+      //    refit_vertex = v;
+      //    use_refitted_vertex_ = true;
+      //  }
+      //}
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("verticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      if(refit_vertex_vec.size()>0) {
+        use_refitted_vertex_ = true;
+        refit_vertex = refit_vertex_vec[0];
       }
 
       auto primary_vtx = refit_vertex;
@@ -2902,13 +2915,19 @@ namespace ic {
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      //ic::Vertex* refit_vertex = vertex_vec[0];
+      //for(auto v : refit_vertex_vec) {
+      //  if(v->id() == ele1->id()+tau2->id()) {
+      //    refit_vertex = v;
+      //    use_refitted_vertex_ = true;
+      //  } 
+      //}
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("verticesBS");
       ic::Vertex* refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == ele1->id()+tau2->id()) {
-          refit_vertex = v;
-          use_refitted_vertex_ = true;
-        } 
+      if(refit_vertex_vec.size()>0) {
+        use_refitted_vertex_ = true;
+        refit_vertex = refit_vertex_vec[0];
       }
 
       //std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
