@@ -770,9 +770,11 @@ namespace ic {
 
           // us groups FFs
           std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-          Met const* pfmet = pfMet_vec.at(0);
+          Met *pfmet = pfMet_vec.at(0);
           double pfmt_1 = MT(lep1, pfmet);
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet->pt()};
+          double pfmet_ = pfmet->vector().pt();
+          if(pfmet_!=pfmet_) pfmet_ = 0.;
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet_};
           double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
           event->Add("wt_ff_us_1",  ff_us_nom);
 

@@ -148,6 +148,7 @@ namespace ic {
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
   if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
+
   if (disable_recoil_corrs && disable_met_sys) return 0;
   
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
@@ -180,7 +181,7 @@ namespace ic {
     correctedMety = Mety;
   }
     
-  //Apply systematic shifts to MET if requested  
+  //Apply systematic shifts to MET if requested 
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
     if((njets_mode_==1 && njets!=0) || (njets_mode_==2 && njets!=1) || (njets_mode_==3 && njets<2)) return 0;
     float met_Shift_x, met_Shift_y;
@@ -225,7 +226,7 @@ namespace ic {
     met->set_pt(sqrt(met_Shift_x*met_Shift_x+met_Shift_y*met_Shift_y));
     met->set_phi(atan2(met_Shift_y,met_Shift_x));
     met->set_energy(sqrt(met_res_e*met_res_e+met_Shift_x*met_Shift_x+met_Shift_y*met_Shift_y));
-
+  
   }
 
 
