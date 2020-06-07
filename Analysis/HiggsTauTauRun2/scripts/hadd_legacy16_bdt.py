@@ -235,7 +235,7 @@ with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
 subdirs=['']
-subdirs+=list_paths(outputf)
+subdirs=list_paths(outputf)
 
 new_subdirs=[]
 for d in subdirs:
@@ -255,8 +255,9 @@ for sa in sample_list:
   to_remove=[]
   hadd_dirs=[]
   command=''
+  year = 2016
   if batch:
-    JOB='jobs/hadd_%s.sh' % sa
+    JOB='jobs/hadd_{}_{}.sh'.format(sa, year)
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

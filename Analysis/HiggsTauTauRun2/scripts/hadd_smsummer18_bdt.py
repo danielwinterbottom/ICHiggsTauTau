@@ -227,8 +227,9 @@ for sa in sample_list:
   to_remove=[]
   hadd_dirs=[]
   command=''
+  year = 2018
   if batch:
-    JOB='jobs/hadd_%s.sh' % sa
+    JOB='jobs/hadd_{}_{}.sh'.format(sa, year)
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:
