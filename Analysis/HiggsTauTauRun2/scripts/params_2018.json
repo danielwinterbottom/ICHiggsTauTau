@@ -405,7 +405,7 @@
     "xs": 0.05542,
     "evt": 979000
   },
-  "SingleElectron": {
+  "EGamma": {
     "lumi": 59740
   },
   "SingleMuon": {

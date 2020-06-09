@@ -36,7 +36,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_et_ip0p5/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_et_newvertex/' % vars()
 
   histsToWrap = [(loc + 'fakefactor_fits_et_%(wp)s_2018.root:et_fracs_njets0_os_qcd' % vars(), 'et_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_et_%(wp)s_2018.root:et_fracs_njets1_os_qcd' % vars(), 'et_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -431,7 +431,6 @@ w.Print()
 w.writeToFile('fakefactors_ws_et_lite_2018.root')
 w.Delete()
 
-exit()
 
 ################################################
 ### mt channel ####
@@ -446,7 +445,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_mt_ip0p5/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_mt_newvertex/' % vars()
 
   histsToWrap = [(loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets0_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_mt_%(wp)s_2018.root:mt_fracs_njets1_os_qcd' % vars(), 'mt_%(wp)s_fracs_njets1_os_qcd' % vars()),
@@ -865,7 +864,7 @@ for wp in wps:
 
   # get fractions
 
-  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_tt_ip0p5/' % vars()
+  loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/mvadm_ff_deeptauV2p1_2018_tt_newvertex/' % vars()
  
   histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_2018.root:tt_fracs_njets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets0_os_qcd' % vars()),
                  (loc + 'fakefactor_fits_tt_%(wp)s_2018.root:tt_fracs_njets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_njets1_os_qcd' % vars()),

@@ -13,9 +13,9 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt_ip0p5')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2018_mt_newvertex')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/FF_2018/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/FF_2018_newvertex/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -117,6 +117,7 @@ dm_bins = {
 #fit_pol0_ttbar = []
 
 fit_pol1_qcd   = [
+'mvadm0_sig_lt3_njets2',
 'mvadm1_njets1',
 'mvadm1_njets2',
 'mvadm11_njets1',
@@ -126,6 +127,8 @@ fit_pol1_wjets = []
 fit_pol1_ttbar = []
 fit_pol0_qcd   = [
 'mvadm0_sig_lt3_njets0_crosstrg',
+'mvadm0_sig_gt3_njets1_crosstrg',
+'mvadm0_sig_gt3_njets2_crosstrg',
 'mvadm1_njets0_crosstrg',
 'mvadm1_njets2_crosstrg',
 'mvadm2_njets1_crosstrg',
@@ -134,6 +137,8 @@ fit_pol0_qcd   = [
 ]
 fit_pol0_wjets = [
 'mvadm0_njets2_crosstrg',
+'mvadm0_sig_gt3_njets0_crosstrg',
+'mvadm0_sig_gt3_njets1_crosstrg',
 'mvadm0_sig_gt3_njets2_crosstrg',
 'mvadm0_sig_lt3_njets2_crosstrg',
 'mvadm1_njets2_crosstrg',
@@ -457,6 +462,7 @@ def CalculateFakeFactors(num,denum):
   ff.Divide(denum)
   return ff
 
+
 def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,200)
@@ -490,8 +496,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    if 'Erf' in func: fitresult = h.Fit("f1",'S')
-    else: fitresult = h.Fit("f1",'SI') 
+    fitresult = h.Fit("f2",'SIR')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -518,7 +523,8 @@ def FitCorrection(h, func='pol1',is2D=False):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f1",'SI')
+    if 'Erf' in func: fitresult = h.Fit("f1",'S')
+    else: fitresult = h.Fit("f1",'SI')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -747,9 +753,9 @@ for ff in ff_list:
       wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
       to_write.append(wjets_mc_ff)
 
-      #if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+        to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
@@ -764,8 +770,9 @@ for ff in ff_list:
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
       ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-      ttbar_mc_ff.SetDirectory(0)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff.SetDirectory(0)
+        to_write.append(ttbar_mc_ff)
     fin.Close()
 
   usePol=None

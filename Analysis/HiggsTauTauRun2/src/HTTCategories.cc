@@ -57,13 +57,13 @@ namespace ic {
       std::string cmsswBase = (getenv ("CMSSW_BASE"));
       TString ip_corr_filename = "";
       if(is_embedded_) {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017.root";
-        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2018.root";
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016_pvbs.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017_pvbs.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2018_pvbs.root";
       } else {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017.root";
-        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2018.root";
+        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016_pvbs.root";
+        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017_pvbs.root";
+        else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2018_pvbs.root";
       }
       ipCorrector.Init(ip_corr_filename);
     }

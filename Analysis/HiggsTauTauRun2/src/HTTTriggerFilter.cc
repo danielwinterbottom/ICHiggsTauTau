@@ -526,7 +526,6 @@ namespace ic {
         if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& era_ == era::data_2018) {
            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first;
-
         }
         
         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& era_ == era::data_2016 ) {

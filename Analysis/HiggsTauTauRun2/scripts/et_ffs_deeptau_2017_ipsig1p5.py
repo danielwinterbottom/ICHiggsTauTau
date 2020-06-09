@@ -752,9 +752,9 @@ for ff in ff_list:
       wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
       to_write.append(wjets_mc_ff)
 
-      #if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+        to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
@@ -768,9 +768,10 @@ for ff in ff_list:
       wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
-      ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-      ttbar_mc_ff.SetDirectory(0)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
+        ttbar_mc_ff.SetDirectory(0)
+        to_write.append(ttbar_mc_ff)
     fin.Close()
 
   usePol=None

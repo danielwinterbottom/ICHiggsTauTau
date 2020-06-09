@@ -453,8 +453,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    if 'Erf' in func: fitresult = h.Fit("f1",'S')
-    else: fitresult = h.Fit("f1",'SI') 
+    fitresult = h.Fit("f2",'SIR')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -481,7 +480,8 @@ def FitCorrection(h, func='pol1',is2D=False):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f1",'SI')
+    if 'Erf' in func: fitresult = h.Fit("f1",'S')
+    else: fitresult = h.Fit("f1",'SI')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -710,9 +710,9 @@ for ff in ff_list:
       wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
       to_write.append(wjets_mc_ff)
 
-      #if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+        to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
@@ -726,9 +726,10 @@ for ff in ff_list:
       wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
-      ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-      ttbar_mc_ff.SetDirectory(0)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
+        ttbar_mc_ff.SetDirectory(0)
+        to_write.append(ttbar_mc_ff)
     fin.Close()
 
   usePol=None
