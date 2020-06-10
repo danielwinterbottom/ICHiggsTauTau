@@ -467,9 +467,9 @@ elif options.channel == 'em':
       cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
     elif options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
       cats['loose_baseline'] = '(wt<2 && iso_1<0.15 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
-    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
+    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && !leptonveto && trg_muonelectron && pt_1>15 && pt_2>15)'
     if options.era in ['cpsummer17','cp18']:
-        cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron)'
+        cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && !leptonveto && trg_muonelectron && pt_1>15 && pt_2>15)'
         cats['loose_baseline'] = '(wt<2 && iso_1<0.15 && iso_2<0.5 && !leptonveto && trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
@@ -570,15 +570,15 @@ if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvad
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0 &&n_loose_bjets<2)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   elif options.channel in ['em']:
-      cats['0jet'] = '(n_jets==0 && n_bjets==0 &&n_loose_bjets<2)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_bjets==0 &&n_loose_bjets<2 '
+      cats['0jet'] = '(n_jets==0 && n_loose_bjets<1)'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_loose_bjets<1 '
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['dijet_loosemjj_boosted']='%s && mjj<500 && pt_tt>150' % cats['dijet']
       cats['dijet_loosemjj_lowboost']='%s && mjj<500 && pt_tt<150' % cats['dijet']
       cats['dijet_tightmjj_boosted']='%s && mjj>500 && pt_tt>150' % cats['dijet']
       cats['dijet_tightmjj_lowboost']='%s && mjj>500 && pt_tt<150' % cats['dijet']
-      cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0 &&n_loose_bjets<2)' % (cats['0jet'], cats['dijet'])
+      cats['boosted'] = '(!(%s) && !(%s) &&n_loose_bjets<1)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   else:    
     cats['0jet'] = '(n_jets==0)'
