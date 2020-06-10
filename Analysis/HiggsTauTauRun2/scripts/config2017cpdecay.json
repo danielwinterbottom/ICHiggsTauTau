@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Jan24_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt", "et", "tt", "em"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,12 +59,12 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/May11_2017/",
+    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/May30_2017/",
     //"output_folder"  : "/vols/cms/dw515/Offline/output/SM/May04_effective_2017/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr21_2017_svfit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr21_2017_svfit_MET/",
     //"svfit_folder"  : "./output/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
@@ -72,7 +72,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -148,7 +148,7 @@
         "do_ff_weights" : true, 
         "do_ff_systematics": true,
         "ff_categories" :"inclusive",
-        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2017.root",
+        "ff_file" : "input/fake_factors/fakefactors_ws_et_lite_2017.root",
         "ff_fracs_file" : ""
           }
     },

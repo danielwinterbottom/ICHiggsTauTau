@@ -212,22 +212,22 @@ namespace ic {
 
       for(auto s : systs_mvadm_) {
         fns_["ff_lt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
-//              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
-              ff_ws_->function(("ff_mt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));
+//              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,wjets_frac,qcd_frac,ttbar_frac")));   
+              ff_ws_->function(("ff_et_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       for(auto s : systs_dm_) {
         fns_["ff_lt_medium_dmbins"+s] = std::shared_ptr<RooFunctor>(
               //ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
-              ff_ws_->function(("ff_mt_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,m_pt,os,met_var_qcd,met_var_w,mt,m_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
+              ff_ws_->function(("ff_et_medium_dmbins"+s).c_str())->functor(ff_ws_->argSet("pt,dm,njets,e_pt,os,met_var_qcd,met_var_w,mt,e_iso,pass_single,mvis,WpT,wjets_frac,qcd_frac,ttbar_frac")));
       }
       fns_["ff_lt_medium_mvadmbins_qcd"] = std::shared_ptr<RooFunctor>(
             //ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
-            ff_ws_->function("ff_mt_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,os,met_var_qcd,m_iso,pass_single")));
+            ff_ws_->function("ff_et_medium_mvadmbins_qcd")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,os,met_var_qcd,e_iso,pass_single")));
       fns_["ff_lt_medium_mvadmbins_wjets"] = std::shared_ptr<RooFunctor>(
             //ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis")));
-            ff_ws_->function("ff_mt_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,m_pt,met_var_w,mt,pass_single,mvis")));
+            ff_ws_->function("ff_et_medium_mvadmbins_wjets")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,e_pt,met_var_w,mt,pass_single,mvis,WpT")));
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
-            ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
+            ff_ws_->function("ff_et_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
       // load us groups fake factors
 
@@ -423,9 +423,6 @@ namespace ic {
     std::string btag_label       = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     std::string btag_label_extra = "";
     double btag_wp (1.0);
-    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
-      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
-    };
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
     if (era_ == era::data_2017) {
@@ -438,6 +435,10 @@ namespace ic {
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
+
+    auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
+    };
     if (era_ == era::data_2017 || era_ == era::data_2018) {
       if (event->Exists("retag_result")) {
         auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
@@ -745,14 +746,14 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.;
  
-          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,w_frac,qcd_frac,ttbar_frac};
-          if(channel_==channel::mt) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
+          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
+          if(channel_==channel::et) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,-1,-1,-1};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
+
           event->Add("wt_ff_1",  ff_nom);
 
           auto args_qcd = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,iso_1_,pass_single};
-          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_};
-          if(channel_==channel::mt) args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_,WpT};
+          auto args_w = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,met_var_w,mt_1_,pass_single,m_vis_,WpT};
           ff_nom = fns_["ff_lt_medium_mvadmbins_qcd"]->eval(args_qcd.data());
 
           event->Add("wt_ff_qcd_1",  ff_nom);
@@ -769,9 +770,11 @@ namespace ic {
 
           // us groups FFs
           std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-          Met const* pfmet = pfMet_vec.at(0);
+          Met *pfmet = pfMet_vec.at(0);
           double pfmt_1 = MT(lep1, pfmet);
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet->pt()};
+          double pfmet_ = pfmet->vector().pt();
+          if(pfmet_!=pfmet_) pfmet_ = 0.;
+          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet_};
           double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
           event->Add("wt_ff_us_1",  ff_us_nom);
 

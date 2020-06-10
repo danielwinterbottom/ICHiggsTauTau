@@ -734,7 +734,9 @@ namespace ic {
 
       synctree_->Branch("puweight", &pu_weight_, "pu_weight/F");
 
-     synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+     if(channel_==channel::et) synctree_->Branch("trigweight_1", &et_trg_, "trigweight_1/F");
+     else synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+
       synctree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       synctree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
@@ -1435,7 +1437,7 @@ namespace ic {
     if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
-    
+    et_trg_=trigweight_1_*single_l_sf_;
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -1503,7 +1505,7 @@ namespace ic {
     } else{ 
       ic::erase_if_not(bjets, filterBTagSumTight);
     } 
-    
+
     // Btag weights
     wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
     wt_btag_down_      = event->Exists("btag_evt_weight_down") ? event->Get<double>("btag_evt_weight_down") : 1.;
@@ -1603,6 +1605,8 @@ namespace ic {
     mt_1_ = MT(lep1, mets);
     mt_2_ = MT(lep2, mets);
     mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
+
+    //std::cout << lep1->pt() << "    " << lep2->pt() << "    " << lep1->eta() << "    " << lep2->eta() << std::endl;
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
@@ -1843,6 +1847,7 @@ namespace ic {
     } else {
       tau_decay_mode_2_ = 0;
     }
+    //std::cout << tau_decay_mode_2_ << std::endl;
 
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();

@@ -69,6 +69,7 @@ int JetEnergyUncertainty<T>::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "jes_shift_mode"      % jes_shift_mode_;
   std::cout << boost::format(param_fmt()) % "uncert_file"         % uncert_file_;
   std::cout << boost::format(param_fmt()) % "uncert_set"          % uncert_set_;
+  std::cout << boost::format(param_fmt()) % "shift_met"          % shift_met_;
   params_ = new JetCorrectorParameters(uncert_file_, uncert_set_);
   uncert_ = new JetCorrectionUncertainty(*params_);
   
@@ -106,7 +107,11 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       if(!skipJet) after+=vec[i]->vector();
 
     }
-    event->ForceAdd("jes_shift", after-before);
+    if (shift_met_) {
+      Met * met = event->GetPtr<Met>(met_label_);
+      this->CorrectMETForShift(met, after-before);
+    }
+    else event->Add("jes_shift", after-before);
   } else if (sum_uncerts_){
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);

@@ -262,10 +262,12 @@ tau_shift_func_1prong0pi0 = "";
 tau_shift_func_1prong1pi0 = "";
 tau_shift_func_3prong0pi0 = "";
 tau_shift_func_3prong1pi0 = "";
-if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
-if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
-if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
-if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+if(!is_embedded){
+  if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
+  if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
+  if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
+  if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+}
 
 alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
@@ -515,6 +517,7 @@ if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != cha
    .set_dilepton_label("ditau"));
 }
 
+
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
 TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
@@ -583,12 +586,12 @@ if (era_type == era::data_2016) {
 BuildModule(jetIDFilter);
 
 // Apply loose PUJID universally
-BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
-  .set_input_label(jets_label)
-  .set_predicate([=](PFJet const* jet) {
-    return  PileupJetID(jet, pu_id_training, false, true);
-  })
-);
+//BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+//  .set_input_label(jets_label)
+//  .set_predicate([=](PFJet const* jet) {
+//    return  PileupJetID(jet, pu_id_training, false, true);
+//  })
+//);
 
 if (era_type == era::data_2017) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
@@ -725,6 +728,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
 if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos)){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
+      .set_era(era_type)
       .set_ditau_label("ditau")
       .set_met_label(met_label)
       .set_jets_label(jets_label)
@@ -759,9 +763,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     if(uncert.find("scale_j")!=std::string::npos) jes_mode_ = unmod_js["sequences"][uncert]["baseline"]["jes_mode"].asUInt();
     if(uncert.find("scale_j")!=std::string::npos) alt_jes_input_set = unmod_js["sequences"][uncert]["baseline"]["jes_input_set"].asString();
     if(uncert.find("res_j")!=std::string::npos) jer_mode_ = unmod_js["sequences"][uncert]["baseline"]["jer_mode"].asUInt();
-    if(uncert.find("res_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
-    if(uncert.find("scale_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
+    if(uncert.find("res_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
+    if(uncert.find("scale_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("met_uncl")!=std::string::npos) metuncl_mode_ = unmod_js["sequences"][uncert]["baseline"]["metuncl_mode"].asUInt();
+
 
     std::string add_dir = unmod_js["sequences"][uncert]["baseline"]["addit_output_folder"].asString(); 
  
@@ -2058,6 +2063,8 @@ void HTTSequence::BuildTauSelection(){
       .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
 
    HTTFilter<CompositeCandidate> vetoElecPairFilter = HTTFilter<CompositeCandidate>("VetoElecPairFilter")
+      .set_veto_name("dielec_veto")
+      .set_no_filter(true)
       .set_input_label("elec_veto_pairs").set_min(0).set_max(0)
       .set_predicate([=](CompositeCandidate const* c) {
         return  c->DeltaR("elec1", "elec2") > 0.15 &&

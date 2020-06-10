@@ -40,6 +40,8 @@ def parse_arguments():
     # parser.add_argument("--eta_hi", default=5.)
     parser.add_argument("--ncores", type=int, default=4)
     parser.add_argument("--jer_regions", action='store_true', default=False)
+    parser.add_argument("--add_jes", action='store_true', default=False)
+    parser.add_argument("--add_tau_variations", action='store_true', default=False)
 
 
     return parser.parse_args()
@@ -53,10 +55,11 @@ def main(args):
         plot_vars = [
 
             # taus/leptons
-            # "m_vis(25,20,250)",
+            # "m_vis(25,50,300)",
             # # "m_sv(25,50,300)",
-            # "svfit_mass(25,50,300)",
-            "svfit_mass_err(10,0,100)",
+            "svfit_mass(25,50,300)",
+            # "svfit_mass_err(10,0,100)",
+            # "IC_15Mar2020_max_score",
             # "pt_tt(30,0,300)",
             # "pt_1(20,40,140)",
             # "pt_2(12,40,100)",
@@ -67,6 +70,7 @@ def main(args):
             # "mva_dm_2(11,0,11)",
             # "mva_dm_1(11,0,11)",
             # "met(20,0,200)",
+            # "dR(20,0,5)",
 
             # # jets
             # "sjdphi(12,-3.2,3.2)",
@@ -77,8 +81,7 @@ def main(args):
             # "jeta_2(12,-4.7,4.7)",
             # "jpt_1(17,30,200)",
             # "jpt_2(17,40,200)",
-
-            # "svfit_mass_test(25,50,300)",
+            # "jmva_1(20,-1,1)",
 
             # bjets
             # "n_bjets(3,0,3)",
@@ -90,6 +93,7 @@ def main(args):
             # "beta_2(12,-4.7,4.7)",
 
             # MVA things
+            # "IC_15Mar2020_max_score(7,0.3,1.0)",
             # "IC_Nov13_tauspinner_v1_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)",
             # "IC_Nov13_tauspinner_v1_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)",
 
@@ -99,14 +103,14 @@ def main(args):
         extras += " --cat {} ".format(args.cat)
         extras += ' --ratio_range 0.01,1.99 '
         # extras += " --split_sm_scheme  --ggh_scheme tauspinner "
-        extras += " --add_wt (wt_tau_trg_mvadm) "
+        extras += " --add_wt (wt_tau_trg_mvadm*wt_tau_id_mvadm) "
 
     elif args.channel in ["mt","et"]:
         # plot_vars = [
         plot_vars = [
 
             # taus/leptons
-            # "m_vis(20,20,200)",
+            "m_vis(20,20,200)",
             # "m_sv(25,50,300)",
             # "svfit_mass_test(25,50,300)",
             # "pt_tt(30,0,300)",
@@ -119,8 +123,8 @@ def main(args):
             # "met(20,0,200)",
 
             # jets
-            "sjdphi(12,-3.2,3.2)",
-            "sjdphi_smear(12,-3.2,3.2)",
+            # "sjdphi(12,-3.2,3.2)",
+            # "sjdphi_smear(12,-3.2,3.2)",
             # "n_jets(5,0,5)",
             # "mjj(15,0,1500)",
             # "jdeta(25,0,5)",
@@ -144,6 +148,7 @@ def main(args):
         extras += " --cat {} ".format(args.cat)
         # extras += " --split_sm_scheme "
         # extras += ' --set_alias "inclusive:(n_jets>=1 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
+        extras += ' --set_alias "inclusive:(n_btag>=1)" --do_ss '
 
     elif args.channel == "em":
         plot_vars = [
@@ -203,16 +208,17 @@ def main(args):
             # "jpt_1,jlrm_1[30,40,50,75,100],(20,-1,1)",
             # "jeta_1,jpt_1[0.,3.,3.5],[30,40,50,60,70,100]",
             # "jeta_2,jpt_2[0.,3.,3.5],[30,40,50,60,70,100]",
-            # "jmva_1(40,-1,1)",
-            # "jmva_2(40,-1,1)",
+            # "jmva_1(20,-1,1)",
+            # "jmva_2(20,-1,1)",
             # "pt_tt(40,0,400)",
             # "m_vis(50,70,110)",
             # "pt_1(18,10,100)",
             # "pt_2(18,10,100)",
-            # "jpt_1(14,30,100)",
-            # "jlrm_1(20,-1,1)",
-            # "n_jets(4,0,4)",
-            # "n_lowpt_jets(7,0,7)",
+            "jpt_1(14,30,100)",
+            # # "jlrm_1(20,-1,1)",
+            # # "n_jets(4,0,4)",
+            # "n_jets(10,0,10)",
+            # # "n_lowpt_jets(7,0,7)",
             # "jeta_1(12,-4.7,4.7)",
             # "m_sv(20,0,200)",
 
@@ -227,7 +233,7 @@ def main(args):
             # "pt_vis(30,0,300)",
 
             # "((dphi_jtt<0.)*(dphi_jtt+{0})+(dphi_jtt>0)*(dphi_jtt-{0}))(41,-1., 1.)".format(np.pi),
-            "shifted_dphi_jtt(81,-3.142,3.142)",
+            # "shifted_dphi_jtt(81,-3.142,3.142)",
             # "shifted_dphi_jtt_smear(81,-3.142,3.142)",
             # "smear_jet_delta(21,-0.5,0.5)",
             # "dphi_jtt_smear(81,-3.142,3.142)",
@@ -248,15 +254,16 @@ def main(args):
             # "shifted_dphi_j20tt_smear(81,-3.142,3.142)",
 
             ]
-        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110 )" '
-        extras += ('--set_alias "inclusive:('
-            'm_vis>70 && m_vis<110 && pt_tt>50'
-            ' && (jpt_1/pt_tt)>0.8 && (jpt_1/pt_tt)<1.2'
-            # ' && n_jets==1'
-            ' && n_lowpt_jets==1'
-            # ' && fabs(jeta_1>{}) && fabs(jeta_1<{}) '.format(args.eta_lo, args.eta_hi)
-            ')" ')
-        # extras += " --datacard {}_dynlo ".format(args.cat)
+        # extras += ' --set_alias "inclusive:(m_vis>70 && m_vis<110)" '
+        # extras += ('--set_alias "inclusive:('
+        #     'm_vis>70 && m_vis<110 && pt_tt>50'
+        #     ' && (jpt_1/pt_tt)>0.8 && (jpt_1/pt_tt)<1.2'
+        #     # ' && n_jets==1'
+        #     ' && n_lowpt_jets==1'
+        #     # ' && fabs(jeta_1>{}) && fabs(jeta_1<{}) '.format(args.eta_lo, args.eta_hi)
+        #     ')" ')
+        # extras += " --datacard {}_alljets_eenoise ".format(args.cat)
+        extras += " --datacard {}_pujid_eenoise ".format(args.cat)
         method = "8"
 
 
@@ -368,16 +375,33 @@ def main(args):
             if "pzeta" in var or "sjdphi" in var or "eta" in var or "aco" in var and not "(" in var:
                 pad_extra = " --extra_pad 0.55 "
 
-            if var.split("(")[0] in ["jeta_1","jpt_1"]:
+            if var.split("(")[0] in ["jeta_1","jpt_1",]:
                 if args.channel in ["mt","et","em"]:
                     custom_extras = ' --set_alias "inclusive:(n_jets>=1 && n_bjets==0)" '
+                elif args.channel in ["zmm"]:
+                    # custom_extras = ' --set_alias "inclusive:(n_jets>=1 && m_vis>70 && m_vis<110)" '
+                    custom_extras += ' --set_alias "inclusive:(n_jets==1 && m_vis>70 && m_vis<110 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
                 else:
                     custom_extras = ' --set_alias "inclusive:(n_jets>=1)" '
-            elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","sjdphi_smear"]:
+            elif var.split("(")[0] in ["jdeta","jpt_2","jeta_2","mjj","sjdphi","sjdphi_smear",]:
                 if args.channel in ["mt","et","em"]:
                     custom_extras = ' --set_alias "inclusive:(n_jets>=2 && n_bjets==0)" '
+                elif args.channel in ["zmm"]:
+                    # custom_extras = ' --set_alias "inclusive:(n_jets>=2 && m_vis>70 && m_vis<110)" '
+                    custom_extras += ' --set_alias "inclusive:(n_jets==2 && m_vis>70 && m_vis<110 && fabs(jeta_1)>2.65 && fabs(jeta_1)<3.139)" '
                 else:
                     custom_extras = ' --set_alias "inclusive:(n_jets>=2)" '
+
+            # for PU jet ID include jet pT < 50 cut
+            if var.split("(")[0] in ["jmva_1","jmva_2",]:
+                if args.channel in ["mt","et","em"]:
+                    custom_extras = ' --set_alias "inclusive:(n_jets>=1 && jpt_1<50 && n_bjets==0)" '
+                elif args.channel == "tt":
+                    custom_extras = ' --set_alias "inclusive:(n_jets>=1 && jpt_1<50)" '
+                elif args.channel in ["zmm","zee"]:
+                    custom_extras = ' --set_alias "inclusive:(m_vis>50 && n_jets>=1 && jpt_1<50)" '
+
+
             if var.split("(")[0] in ["n_bjets"]:
                 custom_extras = ' --set_alias "inclusive:(1)" '
             elif var.split("(")[0] in ["bpt_1","beta_1"]:
@@ -390,12 +414,21 @@ def main(args):
             # elif var.split("(")[0] in ["pt_tt",]:
             #     custom_extras = ' --log_y '
 
+            if args.add_jes:
+                extras += ' --syst_scale_j="CMS_scale_j_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_j_13TeVUp" '
+                extras +=' --custom_uncerts_down_name "total_bkg_CMS_scale_j_13TeVDown" --do_custom_uncerts --add_stat_to_syst '
+            if args.add_tau_variations:
+                extras += ' --syst_tau_scale_grouped="CMS_scale_t_*group_13TeV" --custom_uncerts_up_name "total_bkg_CMS_scale_t_13TeVUp" '
+                extras +=' --custom_uncerts_down_name "total_bkg_CMS_scale_t_13TeVDown" --do_custom_uncerts --add_stat_to_syst '
+                extras +=' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV" --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV" '
+
             commands.append([
                 'python scripts/HiggsTauTauPlot.py '
                 + ' --cfg {} --ratio '.format(config)
                 + ' --var "{}" --channel {} '.format(var,args.channel)
                 + ' --method {}  {} {} {} '.format(method,extras,custom_extras,pad_extra)
             ])
+
 
     pool = mp.Pool(processes=args.ncores)
     results = []
