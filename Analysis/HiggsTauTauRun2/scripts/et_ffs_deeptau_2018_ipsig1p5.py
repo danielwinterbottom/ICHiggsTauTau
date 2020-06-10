@@ -1193,6 +1193,50 @@ for i in ['mvadm','mvadm_nosig','dm']:
   print "QCD pt_1 correction:"
   print pt_1_2d_corr
 
+  # make correction binned also in tau pT
+
+  pt_1_2d_corr='((pt_1>33)*('
+
+  for njet in ['0','1']:
+    for pt in ['20to30','30to40', 'gt40']:
+      cut = ''
+      if njet =='0': cut = 'n_jets==0'
+      if njet =='1': cut = 'n_jets>=1'
+
+      if pt == '20to30': cut += '&&pt_2<30'
+      if pt == '30to40': cut += '&&pt_2>=30&&pt_2<40'
+      if pt == 'gt40': cut += '&&pt_2>=40'
+  
+      #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+      var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+      (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string_ipsig)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
+  
+  
+      fout.cd()
+      qcd_data.Divide(qcd_pred)
+      if njet == '0': pol='landau'
+      else: pol = 'pol1'
+      qcd_pt_1_corr_fit, qcd_pt_1_corr_uncert = FitCorrection(qcd_data, func=pol,)
+      qcd_data.Write()
+      qcd_pt_1_corr_fit.Write()
+      qcd_pt_1_corr_uncert.Write()
+ 
+      if njet=='0': pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','')
+      else:         pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','') 
+      pt_1_2d_corr += '('+cut+')*(%(pt_1_2d_corr_temp)s)' % vars()
+      if not (njet == '1' and pt == 'gt40'): pt_1_2d_corr+=' + '
+  
+      PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
+
+  pt_1_2d_corr+=') + (pt_1<33))'
+  print "QCD pt_1 correction:"
+  print pt_1_2d_corr
+
+  # end of new correction
+
   ## apply all closure corrections in SS region and then derive the aiso->iso correction
 
   var='iso_1[0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.30,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.40,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.50]'

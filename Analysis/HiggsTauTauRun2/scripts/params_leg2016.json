@@ -45,15 +45,15 @@
   },
   "EWKWPlus2Jets_WToLNu-ext1": {
     "xs": 25.62,
-    "evt": 4848395
+    "evt": 4943595
   },
   "EWKWPlus2Jets_WToLNu-ext2": {
     "xs": 25.62,
-    "evt": 4848395
+    "evt": 4943595
   },
   "EWKWPlus2Jets_WToLNu": {
     "xs": 25.62,
-    "evt": 4848395
+    "evt": 4943595
   },
   "EWKZ2Jets_ZToLL-ext1": {
     "xs": 3.987,
@@ -77,7 +77,7 @@
   },
   "TT": {
     "xs": 831.76,
-    "evt": 74885019
+    "evt": 76625784
   },
   "TTTo2L2Nu": {
     "xs": 88.29,
@@ -85,11 +85,11 @@
   },
   "TTToHadronic": {
     "xs": 377.96,
-    "evt": 67963984
+    "evt": 66238196
   },
   "TTToSemiLeptonic": {
     "xs": 365.34,
-    "evt": 106736180
+    "evt": 104579018
   },
   "Tbar-t": {
     "xs": 80.95,
@@ -169,11 +169,11 @@
   },
   "WJetsToLNu": {
     "xs": 61526.7,
-    "evt": 178695240
+    "evt": 16497029
   },
   "WJetsToLNu-ext": {
     "xs": 61526.7,
-    "evt": 178695240
+    "evt": 161995199
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
@@ -248,7 +248,7 @@
   },
   "JJH0PMToTauTauPlusTwoJets_Filtered": {
     "xs": 0.5104,
-    "evt": 5867577,
+    "evt": 5852979,
     "eff": 0.2923
   },
   "JJH0MToTauTauPlusZeroJets": {
@@ -293,7 +293,7 @@
   },
   "JJH0Mf05ph0ToTauTauPlusOneJets_Filtered": {
     "xs": 1.7758,
-    "evt": 2256298,
+    "evt": 2256294,
     "eff": 0.2443
   },
   "JJH0Mf05ph0ToTauTauPlusTwoJets": {
@@ -302,7 +302,7 @@
   },
   "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered": {
     "xs": 0.9898,
-    "evt": 6877107,
+    "evt": 6650071,
     "eff": 0.2926
   },
   "VBFHToTauTauUncorrelatedDecay": {
@@ -411,7 +411,7 @@
   },
   "WHiggs0M": {
     "xs": 0.08606,
-    "evt": 490000
+    "evt": 994000
   },
   "WHiggs0MfWH05ph0": {
     "xs": 0.08606,
@@ -431,7 +431,7 @@
   },
   "ZHiggs0L1": {
     "xs": 0.05542,
-    "evt": 829600
+    "evt": 974400
   },
   "ZHiggs0L1fZH05ph0_HToTauTau": {
     "xs": 0.05542,
@@ -455,7 +455,7 @@
   },
   "ZHiggs0PM": {
     "xs": 0.05542,
-    "evt": 988000
+    "evt": 970400
   },
   "SingleElectron": {
     "lumi": 35920

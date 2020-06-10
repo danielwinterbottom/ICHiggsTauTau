@@ -663,26 +663,31 @@ namespace ic {
       if(channel_ == channel::et || channel_ == channel::mt){
 
         if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
-          std::size_t id = 0;
-          if(channel_==channel::mt){ 
-            Muon const* muon = dynamic_cast<Muon const*>(lep1);
-           id = muon->id();
-          }
-          if(channel_==channel::et){ 
-            Electron const* elec = dynamic_cast<Electron const*>(lep1);
-           id = elec->id();
-          }
+         // std::size_t id = 0;
+         // if(channel_==channel::mt){ 
+         //   Muon const* muon = dynamic_cast<Muon const*>(lep1);
+         //  id = muon->id();
+         // }
+         // if(channel_==channel::et){ 
+         //   Electron const* elec = dynamic_cast<Electron const*>(lep1);
+         //  id = elec->id();
+         // }
 
           Tau const* tau = dynamic_cast<Tau const*>(lep2);
 
           std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
           std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-          ic::Vertex* refit_vertex = vertex_vec[0];
-          for(unsigned i=0; i<refit_vertex_vec.size();++i) {
-            Vertex * v = refit_vertex_vec[i];
-            if(v->id() == tau->id()+id) refit_vertex = v;
-          }
+        //  std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+        //  ic::Vertex* refit_vertex = vertex_vec[0];
+        //  for(unsigned i=0; i<refit_vertex_vec.size();++i) {
+        //    Vertex * v = refit_vertex_vec[i];
+        //    if(v->id() == tau->id()+id) refit_vertex = v;
+        //  }
+         std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("verticesBS");
+         ic::Vertex* refit_vertex = vertex_vec[0];
+         if(refit_vertex_vec.size()>0) {
+           refit_vertex = refit_vertex_vec[0];
+         }
 
           double pass_single = 1.;
           if(channel_==channel::mt) {
@@ -833,11 +838,16 @@ namespace ic {
 
           std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
           std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-          std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-          ic::Vertex* refit_vertex = vertex_vec[0];
-          for(auto v : refit_vertex_vec) {
-            if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
-          }
+         // std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+         // ic::Vertex* refit_vertex = vertex_vec[0];
+         // for(auto v : refit_vertex_vec) {
+         //   if(v->id() == tau1->id()+tau2->id()) refit_vertex = v;
+         // }
+         std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("verticesBS");
+         ic::Vertex* refit_vertex = vertex_vec[0];
+         if(refit_vertex_vec.size()>0) {
+           refit_vertex = refit_vertex_vec[0];
+         }
 
           double ipsig = IPAndSignificance(tau1, refit_vertex, pfcands).second;
 
