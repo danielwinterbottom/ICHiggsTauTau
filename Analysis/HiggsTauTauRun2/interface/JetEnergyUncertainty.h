@@ -111,7 +111,6 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       Met * met = event->GetPtr<Met>(met_label_);
       this->CorrectMETForShift(met, after-before);
     }
-    else event->Add("jes_shift", after-before);
   } else if (sum_uncerts_){
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
@@ -149,7 +148,6 @@ int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
       Met * met = event->GetPtr<Met>(met_label_);
       this->CorrectMETForShift(met, after-before);
     }
-    else event->Add("jes_shift", after-before);
   }
   return 0;
 }
