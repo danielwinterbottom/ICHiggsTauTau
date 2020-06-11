@@ -528,13 +528,13 @@ namespace ic {
       outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
-      outtree_->Branch("shifted_dphi_jtt",  &shifted_dphi_jtt_);
+      //outtree_->Branch("shifted_dphi_jtt",  &shifted_dphi_jtt_);
       //outtree_->Branch("dphi_jtt_smear",    &dphi_jtt_smear_);
       //outtree_->Branch("shifted_dphi_jtt_smear",    &shifted_dphi_jtt_smear_);
       //outtree_->Branch("smear_jet_delta",   &smear_jet_delta_);
-      outtree_->Branch("residual_pt",       &residual_pt_);
-      outtree_->Branch("residual_phi",      &residual_phi_);
-      outtree_->Branch("dphi_residual_tt",  &dphi_residual_tt_);
+      //outtree_->Branch("residual_pt",       &residual_pt_);
+      //outtree_->Branch("residual_phi",      &residual_phi_);
+      //outtree_->Branch("dphi_residual_tt",  &dphi_residual_tt_);
       outtree_->Branch("dijetpt",           &dijetpt_);
       outtree_->Branch("mt_1_nomu"    , &mt_1_nomu_     );
       outtree_->Branch("mu_pt", &mu_pt_);
@@ -1923,25 +1923,25 @@ namespace ic {
       jphi_1_ = lowpt_jets[0]->phi();
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
       dphi_jtt_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector());
-      shifted_dphi_jtt_ = (dphi_jtt_ < 0.) * (dphi_jtt_ + M_PI)
-        + (dphi_jtt_ > 0.) * (dphi_jtt_ - M_PI);
-      // Make the following two respect to Z/mumu
-      residual_pt_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).pt();
-      residual_phi_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).phi();
-      dphi_residual_tt_ =  ROOT::Math::VectorUtil::DeltaPhi(
-        (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()), 
-        ditau->vector()
-      );
+      //shifted_dphi_jtt_ = (dphi_jtt_ < 0.) * (dphi_jtt_ + M_PI)
+      //  + (dphi_jtt_ > 0.) * (dphi_jtt_ - M_PI);
+      //// Make the following two respect to Z/mumu
+      //residual_pt_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).pt();
+      //residual_phi_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).phi();
+      //dphi_residual_tt_ =  ROOT::Math::VectorUtil::DeltaPhi(
+      //  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()), 
+      //  ditau->vector()
+      //);
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
       jphi_1_ = -9999;
       jmva_1_ = -9999;
       dphi_jtt_ = -9999.;
-      shifted_dphi_jtt_ = -9999.;
-      residual_pt_ =  -9999.;
-      residual_phi_ = -9999.;
-      dphi_residual_tt_ = -9999.;
+      //shifted_dphi_jtt_ = -9999.;
+      //residual_pt_ =  -9999.;
+      //residual_phi_ = -9999.;
+      //dphi_residual_tt_ = -9999.;
     }
 
     if (n_lowpt_jets_ >= 2) {

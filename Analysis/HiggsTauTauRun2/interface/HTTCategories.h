@@ -146,15 +146,13 @@ class HTTCategories : public ModuleBase {
 
   double dphi_jtt_;
   double shifted_dphi_jtt_;
-  double dphi_jtt_smear_;
-  double smear_jet_delta_;
-  double shifted_dphi_jtt_smear_;
-  double residual_pt_;
-  double residual_phi_;
-  double dphi_residual_tt_;
-  double shifted_dphi_j20tt_;
-  double shifted_dphi_j20tt_smear_;
-  float sjdphi_smear_;
+  //double dphi_jtt_smear_;
+  //double smear_jet_delta_;
+  //double shifted_dphi_jtt_smear_;
+  //float sjdphi_smear_;
+  //double residual_pt_;
+  //double residual_phi_;
+  //double dphi_residual_tt_;
 
   double dR_;
   double met_dphi_1_;
