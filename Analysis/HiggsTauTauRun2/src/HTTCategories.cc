@@ -72,32 +72,32 @@ namespace ic {
     rand = new TRandom3(0);
 
     // for smearing tests
-    TFile f_smear("smear_file_2018_zmm_formula.root");
-    fns_["smear_func_ptlow30_etalow0p0"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow30_etalow0p0"
-    );
-    fns_["smear_func_ptlow30_etalow1p1"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow30_etalow1p1"
-    );
-    fns_["smear_func_ptlow30_etalow2p1"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow30_etalow2p1"
-    );
-    fns_["smear_func_ptlow30_etalow3p0"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow30_etalow3p0"
-    );
-    fns_["smear_func_ptlow60_etalow0p0"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow60_etalow0p0"
-    );
-    fns_["smear_func_ptlow60_etalow1p1"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow60_etalow1p1"
-    );
-    fns_["smear_func_ptlow60_etalow2p1"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow60_etalow2p1"
-    );
-    fns_["smear_func_ptlow60_etalow3p0"] = (TF1*)f_smear.Get(
-      "smear_func_ptlow60_etalow3p0"
-    );
-    f_smear.Close();
+    //TFile f_smear("smear_file_2018_zmm_formula.root");
+    //fns_["smear_func_ptlow30_etalow0p0"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow30_etalow0p0"
+    //);
+    //fns_["smear_func_ptlow30_etalow1p1"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow30_etalow1p1"
+    //);
+    //fns_["smear_func_ptlow30_etalow2p1"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow30_etalow2p1"
+    //);
+    //fns_["smear_func_ptlow30_etalow3p0"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow30_etalow3p0"
+    //);
+    //fns_["smear_func_ptlow60_etalow0p0"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow60_etalow0p0"
+    //);
+    //fns_["smear_func_ptlow60_etalow1p1"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow60_etalow1p1"
+    //);
+    //fns_["smear_func_ptlow60_etalow2p1"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow60_etalow2p1"
+    //);
+    //fns_["smear_func_ptlow60_etalow3p0"] = (TF1*)f_smear.Get(
+    //  "smear_func_ptlow60_etalow3p0"
+    //);
+    //f_smear.Close();
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
@@ -529,9 +529,9 @@ namespace ic {
       outtree_->Branch("jdphi",             &jdphi_);
       outtree_->Branch("dphi_jtt",          &dphi_jtt_);
       outtree_->Branch("shifted_dphi_jtt",  &shifted_dphi_jtt_);
-      outtree_->Branch("dphi_jtt_smear",    &dphi_jtt_smear_);
-      outtree_->Branch("shifted_dphi_jtt_smear",    &shifted_dphi_jtt_smear_);
-      outtree_->Branch("smear_jet_delta",   &smear_jet_delta_);
+      //outtree_->Branch("dphi_jtt_smear",    &dphi_jtt_smear_);
+      //outtree_->Branch("shifted_dphi_jtt_smear",    &shifted_dphi_jtt_smear_);
+      //outtree_->Branch("smear_jet_delta",   &smear_jet_delta_);
       outtree_->Branch("residual_pt",       &residual_pt_);
       outtree_->Branch("residual_phi",      &residual_phi_);
       outtree_->Branch("dphi_residual_tt",  &dphi_residual_tt_);
@@ -1923,6 +1923,8 @@ namespace ic {
       jphi_1_ = lowpt_jets[0]->phi();
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
       dphi_jtt_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector());
+      shifted_dphi_jtt_ = (dphi_jtt_ < 0.) * (dphi_jtt_ + M_PI)
+        + (dphi_jtt_ > 0.) * (dphi_jtt_ - M_PI);
       // Make the following two respect to Z/mumu
       residual_pt_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).pt();
       residual_phi_ =  (mets->vector() + lowpt_jets[0]->vector() + ditau->vector()).phi();
@@ -1936,6 +1938,7 @@ namespace ic {
       jphi_1_ = -9999;
       jmva_1_ = -9999;
       dphi_jtt_ = -9999.;
+      shifted_dphi_jtt_ = -9999.;
       residual_pt_ =  -9999.;
       residual_phi_ = -9999.;
       dphi_residual_tt_ = -9999.;
@@ -2988,107 +2991,103 @@ namespace ic {
     IC_BDT_max_index_ = event->Exists("IC_BDT_max_index") ? event->Get<int>("IC_BDT_max_index") : -999;
 
     // smear JERphi things
-    gRandom->SetSeed((int)((lep1->eta()+2.5)*100000 + (lep1->phi()+4)*1000));
-    double smear_jphi_1 = 0.;
-    double smear_jphi_2 = 0.;
-    shifted_dphi_jtt_ = -9999.;
-    shifted_dphi_jtt_smear_ = -9999.;
-    dphi_jtt_smear_ = -9999.;
-    sjdphi_smear_ = -9999.;
+    //gRandom->SetSeed((int)((lep1->eta()+2.5)*100000 + (lep1->phi()+4)*1000));
+    //double smear_jphi_1 = 0.;
+    //double smear_jphi_2 = 0.;
+    //shifted_dphi_jtt_smear_ = -9999.;
+    //dphi_jtt_smear_ = -9999.;
+    //sjdphi_smear_ = -9999.;
 
-    // set dphi_jtt_smear_ equal to dphi_jtt_ for data, shift for MC.
-    if (n_lowpt_jets_ >= 1) {
-      dphi_jtt_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector());
-      if(!is_data_) {
-        // do jer shifts for dphi here
-        if (lowpt_jets[0]->vector().pt() > 60.) {
-          if (fabs(lowpt_jets[0]->vector().eta()) > 0. && fabs(lowpt_jets[0]->vector().eta()) < 1.1) {
-            smear_jphi_1 = fns_["smear_func_ptlow60_etalow0p0"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 1.1 && fabs(lowpt_jets[0]->vector().eta()) < 2.1){
-            smear_jphi_1 = fns_["smear_func_ptlow60_etalow1p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 2.1 && fabs(lowpt_jets[0]->vector().eta()) < 3.0){
-            smear_jphi_1 = fns_["smear_func_ptlow60_etalow2p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 3. && fabs(lowpt_jets[0]->vector().eta()) < 5.){
-            smear_jphi_1 = fns_["smear_func_ptlow60_etalow3p0"]->GetRandom();
-          }
-        }
-        else if (lowpt_jets[0]->vector().pt() > 30.) {
-          if (fabs(lowpt_jets[0]->vector().eta()) > 0. && fabs(lowpt_jets[0]->vector().eta()) < 1.1) {
-            smear_jphi_1 = fns_["smear_func_ptlow30_etalow0p0"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 1.1 && fabs(lowpt_jets[0]->vector().eta()) < 2.1){
-            smear_jphi_1 = fns_["smear_func_ptlow30_etalow1p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 2.1 && fabs(lowpt_jets[0]->vector().eta()) < 3.0){
-            smear_jphi_1 = fns_["smear_func_ptlow30_etalow2p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[0]->vector().eta()) > 3. && fabs(lowpt_jets[0]->vector().eta()) < 5.){
-            smear_jphi_1 = fns_["smear_func_ptlow30_etalow3p0"]->GetRandom();
-          }
-        }
-      }
-      // only change dphi_jtt_smear_ for MC. data should be same as dphi_jtt_
-      shifted_dphi_jtt_ = (dphi_jtt_ < 0.) * (dphi_jtt_ + M_PI)
-        + (dphi_jtt_ > 0.) * (dphi_jtt_ - M_PI);
-      // shifted dphi_jtt_ is already wrapped correctly so can just subtract
-      // smear_phi_1 i think
-      shifted_dphi_jtt_smear_ = boundPhi(shifted_dphi_jtt_ - smear_jphi_1);
-      dphi_jtt_smear_ = (shifted_dphi_jtt_smear_ > 0.) * (shifted_dphi_jtt_smear_ - M_PI)
-        + (shifted_dphi_jtt_smear_ < 0.) * (shifted_dphi_jtt_smear_ + M_PI);
-      smear_jet_delta_ = smear_jphi_1;
-    }
+    //// set dphi_jtt_smear_ equal to dphi_jtt_ for data, shift for MC.
+    //if (n_lowpt_jets_ >= 1) {
+    //  dphi_jtt_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), ditau->vector());
+    //  if(!is_data_) {
+    //    // do jer shifts for dphi here
+    //    if (lowpt_jets[0]->vector().pt() > 60.) {
+    //      if (fabs(lowpt_jets[0]->vector().eta()) > 0. && fabs(lowpt_jets[0]->vector().eta()) < 1.1) {
+    //        smear_jphi_1 = fns_["smear_func_ptlow60_etalow0p0"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 1.1 && fabs(lowpt_jets[0]->vector().eta()) < 2.1){
+    //        smear_jphi_1 = fns_["smear_func_ptlow60_etalow1p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 2.1 && fabs(lowpt_jets[0]->vector().eta()) < 3.0){
+    //        smear_jphi_1 = fns_["smear_func_ptlow60_etalow2p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 3. && fabs(lowpt_jets[0]->vector().eta()) < 5.){
+    //        smear_jphi_1 = fns_["smear_func_ptlow60_etalow3p0"]->GetRandom();
+    //      }
+    //    }
+    //    else if (lowpt_jets[0]->vector().pt() > 30.) {
+    //      if (fabs(lowpt_jets[0]->vector().eta()) > 0. && fabs(lowpt_jets[0]->vector().eta()) < 1.1) {
+    //        smear_jphi_1 = fns_["smear_func_ptlow30_etalow0p0"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 1.1 && fabs(lowpt_jets[0]->vector().eta()) < 2.1){
+    //        smear_jphi_1 = fns_["smear_func_ptlow30_etalow1p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 2.1 && fabs(lowpt_jets[0]->vector().eta()) < 3.0){
+    //        smear_jphi_1 = fns_["smear_func_ptlow30_etalow2p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[0]->vector().eta()) > 3. && fabs(lowpt_jets[0]->vector().eta()) < 5.){
+    //        smear_jphi_1 = fns_["smear_func_ptlow30_etalow3p0"]->GetRandom();
+    //      }
+    //    }
+    //  }
+    //  // shifted dphi_jtt_ is already wrapped correctly so can just subtract
+    //  // smear_phi_1 i think
+    //  shifted_dphi_jtt_smear_ = boundPhi(shifted_dphi_jtt_ - smear_jphi_1);
+    //  dphi_jtt_smear_ = (shifted_dphi_jtt_smear_ > 0.) * (shifted_dphi_jtt_smear_ - M_PI)
+    //    + (shifted_dphi_jtt_smear_ < 0.) * (shifted_dphi_jtt_smear_ + M_PI);
+    //  smear_jet_delta_ = smear_jphi_1;
+    //}
 
-    // if two jets smear lowpt_jets[1] for dphi_jj variables
-    if (n_lowpt_jets_ >= 2) {
-      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
-        sjdphi_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
-      }
-      else{
-        sjdphi_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
-      }
-      if(!is_data_) {
-        // do jer shifts for lowpt_jets[1] here, jet[0] smear value is already
-        // obtained above
-        if (lowpt_jets[1]->vector().pt() > 60.) {
-          if (fabs(lowpt_jets[1]->vector().eta()) > 0. && fabs(lowpt_jets[1]->vector().eta()) < 1.1) {
-            smear_jphi_2 = fns_["smear_func_ptlow60_etalow0p0"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 1.1 && fabs(lowpt_jets[1]->vector().eta()) < 2.1){
-            smear_jphi_2 = fns_["smear_func_ptlow60_etalow1p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 2.1 && fabs(lowpt_jets[1]->vector().eta()) < 3.0){
-            smear_jphi_2 = fns_["smear_func_ptlow60_etalow2p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 3. && fabs(lowpt_jets[1]->vector().eta()) < 5.){
-            smear_jphi_2 = fns_["smear_func_ptlow60_etalow3p0"]->GetRandom();
-          }
-        }
-        else if (lowpt_jets[1]->vector().pt() > 30.) {
-          if (fabs(lowpt_jets[1]->vector().eta()) > 0. && fabs(lowpt_jets[1]->vector().eta()) < 1.1) {
-            smear_jphi_2 = fns_["smear_func_ptlow30_etalow0p0"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 1.1 && fabs(lowpt_jets[1]->vector().eta()) < 2.1){
-            smear_jphi_2 = fns_["smear_func_ptlow30_etalow1p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 2.1 && fabs(lowpt_jets[1]->vector().eta()) < 3.0){
-            smear_jphi_2 = fns_["smear_func_ptlow30_etalow2p1"]->GetRandom();
-          }
-          else if (fabs(lowpt_jets[1]->vector().eta()) > 3. && fabs(lowpt_jets[1]->vector().eta()) < 5.){
-            smear_jphi_2 = fns_["smear_func_ptlow30_etalow3p0"]->GetRandom();
-          }
-        }
-      }
-      // calculate smeared sjdphi
-      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
-        sjdphi_smear_ =  boundPhi(sjdphi_ + smear_jphi_2 - smear_jphi_1);
-      }
-      else{
-        sjdphi_smear_ =  boundPhi(sjdphi_ + smear_jphi_1 - smear_jphi_2);
-      }
-    }
+    //// if two jets smear lowpt_jets[1] for dphi_jj variables
+    //if (n_lowpt_jets_ >= 2) {
+    //  if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
+    //    sjdphi_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
+    //  }
+    //  else{
+    //    sjdphi_smear_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
+    //  }
+    //  if(!is_data_) {
+    //    // do jer shifts for lowpt_jets[1] here, jet[0] smear value is already
+    //    // obtained above
+    //    if (lowpt_jets[1]->vector().pt() > 60.) {
+    //      if (fabs(lowpt_jets[1]->vector().eta()) > 0. && fabs(lowpt_jets[1]->vector().eta()) < 1.1) {
+    //        smear_jphi_2 = fns_["smear_func_ptlow60_etalow0p0"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 1.1 && fabs(lowpt_jets[1]->vector().eta()) < 2.1){
+    //        smear_jphi_2 = fns_["smear_func_ptlow60_etalow1p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 2.1 && fabs(lowpt_jets[1]->vector().eta()) < 3.0){
+    //        smear_jphi_2 = fns_["smear_func_ptlow60_etalow2p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 3. && fabs(lowpt_jets[1]->vector().eta()) < 5.){
+    //        smear_jphi_2 = fns_["smear_func_ptlow60_etalow3p0"]->GetRandom();
+    //      }
+    //    }
+    //    else if (lowpt_jets[1]->vector().pt() > 30.) {
+    //      if (fabs(lowpt_jets[1]->vector().eta()) > 0. && fabs(lowpt_jets[1]->vector().eta()) < 1.1) {
+    //        smear_jphi_2 = fns_["smear_func_ptlow30_etalow0p0"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 1.1 && fabs(lowpt_jets[1]->vector().eta()) < 2.1){
+    //        smear_jphi_2 = fns_["smear_func_ptlow30_etalow1p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 2.1 && fabs(lowpt_jets[1]->vector().eta()) < 3.0){
+    //        smear_jphi_2 = fns_["smear_func_ptlow30_etalow2p1"]->GetRandom();
+    //      }
+    //      else if (fabs(lowpt_jets[1]->vector().eta()) > 3. && fabs(lowpt_jets[1]->vector().eta()) < 5.){
+    //        smear_jphi_2 = fns_["smear_func_ptlow30_etalow3p0"]->GetRandom();
+    //      }
+    //    }
+    //  }
+    //  // calculate smeared sjdphi
+    //  if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()){
+    //    sjdphi_smear_ =  boundPhi(sjdphi_ + smear_jphi_2 - smear_jphi_1);
+    //  }
+    //  else{
+    //    sjdphi_smear_ =  boundPhi(sjdphi_ + smear_jphi_1 - smear_jphi_2);
+    //  }
+    //}
     
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
