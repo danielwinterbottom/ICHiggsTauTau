@@ -235,7 +235,7 @@ with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
 subdirs=['']
-subdirs=list_paths(outputf)
+subdirs+=list_paths(outputf)
 
 new_subdirs=[]
 for d in subdirs:
