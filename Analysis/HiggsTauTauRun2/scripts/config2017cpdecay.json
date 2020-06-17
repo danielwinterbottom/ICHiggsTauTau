@@ -59,7 +59,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/May30_2017/",
+    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/Jun15_2017/",
     //"output_folder"  : "/vols/cms/dw515/Offline/output/SM/May04_effective_2017/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
