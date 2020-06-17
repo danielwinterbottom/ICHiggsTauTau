@@ -801,6 +801,7 @@ namespace ic {
       synctree_->Branch("m_1", &m_1_, "m_1/F");
       synctree_->Branch("q_1", &q_1_, "q_1/I");
       synctree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
+      synctree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       synctree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       synctree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
       synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
@@ -977,6 +978,7 @@ namespace ic {
 
       // Number of b-tagging jets passing above selections
       synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      synctree_->Branch("nloosebtag",     &n_loose_bjets_);
       synctree_->Branch("bpt_1", &bpt_1_.var_float, "bpt_1/F");
       synctree_->Branch("beta_1", &beta_1_.var_float, "beta_1/F");
       synctree_->Branch("bphi_1", &bphi_1_, "bphi_1/F");

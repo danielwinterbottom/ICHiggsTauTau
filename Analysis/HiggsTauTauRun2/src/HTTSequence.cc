@@ -141,9 +141,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
 
   if(channel_str == "em"){
     pair_dr = 0.3;
-    elec_pt = 13.;
+    elec_pt = 15.;
     elec_eta = 2.5;
-    muon_pt = 10;
+    muon_pt = 15;
     muon_eta = 2.4;
   }
   if (channel_str == "et"){

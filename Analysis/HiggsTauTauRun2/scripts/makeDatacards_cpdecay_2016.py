@@ -221,7 +221,6 @@ if SCHEME == 'cpdecay':
 
  
   # TT variables
-
   VAR1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR5 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
@@ -284,6 +283,19 @@ if SCHEME == 'cpdecay':
     ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
+    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs",       "2016_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
+    ("17",   "zttEmbed",    "2016_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
+    ("17",   "jetFakes",    "2016_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
+
     # ("17",   "zttEmbed_mvarhorho",    "2016_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
     # ("17",   "zttEmbed_mvarho0a1",    "2016_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
     # ("17",   "zttEmbed_mvaa1rho",    "2016_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
@@ -319,12 +331,12 @@ if SCHEME == 'cpdecay':
 
 if SCHEME == 'ip_uncert':
 
-  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR1 ="IC_PUJIDCheck_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_PUJIDCheck_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_PUJIDCheck_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
+  VAR_ZTTEMBED_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
+  VAR_JETFAKES_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -417,7 +429,7 @@ for ch in channels:
         if options.embedding: extra+=' --embedding'
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_prefire*wt_btag*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
         else: extra+=' --add_wt=\"wt_prefire*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert': extra+=' --do_ff_systs '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert' and not options.no_shape_systs: extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:

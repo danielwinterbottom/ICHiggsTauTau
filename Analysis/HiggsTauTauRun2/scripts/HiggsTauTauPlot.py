@@ -54,7 +54,7 @@ defaults = {
     "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
-    "extra_name":"", "no_default":False, "embedding":False,"syst_embedding_tt":"",
+    "extra_name":"", "no_default":False, "no_systs":False, "embedding":False,"syst_embedding_tt":"",
     "vbf_background":False, "syst_em_qcd":"", "syst_prefire":"",
     "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
@@ -314,6 +314,8 @@ parser.add_argument("--do_unrolling", dest="do_unrolling", type=int,
     help="If argument is set to true will unroll 2D histograms into 1D histogram.")
 parser.add_argument("--no_default", dest="no_default", action='store_true',
     help="If option is speficied then don't do nominal histograms.")
+parser.add_argument("--no_systs", dest="no_systs", action='store_true',
+    help="If option is speficied then don't do systematics histograms.")
 parser.add_argument("--extra_name", dest="extra_name", type=str,
     help="If set, adds an additional string to the output datacard name")
 parser.add_argument("--embedding", dest="embedding", action='store_true',
@@ -1674,6 +1676,7 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
 if not options.no_default: systematics['default'] = ('','', 'wt', [], False)
+if options.no_systs: systematics = {'default' : ('','', 'wt', [], False)}
 
 if options.syst_e_scale != '':
     systematics['scale_e_up'] = ('ESCALE_UP' , '_'+options.syst_e_scale+'Up', 'wt', ['QCD','jetFakes'], False)
@@ -2081,7 +2084,13 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   if options.channel in ['tt']:
     tt_systs={}
     tt_systs['ff_tt_qcd_met_closure_syst' % vars()] = 'wt_ff_qcd_met_' % vars()
+    tt_systs['ff_tt_qcd_met_closure_syst_njets0' % vars()] = '(n_jets!=0)*wt_ff_1+(n_jets==0)*wt_ff_qcd_met_' % vars()
+    tt_systs['ff_tt_qcd_met_closure_syst_njets1' % vars()] = '(n_jets!=1)*wt_ff_1+(n_jets==1)*wt_ff_qcd_met_' % vars()
+    tt_systs['ff_tt_qcd_met_closure_syst_njets2' % vars()] = '(n_jets<2)*wt_ff_1+(n_jets>=2)*wt_ff_qcd_met_' % vars()
     tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_qcd_syst_' % vars()
+    tt_systs['ff_tt_qcd_syst_njets0' % vars()] = '(n_jets!=0)*wt_ff_1+(n_jets==0)*wt_ff_qcd_syst_' % vars()
+    tt_systs['ff_tt_qcd_syst_njets1' % vars()] = '(n_jets==0)*wt_ff_1+(n_jets>=1)*wt_ff_qcd_syst_' % vars()
+    tt_systs['ff_tt_wjets_syst' % vars()] = 'wt_ff_wjets_syst_' % vars()
     for njet in ['0','1','2']:
       for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
         #tt_systs[('ff_tt_qcd_stat_njets%(njet)s_mvadm%(dm)s' % vars()).replace('lt3','lt').replace('gt3','gt')] = 'wt_ff_qcd_stat_njet%(njet)s_mvadm%(dm)s_' % vars()
@@ -2834,7 +2843,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat_1_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_1
         ff_cat_2_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel_2
         if ff_syst_weight is not None and 'sub_syst' not in add_name: 
-            fake_factor_wt_string_1 = ff_syst_weight+'_1'
+            fake_factor_wt_string_1 = '('+ff_syst_weight+'_1)'
             fake_factor_wt_string_2 = ff_syst_weight+'_2'
 
             if options.analysis in ['cpprod','cpdecay']:
