@@ -362,13 +362,17 @@ if SCHEME == 'ip_uncert':
 if SCHEME == 'control':
 
 
+    jdeta      = "jdeta(25,0,5)"
+    jpt_1      = "jpt_1(17,30,200)"
     m_vis      = "m_vis(25,50,300)"
-    svfit_mass = "svfit_mass(25,50,300)"
-    pt_1       = "pt_1(20,40,140)"
-    pt_2       = "pt_2(12,40,100)"
-    n_jets      = "n_jets(5,0,5)"
     met        = "met(20,0,200)"
     mjj        = "mjj(20,0,500)"
+    n_jets     = "n_jets(5,0,5)"
+    pt_1       = "pt_1(20,40,140)"
+    pt_tt      = "pt_tt(30,0,300)"
+    pt_vis     = "pt_vis(30,0,300)"
+    svfit_mass = "svfit_mass(25,50,300)"
+    # pt_2       = "pt_2(12,40,100)"
 
     one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
     two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
@@ -380,13 +384,17 @@ if SCHEME == 'control':
     ]
 
     scheme_tt = [
+        ("17", "inclusive", "{}_jdeta".format(YEAR),      jdeta, two_jet),
+        ("17", "inclusive", "{}_jpt_1".format(YEAR),      jpt_1, one_jet),
         ("17", "inclusive", "{}_m_vis".format(YEAR),      m_vis, ' '),
-        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
-        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
-        ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
-        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
         ("17", "inclusive", "{}_met".format(YEAR),        met, ' '),
+        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
+        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
+        ("17", "inclusive", "{}_pt_tt".format(YEAR),      pt_tt, ' '),
+        ("17", "inclusive", "{}_pt_vis".format(YEAR),     pt_vis, ' '),
+        # ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
         ("17", "inclusive", "{}_mjj".format(YEAR),        mjj, two_jet),
+        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
     ]
     ANA = 'sm'
 
