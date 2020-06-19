@@ -440,7 +440,7 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-    if not options.batch:
+    if not options.batch and options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
         # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
