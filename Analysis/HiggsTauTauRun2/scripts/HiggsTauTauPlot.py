@@ -486,8 +486,13 @@ elif options.channel == 'zee':
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 if options.analysis == 'cpdecay':
-  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40'
+  #if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && m_vis>40'
+  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5)'
+
+  cats['tt_loose_baseline'] = '((deepTauVsJets_medium_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_medium_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2) && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5))'
+  cats['tt_loose_baseline_2'] = '((deepTauVsJets_medium_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_vvloose_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2) && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5))'
+
+
 
 if options.analysis == 'cpprod':
   if options.channel in ['mt','et']: cats['baseline'] += ' && pt_2>30'
@@ -1676,7 +1681,6 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
 if not options.no_default: systematics['default'] = ('','', 'wt', [], False)
-if options.no_systs: systematics = {'default' : ('','', 'wt', [], False)}
 
 if options.syst_e_scale != '':
     systematics['scale_e_up'] = ('ESCALE_UP' , '_'+options.syst_e_scale+'Up', 'wt', ['QCD','jetFakes'], False)
@@ -2192,6 +2196,9 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
 if options.syst_qcd_bkg: 
     systematics['qcd_sub_up'] = ('','_'+options.syst_qcd_bkg+'Up', 'wt', ['EWKZ','ZTT','ZJ','ZL','ZLL','VV','VVT','VVJ','TT','TTT','TTJ','W','signal','EmbedZTT','jetFakes'], False)
     systematics['qcd_sub_down'] = ('','_'+options.syst_qcd_bkg+'Down', 'wt', ['EWKZ','ZTT','ZJ','ZL','ZLL','VV','VVT','VVJ','TT','TTT','TTJ','W','signal','EmbedZTT','jetFakes'], False)
+
+
+if options.no_systs: systematics = {'default' : ('','', 'wt', [], False)}
 
 # sort systematics by tree's input directory name        
 systematics = OrderedDict(sorted(systematics.items(), key=lambda key: key[1]))
@@ -2858,7 +2865,10 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             else:
               fake_factor_wt_string_2='0'
               fake_factor_wt_string_1 = "wt_ff_1"
+              #fake_factor_wt_string_1 = "wt_ff_qcd_syst_down_1"
 
+              #fake_factor_wt_string_1 = '((n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(2.474341*TMath::Landau(pt_1,136.259038,81.132061)+0.000007)+(mva_dm_1==0&&ip_sig_1>=1.5)*(0.674972+-0.000205*pt_1)+(mva_dm_1==1)*(6802.320587*TMath::Landau(pt_1,1213.850825,5075.723006)+-1228.509797)+(mva_dm_1==2)*(1.033403*TMath::Landau(pt_1,158.138815,103.306986)+-0.000000)+(mva_dm_1==10)*(1.025225*TMath::Landau(pt_1,99.718235,36.963197)+0.065619)+(mva_dm_1==11)*(0.914650*TMath::Landau(pt_1,144.228881,100.933168)+-0.063477)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(233.830110*TMath::Landau(pt_1,44798.855387,39791.574742)+-32.565916)+(mva_dm_1==0&&ip_sig_1>=1.5)*(10.344869*TMath::Landau(pt_1,-682.822893,195.374887)+0.000030)+(mva_dm_1==1)*(5977.012666*TMath::Landau(pt_1,1499.585587,6324.486964)+-1079.459158)+(mva_dm_1==2)*(0.863631*TMath::Landau(pt_1,151.161541,107.122591)+0.000000)+(mva_dm_1==10)*(0.557925*TMath::Landau(pt_1,97.816498,34.863833)+0.113732)+(mva_dm_1==11)*(65.963470*TMath::Landau(pt_1,334.978331,954.430911)+-11.828759)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<1.5)*(0.309362+-0.000024*pt_1)+(mva_dm_1==0&&ip_sig_1>=1.5)*(16.769195*TMath::Landau(pt_1,-256.002202,218.221158)+-1.557678)+(mva_dm_1==1)*(1.381870*TMath::Landau(pt_1,3492.257262,194231.638267)+0.042011)+(mva_dm_1==2)*(0.112507+0.000218*pt_1)+(mva_dm_1==10)*(0.383826*TMath::Landau(pt_1,94.658198,23.220247)+0.134826)+(mva_dm_1==11)*(7773.925547*TMath::Landau(pt_1,1746.826375,443.892918)+0.067236)))'
+              #fake_factor_wt_string_1+='*((n_jets==0)*(1.05033+0.252406*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)+-0.288628*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),2)+-0.0813351*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),3)+0.144741*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),4)) + (n_jets==1)*(0.999962+-0.0134061*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)) +(n_jets>=2)*(1.005+-0.0221535*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)))'
           else:    
             fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
             fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
