@@ -1720,11 +1720,11 @@ if options.syst_tau_scale_grouped != "":
         syst_name = hist_name.replace("*group", values[0])
         systematics["scale_t_{}_up".format(name)] = (
             "{}_UP".format(values[1]), "_{}Up".format(syst_name), 
-            "wt", ["QCD"], False
+            "wt", ["QCD","jetFakes"], False
         )
         systematics["scale_t_{}_down".format(name)] = (
             "{}_DOWN".format(values[1]), "_{}Down".format(syst_name), 
-            "wt", ["QCD"], False
+            "wt", ["QCD","jetFakes"], False
         )
 ##
 if options.syst_efake_0pi_scale != '':
@@ -2094,6 +2094,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_qcd_syst_' % vars()
     tt_systs['ff_tt_qcd_syst_njets0' % vars()] = '(n_jets!=0)*wt_ff_1+(n_jets==0)*wt_ff_qcd_syst_' % vars()
     tt_systs['ff_tt_qcd_syst_njets1' % vars()] = '(n_jets==0)*wt_ff_1+(n_jets>=1)*wt_ff_qcd_syst_' % vars()
+
     tt_systs['ff_tt_wjets_syst' % vars()] = 'wt_ff_wjets_syst_' % vars()
     for njet in ['0','1','2']:
       for dm in ['0_sig_lt3','0_sig_gt3','1','2','10','11']:
@@ -2853,6 +2854,59 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             fake_factor_wt_string_1 = '('+ff_syst_weight+'_1)'
             fake_factor_wt_string_2 = ff_syst_weight+'_2'
 
+            if options.analysis in ['cpdecay'] and 'ff_tt_qcd_syst' in add_name:
+              if options.era=='cp18':
+                if 'njets0' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.24845-0.0578994*dR)/1.06 + (n_jets>0))*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.24845-0.0578994*dR)*1.06 + (n_jets>0))*wt_ff_1' 
+                elif 'njets1' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)*(1.15364-0.0317013*dR)/1.06)*wt_ff_1' 
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)/(1.15364-0.0317013*dR)*1.06)*wt_ff_1'
+                else: 
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.24845-0.0578994*dR)/1.06 + (n_jets>0)*(1.15364-0.0317013*dR)/1.06)*wt_ff_1'     
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.24845-0.0578994*dR)*1.06 + (n_jets>0)/(1.15364-0.0317013*dR)*1.06)*wt_ff_1'
+
+              if options.era=='cpsummer17':
+                if 'njets0' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.40415-0.101317*dR)/1.07 + (n_jets>0))*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.40415-0.101317*dR)*1.07 + (n_jets>0))*wt_ff_1'
+                elif 'njets1' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)*(1.16253-0.031154*dR)/1.07)*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)/(1.16253-0.031154*dR)*1.07)*wt_ff_1'
+                else:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.40415-0.101317*dR)/1.07 + (n_jets>0)*(1.16253-0.031154*dR)/1.07)*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.40415-0.101317*dR)*1.07 + (n_jets>0)/(1.16253-0.031154*dR)*1.07)*wt_ff_1'
+
+              if options.era=='legacy16':
+                if 'njets0' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.22618-0.0546679*dR)/1.04 + (n_jets>0))*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.22618-0.0546679*dR)*1.04 + (n_jets>0))*wt_ff_1'
+                elif 'njets1' in add_name:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)*(1.09292-0.0200048*dR)/1.04)*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0) + (n_jets>0)/(1.09292-0.0200048*dR)*1.04)*wt_ff_1'
+                else:
+                  if 'Up' in add_name:
+                    ff_syst_weight = '((n_jets==0)*(1.22618-0.0546679*dR)/1.04 + (n_jets>0)*(1.09292-0.0200048*dR)/1.04)*wt_ff_1'
+                  if 'Down' in add_name:
+                    ff_syst_weight = '((n_jets==0)/(1.22618-0.0546679*dR)*1.04 + (n_jets>0)/(1.09292-0.0200048*dR)*1.04)*wt_ff_1'
+              fake_factor_wt_string_1 = ff_syst_weight
+
             if options.analysis in ['cpprod','cpdecay']:
               fake_factor_wt_string_2='0'
 
@@ -2866,9 +2920,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string_2='0'
               fake_factor_wt_string_1 = "wt_ff_1"
               #fake_factor_wt_string_1 = "wt_ff_qcd_syst_down_1"
+              #fake_factor_wt_string_1 = "wt_ff_qcd_syst_down_1*((n_jets==0)*(1.24845-0.0578994*dR) + (n_jets>0)*(1.15364-0.0317013*dR))"
+              #fake_factor_wt_string_1 = "wt_ff_qcd_syst_down_1"
 
-              #fake_factor_wt_string_1 = '((n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(2.474341*TMath::Landau(pt_1,136.259038,81.132061)+0.000007)+(mva_dm_1==0&&ip_sig_1>=1.5)*(0.674972+-0.000205*pt_1)+(mva_dm_1==1)*(6802.320587*TMath::Landau(pt_1,1213.850825,5075.723006)+-1228.509797)+(mva_dm_1==2)*(1.033403*TMath::Landau(pt_1,158.138815,103.306986)+-0.000000)+(mva_dm_1==10)*(1.025225*TMath::Landau(pt_1,99.718235,36.963197)+0.065619)+(mva_dm_1==11)*(0.914650*TMath::Landau(pt_1,144.228881,100.933168)+-0.063477)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(233.830110*TMath::Landau(pt_1,44798.855387,39791.574742)+-32.565916)+(mva_dm_1==0&&ip_sig_1>=1.5)*(10.344869*TMath::Landau(pt_1,-682.822893,195.374887)+0.000030)+(mva_dm_1==1)*(5977.012666*TMath::Landau(pt_1,1499.585587,6324.486964)+-1079.459158)+(mva_dm_1==2)*(0.863631*TMath::Landau(pt_1,151.161541,107.122591)+0.000000)+(mva_dm_1==10)*(0.557925*TMath::Landau(pt_1,97.816498,34.863833)+0.113732)+(mva_dm_1==11)*(65.963470*TMath::Landau(pt_1,334.978331,954.430911)+-11.828759)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<1.5)*(0.309362+-0.000024*pt_1)+(mva_dm_1==0&&ip_sig_1>=1.5)*(16.769195*TMath::Landau(pt_1,-256.002202,218.221158)+-1.557678)+(mva_dm_1==1)*(1.381870*TMath::Landau(pt_1,3492.257262,194231.638267)+0.042011)+(mva_dm_1==2)*(0.112507+0.000218*pt_1)+(mva_dm_1==10)*(0.383826*TMath::Landau(pt_1,94.658198,23.220247)+0.134826)+(mva_dm_1==11)*(7773.925547*TMath::Landau(pt_1,1746.826375,443.892918)+0.067236)))'
-              #fake_factor_wt_string_1+='*((n_jets==0)*(1.05033+0.252406*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)+-0.288628*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),2)+-0.0813351*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),3)+0.144741*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),4)) + (n_jets==1)*(0.999962+-0.0134061*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)) +(n_jets>=2)*(1.005+-0.0221535*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)))'
+          #    if options.era == 'cp18':
+          #      fake_factor_wt_string_1 = '((n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(2.474341*TMath::Landau(pt_1,136.259038,81.132061)+0.000007)+(mva_dm_1==0&&ip_sig_1>=1.5)*(0.674972+-0.000205*pt_1)+(mva_dm_1==1)*(6802.320587*TMath::Landau(pt_1,1213.850825,5075.723006)+-1228.509797)+(mva_dm_1==2)*(1.033403*TMath::Landau(pt_1,158.138815,103.306986)+-0.000000)+(mva_dm_1==10)*(1.025225*TMath::Landau(pt_1,99.718235,36.963197)+0.065619)+(mva_dm_1==11)*(0.914650*TMath::Landau(pt_1,144.228881,100.933168)+-0.063477)) + (n_jets==1)*((mva_dm_1==0&&ip_sig_1<1.5)*(233.830110*TMath::Landau(pt_1,44798.855387,39791.574742)+-32.565916)+(mva_dm_1==0&&ip_sig_1>=1.5)*(10.344869*TMath::Landau(pt_1,-682.822893,195.374887)+0.000030)+(mva_dm_1==1)*(5977.012666*TMath::Landau(pt_1,1499.585587,6324.486964)+-1079.459158)+(mva_dm_1==2)*(0.863631*TMath::Landau(pt_1,151.161541,107.122591)+0.000000)+(mva_dm_1==10)*(0.557925*TMath::Landau(pt_1,97.816498,34.863833)+0.113732)+(mva_dm_1==11)*(65.963470*TMath::Landau(pt_1,334.978331,954.430911)+-11.828759)) + (n_jets>1)*((mva_dm_1==0&&ip_sig_1<1.5)*(0.309362+-0.000024*pt_1)+(mva_dm_1==0&&ip_sig_1>=1.5)*(16.769195*TMath::Landau(pt_1,-256.002202,218.221158)+-1.557678)+(mva_dm_1==1)*(1.381870*TMath::Landau(pt_1,3492.257262,194231.638267)+0.042011)+(mva_dm_1==2)*(0.112507+0.000218*pt_1)+(mva_dm_1==10)*(0.383826*TMath::Landau(pt_1,94.658198,23.220247)+0.134826)+(mva_dm_1==11)*(7773.925547*TMath::Landau(pt_1,1746.826375,443.892918)+0.067236)))'
+          #      fake_factor_wt_string_1+='*((n_jets==0)*(1.05033+0.252406*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)+-0.288628*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),2)+-0.0813351*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),3)+0.144741*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),4)) + (n_jets==1)*(0.999962+-0.0134061*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)) +(n_jets>=2)*(1.005+-0.0221535*pow(min(max((met*cos(met_dphi_1)/pt_1),-1.5),1.5),1)))'
+          #    if options.era == 'cpsummer17':
+          #    if options.era == 'cpsummer17':
           else:    
             fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
             fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
@@ -2880,8 +2939,18 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         else: 
             wt_1=fake_factor_wt_string_1
             wt_2=fake_factor_wt_string_2
-            
-    
+        
+        if options.analysis == 'cpdecay' and get_os:
+          if options.era=='cp18':
+            fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.24845-0.0578994*dR) + (n_jets>0)*(1.15364-0.0317013*dR))'  
+          if options.era=='cpsummer17':
+            fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.40415-0.101317*dR) + (n_jets>0)*(1.16253-0.031154*dR))'
+          if options.era=='legacy16':
+            fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.22618-0.0546679*dR) + (n_jets>0)*(1.09292-0.0200048*dR))'
+          if wt is not "":
+              wt_1=wt+"*"+fake_factor_wt_string_1
+          else:
+              wt_1=fake_factor_wt_string_1
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1_data, OSSS, '')
         full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2_data, OSSS, '')
      
