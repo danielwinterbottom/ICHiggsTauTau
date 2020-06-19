@@ -279,6 +279,33 @@ if SCHEME == 'cpdecay':
     ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
+    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs",       "2018_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
+    ("17",   "zttEmbed",    "2018_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
+    ("17",   "jetFakes",    "2018_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
+
+
+    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "higgs",       "2018_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "zttEmbed",    "2018_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    ("17",   "jetFakes",    "2018_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+
 
     # ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
     # ("17",   "zttEmbed_mvarho0a1",    "2018_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),

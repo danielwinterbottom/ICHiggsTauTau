@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2017.py --cfg=scripts/plot_cpdecays_2017.cfg -c 'tt' scripts/params_2017.json -s 'cpdecay' --embedding --output_folder datacards --batch
+#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_leg2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding  --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser
@@ -26,9 +26,9 @@ def run_command(command):
     return out, err
 
 parser = OptionParser()
-parser.add_option("-p","--parameterfile", dest="params", type='string',default='scripts/params_2017.json',
+parser.add_option("-p","--parameterfile", dest="params", type='string',default='scripts/params_leg2016.json',
                   help="Specify the parameter file containing the luminosity and cross section information - can be used to override config file.")
-parser.add_option("--cfg", dest="config", type='string', default='scripts/plot_cpdecays_2017.cfg',
+parser.add_option("--cfg", dest="config", type='string', default='scripts/plot_cpdecays_leg2016.cfg',
                   help="The config file that will be passed to HiggsTauTauPlot.py. Parameter file, input folder and signal scheme taken from this cfg file unless overriden by command line options")
 parser.add_option("-i","--input", dest="folder", type='string', default='',
                   help="The input folder, containing the output of HTT - can be used to override config file")
@@ -104,7 +104,7 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
-YEAR=2017
+YEAR=2016
 if "year" in configmap:
   YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
@@ -204,7 +204,6 @@ if not no_shift_systs:
 if options.embedding:
     common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
-
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
       "mt" : ' '+common_shape_systematics+ ' '+mt_shape_systematics,
@@ -219,126 +218,101 @@ if options.no_shape_systs:
   }
 
 if SCHEME == 'cpdecay':
+
  
   # TT variables
 
-  VAR1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_01Jun2020_max_score[0.,0.7,0.8,0.9,1.0]"
-  VAR_H_TT        = "IC_01Jun2020_max_score(7,0.3,1.0)"
-  VAR_ZTTEMBED_TT = "IC_01Jun2020_max_score(7,0.3,1.0)"
-  VAR_JETFAKES_TT = "IC_01Jun2020_max_score(7,0.3,1.0)"
+  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_H_TT        = "IC_11May2020_max_score(7,0.3,1.0)"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
 
-  # VAR_PIPI ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8],(6,0,6.28319)"
-  # VAR_PIRHO ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins (20)!
-  # VAR_PIA1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  # VAR_PI0A1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
-  # VAR_RHORHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
-  # VAR_A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
-  # VAR_A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
+  # VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.6,0.8],(6,0,6.28319)"
+  # #VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.65,0.75,0.85],(14,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.65,0.75,0.85],(16,0,6.28319)" # could use even more bins (20)!
+  # VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"   # concider dropping this altogether
+  # VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(16,0,6.28319)" # could use even more bins!
+  # VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(8,0,6.28319)" # could use even more bins (24)!
+  # VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # concider dropping this one
 
-  # VAR_0A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
-  # VAR_0A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  # VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)" # could use even more bins!
+  # VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
 
   # merge bins after seeing SM/PS stat unc.(28 April 2020) 
-  VAR_PIPI ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_PIRHO ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_PIA1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_PI0A1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_RHORHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_0A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_0A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
   scheme_et = [
   ]
   scheme_mt = [
-   # ("17",   "higgs_mvaMuPi",  "2017_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuRho", "2017_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "higgs_mvaMuA1",  "2017_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "zttEmbed",       "2017_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
-   # ("17",   "jetFakes",       "2017_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuPi",  "2016_higgs_Mu_Pi",        VAR_H_MT_Mu_Pi,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2016_higgs_Mu_Rho_Ip",    VAR_H_MT_Mu_Rho_Ip,     ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuRho", "2016_higgs_Mu_Rho_Mixed",  VAR_H_MT_Mu_Rho_Mixed, ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "higgs_mvaMuA1",  "2016_higgs_Mu_A1",        VAR_H_MT_Mu_A1,         ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "zttEmbed",       "2016_zttEmbed",           VAR_ZTTEMBED_MT,        ' {} '.format(ADD_STRING_MT)),
+   # ("17",   "jetFakes",       "2016_jetFakes",           VAR_JETFAKES_MT,        ' {} '.format(ADD_STRING_MT)),
 
   ]
 
 
   scheme_tt = [
-    ("17",   "higgs_mvarhorho",    "2017_higgs_Rho_Rho",  VAR_RHORHO, ' '),
-    ("17",   "higgs_mvarho0a1",    "2017_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho",  VAR_A1RHO, ' '),
-    ("17",   "higgs_mvaa1a1",    "2017_higgs_A1_A1",  VAR_A1A1, ' '),
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR_PIPI, ' '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    ("17",   "higgs_mvaa10a1",    "2017_higgs_A1_0A1",  VAR_0A1A1, ' '),
+    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho",  VAR_RHORHO, ' '),
+    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1",  VAR_A1A1, ' '),
+    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR_PIPI, ' '),
+    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1",  VAR_0A1A1, ' '),
 
-    # ("17",   "higgs_mvaother",    "2017_higgs_other",  VAR_H_TT_Other, ' '),
-    ("17",   "higgs",       "2017_higgs",     VAR_H_TT, ' '),
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
+    # ("17",   "higgs_mvaother",    "2016_higgs_other",  VAR_H_TT_Other, ' '),
+    ("17",   "higgs",       "2016_higgs",     VAR_H_TT, ' '),
+    ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "higgs_mvarhorho",    "2017_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvarho0a1",    "2017_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2017_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa10a1",    "2017_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
-    ("17",   "higgs",       "2017_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
-    ("17",   "zttEmbed",    "2017_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
-    ("17",   "jetFakes",    "2017_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
-
-    ("17",   "higgs_mvarhorho",    "2017_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvarho0a1",    "2017_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1rho",    "2017_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2017_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa10a1",    "2017_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs",       "2017_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "zttEmbed",    "2017_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "jetFakes",    "2017_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-
-    # ("17",   "zttEmbed_mvarhorho",    "2017_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
-    # ("17",   "zttEmbed_mvarho0a1",    "2017_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    # ("17",   "zttEmbed_mvaa1rho",    "2017_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
-    # ("17",   "zttEmbed_mvaa1a1",    "2017_zttEmbed_A1_A1",  VAR_A1A1, ' '),
-    # ("17",   "zttEmbed_mvapipi",    "2017_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
-    # ("17",   "zttEmbed_mvapirho",    "2017_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    # ("17",   "zttEmbed_mvapi0a1",    "2017_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    # ("17",   "zttEmbed_mvaa1pi",    "2017_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    # ("17",   "zttEmbed_mvaa10a1",    "2017_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
+    # ("17",   "zttEmbed_mvarhorho",    "2016_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
+    # ("17",   "zttEmbed_mvarho0a1",    "2016_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    # ("17",   "zttEmbed_mvaa1rho",    "2016_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
+    # ("17",   "zttEmbed_mvaa1a1",    "2016_zttEmbed_A1_A1",  VAR_A1A1, ' '),
+    # ("17",   "zttEmbed_mvapipi",    "2016_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
+    # ("17",   "zttEmbed_mvapirho",    "2016_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    # ("17",   "zttEmbed_mvapi0a1",    "2016_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    # ("17",   "zttEmbed_mvaa1pi",    "2016_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    # ("17",   "zttEmbed_mvaa10a1",    "2016_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
   
-    # ("17",   "jetFakes_mvarhorho",    "2017_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
-    # ("17",   "jetFakes_mvarho0a1",    "2017_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    # ("17",   "jetFakes_mvaa1rho",    "2017_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
-    # ("17",   "jetFakes_mvaa1a1",    "2017_jetFakes_A1_A1",  VAR_A1A1, ' '),
-    # ("17",   "jetFakes_mvapipi",    "2017_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
-    # ("17",   "jetFakes_mvapirho",    "2017_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    # ("17",   "jetFakes_mvapi0a1",    "2017_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    # ("17",   "jetFakes_mvaa1pi",    "2017_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    # ("17",   "jetFakes_mvaa10a1",    "2017_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
+    # ("17",   "jetFakes_mvarhorho",    "2016_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
+    # ("17",   "jetFakes_mvarho0a1",    "2016_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+    # ("17",   "jetFakes_mvaa1rho",    "2016_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
+    # ("17",   "jetFakes_mvaa1a1",    "2016_jetFakes_A1_A1",  VAR_A1A1, ' '),
+    # ("17",   "jetFakes_mvapipi",    "2016_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
+    # ("17",   "jetFakes_mvapirho",    "2016_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+    # ("17",   "jetFakes_mvapi0a1",    "2016_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+    # ("17",   "jetFakes_mvaa1pi",    "2016_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    # ("17",   "jetFakes_mvaa10a1",    "2016_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
 
-    #("17",   "inclusive_mvarhorho",    "2017_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
-    #("17",   "inclusive_mvarho0a1",    "2017_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
-    #("17",   "inclusive_mvaa1rho",    "2017_SS_A1_Rho",  VAR_A1RHO, ' --do_ss '),
-    #("17",   "inclusive_mvaa1a1",    "2017_SS_A1_A1",  VAR_A1A1, ' --do_ss '),
-    #("17",   "inclusive_mvapipi",    "2017_SS_Pi_Pi",  VAR_PIPI, ' --do_ss '),
-    #("17",   "inclusive_mvapirho",    "2017_SS_Pi_Rho_Mixed",  VAR_PIRHO, ' --do_ss '),
-    #("17",   "inclusive_mvapi0a1",    "2017_SS_Pi_0A1_Mixed",  VAR_PI0A1, ' --do_ss '),
-    #("17",   "inclusive_mvaa1pi",    "2017_SS_Pi_A1_Mixed",  VAR_PIA1, ' --do_ss '),
-    #("17",   "inclusive_mvaa10a1",    "2017_SS_A1_0A1",  VAR_0A1A1, ' --do_ss '),
-
+    #("17",   "inclusive_mvarhorho",    "2016_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
+    #("17",   "inclusive_mvarho0a1",    "2016_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
+    #("17",   "inclusive_mvaa1rho",    "2016_SS_A1_Rho",  VAR_A1RHO, ' --do_ss '),
+    #("17",   "inclusive_mvaa1a1",    "2016_SS_A1_A1",  VAR_A1A1, ' --do_ss '),
+    #("17",   "inclusive_mvapipi",    "2016_SS_Pi_Pi",  VAR_PIPI, ' --do_ss '),
+    #("17",   "inclusive_mvapirho",    "2016_SS_Pi_Rho_Mixed",  VAR_PIRHO, ' --do_ss '),
+    #("17",   "inclusive_mvapi0a1",    "2016_SS_Pi_0A1_Mixed",  VAR_PI0A1, ' --do_ss '),
+    #("17",   "inclusive_mvaa1pi",    "2016_SS_Pi_A1_Mixed",  VAR_PIA1, ' --do_ss '),
+    #("17",   "inclusive_mvaa10a1",    "2016_SS_A1_0A1",  VAR_0A1A1, ' --do_ss '),
   ]
 
   ANA = 'sm'
@@ -363,31 +337,29 @@ if SCHEME == 'ip_uncert':
 
   scheme_tt = [
 
-    ("17",   "zttEmbed",    "2017_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes",    "2017_jetFakes",  VAR_JETFAKES_TT, ' '),
+    ("17",   "zttEmbed",    "2016_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes",    "2016_jetFakes",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "zttEmbed_up",    "2017_zttEmbed_UP",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes_up",    "2017_jetFakes_UP",  VAR_JETFAKES_TT, ' '),
+    ("17",   "zttEmbed_up",    "2016_zttEmbed_UP",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes_up",    "2016_jetFakes_UP",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "zttEmbed_down",    "2017_zttEmbed_DOWN",  VAR_ZTTEMBED_TT, ' '),
-    ("17",   "jetFakes_down",    "2017_jetFakes_DOWN",  VAR_JETFAKES_TT, ' '),
+    ("17",   "zttEmbed_down",    "2016_zttEmbed_DOWN",  VAR_ZTTEMBED_TT, ' '),
+    ("17",   "jetFakes_down",    "2016_jetFakes_DOWN",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "higgs_mvapipi",    "2017_higgs_Pi_Pi",  VAR6, ' '),
-    ("17",   "higgs_mvapirho",    "2017_higgs_Pi_Rho_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1",    "2017_higgs_Pi_0A1_Mixed",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi",    "2017_higgs_Pi_A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi",  VAR6, ' '),
+    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed",  VAR5, ' '),
 
-    ("17",   "higgs_mvapipi_up",    "2017_higgs_Pi_Pi_UP",  VAR6, ' '),
-    ("17",   "higgs_mvapirho_up",    "2017_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1_up",    "2017_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi_up",    "2017_higgs_Pi_A1_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvapipi_up",    "2016_higgs_Pi_Pi_UP",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_up",    "2016_higgs_Pi_Rho_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_up",    "2016_higgs_Pi_0A1_Mixed_UP",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_up",    "2016_higgs_Pi_A1_Mixed_UP",  VAR5, ' '),
 
-    ("17",   "higgs_mvapipi_down",    "2017_higgs_Pi_Pi_DOWN",  VAR6, ' '),
-    ("17",   "higgs_mvapirho_down",    "2017_higgs_Pi_Rho_Mixed_DOWN",  VAR5, ' '),
-    ("17",   "higgs_mvapi0a1_down",    "2017_higgs_Pi_0A1_Mixed_DOWN",  VAR5, ' '),
-    ("17",   "higgs_mvaa1pi_down",    "2017_higgs_Pi_A1_Mixed_DOWN",  VAR5, ' '),
-
-
+    ("17",   "higgs_mvapipi_down",    "2016_higgs_Pi_Pi_DOWN",  VAR6, ' '),
+    ("17",   "higgs_mvapirho_down",    "2016_higgs_Pi_Rho_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvapi0a1_down",    "2016_higgs_Pi_0A1_Mixed_DOWN",  VAR5, ' '),
+    ("17",   "higgs_mvaa1pi_down",    "2016_higgs_Pi_A1_Mixed_DOWN",  VAR5, ' '),
 
   ]
   ANA = 'sm'
@@ -471,4 +443,3 @@ for ch in channels:
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
         # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
-
