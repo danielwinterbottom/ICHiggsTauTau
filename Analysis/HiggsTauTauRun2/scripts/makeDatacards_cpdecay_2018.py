@@ -293,18 +293,18 @@ if SCHEME == 'cpdecay':
     ("17",   "jetFakes",    "2018_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
 
 
-    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs",       "2018_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "zttEmbed",    "2018_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "jetFakes",    "2018_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs",       "2018_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "zttEmbed",    "2018_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "jetFakes",    "2018_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
 
 
 #     ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
@@ -344,9 +344,9 @@ if SCHEME == 'ip_uncert':
   VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -389,13 +389,17 @@ if SCHEME == 'ip_uncert':
 if SCHEME == 'control':
 
 
+    jdeta      = "jdeta(25,0,5)"
+    jpt_1      = "jpt_1(17,30,200)"
     m_vis      = "m_vis(25,50,300)"
-    svfit_mass = "svfit_mass(25,50,300)"
-    pt_1       = "pt_1(20,40,140)"
-    pt_2       = "pt_2(12,40,100)"
-    n_jets      = "n_jets(5,0,5)"
     met        = "met(20,0,200)"
     mjj        = "mjj(20,0,500)"
+    n_jets     = "n_jets(5,0,5)"
+    pt_1       = "pt_1(20,40,140)"
+    pt_tt      = "pt_tt(30,0,300)"
+    pt_vis     = "pt_vis(30,0,300)"
+    svfit_mass = "svfit_mass(25,50,300)"
+    # pt_2       = "pt_2(12,40,100)"
 
     one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
     two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
@@ -407,13 +411,17 @@ if SCHEME == 'control':
     ]
 
     scheme_tt = [
+        ("17", "inclusive", "{}_jdeta".format(YEAR),      jdeta, two_jet),
+        ("17", "inclusive", "{}_jpt_1".format(YEAR),      jpt_1, one_jet),
         ("17", "inclusive", "{}_m_vis".format(YEAR),      m_vis, ' '),
-        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
-        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
-        ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
-        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
         ("17", "inclusive", "{}_met".format(YEAR),        met, ' '),
+        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
+        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
+        ("17", "inclusive", "{}_pt_tt".format(YEAR),      pt_tt, ' '),
+        ("17", "inclusive", "{}_pt_vis".format(YEAR),     pt_vis, ' '),
+        # ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
         ("17", "inclusive", "{}_mjj".format(YEAR),        mjj, two_jet),
+        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
     ]
     ANA = 'sm'
 
@@ -459,7 +467,7 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-    if not options.batch:
+    if not options.batch and options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
         # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 

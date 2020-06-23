@@ -3,12 +3,7 @@
 #include <string>
 #include <fstream>
 #include <map>
-// #include "boost/lexical_cast.hpp"
-#include "boost/algorithm/string.hpp"
 #include "boost/program_options.hpp"
-// #include "boost/bind.hpp"
-// #include "boost/function.hpp"
-// #include "boost/format.hpp"
 #include "TSystem.h"
 #include "Utilities/interface/json.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
@@ -27,8 +22,6 @@
 #include "HiggsTauTauRun2/interface/HTTSequence.h"
 #include "HiggsTauTauRun2/interface/HTTConfig.h"
 
-// using boost::lexical_cast;
-// using boost::bind;
 namespace po = boost::program_options;
 using std::string;
 using std::vector;
