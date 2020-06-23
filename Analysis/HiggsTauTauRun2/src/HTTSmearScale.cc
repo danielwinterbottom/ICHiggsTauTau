@@ -29,13 +29,11 @@ namespace ic {
       for (unsigned i = 0; i < electrons.size() ;++i){
         float preCorr = 1.0;
         float postCorr = 1.0;
-        float preCorrPt = 1.0;
+        float postCorrPt = 1.0;
 
         // energy() should be equivalent to ecalTrkEnergyPreCorr()
         preCorr = electrons[i]->energy(); 
         postCorr = electrons[i]->ecalTrkEnergyPostCorr();
-
-        preCorrPt = electrons[i]->pt();
 
         float shift = postCorr/preCorr;
 
@@ -44,10 +42,9 @@ namespace ic {
         electrons[i]->set_pt(electrons[i]->pt() * shift);
         electrons[i]->set_energy(electrons[i]->energy() * shift);
 
-        elec_ss[electrons[i]->id()] = shift;
+        postCorrPt = electrons[i]->pt();
 
-        /* std::cout << "preCorr: " << preCorr << std::endl; */
-        /* std::cout << "postCorr: " << postCorr << std::endl; */
+        elec_ss[electrons[i]->id()] = shift;
 
         // NEW EDITS
         // now add electron scale and smear uncertainties
@@ -55,14 +52,14 @@ namespace ic {
         // not using resolution uncertainty for now
         float total_shift = 1.0;
         if (e_unc_mode_ == 2)
-          total_shift = electrons[i]->ecalTrkEnergyScaleUp() / preCorr;
+          total_shift = electrons[i]->ecalTrkEnergyScaleUp() / postCorr;
         else if (e_unc_mode_ == 1)
-          total_shift = electrons[i]->ecalTrkEnergyScaleDown() / preCorr;
+          total_shift = electrons[i]->ecalTrkEnergyScaleDown() / postCorr;
         
         /* std::cout << "e_unc_mode: " << e_unc_mode_ << std::endl; */
         
-        electrons[i]->set_pt(preCorrPt * total_shift);
-        electrons[i]->set_energy(preCorr * total_shift);
+        electrons[i]->set_pt(postCorrPt * total_shift);
+        electrons[i]->set_energy(postCorr * total_shift);
 
         /* std::cout << "energy with up/down shift: " << electrons[i]->energy() << std::endl; */
 

@@ -296,18 +296,18 @@ if SCHEME == 'cpdecay':
     ("17",   "zttEmbed",    "2016_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
     ("17",   "jetFakes",    "2016_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
 
-    ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "higgs",       "2016_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "zttEmbed",    "2016_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
-    ("17",   "jetFakes",    "2016_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvarhorho",    "2016_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvarho0a1",    "2016_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1rho",    "2016_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1a1",    "2016_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapipi",    "2016_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapirho",    "2016_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapi0a1",    "2016_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1pi",    "2016_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa10a1",    "2016_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs",       "2016_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "zttEmbed",    "2016_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "jetFakes",    "2016_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
 
      ("17",   "zttEmbed_mvarhorho",    "2016_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
      ("17",   "zttEmbed_mvarho0a1",    "2016_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
@@ -347,9 +347,9 @@ if SCHEME == 'ip_uncert':
   VAR1 ="IC_PUJIDCheck_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR5 ="IC_PUJIDCheck_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_PUJIDCheck_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9]"
+  VAR_H_TT_Other  = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_JETFAKES_TT = "IC_PUJIDCheck_max_score[0.,0.7,0.8,0.9,1.0]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
