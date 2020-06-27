@@ -536,6 +536,7 @@ class HTTCategories : public ModuleBase {
   double tau_pt_1_;
   int tau_dm_1_;
   double wt_dysoup_;
+  double wt_wsoup_;
 
   double wt_prefire_;
   double wt_prefire_up_;

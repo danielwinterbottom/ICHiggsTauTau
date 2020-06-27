@@ -80,7 +80,7 @@ namespace ic {
       outtree_->Branch("rho",               &rho_, "rho/F");
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
-      outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      outtree_->Branch("wt_wsoup",         &wt_wsoup_);
       // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
       if(!systematic_shift_) {
@@ -943,6 +943,7 @@ namespace ic {
 
       // Number of b-tagging jets passing above selections
       synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      synctree_->Branch("nloosebtag",     &n_loose_bjets_);
       synctree_->Branch("bpt_1", &bpt_1_.var_float, "bpt_1/F");
       synctree_->Branch("beta_1", &beta_1_.var_float, "beta_1/F");
       synctree_->Branch("bphi_1", &bphi_1_, "bphi_1/F");
@@ -998,8 +999,8 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : wt_dysoup_;
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();
