@@ -13,7 +13,7 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2016.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016_tt_ip0p5')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016_tt_newvertex')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_leg2016.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/FF_2016_newvertex/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
@@ -77,18 +77,13 @@ dm_bins = {
 }
 
 
-fit_pol1 = [
-'mvadm0_sig_lt3_njets1',
-'mvadm2_njets1',
-'mvadm0_njets1',
-
-'dm2_njets1',
-'dm0_njets1',
-]
 
 fit_pol1=[
 'mvadm0_sig_lt3_njets2',
+'mvadm0_sig_lt3_njets1',
+'mvadm0_sig_gt3_njets2',
 'mvadm11_njets2',
+'mvadm2_njets1',
 
 'dm11_njets2',
 ]
@@ -704,8 +699,8 @@ for i in ['mvadm_nosig','mvadm','dm']:
     PlotFakeFactorCorrection(qcd_ss_data_aiso2, qcd_ss_data_aiso2_uncert, qcd_ss_data_aiso2.GetName(), output_folder, wp, x_title='E_{T}^{miss}cos(#Delta#phi)/p_{T}')
 
 # closure comparrison to define os/ss corrections and uncertainties
-# pt_2 dependent closure correction
-var='pt_2[40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140]'
+# dR dependent closure correction
+var='dR[0.00,0.25,0.50,0.75,1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,3.25,3.50,3.75,4.00,4.25,4.50,4.75,5.00]'
 baseline_aiso2_iso = '(mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0)*(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
 baseline_aiso2_aiso1 = '(mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0)*(deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau && tau_decay_mode_1!=5 && tau_decay_mode_1!=6 && tau_decay_mode_2!=5 && tau_decay_mode_2!=6)' % vars()
 
@@ -723,10 +718,10 @@ for i in ['mvadm_nosig','mvadm','dm']:
     cut='n_jets==0'
     if njet == '1': cut='n_jets>0'
 
-    (qcd_os_data, wjets_os_data, ttbar_os_data) = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', '%(i)s_pt_2_os_closure_njet%(njet)s' % vars(),input_folder,file_ext,True)
-    if i=='mvadm': (qcd_os_pred, wjets_os_pred_mvadm, ttbar_os_pred_mvadm) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_2_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string_ipsig+met_corr)
-    if i=='mvadm_nosig': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_2_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string+met_corr)
-    if i=='dm': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_2_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_dm_aiso_string+met_corr)
+    (qcd_os_data, wjets_os_data, ttbar_os_data) = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', '%(i)s_dR_os_closure_njet%(njet)s' % vars(),input_folder,file_ext,True)
+    if i=='mvadm': (qcd_os_pred, wjets_os_pred_mvadm, ttbar_os_pred_mvadm) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_dR_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string_ipsig+met_corr)
+    if i=='mvadm_nosig': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_dR_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string+met_corr)
+    if i=='dm': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_dR_os_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_dm_aiso_string+met_corr)
     fout.cd()
     qcd_os_data.Divide(qcd_os_pred)
   
@@ -735,6 +730,23 @@ for i in ['mvadm_nosig','mvadm','dm']:
     qcd_os_data.Write()
     qcd_os_data_fit.Write()
     qcd_os_data_uncert.Write()
-    PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp, x_title='p_{T} (GeV)')
+    PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp, x_title='#Delta R')
+
+
+  # now get plat correction
+  var='pt_1[40,100]'
+  (qcd_os_data, wjets_os_data, ttbar_os_data) = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', '%(i)s_flat_os_closure' % vars(),input_folder,file_ext,True)
+  if i=='mvadm': (qcd_os_pred, wjets_os_pred_mvadm, ttbar_os_pred_mvadm) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_flat_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string_ipsig+met_corr)
+  if i=='mvadm_nosig': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_flat_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_mvadm_aiso_string+met_corr)
+  if i=='dm': (qcd_os_pred, wjets_os_pred, ttbar_os_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_flat_os_closure_pred' % vars(),input_folder,file_ext,True,add_wt=tau1_dm_aiso_string+met_corr)
+  fout.cd()
+  qcd_os_data.Divide(qcd_os_pred)
+
+  qcd_os_data_fit, qcd_os_data_uncert =  FitCorrection(qcd_os_data, func='pol0')
+
+  qcd_os_data.Write()
+  qcd_os_data_fit.Write()
+  qcd_os_data_uncert.Write()
+  PlotFakeFactorCorrection(qcd_os_data, qcd_os_data_uncert, qcd_os_data.GetName(), output_folder, wp, x_title='p_{T} (GeV)')
 
 fout.Close()

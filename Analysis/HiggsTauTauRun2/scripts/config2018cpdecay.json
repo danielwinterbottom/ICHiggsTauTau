@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/May21_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt","et"],
+    "channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -61,8 +61,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/FF_2018_newvertex/",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/May21_2018_effective/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/SM/FF_2018_newvertex_test/",
+    //
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/EGamma2018/",
+    //"output_folder" : "./output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Apr21_2018_svfit/",

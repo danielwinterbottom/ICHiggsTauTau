@@ -1290,7 +1290,7 @@ for i in ['mvadm','mvadm_nosig','dm']:
     fout.cd()
     qcd_data.Divide(qcd_pred)
 
-    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='pol3')
+    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='pol1')
 
     qcd_data.Write()
     qcd_data_fit.Write()

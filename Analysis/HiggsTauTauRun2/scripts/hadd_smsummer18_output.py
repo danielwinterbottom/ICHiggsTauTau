@@ -54,6 +54,7 @@ sample_list = [
     'EGammaB',
     'EGammaC',
     'EGammaD',
+    'EGammaD_ReReco',
     'MuonEGA',
     'MuonEGB',
     'MuonEGC',

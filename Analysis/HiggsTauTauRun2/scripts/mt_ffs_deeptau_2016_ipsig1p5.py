@@ -13,7 +13,7 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_mt_2016.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016_mt_ip0p5')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2016_mt_newvertex')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_leg2016.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/FF_2016_newvertex/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
@@ -64,10 +64,10 @@ njets_bins = {
 }
 dm_bins = {
               'inclusive': '(1)',
-              #'dm0':'(tau_decay_mode_2==0)',
-              #'dm1':'(tau_decay_mode_2==1)',
-              #'dm10':'(tau_decay_mode_2==10)',
-              #'dm11': '(tau_decay_mode_2==11)',
+              'dm0':'(tau_decay_mode_2==0)',
+              'dm1':'(tau_decay_mode_2==1)',
+              'dm10':'(tau_decay_mode_2==10)',
+              'dm11': '(tau_decay_mode_2==11)',
               'mvadm0':'(mva_dm_2==0)',
               'mvadm0_sig_gt3':'(mva_dm_2==0&&ip_sig_2>=1.5)',
               'mvadm0_sig_lt3':'(mva_dm_2==0&&ip_sig_2<1.5)',
@@ -83,6 +83,7 @@ fit_pol1_qcd   = [
 'mvadm0_sig_lt3_njets2',
 'mvadm2_njets0',
 'mvadm10_njets1',
+'mvadm1_njets2',
 'mvadm10_njets2',
 'mvadm11_njets2',
 
@@ -93,6 +94,7 @@ fit_pol1_qcd   = [
 ]
 fit_pol1_wjets = [
 'mvadm0_sig_lt3_njets2',
+'mvadm0_sig_gt3_njets2',
 ]
 fit_pol1_ttbar = []
 fit_pol0_qcd   = [
@@ -100,6 +102,7 @@ fit_pol0_qcd   = [
 'mvadm0_njets2_crosstrg',
 'mvadm0_sig_lt3_njets2_crosstrg',
 'mvadm0_sig_gt3_njets2_crosstrg',
+'mvadm0_sig_gt3_njets1_crosstrg',
 'mvadm1_njets2_crosstrg',
 'mvadm2_njets2_crosstrg',
 'mvadm11_njets2_crosstrg',
@@ -111,12 +114,15 @@ fit_pol0_qcd   = [
 
 ]
 fit_pol0_wjets = [
+'mvadm0_sig_gt3_njets2', # check this one!!
 'mvadm0_njets1_crosstrg',
+'mvadm0_sig_lt3_njets2_crosstrg',
 'mvadm0_sig_gt3_njets1_crosstrg',
 'mvadm0_sig_lt3_njets1_crosstrg',
 'mvadm0_sig_gt3_njets2_crosstrg',
 'mvadm1_njets2_crosstrg',
 'mvadm11_njets2_crosstrg',
+'mvadm11_njets1_crosstrg',
 
 'dm0_njets1_crosstrg',
 'dm1_njets2_crosstrg',
@@ -482,6 +488,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
     count+=1
   fit.SetName(h.GetName()+'_fit')
   return fit, h_uncert, h
+
 
 def FitCorrection(h, func='pol1',is2D=False):
   if is2D: 
@@ -1375,7 +1382,8 @@ for i in ['mvadm','mvadm_nosig','dm']:
     fout.cd()
     qcd_data.Divide(qcd_pred)
 
-    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='landau')
+    #qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='landau')
+    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='pol1')
 
     qcd_data.Write()
     qcd_data_fit.Write()
