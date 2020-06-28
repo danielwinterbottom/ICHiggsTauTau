@@ -1584,20 +1584,20 @@ void HTTSequence::BuildEMPairs() {
   std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; 
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
-      .set_input_label("sel_electrons").set_min(1)
+      .set_input_label("sel_electrons").set_min(1) 
       .set_predicate([=](Electron const* e) {
         return ElecID(e);
       }));
 
   if (!is_embedded) {
     BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
-        .set_input_label(js["electrons"].asString())
+        .set_input_label("sel_electrons")
         .set_e_unc_mode(e_unc_mode)
     );
   }
   if(!is_data && is_embedded){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-        .set_input_label(js["electrons"].asString())
+        .set_input_label("sel_electrons")
         .set_shift(elec_shift_barrel)
         .set_shift_endcap(elec_shift_endcap)
         .set_strategy(strategy_type)

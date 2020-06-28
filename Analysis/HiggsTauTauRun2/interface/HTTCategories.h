@@ -43,6 +43,8 @@ class HTTCategories : public ModuleBase {
 
   TRandom3  *rand;
 
+  std::map<std::string, TF1*> fns_;
+
   struct branch_var {
       double var_double;  
       float var_float;
@@ -141,7 +143,16 @@ class HTTCategories : public ModuleBase {
   branch_var pzetavis_;
   branch_var pzetamiss_;
   double dphi_;
+
   double dphi_jtt_;
+  double shifted_dphi_jtt_;
+  //double dphi_jtt_smear_;
+  //double smear_jet_delta_;
+  //double shifted_dphi_jtt_smear_;
+  //float sjdphi_smear_;
+  //double residual_pt_;
+  //double residual_phi_;
+  //double dphi_residual_tt_;
 
   double dR_;
   double met_dphi_1_;

@@ -229,24 +229,24 @@ if SCHEME == 'cpdecay':
 #  VAR_ZTTEMBED_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
 #  VAR_JETFAKES_TT = "IC_Nov13_tauspinner_max_score[0.,0.7,0.8,0.9]"
 
-  VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
-  VAR_H_TT        = "IC_11May2020_max_score(7,0.3,1.0)"
-  VAR_ZTTEMBED_TT = "IC_11May2020_max_score(7,0.3,1.0)"
-  VAR_JETFAKES_TT = "IC_11May2020_max_score(7,0.3,1.0)"
+  VAR1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR5 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR6 ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
+  VAR_H_TT_Other  = "IC_01Jun2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_H_TT        = "IC_01Jun2020_max_score(7,0.3,1.0)"
+  VAR_ZTTEMBED_TT = "IC_01Jun2020_max_score(7,0.3,1.0)"
+  VAR_JETFAKES_TT = "IC_01Jun2020_max_score(7,0.3,1.0)"
 
   # merge bins after seeing SM/PS stat unc.(28 April 2020) 
-  VAR_PIPI ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_PIRHO ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_PIA1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_PI0A1 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_RHORHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
-  VAR_A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_0A1RHO ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_0A1A1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIPI ="IC_01Jun2020_max_score,aco_angle_6[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIRHO ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_PIA1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_PI0A1 ="IC_01Jun2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_RHORHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(10,0,6.28319)"
+  VAR_A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_0A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -279,36 +279,63 @@ if SCHEME == 'cpdecay':
     ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
+    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
+    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
+    ("17",   "higgs",       "2018_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
+    ("17",   "zttEmbed",    "2018_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
+    ("17",   "jetFakes",    "2018_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
 
-    # ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
-    # ("17",   "zttEmbed_mvarho0a1",    "2018_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    # ("17",   "zttEmbed_mvaa1rho",    "2018_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
-    # ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1",  VAR_A1A1, ' '),
-    # ("17",   "zttEmbed_mvapipi",    "2018_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
-    # ("17",   "zttEmbed_mvapirho",    "2018_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    # ("17",   "zttEmbed_mvapi0a1",    "2018_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    # ("17",   "zttEmbed_mvaa1pi",    "2018_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    # ("17",   "zttEmbed_mvaa10a1",    "2018_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
-  
-    # ("17",   "jetFakes_mvarhorho",    "2018_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
-    # ("17",   "jetFakes_mvarho0a1",    "2018_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-    # ("17",   "jetFakes_mvaa1rho",    "2018_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
-    # ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1",  VAR_A1A1, ' '),
-    # ("17",   "jetFakes_mvapipi",    "2018_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
-    # ("17",   "jetFakes_mvapirho",    "2018_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-    # ("17",   "jetFakes_mvapi0a1",    "2018_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-    # ("17",   "jetFakes_mvaa1pi",    "2018_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
-    # ("17",   "jetFakes_mvaa10a1",    "2018_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
 
-    #("17",   "inclusive_mvarhorho",    "2018_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
-    #("17",   "inclusive_mvarho0a1",    "2018_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
-    #("17",   "inclusive_mvaa1rho",    "2018_SS_A1_Rho",  VAR_A1RHO, ' --do_ss '),
-    #("17",   "inclusive_mvaa1a1",    "2018_SS_A1_A1",  VAR_A1A1, ' --do_ss '),
-    #("17",   "inclusive_mvapipi",    "2018_SS_Pi_Pi",  VAR_PIPI, ' --do_ss '),
-    #("17",   "inclusive_mvapirho",    "2018_SS_Pi_Rho_Mixed",  VAR_PIRHO, ' --do_ss '),
-    #("17",   "inclusive_mvapi0a1",    "2018_SS_Pi_0A1_Mixed",  VAR_PI0A1, ' --do_ss '),
-    #("17",   "inclusive_mvaa1pi",    "2018_SS_Pi_A1_Mixed",  VAR_PIA1, ' --do_ss '),
-    #("17",   "inclusive_mvaa10a1",    "2018_SS_A1_0A1",  VAR_0A1A1, ' --do_ss '),
+    # ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_os",  VAR_RHORHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_os",  VAR_0A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_os",  VAR_A1RHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_os",  VAR_A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_os",  VAR_PIPI, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_os",  VAR_PIRHO, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_os",  VAR_PI0A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_os",  VAR_PIA1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_os",  VAR_0A1A1, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "higgs",       "2018_higgs_os",     VAR_H_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "zttEmbed",    "2018_zttEmbed_os",  VAR_ZTTEMBED_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+    # ("17",   "jetFakes",    "2018_jetFakes_os",  VAR_JETFAKES_TT, ' --set_alias=baseline:\"({tt_loose_baseline})\" --no_systs '),
+
+
+#     ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
+#     ("17",   "zttEmbed_mvarho0a1",    "2018_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+#     ("17",   "zttEmbed_mvaa1rho",    "2018_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
+#     ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1",  VAR_A1A1, ' '),
+#     ("17",   "zttEmbed_mvapipi",    "2018_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
+#     ("17",   "zttEmbed_mvapirho",    "2018_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+#     ("17",   "zttEmbed_mvapi0a1",    "2018_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+#     ("17",   "zttEmbed_mvaa1pi",    "2018_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
+#     ("17",   "zttEmbed_mvaa10a1",    "2018_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
+#  
+#     ("17",   "jetFakes_mvarhorho",    "2018_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
+#     ("17",   "jetFakes_mvarho0a1",    "2018_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+#     ("17",   "jetFakes_mvaa1rho",    "2018_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
+#     ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1",  VAR_A1A1, ' '),
+#     ("17",   "jetFakes_mvapipi",    "2018_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
+#     ("17",   "jetFakes_mvapirho",    "2018_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+#     ("17",   "jetFakes_mvapi0a1",    "2018_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+#     ("17",   "jetFakes_mvaa1pi",    "2018_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
+#     ("17",   "jetFakes_mvaa10a1",    "2018_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
+#
+#    ("17",   "inclusive_mvarhorho",    "2018_SS_Rho_Rho",  VAR_RHORHO, ' --do_ss '),
+#    ("17",   "inclusive_mvarho0a1",    "2018_SS_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' --do_ss '),
+#    ("17",   "inclusive_mvaa1rho",    "2018_SS_A1_Rho",  VAR_A1RHO, ' --do_ss '),
+#    ("17",   "inclusive_mvaa1a1",    "2018_SS_A1_A1",  VAR_A1A1, ' --do_ss '),
+#    ("17",   "inclusive_mvapipi",    "2018_SS_Pi_Pi",  VAR_PIPI, ' --do_ss '),
+#    ("17",   "inclusive_mvapirho",    "2018_SS_Pi_Rho_Mixed",  VAR_PIRHO, ' --do_ss '),
+#    ("17",   "inclusive_mvapi0a1",    "2018_SS_Pi_0A1_Mixed",  VAR_PI0A1, ' --do_ss '),
+#    ("17",   "inclusive_mvaa1pi",    "2018_SS_Pi_A1_Mixed",  VAR_PIA1, ' --do_ss '),
+#    ("17",   "inclusive_mvaa10a1",    "2018_SS_A1_0A1",  VAR_0A1A1, ' --do_ss '),
   ]
   ANA = 'sm'
 
@@ -317,9 +344,9 @@ if SCHEME == 'ip_uncert':
   VAR1 ="IC_11May2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR5 ="IC_11May2020_max_score,aco_angle_5[0.,0.7,0.8,0.9],(14,0,6.28319)"
   VAR6 ="IC_11May2020_max_score,aco_angle_6[0.,0.7,0.8,0.9],(14,0,6.28319)"
-  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
-  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9]"
+  VAR_H_TT_Other  = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_ZTTEMBED_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
+  VAR_JETFAKES_TT = "IC_11May2020_max_score[0.,0.7,0.8,0.9,1.0]"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
@@ -362,13 +389,17 @@ if SCHEME == 'ip_uncert':
 if SCHEME == 'control':
 
 
+    jdeta      = "jdeta(25,0,5)"
+    jpt_1      = "jpt_1(17,30,200)"
     m_vis      = "m_vis(25,50,300)"
-    svfit_mass = "svfit_mass(25,50,300)"
-    pt_1       = "pt_1(20,40,140)"
-    pt_2       = "pt_2(12,40,100)"
-    n_jets      = "n_jets(5,0,5)"
     met        = "met(20,0,200)"
     mjj        = "mjj(20,0,500)"
+    n_jets     = "n_jets(5,0,5)"
+    pt_1       = "pt_1(20,40,140)"
+    pt_tt      = "pt_tt(30,0,300)"
+    pt_vis     = "pt_vis(30,0,300)"
+    svfit_mass = "svfit_mass(25,50,300)"
+    # pt_2       = "pt_2(12,40,100)"
 
     one_jet    = ' --set_alias "inclusive:(n_jets>=1)" '
     two_jet    = ' --set_alias "inclusive:(n_jets>=2)" '
@@ -380,13 +411,17 @@ if SCHEME == 'control':
     ]
 
     scheme_tt = [
+        ("17", "inclusive", "{}_jdeta".format(YEAR),      jdeta, two_jet),
+        ("17", "inclusive", "{}_jpt_1".format(YEAR),      jpt_1, one_jet),
         ("17", "inclusive", "{}_m_vis".format(YEAR),      m_vis, ' '),
-        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
-        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
-        ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
-        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
         ("17", "inclusive", "{}_met".format(YEAR),        met, ' '),
+        ("17", "inclusive", "{}_n_jets".format(YEAR),     n_jets, ' '),
+        ("17", "inclusive", "{}_pt_1".format(YEAR),       pt_1, ' '),
+        ("17", "inclusive", "{}_pt_tt".format(YEAR),      pt_tt, ' '),
+        ("17", "inclusive", "{}_pt_vis".format(YEAR),     pt_vis, ' '),
+        # ("17", "inclusive", "{}_pt_2".format(YEAR),       pt_2, ' '),
         ("17", "inclusive", "{}_mjj".format(YEAR),        mjj, two_jet),
+        ("17", "inclusive", "{}_svfit_mass".format(YEAR), svfit_mass, ' '),
     ]
     ANA = 'sm'
 
@@ -432,7 +467,7 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-    if not options.batch:
+    if not options.batch and options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
         # os.system('rm %(output_folder)s%(SCHEME)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
