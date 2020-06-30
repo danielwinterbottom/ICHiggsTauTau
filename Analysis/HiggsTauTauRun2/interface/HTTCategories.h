@@ -175,7 +175,6 @@ class HTTCategories : public ModuleBase {
   branch_var phi_2_;
   double E_1_;
   double E_2_;
-  double raw_pt_1_;
   int q_1_;
   int q_2_;
   int jet_flav_1_;
