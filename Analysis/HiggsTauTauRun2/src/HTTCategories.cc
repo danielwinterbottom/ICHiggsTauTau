@@ -109,6 +109,7 @@ namespace ic {
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      outtree_->Branch("wt_wsoup",         &wt_wsoup_);
       // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
       if(!systematic_shift_) {
@@ -796,6 +797,7 @@ namespace ic {
         synctree_->Branch("eCorr_1",           &E_1_);
       }
       synctree_->Branch("pt_1", &pt_1_.var_float, "pt_1/F");
+      synctree_->Branch("raw_pt_1", &raw_pt_1_);
       synctree_->Branch("phi_1", &phi_1_.var_float, "phi_1/F");
       synctree_->Branch("eta_1", &eta_1_.var_float, "eta_1/F");
       synctree_->Branch("m_1", &m_1_, "m_1/F");
@@ -1034,11 +1036,11 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
-    wt_dysoup_ = eventInfo->weight_defined("ggHsoup") ? eventInfo->weight("ggHsoup") : wt_dysoup_;
 
-    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_weights();
+    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    eventInfo->print_weights();
     //eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
@@ -1778,6 +1780,7 @@ namespace ic {
       dz_1_ = elec->dz_vertex();
       d0_2_ = muon->dxy_vertex();
       dz_2_ = muon->dz_vertex();
+      raw_pt_1_ = elec->ecalTrkEnergyPreCorr()/elec->energy()*pt_1_.var_float;
     }
     if (channel_ == channel::tt) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -2937,6 +2940,7 @@ namespace ic {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
       lead_pt_2_ =  tau2->lead_pt();
+      raw_pt_1_ = ele1->ecalTrkEnergyPreCorr()/ele1->energy()*pt_1_.var_float;
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 

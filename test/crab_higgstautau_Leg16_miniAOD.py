@@ -12,7 +12,7 @@ config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 2500
-cfgParams = ['isData=0' ,'globalTag=102X_mcRun2_asymptotic_v7']
+cfgParams = ['isData=0' ,'globalTag=102X_mcRun2_asymptotic_v7','doHT=1']
 config.JobType.allowUndistributedCMSSW = True
 
 #config.Data.unitsPerJob = 100000

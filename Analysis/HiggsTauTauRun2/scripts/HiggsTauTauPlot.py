@@ -4133,6 +4133,18 @@ def MergeXBins(hist):
       hist.SetBinContent(j,i,tot/nxbins)
       hist.SetBinError(j,i,tot_err/nxbins)
 
+# print average weights
+x_lines = []
+y_labels = []
+directory = outfile.Get(nodename)
+outfile.cd(nodename)
+for key in directory.GetListOfKeys():
+  hist_name = key.GetName()
+  hist = directory.Get(hist_name).Clone()
+
+  if not isinstance(hist,ROOT.TDirectory):
+    print hist.GetName(), hist.GetEntries(), hist.Integral(-1,-1)/hist.GetEntries()
+
 # sm 2D unrolling
 if is_2d and options.do_unrolling:
   x_lines = []

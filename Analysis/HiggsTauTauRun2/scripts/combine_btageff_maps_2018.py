@@ -19,29 +19,29 @@ other_effs = [other_eff_dy, other_eff_dyext]
 #ttbarwt = float(831.76/76628591)
 #dywt = float(5765.4/49064064)
 ttbarwt = 1
-dywt = 6077.22/97525274.
+dywt = 6077.22/100043797.
 
 channels = ['mt','tt','et','em']
 counter = 0
-path = "/vols/cms/dw515/Offline/output/SM/btag_eff_2017/"
+path = "/vols/cms/dw515/Offline/output/SM/btag_eff_2018_loose/"
 
 #channels = ['em']
 
 
-tt_had_sf = 377.96/41019500.
-tt_semilep_sf = 365.34/42076324.
-tt_lep_sf = 88.29/8918978.
+tt_had_sf = 377.96/132202627.
+tt_semilep_sf = 365.34/96514045.
+tt_lep_sf = 88.29/132202627.
 
 
 for ch in channels:
-    ftt_had = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_tthad, ch))
-    ftt_semilep = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_ttsemilep, ch))
-    ftt_lep = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff_ttlep, ch))
+    ftt_had = ROOT.TFile("{}/{}_{}_2018.root".format(path, bc_eff_tthad, ch))
+    ftt_semilep = ROOT.TFile("{}/{}_{}_2018.root".format(path, bc_eff_ttsemilep, ch))
+    ftt_lep = ROOT.TFile("{}/{}_{}_2018.root".format(path, bc_eff_ttlep, ch))
 
-    #ftt = ROOT.TFile("{}/{}_{}_2017.root".format(path, bc_eff, ch))
+    #ftt = ROOT.TFile("{}/{}_{}_2018.root".format(path, bc_eff, ch))
 
-    fdy = ROOT.TFile("{}/{}_{}_2017.root".format(path, other_eff_dy, ch))
-    # fdyext = ROOT.TFile("{}/{}_{}_2017.root".format(path, other_eff_dyext, ch))
+    fdy = ROOT.TFile("{}/{}_{}_2018.root".format(path, other_eff_dy, ch))
+    # fdyext = ROOT.TFile("{}/{}_{}_2018.root".format(path, other_eff_dyext, ch))
 
     btag_b_had = ftt_had.Get("BTagCheck/NBtag_bflav")
     tot_b_had = ftt_had.Get("BTagCheck/NTot_bflav")
@@ -150,7 +150,7 @@ comb_btag_b.Divide(comb_tot_b)
 comb_btag_c.Divide(comb_tot_c)
 comb_btag_oth.Divide(comb_tot_oth)
 
-outfile = ROOT.TFile("tagging_efficiencies_deepCSV_2017.root","RECREATE")
+outfile = ROOT.TFile("tagging_efficiencies_deepCSV_2018_loose.root","RECREATE")
 outfile.WriteObject(comb_btag_b,"btag_eff_b")
 outfile.WriteObject(comb_btag_c,"btag_eff_c")
 outfile.WriteObject(comb_btag_oth,"btag_eff_oth")

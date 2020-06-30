@@ -199,14 +199,19 @@ namespace ic {
     if (do_w_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015 && era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){ 
+      if((era_ != era::data_2015 && era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018) || !(event->ExistsInTree("lheParticles"))){ 
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = true;
         for (unsigned i = 0; i < parts.size(); ++i) {
-          if (!(parts[i]->statusFlags()[FromHardProcessBeforeFSR] && parts[parts[i]->mothers()[0]]->pdgid() != 2212)) continue;
+          //if (!(parts[i]->statusFlags()[FromHardProcessBeforeFSR] && parts[parts[i]->mothers()[0]]->pdgid() != 2212)) continue;
+          if (!(parts[i]->statusFlags()[IsHardProcess])) continue;
+          if (parts[i]->status()!=23) continue;
+          if(parts[parts[i]->mothers()[0]]->pdgid() == 2212) continue;
           unsigned id = abs(parts[i]->pdgid());
           if (count_jets) { 
-            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) {
+              partons++;
+            }
           }
           if (id == 24) count_jets = true; 
         }
@@ -225,14 +230,14 @@ namespace ic {
           t_mll_ = gen_mll;
           t_decay_ = 0;  // ee, mumu, tautau
       }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
-      }
+      //if (partons > 4) {
+      //  std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+      //  throw;
+      //}
       if (partons == 1) eventInfo->set_weight("wsoup", w1_);
       if (partons == 2) eventInfo->set_weight("wsoup", w2_);
       if (partons == 3) eventInfo->set_weight("wsoup", w3_);
-      if (partons == 4) eventInfo->set_weight("wsoup", w4_);
+      if (partons >= 4) eventInfo->set_weight("wsoup", w4_);
       t_njets_ = partons;
 
       t_wt_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.;
@@ -242,13 +247,14 @@ namespace ic {
     if (do_dy_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if(era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018){ 
+      if((era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018) || !(event->ExistsInTree("lheParticles"))){ 
         
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = true;
       
         for (unsigned i = 0; i < parts.size(); ++i) {
           if (!(parts[i]->statusFlags()[IsHardProcess])) continue;
+          if (parts[i]->status()!=23) continue;
           if(parts[parts[i]->mothers()[0]]->pdgid() == 2212) continue;
           unsigned id = abs(parts[i]->pdgid());
           if (count_jets) { 
@@ -294,14 +300,14 @@ namespace ic {
           //throw; // this throw caused the crash ->but  we dont even need this part if we aren't stitching a high mass sample
         }
       }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
-      }
+      //if (partons > 4) {
+      //  std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+      //  throw;
+      //}
       if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
       if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
       if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
-      if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+      if (partons >= 4) eventInfo->set_weight("dysoup", zw4_);
       t_njets_ = partons;
 
       t_wt_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.;
