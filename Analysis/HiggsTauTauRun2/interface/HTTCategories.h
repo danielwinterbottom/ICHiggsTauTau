@@ -173,6 +173,7 @@ class HTTCategories : public ModuleBase {
   branch_var eta_2_;
   branch_var phi_1_;
   branch_var phi_2_;
+  double raw_pt_1_;
   double E_1_;
   double E_2_;
   int q_1_;
@@ -269,6 +270,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_sm_alt_;
+  double wt_cp_ps_alt_;
+  double wt_cp_mm_alt_;
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
   double wt_cp_prod_mm_;

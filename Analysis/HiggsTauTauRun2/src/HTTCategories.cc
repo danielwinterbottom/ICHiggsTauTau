@@ -560,6 +560,10 @@ namespace ic {
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
 
+      outtree_->Branch("wt_cp_sm_alt"       , &wt_cp_sm_alt_);
+      outtree_->Branch("wt_cp_ps_alt"       , &wt_cp_ps_alt_);
+      outtree_->Branch("wt_cp_mm_alt"       , &wt_cp_mm_alt_);
+
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
@@ -1039,8 +1043,8 @@ namespace ic {
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
 
-    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    eventInfo->print_weights();
+    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    //eventInfo->print_weights();
     //eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
@@ -2128,6 +2132,12 @@ namespace ic {
       wt_cp_sm_ = tauspinner->weight("wt_cp_0");
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+
+      if(tauspinner->weight_defined("wt_cp_0_alt")){
+        wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+        wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+        wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+      }
     }
     wt_cp_prod_sm_=0.; wt_cp_prod_ps_=0.; wt_cp_prod_mm_=0.; 
     if(eventInfo->weight_defined("sm_weight_nlo")) {        
