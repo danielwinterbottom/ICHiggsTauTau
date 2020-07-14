@@ -56,16 +56,26 @@ namespace ic {
       // initialize IP corrector
       std::string cmsswBase = (getenv ("CMSSW_BASE"));
       TString ip_corr_filename = "";
+      TString ip_corr_filename_elecs = "";
       if(is_embedded_) {
         if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016.root";
         if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017.root";
         else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2018.root";
+
+        if(era_ == era::data_2016) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2017.root";
+        else                       ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2018.root";
       } else {
         if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016.root";
         if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017.root";
         else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2018.root";
+
+        if(era_ == era::data_2016) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2016.root";
+        if(era_ == era::data_2017) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2017.root";
+        else                       ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2018.root";
       }
       ipCorrector.Init(ip_corr_filename);
+      ipCorrectorEle.Init(ip_corr_filename_elecs);
     }
 
 
@@ -560,6 +570,10 @@ namespace ic {
       outtree_->Branch("wt_cp_ps", &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm", &wt_cp_mm_);
 
+      outtree_->Branch("wt_cp_sm_alt"       , &wt_cp_sm_alt_);
+      outtree_->Branch("wt_cp_ps_alt"       , &wt_cp_ps_alt_);
+      outtree_->Branch("wt_cp_mm_alt"       , &wt_cp_mm_alt_);
+
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
@@ -776,8 +790,10 @@ namespace ic {
      else synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
 
       synctree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
+      synctree_->Branch("trigweight", &et_trg_or_, "trigweight_2/F");
       synctree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
-      synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_, "idisoweight_2/F");
+      else synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
       synctree_->Branch("effweight", &effweight_, "effweight/F");
@@ -833,7 +849,7 @@ namespace ic {
       synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
 
       // acoplanarity angles
-      if (channel_ == channel::mt) {
+      if (channel_ == channel::mt || channel_ == channel::et ) {
         // 00: mu + pi (IP)
         // 01: mu + rho/a1 (DP)
         synctree_->Branch("acotautau_00",      & aco_angle_6_, "acotautau_00/D");
@@ -857,6 +873,16 @@ namespace ic {
       synctree_->Branch("ipx_2", &ipx_2_);
       synctree_->Branch("ipy_2", &ipy_2_);
       synctree_->Branch("ipz_2", &ipz_2_);
+
+
+      synctree_->Branch("ipx_uncorr_1", &ipx_uncorr_1_);
+      synctree_->Branch("ipy_uncorr_1", &ipy_uncorr_1_);
+      synctree_->Branch("ipz_uncorr_1", &ipz_uncorr_1_);
+      synctree_->Branch("ipx_uncorr_2", &ipx_uncorr_2_);
+      synctree_->Branch("ipy_uncorr_2", &ipy_uncorr_2_);
+      synctree_->Branch("ipz_uncorr_2", &ipz_uncorr_2_);
+      synctree_->Branch("ip_sig_uncorr_1", &ip_sig_uncorr_1_);
+      synctree_->Branch("ip_sig_uncorr_2", &ip_sig_uncorr_2_);
 
       synctree_->Branch("gen_ipx_1", &gen_ipx_1_);
       synctree_->Branch("gen_ipy_1", &gen_ipy_1_);
@@ -1469,6 +1495,7 @@ namespace ic {
     if (!is_embedded_ && eventInfo->weight_defined("pileup")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
     if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
     if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
+    if (event->Exists("et_trg_or")) et_trg_or_ = event->Get<double>("et_trg_or"); else et_trg_or_ = 1.0;
     if (event->Exists("xtrg_sf")) xtrg_sf_ = event->Get<double>("xtrg_sf"); else xtrg_sf_ = 1.0;
     if (event->Exists("single_l_sf")) single_l_sf_ = event->Get<double>("single_l_sf"); else single_l_sf_ = 1.0;
     if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;
@@ -1479,6 +1506,7 @@ namespace ic {
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
     et_trg_=trigweight_1_*single_l_sf_;
+    mvadm_idiso_et_ = idisoweight_2_*wt_tau_id_mvadm_;
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -2128,6 +2156,12 @@ namespace ic {
       wt_cp_sm_ = tauspinner->weight("wt_cp_0");
       wt_cp_ps_ = tauspinner->weight("wt_cp_0p5");
       wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+
+      if(tauspinner->weight_defined("wt_cp_0_alt")){
+        wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+        wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+        wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+      }
     }
     wt_cp_prod_sm_=0.; wt_cp_prod_ps_=0.; wt_cp_prod_mm_=0.; 
     if(eventInfo->weight_defined("sm_weight_nlo")) {        
@@ -2967,28 +3001,207 @@ namespace ic {
         } 
       }
 
-      //std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceMuon(muon1, refit_vertex);
+      auto primary_vtx = refit_vertex;
+
+      std::pair<TVector3,double> ipandsig_1 = IPAndSignificanceElectron(ele1, refit_vertex);
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
-      //ip_mag_1_ = ipandsig_1.first.Mag();
-      //ip_sig_1_ = ipandsig_1.second;
+      ip_mag_1_ = ipandsig_1.first.Mag();
+      ip_sig_1_ = ipandsig_1.second;
       ip_mag_2_ = ipandsig_2.first.Mag();
       ip_sig_2_ = ipandsig_2.second;
 
+      TVector3 ip_corrected_1 = ipandsig_1.first;
+      TVector3 ip_corrected_2 = ipandsig_2.first;
 
-      if(tau_decay_mode_2_==1){
-
-        lvec1 = ConvertToLorentz(pi0_tau2->vector());
-        pvtosv.SetXYZT(
-                ele1->vx() - vertex_vec[0]->vx(),
-                ele1->vy() - vertex_vec[0]->vy(),
-                ele1->vz() - vertex_vec[0]->vz(),
-                0.);
-        lvec3 = ConvertToLorentz(pi_tau2->vector());
-        lvec4 = ConvertToLorentz(ele1->vector());
+      ipx_uncorr_1_ = ipandsig_1.first.X();
+      ipy_uncorr_1_ = ipandsig_1.first.Y();
+      ipz_uncorr_1_ = ipandsig_1.first.Z();
+      ipx_uncorr_2_ = ipandsig_2.first.X();
+      ipy_uncorr_2_ = ipandsig_2.first.Y();
+      ipz_uncorr_2_ = ipandsig_2.first.Z();
+      ip_sig_uncorr_1_ = ipandsig_1.second;
+      ip_sig_uncorr_2_ = ipandsig_1.second;
 
 
-        //double cp_sign_ = YRho(std::vector<Candidate*>({pi_tau2, pi0_tau2}),TVector3());
+      if(!is_data_) {
+
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovElec(ele1, refit_vertex);
+        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+
+        ip_corrected_1 = ipCorrectorEle.correctIp(
+                         ipandsig_1.first,
+                         ipgen1,
+                         fabs(lep1->eta())
+        );
+
+        ip_corrected_2 = ipCorrector.correctIp(
+                         ipandsig_2.first,
+                         ipgen2,
+                         fabs(lep2->eta())
+        );
+
+
+        // Correct IP covariance matrix
+        CovMatrix cov_corrected_1 = ipCorrectorEle.correctIpCov(
+                    ipandcov_1.second,
+                    fabs(lep1->eta())
+        );
+
+        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+                    ipandcov_2.second,
+                    fabs(lep2->eta())
+        );
+
+        ROOT::Math::SVector<double, 3> ip_svec_1;
+        ip_svec_1(0) = ip_corrected_1.X();
+        ip_svec_1(1) = ip_corrected_1.Y();
+        ip_svec_1(2) = ip_corrected_1.Z();
+        ip_svec_1 = ip_svec_1.Unit();
+        ip_sig_1_ = ip_corrected_1.Mag()/sqrt(ROOT::Math::Dot( ip_svec_1, cov_corrected_1 * ip_svec_1));
+
+        ROOT::Math::SVector<double, 3> ip_svec_2;
+        ip_svec_2(0) = ip_corrected_2.X();
+        ip_svec_2(1) = ip_corrected_2.Y();
+        ip_svec_2(2) = ip_corrected_2.Z();
+        ip_svec_2 = ip_svec_2.Unit();
+        ip_sig_2_ = ip_corrected_2.Mag()/sqrt(ROOT::Math::Dot( ip_svec_2, cov_corrected_2 * ip_svec_2));
+
+        ip_sig_1_down_= ip_sig_1_ -0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_1_up_  = ip_sig_1_ +0.2*(ip_sig_1_-ip_sig_1_raw_);
+        ip_sig_2_down_= ip_sig_2_ -0.2*(ip_sig_2_-ip_sig_2_raw_);
+        ip_sig_2_up_  = ip_sig_2_ +0.2*(ip_sig_2_-ip_sig_2_raw_);
+
+      } else {
+        ip_sig_1_raw_= ip_sig_1_;
+        ip_sig_2_raw_= ip_sig_2_;
+        ip_sig_1_up_= ip_sig_1_;
+        ip_sig_2_up_= ip_sig_2_;
+        ip_sig_1_down_= ip_sig_1_;
+        ip_sig_2_down_= ip_sig_2_;
       }
+
+      // corrected IP
+      TVector3 ip1 = ip_corrected_1.Unit();
+      TVector3 ip2 = ip_corrected_2.Unit();
+
+      lvec1 = TLorentzVector(ip1, 0.);
+      lvec3 = ConvertToLorentz(ele1->vector());
+
+
+      if(tau_decay_mode_2_==0) {
+
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
+        lvec4 = ConvertToLorentz(tau2->vector());
+
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        lvec2 = TLorentzVector(ip2, 0.);
+
+        aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
+
+        if(event_ % 2) {
+          aco_angle_rand_ = aco_angle_6_;
+          aco_sign_rand_ = aco_sign_;
+        } else {
+          aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+          aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+        }
+
+        alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
+        alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
+      }
+
+      if(tau_decay_mode_2_==1) {
+               
+        ic::Candidate *pi;
+        ic::Candidate *pi0;
+        
+        pi = pi_tau2;
+        pi0 = pi0_tau2;
+        
+        lvec2 = ConvertToLorentz(pi0->vector()); //pi zero from rho
+        lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
+        
+        double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        TLorentzVector pvtosv2(
+                tau2->svx() - primary_vtx->vx(),
+                tau2->svy() - primary_vtx->vy(),
+                tau2->svz() - primary_vtx->vz(),
+                0.);
+        
+        TLorentzVector lvec4_2 = ConvertToLorentz(tau2->vector());
+        
+        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4_2.Vect().Unit())*lvec4_2.Vect().Unit()).Unit();
+        TLorentzVector lvec2_2 = TLorentzVector(ip2, 0.);
+        
+        aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+          else                    aco_angle_5_ = aco_angle_5_-M_PI;
+        }
+        aco_angle_6_ = IPAcoAngle(lvec1, lvec2_2, lvec3, lvec4_2,false);
+        if (cp_sign_<0) {
+          if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
+          else                    aco_angle_6_ = aco_angle_6_-M_PI;
+        }
+        
+        alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
+        alpha1_2_ = AlphaAngle(lvec4_2.Vect(), ip2);
+        alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
+      }
+
+      else if(tau_decay_mode_2_>=10){
+
+        std::vector<ic::PFCandidate*> a1_daughters;
+        std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
+        a1_daughters  = GetA1(tau2, pfcands).first;
+
+        if (a1_daughters.size()>2){
+
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
+            aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+            aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
+
+            double cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+
+            if (cp_sign_<0) {
+              if (aco_angle_5_<M_PI)  aco_angle_5_ = aco_angle_5_+M_PI;
+              else                    aco_angle_5_ = aco_angle_5_-M_PI;
+            }
+
+            if(event_ % 2) {
+              aco_angle_rand_ = aco_angle_5_;
+              aco_sign_rand_ = aco_sign_;
+            } else {
+              aco_angle_rand_ = IPAcoAngle(lvec2, lvec1, lvec4, lvec3,false);
+              aco_sign_rand_ = IPAcoSign(lvec2, lvec1, lvec4, lvec3,false);
+              if (cp_sign_<0) {
+                if (aco_angle_rand_<M_PI) aco_angle_rand_ = aco_angle_rand_+M_PI;
+                else                      aco_angle_rand_ = aco_angle_rand_-M_PI;
+              }
+            }
+
+          }
+          alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
+          alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
+      }
+    
+      // save IP for sync 
+      ipx_1_ = ip1.X();
+      ipy_1_ = ip1.Y();
+      ipz_1_ = ip1.Z();
+      ipx_2_ = ip2.X();
+      ipy_2_ = ip2.Y();
+      ipz_2_ = ip2.Z();
 
     }
       

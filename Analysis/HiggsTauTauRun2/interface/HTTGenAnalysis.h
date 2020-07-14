@@ -96,6 +96,10 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_cp_sm_;
   double wt_cp_ps_;
   double wt_cp_mm_;
+  double wt_cp_sm_alt_;
+  double wt_cp_ps_alt_;
+  double wt_cp_mm_alt_;
+  double WTm_, WTp_;
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
   double wt_cp_prod_mm_;
