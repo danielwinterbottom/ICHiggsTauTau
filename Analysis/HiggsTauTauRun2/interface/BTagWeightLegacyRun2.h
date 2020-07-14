@@ -32,6 +32,14 @@ class BTagWeightLegacyRun2 : public ModuleBase {
    CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,cbtag_eff_alt)
    CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,othbtag_eff_alt)
    CLASS_MEMBER(BTagWeightLegacyRun2, std::string, add_name)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,bbtag_eff_cp5)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,cbtag_eff_cp5)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,othbtag_eff_cp5)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,bbtag_eff_cp5_alt)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,cbtag_eff_cp5_alt)
+   CLASS_MEMBER(BTagWeightLegacyRun2, TH2F*,othbtag_eff_cp5_alt)
+   CLASS_MEMBER(BTagWeightLegacyRun2, bool, do_cp5_2016)
+
    //1 Down 2 Up (promote-demote) || 
    //3 JES Down 4 Jes Up 5 LF Down 6 LF Up  7 HF down 8 HFUp 9HFStats1Down 10 HFStats1Up 11 HFStats2Down 12 HFStats2Up 13 LFStats1Down 14 LFStats1Up 
    //15 LFStats2Down 16 LFStats2Up 17 CFErrIDown 18CFErr1Up 19 CFErr2Down 20 CFerr2Up
@@ -46,6 +54,7 @@ class BTagWeightLegacyRun2 : public ModuleBase {
 
   std::vector<double> EventReweighting(std::vector<PFJet *> const& jets) const;
   double GetEff(unsigned flav, double pt, double eta, std::string wp="tight") const;
+  double GetEffCP5(unsigned flav, double pt, double eta, std::string wp="tight") const;
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();

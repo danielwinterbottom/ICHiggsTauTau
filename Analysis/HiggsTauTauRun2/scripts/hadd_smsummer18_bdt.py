@@ -85,6 +85,7 @@ sample_list = [
     'WWTo2L2Nu',#new
     'WWTo4Q',#new
     'WWToLNuQQ',#new
+    'WZTo1L1Nu2Q',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo3LNu',#new

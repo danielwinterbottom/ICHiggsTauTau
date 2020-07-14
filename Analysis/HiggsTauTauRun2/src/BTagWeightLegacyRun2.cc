@@ -13,12 +13,20 @@ namespace ic {
     cbtag_eff_alt_ = nullptr;
     othbtag_eff_alt_ = nullptr;
     add_name_="";
+    do_cp5_2016_=false;
+    bbtag_eff_cp5_ = nullptr;
+    cbtag_eff_cp5_ = nullptr;
+    othbtag_eff_cp5_ = nullptr;
+    bbtag_eff_cp5_alt_ = nullptr;
+    cbtag_eff_cp5_alt_ = nullptr;
+    othbtag_eff_cp5_alt_ = nullptr;
   }
   BTagWeightLegacyRun2::~BTagWeightLegacyRun2() {
    ;
   }
 
   int BTagWeightLegacyRun2::PreAnalysis() {
+    if(do_cp5_2016_) std::cout << "Using CP5 tune fix for btag SFs in 2016" << std::endl;
     std::string name = "btag_calib";
     if(ProductExists(name) && ProductExists(name+"_reader_comb_tight") && ProductExists(name+"_reader_comb_loose")){
       std::cout << "Getting BTagCalibration and BTagCalibrationReader objects from products." << std::endl;
@@ -87,6 +95,7 @@ namespace ic {
     double sf_tight = 1.;*/
     double eff_loose = 1.;
     double eff_tight = 1.;
+    double sf_extra_loose=1., sf_extra_tight=1.;
     // First decide whether a jet is tight btagged, loose-only btagged, or untagged
     // Then calculate the probablities for MC and data
     for (unsigned i = 0; i < jets.size(); ++i) {
@@ -95,6 +104,12 @@ namespace ic {
       jet_flavour = jets[i]->hadron_flavour();
       eff_loose = GetEff(jet_flavour, pt, fabs(eta), "loose");
       eff_tight = GetEff(jet_flavour, pt, fabs(eta), "tight");
+      if(do_cp5_2016_) {
+        eff_loose = GetEffCP5(jet_flavour, pt, fabs(eta), "loose");
+        eff_tight = GetEffCP5(jet_flavour, pt, fabs(eta), "tight");
+        sf_extra_loose = eff_loose >0. ? GetEff(jet_flavour, pt, fabs(eta), "loose")/eff_loose : 1.;
+        sf_extra_tight = eff_tight >0. ? GetEff(jet_flavour, pt, fabs(eta), "tight")/eff_tight : 1.;
+      }
 
       if(jet_flavour == 5){
         sf_tight[0] = reader_comb_tight->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
@@ -172,7 +187,12 @@ namespace ic {
 
         double sf_l = sf_loose[j];
         double sf_t = sf_tight[j];
-          
+      
+        if(do_cp5_2016_) {
+          sf_l*=sf_extra_loose;
+          sf_t*=sf_extra_tight;
+        }
+    
         if (csv > tight_wp) {
           p_data *= sf_t;
         }
@@ -250,6 +270,51 @@ namespace ic {
    return res;
 
   }
- 
+
+  double BTagWeightLegacyRun2::GetEffCP5(unsigned flav, double pt, double eta, std::string wp) const {
+    double res = 1.;
+    if (wp == "tight") {
+      if(flav == 5){
+        if(pt > bbtag_eff_cp5_->GetXaxis()->GetBinLowEdge(bbtag_eff_cp5_->GetNbinsX()+1))
+          res = bbtag_eff_cp5_->GetBinContent(bbtag_eff_cp5_->GetNbinsX(),bbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+        else
+          res = bbtag_eff_cp5_->GetBinContent(bbtag_eff_cp5_->GetXaxis()->FindBin(pt),bbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+
+      } else if(flav == 4){
+        if(pt > cbtag_eff_cp5_->GetXaxis()->GetBinLowEdge(cbtag_eff_cp5_->GetNbinsX()+1))
+          res = cbtag_eff_cp5_->GetBinContent(cbtag_eff_cp5_->GetNbinsX(),cbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+        else
+          res = cbtag_eff_cp5_->GetBinContent(cbtag_eff_cp5_->GetXaxis()->FindBin(pt),cbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+
+      } else {
+        if(pt > othbtag_eff_cp5_->GetXaxis()->GetBinLowEdge(othbtag_eff_cp5_->GetNbinsX()+1))
+          res = othbtag_eff_cp5_->GetBinContent(othbtag_eff_cp5_->GetNbinsX(),othbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+        else
+          res = othbtag_eff_cp5_->GetBinContent(othbtag_eff_cp5_->GetXaxis()->FindBin(pt),othbtag_eff_cp5_->GetYaxis()->FindBin(eta));
+      }
+    }
+    else if (wp == "loose") {
+      if(flav == 5){
+        if(pt > bbtag_eff_cp5_alt_->GetXaxis()->GetBinLowEdge(bbtag_eff_cp5_alt_->GetNbinsX()+1))
+          res = bbtag_eff_cp5_alt_->GetBinContent(bbtag_eff_cp5_alt_->GetNbinsX(),bbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+        else
+          res = bbtag_eff_cp5_alt_->GetBinContent(bbtag_eff_cp5_alt_->GetXaxis()->FindBin(pt),bbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+
+      } else if(flav == 4){
+        if(pt > cbtag_eff_cp5_alt_->GetXaxis()->GetBinLowEdge(cbtag_eff_cp5_alt_->GetNbinsX()+1))
+          res = cbtag_eff_cp5_alt_->GetBinContent(cbtag_eff_cp5_alt_->GetNbinsX(),cbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+        else
+          res = cbtag_eff_cp5_alt_->GetBinContent(cbtag_eff_cp5_alt_->GetXaxis()->FindBin(pt),cbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+
+      } else {
+        if(pt > othbtag_eff_cp5_alt_->GetXaxis()->GetBinLowEdge(othbtag_eff_cp5_alt_->GetNbinsX()+1))
+          res = othbtag_eff_cp5_alt_->GetBinContent(othbtag_eff_cp5_alt_->GetNbinsX(),othbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+        else
+          res = othbtag_eff_cp5_alt_->GetBinContent(othbtag_eff_cp5_alt_->GetXaxis()->FindBin(pt),othbtag_eff_cp5_alt_->GetYaxis()->FindBin(eta));
+      }
+    }
+   return res;
+
+  }
 
 }

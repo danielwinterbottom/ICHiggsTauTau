@@ -110,6 +110,8 @@ class HTTCategories : public ModuleBase {
   double xtrg_sf_;
   double single_l_sf_;
   double et_trg_;
+  double et_trg_or_;
+  double mvadm_idiso_et_;
   double xtrg_notrig_;
   double OR_notrig_;
   float idisoweight_1_;
@@ -624,6 +626,16 @@ class HTTCategories : public ModuleBase {
   double ipx_2_;
   double ipy_2_;
   double ipz_2_;
+
+  double ipx_uncorr_1_;
+  double ipy_uncorr_1_;
+  double ipz_uncorr_1_;
+  double ipx_uncorr_2_;
+  double ipy_uncorr_2_;
+  double ipz_uncorr_2_;
+  double ip_sig_uncorr_1_;
+  double ip_sig_uncorr_2_;
+
   double gen_ipx_1_;
   double gen_ipy_1_;
   double gen_ipz_1_;
@@ -720,6 +732,7 @@ class HTTCategories : public ModuleBase {
   virtual void PrintInfo();
 
   IpCorrection ipCorrector = IpCorrection();
+  IpCorrection ipCorrectorEle = IpCorrection();
 
 };
 

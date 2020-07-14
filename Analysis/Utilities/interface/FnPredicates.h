@@ -1035,8 +1035,10 @@ namespace ic {
   double quantile_mapping(double value, TH1D *input_cdf, TH1D *output_cdf);
   std::pair<TVector3,double> IPAndSignificance(ic::Tau const *tau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands);
   std::pair<TVector3,double> IPAndSignificanceMuon(ic::Muon const *muon, ic::Vertex *vertex);
+  std::pair<TVector3,double> IPAndSignificanceElectron(ic::Electron const *elec, ic::Vertex *vertex);
   std::pair<TVector3, ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> IPAndCov(ic::Tau const *tau, ic::Vertex *vertex, std::vector<ic::PFCandidate*> pfcands);
   std::pair<TVector3, ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> IPAndCovMuon(ic::Muon const *muon, ic::Vertex *vertex);
+  std::pair<TVector3, ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> IPAndCovElec(ic::Electron const *muon, ic::Vertex *vertex);
   
 } // namepsace
 #endif

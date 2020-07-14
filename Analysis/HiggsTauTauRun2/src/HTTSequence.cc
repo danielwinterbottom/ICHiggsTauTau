@@ -903,8 +903,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
     }
-  
-    BuildModule(BTagWeightLegacyRun2("BTagWeightLegacyRun2")
+
+    BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
      .set_channel(channel)
      .set_era(era_type)
      .set_strategy(strategy_type)
@@ -914,7 +914,25 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_othbtag_eff(new TH2F(othbtag_eff))
      .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
      .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)));
+     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt));
+
+    if(era_type == era::data_2016 && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
+      BTagWeight.set_do_cp5_2016(true);
+      TH2F bbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_b");
+      TH2F cbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_c");
+      TH2F othbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_oth");
+      TH2F bbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_b");
+      TH2F cbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_c");
+      TH2F othbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_oth");
+      BTagWeight.set_bbtag_eff_cp5(new TH2F(bbtag_cp5_eff));
+      BTagWeight.set_cbtag_eff_cp5(new TH2F(cbtag_cp5_eff));
+      BTagWeight.set_othbtag_eff_cp5(new TH2F(othbtag_cp5_eff));
+      BTagWeight.set_bbtag_eff_cp5_alt(new TH2F(bbtag_eff_cp5_alt));
+      BTagWeight.set_cbtag_eff_cp5_alt(new TH2F(cbtag_eff_cp5_alt));
+      BTagWeight.set_othbtag_eff_cp5_alt(new TH2F(othbtag_eff_cp5_alt));
+   }
+ 
+   BuildModule(BTagWeight);
   }
   
   if(usePFMET && do_recoil){ 

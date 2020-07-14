@@ -2303,7 +2303,7 @@ def HTTPlot(nodename,
     #        if not embedding:  bkg['plot_list'] = ["ZTT_rho"]
     #        else:              bkg['plot_list'] = ["EmbedZTT_rho"]
     #        bkg['leg_text'] = ztt_name+' (#tau#rightarrow#rho)'
- 
+
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()

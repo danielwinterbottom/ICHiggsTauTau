@@ -112,6 +112,12 @@ namespace ic {
       outtree_->Branch("wt_cp_sm"       , &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
+      outtree_->Branch("WTp"       , &WTp_);
+      outtree_->Branch("WTm"       , &WTm_);
+
+      outtree_->Branch("wt_cp_sm_alt"       , &wt_cp_sm_alt_);
+      outtree_->Branch("wt_cp_ps_alt"       , &wt_cp_ps_alt_);
+      outtree_->Branch("wt_cp_mm_alt"       , &wt_cp_mm_alt_);
 
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
@@ -318,6 +324,12 @@ namespace ic {
         wt_cp_sm_ = tauspinner->weight("wt_cp_0");
         wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
         wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+
+        wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+        wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+        wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+        WTm_ = tauspinner->weight("WTm");
+        WTp_ = tauspinner->weight("WTp");
       }
 
     }
@@ -1168,10 +1180,10 @@ namespace ic {
         GenParticle* kaon = new GenParticle();
         std::vector<int> daughters = gen_particles[i]->daughters();
         charged_vec.push_back(gen_particles[i]);
-        std::cout << "tau: " << gen_particles[i] << std::endl;
+        //std::cout << "tau: " << gen_particles[i] << std::endl;
         for (unsigned d : daughters){
           unsigned daughter_id = fabs(gen_particles[d]->pdgid());
-          std::cout << "ID in other function: " << gen_particles[d]->pdgid() << std::endl;
+          //std::cout << "ID in other function: " << gen_particles[d]->pdgid() << std::endl;
           int daughter_charge = gen_particles[d]->charge();
           if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) continue;
           ++count_hadr;
@@ -1292,14 +1304,12 @@ namespace ic {
         }
       }
     }
-/*
+
     fakea1_dR_ = -1;
     rho_dR_ = -1;
-    tauFlag = -1;
 
     if(rho_daughters.size()==1) {
       rho_dR_ = ROOT::Math::VectorUtil::DeltaR(rho_daughters[0].first->vector(),rho_daughters[0].second->vector());
-      tauFlag = 1;
     }
 
 
@@ -1311,7 +1321,6 @@ namespace ic {
         else charged_vec += p->vector();
       }
       fakea1_dR_ = ROOT::Math::VectorUtil::DeltaR(neutral_vec,charged_vec);
-      tauFlag = 11;
     }
     
 
@@ -1498,6 +1507,12 @@ namespace ic {
 
     }
 
+    if(a1_daughters.size()==1){
+      mass1_ = (a1_daughters[0][0]->vector() + a1_daughters[0][1]->vector()).M();
+      mass2_ = (a1_daughters[0][0]->vector() + a1_daughters[0][2]->vector()).M();
+      a1_mass_ = (a1_daughters[0][0]->vector() + a1_daughters[0][1]->vector()+a1_daughters[0][2]->vector()).M();
+
+    }
     if(a1_daughters.size()==1 && rho_daughters.size()==1){
       cp_channel_=4;
       cp_sign_1_ = 999;
@@ -1688,43 +1703,86 @@ namespace ic {
         lvec2 = TLorentzVector(ip, 0.);
     }
 
-//    else if (rho_daughters.size()==1 && l_daughters.size()==1){
-//        cp_channel_=5;
-//        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-//        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
-//        for (unsigned i = 0; i < vertex_vec.size(); i++) {
-//          reco_pvx_ = vertex_vec[0]->vx();
-//          reco_pvy_ = vertex_vec[0]->vy();
-//          reco_pvz_ = vertex_vec[0]->vz();
-//        }
-//        for (unsigned i = 0; i < gen_vertices.size(); i++) {
-//          gen_pvx_ = gen_vertices[0]->vx();
-//          gen_pvy_ = gen_vertices[0]->vy();
-//          gen_pvz_ = gen_vertices[0]->vz();
-//        }
-//        TLorentzVector pvtosv(
-//                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
-//                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
-//                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
-//                0.);
-//
-//        if(l_daughters[0].first->charge()<0) {
-//
-//          lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
-//          lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
-//          lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
-//          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
-//          lvec2 = TLorentzVector(ip, 0.);
-//        } else {
-//          lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
-//          lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
-//          lvec3 = ConvertToLorentz(l_daughters[0].first->vector());
-//          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
-//          lvec1 = TLorentzVector(ip, 0.);
-//        }
-//        cp_sign_1_ = YRho(std::vector<GenParticle*>(
-//                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
-//    }
+    else if (rho_daughters.size()==1 && l_daughters.size()==1){
+        cp_channel_=5;
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+        TLorentzVector pvtosv(
+                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(), 
+                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(), 
+                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(), 
+                0.);
+
+        if(l_daughters[0].first->charge()<0) {
+
+          lvec1 = ConvertToLorentz(rho_daughters[0].second->vector());
+          lvec3 = ConvertToLorentz(rho_daughters[0].first->vector());
+          lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
+          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+          lvec2 = TLorentzVector(ip, 0.);
+        } else {
+          lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
+          lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
+          lvec3 = ConvertToLorentz(l_daughters[0].first->vector());
+          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+          lvec1 = TLorentzVector(ip, 0.);
+        }
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {rho_daughters[0].first, rho_daughters[0].second}),TVector3());
+    }
+
+    if (a1_daughters.size()==1 && l_daughters.size()==1){
+
+      a1_daughters[0] = SortA1Products(a1_daughters[0]);
+
+//      aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
+
+        cp_channel_=51;
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
+        for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          reco_pvx_ = vertex_vec[0]->vx();
+          reco_pvy_ = vertex_vec[0]->vy();
+          reco_pvz_ = vertex_vec[0]->vz();
+        }
+        for (unsigned i = 0; i < gen_vertices.size(); i++) {
+          gen_pvx_ = gen_vertices[0]->vx();
+          gen_pvy_ = gen_vertices[0]->vy();
+          gen_pvz_ = gen_vertices[0]->vz();
+        }
+        TLorentzVector pvtosv(
+                l_daughters[0].first->vtx().vx() - l_daughters[0].second->vtx().vx(),
+                l_daughters[0].first->vtx().vy() - l_daughters[0].second->vtx().vy(),
+                l_daughters[0].first->vtx().vz() - l_daughters[0].second->vtx().vz(),
+                0.);
+
+        if(l_daughters[0].first->charge()<0) {
+
+          lvec1 = ConvertToLorentz(a1_daughters[0][1]->vector());
+          lvec3 = ConvertToLorentz(a1_daughters[0][0]->vector());
+          lvec4 = ConvertToLorentz(l_daughters[0].first->vector());
+          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+          lvec2 = TLorentzVector(ip, 0.);
+        } else {
+          lvec2 = ConvertToLorentz(a1_daughters[0][1]->vector());
+          lvec4 = ConvertToLorentz(a1_daughters[0][0]->vector());
+          lvec3 = ConvertToLorentz(l_daughters[0].first->vector());
+          TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+          lvec1 = TLorentzVector(ip, 0.);
+        }
+        cp_sign_1_ = YRho(std::vector<GenParticle*>(
+                    {a1_daughters[0][0], a1_daughters[0][1]}),TVector3());
+    }
 
 //    if (pi_daughters.size()==1&&l_daughters.size()==1){
 //        cp_channel_=1;
@@ -1899,12 +1957,12 @@ namespace ic {
 
       //std::cout << k1.X() << "    " << k1.Y() << "    " << k1.Z() << std::endl;
       //std::cout << k2.X() << "    " << k2.Y() << "    " << k2.Z() << std::endl;
-std::cout << k1.Dot(k2) << std::endl;
+//std::cout << k1.Dot(k2) << std::endl;
       aco_angle_1_ = acos(k1.Dot(k2));
       double sign = h1.Cross(h2).Dot(n1);
       if(sign>0) aco_angle_1_ = 2*M_PI-aco_angle_1_;
 
-    }*/
+    }
 
     aco_angle_smear_=-9999;
     aco_sign_smear_=-9999;

@@ -385,6 +385,10 @@ int HTTWeights::PreAnalysis() {
           w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_ratio")->functor(w_->argSet("t_pt,t_mvadm")));
       fns_["t_trg_30_ic_mvadm_embed_data"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed_data")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_30_ic_mvadm_embed"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_etau_embed")->functor(w_->argSet("t_pt,t_mvadm")));
+      fns_["t_trg_30_ic_mvadm_mc"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_mvadm_etau_mc")->functor(w_->argSet("t_pt,t_mvadm")));
 
       fns_["t_trg_30_ic_mvadm_ratio_mvadm0_up"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_ic_deeptau_medium_mvadm_etau_ratio_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
@@ -626,6 +630,9 @@ int HTTWeights::PreAnalysis() {
 
     fns_["t_deeptauid_mvadm_medium_tightvsele"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_mvadm_medium_tightvsele")->functor(w_->argSet("t_pt,t_mvadm")));
+
+    fns_["t_deeptauid_mvadm_embed_medium_tightvsele"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_mvadm_embed_medium_tightvsele")->functor(w_->argSet("t_pt,t_mvadm")));
 
     fns_["t_deeptauid_mvadm_medium_lowpt_mvadm0_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_mvadm_medium_lowpt_mvadm0_up")->functor(w_->argSet("t_pt,t_mvadm")));
@@ -964,6 +971,10 @@ int HTTWeights::Execute(TreeEvent *event) {
 
         double tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium"]->eval(args_mvadm.data()) : 1.0;
 
+        if(channel_== channel::et) {
+          tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_tightvsele"]->eval(args_mvadm.data()) : 1.0;
+        }
+
         double tau_sf_mvadm_2_lowpt_mvadm0_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_lowpt_mvadm0_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
         double tau_sf_mvadm_2_lowpt_mvadm1_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_lowpt_mvadm1_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
         double tau_sf_mvadm_2_lowpt_mvadm2_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_lowpt_mvadm2_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
@@ -1051,7 +1062,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
         double tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium"]->eval(args_mvadm.data()) : 1.0;
         if(channel_== channel::et) {
-          tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_tightvsele"]->eval(args_mvadm.data()) : 1.0;
+          tau_sf_mvadm_2 = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium_tightvsele"]->eval(args_mvadm.data()) : 1.0;
         }
 
         double tau_sf_mvadm_2_lowpt_mvadm0_up = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium_lowpt_mvadm0_up"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
@@ -1607,7 +1618,9 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       double ele_xtrg = 1.;
       double ele_xtrg_mc=1.;
-      double tau_trg_ic=1., tau_trg_mvadm=1., tau_trg_ic_data=1., tau_trg_mvadm_data=1., tau_trg_data=1.;
+      double tau_trg_ic=1., tau_trg_mvadm=1., tau_trg_ic_data=1., tau_trg_mvadm_data=1., tau_trg_data=1., tau_trg_mvadm_mc=1.;
+
+      double xtrg_et_sf_mvadm=1.;
 
       if(era_ == era::data_2017 || era_ == era::data_2018) {
 
@@ -1623,15 +1636,25 @@ int HTTWeights::Execute(TreeEvent *event) {
           tau_trg_mvadm = fns_["t_trg_30_ic_mvadm_embed_ratio"]->eval(args_mvadm.data());
           tau_trg_ic_data = fns_["t_trg_30_ic_embed_data"]->eval(args_4.data());
           tau_trg_mvadm_data = fns_["t_trg_30_ic_mvadm_embed_data"]->eval(args_mvadm.data());
+          tau_trg_mvadm_mc = fns_["t_trg_30_ic_mvadm_embed"]->eval(args_mvadm.data());
         }
         else {
           tau_trg_mc = 1.;
           tau_trg = fns_["t_trg_30_ratio"]->eval(args_4.data());
           tau_trg_ic = fns_["t_trg_30_ic_ratio"]->eval(args_4.data());
           tau_trg_mvadm = fns_["t_trg_30_ic_mvadm_ratio"]->eval(args_mvadm.data());
+          tau_trg_mvadm_mc = fns_["t_trg_30_ic_mvadm_mc"]->eval(args_mvadm.data());
 
         }
+        xtrg_et_sf_mvadm = tau_trg_mvadm;
 
+      }
+
+      double et_trg_or=1.;
+      //double cpdecay_sf = 1.;
+      if(era_ != era::data_2016){
+        et_trg_or = (ele_trg + (ele_xtrg - ele_trg)*tau_trg_mvadm_data)/(ele_trg_mc + (ele_xtrg_mc - ele_trg_mc)*tau_trg_mvadm_mc);   
+        //eff(single-e) + (eff(e-leg, e-tau)-eff(single-e))*eff(tau-leg, e-tau) 
       }
 
       double e_high_pt_cut=28.;
@@ -1655,9 +1678,13 @@ int HTTWeights::Execute(TreeEvent *event) {
         xtrg_et_sf = ele_xtrg*tau_trg_data;
         xtrg_OR_sf = (e_pt >= e_high_pt_cut) ? single_e_sf : xtrg_et_sf;
         tau_trg_ic = tau_trg_ic_data; 
-        tau_trg_mvadm = tau_trg_mvadm_data; 
+        tau_trg_mvadm = tau_trg_mvadm_data;
+        xtrg_et_sf_mvadm = tau_trg_mvadm_data*ele_xtrg; 
+        et_trg_or = ele_trg + (ele_xtrg - ele_trg)*tau_trg_mvadm_data;   
       }
-   
+ 
+      event->Add("et_trg_or",et_trg_or); 
+ 
       // for 2016 we only use the single electron trigger
       if(era_ == era::data_2016) {
         xtrg_et_sf=0.;
@@ -1807,7 +1834,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       // have xtrg OR as default but save others to check 
       event->Add("single_l_sf", xtrg_OR_sf==0 ? single_e_sf : single_e_sf/xtrg_OR_sf );
-      event->Add("xtrg_sf", xtrg_OR_sf==0 ? xtrg_et_sf : xtrg_et_sf);
+      event->Add("xtrg_sf", xtrg_OR_sf==0 ? xtrg_et_sf : xtrg_et_sf/xtrg_OR_sf);
 
       ele_trg = xtrg_OR_sf;
       ele_trg_mc = 1.0;
@@ -1822,7 +1849,7 @@ int HTTWeights::Execute(TreeEvent *event) {
      if(ele_trg>2) ele_trg=2;
      weight *= (ele_trg * tau_trg);
      event->Add("trigweight_1", ele_trg);
-     event->Add("trigweight_2", tau_trg);
+     event->Add("trigweight_2", xtrg_et_sf_mvadm);
    } else if (channel_ == channel::mt) {
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
      double pt = muon->pt();
