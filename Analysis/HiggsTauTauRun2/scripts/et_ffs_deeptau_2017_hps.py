@@ -12,10 +12,10 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
-parser.add_argument('--file_ext',help= 'Extension of files names', default='_et_2018.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='hpsdm_ff_deeptauV2p1_2018_et')
-parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/cpprod_2018/')
+parser.add_argument('--file_ext',help= 'Extension of files names', default='_et_2017.root')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='hpsdm_ff_deeptauV2p1_2017_et')
+parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2017.json')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/cpprod_2017/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -25,9 +25,9 @@ output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
 draw = int(args.draw) > 0
-lumi=58826.8469
+lumi=41530.
 
-out_file = '%(output_folder)s/fakefactor_fits_et_%(wp)s_2018.root' % vars()
+out_file = '%(output_folder)s/fakefactor_fits_et_%(wp)s_2017.root' % vars()
 
 # read params from json
 
@@ -35,62 +35,29 @@ with open(params_file) as jsonfile:
   params = json.load(jsonfile)
 
 data_files = [
-  'EGammaA',
-  'EGammaB',
-  'EGammaC',
-  'EGammaD'
+  'SingleElectronB',
+  'SingleElectronC',
+  'SingleElectronD',
+  'SingleElectronE',
+  'SingleElectronF',
 ]
 
-ttbar_files = [
-  'TTTo2L2Nu',
-  'TTToHadronic',
-  'TTToSemiLeptonic'
-]
+ttbar_files = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
 
-wjets_files = [
-  'W1JetsToLNu-LO',
-  'W2JetsToLNu-LO',
-  'W3JetsToLNu-LO',
-  'W4JetsToLNu-LO',
-  'WJetsToLNu-LO',
-  'EWKWMinus2Jets',
-  'EWKWPlus2Jets'
-]
+wjets_files = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
 
-other_files = [
-  'EWKZ2Jets',
-  'T-tW-ext1',
-  'T-t',
-  'DY1JetsToLL-LO',
-  'DY2JetsToLL-LO',
-  'DY3JetsToLL-LO',
-  'DY4JetsToLL-LO',
-  'DYJetsToLL-LO',
-  'DYJetsToLL_M-10-50-LO',
-  'Tbar-tW-ext1',
-  'Tbar-t',
-  'WWToLNuQQ',
-  'WWTo2L2Nu',
-  'WZTo1L3Nu',
-  'WZTo2L2Q',
-  'WZTo3LNu-ext1',
-  'WZTo3LNu',
-  'ZZTo2L2Nu-ext1',
-  'ZZTo2L2Nu-ext2',
-  'ZZTo2L2Q',
-  'ZZTo4L-ext',
-  'ZZTo4L'
-]
+# Add MC sample names   
+other_files = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1','T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','EWKZ2Jets']
 
 
 njets_bins = {
               'inclusive': '(1)',
-              'njets0':'n_jets==0 && trg_singleelectron && pt_1>33',
-              'njets1':'n_jets==1 && trg_singleelectron & pt_1>33',
-              'njets2':'n_jets>1 && trg_singleelectron & pt_1>33',
-              'njets0_crosstrg':'n_jets==0 && (trg_singleelectron && pt_1>33)==0',
-              'njets1_crosstrg':'n_jets==1 && (trg_singleelectron && pt_1>33)==0',
-              'njets2_crosstrg':'n_jets>1 && (trg_singleelectron && pt_1>33)==0'
+              'njets0':'n_jets==0 && trg_singleelectron && pt_1>28',
+              'njets1':'n_jets==1 && trg_singleelectron & pt_1>28',
+              'njets2':'n_jets>1 && trg_singleelectron & pt_1>28',
+              'njets0_crosstrg':'n_jets==0 && (trg_singleelectron && pt_1>28)==0',
+              'njets1_crosstrg':'n_jets==1 && (trg_singleelectron && pt_1>28)==0',
+              'njets2_crosstrg':'n_jets>1 && (trg_singleelectron && pt_1>28)==0'
 }
 
 dm_bins = {
@@ -100,7 +67,6 @@ dm_bins = {
               'dm10':'(tau_decay_mode_2==10)',
               'dm11': '(tau_decay_mode_2==11)',
 }
-
 
 fit_pol1_qcd   = [
 ]
@@ -116,8 +82,9 @@ fit_pol0_wjets = [
 'dm0_njets2',
 ]
 fit_pol0_ttbar = [
-  'dm0_sig_gt3_inclusive'
+  'dm0_inclusive'
 ]
+
 
 def Draw2DQCDHist(var_input1, var_input2, cuts, name, input_folder, file_ext,doOS=False,add_wt='1'):
   var1 = var_input1.split('[')[0]
@@ -488,20 +455,6 @@ def FitCorrection(h, func='pol1',is2D=False):
     f1.SetParameter(1,-1.5)
     f1.SetParameter(2,3) # change to 1 ?
 
-# data dm bins:
-
-#   1  p0           5.40093e-01   3.18594e-02   3.77396e-05   7.03486e-02
-#   2  p1          -1.73975e+00   4.66415e-02   4.41782e-05  -3.59702e-02
-#   3  p2           9.57227e-01   9.69533e-02   1.14197e-04  -1.20073e-03
-#   4  p3           8.31828e-01   2.27701e-02   2.16125e-05   3.27185e-02
-
-# mc:
-
-#   1  p0           4.97757e-01   3.61110e-02   6.13712e-05   3.24495e-02
-#   2  p1          -1.68592e+00   6.53303e-02   8.24756e-05  -4.93017e-02
-#   3  p2           8.33561e-01   1.13066e-01   1.85746e-04  -1.55238e-02
-#   4  p3           8.45756e-01   3.02467e-02   3.93895e-05   1.24748e-01
-
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
@@ -609,7 +562,7 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 
   ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
 
-  ff_eqn_tot = '((trg_singleelectron&&pt_1>33)*%(ff_eqn_tot)s + ((trg_singleelectron&&pt_1>33)==0)*%(ff_eqn_tot_cross)s)' % vars()
+  ff_eqn_tot = '((trg_singleelectron&&pt_1>28)*%(ff_eqn_tot)s + ((trg_singleelectron&&pt_1>28)==0)*%(ff_eqn_tot_cross)s)' % vars()
 
   return ff_eqn_tot
 
@@ -617,8 +570,8 @@ def WriteFunctionDM2Jets(fout,proc='qcd',aiso=False):
 draw_list=[]
 
 # mt plots
-baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
-baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
+baseline_bothiso = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<28)||(trg_singleelectron&&pt_1>28)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
+baseline_aiso1 = 'iso_1<0.15 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<28)||(trg_singleelectron&&pt_1>28)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
 
 var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100]'
 #var2='pt_2[20,30,40,50,60,80]'
@@ -640,8 +593,8 @@ for njetbin in njets_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
-baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
+baseline_aiso2_iso = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<28)||(trg_singleelectron&&pt_1>28)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
+baseline_aiso2_aiso1 = 'iso_1<0.5&&iso_1>0.25 && deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_1<28)||(trg_singleelectron&&pt_1>28)) && wt<2 && n_bjets==0 && n_loose_bjets<2' % vars()
 
 for njetbin in njets_bins:
   for dmbin in dm_bins:
@@ -843,7 +796,7 @@ for i in ['dm']:
   met_2d_corr+=')'
   # now the pt_1 correction
 
-  pt_1_2d_corr='((pt_1>33)*('
+  pt_1_2d_corr='((pt_1>28)*('
 
   for njet in ['0','1','2']:
     cut = ''
@@ -852,7 +805,7 @@ for i in ['dm']:
     if njet =='2': cut = 'n_jets>=2'
 
     #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
-    var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+    var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
     (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s' % vars(),input_folder,file_ext,False,doQCD=False,doW=True,doMC=False)
     if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_wjets_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=False,doW=True,doMC=False)
   
@@ -872,7 +825,7 @@ for i in ['dm']:
 
     PlotFakeFactorCorrection(wjets_data, wjets_pt_1_corr_uncert, wjets_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
 
-  pt_1_2d_corr+=') + (pt_1<33))'
+  pt_1_2d_corr+=') + (pt_1<28))'
   print 'The W non-closure function for decay mode binning %(i)s:' % vars()
   print '%(met_2d_corr)s*%(pt_1_2d_corr)s' % vars()
 
@@ -910,7 +863,7 @@ for i in ['dm']:
 
   # now the pt_1 correction
 
-  pt_1_2d_corr_mc='((pt_1>33)*('
+  pt_1_2d_corr_mc='((pt_1>28)*('
 
   for njet in ['0','1','2']:
     cut = ''
@@ -918,7 +871,7 @@ for i in ['dm']:
     if njet =='1': cut = 'n_jets==1'
     if njet =='2': cut = 'n_jets>=2'
 
-    var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+    var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
     (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s' % vars(),input_folder,file_ext,False,doQCD=False,doW=False,doMC=True,doTT=False)
     if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_wjets_mc_dm_string)s*%(met_2d_corr_mc)s' % vars() ,doQCD=False,doW=False,doMC=True,doTT=False)
   
@@ -938,7 +891,7 @@ for i in ['dm']:
 
     PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_pt_1_corr_uncert, wjets_mc_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
 
-  pt_1_2d_corr_mc+=') + (pt_1<33))'
+  pt_1_2d_corr_mc+=') + (pt_1<28))'
   print 'The W MC non-closure function for decay mode binning %(i)s:' % vars()
   print '%(met_2d_corr_mc)s*%(pt_1_2d_corr_mc)s' % vars()
 
@@ -1017,7 +970,7 @@ for i in ['dm']:
 
   # now the pt_1 correction
 
-  pt_1_2d_corr='((pt_1>33)*('
+  pt_1_2d_corr='((pt_1>28)*('
 
   for njet in ['0','1']:
     cut = ''
@@ -1025,7 +978,7 @@ for i in ['dm']:
     if njet =='1': cut = 'n_jets>=1'
 
     #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
-    var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+    var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
     (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
     if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
   
@@ -1046,13 +999,13 @@ for i in ['dm']:
   
     PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
   
-  pt_1_2d_corr+=') + (pt_1<33))'
+  pt_1_2d_corr+=') + (pt_1<28))'
   print "QCD pt_1 correction:"
   print pt_1_2d_corr
 
   # make correction binned also in tau pT
 
-  pt_1_2d_corr='((pt_1>33)*('
+  pt_1_2d_corr='((pt_1>28)*('
 
   for njet in ['0','1']:
     for pt in ['20to30','30to40', 'gt40']:
@@ -1065,7 +1018,7 @@ for i in ['dm']:
       if pt == 'gt40': cut += '&&pt_2>=40'
   
       #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
-      var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+      var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
       (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
       if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
   
@@ -1086,7 +1039,7 @@ for i in ['dm']:
   
       PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
 
-  pt_1_2d_corr+=') + (pt_1<33))'
+  pt_1_2d_corr+=') + (pt_1<28))'
   print "QCD pt_1 correction:"
   print pt_1_2d_corr
 
@@ -1151,7 +1104,7 @@ for i in ['dm']:
 
   # now the pt_1 correction
 
-  pt_1_2d_corr_aiso='((pt_1>33)*('
+  pt_1_2d_corr_aiso='((pt_1>28)*('
 
   for njet in ['0','1']:
     cut = ''
@@ -1159,7 +1112,7 @@ for i in ['dm']:
     if njet =='1': cut = 'n_jets>=1'
 
     #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
-    var='pt_1[33,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+    var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
     (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_aiso' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
     if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_pred_aiso' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string_aiso)s*%(met_2d_corr_aiso)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
   
@@ -1180,7 +1133,7 @@ for i in ['dm']:
   
     PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
 
-  pt_1_2d_corr_aiso+=') + (pt_1<33))'
+  pt_1_2d_corr_aiso+=') + (pt_1<28))'
   print "QCD pt_1 correction (anti isolated):"
   print pt_1_2d_corr_aiso
 
