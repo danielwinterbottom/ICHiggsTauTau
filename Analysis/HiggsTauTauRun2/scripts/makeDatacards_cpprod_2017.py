@@ -155,6 +155,7 @@ if options.split_jes:
 common_shape_systematics = (
     ' --syst_zwt="CMS_htt_dyShape_13TeV" '
     ' --syst_tquark="CMS_htt_ttbarShape_13TeV" '
+    ' --syst_prefire="CMS_PreFire_13TeV" '
     ' --syst_qcd_scale="CMS_scale_gg_13TeV" '
     ' --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" '
     ' --syst_ps="CMS_*PS_ggH_13TeV" '
@@ -480,46 +481,11 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-            if jes_systematics and not options.no_shape_systs and not options.batch:
-              # have to do this to avoid using too much memory...
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes1'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=1:9' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes2'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=10:18' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes3'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=19:27' % vars())
-
-            elif jes_systematics and not options.no_shape_systs and options.batch:
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes1,jes_sources=1:9 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes2,jes_sources=10:18 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes3,jes_sources=19:27 ./scripts/batch_datacards_jes.sh'
-                        )
-
     if not options.batch:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 
