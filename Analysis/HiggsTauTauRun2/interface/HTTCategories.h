@@ -721,8 +721,6 @@ class HTTCategories : public ModuleBase {
   double ip_sig_1_down_;
   double ip_sig_2_down_;
 
-  double raw_pt_1_;
-
 
  public:
   HTTCategories(std::string const& name);
