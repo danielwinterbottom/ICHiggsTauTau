@@ -286,7 +286,7 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   
-  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))<50)'
+  sel='(mt_1<50)'
 
   scheme_et = [
     ("17",   "0jet",    "2017_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),

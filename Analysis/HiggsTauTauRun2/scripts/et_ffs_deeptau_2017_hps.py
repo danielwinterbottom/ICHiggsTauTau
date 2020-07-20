@@ -509,7 +509,7 @@ def WriteFunctionTTbar(fout,proc='ttbar_mc',aiso=False):
   ff_pol0 = 'p0'
   ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
-  for dmbin in ['1','2','10','11']:
+  for dmbin in ['0','1','10','11']:
     fout.cd()
     extra=''
     if aiso: extra = '_aiso2_ss'

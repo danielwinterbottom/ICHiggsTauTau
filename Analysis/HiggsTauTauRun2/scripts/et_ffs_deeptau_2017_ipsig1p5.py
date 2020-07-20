@@ -13,9 +13,9 @@ ROOT.Math.MinimizerOptions.SetDefaultTolerance(1)
 parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_et_2017.root')
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2017_et_ip0p5')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='mvadm_ff_deeptauV2p1_2017_et')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2017.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/May19_2017/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/dw515/Offline/output/SM/cpprod_2017/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -59,6 +59,7 @@ njets_bins = {
               'njets1_crosstrg':'n_jets==1 && (trg_singleelectron && pt_1>28)==0',
               'njets2_crosstrg':'n_jets>1 && (trg_singleelectron && pt_1>28)==0'
 }
+
 dm_bins = {
               'inclusive': '(1)',
               'dm0':'(tau_decay_mode_2==0)',
@@ -73,7 +74,6 @@ dm_bins = {
               'mvadm10':'(mva_dm_2==10)',
               'mvadm11':'(mva_dm_2==11)'
 }
-
 
 # choose bins to set to pol1 and pol0 here:
 #fit_pol1_qcd   = ['mvadm0_sig_lt3_njets0','mvadm0_sig_lt3_njets2','mvadm1_njets2','dm0_njets2']
@@ -436,14 +436,17 @@ def CalculateFakeFactors(num,denum):
   return ff
 
 def FitFakeFactors(h,usePol1=False,polOnly=None):
+  count_filled = 0
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i)>0: count_filled+=1
+
+  if count_filled==0:
+    print 'Error, histogram ', h.GetName(), ' is empty, setting all bins to 0 +/- 1'
+    for i in range(1,h.GetNbinsX()+1): 
+      h.SetBinContent(i,0.001)
+      h.SetBinError(i,1.)
+
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
-  if h.GetEntries()==0: 
-    f2 = ROOT.TF1(h.GetName()+'_fit',"pol0",20,200)
-    f2.SetParameter(0,0.)
-    for i in range(1,h_uncert.GetNbinsX()+1): 
-      h_uncert.SetBinError(i,1.)
-      h_uncert.SetBinContent(i,0.)
-    return (f2, h_uncert, h)
   f1 = ROOT.TF1("f1","landau",20,200)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,200)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,200)
@@ -566,7 +569,7 @@ def WriteFunctionTTbar(fout,proc='ttbar_mc',aiso=False):
     else:
       ff_params['mvadm%(mvadmbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
-  ff_eqn_tot = '((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) ' % (ff_params['mvadm0_sig_lt3'], ff_params['mvadm0_sig_gt3'], ff_params['mvadm1'], ff_params['mvadm2'], ff_params['mvadm10'], ff_params['mvadm11'])
+  ff_eqn_tot = '((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) ' % (ff_params['mvadm0_sig_lt3'], ff_params['mvadm0_sig_gt3'], ff_params['mvadm1'], ff_params['mvadm2'], ff_params['mvadm10'], ff_params['mvadm11'])
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
 
@@ -596,11 +599,11 @@ def WriteFunctionMVADM2Jets(fout,proc='qcd',aiso=False):
       else:
         ff_params['mvadm%(mvadmbin)i_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
-  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
+  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
 
-  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
+  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
   ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
 
   ff_eqn_tot = '((trg_singleelectron&&pt_1>28)*%(ff_eqn_tot)s + ((trg_singleelectron&&pt_1>28)==0)*%(ff_eqn_tot_cross)s)' % vars()
@@ -630,9 +633,9 @@ def WriteFunctionMVADM2JetsIPSig(fout,proc='qcd',aiso=False):
       else:
         ff_params['mvadm%(mvadmbin)s_njets%(njetbin)s' % vars()] = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
 
-  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
+  ff_eqn_tot = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0'], ff_params['mvadm0_sig_gt3_njets0'], ff_params['mvadm1_njets0'], ff_params['mvadm2_njets0'], ff_params['mvadm10_njets0'], ff_params['mvadm11_njets0'], ff_params['mvadm0_sig_lt3_njets1'], ff_params['mvadm0_sig_gt3_njets1'], ff_params['mvadm1_njets1'], ff_params['mvadm2_njets1'], ff_params['mvadm10_njets1'], ff_params['mvadm11_njets1'], ff_params['mvadm0_sig_lt3_njets2'], ff_params['mvadm0_sig_gt3_njets2'], ff_params['mvadm1_njets2'], ff_params['mvadm2_njets2'], ff_params['mvadm10_njets2'], ff_params['mvadm11_njets2'])
 
-  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0_crosstrg'], ff_params['mvadm0_sig_gt3_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_sig_lt3_njets1_crosstrg'], ff_params['mvadm0_sig_gt3_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_sig_lt3_njets2_crosstrg'], ff_params['mvadm0_sig_gt3_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
+  ff_eqn_tot_cross = '((n_jets==0)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets==1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)) + (n_jets>1)*((mva_dm_X==0&&ip_sig_2<1.5)*(%s)+(mva_dm_X==0&&ip_sig_2>=1.5)*(%s)+(mva_dm_X==1&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==2&&tau_decay_mode_X==1&&tau_decay_mode_X==1)*(%s)+(mva_dm_X==10)*(%s)+(mva_dm_X==11)*(%s)))' % (ff_params['mvadm0_sig_lt3_njets0_crosstrg'], ff_params['mvadm0_sig_gt3_njets0_crosstrg'], ff_params['mvadm1_njets0_crosstrg'], ff_params['mvadm2_njets0_crosstrg'], ff_params['mvadm10_njets0_crosstrg'], ff_params['mvadm11_njets0_crosstrg'], ff_params['mvadm0_sig_lt3_njets1_crosstrg'], ff_params['mvadm0_sig_gt3_njets1_crosstrg'], ff_params['mvadm1_njets1_crosstrg'], ff_params['mvadm2_njets1_crosstrg'], ff_params['mvadm10_njets1_crosstrg'], ff_params['mvadm11_njets1_crosstrg'], ff_params['mvadm0_sig_lt3_njets2_crosstrg'], ff_params['mvadm0_sig_gt3_njets2_crosstrg'], ff_params['mvadm1_njets2_crosstrg'], ff_params['mvadm2_njets2_crosstrg'], ff_params['mvadm10_njets2_crosstrg'], ff_params['mvadm11_njets2_crosstrg'])
 
   ff_eqn_tot = re.sub('X', '2', ff_eqn_tot)
   ff_eqn_tot_cross = re.sub('X', '2', ff_eqn_tot_cross).replace('pt_2','min(pt_2,80.)')
@@ -723,23 +726,23 @@ for ff in ff_list:
     (qcd_aiso, wjets_aiso, wjets_mc_aiso, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
 
     if 'crosstrg' in ff:
-      cuts_new_iso  = ff_list[ff][1].replace('(trg_singleelectron && pt_1>28)==0','trg_etaucross') 
-      cuts_new_aiso = ff_list[ff][2].replace('(trg_singleelectron && pt_1>28)==0','trg_etaucross') 
+      cuts_new_iso  = ff_list[ff][1].replace('(trg_singleelectron && pt_1>28)==0','trg_etaucross')
+      cuts_new_aiso = ff_list[ff][2].replace('(trg_singleelectron && pt_1>28)==0','trg_etaucross')
       # if the cross trigger data is empty then we have to use events without cross-triggers applied
       if qcd_iso.Integral()<=0 or qcd_aiso.Integral()<=0:
-        print 'QCD cross trigger empty for ', ff 
-        (qcd_iso, dummy, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso3' in ff))
+        print 'QCD cross trigger empty for ', ff
+        (qcd_iso, dummy, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
         (qcd_aiso, dummy, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_aiso, ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
-      if wjets_iso.Integral()<=0 or wjets_aiso.Integral()<=0: 
-        print 'W+jets cross trigger empty for ', ff 
-        (dummy, wjets_iso, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso3' in ff))
+      if wjets_iso.Integral()<=0 or wjets_aiso.Integral()<=0:
+        print 'W+jets cross trigger empty for ', ff
+        (dummy, wjets_iso, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
         (dummy, wjets_aiso, dummy, dummy) = DrawHists(ff_list[ff][0], cuts_new_aiso, ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
       if wjets_mc_iso.Integral()<=0 or wjets_mc_aiso.Integral()<=0:
-        print 'W+jets MC cross trigger empty for ', ff 
-        (dummy, dummy, wjets_mc_iso, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso3' in ff))
+        print 'W+jets MC cross trigger empty for ', ff
+        (dummy, dummy, wjets_mc_iso, dummy) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
         (dummy, dummy, wjets_mc_aiso, dummy) = DrawHists(ff_list[ff][0], cuts_new_aiso, ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
       if ttbar_mc_iso.Integral()<=0 or ttbar_mc_aiso.Integral()<=0:
-        (dummy, dummy, dummy, ttbar_mc_iso) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso3' in ff))
+        (dummy, dummy, dummy, ttbar_mc_iso) = DrawHists(ff_list[ff][0], cuts_new_iso, ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
         (dummy, dummy, dummy, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], cuts_new_aiso, ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff))
 
     qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
@@ -752,9 +755,9 @@ for ff in ff_list:
       wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
       to_write.append(wjets_mc_ff)
 
-      #if 'inclusive_inclusive' in ff:
-      ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
+        to_write.append(ttbar_mc_ff)
   else:
     # if not drawing histogram then retrieve them from the old output folder
     fin = ROOT.TFile(out_file)
@@ -768,9 +771,10 @@ for ff in ff_list:
       wjets_mc_ff = fin.Get(ff+'_ff_wjets_mc')
       wjets_mc_ff.SetDirectory(0)
       to_write.append(wjets_mc_ff)
-      ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
-      ttbar_mc_ff.SetDirectory(0)
-      to_write.append(ttbar_mc_ff)
+      if '_inclusive' in ff:
+        ttbar_mc_ff = fin.Get(ff+'_ff_ttbar_mc')
+        ttbar_mc_ff.SetDirectory(0)
+        to_write.append(ttbar_mc_ff)
     fin.Close()
 
   usePol=None
@@ -1166,6 +1170,50 @@ for i in ['mvadm','mvadm_nosig','dm']:
   print "QCD pt_1 correction:"
   print pt_1_2d_corr
 
+  # make correction binned also in tau pT
+
+  pt_1_2d_corr='((pt_1>28)*('
+
+  for njet in ['0','1']:
+    for pt in ['20to30','30to40', 'gt40']:
+      cut = ''
+      if njet =='0': cut = 'n_jets==0'
+      if njet =='1': cut = 'n_jets>=1'
+
+      if pt == '20to30': cut += '&&pt_2<30'
+      if pt == '30to40': cut += '&&pt_2>=30&&pt_2<40'
+      if pt == 'gt40': cut += '&&pt_2>=40'
+  
+      #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+      var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+      (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string_ipsig)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+      if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
+  
+  
+      fout.cd()
+      qcd_data.Divide(qcd_pred)
+      if njet == '0': pol='landau'
+      else: pol = 'pol1'
+      qcd_pt_1_corr_fit, qcd_pt_1_corr_uncert = FitCorrection(qcd_data, func=pol,)
+      qcd_data.Write()
+      qcd_pt_1_corr_fit.Write()
+      qcd_pt_1_corr_uncert.Write()
+ 
+      if njet=='0': pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','')
+      else:         pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','') 
+      pt_1_2d_corr += '('+cut+')*(%(pt_1_2d_corr_temp)s)' % vars()
+      if not (njet == '1' and pt == 'gt40'): pt_1_2d_corr+=' + '
+  
+      PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
+
+  pt_1_2d_corr+=') + (pt_1<28))'
+  print "QCD pt_1 correction:"
+  print pt_1_2d_corr
+
+  # end of new correction
+
   ## apply all closure corrections in SS region and then derive the aiso->iso correction
 
   var='iso_1[0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.30,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.40,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.50]'
@@ -1264,6 +1312,49 @@ for i in ['mvadm','mvadm_nosig','dm']:
   print "QCD pt_1 correction (anti isolated):"
   print pt_1_2d_corr_aiso
 
+#  # make correction binned also in tau pT
+#
+#  pt_1_2d_corr_aiso='((pt_1>28)*('
+#
+#  for njet in ['0','1']:
+#    for pt in ['20to30','30to40', 'gt40']:
+#      cut = ''
+#      if njet =='0': cut = 'n_jets==0'
+#      if njet =='1': cut = 'n_jets>=1'
+#
+#      if pt == '20to30': cut += '&&pt_2<30'
+#      if pt == '30to40': cut += '&&pt_2>=30&&pt_2<40'
+#      if pt == 'gt40': cut += '&&pt_2>=40'
+#
+#      #var='pt_1[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+#      var='pt_1[28,35,40,45,50,55,60,65,70,75,80,85,90,95,100]'
+#      (qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_aiso' % vars(),input_folder,file_ext,False,doQCD=True,doW=False,doMC=False,doTT=False)
+#      if i=='mvadm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred_mvadm) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred_aiso' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string_ipsig)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+#      if i=='mvadm_nosig': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred_aiso' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_mvadm_string)s*%(met_2d_corr)s' % vars(),doQCD=True,doW=False,doMC=False,doTT=False)
+#      if i=='dm': (qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', '%(i)s_pt_1_closure_njet%(njet)s_taupt%(pt)s_pred_aiso' % vars(),input_folder,file_ext,False,add_wt='%(tau_qcd_dm_string)s*%(met_2d_corr)s' % vars() ,doQCD=True,doW=False,doMC=False,doTT=False)
+#
+#
+#      fout.cd()
+#      qcd_data.Divide(qcd_pred)
+#      if njet == '0': pol='landau'
+#      else: pol = 'pol1'
+#      qcd_pt_1_corr_fit, qcd_pt_1_corr_uncert = FitCorrection(qcd_data, func=pol,)
+#      qcd_data.Write()
+#      qcd_pt_1_corr_fit.Write()
+#      qcd_pt_1_corr_uncert.Write()
+#
+#      if njet=='0': pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','')
+#      else:         pt_1_2d_corr_temp=str(qcd_pt_1_corr_fit.GetExpFormula('p')).replace('x','min(pt_1,70.)').replace(',false','')
+#      pt_1_2d_corr_aiso += '('+cut+')*(%(pt_1_2d_corr_temp)s)' % vars()
+#      if not (njet == '1' and pt == 'gt40'): pt_1_2d_corr_aiso+=' + '
+#
+#      PlotFakeFactorCorrection(qcd_data, qcd_pt_1_corr_uncert, qcd_data.GetName(), output_folder, wp,x_title='p_{T}^{l} (GeV)')
+#
+#  pt_1_2d_corr_aiso+=') + (pt_1<28))'
+#  print "QCD pt_1 correction:"
+#  print pt_1_2d_corr
+#
+#  # end of new correction
 
   if i=='dm':
     aiso_ff_string='((%(tau_qcd_dm_string_aiso)s)*(%(met_2d_corr_aiso)s)*(%(pt_1_2d_corr_aiso)s))' % vars()
@@ -1289,7 +1380,7 @@ for i in ['mvadm','mvadm_nosig','dm']:
     fout.cd()
     qcd_data.Divide(qcd_pred)
 
-    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='pol3')
+    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data, func='pol1')
 
     qcd_data.Write()
     qcd_data_fit.Write()

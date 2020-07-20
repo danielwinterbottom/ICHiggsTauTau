@@ -69,14 +69,23 @@ dm_bins = {
 
 # choose bins to set to pol1 and pol0 here:
 
-fit_pol1_qcd   = []
+fit_pol1_qcd   = [
+
+'dm0_njets2',
+'dm1_njets1',
+'dm1_njets2',
+'dm11_njets1',
+]
 fit_pol1_wjets = [
 'dm11_njets0',
 'dm0_njets2',
 
 'dm11_njets0',
 ]
-fit_pol1_ttbar = []
+fit_pol1_ttbar = [
+
+'dm1_inclusive',
+]
 fit_pol0_qcd   = [
 'dm1_njets2_crosstrg',
 
@@ -86,6 +95,7 @@ fit_pol0_wjets = [
 
 'dm0_njets2_crosstrg',
 'dm0_njets2_crosstrg',
+'dm11_njets1_crosstrg',
 'dm11_njets2_crosstrg',
 
 'dm0_njets2_crosstrg',
@@ -392,10 +402,9 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
 
   # subtract other processes to get QCD
   data.Add(bkgs,-1); data.Add(wjets,-1); data.Add(ttbar,-1)
-
   # fix any negative bins to 0 
   for i in range(1,data.GetNbinsX()+1):
-    if data.GetBinContent(i) < 0: qcd.SetBinContent(i,0.)
+    if data.GetBinContent(i) < 0: data.SetBinContent(i,0.)
     if ttbar.GetBinContent(i) < 0: ttbar.SetBinContent(i,0.)
     if wjets.GetBinContent(i) < 0: wjets.SetBinContent(i,0.)
 
@@ -469,7 +478,8 @@ def FitCorrection(h, func='pol1',is2D=False):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f1",'SI')
+    if 'Erf' in func: fitresult = h.Fit("f1",'S')
+    else: fitresult = h.Fit("f1",'SI')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -518,7 +528,7 @@ def WriteFunctionTTbar(fout,proc='ttbar_mc',aiso=False):
   ff_pol0 = 'p0'
   ff_pol1 = 'p0+p1*pt_X'
   ff_params = {}
-  for dmbin in ['1','2','10','11']:
+  for dmbin in ['0','1','10','11']:
     fout.cd()
     extra=''
     if aiso: extra = '_aiso2_ss'
@@ -937,7 +947,7 @@ for i in ['dm']:
 
     fout.cd()
     qcd_data.Divide(qcd_pred)
-    qcd_met_corr_fit, qcd_met_corr_uncert = FitCorrection(qcd_data, func='pol1',)
+    qcd_met_corr_fit, qcd_met_corr_uncert = FitCorrection(qcd_data, func='[0]*TMath::Erf((x-[1])/[2])+[3]',)
     qcd_data.Write()
     qcd_met_corr_fit.Write()
     qcd_met_corr_uncert.Write()

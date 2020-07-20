@@ -423,7 +423,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
 
  //Build LumiMask module here - json file definition eralier in the code to be able to 
  //run *just* this module
- if(is_data && strategy_type!=strategy::phys14){
+ if((is_data|| is_embedded) && strategy_type!=strategy::phys14){
    LumiMask lumiMask = LumiMask("LumiMask")
      .set_produce_output_jsons("")
      .set_input_file(data_json);

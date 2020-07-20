@@ -87,6 +87,11 @@ class TagAndProbe : public ModuleBase {
   bool pass_dimu_;
   bool passed_extra_1_;
   bool passed_extra_2_;
+
+  double lt_tag_iso_1_=-1;
+  double lt_tag_pt_1_=-1;
+  double lt_tag_iso_2_=-1;
+  double lt_tag_pt_2_=-1;
  
   bool trg_probe_2_1_;
   bool trg_probe_2_2_;
@@ -177,6 +182,11 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
     outtree_->Branch("lepton_veto"  , &lepton_veto_ );
     outtree_->Branch("n_leptons", &n_leptons_);
+
+    outtree_->Branch("lt_tag_iso_1", &lt_tag_iso_1_);
+    outtree_->Branch("lt_tag_iso_2", &lt_tag_iso_2_);
+    outtree_->Branch("lt_tag_pt_1", &lt_tag_pt_1_);
+    outtree_->Branch("lt_tag_pt_2", &lt_tag_pt_2_);
 
     if(channel_ == channel::tpmt){
       outtree_->Branch("iso_vloose" , &iso_vloose_);
@@ -502,17 +512,28 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
     if(extra_l1_tag_pt_>0){
+      lt_tag_iso_1_=-1;
+      lt_tag_pt_1_=-1;
+      lt_tag_iso_2_=-1;
+      lt_tag_pt_2_=-1;
       std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
       bool found_match_tag_1 = false;
       bool found_match_tag_2 = false;
       int isocut=1;
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) isocut=3;
-   
       for(unsigned eg=0; eg<l1electrons.size(); ++eg){
         if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.17&&l1electrons[eg]->vector().Pt()>extra_l1_tag_pt_&&l1electrons[eg]->isolation()>=isocut){
           // must pass L1 eta, pT and iso cuts and be matched by DR to the tagging electron
-          if(DR(l1electrons[eg],lep1)<0.5) found_match_tag_1 = true;
-          if(DR(l1electrons[eg],lep2)<0.5) found_match_tag_2 = true;
+          if(DR(l1electrons[eg],lep1)<0.5) {
+            found_match_tag_1 = true;
+            lt_tag_iso_1_ = l1electrons[eg]->isolation();
+            lt_tag_pt_1_ = l1electrons[eg]->vector().Pt(); 
+          }
+          if(DR(l1electrons[eg],lep2)<0.5) {
+            found_match_tag_2 = true;
+            lt_tag_iso_2_ = l1electrons[eg]->isolation();
+            lt_tag_pt_2_ = l1electrons[eg]->vector().Pt(); 
+          }
         }
       }
       trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
