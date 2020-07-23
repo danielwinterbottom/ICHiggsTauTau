@@ -199,11 +199,11 @@ int TagAndProbe<T>::PreAnalysis() {
       outtree_->Branch("n_bjets"  , &n_bjets_ );
       outtree_->Branch("pzeta"  , &pzeta_ );
     }
-    if(do_dzmass_){
+    //if(do_dzmass_){
       outtree_->Branch("pass_dz" , &pass_dz_    );
       outtree_->Branch("pass_mass8", &pass_mass8_);
       outtree_->Branch("pass_dimu", &pass_dimu_);
-    }
+    //}
   }    
   return 0;
 }

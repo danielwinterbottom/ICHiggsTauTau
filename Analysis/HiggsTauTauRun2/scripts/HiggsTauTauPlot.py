@@ -1534,20 +1534,20 @@ if options.analysis in ['cpprod']:
     sm_samples = { 
 
          'ggh*_powheg' : 'GluGluToHToTauTau_M-125', 
-         'vbf*_powheg' : 'VBFHToTauTau_M-125',
-         'wplush*_powheg': 'WplusHToTauTau_M-125',
-         'wminush*_powheg': 'WminusHToTauTau_M-125',
-         'zh*_powheg': 'ZHToTauTau_M-125',
-         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+   #      'vbf*_powheg' : 'VBFHToTauTau_M-125',
+    #     'wplush*_powheg': 'WplusHToTauTau_M-125',
+     #    'wminush*_powheg': 'WminusHToTauTau_M-125',
+      #   'zh*_powheg': 'ZHToTauTau_M-125',
+#         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+ #        'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+  #       'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
-         "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+       #  "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
     }
 
 # 2017
@@ -1555,10 +1555,10 @@ if options.analysis in ['cpprod']:
   if options.era == 'cpsummer17':
     sm_samples = {
          'ggh*_powheg' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
-         'vbf*_powheg' : 'VBFHToTauTau_M-125',
-         'wplush*_powheg': 'WplusHToTauTau_M-125',
-         'wminush*_powheg': 'WminusHToTauTau_M-125',
-         'zh*_powheg': 'ZHToTauTau_M-125',
+     #    'vbf*_powheg' : 'VBFHToTauTau_M-125',
+      #   'wplush*_powheg': 'WplusHToTauTau_M-125',
+      #   'wminush*_powheg': 'WminusHToTauTau_M-125',
+       #  'zh*_powheg': 'ZHToTauTau_M-125',
          #'ZHps_htt*' : 'ZHiggs0MToTauTau',
          #'ZHsm_htt*' : 'ZHiggs0PMToTauTau',
          #'ZHmm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
@@ -1568,16 +1568,16 @@ if options.analysis in ['cpprod']:
          #'WHps_htt*' :'WHiggs0MToTauTau',
          #'WHmm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
          #'WHsm_htt*' : 'WHiggs0PMToTauTau',
-         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+        # 'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+        # 'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+        # 'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
-         "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+     #    "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
     }
 
 # 2018
@@ -1585,20 +1585,20 @@ if options.analysis in ['cpprod']:
   if options.era == 'cp18':
     sm_samples = {
          'ggh*_powheg' : 'GluGluHToTauTau_M-125',
-         'vbf*_powheg' : 'VBFHToTauTau_M-125-ext1',
-         'wplush*_powheg': 'WplusHToTauTau_M-125',
-         'wminush*_powheg': 'WminusHToTauTau_M-125',
-         'zh*_powheg': 'ZHToTauTau_M-125',
-         'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
-         'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
+     #    'vbf*_powheg' : 'VBFHToTauTau_M-125-ext1',
+      #   'wplush*_powheg': 'WplusHToTauTau_M-125',
+       #  'wminush*_powheg': 'WminusHToTauTau_M-125',
+        # 'zh*_powheg': 'ZHToTauTau_M-125',
+         #'reweighted_ggH_htt_0PM*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
+         #'reweighted_ggH_htt_0Mf05ph0*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
+         #'reweighted_ggH_htt_0M*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'ggH_sm_htt*' : ['JJH0PMToTauTauPlusZeroJets_Filtered','JJH0PMToTauTauPlusOneJets_Filtered','JJH0PMToTauTauPlusTwoJets_Filtered'],
          'ggH_mm_htt*' : ['JJH0Mf05ph0ToTauTauPlusZeroJets_Filtered','JJH0Mf05ph0ToTauTauPlusOneJets_Filtered','JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered'],
          'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
-         "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+        # "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
     }
 
 
@@ -1949,8 +1949,8 @@ if options.syst_res_met != '':
       systematics['syst_res_met_2jet_up'] = ('MET_RES_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_res_met_2jet_down'] = ('MET_RES_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:
-      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['W','QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
-      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['W','QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
+      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
 if options.syst_scale_met != '':
     hist_name = options.syst_scale_met
     if '$NJET' in hist_name: 
@@ -1966,8 +1966,8 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_2jet_up'] = ('MET_SCALE_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:  
-      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['W','QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
-      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['W','QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
+      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
     jes_to_process=[]
@@ -2142,7 +2142,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   if options.channel in ['et','mt']:
     chan = options.channel
     lt_systs = {}
-    lt_systs['ff_%(chan)s_qcd_syst' % vars()] = 'wt_ff_dmbins_dmbins_qcd_syst_' % vars()
+    lt_systs['ff_%(chan)s_qcd_syst' % vars()] = 'wt_ff_dmbins_qcd_syst_' % vars()
     lt_systs['ff_%(chan)s_wjets_syst' % vars()] = 'wt_ff_dmbins_wjets_syst_' % vars()
     lt_systs['ff_%(chan)s_ttbar_syst' % vars()] = 'wt_ff_dmbins_ttbar_syst_' % vars()
 
@@ -2189,7 +2189,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
 
 #    tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_dmbins_qcd_syst_' % vars()
     tt_systs['ff_tt_qcd_syst_njets0' % vars()] = '(n_jets!=0)*wt_ff_dmbins_1+(n_jets==0)*wt_ff_dmbins_qcd_syst_' % vars()
-    tt_systs['ff_tt_qcd_syst_njets1_m' % vars()] = '(n_jets==0)*wt_ff_dmbins_1+(n_jets>=1)*wt_ff_dmbins_qcd_syst_' % vars()
+    tt_systs['ff_tt_qcd_syst_njets1' % vars()] = '(n_jets==0)*wt_ff_dmbins_1+(n_jets>=1)*wt_ff_dmbins_qcd_syst_' % vars()
 
     tt_systs['ff_tt_wjets_syst' % vars()] = 'wt_ff_dmbins_wjets_syst_' % vars()
     for njet in ['0','1','2']:
