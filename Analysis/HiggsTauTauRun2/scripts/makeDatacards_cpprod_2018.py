@@ -345,7 +345,7 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'  
 
-  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))<50)'
+  sel='(mt_1<50)'
 
   scheme_et = [
     ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
@@ -390,80 +390,6 @@ if SCHEME == 'cpprod_extrapt':
   }
   ANA = 'sm'
 
-
-if SCHEME == 'cpprod_extrapt_svfit':
-  
-  VAR_0JET_LT = 'svfit_mass_test[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_EM = 'svfit_mass_test[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-
-  VAR_0JET_TT = 'svfit_mass_test[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' 
-
-
-  VAR_BOOSTED = 'pt_tt,svfit_mass_test[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,svfit_mass_test[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]' 
-
-  VAR_DIJET = 'svfit_mass_test,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_TT_TI_HI='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_TT_LO_HI='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_HI='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_HI='svfit_mass_test,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_LO_LO='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_MT_LO_LO='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_ET_LO_LO='svfit_mass_test,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_LO='svfit_mass_test,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_LO_HI='svfit_mass_test,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-
-  VAR_TT_TI_LO='svfit_mass_test,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
-  VAR_MT_TI_LO='svfit_mass_test,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
-  VAR_ET_TI_LO='svfit_mass_test,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-  VAR_EM_TI_LO='svfit_mass_test,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
-
-  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))>50)'
-
-
-  scheme_et = [
-    ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  '),
-    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_ET_LO_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_ET_LO_HI, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_ET_TI_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_ET_TI_HI, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars())
-  ]
-  scheme_mt = [
-    ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_MT_LO_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_MT_TI_LO, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
-    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars())
-
-  ]
-  scheme_tt = [
-    ("17",   "0jet",    "2018_0jet",  VAR_0JET_TT, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
-    ("17",   "boosted", "2018_boosted",  VAR_BOOSTED_TT, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
-    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_TT_LO_LO, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
-    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_TT_LO_HI, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
-    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_TT_TI_LO, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
-    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_TT_TI_HI, ' --set_alias="baseline:({baseline}&&pt_1>50)"  ')
-  ]
-  scheme_em = [
-    ("19",   "0jet",    "2018_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35"  '),
-    ("19",   "boosted", "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35"  '),
-    ("19",   "inclusive",    "2018_ttbar",  'svfit_mass_test[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"  '),
-    ("19",   "dijet_loosemjj_lowboost",     "2018_dijet_loosemjj_lowboost",  VAR_EM_LO_LO, ' --set_alias="sel:pzeta>-10"  '),
-    ("19",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_EM_LO_HI, ' --set_alias="sel:pzeta>-10"  '),
-    ("19",   "dijet_tightmjj_lowboost",     "2018_dijet_tightmjj_lowboost",  VAR_EM_TI_LO, ' --set_alias="sel:pzeta>-10"  '),
-    ("19",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  ')
-  ]
-  bkg_schemes = {
-    'et' : 'et_default',
-    'mt' : 'mt_with_zmm',
-    'em' : 'em_default',
-    'tt' : 'tt_default',
-    'zmm' : 'zmm_default'
-  }
-  ANA = 'sm'
 
 if SCHEME == 'control_plots':
   scheme_mt=[
@@ -564,14 +490,10 @@ for ch in channels:
         var     = x[3]
         opts    = x[4]
         extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
-        if options.embedding: 
-            extra+=' --embedding '
-        if ch in ['em','et','mt'] and SCHEME != 'sync': 
-            extra+=' --add_wt=\"wt_btag\" '
-        if ch in ['et'] and SCHEME != 'sync': 
-            extra+=' --add_wt=\"wt_btag*trigweight_1\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'sync': 
-            extra+=' --do_ff_systs '
+        if options.embedding: extra+=' --embedding '
+        if ch in ['em','et','mt'] and SCHEME != 'sync': extra+=' --add_wt=\"wt_btag\" '
+#        if ch in ['et'] and SCHEME != 'sync': extra+=' --add_wt=\"wt_btag*trigweight_1\" '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'sync': extra+=' --do_ff_systs '
 
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 

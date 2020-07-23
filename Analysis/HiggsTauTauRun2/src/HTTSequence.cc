@@ -423,7 +423,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
 
  //Build LumiMask module here - json file definition eralier in the code to be able to 
  //run *just* this module
- if(is_data && strategy_type!=strategy::phys14){
+ if((is_data|| is_embedded) && strategy_type!=strategy::phys14){
    LumiMask lumiMask = LumiMask("LumiMask")
      .set_produce_output_jsons("")
      .set_input_file(data_json);
@@ -1352,6 +1352,20 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
             .set_do_extra(true)
             .set_add_name("_ET")
         );
+
+        BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+            .set_fs(fs.get())
+            .set_channel(channel)
+            .set_strategy(strategy_type)
+            .set_ditau_label("ditau")
+            .set_tag_trg_objects("triggerObjectsEle35")
+            .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+            .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+            .set_probe_id(elec_probe_id)
+            .set_tag_id(elec_tag_id)
+            .set_probe_trg_objects("triggerObjectsEle35")
+            .set_probe_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+        );
       } else {
 
         // for el23 leg of EMu cross-trigger
@@ -1369,6 +1383,20 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
             .set_probe_trg_filters("hltEle24erWPTightGsfTrackIsoFilterForTau") // for 2017
             .set_do_extra(true)
             .set_add_name("_ET")
+        );
+
+        BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+            .set_fs(fs.get())
+            .set_channel(channel)
+            .set_strategy(strategy_type)
+            .set_ditau_label("ditau")
+            .set_tag_trg_objects("triggerObjectsEle35")
+            .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+            .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+            .set_probe_id(elec_probe_id)
+            .set_tag_id(elec_tag_id)
+            .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG")
+            .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
         );
       }
 

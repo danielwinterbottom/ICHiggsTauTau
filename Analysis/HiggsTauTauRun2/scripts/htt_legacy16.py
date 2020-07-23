@@ -145,6 +145,9 @@ with open("config_for_python_channels.json") as config_file:
   svfit_mode = cfg["sequence"]["new_svfit_mode"]
   svfit_folder = cfg["sequence"]["svfit_folder"]
 
+
+n_channels=4
+
 # makes sure output folder(s) (and svfit folder(s) if needed) is always created
 os.system("bash scripts/make_output_folder.sh {}".format(output_folder))
 if svfit_mode == 1:

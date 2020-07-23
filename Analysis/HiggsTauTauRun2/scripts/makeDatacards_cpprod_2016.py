@@ -174,40 +174,17 @@ if not no_shift_systs:
 if options.total_jes:
     common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
 
-em_shape_systematics = (
-    ' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" '
-    ' --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" '
-    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
-)
+em_shape_systematics=' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 # need to add new QCD uncertainties
 
 if not no_shift_systs:
-    em_shape_systematics += (
-        ' --syst_e_scale="CMS_scale_e_13TeV" '
-        ' --syst_mu_scale="CMS_scale_mu_13TeV" '
-    )
+  em_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
 
-et_shape_systematics = (
-    ' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" '
-    ' --syst_tau_trg_diff="CMS_eff_Xtrigger_et_*DM_13TeV" '
-    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
-)
+et_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 if not no_shift_systs:
-    et_shape_systematics += (
-        ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" '
-        ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" '
-        ' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" '
-        ' --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" '
-        ' --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
-        ' --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
-        ' --syst_e_scale="CMS_scale_e_13TeV" '
-    )
+  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
 
-mt_shape_systematics = (
-    ' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" '
-    ' --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" '
-    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
-)
+mt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
 if not no_shift_systs:
     mt_shape_systematics += (
         ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" '
@@ -347,7 +324,7 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
 
-  sel='(sqrt(2*met*pt_1*(1-cos(met_dphi_1)))<50)'
+  sel='(mt_1<50)'
 
   scheme_et = [
     ("17",   "0jet",    "2016_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),

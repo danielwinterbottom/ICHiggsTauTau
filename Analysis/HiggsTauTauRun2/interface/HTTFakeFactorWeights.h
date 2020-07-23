@@ -58,6 +58,7 @@ class HTTFakeFactorWeights : public ModuleBase {
 
   std::shared_ptr<RooWorkspace> ff_ws_;
   std::shared_ptr<RooWorkspace> ff_ws_us_;
+  std::shared_ptr<RooWorkspace> ff_ws_dm_;
 
   std::vector<std::string> systs_dm_;
   std::vector<std::string> systs_mvadm_;
