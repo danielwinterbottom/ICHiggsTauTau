@@ -155,7 +155,6 @@ if options.split_jes:
 common_shape_systematics = (
     ' --syst_zwt="CMS_htt_dyShape_13TeV" '
     ' --syst_tquark="CMS_htt_ttbarShape_13TeV" '
-    ' --syst_prefire="CMS_PreFire_13TeV" '
     ' --syst_qcd_scale="CMS_scale_gg_13TeV" '
     ' --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" '
     ' --syst_ps="CMS_*PS_ggH_13TeV" '
@@ -568,11 +567,9 @@ for ch in channels:
         if options.embedding: 
             extra+=' --embedding '
         if ch in ['em','et','mt'] and SCHEME != 'sync': 
-            extra+=' --add_wt=\"wt_prefire*wt_btag\" '
+            extra+=' --add_wt=\"wt_btag\" '
         if ch in ['et'] and SCHEME != 'sync': 
-            extra+=' --add_wt=\"wt_prefire*wt_btag*trigweight_1\" '
-        if ch in ['tt'] and SCHEME != 'sync': 
-            extra+=' --add_wt=wt_prefire '
+            extra+=' --add_wt=\"wt_btag*trigweight_1\" '
         if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'sync': 
             extra+=' --do_ff_systs '
 
