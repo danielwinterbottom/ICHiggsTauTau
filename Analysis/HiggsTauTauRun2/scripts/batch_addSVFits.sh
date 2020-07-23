@@ -1,8 +1,10 @@
 #!/bin/bash
 
-dir=/vols/build/cms/dw515/test_crash/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/
+# dir=/vols/build/cms/dw515/test_crash/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/
+dir=/vols/build/cms/akd116/newest/run/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2
 
-cd /vols/build/cms/dw515/JER/CMSSW_10_2_18/src/
+# cd /vols/build/cms/dw515/JER/CMSSW_10_2_18/src/
+cd /vols/build/cms/akd116/newest/CMSSW_10_2_14/src
 export SCRAM_ARCH=slc6_amd64_gcc481
 eval `scramv1 runtime -sh`
 cd $dir
