@@ -2918,7 +2918,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
-          if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = ff_syst_weight+'_1'
+          if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = '('+ff_syst_weight+'_1)'
           else:
             if options.analysis == 'cpprod': 
               fake_factor_wt_string = "wt_ff_us_1"
