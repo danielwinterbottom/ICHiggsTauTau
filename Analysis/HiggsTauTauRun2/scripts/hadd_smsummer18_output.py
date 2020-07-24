@@ -203,7 +203,7 @@ sample_list = [
 
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-#channel = ['mt']
+# channel = ['mt']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
@@ -269,8 +269,8 @@ for sa in sample_list:
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())) 
-              #command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars() # to be used if you want to only delete all files at the end of the hadding 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*; fi\n" % vars() 
+              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars() # to be used if you want to only delete all files at the end of the hadding 
+              # command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*; fi\n" % vars() 
           else :
             print "Incorrect number of files for sample %(sa)s_2018_%(ch)s! in %(sdir)s"%vars()
             remove=False

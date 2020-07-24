@@ -82,6 +82,9 @@ sample_list = [
      'Tbar-t',
      'T-t',
      'TT',
+     'TTTo2L2Nu',
+     'TTToHadronic',
+     'TTToSemiLeptonic',
      'WJetsToLNu',
      'WJetsToLNu-ext',
      'EWKWMinus2Jets_WToLNu',
@@ -168,9 +171,6 @@ sample_list = [
      'EmbeddingTauTauG',
      'EmbeddingTauTauH',
 
-     'TTTo2L2Nu',
-     'TTToHadronic',
-     'TTToSemiLeptonic',
      'GluGluHToTauTauUncorrelatedDecay',
      'GluGluHToTauTauUncorrelatedDecay_Filtered',
      'GluGluHToWWTo2L2Nu_M-125',
@@ -231,6 +231,7 @@ sample_list = [
     ]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
+# channel = ['mt']
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
