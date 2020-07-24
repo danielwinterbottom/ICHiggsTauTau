@@ -18,7 +18,7 @@
   },
   "sequence": {
     "usePFMET" : false,
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "mc"            : "mc2018",
     "era"           : "data_2018",
     "strategy"      : "cpdecays18",
