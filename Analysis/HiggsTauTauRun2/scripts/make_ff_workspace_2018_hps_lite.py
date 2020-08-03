@@ -145,11 +145,11 @@ for wp in wps:
       njets_cut = cutsmap_njets[njet] % vars()
       njets_cut_cross = cutsmap_njets[njet+'_crosstrg'] % vars()
 
-      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert1_up,et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert1_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
-      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert2_up,et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert2_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert1_up,et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert1_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert2_up,et_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert2_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
 
-      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert1_up,et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert1_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
-      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert2_up,et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert2_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
+      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert1_up,et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert1_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
+      w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert2_up,et_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert2_up,et_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
 
       w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_down("2. - @0", et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up)' % vars())
       w.factory('expr::et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_down("2. - @0", et_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up)' % vars())
@@ -181,8 +181,8 @@ for wp in wps:
 
     dm_cut    = (cutsmap_dm[dm] % vars()).replace('@1','@0').replace('@2','@1')
 
-    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",mvadm[1],ipsig[0],et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_hist_up,et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
-    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",mvadm[1],ipsig[0],et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_hist_up,et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
+    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",dm[1],ipsig[0],et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_hist_up,et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
+    w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",dm[1],ipsig[0],et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_hist_up,et_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
 
     w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_down("2. - @0", et_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up)' % vars())
     w.factory('expr::et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_down("2. - @0", et_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up)' % vars())
@@ -529,11 +529,11 @@ for wp in wps:
       njets_cut = cutsmap_njets[njet] % vars()
       njets_cut_cross = cutsmap_njets[njet+'_crosstrg'] % vars()
 
-      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert1_up,mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert1_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
-      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert2_up,mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert2_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert1_up,mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert1_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert2_up,mt_%(dm)s_njets%(njet)s_%(wp)s_qcd_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert2_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_qcd_uncert_nom)' % vars())
 
-      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert1_up,mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert1_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
-      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert2_up,mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert2_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
+      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert1_up,mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert1_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
+      w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_wjets_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@4/@5) + (%(njets_cut_cross)s&&%(dm_cut)s)*(@6/@7) + (((%(njets_cut)s||%(njets_cut_cross)s)&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],pass_single[1],mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert2_up,mt_%(dm)s_njets%(njet)s_%(wp)s_wjets_uncert_nom, mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert2_up,mt_%(dm)s_njets%(njet)s_crosstrg_%(wp)s_wjets_uncert_nom)' % vars())
 
       w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_down("2. - @0", mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert1_up)' % vars())
       w.factory('expr::mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_down("2. - @0", mt_%(dm)s_njets%(njet)s_comb_%(wp)s_qcd_uncert2_up)' % vars())
@@ -565,8 +565,8 @@ for wp in wps:
 
     dm_cut    = (cutsmap_dm[dm] % vars()).replace('@1','@0').replace('@2','@1')
 
-    w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",mvadm[1],ipsig[0],mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_hist_up,mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
-    w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",mvadm[1],ipsig[0],mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_hist_up,mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",dm[1],ipsig[0],mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_hist_up,mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
+    w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up("(%(dm_cut)s)*(@2/@3) + ((%(dm_cut)s)==0)",dm[1],ipsig[0],mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_hist_up,mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert_nom)' % vars())
 
     w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_down("2. - @0", mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert1_up)' % vars())
     w.factory('expr::mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_down("2. - @0", mt_%(dm)s_inclusive_%(wp)s_ttbar_uncert2_up)' % vars())
@@ -879,8 +879,8 @@ for wp in wps:
       njets_cut = cutsmap_njets[njet] % vars() 
       dm_cut    = cutsmap_dm[dm] % vars()
 
-      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_hist_up,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
-      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],mvadm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_hist_up,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_up("(%(njets_cut)s&&%(dm_cut)s)*(@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_hist_up,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
+      w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_up("(%(njets_cut)s&&%(dm_cut)s)*(@3/@4) + ((%(njets_cut)s&&%(dm_cut)s)==0)",njets[0],dm[1],ipsig[0],tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_hist_up,tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert_nom)' % vars())
 
       w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_down("2. - @0", tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert1_up)' % vars())
       w.factory('expr::tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_down("2. - @0", tt_%(dm)s_njets%(njet)i_%(wp)s_qcd_uncert2_up)' % vars())
