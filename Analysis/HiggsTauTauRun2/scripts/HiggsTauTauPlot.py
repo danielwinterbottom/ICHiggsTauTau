@@ -2232,7 +2232,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       for njet in ['0','1','2']:
         lt_systs['ff_%(chan)s_%(proc)s_stat_njets%(njet)s_unc1' % vars()] = 'wt_ff_us_%(proc)s_stat_njets%(njet)s_unc1_' % vars()
         lt_systs['ff_%(chan)s_%(proc)s_stat_njets%(njet)s_unc2' % vars()] = 'wt_ff_us_%(proc)s_stat_njets%(njet)s_unc2_' % vars() 
- 
+
     for template_name in lt_systs:
       weight_name = lt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
@@ -2778,6 +2778,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   if options.channel == "em":
       wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
       subtract_node.AddNode(wg_node)
+  print(subtract_node.shape)
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True,w_shift=None):
@@ -2898,16 +2899,16 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
             
         
 def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='', sel='', cat_name='',get_os=True,ff_syst_weight=None):
-    
+
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
-        
+
     sub_wt=''
     if 'sub_syst' in add_name and 'Up' in add_name: sub_wt='*1.1'
     if 'sub_syst' in add_name and 'Down' in add_name: sub_wt='*0.9'
-        
+
     # Select data from anti-isolated region
     if options.channel != "tt":
         if options.channel == 'mt':
@@ -2935,13 +2936,13 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           fake_factor_wt_string+='*wt_tau_id_loose'
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
-    
+
         full_selection = BuildCutString(wt, sel, ff_cat_data, OSSS, '')
         # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
         f1 = ana.SummedFactory('data', data, plot_unmodified, full_selection)
         f2 = GetSubtractNode(ana,'',plot,plot_unmodified,wt+sub_wt,sel+'&&(gen_match_2<6)',ff_cat,ff_cat_data,8,1.0,get_os,True)
         ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1, f2))
-        
+
     if options.channel == 'tt':
         anti_isolated_sel_1 = '(mva_olddm_medium_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
         anti_isolated_sel_2 = '(mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'

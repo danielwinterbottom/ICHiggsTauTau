@@ -1535,6 +1535,8 @@ namespace ic {
         wt_ff_qcd_stat_unc2_njet2_mvadm11_down_1_ = event->Exists("wt_ff_qcd_stat_unc2_njet2_mvadm11_down_1") ? event->Get<double>("wt_ff_qcd_stat_unc2_njet2_mvadm11_down_1") : 0.0;
 
 
+        wt_ff_dmbins_ttbar_syst_up_1_ = event->Exists("wt_ff_dmbins_ttbar_syst_up_1") ? event->Get<double>("wt_ff_dmbins_ttbar_syst_up_1") : 0.0;
+        wt_ff_dmbins_ttbar_syst_down_1_ = event->Exists("wt_ff_dmbins_ttbar_syst_down_1") ? event->Get<double>("wt_ff_dmbins_ttbar_syst_down_1") : 0.0;
         wt_ff_dmbins_wjets_syst_up_1_ = event->Exists("wt_ff_dmbins_wjets_syst_up_1") ? event->Get<double>("wt_ff_dmbins_wjets_syst_up_1") : 0.0;
         wt_ff_dmbins_wjets_syst_down_1_ = event->Exists("wt_ff_dmbins_wjets_syst_down_1") ? event->Get<double>("wt_ff_dmbins_wjets_syst_down_1") : 0.0;
         wt_ff_dmbins_wjets_met_up_1_ = event->Exists("wt_ff_dmbins_wjets_met_up_1") ? event->Get<double>("wt_ff_dmbins_wjets_met_up_1") : 0.0;

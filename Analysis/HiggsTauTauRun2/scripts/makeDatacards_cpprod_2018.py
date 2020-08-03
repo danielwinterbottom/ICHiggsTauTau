@@ -123,6 +123,12 @@ if not options.year == "":
   YEAR=options.year
 no_shift_systs = options.no_shift_systs
 
+# create separate output folder for scheme and year
+output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
+os.system('mkdir {}'.format(output_folder))
+os.system('mkdir {}/{}'.format(output_folder, SCHEME))
+os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
+
 ########## Set up schemes and options
 
 #### Always apply these options:
@@ -141,39 +147,91 @@ extra_channel = {
       "zmm" : ' ',
   }
 jes_systematics=''
+
 if options.split_jes:
-  jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
+    jes_systematics = ' --syst_scale_j_by_source="CMS_scale_j_SOURCE_13TeV" '
 
 
-common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV"  --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" --syst_ps="CMS_*PS_ggH_13TeV" --syst_ue="CMS_UE_ggH_13TeV" --syst_res_j="CMS_res_j_13TeV" '
+common_shape_systematics = (
+    ' --syst_zwt="CMS_htt_dyShape_13TeV" '
+    ' --syst_tquark="CMS_htt_ttbarShape_13TeV" '
+    ' --syst_qcd_scale="CMS_scale_gg_13TeV" '
+    ' --syst_quarkmass="CMS_FiniteQuarkMass_13TeV" '
+    ' --syst_ps="CMS_*PS_ggH_13TeV" '
+    ' --syst_ue="CMS_UE_ggH_13TeV" '
+    ' --syst_res_j="CMS_res_j_13TeV" '
+)
 
 if not no_shift_systs:
-  common_shape_systematics+=' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" --syst_scale_met="CMS_htt_boson_scale_met_13TeV" --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
-  common_shape_systematics += ' --syst_scale_j_regrouped="CMS_scale_j_*group_13TeV"'
+    common_shape_systematics += (
+        ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV" '
+        ' --syst_scale_met="CMS_htt_boson_scale_met_13TeV" '
+        ' --syst_res_met="CMS_htt_boson_reso_met_13TeV" '
+        ' --syst_scale_j_regrouped="CMS_scale_j_*group_13TeV"'
+    )
 
 if options.total_jes:
-  common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
+    common_shape_systematics += ' --syst_scale_j="CMS_scale_j_13TeV" '
 
-em_shape_systematics=' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
+em_shape_systematics = (
+    ' --syst_qcd_bkg="CMS_em_QCD_BackgroundSubtraction_13TeV" '
+    ' --syst_em_qcd="CMS_em_QCD_*BIN_13TeV" '
+    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
+)
 # need to add new QCD uncertainties
 
 if not no_shift_systs:
-  em_shape_systematics+=' --syst_e_scale="CMS_scale_e_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
+    em_shape_systematics += (
+        ' --syst_e_scale="CMS_scale_e_13TeV" '
+        ' --syst_mu_scale="CMS_scale_mu_13TeV" '
+    )
 
-et_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_et_*DM_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
+et_shape_systematics = (
+    ' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" '
+    ' --syst_tau_trg_diff="CMS_eff_Xtrigger_et_*DM_13TeV" '
+    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
+)
 if not no_shift_systs:
-  et_shape_systematics+=' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" --syst_e_scale="CMS_scale_e_13TeV" '
+    et_shape_systematics += (
+        ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV" '
+        ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV" '
+        ' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" '
+        ' --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" '
+        ' --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+        ' --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
+        ' --syst_e_scale="CMS_scale_e_13TeV" '
+    )
 
-mt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" --syst_eff_b_weights="CMS_eff_b_13TeV" '
+mt_shape_systematics = (
+    ' --syst_tau_id_diff="CMS_eff_t_*PT_13TeV" '
+    ' --syst_tau_trg_diff="CMS_eff_Xtrigger_mt_*DM_13TeV" '
+    ' --syst_eff_b_weights="CMS_eff_b_13TeV" '
+)
 if not no_shift_systs:
-  mt_shape_systematics+=' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" --syst_mu_scale="CMS_scale_mu_13TeV" '
+    mt_shape_systematics += (
+        ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV" '
+        ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV" '
+        ' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" '
+        ' --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" '
+        ' --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+        ' --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
+        ' --syst_mu_scale="CMS_scale_mu_13TeV" '
+    )
 
-tt_shape_systematics=' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" --syst_tau_trg_diff="CMS_eff_t_trg_*DM_13TeV" '
+tt_shape_systematics = (
+    ' --syst_tau_id_diff="CMS_eff_t_*DM_13TeV" '
+    ' --syst_tau_trg_diff="CMS_eff_t_trg_*DM_13TeV" '
+)
 if not no_shift_systs:
-  tt_shape_systematics+=' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
+    tt_shape_systematics += (
+        ' --syst_tau_scale_0pi="CMS_scale_t_1prong_13TeV" '
+        ' --syst_tau_scale_1pi="CMS_scale_t_1prong1pizero_13TeV" '
+        ' --syst_tau_scale_3prong="CMS_scale_t_3prong_13TeV" '
+        ' --syst_tau_scale_3prong1pi0="CMS_scale_t_3prong1pizero_13TeV" '
+    )
 
 if options.embedding:
-  common_shape_systematics+=' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
+    common_shape_systematics += ' --syst_embedding_tt="CMS_ttbar_embeded_13TeV" '
 
 extra_channel = {
       "et" : ' '+common_shape_systematics+ ' '+et_shape_systematics,
@@ -517,46 +575,12 @@ for ch in channels:
                         + ' ./scripts/batch_datacards.sh'
                         )
 
-            if jes_systematics and not options.no_shape_systs and not options.batch:
-              # have to do this to avoid using too much memory...
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes1'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=1:9' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes2'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=10:18' % vars())
-                os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-                    ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s --extra_name=jes3'
-                    ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s'
-                    ' --var="%(var)s" %(extra_jes)s --no_plot --jes_sources=19:27' % vars())
 
-            elif jes_systematics and not options.no_shape_systs and options.batch:
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes1,jes_sources=1:9 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes2,jes_sources=10:18 ./scripts/batch_datacards_jes.sh'
-                        )
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra_jes="{}"'.format(extra_jes)
-                        + ' -v extra_name=jes3,jes_sources=19:27 ./scripts/batch_datacards_jes.sh'
-                        )
-
-    if not options.batch:
+    if not options.batch and options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
 
     if options.hadd:
         os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
-        os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
+        # os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root ' % vars())
 

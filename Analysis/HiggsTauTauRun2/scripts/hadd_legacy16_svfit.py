@@ -244,8 +244,9 @@ for sa in sample_list:
     to_remove=[]
     hadd_dirs=[]
     command=''
+    year = 2016
     if batch:
-      JOB='jobs/hadd_%s_%s.sh' % (sa,ch)
+      JOB='jobs/hadd_%s_%s_%s.sh' % (sa,ch,year)
       os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
@@ -266,12 +267,13 @@ for sa in sample_list:
             to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())
         else:
           haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir) 
-          command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root; fi\n" % vars()    
+          # command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root; fi\n" % vars()    
+          command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then echo 'Error in this file'; fi\n" % vars()
 
     if batch and command:
       with open(JOB, "a") as file: 
         file.write("\n%s" % command)
-        file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s_%(ch)s.log' % vars())
+        file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s_%(ch)s_%(year)s.log' % vars())
       os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
   if not batch and remove:

@@ -341,6 +341,7 @@ if options.proc_embed or options.proc_all:
 
     embed_samples = []
     data_eras = ['A','B','C','D']
+    # data_eras = ['D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -369,7 +370,7 @@ if options.proc_embed or options.proc_all:
             if 'MuTauA' in sa or 'MuTauC' in sa: nperjob = 2
             if 'ElTauD' in sa or 'ElElD' in sa: nperjob = 200
             if 'ElMuD' in sa: nperjob = 200
-            if 'MuTauD' in sa: nperjob = 200
+            if 'MuTauD' in sa: nperjob = 100
             if 'TauTauD' in sa: nperjob = 200
             if 'MuMu' in sa and 'MuMuD' not in sa: nperjob = 10
             #print FLATJSONPATCH
@@ -412,41 +413,41 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-          'DYJetsToLL',
-         'DY1JetsToLL-LO',
-         'DY2JetsToLL-LO',
-         'DY3JetsToLL-LO',
-         'DY4JetsToLL-LO',
-         'DYJetsToLL-LO',
-          'DYJetsToLL_M-10-50-LO',
-          'EWKWMinus2Jets',
-          'EWKWPlus2Jets',
-          'EWKZ2Jets',
-          'T-t',
-          'T-tW-ext1',
-          'TTTo2L2Nu',
-          'TTToHadronic',
-          'TTToSemiLeptonic',
-          'Tbar-t',
-          'Tbar-tW-ext1',
-          'W1JetsToLNu-LO',
-          'W2JetsToLNu-LO',
-          'W3JetsToLNu-LO',
-          'W4JetsToLNu-LO',
-          'WGToLNuG',
-          'WJetsToLNu-LO',
-          'WWTo2L2Nu',
-          'WWToLNuQQ',
-          'WZTo1L3Nu',
-          'WZTo2L2Q',
-          'WZTo3LNu',
-          'WZTo3LNu-ext1',
-          'ZZTo2L2Nu-ext1',
-          'ZZTo2L2Nu-ext2',
-          'ZZTo2L2Q',
-          'ZZTo4L',
-          'ZZTo4L-ext',
-          'WZTo1L1Nu2Q', #don't forget cross section and params for this one!
+        'DYJetsToLL',
+        'DY1JetsToLL-LO',
+        'DY2JetsToLL-LO',
+        'DY3JetsToLL-LO',
+        'DY4JetsToLL-LO',
+        'DYJetsToLL-LO',
+        'DYJetsToLL_M-10-50-LO',
+        'EWKWMinus2Jets',
+        'EWKWPlus2Jets',
+        'EWKZ2Jets',
+        'T-t',
+        'T-tW-ext1',
+        'TTTo2L2Nu',
+        'TTToHadronic',
+        'TTToSemiLeptonic',
+        'Tbar-t',
+        'Tbar-tW-ext1',
+        'W1JetsToLNu-LO',
+        'W2JetsToLNu-LO',
+        'W3JetsToLNu-LO',
+        'W4JetsToLNu-LO',
+        'WGToLNuG',
+        'WJetsToLNu-LO',
+        'WWTo2L2Nu',
+        'WWToLNuQQ',
+        'WZTo1L3Nu',
+        'WZTo2L2Q',
+        'WZTo3LNu',
+        'WZTo3LNu-ext1',
+        'ZZTo2L2Nu-ext1',
+        'ZZTo2L2Nu-ext2',
+        'ZZTo2L2Q',
+        'ZZTo4L',
+        'ZZTo4L-ext',
+        'WZTo1L1Nu2Q', #don't forget cross section and params for this one!
     ]
 
 
