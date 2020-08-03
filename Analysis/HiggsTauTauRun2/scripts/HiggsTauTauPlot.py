@@ -1584,6 +1584,7 @@ if options.analysis in ['cpprod']:
 
   if options.era == 'cp18':
     sm_samples = {
+         'vbf_new' : 'VBFHToTauTau_M125_withDipoleRecoil',
          'ggh*_powheg' : 'GluGluHToTauTau_M-125',
      #    'vbf*_powheg' : 'VBFHToTauTau_M-125-ext1',
       #   'wplush*_powheg': 'WplusHToTauTau_M-125',
@@ -2030,8 +2031,12 @@ if options.syst_tau_trg_diff != '':
     if '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
-        systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
-        systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+        if options.channel != 'tt':
+          systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*((wt_tau_trg_dm%(i)i_up==1) + (wt_tau_trg_dm%(i)i_up!=1)*(max(1.05,wt_tau_trg_dm%(i)i_up)))' % vars(), ['QCD','jetFakes'], False)
+          systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*((wt_tau_trg_dm%(i)i_down==1) + (wt_tau_trg_dm%(i)i_down!=1)*(min(0.95,wt_tau_trg_dm%(i)i_down)))' % vars(), ['QCD','jetFakes'], False)
+        else: 
+          systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+          systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
     if '*MVADM' in hist_name:
 
       for i in [0,1,2,10,11]:
@@ -4231,6 +4236,7 @@ def Symmetrise(hist):
     print 'N X bins in 2D histogram is not even so cannot symmetrise!'
     return
   to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
+  to_skip = ['data_obs']
   if True in [x in hist.GetName() for x in to_skip]: return
   for i in range(1,nbins/2+1):
     lo_bin = i
@@ -4428,7 +4434,8 @@ if not options.no_plot:
         x_lines,
         [y_labels,y_var_titles],
         options.embedding,
-        vbf_background
+        vbf_background,
+        options.signal_scheme
         )
     elif scheme != 'signal':
       plotting.HTTPlot(nodename, 

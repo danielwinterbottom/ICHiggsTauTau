@@ -287,6 +287,11 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'  
 
+
+  #VAR_DIJET   =  'svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
+  #VAR_DIJET_1 =  'svfit_mass,sjdphi[50,80,100,115,130,200],(12,-3.2,3.2)'
+  #VAR_DIJET_2 =  'svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+
   sel='(mt_1<50)'
 
   scheme_et = [
@@ -332,6 +337,63 @@ if SCHEME == 'cpprod_extrapt':
   }
   ANA = 'sm'
 
+if SCHEME == 'cpprod_new':
+
+  VAR_0JET_LT = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_EM = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+  VAR_0JET_TT = 'svfit_mass[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+
+  VAR_BOOSTED = 'pt_tt,svfit_mass[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+  VAR_BOOSTED_TT = 'pt_tt,svfit_mass[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
+
+  VAR_DIJET   =  'svfit_mass,sjdphi[50,80,100,115,130,140,150,160,200],(12,-3.2,3.2)'
+  VAR_DIJET_1 =  'svfit_mass,sjdphi[50,80,100,115,130,200],(12,-3.2,3.2)'
+  VAR_DIJET_2 =  'svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
+
+  sel='(mt_1<50)'
+
+  scheme_et = [
+    ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s"  --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars())
+  ]
+  scheme_mt = [
+    ("17",   "0jet",    "2018_0jet",  VAR_0JET_LT, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "boosted",    "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars()),
+    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, '--set_alias="sel:%(sel)s" --set_alias="baseline:({baseline}&&pt_2>30)"  ' % vars())
+
+  ]
+  scheme_tt = [
+    ("17",   "0jet",    "2018_0jet",  VAR_0JET_TT, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
+    ("17",   "boosted", "2018_boosted",  VAR_BOOSTED_TT, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
+    ("17",   "dijet_loosemjj_lowboost",    "2018_dijet_loosemjj_lowboost", VAR_DIJET, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
+    ("17",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
+    ("17",   "dijet_tightmjj_lowboost",    "2018_dijet_tightmjj_lowboost", VAR_DIJET, ' --set_alias="baseline:({baseline}&&pt_1>50)"  '),
+    ("17",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="baseline:({baseline}&&pt_1>50)"  ')
+  ]
+  scheme_em = [
+    ("19",   "0jet",    "2018_0jet",  VAR_0JET_EM, ' --set_alias="sel:pzeta>-35"  '),
+    ("19",   "boosted", "2018_boosted",  VAR_BOOSTED, ' --set_alias="sel:pzeta>-35"  '),
+    ("19",   "inclusive",    "2018_ttbar",  'm_sv[50,300]', ' --set_alias="sel:pzeta<-50" --set_alias="inclusive:(n_jets>0)"  '),
+    ("19",   "dijet_loosemjj_lowboost",     "2018_dijet_loosemjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_loosemjj_boosted",     "2018_dijet_loosemjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_tightmjj_lowboost",     "2018_dijet_tightmjj_lowboost",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  '),
+    ("19",   "dijet_tightmjj_boosted",     "2018_dijet_tightmjj_boosted",  VAR_DIJET, ' --set_alias="sel:pzeta>-10"  ')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default',
+    'zmm' : 'zmm_default'
+  }
+  ANA = 'sm'
 
 if SCHEME == 'control_plots':
   scheme_mt=[

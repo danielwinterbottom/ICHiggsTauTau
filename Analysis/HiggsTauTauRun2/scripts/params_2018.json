@@ -258,6 +258,10 @@
     "xs": 0.2371,
     "evt": 2995858
   },
+  "VBFHToTauTau_M125_withDipoleRecoil": {
+    "xs": 0.2371,
+    "evt": 2879446
+  },
   "VBFHToWWTo2L2Nu_M-125": {
     "xs": 0.0858,
     "evt": 998428

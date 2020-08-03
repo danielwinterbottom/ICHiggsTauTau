@@ -41,6 +41,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
+    'VBFHToTauTau_M125_withDipoleRecoil',
     #'DYJetsToLL-2017',
     'SingleMuonA',
     'SingleMuonB',

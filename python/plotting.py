@@ -2155,8 +2155,8 @@ def HTTPlot(nodename,
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
 
-    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False )
-    # sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False )
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_sm_htt"], False )
+    sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggH_ps_htt"], False )
     # sig_schemes['sm_mm'] = ( str(int(signal_scale))+"#times MM ggH#rightarrow#tau#tau", ["ggHmm_htt"], False )
 
     sig_schemes["sm_cp_decays_ggh"] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_sm_htt"], False )
@@ -2493,7 +2493,7 @@ def HTTPlot(nodename,
         elif ggh_scheme == 'JHU':
             signal_split_schemes = ['sm_ggH_JHU','sm_qqH','sm_VH']
         if ggh_scheme == 'madgraph':
-            signal_split_schemes = ['sm_cp','sm_qqH']
+            signal_split_schemes = ['sm_cp','ps_sm']
             # signal_split_schemes = ['sm_cp','sm_ps','sm_mm']
 
         for index,split_scheme in enumerate(signal_split_schemes):
@@ -3600,7 +3600,8 @@ def HTTPlotUnrolled(nodename,
             x_lines=None,
             y_labels_vec=None,
             embedding=False,
-            vbf_background=False
+            vbf_background=False,
+            signal_scheme="",
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -3610,7 +3611,8 @@ def HTTPlotUnrolled(nodename,
     # sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggHsm_htt"], False , R.kRed) 
     #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
-    # sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggHsm_htt"], False, R.kRed)
+    sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_sm_htt"], False, R.kRed)
+    sig_schemes['ps_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_ps_htt"], False, R.kRed)
     sig_schemes["sm_cp_decays"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_sm_htt", "qqH_sm_htt"], False, R.kRed)
     sig_schemes["sm_cp_decays_ps"] = ( str(int(signal_scale))+"#times PS H#rightarrow#tau#tau", ["ggH_ps_htt", "qqH_ps_htt"], False, R.kGreen+3)
     #sig_schemes['sm_ps'] = ( str(int(signal_scale))+"#times PS ggH#rightarrow#tau#tau", ["ggHps_htt"], False, R.kGreen+3)
@@ -3693,9 +3695,9 @@ def HTTPlotUnrolled(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
     
-    # if vbf_background:
-    #     for key in background_schemes: 
-    #         background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    if vbf_background:
+         for key in background_schemes: 
+             background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
 
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
@@ -3818,7 +3820,28 @@ def HTTPlotUnrolled(nodename,
     sighist = R.TH1F()
     sighists = []
     sighist_blind = []
-    if signal_mass != "":
+
+    signal_split_schemes = []
+    if signal_scheme == 'cpprod_split':
+      signal_split_schemes = ['sm_cp','ps_sm']
+
+      print sig_schemes['sm_cp'][1] 
+      print sig_schemes['sm_cp'][1][0] 
+      h = infile.Get(nodename+'/'+sig_schemes['sm_cp'][1][0]+'125').Clone()
+      h2 = infile.Get(nodename+'/'+sig_schemes['ps_cp'][1][0]+'125').Clone()
+
+      h.SetLineColor(R.kRed)
+      h.SetLineWidth(2)
+      h.Scale(signal_scale)
+
+      h2.SetLineColor(R.kGreen -2)
+      h2.SetLineWidth(2)
+      h2.Scale(signal_scale)
+      stack.Draw("histsame")
+      h.Draw('histsame')
+      h2.Draw('histsame')
+
+    elif signal_mass != "":
         for signal_scheme in sig_schemes:
             sighist = R.TH1F()  
             sig_scheme = sig_schemes[signal_scheme]

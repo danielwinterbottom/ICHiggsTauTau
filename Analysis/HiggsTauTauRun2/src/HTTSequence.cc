@@ -1303,6 +1303,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 
       // for el12 leg of EMu cross-trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emLow")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -1320,6 +1321,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 
       // for el23 leg of EMu cross-trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emHigh")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -1338,6 +1340,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 
       if(strategy_type == strategy::cpdecays18) {
         BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET")
+            .set_is_embedded(is_embedded)
             .set_fs(fs.get())
             .set_channel(channel)
             .set_strategy(strategy_type)
@@ -1354,6 +1357,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
         );
 
         BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+            .set_is_embedded(is_embedded)
             .set_fs(fs.get())
             .set_channel(channel)
             .set_strategy(strategy_type)
@@ -1370,6 +1374,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 
         // for el23 leg of EMu cross-trigger
         BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET")
+            .set_is_embedded(is_embedded)
             .set_fs(fs.get())
             .set_channel(channel)
             .set_strategy(strategy_type)
@@ -1386,6 +1391,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
         );
 
         BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+            .set_is_embedded(is_embedded)
             .set_fs(fs.get())
             .set_channel(channel)
             .set_strategy(strategy_type)
@@ -1401,6 +1407,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       }
 
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -1423,6 +1430,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       
           // for Ele12 leg of EMu cross-trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emLow")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -1440,6 +1448,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           
           //// for Ele23 leg of EMu cross-trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_emHigh")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)
@@ -1456,6 +1465,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       );
           // for single electron trigger
       BuildModule(TagAndProbe<Electron const*>("TagAndProbe_Single")
+          .set_is_embedded(is_embedded)
           .set_fs(fs.get())
           .set_channel(channel)
           .set_strategy(strategy_type)

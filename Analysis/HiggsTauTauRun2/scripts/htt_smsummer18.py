@@ -246,7 +246,7 @@ if options.proc_sm or options.proc_all:
        'ZHiggs0PHToTauTau',
        'ZHiggs0PHf05ph0ToTauTau',
        'ZHiggs0PMToTauTau',
-
+      'VBFHToTauTau_M125_withDipoleRecoil'
     ]
 
 
@@ -367,7 +367,7 @@ if options.proc_embed or options.proc_all:
             if 'ElTau' or 'MuTau' in sa: nperjob = 5
             if 'MuTau' in sa: nperjob = 2
             if 'MuTauA' in sa or 'MuTauC' in sa: nperjob = 2
-            if 'ElTauD' in sa: nperjob = 200
+            if 'ElTauD' in sa or 'ElElD' in sa: nperjob = 200
             if 'ElMuD' in sa: nperjob = 200
             if 'MuTauD' in sa: nperjob = 200
             if 'TauTauD' in sa: nperjob = 200
@@ -503,6 +503,9 @@ if options.mg_signal or options.proc_sm:
         user='dwinterb'
         SIG_FILELIST = './filelists/Mar20_2018_MC_102X'
         SIG_DIR = 'Mar20_MC_102X_2018'
+        if 'VBFHToTauTau_M125_withDipoleRecoil' in sa:
+          SIG_FILELIST = './filelists/tauspinner_uncerts_2018_v2_MC_102X'
+          SIG_DIR = 'tauspinner_uncerts_2018_v2'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 

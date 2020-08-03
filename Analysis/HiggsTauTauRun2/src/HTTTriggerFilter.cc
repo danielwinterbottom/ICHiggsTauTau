@@ -608,6 +608,20 @@ namespace ic {
       if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
       }
     }
+    if(is_embedded_&&(era_ == era::data_2017||era_ == era::data_2018)) {
+      //L1 cut
+      std::vector<Candidate const *> match_tau;
+      match_tau.push_back(dileptons[0]->At(1));
+      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+      std::vector<ic::L1TObject*> passed_l1_taus_etau;
+      for(unsigned ta=0; ta<l1taus.size(); ++ta){
+          if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);
+      }
+      bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+      //if(passed_etaucross && !match_l1_part_etau) std::cout << "L1 not passed!" << std::endl;
+      //else if(passed_etaucross) std::cout << "L1 passed!" << std::endl;
+      passed_etaucross = passed_etaucross && match_l1_part_etau;
+    }
     event->Add("trg_etaucross", passed_etaucross);
 
    

@@ -241,6 +241,7 @@ if options.proc_sm or options.proc_all:
        'ZHiggs0PHToTauTau',
        'ZHiggs0PHf05ph0ToTauTau',
        'ZHiggs0PMToTauTau', 
+
         ]
    # signal_mc += [
    #     'GluGluToHToTauTau_M125_amcatnloFXFX-UEUp',
@@ -518,7 +519,7 @@ if options.mg_signal or options.proc_sm:
 
         if n_scales*n_channels>=24: nperjob = int(math.ceil(float(nperjob)/2))
         if n_scales*n_channels>=48: nperjob = int(math.ceil(float(nperjob)/4))
-        if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
+        if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa or 'Higgs' in sa: 
           nperjob = int(math.ceil(float(nperjob)/5))
         if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
  

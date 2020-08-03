@@ -41,6 +41,7 @@ class TagAndProbe : public ModuleBase {
   CLASS_MEMBER(TagAndProbe, bool, loose_iso_trgprobe)
   CLASS_MEMBER(TagAndProbe, bool, do_dzmass)
   CLASS_MEMBER(TagAndProbe, bool, do_extra)
+  CLASS_MEMBER(TagAndProbe, bool, is_embedded)
  
   TTree *outtree_;
   
@@ -61,8 +62,12 @@ class TagAndProbe : public ModuleBase {
   double m_vis_;
   double wt_;
   bool os_;
+  double match_tau_pt_1_;
+  double match_tau_pt_2_;
   bool trg_tag_1_;
   bool trg_tag_2_;
+  bool trg_tag_extra_1_;
+  bool trg_tag_extra_2_;
   bool trg_probe_1_;
   bool trg_probe_2_;
   bool id_probe_1_;
@@ -176,6 +181,10 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("passed_extra_2" , &passed_extra_2_    );
     outtree_->Branch("trg_tag_1" , &trg_tag_1_    );
     outtree_->Branch("trg_tag_2" , &trg_tag_2_    );
+    outtree_->Branch("trg_tag_extra_1" , &trg_tag_extra_1_    );
+    outtree_->Branch("trg_tag_extra_2" , &trg_tag_extra_2_    );
+    outtree_->Branch("match_tau_pt_1" , &match_tau_pt_1_    );
+    outtree_->Branch("match_tau_pt_2" , &match_tau_pt_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
     outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
@@ -464,23 +473,48 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       if(do_extra_){
         //put any extra condition your require the events to pass here
         std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-        bool passed_extra_1 = false;
-        bool passed_extra_2 = false;
+        //bool passed_extra_1 = false;
+        //bool passed_extra_2 = false;
+        trg_tag_extra_1_=false;
+        trg_tag_extra_2_=false;
+        match_tau_pt_1_=-9999; 
+        match_tau_pt_2_=-9999;
+
+        std::vector<ic::Tau*> taus = event->GetPtrVec<ic::Tau>("taus");
+
+        std::vector<ic::L1TObject*> sel_l1taus_1={};
+        std::vector<ic::L1TObject*> sel_l1taus_2={};
         for(unsigned ta=0; ta<l1taus.size(); ++ta){
           if(l1taus[ta]->vector().Pt()>26 && fabs(l1taus[ta]->eta())<2.1 && l1taus[ta]->isolation()>0)  {
-            double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
-            double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
+            //double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
+            //double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
             double deta_1 = std::fabs(l1taus[ta]->eta()-lep1->eta());
             double deta_2 = std::fabs(l1taus[ta]->eta()-lep2->eta());
-            if(deta_1>0.2&&dR_1>0.5) passed_extra_1 = true;
-            if(deta_2>0.2&&dR_2>0.5) passed_extra_2 = true;
+            //if(deta_1>0.2&&dR_1>0.5) passed_extra_1 = true;
+            //if(deta_2>0.2&&dR_2>0.5) passed_extra_2 = true;
+            if(deta_2>0.3) sel_l1taus_1.push_back(l1taus[ta]);
+            if(deta_1>0.3) sel_l1taus_2.push_back(l1taus[ta]);
           }
          }
-         trg_tag_1_ = trg_tag_1_ && passed_extra_2;
-         trg_tag_2_ = trg_tag_2_ && passed_extra_1;
+         std::vector<Candidate const*> lep1_vec = {lep1};
+         std::vector<Candidate const*> lep2_vec = {lep2};
+         std::vector<std::pair <ic::L1TObject*, Candidate const*> > match1 = MatchByDR(sel_l1taus_1, lep1_vec, 0.5, false, false);    
+         std::vector<std::pair <ic::L1TObject*, Candidate const*> > match2 = MatchByDR(sel_l1taus_2, lep2_vec, 0.5, false, false);    
+         trg_tag_extra_1_=match1.size()>0;
+         trg_tag_extra_2_=match2.size()>0;
+
+
+         std::vector<std::pair <ic::Tau*, Candidate const*> > match1_2 = MatchByDR(taus, lep1_vec, 0.5, false, false);    
+         std::vector<std::pair <ic::Tau*, Candidate const*> > match2_2 = MatchByDR(taus, lep2_vec, 0.5, false, false);    
+
+         if(match1_2.size()>0) match_tau_pt_1_ = match1_2[0].first->pt();
+         if(match2_2.size()>0) match_tau_pt_2_ = match2_2[0].first->pt(); 
+
+         //trg_tag_1_ = trg_tag_1_ && passed_extra_2 && passed_extra_1;
+         //trg_tag_2_ = trg_tag_2_ && passed_extra_1 && passed_extra_2; // make sure the L1 tau is seperated from both objects?
       }
 
-      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16){
+      if((strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) && ! is_embedded_){
         // we have to do this here so that the ID is compted before the smear and scale shift
         float  preCorr_1 = elec1_1->ecalTrkEnergyPreCorr();
         float postCorr_1 = elec1_1->ecalTrkEnergyPostCorr();

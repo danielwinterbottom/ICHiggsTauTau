@@ -997,6 +997,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         double tau_sf_mvadm_2_highpt_mvadm11_down = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_medium_highpt_mvadm11_down"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
 
         event->Add("wt_tau_id_mvadm",tau_sf_mvadm_2/tau_sf_2);
+        event->Add("wt_tau_id_mvadm_sync",tau_sf_mvadm_2);
 
         event->Add("wt_tau_id_lowpt_mvadm0_up",tau_sf_mvadm_2_lowpt_mvadm0_up); 
         event->Add("wt_tau_id_lowpt_mvadm1_up",tau_sf_mvadm_2_lowpt_mvadm1_up); 
@@ -1671,6 +1672,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         single_e_sf = ele_trg;
       }
 
+      xtrg_et_sf_mvadm = ele_xtrg / ele_xtrg_mc *tau_trg_mvadm;
 
       if(era_ == era::data_2017 && is_embedded_ && e_pt<40 && fabs(e_eta)>1.479){
         // electron triggers in this eta/pT region don't work properly for the embedding in 2017 so set the SF to the data efficiency and have all events pass the trigger in HTTTriggerFilter - this works for the 2018 but needs to be checked for the 2016 legacy!
@@ -1682,8 +1684,10 @@ int HTTWeights::Execute(TreeEvent *event) {
         xtrg_et_sf_mvadm = tau_trg_mvadm_data*ele_xtrg; 
         et_trg_or = ele_trg + (ele_xtrg - ele_trg)*tau_trg_mvadm_data;   
       }
- 
+
       event->Add("et_trg_or",et_trg_or); 
+      event->Add("et_trg_cross",xtrg_et_sf_mvadm); 
+      event->Add("et_trg_single",single_e_sf); 
  
       // for 2016 we only use the single electron trigger
       if(era_ == era::data_2016) {
@@ -1841,6 +1845,8 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       tau_trg = 1.0;
       tau_trg_mc = 1.0; 
+
+      xtrg_et_sf_mvadm = xtrg_OR_sf==0 ? xtrg_et_sf_mvadm : xtrg_et_sf_mvadm/xtrg_OR_sf;
 
      if (trg_applied_in_mc_) {
        ele_trg = ele_trg / ele_trg_mc;

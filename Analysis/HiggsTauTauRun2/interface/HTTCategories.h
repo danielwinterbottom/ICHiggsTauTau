@@ -111,6 +111,7 @@ class HTTCategories : public ModuleBase {
   double single_l_sf_;
   double et_trg_;
   double et_trg_or_;
+  double et_trg_cross_;
   double mvadm_idiso_et_;
   double xtrg_notrig_;
   double OR_notrig_;
@@ -643,6 +644,7 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   bool trg_mutaucross_;
   bool trg_etaucross_;
+  bool trg_etau_matched_;
   
   double scale1_;
   double scale2_;
@@ -842,6 +844,8 @@ class HTTCategories : public ModuleBase {
   double ip_sig_1_down_;
   double ip_sig_2_down_;
 
+  bool a1_flag_;
+  bool a1_flag_2_;
 
  public:
   HTTCategories(std::string const& name);

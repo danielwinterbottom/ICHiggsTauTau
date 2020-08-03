@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "Utilities/interface/FnRootTools.h"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
@@ -702,6 +703,8 @@ namespace ic {
       outtree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
       outtree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
 
+      outtree_->Branch("a1_flag", &a1_flag_);
+      outtree_->Branch("a1_flag_2", &a1_flag_2_);
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("aco_angle_2", &aco_angle_2_);
       outtree_->Branch("aco_angle_3", &aco_angle_3_);
@@ -820,6 +823,7 @@ namespace ic {
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
       outtree_->Branch("trg_etaucross",    &trg_etaucross_);
+      outtree_->Branch("trg_etau_matched", &trg_etau_matched_);
       outtree_->Branch("jpt_1",             &jpt_1_.var_double);
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
@@ -907,13 +911,13 @@ namespace ic {
 
       synctree_->Branch("puweight", &pu_weight_, "pu_weight/F");
 
-     if(channel_==channel::et) synctree_->Branch("trigweight_1", &et_trg_, "trigweight_1/F");
+     if(channel_==channel::et) synctree_->Branch("trigweight_1", &et_trg_);
      else synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
 
-      synctree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
-      synctree_->Branch("trigweight", &et_trg_or_, "trigweight_2/F");
-      synctree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
-      if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_, "idisoweight_2/F");
+      synctree_->Branch("trigweight_2", &et_trg_cross_);
+      synctree_->Branch("trigweight", &et_trg_or_);
+      synctree_->Branch("idisoweight_1", &idisoweight_1_);
+      if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_);
       else synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
@@ -1733,7 +1737,6 @@ namespace ic {
     if (!is_embedded_ && eventInfo->weight_defined("pileup")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
     if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
     if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
-    if (event->Exists("et_trg_or")) et_trg_or_ = event->Get<double>("et_trg_or"); else et_trg_or_ = 1.0;
     if (event->Exists("xtrg_sf")) xtrg_sf_ = event->Get<double>("xtrg_sf"); else xtrg_sf_ = 1.0;
     if (event->Exists("single_l_sf")) single_l_sf_ = event->Get<double>("single_l_sf"); else single_l_sf_ = 1.0;
     if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;
@@ -1743,8 +1746,12 @@ namespace ic {
     if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
-    et_trg_=trigweight_1_*single_l_sf_;
-    mvadm_idiso_et_ = idisoweight_2_*wt_tau_id_mvadm_;
+    et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;
+    et_trg_cross_= (event->Exists("et_trg_cross")) ? event->Get<double>("et_trg_cross") : 0;
+    et_trg_or_= (event->Exists("et_trg_or")) ? event->Get<double>("et_trg_or") : 0;
+
+
+    mvadm_idiso_et_ =  (event->Exists("wt_tau_id_mvadm_sync")) ? event->Get<double>("wt_tau_id_mvadm_sync") : 1.0; 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -1929,6 +1936,8 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
+
+
 
     if(make_sync_ntuple_){
       event->Exists("genpX") ? gen_px_ = event->Get<double>("genpX") : 0.;
@@ -2434,7 +2443,9 @@ namespace ic {
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
+    a1_flag_ = false;
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
+
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
@@ -2737,6 +2748,9 @@ namespace ic {
 
         if (a1_daughters.size()>2){
 
+            a1_flag_ = true;
+            if(a1_daughters.size()==3) a1_flag_2_ = true;
+
             lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
             aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
@@ -2797,6 +2811,8 @@ namespace ic {
         //double  cp_sign_4_;
 
         if (a1_daughters.size()>2){
+            a1_flag_ = true;
+            if(a1_daughters.size()==3) a1_flag_2_ = true;
             mass0_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector() + a1_daughters[2]->vector()).M();
             mass1_ = (a1_daughters[0]->vector() + a1_daughters[1]->vector()).M();
             mass2_ = (a1_daughters[0]->vector() + a1_daughters[2]->vector()).M();
@@ -2859,6 +2875,8 @@ namespace ic {
         std::vector<ic::PFCandidate*> a1_daughters_2 = GetA1(tau2, pfcands).first;
 
         if(a1_daughters_1.size()>2 && a1_daughters_2.size()>2) {
+          a1_flag_ = true;
+          if(a1_daughters_1.size()==3 && a1_daughters_2.size()==3) a1_flag_2_ = true;
           Candidate* rho_1  = new Candidate();
           Candidate* rho_2  = new Candidate();
           rho_1->set_vector(a1_daughters_1[0]->vector()+a1_daughters_1[1]->vector());
@@ -3545,7 +3563,65 @@ namespace ic {
     //    sjdphi_smear_ =  boundPhi(sjdphi_ + smear_jphi_1 - smear_jphi_2);
     //  }
     //}
-    
+
+    // add 
+    // add bools for etau cross trigger SF measurment
+    if(channel_ == channel::mt) {
+      trg_etau_matched_ = false;
+      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+      std::vector<Candidate const *> match_tau;
+      match_tau.push_back(lep2);
+      std::pair<bool, unsigned> match_etau;
+      if(strategy_ == strategy::cpdecays17 || (is_data_ && strategy_ == strategy::cpdecays18 && run_ < 317509)){
+        std::string trg_etau_label = "triggerObjectsIsoMu20Tau27";
+        std::string filter_etau_Data_MC = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+        std::string filter_etau_Embed = "hltL1sMu18erTau24erIorMu20erTau24er";
+
+        std::vector<TriggerObject *> const& objs_etau = event->GetPtrVec<TriggerObject>(trg_etau_label);
+
+        if (is_embedded_)
+            match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Embed, 0.5);
+        else
+            match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Data_MC, 0.5);
+
+        //HLT pt cut - only for MC and for embedding we only have L1 
+        if (match_etau.first && !is_embedded_)  trg_etau_matched_ = objs_etau[match_etau.second]->vector().Pt()>30;
+
+        //L1 cut
+        std::vector<ic::L1TObject*> passed_l1_taus_etau;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);
+        }
+        bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+        trg_etau_matched_ = trg_etau_matched_ && match_l1_part_etau;
+
+      }
+      else if(strategy_ == strategy::cpdecays18){
+        std::string trg_etau_label = "triggerObjectsIsoMu20TauHPS27";
+        std::string filter_etau_Data_MC = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+        std::string filter_etau_Embed = "hltL1sBigORMu18erTauXXer2p1";
+
+        std::vector<TriggerObject *> const& objs_etau = event->GetPtrVec<TriggerObject>(trg_etau_label);
+
+        if (is_embedded_)
+            match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Embed, 0.5);
+        else
+            match_etau = IsFilterMatchedWithIndex(lep2, objs_etau, filter_etau_Data_MC, 0.5);
+
+        //HLT pt cut
+        if (match_etau.first && !is_embedded_)  trg_etau_matched_ = objs_etau[match_etau.second]->vector().Pt()>30;
+
+        //L1 cut
+        std::vector<ic::L1TObject*> passed_l1_taus_etau;
+        for(unsigned ta=0; ta<l1taus.size(); ++ta){
+            if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);
+        }
+        bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+        trg_etau_matched_ = trg_etau_matched_ && match_l1_part_etau;
+      }
+    }   
+
+ 
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
 
