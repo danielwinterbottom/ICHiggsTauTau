@@ -32,7 +32,7 @@ defaults = {
     "channel":"tpzmm" , 
     "outputfolder":"tagandprobe", 
     "folder":"/vols/cms/dw515/Offline/output/SM/TAPElMuLO2016/",
-    "era":"summer17", 
+    "era":"sm18", 
     "embedded":False, 
     "em_iso":False, 
     "aiso1":False, 
@@ -172,7 +172,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       #idiso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
       iso_pt_bins   = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]' 
-      idiso_pt_bins = '[10,15,20,25,30,40,50,100,200]'
+      idiso_pt_bins = '[10,15,20,25,30,35,40,50,100,200]'
       trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
       trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
       if options.em_iso: 
@@ -762,7 +762,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           wsp.var('sigma1f').setRange(0.2,4)
           wsp.var('sigma2f').setRange(2,10)
           wsp.var('sigma2p').setRange(2,10)
-      if options.channel=='tpzee' and 'id' in name and option.era in ['summer18']:
+      if options.channel=='tpzee' and 'id' in name and options.era in ['summer18']:
         print("changing range of betaFail for bkg")
         wsp.var('betaFail').setRange(0,0.1)
 
@@ -1028,8 +1028,8 @@ if options.channel == 'tpzee':
   
   if options.era in ['summer18','sm18','summer17']:
     if options.tree_name == 'tagandprobe_ET':
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&trg_tag_extra_1&&os)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&trg_tag_extra_2&&os)'
+      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&trg_tag_extra_1&&os)'
+      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&trg_tag_extra_2&&os)'
     else:
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'

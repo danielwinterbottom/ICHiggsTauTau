@@ -178,20 +178,31 @@ int HTTWeights::PreAnalysis() {
        w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
      fns_["m_trg_binned_23_embed"] = std::shared_ptr<RooFunctor>(
         w_->function("m_trg_23_binned_ic_embed")->functor(w_->argSet("m_pt,m_eta,m_iso")));
- 
-    // triggers for tau legs in et, mt and tt channels
+
     fns_["t_trg_30_embed_data"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-    fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm")));
     fns_["t_trg_30_embed"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_embed")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
-    fns_["t_trg_30_ratio"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio")->functor(w_->argSet("t_pt,t_dm")));
     fns_["t_trg_30_embed_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+ 
+    // triggers for tau legs in et, mt and tt channels
+    if(era_ != era::data_2018) {
+      fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio")->functor(w_->argSet("t_pt,t_dm")));
+    } else { 
+      fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio")->functor(w_->argSet("t_pt,t_dm")));
+    }
+
 
     fns_["t_trg_27_embed_data"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_mutau_data")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
@@ -248,23 +259,6 @@ int HTTWeights::PreAnalysis() {
     fns_["t_trg_27_embed_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_mutau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-    fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
-    fns_["t_trg_30_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
-
     fns_["t_trg_30_embed_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm0_up")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
     fns_["t_trg_30_embed_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
@@ -281,6 +275,45 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm10_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
     fns_["t_trg_30_embed_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
+
+    if(era_ != era::data_2018) {
+
+      fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
+
+    } else {
+
+      fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm1_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm10_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm11_up")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm0_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm1_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm10_down")->functor(w_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_->function("t_trg_ic_deeptau_medium_etau_ratio_dm11_down")->functor(w_->argSet("t_pt,t_dm")));
+    }
 
     fns_["t_trg_35_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
@@ -581,6 +614,28 @@ int HTTWeights::PreAnalysis() {
     fns_["t_deeptauid_dm_embed_vvvloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_dm_embed_vvvloose")->functor(w_->argSet("t_dm")));
 
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin1_up")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin2_up")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin3_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin3_up")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin4_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin4_up")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin5_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin5_up")->functor(w_->argSet("t_pt")));
+
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin1_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin1_down")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin2_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin2_down")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin3_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin3_down")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin4_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin4_down")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_pt_tightvse_embed_medium_bin5_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_pt_tightvse_embed_medium_bin5_down")->functor(w_->argSet("t_pt")));
+
 
     fns_["t_deeptauid_pt_embed_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_pt_embed_medium_bin1_up")->functor(w_->argSet("t_pt")));
@@ -840,6 +895,7 @@ int HTTWeights::Execute(TreeEvent *event) {
     double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
     if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield = 0.; // values > 1 are un-physical so set yield to 0
     eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
+    event->Add("wt_embedding_yield", wt_embedding_yield);
   }
 
   if (do_topquark_weights_) {
@@ -1026,6 +1082,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium"]->eval(args_pt.data()) : 1.0;
 
         if(channel_== channel::et) {
+          tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium"]->eval(args_pt.data()) : 1.0;
           double et_tau_extra = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium"]->eval(args_pt.data()) : 1.0;
           et_tau_extra/=tau_sf_2;
           event->Add("wt_tau_id_extra",et_tau_extra);
@@ -1041,6 +1098,20 @@ int HTTWeights::Execute(TreeEvent *event) {
         double tau_sf_2_bin3_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin3_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
         double tau_sf_2_bin4_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin4_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
         double tau_sf_2_bin5_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium_bin5_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+
+        if(channel_== channel::et) {
+          tau_sf_2_bin1_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin1_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin2_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin2_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin3_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin3_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin4_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin4_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin5_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin5_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin1_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin1_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin2_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin2_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin3_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin3_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin4_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin4_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+          tau_sf_2_bin5_down = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium_bin5_down"]->eval(args_pt.data())/tau_sf_2 : 1.0;
+        }
+
 
         if(gen_match_2==5) {
           if (decay_mode_2==0) tau_sf_2*=0.975;
@@ -1088,6 +1159,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         double tau_sf_mvadm_2_highpt_mvadm11_down = (gen_match_2==5) ? fns_["t_deeptauid_mvadm_embed_medium_highpt_mvadm11_down"]->eval(args_mvadm.data())/tau_sf_mvadm_2 : 1.0;
 
         event->Add("wt_tau_id_mvadm",tau_sf_mvadm_2/tau_sf_2);
+        event->Add("wt_tau_id_mvadm_sync",tau_sf_mvadm_2);
 
         event->Add("wt_tau_id_lowpt_mvadm0_up",tau_sf_mvadm_2_lowpt_mvadm0_up);
         event->Add("wt_tau_id_lowpt_mvadm1_up",tau_sf_mvadm_2_lowpt_mvadm1_up);
@@ -1610,8 +1682,8 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       double single_e_sf = ele_trg_mc>0 ? ele_trg / ele_trg_mc : 0.;
       double t_dm = tau->decay_mode();
-      auto args_2 = std::vector<double>{e_pt,e_eta};  
-      auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
+      auto args_2 = std::vector<double>{e_pt,e_eta}; 
+      auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm}; 
       auto args_4 = std::vector<double>{t_pt,t_dm};
 
       double t_mvadm = tau->GetTauID("MVADM2017v1");
@@ -1684,6 +1756,12 @@ int HTTWeights::Execute(TreeEvent *event) {
         xtrg_et_sf_mvadm = tau_trg_mvadm_data*ele_xtrg; 
         et_trg_or = ele_trg + (ele_xtrg - ele_trg)*tau_trg_mvadm_data;   
       }
+
+      bool pass_single_offline = (e_pt>e_high_pt_cut);
+      bool pass_cross_offline = (t_pt>35);
+
+      if (!pass_cross_offline) et_trg_or = single_e_sf;
+      else if(!pass_single_offline) et_trg_or = xtrg_et_sf_mvadm;
 
       event->Add("et_trg_or",et_trg_or); 
       event->Add("et_trg_cross",xtrg_et_sf_mvadm); 

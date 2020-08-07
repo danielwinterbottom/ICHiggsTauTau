@@ -919,6 +919,8 @@ namespace ic {
       synctree_->Branch("idisoweight_1", &idisoweight_1_);
       if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_);
       else synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      synctree_->Branch("embweight", &wt_embedding_yield_);
+      synctree_->Branch("trkeffweight", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
       synctree_->Branch("effweight", &effweight_, "effweight/F");
@@ -1747,6 +1749,7 @@ namespace ic {
     if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 1.0;
     if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
+    if (event->Exists("wt_embedding_yield")) wt_embedding_yield_ = event->Get<double>("wt_embedding_yield"); else wt_embedding_yield_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
     et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;
     et_trg_cross_= (event->Exists("et_trg_cross")) ? event->Get<double>("et_trg_cross") : 0;
@@ -3602,6 +3605,11 @@ namespace ic {
         std::string trg_etau_label = "triggerObjectsIsoMu20TauHPS27";
         std::string filter_etau_Data_MC = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
         std::string filter_etau_Embed = "hltL1sBigORMu18erTauXXer2p1";
+        //if(run_< 317509 && is_data_) {
+        //  std::string trg_etau_label = "triggerObjectsIsoMu20Tau27";
+        //  std::string filter_etau_Data_MC = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
+        //} 
+
 
         std::vector<TriggerObject *> const& objs_etau = event->GetPtrVec<TriggerObject>(trg_etau_label);
 
@@ -3612,6 +3620,7 @@ namespace ic {
 
         //HLT pt cut
         if (match_etau.first && !is_embedded_)  trg_etau_matched_ = objs_etau[match_etau.second]->vector().Pt()>30;
+        else if(is_embedded_)  trg_etau_matched_ = match_etau.first;       
 
         //L1 cut
         std::vector<ic::L1TObject*> passed_l1_taus_etau;

@@ -124,7 +124,8 @@ if not options.year == "":
 no_shift_systs = options.no_shift_systs
 
 # create separate output folder for scheme and year
-output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
+#output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
+output_folder = options.output_folder
 os.system('mkdir {}'.format(output_folder))
 os.system('mkdir {}/{}'.format(output_folder, SCHEME))
 os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
@@ -323,12 +324,19 @@ if SCHEME == 'cpprod':
 
 if SCHEME == 'cpprod_extrapt':
 
-  VAR_0JET_LT = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_EM = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
-  VAR_0JET_TT = 'svfit_mass[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+#  VAR_0JET_LT = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+#  VAR_0JET_EM = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300]'
+#  VAR_0JET_TT = 'svfit_mass[50,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
 
-  VAR_BOOSTED = 'pt_tt,svfit_mass[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,svfit_mass[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
+#  VAR_BOOSTED = 'pt_tt,svfit_mass[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,300]'
+#  VAR_BOOSTED_TT = 'pt_tt,svfit_mass[0,100,170,300],[50,70,80,90,100,110,120,130,150,200,250]'
+
+  VAR_0JET_LT = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'
+  VAR_0JET_EM = 'svfit_mass[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'
+  VAR_0JET_TT = 'svfit_mass[50,80,90,100,110,120,130,140,150,160,170,180,190,200]'
+
+  VAR_BOOSTED = 'pt_tt,svfit_mass[0,100,150,200,250,300],[50,80,90,100,110,120,130,140,150,160,200]'
+  VAR_BOOSTED_TT = 'pt_tt,svfit_mass[0,100,170,300],[50,70,80,90,100,110,120,130,150,200]'
 
   VAR_DIJET =  'svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
   VAR_TT_TI_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
@@ -539,7 +547,8 @@ cat_schemes = {
   'tt' : scheme_tt
 }
 
-qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_vmem=24G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+#qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_vmem=24G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_rt=10:0:0 -l h_vmem=12G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:

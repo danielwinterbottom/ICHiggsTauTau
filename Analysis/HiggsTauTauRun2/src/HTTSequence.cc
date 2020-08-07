@@ -697,7 +697,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     httStitching.set_do_w_soup(true);
     if(era_type == era::data_2016) {
      httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6); 
-     httStitching.SetWInputYields(58592840+114659635, 45283121, 30064264+30374504, 39501912+19798117, 18751462+2073275+9116657);
+     httStitching.SetWInputYields(57402435+29514020, 45283121, 30064264+30374504, 39501912+19798117, 18751462+2073275+9116657);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
@@ -1347,13 +1347,28 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
             .set_ditau_label("ditau")
             .set_tag_trg_objects("triggerObjectsEle35")
             .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-            .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+            //.set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
             .set_probe_id(elec_probe_id)
             .set_tag_id(elec_tag_id)
             .set_probe_trg_objects("triggerObjectsEle24Tau30,triggerObjectsEle24TauHPS30") // for 2018
             .set_probe_trg_filters("hltEle24erWPTightClusterShapeFilterForTau,hltEle24erWPTightClusterShapeFilterForTau") // for 2018
             .set_do_extra(true)
             .set_add_name("_ET")
+        );
+
+        BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET_v2")
+            .set_is_embedded(is_embedded)
+            .set_fs(fs.get())
+            .set_channel(channel)
+            .set_strategy(strategy_type)
+            .set_ditau_label("ditau")
+            .set_tag_trg_objects("triggerObjectsEle35")
+            .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+            .set_probe_id(elec_probe_id)
+            .set_tag_id(elec_tag_id)
+            .set_probe_trg_objects("triggerObjectsDoubleEl24") // use double electron monitoring trigger for 2018
+            .set_probe_trg_filters("hltDoubleEle24erWPTightGsfTrackIsoFilterForTau") // for 2018
+            .set_add_name("_ET_v2")
         );
 
         BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
@@ -1364,12 +1379,29 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
             .set_ditau_label("ditau")
             .set_tag_trg_objects("triggerObjectsEle35")
             .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-            .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+            //.set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
             .set_probe_id(elec_probe_id)
             .set_tag_id(elec_tag_id)
-            .set_probe_trg_objects("triggerObjectsEle35")
-            .set_probe_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+            .set_probe_trg_objects("triggerObjectsEle32,triggerObjectsEle35")
+            .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter,hltEle35noerWPTightGsfTrackIsoFilter")
         );
+
+        BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single32")
+            .set_is_embedded(is_embedded)
+            .set_fs(fs.get())
+            .set_channel(channel)
+            .set_strategy(strategy_type)
+            .set_ditau_label("ditau")
+            .set_tag_trg_objects("triggerObjectsEle35")
+            .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
+            //.set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
+            .set_probe_id(elec_probe_id)
+            .set_tag_id(elec_tag_id)
+            .set_probe_trg_objects("triggerObjectsEle32")
+            .set_probe_trg_filters("hltEle32WPTightGsfTrackIsoFilter")
+            .set_add_name("_single32")
+        );
+
       } else {
 
         // for el23 leg of EMu cross-trigger
@@ -1405,21 +1437,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
             .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
         );
       }
-
-      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_single")
-          .set_is_embedded(is_embedded)
-          .set_fs(fs.get())
-          .set_channel(channel)
-          .set_strategy(strategy_type)
-          .set_ditau_label("ditau")
-          .set_tag_trg_objects("triggerObjectsEle35")
-          .set_tag_trg_filters("hltEle35noerWPTightGsfTrackIsoFilter")
-          .set_extra_l1_tag_pt(32.) // ensure L1 was not prescaled during data-taking
-          .set_probe_id(elec_probe_id)
-          .set_tag_id(elec_tag_id)
-          .set_probe_trg_objects("triggerObjectsEle27,triggerObjectsEle32L1DoubleEG") 
-          .set_probe_trg_filters("hltEle27WPTightGsfTrackIsoFilter,hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-      );
 
     } else {
         

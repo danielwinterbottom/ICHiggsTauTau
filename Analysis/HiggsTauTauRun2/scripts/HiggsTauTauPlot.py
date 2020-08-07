@@ -429,10 +429,11 @@ if options.analysis in ['sm','cpprod','cpdecay']:
         if options.era in ['cpsummer16','cpdecay16',"legacy16"]:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_2>35&&pt_1<28)||(trg_singleelectron&&pt_1>28)))'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_2>35&&pt_1<28&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)))'
         if options.era in ['cp18']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)))'
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1 && fabs(eta_1-eta_2)>0.2)||(trg_singleelectron&&pt_1>33)))&&wt<2'
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)))&&wt<2'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -1584,7 +1585,7 @@ if options.analysis in ['cpprod']:
 
   if options.era == 'cp18':
     sm_samples = {
-         'vbf_new' : 'VBFHToTauTau_M125_withDipoleRecoil',
+         #'vbf_new' : 'VBFHToTauTau_M125_withDipoleRecoil',
          'ggh*_powheg' : 'GluGluHToTauTau_M-125',
      #    'vbf*_powheg' : 'VBFHToTauTau_M-125-ext1',
       #   'wplush*_powheg': 'WplusHToTauTau_M-125',
@@ -2397,6 +2398,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
+    #if options.channel == 'et': wt_+='*(((tau_decay_mode_2==0)*0.975 + (tau_decay_mode_2==1)*0.975*1.051 + (tau_decay_mode_2==10)*0.927 + (tau_decay_mode_2==11)*0.926*1.051)*0.965600)/idisoweight_2'
     #if options.channel == 'et': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
     #if options.channel == 'mt': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
 #'*0.98' # this is a tempoary fix for the different rates at which embedded taus pass the tight anti electron discriminator!
@@ -3242,7 +3244,9 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
         if not non_cp:
           for name in weights: 
             tname = key.replace('*',mass)+add_name
-            if 'ggH_'+name not in tname: tname=key.replace('*',mass)+'_reweightedto_'+name+add_name
+            if 'ggH_'+name not in tname: 
+              tname=key.replace('*',mass)+'_reweightedto_'+name+add_name
+              continue
             non_cp=False
             weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
             #if 'ggH_mm' in key: weight+='*2' # change MM to 2 times SM cross section to make life easier when combining reweighted templates - this is now done in XS file so not needed!!

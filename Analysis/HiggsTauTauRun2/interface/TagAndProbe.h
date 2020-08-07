@@ -130,7 +130,7 @@ TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   strategy_(strategy::mssmsummer16) {
   ditau_label_ = "ditau";
   fs_ = NULL;
-  extra_l1_tag_pt_ = 34.0;
+  extra_l1_tag_pt_ = -1.;
   extra_l1_probe_pt_ = 0.;
   extra_hlt_probe_pt_ = 0.;
   extra_hlt_probe_pt_vec_ = {};
@@ -545,7 +545,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       trg_probe_1_ = trg_probe_1_ && found_match_probe_1;
       trg_probe_2_ = trg_probe_2_ && found_match_probe_2;
     }
-    if(extra_l1_tag_pt_>0){
+    if(extra_l1_tag_pt_>0 || true){
       lt_tag_iso_1_=-1;
       lt_tag_pt_1_=-1;
       lt_tag_iso_2_=-1;
@@ -570,8 +570,10 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
           }
         }
       }
-      trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
-      trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
+      if(extra_l1_tag_pt_>0){
+        trg_tag_1_ = trg_tag_1_ && found_match_tag_1;
+        trg_tag_2_ = trg_tag_2_ && found_match_tag_2;
+      }
     }
  //Add photons to veto Final State Radiation for isolation SF (zee).
     if(event->ExistsInTree("photons")){

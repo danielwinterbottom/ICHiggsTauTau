@@ -253,6 +253,7 @@ for sa in sample_list:
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
         if "%(sa)s_2018"%vars() in nfiles or ignore==True:
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
+          #no_missing_files = True
           if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
