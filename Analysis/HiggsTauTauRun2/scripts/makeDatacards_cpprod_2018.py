@@ -348,10 +348,12 @@ if SCHEME == 'cpprod_extrapt':
   VAR_ET_LO_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_LO_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_LO_HI='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
-  VAR_TT_TI_LO='svfit_mass,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
+  #VAR_TT_TI_LO='svfit_mass,sjdphi[50,80,100,130,200],(12,-3.2,3.2)'
   VAR_MT_TI_LO='svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'
   VAR_ET_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'
   VAR_EM_TI_LO='svfit_mass,sjdphi[50,80,100,150,200],(12,-3.2,3.2)'  
+
+  VAR_TT_TI_LO='svfit_mass,sjdphi[50,80,100,115,150,200],(12,-3.2,3.2)'
 
 
   #VAR_DIJET   =  'svfit_mass,sjdphi[50,80,100,115,130,150,200],(12,-3.2,3.2)'

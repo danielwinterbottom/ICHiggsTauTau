@@ -578,15 +578,15 @@ if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvad
       cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0 &&n_loose_bjets<2)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   elif options.channel in ['em']:
-      cats['0jet'] = '(n_jets==0 && n_loose_bjets<1)'
-      cats['dijet']='n_jets>=2 && mjj>300 && n_loose_bjets<1 '
+      cats['0jet'] = '(n_jets==0 && n_loose_bjets<2 && n_bjets==0)'
+      cats['dijet']='n_jets>=2 && mjj>300 && n_loose_bjets<2 && n_bjets==0 '
       cats['dijet_boosted']='%s && pt_tt>200' % cats['dijet']
       cats['dijet_lowboost']='%s && pt_tt<200' % cats['dijet']
       cats['dijet_loosemjj_boosted']='%s && mjj<500 && pt_tt>150' % cats['dijet']
       cats['dijet_loosemjj_lowboost']='%s && mjj<500 && pt_tt<150' % cats['dijet']
       cats['dijet_tightmjj_boosted']='%s && mjj>500 && pt_tt>150' % cats['dijet']
       cats['dijet_tightmjj_lowboost']='%s && mjj>500 && pt_tt<150' % cats['dijet']
-      cats['boosted'] = '(!(%s) && !(%s) &&n_loose_bjets<1)' % (cats['0jet'], cats['dijet'])
+      cats['boosted'] = '(!(%s) && !(%s) &&n_loose_bjets<2 && n_bjets==0)' % (cats['0jet'], cats['dijet'])
       #cats['boosted'] = '(n_jets==1&& n_bjets==0)'
   else:    
     cats['0jet'] = '(n_jets==0)'
@@ -1549,6 +1549,16 @@ if options.analysis in ['cpprod']:
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
        #  "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+
+         'qqH_mm_htt*' : 'VBFHiggs0Mf05ph0_HToTauTau',
+         'qqH_ps_htt*' : 'VBFHiggs0M_HToTauTau',
+         'qqH_sm_htt*' : 'VBFHiggs0PM_HToTauTau',
+         'WH_mm_htt*' : 'WHiggs0MfWH05ph0',
+         'WH_ps_htt*' : 'WHiggs0M',
+         'WH_sm_htt*' : 'WHiggs0PM',
+         'ZH_mm_htt*' : 'ZHiggs0MfZH05ph0',
+         'ZH_ps_htt*' : 'ZHiggs0M',
+         'ZH_sm_htt*' : 'ZHiggs0PM',
     }
 
 # 2017
@@ -1579,6 +1589,15 @@ if options.analysis in ['cpprod']:
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
      #    "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+         'qqH_mm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
+         'qqH_ps_htt*' : 'VBFHiggs0MToTauTau',
+         'qqH_sm_htt*' : 'VBFHiggs0PMToTauTau',
+         'WH_mm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
+         'WH_ps_htt*' : 'WHiggs0MToTauTau',
+         'WH_sm_htt*' : 'WHiggs0PMToTauTau',
+         'ZH_mm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
+         'ZH_ps_htt*' : 'ZHiggs0MToTauTau',
+         'ZH_sm_htt*' : 'ZHiggs0PMToTauTau',
     }
 
 # 2018
@@ -1601,6 +1620,15 @@ if options.analysis in ['cpprod']:
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
          'ZH_htt*': 'ZHToTauTau_M-125',
         # "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
+         'qqH_mm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
+         'qqH_ps_htt*' : 'VBFHiggs0MToTauTau',
+         'qqH_sm_htt*' : 'VBFHiggs0PMToTauTau',
+         'WH_mm_htt*' : 'WHiggs0Mf05ph0ToTauTau',
+         'WH_ps_htt*' : 'WHiggs0MToTauTau',
+         'WH_sm_htt*' : 'WHiggs0PMToTauTau',
+         'ZH_mm_htt*' : 'ZHiggs0Mf05ph0ToTauTau',
+         'ZH_ps_htt*' : 'ZHiggs0MToTauTau',
+         'ZH_sm_htt*' : 'ZHiggs0PMToTauTau',
     }
 
 
@@ -3231,7 +3259,8 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
              ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
 def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
-    weights = {"sm": "wt_cp_prod_sm*(wt_cp_prod_sm!=0)", "ps": "wt_cp_prod_ps*(wt_cp_prod_sm!=0)", "mm": "wt_cp_prod_mm*(wt_cp_prod_sm!=0)"}#, "flat": "(wt_cp_prod_sm!=0)"}
+    #weights = {"sm": "wt_cp_prod_sm*(wt_cp_prod_sm!=0)", "ps": "wt_cp_prod_ps*(wt_cp_prod_sm!=0)", "mm": "wt_cp_prod_mm*(wt_cp_prod_sm!=0)"}#, "flat": "(wt_cp_prod_sm!=0)"}
+    weights = {"sm": "1", "ps": "1", "mm": "1"}#, "flat": "(wt_cp_prod_sm!=0)"}
     if get_os:
         OSSS = 'os'
     else:
