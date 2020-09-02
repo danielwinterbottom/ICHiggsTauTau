@@ -8,6 +8,10 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "TRandom3.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IpCorrection.h"
+#include "Math/Functor.h"
+#include "Math/BrentMinimizer1D.h"
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
 
 #include <string>
 
@@ -24,10 +28,12 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
   CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
+  CLASS_MEMBER(HTTCategories, bool, make_mva_ntuple)
   CLASS_MEMBER(HTTCategories, bool, is_embedded)
   CLASS_MEMBER(HTTCategories, bool, is_data)
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
+  CLASS_MEMBER(HTTCategories, std::string, mva_output_name)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTCategories, bool, do_ff_weights)
   CLASS_MEMBER(HTTCategories, bool, do_ff_systematics)
@@ -39,6 +45,7 @@ class HTTCategories : public ModuleBase {
 
   TTree *outtree_;
   TTree *synctree_;
+  TTree *mvatree_;
   TFile *lOFile;
 
   TRandom3  *rand;
@@ -261,6 +268,7 @@ class HTTCategories : public ModuleBase {
   double aco_angle_4_;
   double aco_angle_5_;
   double aco_angle_6_;
+  double aco_angle_7_;
   double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
   double alpha1_1_,alpha1_2_, alpha2_1_, alpha2_2_;
@@ -281,6 +289,9 @@ class HTTCategories : public ModuleBase {
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
   double wt_cp_prod_mm_;
+
+  double gen_phitt_;
+  double gen_phitt_2_;
 
   float IC_BDT_max_score_;
   int IC_BDT_max_index_;

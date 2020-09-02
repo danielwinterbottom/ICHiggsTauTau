@@ -82,7 +82,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   output_name=output_name + "_" + chan + "_" + postf + ".root";
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
-  if(!json["make_sync_ntuple"].asBool()) {
+  if(!json["make_sync_ntuple"].asBool() && !json["make_mva_ntuple"].asBool()) {
       fs = std::make_shared<fwlite::TFileService>(
        (output_folder+output_name).c_str());
   } else {
@@ -1009,7 +1009,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_met_label(shift_met_label)
       .set_jets_label(shift_jets_label)
       .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+      .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
       .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
+      .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
       .set_is_embedded(is_embedded)
       .set_is_data(is_data)
       .set_systematic_shift(addit_output_folder!="" && i==0)

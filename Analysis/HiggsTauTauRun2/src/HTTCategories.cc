@@ -13,6 +13,21 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
+double CPWeight(double x, double sm, double ps, double mm ){
+        x*=M_PI/180; //convert to radians
+        // because we minimise rather than maximise we phase shift by pi/2
+        //x+=M_PI/2; 
+        //if(x>M_PI/2) x-=M_PI;  
+        return cos(x)*cos(x)*sm + sin(x)*sin(x)*ps + 2*cos(x)*sin(x)*(mm-sm/2-ps/2);
+
+}
+
+double minuitFunction(const double *xx){
+        long double x = xx[0];
+        //return CPWeight(x, wt_cp_sm_, wt_cp_ps_, wt_cp_mm_ );
+        return CPWeight(x, xx[1], xx[2], xx[3] );
+        //return cos(x)*cos(x)*wt_cp_sm_ + sin(x)*sin(x)*wt_cp_ps_ + 2*cos(x)*sin(x)*(wt_cp_mm_-wt_cp_sm_/2+wt_cp_ps_/2)
+}
 
 namespace ic {
 
@@ -26,6 +41,7 @@ namespace ic {
       fs_ = NULL;
       write_tree_ = true;
       make_sync_ntuple_ = false;
+      make_mva_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
       is_embedded_=false;
       is_data_=false;
@@ -52,6 +68,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
+      std::cout << boost::format(param_fmt()) % "make_mva_ntuple" % make_mva_ntuple_;
 
     if (!is_data_) {
       // initialize IP corrector
@@ -696,6 +713,9 @@ namespace ic {
       outtree_->Branch("wt_cp_ps_alt"       , &wt_cp_ps_alt_);
       outtree_->Branch("wt_cp_mm_alt"       , &wt_cp_mm_alt_);
 
+      outtree_->Branch("gen_phitt", &gen_phitt_);
+      outtree_->Branch("gen_phitt_2", &gen_phitt_2_);
+
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
@@ -1154,6 +1174,61 @@ namespace ic {
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
       synctree_->Branch("trg_etaucross", &trg_etaucross_);
 
+
+    }
+
+    if(make_mva_ntuple_) {
+      lOFile = new TFile(mva_output_name_.c_str(), "RECREATE");
+      lOFile->cd();
+      mvatree_ = new TTree("ntuple", "ntuple");
+
+      mvatree_->Branch("pt_2",              &pt_2_.var_double);
+      mvatree_->Branch("pt_1",              &pt_1_.var_double);
+      mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
+      mvatree_->Branch("met",               &met_.var_double);
+      mvatree_->Branch("wt_cp_sm", &wt_cp_sm_);
+      mvatree_->Branch("wt_cp_ps", &wt_cp_ps_);
+      mvatree_->Branch("wt_cp_mm", &wt_cp_mm_);
+      mvatree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
+      mvatree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
+      mvatree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
+      mvatree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
+      mvatree_->Branch("trg_singleelectron",    &trg_singleelectron_);
+      mvatree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      mvatree_->Branch("trg_doubletau",    &trg_doubletau_);
+      mvatree_->Branch("deepTauVsJets_medium_1",   &deepTauVsJets_medium_1_);
+      mvatree_->Branch("deepTauVsJets_medium_2",   &deepTauVsJets_medium_2_);
+      mvatree_->Branch("deepTauVsEle_vvloose_1",   &deepTauVsEle_vvloose_1_);
+      mvatree_->Branch("deepTauVsEle_vvloose_2",   &deepTauVsEle_vvloose_2_);
+      mvatree_->Branch("deepTauVsEle_tight_1",   &deepTauVsEle_tight_1_);
+      mvatree_->Branch("deepTauVsEle_tight_2",   &deepTauVsEle_tight_2_);
+      mvatree_->Branch("deepTauVsMu_vloose_1",   &deepTauVsMu_vloose_1_);
+      mvatree_->Branch("deepTauVsMu_vloose_2",   &deepTauVsMu_vloose_2_);
+      mvatree_->Branch("deepTauVsMu_tight_1",   &deepTauVsMu_tight_1_);
+      mvatree_->Branch("deepTauVsMu_tight_2",   &deepTauVsMu_tight_2_);
+      mvatree_->Branch("aco_angle_1", &aco_angle_1_);
+      mvatree_->Branch("aco_angle_2", &aco_angle_2_);
+      mvatree_->Branch("aco_angle_3", &aco_angle_3_);
+      mvatree_->Branch("aco_angle_4", &aco_angle_4_);
+      mvatree_->Branch("aco_angle_5", &aco_angle_5_);
+      mvatree_->Branch("aco_angle_6", &aco_angle_6_);
+      mvatree_->Branch("aco_angle_7", &aco_angle_7_);
+      mvatree_->Branch("mass0",         &mass0_);
+      mvatree_->Branch("mass1",         &mass1_);
+      mvatree_->Branch("mass2",         &mass2_);
+      mvatree_->Branch("ip_sig_1", &ip_sig_1_);
+      mvatree_->Branch("ip_sig_2", &ip_sig_2_);
+      mvatree_->Branch("rand", &rand_);
+      mvatree_->Branch("tauFlag_1", &tauFlag_1_);
+      mvatree_->Branch("tauFlag_2", &tauFlag_2_);
+      mvatree_->Branch("gen_phitt", &gen_phitt_);
+      mvatree_->Branch("gen_phitt_2", &gen_phitt_2_);
+
+      mvatree_->Branch("y_1_1", &y_1_1_);
+      mvatree_->Branch("y_1_2", &y_1_2_);
+      mvatree_->Branch("y_2_2", &y_2_2_);
+      mvatree_->Branch("y_3_2", &y_3_2_);
+      mvatree_->Branch("y_4_2", &y_4_2_);
     }
     return 0;
   }
@@ -2414,6 +2489,44 @@ namespace ic {
         wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
         wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
       }
+
+      if(make_mva_ntuple_){
+        //double x_best = 0.0;
+        //ROOT::Math::Minimizer *min = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Combined");
+        //ROOT::Math::Functor f(&minuitFunction,1);
+
+        //gErrorIgnoreLevel = kError;
+        //min->SetFunction(f);
+        //min->SetVariable(0,"x",1e-14, 1e-16);
+        //min->SetVariableLimits(0,-90.+0.0001,90.);
+        ////min->SetVariableLimits(0,-M_PI/2+0.0001,M_PI/2);
+        //min->SetFixedVariable (1, "sm", wt_cp_sm_);
+        //min->SetFixedVariable (2, "ps", wt_cp_ps_);
+        //min->SetFixedVariable (3, "mm", wt_cp_mm_);
+        //min->SetTolerance(1e-15);
+        //min->Minimize();
+
+        //const double *xs = min->X();
+        //x_best=xs[0];
+
+        //x_best += 90.;
+        //if(x_best>90) x_best-=180.;
+      
+        //if(wt_cp_sm_==1&&wt_cp_ps_==1&&wt_cp_mm_==1) x_best = rand_*180. - 90. ;
+ 
+        //gen_phitt_2_ = x_best;  
+  
+        gen_phitt_ = 0.;
+        double max=0.;
+        double step=0.01;
+        for (double i=-90+step; i<=90.; i+=step) {
+          double m = CPWeight(i, wt_cp_sm_, wt_cp_ps_, wt_cp_mm_ );
+          if (m > max) { max = m; gen_phitt_ = i; }
+        }
+        if(wt_cp_sm_==1&&wt_cp_ps_==1&&wt_cp_mm_==1) gen_phitt_ = rand_*180. - 90. ;
+
+      }
+
     }
     wt_cp_prod_sm_=0.; wt_cp_prod_ps_=0.; wt_cp_prod_mm_=0.; 
     if(eventInfo->weight_defined("sm_weight_nlo")) {        
@@ -2439,6 +2552,20 @@ namespace ic {
     gen_ipx_2_ = -9999.;
     gen_ipy_2_ = -9999.;
     gen_ipz_2_ = -9999.;
+
+    aco_angle_1_=-9999.;
+    aco_angle_2_=-9999.;
+    aco_angle_3_=-9999.;
+    aco_angle_4_=-9999.;
+    aco_angle_5_=-9999.;
+    aco_angle_6_=-9999.;
+    aco_angle_7_=-9999.;
+
+    y_1_1_=-9999.;
+    y_1_2_=-9999.;
+    y_2_2_=-9999.;
+    y_3_2_=-9999.;
+    y_4_2_=-9999.;
 
     use_refitted_vertex_ = false;
 
@@ -2529,12 +2656,14 @@ namespace ic {
                     fabs(lep2->eta())
         );
 
+
         ROOT::Math::SVector<double, 3> ip_svec_1;
         ip_svec_1(0) = ip_corrected_1.X();
         ip_svec_1(1) = ip_corrected_1.Y();
         ip_svec_1(2) = ip_corrected_1.Z();
         ip_svec_1 = ip_svec_1.Unit();
         ip_sig_1_ = ip_corrected_1.Mag()/sqrt(ROOT::Math::Dot( ip_svec_1, cov_corrected_1 * ip_svec_1));
+
 
         ROOT::Math::SVector<double, 3> ip_svec_2;
         ip_svec_2(0) = ip_corrected_2.X();
@@ -2590,13 +2719,15 @@ namespace ic {
         lvec3 = ConvertToLorentz(tau1->vector()); 
         lvec4 = ConvertToLorentz(tau2->vector()); 
 
-        //TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
+        //ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
         lvec1 = TLorentzVector(ip1, 0.);
-        //TVector3 ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
+        //ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
+        //std::cout << ip1.X() << "    " << ip2.X() << "    " << aco_angle_6_ << std::endl; 
+ 
 
         if(event_ % 2) {
           aco_angle_rand_ = aco_angle_6_;
@@ -2700,12 +2831,36 @@ namespace ic {
         y_1_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3());
         y_1_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3());
 
+        //double cp_sign_1_ = YRho(std::vector<Candidate*>({pi0_tau1, pi_tau1}),TVector3()); 
+        //double cp_sign_2_ = YRho(std::vector<Candidate*>({pi0_tau2, pi_tau2}),TVector3()); 
+
         aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
+
+        TLorentzVector lvec1_1 = TLorentzVector(ip1, 0.);
+        TLorentzVector lvec2_1 = TLorentzVector(ip2, 0.);
+
+        aco_angle_6_ = IPAcoAngle(lvec1_1, lvec2_1, lvec3, lvec4,false);
+        aco_angle_5_ = IPAcoAngle(lvec1_1, lvec2, lvec3, lvec4,false);
+        aco_angle_7_ = IPAcoAngle(lvec1, lvec2_1, lvec3, lvec4,false);
+
+        if (cp_sign_<0) {
+          if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
+          else                    aco_angle_6_ = aco_angle_6_-M_PI;
+        }
 
         if (cp_sign_<0) {
           if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
           else                   aco_angle_1_ -= M_PI;
+        }
+
+        if (cp_sign_<0) {
+          if (aco_angle_5_<M_PI) aco_angle_5_ += M_PI;
+          else                   aco_angle_5_ -= M_PI;
+        }
+        if (cp_sign_<0) {
+          if (aco_angle_7_<M_PI) aco_angle_7_ += M_PI;
+          else                   aco_angle_7_ -= M_PI;
         }
 
         if(event_ % 2) {
@@ -2812,8 +2967,8 @@ namespace ic {
         }
         double  cp_sign_1_=0;
         double  cp_sign_2_=0;
-        //double  cp_sign_3_;
-        //double  cp_sign_4_;
+        double  cp_sign_3_=0;
+        double  cp_sign_4_=0;
 
         if (a1_daughters.size()>2){
             a1_flag_ = true;
@@ -2832,11 +2987,26 @@ namespace ic {
             aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
             aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
 
+            //aco_angle_2_ treats rho like neutral pion 
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()+a1_daughters[1]->vector());
+            lvec4 = ConvertToLorentz(a1_daughters[2]->vector());
+            aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            //aco_angle_3 is same as aco_angle_1 but makes other choise for a1->rho
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi charge from rho 
+            lvec4 = ConvertToLorentz(a1_daughters[2]->vector()); //pi zero from rho
+            aco_angle_3_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
+            //aco_angle_4 is same as aco_angle_2 but makes other choise for a1->rho
+            lvec2 = ConvertToLorentz(a1_daughters[0]->vector()+a1_daughters[2]->vector());
+            lvec4 = ConvertToLorentz(a1_daughters[1]->vector());
+            aco_angle_4_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+
             Candidate* rho_1  = new Candidate();
             Candidate* rho_2  = new Candidate();
             rho_1->set_vector(a1_daughters[0]->vector()+a1_daughters[1]->vector());
             rho_2->set_vector(a1_daughters[0]->vector()+a1_daughters[2]->vector());
-            aco_angle_2_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
+            //aco_angle_3_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_1,a1_daughters[2]}));
             //aco_angle_4_ = AcoplanarityAngle(std::vector<Candidate*> ({rho_daughters.first,rho_daughters.second}), std::vector<Candidate*> ({rho_2,a1_daughters[1]}));
 
             y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
@@ -2847,8 +3017,8 @@ namespace ic {
 
             cp_sign_1_ = y_1_1_*y_1_2_;
             cp_sign_2_ = y_1_1_*y_2_2_;
-            //cp_sign_3_ = y_1_1_*y_3_2_;
-            //cp_sign_4_ = y_1_1_*y_4_2_;
+            cp_sign_3_ = y_1_1_*y_3_2_;
+            cp_sign_4_ = y_1_1_*y_4_2_;
         }   
 
         if (cp_sign_1_<0) {
@@ -2858,6 +3028,14 @@ namespace ic {
         if (cp_sign_2_<0) {
           if (aco_angle_2_<M_PI) aco_angle_2_ += M_PI;
           else                   aco_angle_2_ -= M_PI;
+        }
+        if (cp_sign_3_<0) { 
+          if (aco_angle_3_<M_PI) aco_angle_3_ += M_PI;
+          else                   aco_angle_3_ -= M_PI;
+        }
+        if (cp_sign_4_<0) {
+          if (aco_angle_4_<M_PI) aco_angle_4_ += M_PI;
+          else                   aco_angle_4_ -= M_PI;
         }
 
         if(event_ % 2) {
@@ -2913,6 +3091,23 @@ namespace ic {
           double cp_sign_2_=yrho_1_*ya1_2_;
           double cp_sign_3_=yrho_2_*ya1_1_;
           double cp_sign_4_=ya1_1_*ya1_2_;
+
+          y_1_1_ = yrho_1_; 
+          y_1_2_ = yrho_2_;
+
+          //y_3_1_ =   
+          //y_2_1_ =   
+          //y_4_1_ = 
+
+          //y_3_2_ = 
+          //y_2_2_ = 
+          //y_4_2_ = 
+
+          //  y_1_1_ = YRho(std::vector<Candidate*>({rho_daughters.first, rho_daughters.second}),TVector3());
+          //  y_1_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
+          //  y_3_2_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[2]}),TVector3());
+          //  y_2_2_ = YA1(std::vector<Candidate*>({rho_1, a1_daughters[2]}),TVector3());
+          //  y_4_2_ = YA1(std::vector<Candidate*>({rho_2, a1_daughters[1]}),TVector3());
 
           if (cp_sign_1_<0) {
             if (aco_angle_1_<M_PI) aco_angle_1_ += M_PI;
@@ -3304,7 +3499,6 @@ namespace ic {
                          fabs(lep2->eta())
         );
 
-
         // Correct IP covariance matrix
         CovMatrix cov_corrected_1 = ipCorrectorEle.correctIpCov(
                     ipandcov_1.second,
@@ -3457,12 +3651,25 @@ namespace ic {
       }
     
       // save IP for sync 
-      ipx_1_ = ip1.X();
-      ipy_1_ = ip1.Y();
-      ipz_1_ = ip1.Z();
-      ipx_2_ = ip2.X();
-      ipy_2_ = ip2.Y();
-      ipz_2_ = ip2.Z();
+      ipx_1_ = ip_corrected_1.X();
+      ipy_1_ = ip_corrected_1.Y();
+      ipz_1_ = ip_corrected_1.Z();
+      ipx_2_ = ip_corrected_2.X();
+      ipy_2_ = ip_corrected_2.Y();
+      ipz_2_ = ip_corrected_2.Z();
+
+      // gen IP
+      gen_ipx_1_ = ipgen1.X();
+      gen_ipy_1_ = ipgen1.Y();
+      gen_ipz_1_ = ipgen1.Z();
+      gen_ipx_2_ = ipgen2.X();
+      gen_ipy_2_ = ipgen2.Y();
+      gen_ipz_2_ = ipgen2.Z();
+
+      // primary vertex
+      pvx_ = primary_vtx->vx();
+      pvy_ = primary_vtx->vy();
+      pvz_ = primary_vtx->vz();
 
     }
       
@@ -3635,6 +3842,7 @@ namespace ic {
  
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
+    if (make_mva_ntuple_) mvatree_->Fill();
 
     return 0;
   }
@@ -3643,6 +3851,11 @@ namespace ic {
     if(make_sync_ntuple_) {   
       lOFile->cd();
       synctree_->Write();
+      lOFile->Close();
+    }
+    if(make_mva_ntuple_) {
+      lOFile->cd();
+      mvatree_->Write();
       lOFile->Close();
     }
     return 0;
