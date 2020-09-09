@@ -15,18 +15,8 @@
 
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
-        // because we minimise rather than maximise we phase shift by pi/2
-        //x+=M_PI/2; 
-        //if(x>M_PI/2) x-=M_PI;  
         return cos(x)*cos(x)*sm + sin(x)*sin(x)*ps + 2*cos(x)*sin(x)*(mm-sm/2-ps/2);
 
-}
-
-double minuitFunction(const double *xx){
-        long double x = xx[0];
-        //return CPWeight(x, wt_cp_sm_, wt_cp_ps_, wt_cp_mm_ );
-        return CPWeight(x, xx[1], xx[2], xx[3] );
-        //return cos(x)*cos(x)*wt_cp_sm_ + sin(x)*sin(x)*wt_cp_ps_ + 2*cos(x)*sin(x)*(wt_cp_mm_-wt_cp_sm_/2+wt_cp_ps_/2)
 }
 
 namespace ic {
@@ -714,7 +704,6 @@ namespace ic {
       outtree_->Branch("wt_cp_mm_alt"       , &wt_cp_mm_alt_);
 
       outtree_->Branch("gen_phitt", &gen_phitt_);
-      outtree_->Branch("gen_phitt_2", &gen_phitt_2_);
 
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
@@ -731,6 +720,7 @@ namespace ic {
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
+      outtree_->Branch("pv_angle", &pv_angle_);
       outtree_->Branch("aco_angle_rand", &aco_angle_rand_);
       outtree_->Branch("aco_sign", &aco_sign_);
       outtree_->Branch("aco_sign_rand", &aco_sign_rand_);
@@ -995,6 +985,7 @@ namespace ic {
       synctree_->Branch("tauspinnerA",      & wt_cp_ps_, "tauspinnerA/D");
       synctree_->Branch("tauspinnerMaxMix", & wt_cp_mm_, "tauspinnerMaxMix/D");
 
+      synctree_->Branch("pv_angle", &pv_angle_);
       // acoplanarity angles
       if (channel_ == channel::mt || channel_ == channel::et ) {
         // 00: mu + pi (IP)
@@ -1213,6 +1204,7 @@ namespace ic {
       mvatree_->Branch("aco_angle_5", &aco_angle_5_);
       mvatree_->Branch("aco_angle_6", &aco_angle_6_);
       mvatree_->Branch("aco_angle_7", &aco_angle_7_);
+      mvatree_->Branch("pv_angle", &pv_angle_);
       mvatree_->Branch("mass0",         &mass0_);
       mvatree_->Branch("mass1",         &mass1_);
       mvatree_->Branch("mass2",         &mass2_);
@@ -1222,13 +1214,92 @@ namespace ic {
       mvatree_->Branch("tauFlag_1", &tauFlag_1_);
       mvatree_->Branch("tauFlag_2", &tauFlag_2_);
       mvatree_->Branch("gen_phitt", &gen_phitt_);
-      mvatree_->Branch("gen_phitt_2", &gen_phitt_2_);
 
       mvatree_->Branch("y_1_1", &y_1_1_);
       mvatree_->Branch("y_1_2", &y_1_2_);
       mvatree_->Branch("y_2_2", &y_2_2_);
       mvatree_->Branch("y_3_2", &y_3_2_);
       mvatree_->Branch("y_4_2", &y_4_2_);
+
+      mvatree_->Branch("metcov00", &metCov00_, "metCov00/F");
+      mvatree_->Branch("metcov01", &metCov01_, "metCov01/F");
+      mvatree_->Branch("metcov10", &metCov10_, "metCov10/F");
+      mvatree_->Branch("metcov11", &metCov11_, "metCov11/F");
+
+      mvatree_->Branch("pi_px_1", &pi_px_1_);
+      mvatree_->Branch("pi_py_1", &pi_py_1_);
+      mvatree_->Branch("pi_pz_1", &pi_pz_1_);
+      mvatree_->Branch("pi_E_1", &pi_E_1_);
+      mvatree_->Branch("pi_px_2", &pi_px_2_);
+      mvatree_->Branch("pi_py_2", &pi_py_2_);
+      mvatree_->Branch("pi_pz_2", &pi_pz_2_);
+      mvatree_->Branch("pi_E_2", &pi_E_2_);
+      mvatree_->Branch("pi0_px_1", &pi0_px_1_);
+      mvatree_->Branch("pi0_py_1", &pi0_py_1_);
+      mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);
+      mvatree_->Branch("pi0_E_1", &pi0_E_1_);
+      mvatree_->Branch("pi0_px_2", &pi0_px_2_);
+      mvatree_->Branch("pi0_py_2", &pi0_py_2_);
+      mvatree_->Branch("pi0_pz_2", &pi0_pz_2_);
+      mvatree_->Branch("pi0_E_2", &pi0_E_2_);
+      mvatree_->Branch("gam1_px_1", &gam1_px_1_);
+      mvatree_->Branch("gam1_py_1", &gam1_py_1_);
+      mvatree_->Branch("gam1_pz_1", &gam1_pz_1_);
+      mvatree_->Branch("gam1_E_1", &gam1_E_1_);
+      mvatree_->Branch("gam1_px_2", &gam1_px_2_);
+      mvatree_->Branch("gam1_py_2", &gam1_py_2_);
+      mvatree_->Branch("gam1_pz_2", &gam1_pz_2_);
+      mvatree_->Branch("gam1_E_2", &gam1_E_2_);
+      mvatree_->Branch("gam2_px_1", &gam2_px_1_);
+      mvatree_->Branch("gam2_py_1", &gam2_py_1_);
+      mvatree_->Branch("gam2_pz_1", &gam2_pz_1_);
+      mvatree_->Branch("gam2_E_1", &gam2_E_1_);
+      mvatree_->Branch("gam2_px_2", &gam2_px_2_);
+      mvatree_->Branch("gam2_py_2", &gam2_py_2_);
+      mvatree_->Branch("gam2_pz_2", &gam2_pz_2_);
+      mvatree_->Branch("gam2_E_2", &gam2_E_2_);
+      mvatree_->Branch("gam3_px_1", &gam3_px_1_);
+      mvatree_->Branch("gam3_py_1", &gam3_py_1_);
+      mvatree_->Branch("gam3_pz_1", &gam3_pz_1_);
+      mvatree_->Branch("gam3_E_1", &gam3_E_1_);
+      mvatree_->Branch("gam3_px_2", &gam3_px_2_);
+      mvatree_->Branch("gam3_py_2", &gam3_py_2_);
+      mvatree_->Branch("gam3_pz_2", &gam3_pz_2_);
+      mvatree_->Branch("gam3_E_2", &gam3_E_2_);
+      mvatree_->Branch("gam4_px_1", &gam4_px_1_);
+      mvatree_->Branch("gam4_py_1", &gam4_py_1_);
+      mvatree_->Branch("gam4_pz_1", &gam4_pz_1_);
+      mvatree_->Branch("gam4_E_1", &gam4_E_1_);
+      mvatree_->Branch("gam4_px_2", &gam4_px_2_);
+      mvatree_->Branch("gam4_py_2", &gam4_py_2_);
+      mvatree_->Branch("gam4_pz_2", &gam4_pz_2_);
+      mvatree_->Branch("gam4_E_2", &gam4_E_2_);
+      mvatree_->Branch("metx", &metx_);
+      mvatree_->Branch("mety", &mety_);
+      mvatree_->Branch("ip_x_1", &ip_x_1_);
+      mvatree_->Branch("ip_y_1", &ip_y_1_);
+      mvatree_->Branch("ip_z_1", &ip_z_1_);
+      mvatree_->Branch("ip_x_2", &ip_x_2_);
+      mvatree_->Branch("ip_y_2", &ip_y_2_);
+      mvatree_->Branch("ip_z_2", &ip_z_2_);
+      mvatree_->Branch("ipcov00_1", &ipcov00_1_);
+      mvatree_->Branch("ipcov01_1", &ipcov01_1_);
+      mvatree_->Branch("ipcov02_1", &ipcov02_1_);
+      mvatree_->Branch("ipcov10_1", &ipcov10_1_);
+      mvatree_->Branch("ipcov11_1", &ipcov11_1_);
+      mvatree_->Branch("ipcov12_1", &ipcov12_1_);
+      mvatree_->Branch("ipcov20_1", &ipcov20_1_);
+      mvatree_->Branch("ipcov21_1", &ipcov21_1_);
+      mvatree_->Branch("ipcov22_1", &ipcov22_1_);
+      mvatree_->Branch("ipcov00_2", &ipcov00_2_);
+      mvatree_->Branch("ipcov01_2", &ipcov01_2_);
+      mvatree_->Branch("ipcov02_2", &ipcov02_2_);
+      mvatree_->Branch("ipcov10_2", &ipcov10_2_);
+      mvatree_->Branch("ipcov11_2", &ipcov11_2_);
+      mvatree_->Branch("ipcov12_2", &ipcov12_2_);
+      mvatree_->Branch("ipcov20_2", &ipcov20_2_);
+      mvatree_->Branch("ipcov21_2", &ipcov21_2_);
+      mvatree_->Branch("ipcov22_2", &ipcov22_2_);
     }
     return 0;
   }
@@ -2491,30 +2562,6 @@ namespace ic {
       }
 
       if(make_mva_ntuple_){
-        //double x_best = 0.0;
-        //ROOT::Math::Minimizer *min = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Combined");
-        //ROOT::Math::Functor f(&minuitFunction,1);
-
-        //gErrorIgnoreLevel = kError;
-        //min->SetFunction(f);
-        //min->SetVariable(0,"x",1e-14, 1e-16);
-        //min->SetVariableLimits(0,-90.+0.0001,90.);
-        ////min->SetVariableLimits(0,-M_PI/2+0.0001,M_PI/2);
-        //min->SetFixedVariable (1, "sm", wt_cp_sm_);
-        //min->SetFixedVariable (2, "ps", wt_cp_ps_);
-        //min->SetFixedVariable (3, "mm", wt_cp_mm_);
-        //min->SetTolerance(1e-15);
-        //min->Minimize();
-
-        //const double *xs = min->X();
-        //x_best=xs[0];
-
-        //x_best += 90.;
-        //if(x_best>90) x_best-=180.;
-      
-        //if(wt_cp_sm_==1&&wt_cp_ps_==1&&wt_cp_mm_==1) x_best = rand_*180. - 90. ;
- 
-        //gen_phitt_2_ = x_best;  
   
         gen_phitt_ = 0.;
         double max=0.;
@@ -2560,12 +2607,88 @@ namespace ic {
     aco_angle_5_=-9999.;
     aco_angle_6_=-9999.;
     aco_angle_7_=-9999.;
-
+    pv_angle_=-9999.;
+ 
     y_1_1_=-9999.;
     y_1_2_=-9999.;
     y_2_2_=-9999.;
     y_3_2_=-9999.;
     y_4_2_=-9999.;
+
+    pi_px_1_=-1;
+    pi_py_1_=-1;
+    pi_pz_1_=-1;
+    pi_E_1_=-1;
+    pi_px_2_=-1;
+    pi_py_2_=-1;
+    pi_pz_2_=-1;
+    pi_E_2_=-1;
+    pi0_px_1_=-1;
+    pi0_py_1_=-1;
+    pi0_pz_1_=-1;
+    pi0_E_1_=-1;
+    pi0_px_2_=-1;
+    pi0_py_2_=-1;
+    pi0_pz_2_=-1;
+    pi0_E_2_=-1;
+    gam1_px_1_=-1;
+    gam1_py_1_=-1;
+    gam1_pz_1_=-1;
+    gam1_E_1_=-1;
+    gam1_px_2_=-1;
+    gam1_py_2_=-1;
+    gam1_pz_2_=-1;
+    gam1_E_2_=-1;
+    gam2_px_1_=-1;
+    gam2_py_1_=-1;
+    gam2_pz_1_=-1;
+    gam2_E_1_=-1;
+    gam2_px_2_=-1;
+    gam2_py_2_=-1;
+    gam2_pz_2_=-1;
+    gam2_E_2_=-1;
+    gam3_px_1_=-1;
+    gam3_py_1_=-1;
+    gam3_pz_1_=-1;
+    gam3_E_1_=-1;
+    gam3_px_2_=-1;
+    gam3_py_2_=-1;
+    gam3_pz_2_=-1;
+    gam3_E_2_=-1;
+    gam4_px_1_=-1;
+    gam4_py_1_=-1;
+    gam4_pz_1_=-1;
+    gam4_E_1_=-1;
+    gam4_px_2_=-1;
+    gam4_py_2_=-1;
+    gam4_pz_2_=-1;
+    gam4_E_2_=-1;
+    metx_= mets->vector().Px();
+    mety_= mets->vector().Py();
+    ip_x_1_=-1;
+    ip_y_1_=-1;
+    ip_z_1_=-1;
+    ip_x_2_=-1;
+    ip_y_2_=-1;
+    ip_z_2_=-1;
+    ipcov00_1_=-1;
+    ipcov01_1_=-1;
+    ipcov02_1_=-1;
+    ipcov10_1_=-1;
+    ipcov11_1_=-1;
+    ipcov12_1_=-1;
+    ipcov20_1_=-1;
+    ipcov21_1_=-1;
+    ipcov22_1_=-1;
+    ipcov00_2_=-1;
+    ipcov01_2_=-1;
+    ipcov02_2_=-1;
+    ipcov10_2_=-1;
+    ipcov11_2_=-1;
+    ipcov12_2_=-1;
+    ipcov20_2_=-1;
+    ipcov21_2_=-1;
+    ipcov22_2_=-1;
 
     use_refitted_vertex_ = false;
 
@@ -2596,7 +2719,69 @@ namespace ic {
       std::pair<ic::Candidate*, ic::Candidate*> rho2 = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho2.first;
       ic::Candidate *pi0_tau2 = rho2.second;
- 
+
+      std::vector<ic::PFCandidate*> hads1 = GetTauHads(tau1, pfcands,0);
+      std::vector<ic::PFCandidate*> gammas1 = GetTauGammas(tau1, pfcands, 1., 0);
+      std::vector<ic::PFCandidate*> hads2 = GetTauHads(tau2, pfcands,0);
+      std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands, 1., 0);
+      if(hads1.size()>2) hads1 = GetA1 (tau1, pfcands).first;
+      if(hads2.size()>2) hads2 = GetA1 (tau2, pfcands).first;
+
+
+      pi_px_1_=pi_tau1->vector().Px();
+      pi_py_1_=pi_tau1->vector().Py();
+      pi_pz_1_=pi_tau1->vector().Pz();
+      pi_E_1_=pi_tau1->vector().E();
+      pi_px_2_=pi_tau2->vector().Px();
+      pi_py_2_=pi_tau2->vector().Py();
+      pi_pz_2_=pi_tau2->vector().Pz();
+      pi_E_2_=pi_tau2->vector().E();
+      if(gammas1.size()>0 && tau_decay_mode_1_<2){
+        pi0_px_1_=pi0_tau1->vector().Px();
+        pi0_py_1_=pi0_tau1->vector().Py();
+        pi0_pz_1_=pi0_tau1->vector().Pz();
+        pi0_E_1_=pi0_tau1->vector().E();
+        gam1_px_1_=gammas1[0]->vector().Px();
+        gam1_py_1_=gammas1[0]->vector().Py();
+        gam1_pz_1_=gammas1[0]->vector().Pz();
+        gam1_E_1_=gammas1[0]->vector().E();
+        if(gammas1.size()>1) gam2_px_1_= gammas1[1]->vector().Px();
+        if(gammas1.size()>1) gam2_py_1_= gammas1[1]->vector().Py();
+        if(gammas1.size()>1) gam2_pz_1_= gammas1[1]->vector().Pz();
+        if(gammas1.size()>1) gam2_E_1_= gammas1[1]->vector().E();
+        if(gammas1.size()>2) gam3_px_1_= gammas1[2]->vector().Px();
+        if(gammas1.size()>2) gam3_py_1_= gammas1[2]->vector().Py();
+        if(gammas1.size()>2) gam3_pz_1_= gammas1[2]->vector().Pz();
+        if(gammas1.size()>2) gam3_E_1_= gammas1[2]->vector().E();
+        if(gammas1.size()>3) gam4_px_1_= gammas1[3]->vector().Px();
+        if(gammas1.size()>3) gam4_py_1_= gammas1[3]->vector().Py();
+        if(gammas1.size()>3) gam4_pz_1_= gammas1[3]->vector().Pz();
+        if(gammas1.size()>3) gam4_E_1_= gammas1[3]->vector().E();
+      }
+      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+        pi0_px_2_=pi0_tau2->vector().Px();
+        pi0_py_2_=pi0_tau2->vector().Py();
+        pi0_pz_2_=pi0_tau2->vector().Pz();
+        pi0_E_2_=pi0_tau2->vector().E();
+
+        gam1_px_2_=gammas2[0]->vector().Px();
+        gam1_py_2_=gammas2[0]->vector().Py();
+        gam1_pz_2_=gammas2[0]->vector().Pz();
+        gam1_E_2_=gammas2[0]->vector().E();
+        if(gammas2.size()>1) gam2_px_2_= gammas2[1]->vector().Px();
+        if(gammas2.size()>1) gam2_py_2_= gammas2[1]->vector().Py();
+        if(gammas2.size()>1) gam2_pz_2_= gammas2[1]->vector().Pz();
+        if(gammas2.size()>1) gam2_E_2_= gammas2[1]->vector().E();
+        if(gammas2.size()>2) gam3_px_2_= gammas2[2]->vector().Px();
+        if(gammas2.size()>2) gam3_py_2_= gammas2[2]->vector().Py();
+        if(gammas2.size()>2) gam3_pz_2_= gammas2[2]->vector().Pz();
+        if(gammas2.size()>2) gam3_E_2_= gammas2[2]->vector().E();
+        if(gammas2.size()>3) gam4_px_2_= gammas2[3]->vector().Px();
+        if(gammas2.size()>3) gam4_py_2_= gammas2[3]->vector().Py();
+        if(gammas2.size()>3) gam4_pz_2_= gammas2[3]->vector().Pz();
+        if(gammas2.size()>3) gam4_E_2_= gammas2[3]->vector().E();
+      }
+
       TLorentzVector lvec1;
       TLorentzVector lvec2;
       TLorentzVector lvec3;
@@ -2623,14 +2808,17 @@ namespace ic {
       TVector3 ip_corrected_1 = ipandsig_1.first;
       TVector3 ip_corrected_2 = ipandsig_2.first;
 
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCov(tau1, refit_vertex, pfcands);
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+      CovMatrix cov_corrected_1 = ipandcov_1.second;
+      CovMatrix cov_corrected_2 = ipandcov_2.second;
+
+
       // add this part for the mt channel as well!!!!!
       if(!is_data_) {
 
         ip_sig_1_raw_= ip_sig_1_;
         ip_sig_2_raw_= ip_sig_2_;
-
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCov(tau1, refit_vertex, pfcands);
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
 
         ip_corrected_1 = ipCorrector.correctIp(
                          ipandsig_1.first,
@@ -2646,12 +2834,12 @@ namespace ic {
 
       
         // Correct IP covariance matrix
-        CovMatrix cov_corrected_1 = ipCorrector.correctIpCov(
+        cov_corrected_1 = ipCorrector.correctIpCov(
                     ipandcov_1.second, 
                     fabs(lep1->eta())
         );
 
-        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+        cov_corrected_2 = ipCorrector.correctIpCov(
                     ipandcov_2.second,
                     fabs(lep2->eta())
         );
@@ -2686,6 +2874,33 @@ namespace ic {
         ip_sig_2_down_= ip_sig_2_;
       }
 
+      ip_x_1_ = ip_corrected_1.X();
+      ip_y_1_ = ip_corrected_1.Y();
+      ip_z_1_ = ip_corrected_1.Z();
+      ip_x_2_ = ip_corrected_2.X();
+      ip_y_2_ = ip_corrected_2.Y();
+      ip_z_2_ = ip_corrected_2.Z();
+
+      ipcov00_1_ = cov_corrected_1(0,0);
+      ipcov01_1_ = cov_corrected_1(0,1);
+      ipcov02_1_ = cov_corrected_1(0,2);
+      ipcov10_1_ = cov_corrected_1(1,0);
+      ipcov11_1_ = cov_corrected_1(1,1);
+      ipcov12_1_ = cov_corrected_1(1,2);
+      ipcov20_1_ = cov_corrected_1(2,0);
+      ipcov21_1_ = cov_corrected_1(2,1);
+      ipcov22_1_ = cov_corrected_1(2,2);
+
+      ipcov00_2_ = cov_corrected_2(0,0);
+      ipcov01_2_ = cov_corrected_2(0,1);
+      ipcov02_2_ = cov_corrected_2(0,2);
+      ipcov10_2_ = cov_corrected_2(1,0);
+      ipcov11_2_ = cov_corrected_2(1,1);
+      ipcov12_2_ = cov_corrected_2(1,2);
+      ipcov20_2_ = cov_corrected_2(2,0);
+      ipcov21_2_ = cov_corrected_2(2,1);
+      ipcov22_2_ = cov_corrected_2(2,2);
+
       // uncorrected IP
       //TVector3 ip1 = (ipandsig_1.first).Unit();
       //TVector3 ip2 = (ipandsig_2.first).Unit();
@@ -2719,15 +2934,11 @@ namespace ic {
         lvec3 = ConvertToLorentz(tau1->vector()); 
         lvec4 = ConvertToLorentz(tau2->vector()); 
 
-        //ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
         lvec1 = TLorentzVector(ip1, 0.);
-        //ip2 = (pvtosv2.Vect() - pvtosv2.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
         lvec2 = TLorentzVector(ip2, 0.);
 
         aco_angle_6_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
         aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
-        //std::cout << ip1.X() << "    " << ip2.X() << "    " << aco_angle_6_ << std::endl; 
- 
 
         if(event_ % 2) {
           aco_angle_rand_ = aco_angle_6_;
@@ -2767,6 +2978,7 @@ namespace ic {
           ip_alt = ip2;
         }
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv1(
                 tau->svx() - primary_vtx->vx(),
                 tau->svy() - primary_vtx->vy(),
@@ -3054,8 +3266,63 @@ namespace ic {
         alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
 
       } else if(tau_decay_mode_1_>=10&&tau_decay_mode_2_>=10){
+
         std::vector<ic::PFCandidate*> a1_daughters_1 = GetA1(tau1, pfcands).first;
         std::vector<ic::PFCandidate*> a1_daughters_2 = GetA1(tau2, pfcands).first;
+
+        if(tau1->hasSV()&&tau2->hasSV()&&a1_daughters_1.size()==3&&a1_daughters_2.size()==3) {
+
+          Tau const *tau_neg;
+          Tau const *tau_pos;
+
+          if(tau1->charge()<tau2->charge()) {
+            tau_neg = tau1;
+            tau_pos = tau2;
+          } else {
+            tau_neg = tau2;
+            tau_pos = tau1;
+          }
+
+          std::vector<ic::PFCandidate*> a1_daughters_neg = GetA1(tau_neg, pfcands).first;
+          std::vector<ic::PFCandidate*> a1_daughters_pos = GetA1(tau_pos, pfcands).first;
+
+          TVector3 svminuspv_1(
+                tau_neg->secondary_vertex().X() - primary_vtx->vx(),
+                tau_neg->secondary_vertex().Y() - primary_vtx->vy(),
+                tau_neg->secondary_vertex().Z() - primary_vtx->vz()
+          );
+          TVector3 svminuspv_2(
+                tau_pos->secondary_vertex().X() - primary_vtx->vx(),
+                tau_pos->secondary_vertex().Y() - primary_vtx->vy(),
+                tau_pos->secondary_vertex().Z() - primary_vtx->vz()
+          ); 
+
+          std::vector<TLorentzVector> pis_1 = { 
+                ConvertToLorentz(a1_daughters_neg[0]->vector()),
+                ConvertToLorentz(a1_daughters_neg[1]->vector()),
+                ConvertToLorentz(a1_daughters_neg[2]->vector())
+          };
+
+          std::vector<TLorentzVector> pis_2 = {
+                ConvertToLorentz(a1_daughters_pos[0]->vector()),
+                ConvertToLorentz(a1_daughters_pos[1]->vector()),
+                ConvertToLorentz(a1_daughters_pos[2]->vector())
+          };
+
+          std::vector<double> charges_1 = {
+                (double)a1_daughters_neg[0]->charge(),
+                (double)a1_daughters_neg[1]->charge(),
+                (double)a1_daughters_neg[2]->charge()
+          };
+
+          std::vector<double> charges_2 = {
+                (double)a1_daughters_pos[0]->charge(),
+                (double)a1_daughters_pos[1]->charge(),
+                (double)a1_daughters_pos[2]->charge()
+          };
+
+          pv_angle_=PolarimetricA1A1(svminuspv_1, svminuspv_2, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
+        } else pv_angle_=-9999;
 
         if(a1_daughters_1.size()>2 && a1_daughters_2.size()>2) {
           a1_flag_ = true;
@@ -3178,7 +3445,44 @@ namespace ic {
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
-      
+     
+      std::vector<ic::PFCandidate*> hads2 = GetTauHads(tau2, pfcands,0);
+      std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands, 1., 0);
+      if(hads2.size()>2) hads2 = GetA1 (tau2, pfcands).first;
+
+      pi_px_1_=lep1->vector().Px();
+      pi_py_1_=lep1->vector().Py();
+      pi_pz_1_=lep1->vector().Pz();
+      pi_E_1_=lep1->vector().E();
+      pi_px_2_=pi_tau2->vector().Px();
+      pi_py_2_=pi_tau2->vector().Py();
+      pi_pz_2_=pi_tau2->vector().Pz();
+      pi_E_2_=pi_tau2->vector().E();
+
+      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+        pi0_px_2_=pi0_tau2->vector().Px();
+        pi0_py_2_=pi0_tau2->vector().Py();
+        pi0_pz_2_=pi0_tau2->vector().Pz();
+        pi0_E_2_=pi0_tau2->vector().E();
+
+        gam1_px_2_=gammas2[0]->vector().Px();
+        gam1_py_2_=gammas2[0]->vector().Py();
+        gam1_pz_2_=gammas2[0]->vector().Pz();
+        gam1_E_2_=gammas2[0]->vector().E();
+        if(gammas2.size()>1) gam2_px_2_= gammas2[1]->vector().Px();
+        if(gammas2.size()>1) gam2_py_2_= gammas2[1]->vector().Py();
+        if(gammas2.size()>1) gam2_pz_2_= gammas2[1]->vector().Pz();
+        if(gammas2.size()>1) gam2_E_2_= gammas2[1]->vector().E();
+        if(gammas2.size()>2) gam3_px_2_= gammas2[2]->vector().Px();
+        if(gammas2.size()>2) gam3_py_2_= gammas2[2]->vector().Py();
+        if(gammas2.size()>2) gam3_pz_2_= gammas2[2]->vector().Pz();
+        if(gammas2.size()>2) gam3_E_2_= gammas2[2]->vector().E();
+        if(gammas2.size()>3) gam4_px_2_= gammas2[3]->vector().Px();
+        if(gammas2.size()>3) gam4_py_2_= gammas2[3]->vector().Py();
+        if(gammas2.size()>3) gam4_pz_2_= gammas2[3]->vector().Pz();
+        if(gammas2.size()>3) gam4_E_2_= gammas2[3]->vector().E();
+      }
+ 
       TLorentzVector lvec1;
       TLorentzVector lvec2;
       TLorentzVector lvec3;
@@ -3215,13 +3519,16 @@ namespace ic {
       TVector3 ip_corrected_1 = ipandsig_1.first;
       TVector3 ip_corrected_2 = ipandsig_2.first;
 
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovMuon(muon1, refit_vertex);
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+      CovMatrix cov_corrected_1 = ipandcov_1.second;
+      CovMatrix cov_corrected_2 = ipandcov_2.second;
+
       if(!is_data_) {
 
         ip_sig_1_raw_= ip_sig_1_;
         ip_sig_2_raw_= ip_sig_2_;
 
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovMuon(muon1, refit_vertex);
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
 
         ip_corrected_1 = ipCorrector.correctIp(
                          ipandsig_1.first,
@@ -3237,12 +3544,12 @@ namespace ic {
 
 
         // Correct IP covariance matrix
-        CovMatrix cov_corrected_1 = ipCorrector.correctIpCov(
+        cov_corrected_1 = ipCorrector.correctIpCov(
                     ipandcov_1.second, 
                     fabs(lep1->eta())
         );
 
-        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+        cov_corrected_2 = ipCorrector.correctIpCov(
                     ipandcov_2.second,
                     fabs(lep2->eta())
         );
@@ -3274,6 +3581,33 @@ namespace ic {
         ip_sig_1_down_= ip_sig_1_;
         ip_sig_2_down_= ip_sig_2_;
       }
+
+      ip_x_1_ = ip_corrected_1.X();
+      ip_y_1_ = ip_corrected_1.Y();
+      ip_z_1_ = ip_corrected_1.Z();
+      ip_x_2_ = ip_corrected_2.X();
+      ip_y_2_ = ip_corrected_2.Y();
+      ip_z_2_ = ip_corrected_2.Z();
+
+      ipcov00_1_ = cov_corrected_1(0,0);
+      ipcov01_1_ = cov_corrected_1(0,1);
+      ipcov02_1_ = cov_corrected_1(0,2);
+      ipcov10_1_ = cov_corrected_1(1,0);
+      ipcov11_1_ = cov_corrected_1(1,1);
+      ipcov12_1_ = cov_corrected_1(1,2);
+      ipcov20_1_ = cov_corrected_1(2,0);
+      ipcov21_1_ = cov_corrected_1(2,1);
+      ipcov22_1_ = cov_corrected_1(2,2);
+
+      ipcov00_2_ = cov_corrected_2(0,0);
+      ipcov01_2_ = cov_corrected_2(0,1);
+      ipcov02_2_ = cov_corrected_2(0,2);
+      ipcov10_2_ = cov_corrected_2(1,0);
+      ipcov11_2_ = cov_corrected_2(1,1);
+      ipcov12_2_ = cov_corrected_2(1,2);
+      ipcov20_2_ = cov_corrected_2(2,0);
+      ipcov21_2_ = cov_corrected_2(2,1);
+      ipcov22_2_ = cov_corrected_2(2,2);
 
       // uncorrected IP
       //TVector3 ip1 = (ipandsig_1.first).Unit();
@@ -3326,6 +3660,7 @@ namespace ic {
         lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
 
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv2(
                 tau2->svx() - primary_vtx->vx(),
                 tau2->svy() - primary_vtx->vy(),
@@ -3434,11 +3769,47 @@ namespace ic {
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
- 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
+
+      std::vector<ic::PFCandidate*> hads2 = GetTauHads(tau2, pfcands,0);
+      std::vector<ic::PFCandidate*> gammas2 = GetTauGammas(tau2, pfcands, 1., 0);
+      if(hads2.size()>2) hads2 = GetA1 (tau2, pfcands).first;
+
+      pi_px_1_=lep1->vector().Px();
+      pi_py_1_=lep1->vector().Py();
+      pi_pz_1_=lep1->vector().Pz();
+      pi_E_1_=lep1->vector().E();
+      pi_px_2_=pi_tau2->vector().Px();
+      pi_py_2_=pi_tau2->vector().Py();
+      pi_pz_2_=pi_tau2->vector().Pz();
+      pi_E_2_=pi_tau2->vector().E();
+
+      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+        pi0_px_2_=pi0_tau2->vector().Px();
+        pi0_py_2_=pi0_tau2->vector().Py();
+        pi0_pz_2_=pi0_tau2->vector().Pz();
+        pi0_E_2_=pi0_tau2->vector().E();
+      
+        gam1_px_2_=gammas2[0]->vector().Px();
+        gam1_py_2_=gammas2[0]->vector().Py();
+        gam1_pz_2_=gammas2[0]->vector().Pz();
+        gam1_E_2_=gammas2[0]->vector().E(); 
+        if(gammas2.size()>1) gam2_px_2_= gammas2[1]->vector().Px();
+        if(gammas2.size()>1) gam2_py_2_= gammas2[1]->vector().Py();
+        if(gammas2.size()>1) gam2_pz_2_= gammas2[1]->vector().Pz();
+        if(gammas2.size()>1) gam2_E_2_= gammas2[1]->vector().E();
+        if(gammas2.size()>2) gam3_px_2_= gammas2[2]->vector().Px();
+        if(gammas2.size()>2) gam3_py_2_= gammas2[2]->vector().Py();
+        if(gammas2.size()>2) gam3_pz_2_= gammas2[2]->vector().Pz();
+        if(gammas2.size()>2) gam3_E_2_= gammas2[2]->vector().E();
+        if(gammas2.size()>3) gam4_px_2_= gammas2[3]->vector().Px();
+        if(gammas2.size()>3) gam4_py_2_= gammas2[3]->vector().Py();
+        if(gammas2.size()>3) gam4_pz_2_= gammas2[3]->vector().Pz();
+        if(gammas2.size()>3) gam4_E_2_= gammas2[3]->vector().E();
+      }
  
       TLorentzVector lvec1;
       TLorentzVector lvec2;
@@ -3469,6 +3840,7 @@ namespace ic {
       TVector3 ip_corrected_1 = ipandsig_1.first;
       TVector3 ip_corrected_2 = ipandsig_2.first;
 
+
       ipx_uncorr_1_ = ipandsig_1.first.X();
       ipy_uncorr_1_ = ipandsig_1.first.Y();
       ipz_uncorr_1_ = ipandsig_1.first.Z();
@@ -3478,14 +3850,15 @@ namespace ic {
       ip_sig_uncorr_1_ = ipandsig_1.second;
       ip_sig_uncorr_2_ = ipandsig_1.second;
 
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovElec(ele1, refit_vertex);
+      std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
+      CovMatrix cov_corrected_1 = ipandcov_1.second;
+      CovMatrix cov_corrected_2 = ipandcov_2.second;
 
       if(!is_data_) {
 
         ip_sig_1_raw_= ip_sig_1_;
         ip_sig_2_raw_= ip_sig_2_;
-
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_1 = IPAndCovElec(ele1, refit_vertex);
-        std::pair<TVector3,ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >>> ipandcov_2 = IPAndCov(tau2, refit_vertex, pfcands);
 
         ip_corrected_1 = ipCorrectorEle.correctIp(
                          ipandsig_1.first,
@@ -3500,12 +3873,12 @@ namespace ic {
         );
 
         // Correct IP covariance matrix
-        CovMatrix cov_corrected_1 = ipCorrectorEle.correctIpCov(
+        cov_corrected_1 = ipCorrectorEle.correctIpCov(
                     ipandcov_1.second,
                     fabs(lep1->eta())
         );
 
-        CovMatrix cov_corrected_2 = ipCorrector.correctIpCov(
+        cov_corrected_2 = ipCorrector.correctIpCov(
                     ipandcov_2.second,
                     fabs(lep2->eta())
         );
@@ -3537,6 +3910,33 @@ namespace ic {
         ip_sig_1_down_= ip_sig_1_;
         ip_sig_2_down_= ip_sig_2_;
       }
+
+      ip_x_1_ = ip_corrected_1.X();
+      ip_y_1_ = ip_corrected_1.Y();
+      ip_z_1_ = ip_corrected_1.Z();
+      ip_x_2_ = ip_corrected_2.X();
+      ip_y_2_ = ip_corrected_2.Y();
+      ip_z_2_ = ip_corrected_2.Z();
+
+      ipcov00_1_ = cov_corrected_1(0,0); 
+      ipcov01_1_ = cov_corrected_1(0,1); 
+      ipcov02_1_ = cov_corrected_1(0,2); 
+      ipcov10_1_ = cov_corrected_1(1,0); 
+      ipcov11_1_ = cov_corrected_1(1,1); 
+      ipcov12_1_ = cov_corrected_1(1,2); 
+      ipcov20_1_ = cov_corrected_1(2,0); 
+      ipcov21_1_ = cov_corrected_1(2,1); 
+      ipcov22_1_ = cov_corrected_1(2,2); 
+
+      ipcov00_2_ = cov_corrected_2(0,0);
+      ipcov01_2_ = cov_corrected_2(0,1);
+      ipcov02_2_ = cov_corrected_2(0,2);
+      ipcov10_2_ = cov_corrected_2(1,0);
+      ipcov11_2_ = cov_corrected_2(1,1);
+      ipcov12_2_ = cov_corrected_2(1,2);
+      ipcov20_2_ = cov_corrected_2(2,0);
+      ipcov21_2_ = cov_corrected_2(2,1);
+      ipcov22_2_ = cov_corrected_2(2,2);
 
       // corrected IP
       TVector3 ip1 = ip_corrected_1.Unit();
@@ -3585,6 +3985,7 @@ namespace ic {
         lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
         
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
+        y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv2(
                 tau2->svx() - primary_vtx->vx(),
                 tau2->svy() - primary_vtx->vy(),
@@ -3839,6 +4240,16 @@ namespace ic {
       }
     }   
 
+    if (ip_sig_1_ != ip_sig_1_) ip_sig_1_=0.;
+    if (ip_sig_2_ != ip_sig_2_) ip_sig_2_=0.;
+
+    aco_angle_1_ = aco_angle_1_!=aco_angle_1_ ? -9999. : aco_angle_1_;
+    aco_angle_2_ = aco_angle_2_!=aco_angle_2_ ? -9999. : aco_angle_2_;
+    aco_angle_3_ = aco_angle_3_!=aco_angle_3_ ? -9999. : aco_angle_3_;
+    aco_angle_4_ = aco_angle_4_!=aco_angle_4_ ? -9999. : aco_angle_4_;
+    aco_angle_5_ = aco_angle_5_!=aco_angle_5_ ? -9999. : aco_angle_5_;
+    aco_angle_6_ = aco_angle_6_!=aco_angle_6_ ? -9999. : aco_angle_6_;
+    aco_angle_7_ = aco_angle_7_!=aco_angle_7_ ? -9999. : aco_angle_7_;
  
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();

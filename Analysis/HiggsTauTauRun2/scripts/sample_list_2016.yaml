@@ -168,3 +168,9 @@ samples:
     - ttHiggs0MToTauTau
     - ttHiggs0Mf05ph0ToTauTau
     - ttHiggs0PMToTauTau
+    - WHiggs0MfWH05ph0
+    - WHiggs0M
+    - WHiggs0PM
+    - ZHiggs0MfZH05ph0
+    - ZHiggs0M
+    - ZHiggs0PM

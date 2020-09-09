@@ -554,7 +554,7 @@ namespace ic {
     if(is_embedded_&& era_ == era::data_2017 && (channel_==channel::et || channel_==channel::zee)){
       // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
       Electron const* elec = dynamic_cast<Electron const*>(dileptons[0]->At(0));
-      double eta = fabs(elec->sc_eta());
+      double eta = fabs(elec->eta());
       double pt = elec->pt();
       if(pt<40 && eta>1.479) passed_singleelectron = true;
     }
@@ -598,29 +598,29 @@ namespace ic {
         if(extra_leg2_filter!="") leg2_match = leg2_match&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, extra_leg2_filter,0.5).first;
 
         passed_etaucross = leg1_match && leg2_match;
+        if(is_embedded_&&(era_ == era::data_2017||era_ == era::data_2018)) {
+          //L1 cut
+          std::vector<Candidate const *> match_tau;
+          match_tau.push_back(dileptons[0]->At(1));
+          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+          std::vector<ic::L1TObject*> passed_l1_taus_etau;
+          for(unsigned ta=0; ta<l1taus.size(); ++ta){
+              if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);
+          }
+          bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
+          //if(passed_etaucross && !match_l1_part_etau) std::cout << "L1 not passed!" << std::endl;
+          //else if(passed_etaucross) std::cout << "L1 passed!" << std::endl;
+          passed_etaucross = passed_etaucross && match_l1_part_etau;
+        }
         if(is_embedded_&& era_ == era::data_2017){
           // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
           Electron const* elec = dynamic_cast<Electron const*>(dileptons[i]->At(0)); 
-          double eta = fabs(elec->sc_eta());
+          double eta = fabs(elec->eta());
           double pt = elec->pt();
           if(pt<40 && eta>1.479) { passed_etaucross = true; }
         }
       if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
       }
-    }
-    if(is_embedded_&&(era_ == era::data_2017||era_ == era::data_2018)) {
-      //L1 cut
-      std::vector<Candidate const *> match_tau;
-      match_tau.push_back(dileptons[0]->At(1));
-      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-      std::vector<ic::L1TObject*> passed_l1_taus_etau;
-      for(unsigned ta=0; ta<l1taus.size(); ++ta){
-          if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 26.) passed_l1_taus_etau.push_back(l1taus[ta]);
-      }
-      bool match_l1_part_etau = (MatchByDR(match_tau,passed_l1_taus_etau,0.5,true,true)).size() == 1;
-      //if(passed_etaucross && !match_l1_part_etau) std::cout << "L1 not passed!" << std::endl;
-      //else if(passed_etaucross) std::cout << "L1 passed!" << std::endl;
-      passed_etaucross = passed_etaucross && match_l1_part_etau;
     }
     event->Add("trg_etaucross", passed_etaucross);
 

@@ -809,6 +809,7 @@ if options.channel == 'tt':
     cats['zttEmbed_mvaa1pi']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvaa1pi"])
     cats['jetFakes_mvaa1pi']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_mvaa1pi"])
     cats['higgs_mvaa1a1']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvaa1a1"])
+    cats['higgs_mvaa1a1_sync']      = '({} && {} && tau_decay_mode_1==10 && tau_decay_mode_2==10 && a1_flag)'.format(mva_ggh, cats["inclusive_mvaa1a1"])
     cats['zttEmbed_mvaa1a1']   = '({} && {})'.format(mva_zttEmbed, cats["inclusive_mvaa1a1"])
     cats['jetFakes_mvaa1a1']   = '({} && {})'.format(mva_jetFakes, cats["inclusive_mvaa1a1"])
     cats['higgs_mvapipi']      = '({} && {})'.format(mva_ggh, cats["inclusive_mvapipi"])
@@ -1462,7 +1463,9 @@ if options.era in ['cpsummer17','tauid2017']:
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []
     qqhww_samples = []
-    
+    gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
+    qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']   
+ 
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     if options.channel == 'em': 
@@ -1506,7 +1509,10 @@ if options.era in ['cp18']:
     ewkz_samples = ['EWKZ2Jets']
     gghww_samples = []
     qqhww_samples = []
-    
+    gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
+    qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']   
+
+ 
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     if options.channel == 'em':
@@ -1958,8 +1964,8 @@ if options.syst_qcd_shape_wsf != '':
             ]:
         w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
-    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT'], False)
-    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT'], False)
+    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
 if options.syst_scale_met_clustered != '':
     systematics['syst_scale_met_clustered_up'] = ('METCL_UP' , '_'+options.syst_scale_met_clustered+'Up', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
     systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
@@ -3260,7 +3266,8 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
 
 def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
     #weights = {"sm": "wt_cp_prod_sm*(wt_cp_prod_sm!=0)", "ps": "wt_cp_prod_ps*(wt_cp_prod_sm!=0)", "mm": "wt_cp_prod_mm*(wt_cp_prod_sm!=0)"}#, "flat": "(wt_cp_prod_sm!=0)"}
-    weights = {"sm": "1", "ps": "1", "mm": "1"}#, "flat": "(wt_cp_prod_sm!=0)"}
+    weights = {"sm": "wt_cp_prod_sm", "ps": "wt_cp_prod_ps", "mm": "wt_cp_prod_mm"}
+    #weights = {"sm": "1", "ps": "1", "mm": "1"}#, "flat": "(wt_cp_prod_sm!=0)"}
     if get_os:
         OSSS = 'os'
     else:
@@ -3275,10 +3282,12 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
             tname = key.replace('*',mass)+add_name
             if 'ggH_'+name not in tname: 
               tname=key.replace('*',mass)+'_reweightedto_'+name+add_name
-              continue
+              #continue
+              weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
+            else:
+              weight=wt+'*wt_quarkmass*wt_mg_nnlops'
             non_cp=False
-            weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
-            #if 'ggH_mm' in key: weight+='*2' # change MM to 2 times SM cross section to make life easier when combining reweighted templates - this is now done in XS file so not needed!!
+            #weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
             full_selection = BuildCutString(weight, sel, cat, OSSS)
             name = key
 
@@ -3846,7 +3855,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016']: 
             #GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
-
+        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis == 'cpprod':
+        #  GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)
         if 'W' not in samples_to_skip and options.channel=='tt' and options.analysis in ['cpprod','cpdecay'] and 'VV' not in samples_to_skip and 'ZTT' not in samples_to_skip:
             GenerateW(ana, 'fakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel+'&&gen_match_1!=6&&gen_match_2==6', cat, cat_data, 8, qcd_os_ss_ratio, not options.do_ss)
     else:
@@ -3912,8 +3922,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016'] and options.method!=0: 
         #    GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016'] and options.channel == 'em':
-        #    GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
+        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis == 'cpprod' and options.channel == 'em':
+          GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)    
         if options.method==0 and options.channel=='tt':
             sel_mod = sel
             if True in ['baseline_aisotau1' in x for x in options.set_alias]: sel_mod =sel+'&&(gen_match_1!=6)'

@@ -8,10 +8,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "TRandom3.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IpCorrection.h"
-#include "Math/Functor.h"
-#include "Math/BrentMinimizer1D.h"
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
 
 #include <string>
 
@@ -269,6 +265,7 @@ class HTTCategories : public ModuleBase {
   double aco_angle_5_;
   double aco_angle_6_;
   double aco_angle_7_;
+  double pv_angle_;
   double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
   double alpha1_1_,alpha1_2_, alpha2_1_, alpha2_2_;
@@ -291,7 +288,6 @@ class HTTCategories : public ModuleBase {
   double wt_cp_prod_mm_;
 
   double gen_phitt_;
-  double gen_phitt_2_;
 
   float IC_BDT_max_score_;
   int IC_BDT_max_index_;
@@ -858,6 +854,18 @@ class HTTCategories : public ModuleBase {
 
   bool a1_flag_;
   bool a1_flag_2_;
+
+  // additional variables needed for MVA training for CP master projects
+  double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_; 
+  double pi0_px_1_, pi0_py_1_, pi0_pz_1_, pi0_E_1_, pi0_px_2_, pi0_py_2_, pi0_pz_2_, pi0_E_2_; 
+  double gam1_px_1_, gam1_py_1_, gam1_pz_1_, gam1_E_1_, gam1_px_2_, gam1_py_2_, gam1_pz_2_, gam1_E_2_; 
+  double gam2_px_1_, gam2_py_1_, gam2_pz_1_, gam2_E_1_, gam2_px_2_, gam2_py_2_, gam2_pz_2_, gam2_E_2_; 
+  double gam3_px_1_, gam3_py_1_, gam3_pz_1_, gam3_E_1_, gam3_px_2_, gam3_py_2_, gam3_pz_2_, gam3_E_2_; 
+  double gam4_px_1_, gam4_py_1_, gam4_pz_1_, gam4_E_1_, gam4_px_2_, gam4_py_2_, gam4_pz_2_, gam4_E_2_; 
+  double metx_, mety_; 
+  double ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_; 
+  double ipcov00_1_, ipcov01_1_, ipcov02_1_, ipcov10_1_, ipcov11_1_, ipcov12_1_, ipcov20_1_, ipcov21_1_, ipcov22_1_; 
+  double ipcov00_2_, ipcov01_2_, ipcov02_2_, ipcov10_2_, ipcov11_2_, ipcov12_2_, ipcov20_2_, ipcov21_2_, ipcov22_2_; 
 
  public:
   HTTCategories(std::string const& name);

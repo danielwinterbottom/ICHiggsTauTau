@@ -325,11 +325,11 @@ namespace ic {
         wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
         wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
 
-        wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
-        wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
-        wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
-        WTm_ = tauspinner->weight("WTm");
-        WTp_ = tauspinner->weight("WTp");
+        //wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+        //wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+        //wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+        //WTm_ = tauspinner->weight("WTm");
+        //WTp_ = tauspinner->weight("WTp");
       }
 
     }

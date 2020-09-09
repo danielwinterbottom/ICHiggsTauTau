@@ -2572,6 +2572,26 @@ namespace ic {
     return angle;
   }
 
+  double PolarimetricA1A1(TVector3 tau1, TVector3 tau2, TLorentzVector a1_1, TLorentzVector a1_2, std::vector<TLorentzVector> pis_1, std::vector<TLorentzVector> pis_2, std::vector<double> charges_1, std::vector<double> charges_2) {
+    double angle = -9999.;
+    TLorentzVector Tauminus, Tauplus;
+    std::vector<TLorentzVector> solutions;
+    TLorentzVector dummy1, dummy2;
+
+    solutions=tauPairMomentumSolutions(tau1, a1_1, dummy1, true, tau2, a1_2, dummy2, true,true);
+
+    Tauminus=solutions.at(3);
+    Tauplus=solutions.at(7);
+
+    SCalculator Scalc("a1");
+    if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)) //(security checks, if there is no problem with variables)
+    {
+       angle= Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+    }
+
+    return angle;
+  }
+
   double AlphaAngle(TVector3 p, TVector3 ip) {
     TVector3 z(0,0,1);
     TVector3 p_unit = p.Unit();

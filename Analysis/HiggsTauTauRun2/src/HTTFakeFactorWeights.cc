@@ -784,8 +784,8 @@ namespace ic {
           double os = 1.;
           if(!isOS) os=0.;
  
-          auto args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
-          if(channel_==channel::et) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,-1,-1,-1};
+          auto args = std::vector<double>                     {pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,w_frac,qcd_frac,ttbar_frac};
+          //if(channel_==channel::et) args = std::vector<double>{pt_2_,mva_dm_2_,ipsig,n_jets_,pt_1_,os,met_var_qcd,met_var_w,mt_1_, iso_1_,pass_single,m_vis_,WpT,-1,-1,-1};
           double ff_nom = fns_["ff_lt_medium_mvadmbins"]->eval(args.data());
 
           event->Add("wt_ff_1",  ff_nom);

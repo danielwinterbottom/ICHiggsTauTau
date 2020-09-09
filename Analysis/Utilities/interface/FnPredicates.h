@@ -20,6 +20,8 @@
 #include "TMVA/Reader.h"
 #include "TH1D.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/ImpactParameter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/fonction_a1.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SCalculator.h"
 
 namespace ic {
 
@@ -177,6 +179,8 @@ namespace ic {
     p->set_vector(out_vec);
   }
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
+
+  double PolarimetricA1A1(TVector3 tau1, TVector3 tau2, TLorentzVector a1_1, TLorentzVector a1_2, std::vector<TLorentzVector> pis_1, std::vector<TLorentzVector> pis_2, std::vector<double> charges_1, std::vector<double> charges_2);
 
   double IPAcoSign(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
 

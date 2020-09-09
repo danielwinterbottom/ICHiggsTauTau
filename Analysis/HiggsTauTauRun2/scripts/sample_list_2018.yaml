@@ -93,7 +93,7 @@ samples:
     - JJH0MToTauTauPlusTwoJets_Filtered
     - JJH0MToTauTauPlusZeroJets
     - JJH0MToTauTauPlusZeroJets_Filtered
-    - JJH0Mf05ph0ToTauTauPlusOneJets.dat
+    - JJH0Mf05ph0ToTauTauPlusOneJets
     - JJH0Mf05ph0ToTauTauPlusOneJets_Filtered
     - JJH0Mf05ph0ToTauTauPlusTwoJets
     - JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered
@@ -132,7 +132,7 @@ samples:
     - WHiggs0Mf05ph0ToTauTau
     - WHiggs0PHToTauTau
     - WHiggs0PHf05ph0ToTauTau
-    - WHiggs0PMToTauTau.dat
+    - WHiggs0PMToTauTau
     - WminusHToTauTauUncorrelatedDecay
     - WminusHToTauTauUncorrelatedDecay_Filtered
     - WminusHToTauTau_M-125
