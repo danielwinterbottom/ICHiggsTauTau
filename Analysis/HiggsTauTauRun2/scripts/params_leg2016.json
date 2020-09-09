@@ -248,7 +248,7 @@
   },
   "JJH0PMToTauTauPlusTwoJets_Filtered": {
     "xs": 0.5104,
-    "evt": 5867577,
+    "evt": 5867664,
     "eff": 0.2923
   },
   "JJH0MToTauTauPlusZeroJets": {
@@ -275,7 +275,7 @@
   },
   "JJH0MToTauTauPlusTwoJets_Filtered": {
     "xs": 0.4697,
-    "evt": 6210690,
+    "evt": 6210732,
     "eff": 0.2950
   },
   "JJH0Mf05ph0ToTauTauPlusZeroJets": {

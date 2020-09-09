@@ -3265,9 +3265,7 @@ def GenerateReweightedCPSignal(ana, add_name='', plot='', wt='', sel='', cat='',
              ana.nodes[nodename].AddNode(ana.SummedFactory(key.replace('*',mass)+add_name, sample_names, plot, full_selection))
 
 def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
-    #weights = {"sm": "wt_cp_prod_sm*(wt_cp_prod_sm!=0)", "ps": "wt_cp_prod_ps*(wt_cp_prod_sm!=0)", "mm": "wt_cp_prod_mm*(wt_cp_prod_sm!=0)"}#, "flat": "(wt_cp_prod_sm!=0)"}
     weights = {"sm": "wt_cp_prod_sm", "ps": "wt_cp_prod_ps", "mm": "wt_cp_prod_mm"}
-    #weights = {"sm": "1", "ps": "1", "mm": "1"}#, "flat": "(wt_cp_prod_sm!=0)"}
     if get_os:
         OSSS = 'os'
     else:
@@ -3285,7 +3283,7 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
               #continue
               weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
             else:
-              weight=wt+'*wt_quarkmass*wt_mg_nnlops'
+              weight=wt+'*wt_quarkmass*wt_mg_nnlops*(wt_cp_prod_sm!=0)'
             non_cp=False
             #weight=wt+"*"+weights[name]+'*wt_quarkmass*wt_mg_nnlops'
             full_selection = BuildCutString(weight, sel, cat, OSSS)
