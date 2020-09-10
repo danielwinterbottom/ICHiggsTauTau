@@ -721,6 +721,15 @@ namespace ic {
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("pv_angle", &pv_angle_);
+
+      outtree_->Branch("sv_x_2", &sv_x_2_);
+      outtree_->Branch("sv_y_2", &sv_y_2_);
+      outtree_->Branch("sv_z_2", &sv_z_2_);
+      outtree_->Branch("sv_mag_2", &sv_mag_2_);
+      outtree_->Branch("sv_dphi_2", &sv_dphi_2_);
+      outtree_->Branch("sv_deta_2", &sv_deta_2_);
+      outtree_->Branch("hasSV_2", &hasSV_2_);
+
       outtree_->Branch("aco_angle_rand", &aco_angle_rand_);
       outtree_->Branch("aco_sign", &aco_sign_);
       outtree_->Branch("aco_sign_rand", &aco_sign_rand_);
@@ -2608,6 +2617,13 @@ namespace ic {
     aco_angle_6_=-9999.;
     aco_angle_7_=-9999.;
     pv_angle_=-9999.;
+    sv_x_2_=-9999.;
+    sv_y_2_=-9999.;
+    sv_z_2_=-9999.;
+    sv_mag_2_=-9999.;
+    sv_dphi_2_=-9999.;
+    sv_deta_2_=-9999.;
+    hasSV_2_=false;
  
     y_1_1_=-9999.;
     y_1_2_=-9999.;
@@ -3708,6 +3724,23 @@ namespace ic {
         a1_daughters  = GetA1(tau2, pfcands).first;
 
         if (a1_daughters.size()>2){
+
+            if(tau2->hasSV()) {
+
+              TVector3 svminuspv_2(
+                    tau2->secondary_vertex().X() - primary_vtx->vx(),
+                    tau2->secondary_vertex().Y() - primary_vtx->vy(),
+                    tau2->secondary_vertex().Z() - primary_vtx->vz()
+              );
+
+              sv_x_2_=svminuspv_2.X();
+              sv_y_2_=svminuspv_2.Y();
+              sv_z_2_=svminuspv_2.Z();
+              sv_mag_2_=svminuspv_2.Mag();
+              sv_dphi_2_=svminuspv_2.DeltaPhi (ConvertToTVector3(tau2->vector()));
+              sv_deta_2_=svminuspv_2.Eta()-tau2->eta();
+              hasSV_2_=true;
+            }
 
             lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho

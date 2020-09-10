@@ -494,7 +494,6 @@ for ch in channels:
                 #now loop over non-shift systematics
 
                 for s in extra_channel_noshift[ch].split():
-                  print s
                   name = s.split('=')[0].split('--')[1]
                   extra_ = extra_noshift+' '+s+' --extra_name='+name
                   run_command(qsub_command

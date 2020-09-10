@@ -569,7 +569,7 @@ cat_schemes = {
 }
 
 qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_vmem=24G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
-#qsub_command = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_rt=10:0:0 -l h_vmem=12G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
+qsub_command_long = 'qsub -e ./err -o ./out -cwd -V -q hep.q -l h_rt=10:0:0 -l h_vmem=12G -v CFG="{}",ch="{}",cat_num="{}",cat_str="{}",YEAR="{}",output_folder="{}",dc="{}",PARAMS="{}",FOLDER="{}",BLIND="{}"'
 
 dc_app='-2D'
 for ch in channels:
@@ -599,12 +599,20 @@ for ch in channels:
                     ' --var="%(var)s" %(extra)s --no_plot' % vars())
 
             else:
-                run_command(qsub_command
-                        .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
-                        + ' -v var="\'{}\'"'.format(var)
-                        + ' -v extra="{}"'.format(extra)
-                        + ' ./scripts/batch_datacards.sh'
-                        )
+                if cat_str == 'boosted' and ch == 'mt':
+                  run_command(qsub_command_long
+                          .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
+                          + ' -v var="\'{}\'"'.format(var)
+                          + ' -v extra="{}"'.format(extra)
+                          + ' ./scripts/batch_datacards.sh'
+                          )
+                else:
+                  run_command(qsub_command
+                          .format(CFG,ch,cat_num,cat_str,YEAR,output_folder,dc,PARAMS,FOLDER,BLIND)
+                          + ' -v var="\'{}\'"'.format(var)
+                          + ' -v extra="{}"'.format(extra)
+                          + ' ./scripts/batch_datacards.sh'
+                          )
 
                 #now loop over non-shift systematics
                
