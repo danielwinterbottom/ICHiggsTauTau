@@ -409,7 +409,7 @@ def FitFakeFactors(h,pt_min,pt_max,usePol1=False,polOnly=None,useExp=False,useSp
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",0,400)
   f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",0,400)
-  f2.SetParLimits(3,0.01,1)
+  f2.SetParLimits(3,0,1)
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",0,400)
   if useExp: 
     f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+exp([4]+([5]*x))",0,400)
@@ -515,7 +515,7 @@ def WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='qcd',aiso
   ff_eqn_landau = 'p0*TMath::Landau(jet_pt_2,p1,p2)+p3'
   ff_eqn_landau_exp = 'p0*TMath::Landau(jet_pt_2,p1,p2)+p3+exp(p4+p5*jet_pt_2)'
   ff_eqn_pol0 = 'p0'
-  ff_eqn_landau_split = '(p5*(jet_pt_2<p5)) + ((jet_pt_2>p4)*(p0*TMath::Landau(jet_pt_2,p1,p2)+p3))'
+  ff_eqn_landau_split = '(p5*(jet_pt_2<p4)) + ((jet_pt_2>p4)*(p0*TMath::Landau(jet_pt_2,p1,p2)+p3))'
   ff_params = {}
   ff_eqn_tot = ''
   extra_bin_name = ''
@@ -742,19 +742,14 @@ fout = ROOT.TFile(out_file, 'RECREATE')
 
 for i in to_write: i.Write()
 
-print "QCD FF"
 print "jetpt_qcd="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='qcd',aiso=False)
 
-print "QCD AISO FF"
 print "jetpt_qcd_aiso="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='qcd',aiso=True)
 
-print "W+JETS FF"
 print "jetpt_wjets="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='wjets',aiso=False)
 
-print "W+JETS MC FF"
 print "jetpt_wjets_mc="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='wjets_mc',aiso=False)
 
-print "TTBAR MC FF"
 print "jetpt_ttbar_mc="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_bins,proc='ttbar_mc',aiso=False)
 
 
@@ -776,20 +771,6 @@ print "jetpt_ttbar_mc="+WriteFunctionForApplyingFakeFactors(fout,pt_bins_fit,pt_
 
 #PlotFakeFactorCorrection(wjets_data, wjets_n_bjets1_corr_uncert, wjets_data.GetName(), output_folder, wp,x_title="n_{b-jets}")
 
-#Cross Trigger
-#cut = ''
-#var = 'trg_singlemuon[0,1,2]'
-#ff_weight_cond = WriteFunctionForApplyingFakeFactors(fout,njets_bins,pt_bins,proc='wjets',aiso=False)
-#(qcd_data, wjets_data, wjets_mc_data, ttbar_data) = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', 'crosstrg_closure' % vars(),input_folder,file_ext,False,doQCD=False,doW=True,doMC=False)
-#(qcd_pred, wjets_pred, wjets_mc_pred, ttbar_pred) = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', 'crosstrg_closure_pred' % vars(),input_folder,file_ext,False,add_wt='%(ff_weight_cond)s' % vars() ,doQCD=False,doW=True,doMC=False)
-
-#wjets_data.Divide(wjets_pred)
-#wjets_crosstrg_corr_fit, wjets_crosstrg_corr_uncert = FitCorrection(wjets_data, func='pol1')
-#wjets_data.Write()
-#wjets_crosstrg_corr_fit.Write()
-#wjets_crosstrg_corr_uncert.Write()
-
-#PlotFakeFactorCorrection(wjets_data, wjets_crosstrg_corr_uncert, wjets_data.GetName(), output_folder, wp,x_title="Cross Trigger")
 
 
 fout.Close()
