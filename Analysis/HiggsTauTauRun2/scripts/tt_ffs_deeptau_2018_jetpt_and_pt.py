@@ -18,6 +18,7 @@ parser.add_argument('--output_folder','-o', help= 'Name of output directory', de
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/gu18/Offline/output/SUSY/Jan24_2018_SUSY/')
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
+parser.add_argument('--year','-y', help= 'year', default=2018)
 args = parser.parse_args()
 
 wp = args.wp
@@ -83,6 +84,63 @@ other_files = [
   'ZZTo4L'
 ]
 
+if year == 2017:
+
+  lumi=41530.
+
+  out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
+
+  # read params from json
+
+  with open('scripts/params_2017.json') as jsonfile:
+    params = json.load(jsonfile)
+
+  data_files = [
+    'TauB',
+    'TauC',
+    'TauD',
+    'TauE',
+    'TauF',
+  ]
+  
+  ttbar_files = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+  
+  wjets_files = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+  
+  # Add MC sample names   
+  other_files = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1','T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','EWKZ2Jets']
+
+if year == 2016:  
+
+  lumi=35920.
+
+  out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
+
+  # read params from json
+
+  with open('scripts/params_leg2016.json') as jsonfile:
+    params = json.load(jsonfile)
+
+  data_files = [
+    'TauB',
+    'TauC',
+    'TauD',
+    'TauE',
+    'TauF',
+    'TauG',
+    'TauH'
+  ]
+  
+  ttbar_files = [
+    'TT'
+  ]
+  
+  wjets_files = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
+  
+  # Add MC sample names   
+  other_files = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO', 'T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
+  
+  
 string_0jet = '(n_lowpt_jets==0 || (n_lowpt_jets==1&&fabs(jeta_1)<2.4) || (n_lowpt_jets==2&&fabs(jeta_1)<2.4&&fabs(jeta_2)<2.4) )'
 string_1jet = '(n_lowpt_jets==0 || (n_lowpt_jets==1&&fabs(jeta_1)<2.4) || (n_lowpt_jets==2&&fabs(jeta_1)<2.4&&fabs(jeta_2)<2.4) )==0'
 
@@ -534,6 +592,65 @@ print tau1_string
 print '`n'
 print 'aiso FF'
 print tau1_aiso_string
+
+# same sign correction from aiso data
+
+var='dR[0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0]'
+var_alt='pt_1[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'
+for nbjet in ['0','1']:
+  cut = ''
+  if nbjet =='0': cut = 'n_bjets==0'
+  if nbjet =='1': cut = 'n_bjets>0'
+
+  # os aiso2 region
+  qcd_os_data_aiso2 = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', 'os_closure_nbjet%(nbjet)s' % vars(),input_folder,file_ext,doOS=True)
+  qcd_os_pred_aiso2 = DrawHists(var, '('+baseline_aiso2_aiso1+')*('+cut+')', 'os_closure_nbjet%(nbjet)s_aiso2_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=tau1_aiso_string)
+  fout.cd()
+
+  # obtain a flat correction as well
+  flat_corr = qcd_os_data_aiso2.Clone()
+  flat_corr_denom = qcd_os_pred_aiso2.Clone()
+  n_bins = flat_corr.GetNbinsX()
+  flat_corr.Rebin(n_bins)
+  flat_corr_denom.Rebin(n_bins)
+  flat_corr.Divide(flat_corr_denom)
+  flat_corr.SetName('os_closure_nbjet%(nbjet)s_flat' % vars())
+  fout.cd()
+  flat_corr.Write()
+
+  qcd_os_data_aiso2.Divide(qcd_os_pred_aiso2)
+
+  polfit = 'pol3'
+
+  fout.cd()
+  qcd_os_data_aiso2_fit, qcd_os_data_aiso2_uncert =  FitCorrection(qcd_os_data_aiso2, func=polfit)
+
+  qcd_os_data_aiso2.Write()
+  qcd_os_data_aiso2_fit.Write()
+  qcd_os_data_aiso2_uncert.Write()
+  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
+
+
+  #alternative parameterisation 
+
+  qcd_os_data_aiso2 = DrawHists(var_alt, '('+baseline_aiso2_iso+')*('+cut+')', 'os_closure_nbjet%(nbjet)s_alt' % vars(),input_folder,file_ext,doOS=True)
+  qcd_os_pred_aiso2 = DrawHists(var_alt, '('+baseline_aiso2_aiso1+')*('+cut+')', 'os_closure_nbjet%(nbjet)s_aiso2_alt_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=tau1_aiso_string)
+  fout.cd()
+  qcd_os_data_aiso2.Divide(qcd_os_pred_aiso2)
+
+  polfit = 'pol3'
+
+  fout.cd()
+  qcd_os_data_aiso2_fit, qcd_os_data_aiso2_uncert =  FitCorrection(qcd_os_data_aiso2, func=polfit)
+
+  qcd_os_data_aiso2.Write()
+  qcd_os_data_aiso2_fit.Write()
+  qcd_os_data_aiso2_uncert.Write()
+  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
+
+tau1_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_aiso_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+
 
 ## Make Fractions
 #
