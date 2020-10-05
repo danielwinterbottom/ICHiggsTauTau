@@ -235,7 +235,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Sep18_Data_102X_2017"
+  DATAFILELIST="./filelists/Sep18_2017_Data_102X"
   DATAPREFIX = DATAFILELIST.split("/")[2]
 
   if options.calc_lumi:
