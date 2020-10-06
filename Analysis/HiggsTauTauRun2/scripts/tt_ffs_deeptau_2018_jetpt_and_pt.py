@@ -27,6 +27,7 @@ output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
 draw = int(args.draw) > 0
+year = args.year
 lumi=58826.8469
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()

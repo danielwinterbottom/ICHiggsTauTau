@@ -266,6 +266,15 @@ namespace ic {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
           outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
           outtree_->Branch("wt_ff_us_1"  , &wt_ff_us_1_);
+
+          // for testing ff
+          outtree_->Branch("wt_ff_test_lead_1",    &wt_ff_test_lead_1_);
+          outtree_->Branch("wt_ff_test_sublead_1", &wt_ff_test_sublead_1_);
+          outtree_->Branch("wt_ff_test_both_1",    &wt_ff_test_both_1_);
+          outtree_->Branch("wt_ff_test_lead_2",    &wt_ff_test_lead_2_);
+          outtree_->Branch("wt_ff_test_sublead_2", &wt_ff_test_sublead_2_);
+          outtree_->Branch("wt_ff_test_both_2",    &wt_ff_test_both_2_);
+          // 
  
           outtree_->Branch("w_frac",             &w_frac_);
           outtree_->Branch("qcd_frac",             &qcd_frac_);
@@ -661,6 +670,8 @@ namespace ic {
       outtree_->Branch("met",               &met_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
+      outtree_->Branch("n_deepbjets",       &n_deepbjets_);
+      outtree_->Branch("n_prebjets",        &n_prebjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("n_btag",            &n_btag_);
       outtree_->Branch("n_loose_btag",      &n_loose_btag_);
@@ -1466,6 +1477,16 @@ namespace ic {
       if(event->Exists("wt_ff_dmbins_wjets_1")) wt_ff_dmbins_wjets_1_ = event->Get<double>("wt_ff_dmbins_wjets_1");
       if(event->Exists("wt_ff_dmbins_ttbar_1")) wt_ff_dmbins_ttbar_1_ = event->Get<double>("wt_ff_dmbins_ttbar_1");
 
+      //for fake factor tests
+      if(event->Exists("wt_ff_test_lead_1")) wt_ff_test_lead_1_ = event->Get<double>("wt_ff_test_lead_1");
+      if(event->Exists("wt_ff_test_both_1")) wt_ff_test_both_1_ = event->Get<double>("wt_ff_test_both_1");
+      if(event->Exists("wt_ff_test_sublead_1")) wt_ff_test_sublead_1_ = event->Get<double>("wt_ff_test_sublead_1");
+
+      if(event->Exists("wt_ff_test_lead_2")) wt_ff_test_lead_2_ = event->Get<double>("wt_ff_test_lead_2");
+      if(event->Exists("wt_ff_test_both_2")) wt_ff_test_both_2_ = event->Get<double>("wt_ff_test_both_2");
+      if(event->Exists("wt_ff_test_sublead_2")) wt_ff_test_sublead_2_ = event->Get<double>("wt_ff_test_sublead_2");
+      //
+
       wt_ff_us_1_ = event->Exists("wt_ff_us_1") ? event->Get<double>("wt_ff_us_1") : 0.0;
 
       if(do_ff_systematics_){
@@ -1927,35 +1948,51 @@ namespace ic {
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     std::vector<PFJet*> prebjets = lowpt_jets;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     // NEW
     std::vector<PFJet*> btag = prebjets;
     std::vector<PFJet*> loose_btag = prebjets;
     //
+    std::vector<PFJet*> deepbjets = prebjets;
     std::string btag_label="s";
     std::string btag_label_extra ="";
     double btag_wp;
     double loose_btag_wp;
+    double deepjet_wp;
     if (era_ == era::data_2017) {
       btag_wp = 0.4941;
       loose_btag_wp = 0.1522;
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.3033;
     }
     if (era_ == era::data_2018) {
       btag_wp = 0.4184;
       loose_btag_wp = 0.1241;
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.2770;
     }
     if (era_ == era::data_2016) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.3093;
     }
 
+    std::string deepjet_label_1 = "pfDeepFlavourJetTags:probb"; 
+    std::string deepjet_label_2 = "pfDeepFlavourJetTags:probbb"; 
+    std::string deepjet_label_3 = "pfDeepFlavourJetTags:problepb";
+
+    auto filterDeepJetBTag = [deepjet_label_1, deepjet_label_2, deepjet_label_3, deepjet_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(deepjet_label_1) + s1->GetBDiscriminator(deepjet_label_2) + s1->GetBDiscriminator(deepjet_label_3) > deepjet_wp;
+    };
 
     auto sortRuleBTagSum = [btag_label, btag_label_extra] (PFJet* s1, PFJet* s2) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > 
@@ -1978,6 +2015,13 @@ namespace ic {
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
       ic::erase_if_not(bjets, filterBTagSumTight);
+    }
+
+    if (event->Exists("retag_result")) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
+      ic::erase_if(deepbjets, !boost::bind(IsReBTagged, _1, retag_result));
+    } else{
+      ic::erase_if_not(deepbjets, filterDeepJetBTag);
     } 
 
     // Btag weights
@@ -2356,7 +2400,9 @@ namespace ic {
     if(jets.size() > 0) {
         jet_flav_3_ = jets[0]->parton_flavour();
     } else jet_flav_3_ = -9999;
-    
+   
+    //std::cout << pt_1_.var_double << "    " << jet_pt_1_ << "    " << pt_2_.var_double << "    " << jet_pt_2_ << std::endl;
+ 
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
       jeta_1_ = lowpt_jets[0]->eta();
