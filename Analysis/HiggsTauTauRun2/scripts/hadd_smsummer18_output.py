@@ -41,8 +41,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
-    'VBFHToTauTau_M125_withDipoleRecoil',
-    #'DYJetsToLL-2017',
+    'DYJetsToLL-2017',
     'SingleMuonA',
     'SingleMuonB',
     'SingleMuonC',
@@ -86,7 +85,6 @@ sample_list = [
     'WWTo2L2Nu',#new
     'WWTo4Q',#new
     'WWToLNuQQ',#new
-    'WZTo1L1Nu2Q',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo3LNu',#new
@@ -124,7 +122,6 @@ sample_list = [
     'GluGluHToTauTauUncorrelatedDecay',
     'GluGluHToTauTauUncorrelatedDecay_Filtered',
     'GluGluHToTauTau_M-125',
-    'GluGluHToWWTo2L2Nu_M-125',
     'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
     'GluGluToHToTauTau_M-125-nospinner-filter',
     'GluGluToHToTauTau_M-125-nospinner',
@@ -139,7 +136,7 @@ sample_list = [
     'JJH0MToTauTauPlusTwoJets_Filtered',
     'JJH0MToTauTauPlusZeroJets',
     'JJH0MToTauTauPlusZeroJets_Filtered',
-    'JJH0Mf05ph0ToTauTauPlusOneJets',
+    'JJH0Mf05ph0ToTauTauPlusOneJets.dat',
     'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
     'JJH0Mf05ph0ToTauTauPlusTwoJets',
     'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
@@ -159,10 +156,8 @@ sample_list = [
     'VBFHToTauTau_M-125-MM-filter',
     'VBFHToTauTau_M-125-PS-filter',
     'VBFHToTauTau_M-125-SM-filter',
-    'VBFHToTauTau_M-125-ext1',
     'VBFHToTauTau_M-125-nospinner-filter',
     'VBFHToTauTau_M-126-nospinner',
-    'VBFHToWWTo2L2Nu_M-125',
     'VBFHiggs0L1ToTauTau',
     'VBFHiggs0L1ZgToTauTau',
     'VBFHiggs0L1Zgf05ph0ToTauTau',
@@ -178,15 +173,12 @@ sample_list = [
     'WHiggs0Mf05ph0ToTauTau',
     'WHiggs0PHToTauTau',
     'WHiggs0PHf05ph0ToTauTau',
-    'WHiggs0PMToTauTau',
+    'WHiggs0PMToTauTau.dat',
     'WminusHToTauTauUncorrelatedDecay',
     'WminusHToTauTauUncorrelatedDecay_Filtered',
-    'WminusHToTauTau_M-125',
     'WplusHToTauTauUncorrelatedDecay',
     'WplusHToTauTauUncorrelatedDecay_Filtered',
-    'WplusHToTauTau_M-125',
     'ZHToTauTauUncorrelatedDecay_Filtered',
-    'ZHToTauTau_M-125',
     'ZHiggs0L1ToTauTau',
     'ZHiggs0L1ZgToTauTau',
     'ZHiggs0L1Zgf05ph0ToTauTau',
@@ -199,12 +191,114 @@ sample_list = [
     'ttHiggs0MToTauTau',
     'ttHiggs0Mf05ph0ToTauTau',
     'ttHiggs0PMToTauTau',
-
+	'SUSYGluGluToBBHToTauTau_M-80',
+    'SUSYGluGluToBBHToTauTau_M-90',
+    'SUSYGluGluToBBHToTauTau_M-100',
+    'SUSYGluGluToBBHToTauTau_M-110',
+    'SUSYGluGluToBBHToTauTau_M-120',
+    'SUSYGluGluToBBHToTauTau_M-125',
+    'SUSYGluGluToBBHToTauTau_M-130',
+    'SUSYGluGluToBBHToTauTau_M-140',
+    'SUSYGluGluToBBHToTauTau_M-160',
+    'SUSYGluGluToBBHToTauTau_M-180',
+    'SUSYGluGluToBBHToTauTau_M-200',
+    'SUSYGluGluToBBHToTauTau_M-250',
+    'SUSYGluGluToBBHToTauTau_M-300',
+    'SUSYGluGluToBBHToTauTau_M-350',
+    'SUSYGluGluToBBHToTauTau_M-400',
+    'SUSYGluGluToBBHToTauTau_M-450',
+    'SUSYGluGluToBBHToTauTau_M-500',
+    'SUSYGluGluToBBHToTauTau_M-600',
+    'SUSYGluGluToBBHToTauTau_M-700',
+    'SUSYGluGluToBBHToTauTau_M-800',
+    'SUSYGluGluToBBHToTauTau_M-900',
+    'SUSYGluGluToBBHToTauTau_M-1000',
+    'SUSYGluGluToBBHToTauTau_M-1200',
+    'SUSYGluGluToBBHToTauTau_M-1400',
+    'SUSYGluGluToBBHToTauTau_M-1600',
+    'SUSYGluGluToBBHToTauTau_M-1800',
+    'SUSYGluGluToBBHToTauTau_M-2000',
+    'SUSYGluGluToBBHToTauTau_M-2300',
+    'SUSYGluGluToBBHToTauTau_M-2600',
+    'SUSYGluGluToBBHToTauTau_M-2900',
+    'SUSYGluGluToBBHToTauTau_M-3200',
+    'SUSYGluGluToBBHToTauTau_M-3500',
+    'SUSYGluGluToBBHToTauTau_M-80-NLO',
+    'SUSYGluGluToBBHToTauTau_M-90-NLO',
+    'SUSYGluGluToBBHToTauTau_M-100-NLO',
+    'SUSYGluGluToBBHToTauTau_M-110-NLO',
+    'SUSYGluGluToBBHToTauTau_M-120-NLO',
+    'SUSYGluGluToBBHToTauTau_M-125-NLO',
+    'SUSYGluGluToBBHToTauTau_M-130-NLO',
+    'SUSYGluGluToBBHToTauTau_M-140-NLO',
+    'SUSYGluGluToBBHToTauTau_M-160-NLO',
+    'SUSYGluGluToBBHToTauTau_M-180-NLO',
+    'SUSYGluGluToBBHToTauTau_M-200-NLO',
+    'SUSYGluGluToBBHToTauTau_M-250-NLO',
+    'SUSYGluGluToBBHToTauTau_M-300-NLO',
+    'SUSYGluGluToBBHToTauTau_M-350-NLO',
+    'SUSYGluGluToBBHToTauTau_M-400-NLO',
+    'SUSYGluGluToBBHToTauTau_M-450-NLO',
+    'SUSYGluGluToBBHToTauTau_M-500-NLO',
+    'SUSYGluGluToBBHToTauTau_M-600-NLO',
+    'SUSYGluGluToBBHToTauTau_M-700-NLO',
+    'SUSYGluGluToBBHToTauTau_M-800-NLO',
+    'SUSYGluGluToBBHToTauTau_M-900-NLO',
+    'SUSYGluGluToBBHToTauTau_M-1000-NLO',
+    'SUSYGluGluToBBHToTauTau_M-1200-NLO',
+    'SUSYGluGluToBBHToTauTau_M-1400-NLO',
+    'SUSYGluGluToBBHToTauTau_M-1600-NLO',
+    'SUSYGluGluToBBHToTauTau_M-1800-NLO',
+    'SUSYGluGluToBBHToTauTau_M-2000-NLO',
+    'SUSYGluGluToBBHToTauTau_M-2300-NLO',
+    'SUSYGluGluToBBHToTauTau_M-2600-NLO',
+    'SUSYGluGluToBBHToTauTau_M-2900-NLO',
+    'SUSYGluGluToBBHToTauTau_M-3200-NLO',
+    'SUSYGluGluToBBHToTauTau_M-3500-NLO',
+    'SUSYGluGluToHToTauTau_M-80',
+    'SUSYGluGluToHToTauTau_M-90',
+    'SUSYGluGluToHToTauTau_M-100',
+    'SUSYGluGluToHToTauTau_M-110',
+    'SUSYGluGluToHToTauTau_M-120',
+    'SUSYGluGluToHToTauTau_M-130',
+    'SUSYGluGluToHToTauTau_M-140',
+    'SUSYGluGluToHToTauTau_M-160',
+    'SUSYGluGluToHToTauTau_M-180',
+    'SUSYGluGluToHToTauTau_M-200',
+    'SUSYGluGluToHToTauTau_M-250',
+    'SUSYGluGluToHToTauTau_M-300',
+    'SUSYGluGluToHToTauTau_M-350',
+    'SUSYGluGluToHToTauTau_M-400',
+    'SUSYGluGluToHToTauTau_M-450',     
+    'SUSYGluGluToHToTauTau_M-600',
+    'SUSYGluGluToHToTauTau_M-700',
+    'SUSYGluGluToHToTauTau_M-800',
+    'SUSYGluGluToHToTauTau_M-900',
+    'SUSYGluGluToHToTauTau_M-1200',
+    'SUSYGluGluToHToTauTau_M-1400',
+    'SUSYGluGluToHToTauTau_M-1500',
+    'SUSYGluGluToHToTauTau_M-1600',
+    'SUSYGluGluToHToTauTau_M-1800',
+    'SUSYGluGluToHToTauTau_M-2000',
+    'SUSYGluGluToHToTauTau_M-2300',
+    'SUSYGluGluToHToTauTau_M-2600',
+    'SUSYGluGluToHToTauTau_M-2900',
+    'SUSYGluGluToHToTauTau_M-3200',
+    'GluGluHToWWTo2L2Nu_M-125',
+    'VBFHToWWTo2L2Nu_M-125',
+    'GluGluZH_HToWW',
+    'HZJ_HToWW',
+    'HWminusJ_HToWW',
+    'HWplusJ_HToWW',
+    'GluGluToHToTauTau_M-125',
+    'VBFHToTauTau_M-125-ext1',
+    'WplusHToTauTau_M-125',
+    'WminusHToTauTau_M-125',
+    'ZHToTauTau_M-125',
+    'ttHToTauTau',
 	]
 
-
-channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-# channel = ['mt']
+channel = ['tt','mt','et','em']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
@@ -239,21 +333,21 @@ def FindMissingFiles(outf, d, samp, chan, infiles):
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 for sa in sample_list:
+  remove=True
+  to_remove=[]
+  hadd_dirs=[]
+  command=''
+  if batch:
+    JOB='jobs/hadd_%s.sh' % sa
+    os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
-    remove=True
-    to_remove=[]
-    hadd_dirs=[]
-    command=''
-    if batch:
-      JOB='jobs/hadd_%s_%s.sh' % (sa, ch)
-      os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_0.root'%vars()):
         if "%(sa)s_2018"%vars() in nfiles or ignore==True:
+#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*.root'%vars())
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
-          #no_missing_files = True
           if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2018_%(ch)s_*'%vars())) == nfiles["%(sa)s_2018"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
@@ -265,41 +359,33 @@ for sa in sample_list:
                 print "Hadd had a problem:"
                 print filetext 
                 remove=False
-              else:
+              else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())
-                os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*' %vars())) 
-              #command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars() # to be used if you want to only delete all files at the end of the hadding 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\" != \"\" ]; then echo \"Hadd had a problem:\"\ncat %(haddout)s ;\nelse rm %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_*; fi\n" % vars() 
+              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2018.root %(outputf)s/%(sdir)s/%(sa)s_2018_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :
             print "Incorrect number of files for sample %(sa)s_2018_%(ch)s! in %(sdir)s"%vars()
             remove=False
 
-    if batch and command:
-      with open(JOB, "a") as file: 
-        file.write("\n%s" % command)
-        file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
-      os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+  if not batch and remove:
+    # if all channels and systematics were hadded sucsessfully then remove the input files
+    for x in to_remove: 
+      os.system(x)
 
-   # if batch and command:  # to be used if you want to only delete all files at the end of the hadding
-   #   with open(JOB, "a") as file: 
-   #     file.write("\n%s" % command)
-   #     rm_command = 'y=1\n' % vars()
-   #     for i in hadd_dirs:
-   #       hadd_file  = i[0]
-   #       rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
-   #     rm_command+='if [ $y == 1 ]; then\n'
-   #     for i in hadd_dirs:
-   #       input_file = i[1]
-   #       rm_command+=input_file+'\n'
-   #     rm_command+='fi'
-   #     if remove: file.write("\n%s" % rm_command)
-   #     file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
-   #   os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
-
-  #if not batch and remove:
-  #  # if all channels and systematics were hadded sucsessfully then remove the input files
-  #  for x in to_remove:
-  #    os.system(x)
+  if batch and command:
+    with open(JOB, "a") as file: 
+      file.write("\n%s" % command)
+      rm_command = 'y=1\n' % vars()
+      for i in hadd_dirs:
+        hadd_file  = i[0]
+        rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
+      rm_command+='if [ $y == 1 ]; then\n'
+      for i in hadd_dirs:
+        input_file = i[1]
+        rm_command+=input_file+'\n'
+      rm_command+='fi'
+      if remove: file.write("\n%s" % rm_command)
+      file.write('\nEnd of job')
+    os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
