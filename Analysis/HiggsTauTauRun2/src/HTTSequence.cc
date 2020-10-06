@@ -893,9 +893,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2017) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
@@ -905,9 +905,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2018) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
@@ -917,9 +917,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     }
 
     BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
