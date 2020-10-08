@@ -77,9 +77,12 @@ namespace ic {
     double alt_er_trk_min_online_pt=0;
     double high_leg_pt = 0;
     
-    std::string singletau_trg_obj_label;
+    std::string singletau_trg_obj_label="";
+    std::string singletau_trg_obj_alt_label="";
     double min_online_singletau_pt=0;
-    std::string singletau_leg1_filter;
+    std::string singletau_leg1_filter="";
+    std::string singletau_leg1_alt_filter="";
+    std::string singletau_leg1_filter_2="";
     
     if (is_data_) { 
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -90,7 +93,6 @@ namespace ic {
 
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
         std::string name = triggerPathPtrVec[i]->name();
-
         if (channel_ == channel::et||channel_ == channel::zee || channel_ == channel::tpzee) {
        if (run >= 271036 /*&& run <= 258654*/  && (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v") != name.npos)) path_found = true;
        if (run >= 294927 && run < 314472  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos)) path_found = true;
@@ -119,7 +121,7 @@ namespace ic {
 
          if (path_found) break;
       }
-      if (!path_found) return 1;
+      //if (!path_found) return 1; // note sure why we need to do this so commenting out
 
       if (channel_ == channel::et || channel_ == channel::zee || channel_ == channel :: tpzee) {
         if (run >= 271036 && run <= 284044){
@@ -309,18 +311,39 @@ namespace ic {
       
       //single tau trigger  
       if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee) {
-        if(run >= 271036 /*&& run <= xxxxxx*/){
-          singletau_trg_obj_label = "triggerObjectsSingleTau140";
-          min_online_singletau_pt=150; // don't know what this would be at the moment so just keep as 0 for now
-          singletau_leg1_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+        if(run >= 271036 && run <= 284044){
+          singletau_trg_obj_label = "triggerObjectsSingleTau120";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
+
+          singletau_trg_obj_alt_label = "triggerObjectsSingleTau140";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+        } else if(run >= 294927) {
+          singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
+          singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
         }
       }  
     } else {
       //single tau trigger  
       if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
-        singletau_trg_obj_label = "triggerObjectsSingleTau140";
-        min_online_singletau_pt=150; // don't know what this would be at the moment so just keep as 0 for now
-        singletau_leg1_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+
+        if(era_ == era::data_2016){
+          singletau_trg_obj_label = "triggerObjectsSingleTau120";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
+
+          singletau_trg_obj_alt_label = "triggerObjectsSingleTau140";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+        } else if(era_ == era::data_2017 || era_ == era::data_2018) {
+          singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
+          singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+        }
       }
         
       if (channel_ == channel::et || channel_ == channel::zee || channel_ ==  channel::tpzee) {
@@ -795,9 +818,31 @@ namespace ic {
         bool taupt_leg1 = dileptons[i]->At(0)->pt() > min_online_singletau_pt;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, singletau_leg1_filter, 0.5).first;
         bool taupt_leg2 = dileptons[i]->At(1)->pt() > min_online_singletau_pt;
-        
+
+ 
+        if(singletau_leg1_filter_2!="") {
+          bool leg1_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, singletau_leg1_filter_2, 0.5).first;
+          bool leg2_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, singletau_leg1_filter_2, 0.5).first;
+          leg1_match = (leg1_match && leg1_match_2);
+          leg2_match = (leg2_match && leg2_match_2);
+        }
+ 
         if (leg1_match && taupt_leg1) passed_singletau_1 = true;
         if (leg2_match && taupt_leg2) passed_singletau_2 = true;
+
+        if(singletau_trg_obj_alt_label!="") {
+
+          std::vector<TriggerObject *> const& objs_alt = event->GetPtrVec<TriggerObject>(singletau_trg_obj_alt_label);
+          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs_alt, singletau_leg1_alt_filter, 0.5).first;
+          taupt_leg1 = dileptons[i]->At(0)->pt() > min_online_singletau_pt;
+          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs_alt, singletau_leg1_alt_filter, 0.5).first;
+          taupt_leg2 = dileptons[i]->At(1)->pt() > min_online_singletau_pt;
+
+          if (leg1_match && taupt_leg1) passed_singletau_1 = true;
+          if (leg2_match && taupt_leg2) passed_singletau_2 = true;
+
+        }
+
         if(passed_singletau_1 || passed_singletau_2) dileptons_pass.push_back(dileptons[i]);
       }
     }

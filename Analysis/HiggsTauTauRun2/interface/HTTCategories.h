@@ -872,15 +872,6 @@ class HTTCategories : public ModuleBase {
   double ipcov00_1_, ipcov01_1_, ipcov02_1_, ipcov10_1_, ipcov11_1_, ipcov12_1_, ipcov20_1_, ipcov21_1_, ipcov22_1_; 
   double ipcov00_2_, ipcov01_2_, ipcov02_2_, ipcov10_2_, ipcov11_2_, ipcov12_2_, ipcov20_2_, ipcov21_2_, ipcov22_2_; 
 
-  // for testing FFs
-
-  double wt_ff_test_lead_1_;
-  double wt_ff_test_sublead_1_;
-  double wt_ff_test_both_1_;
-  double wt_ff_test_lead_2_;
-  double wt_ff_test_sublead_2_;
-  double wt_ff_test_both_2_;
-
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();

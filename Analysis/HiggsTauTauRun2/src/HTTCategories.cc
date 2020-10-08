@@ -266,15 +266,6 @@ namespace ic {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
           outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
           outtree_->Branch("wt_ff_us_1"  , &wt_ff_us_1_);
-
-          // for testing ff
-          outtree_->Branch("wt_ff_test_lead_1",    &wt_ff_test_lead_1_);
-          outtree_->Branch("wt_ff_test_sublead_1", &wt_ff_test_sublead_1_);
-          outtree_->Branch("wt_ff_test_both_1",    &wt_ff_test_both_1_);
-          outtree_->Branch("wt_ff_test_lead_2",    &wt_ff_test_lead_2_);
-          outtree_->Branch("wt_ff_test_sublead_2", &wt_ff_test_sublead_2_);
-          outtree_->Branch("wt_ff_test_both_2",    &wt_ff_test_both_2_);
-          // 
  
           outtree_->Branch("w_frac",             &w_frac_);
           outtree_->Branch("qcd_frac",             &qcd_frac_);
@@ -1335,7 +1326,7 @@ namespace ic {
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
     if (event->Exists("trg_etaucross"))     trg_etaucross_ = event->Get<bool>("trg_etaucross");
-   
+ 
     if(!trg_applied_in_mc_) {
       trg_singleelectron_ = true;
       trg_singlemuon_     = true;
@@ -1476,16 +1467,6 @@ namespace ic {
       if(event->Exists("wt_ff_dmbins_qcd_1")) wt_ff_dmbins_qcd_1_ = event->Get<double>("wt_ff_dmbins_qcd_1");
       if(event->Exists("wt_ff_dmbins_wjets_1")) wt_ff_dmbins_wjets_1_ = event->Get<double>("wt_ff_dmbins_wjets_1");
       if(event->Exists("wt_ff_dmbins_ttbar_1")) wt_ff_dmbins_ttbar_1_ = event->Get<double>("wt_ff_dmbins_ttbar_1");
-
-      //for fake factor tests
-      if(event->Exists("wt_ff_test_lead_1")) wt_ff_test_lead_1_ = event->Get<double>("wt_ff_test_lead_1");
-      if(event->Exists("wt_ff_test_both_1")) wt_ff_test_both_1_ = event->Get<double>("wt_ff_test_both_1");
-      if(event->Exists("wt_ff_test_sublead_1")) wt_ff_test_sublead_1_ = event->Get<double>("wt_ff_test_sublead_1");
-
-      if(event->Exists("wt_ff_test_lead_2")) wt_ff_test_lead_2_ = event->Get<double>("wt_ff_test_lead_2");
-      if(event->Exists("wt_ff_test_both_2")) wt_ff_test_both_2_ = event->Get<double>("wt_ff_test_both_2");
-      if(event->Exists("wt_ff_test_sublead_2")) wt_ff_test_sublead_2_ = event->Get<double>("wt_ff_test_sublead_2");
-      //
 
       wt_ff_us_1_ = event->Exists("wt_ff_us_1") ? event->Get<double>("wt_ff_us_1") : 0.0;
 
