@@ -176,8 +176,8 @@ if options.proc_sm or options.proc_all:
       'HZJ_HToWW',
       'HWminusJ_HToWW',
       'HWplusJ_HToWW',
-      'GluGluToHToTauTau_M-125',
-      'GluGluToHToTauTau_M-125-ext',
+      'GluGluHToTauTau_M-125',
+      'GluGluHToTauTau_M-125-ext',
       'VBFHToTauTau_M-125',
       'WplusHToTauTau_M-125',
       'WminusHToTauTau_M-125',
@@ -236,7 +236,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = list(set(data_samples))
 
   DATAFILELIST="./filelists/Sep18_2017_Data_102X"
-  DATAPREFIX = DATAFILELIST.split("/")[2]
+#  DATAPREFIX = DATAFILELIST.split("/")[2]
+  DATAPREFIX = 'Sep18_Data_102X_2017'
 
   if options.calc_lumi:
     for sa in data_samples:
@@ -301,8 +302,9 @@ if options.proc_embed or options.proc_all:
       if 'zee' in chn:
         embed_samples+=['EmbeddingElEl'+era]
 
-  EMBEDFILELIST="./filelists/Sep18_MC_102X_2017"
-  EMBEDPREFIX = EMBEDFILELIST.split("/")[2]
+  EMBEDFILELIST="./filelists/Sep18_2017_MC_102X"
+  #EMBEDPREFIX = EMBEDFILELIST.split("/")[2]
+  EMBEDPREFIX='Sep18_MC_102X_2017'
 
   for sa in embed_samples:
     job_num=0
@@ -399,7 +401,8 @@ if options.proc_bkg or options.proc_all:
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)
-      PREFIX = FILELIST.split("/")[1]
+      #PREFIX = FILELIST.split("/")[1]
+      PREFIX='Sep18_MC_102X_2017'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\"}}' "%vars());
       if "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
           JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())

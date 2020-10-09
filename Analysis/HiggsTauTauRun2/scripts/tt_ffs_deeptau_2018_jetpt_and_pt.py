@@ -147,6 +147,7 @@ string_1jet = '(n_lowpt_jets==0 || (n_lowpt_jets==1&&fabs(jeta_1)<2.4) || (n_low
 
 pt_bins = {
 
+              'inclusive': '1' % vars(),
               '0jet': '%(string_0jet)s' % vars(),
               '1jet': '%(string_1jet)s' % vars(),
 
@@ -468,6 +469,7 @@ for ptbin in pt_bins:
   cut_iso1 = re.sub('X', '1', '(%(baseline_bothiso)s)*(%(cuts)s)' % vars())
   cut_aiso1 = re.sub('X', '1','(%(baseline_aiso1)s)*(%(cuts)s)' % vars())
   var1 = VariableBinning(ptbin)
+  if not ('high' in ptbin or 'med' in ptbin or 'low' in ptbin): var1='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,160,200,240,300,400]'
   ff_list[name+'_pt_1'] = (var1, cut_iso1, cut_aiso1)
 
 # add aiso plots
@@ -503,15 +505,15 @@ for ff in ff_list:
     fin.Close()
 
   # Get Fit Type
-  if 'inclusive' in ff:
-    fit_type_qcd = pt_bins_fit['qcd_inclusive']
-    fit_type_qcd_aiso = pt_bins_fit['qcd_aiso_inclusive']
-  else:
-    pt_bin = ff.split('_')[0] + '_' + ff.split('_')[1]
-    if 'qcd_'+pt_bin in pt_bins_fit: fit_type_qcd = pt_bins_fit['qcd_'+pt_bin]
-    else: fit_type_qcd = 'landau'
-    if 'qcd_aiso_'+pt_bin in pt_bins_fit: fit_type_qcd_aiso = pt_bins_fit['qcd_aiso_'+pt_bin]
-    else: fit_type_qcd_aiso = 'landau'
+  #if 'inclusive' in ff:
+  #  fit_type_qcd = pt_bins_fit['qcd_inclusive']
+  #  fit_type_qcd_aiso = pt_bins_fit['qcd_aiso_inclusive']
+  #else:
+  pt_bin = ff.split('_')[0] + '_' + ff.split('_')[1]
+  if 'qcd_'+pt_bin in pt_bins_fit: fit_type_qcd = pt_bins_fit['qcd_'+pt_bin]
+  else: fit_type_qcd = 'landau'
+  if 'qcd_aiso_'+pt_bin in pt_bins_fit: fit_type_qcd_aiso = pt_bins_fit['qcd_aiso_'+pt_bin]
+  else: fit_type_qcd_aiso = 'landau'
 
   # Choose Fit
   polOnlyInFit_qcd = None
@@ -597,7 +599,7 @@ print tau1_aiso_string
 # same sign correction from aiso data
 
 var='dR[0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0]'
-var_alt='pt_1[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'
+var_alt='pt_1[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,250,300,400]'
 for nbjet in ['0','1']:
   cut = ''
   if nbjet =='0': cut = 'n_bjets==0'
@@ -639,7 +641,7 @@ for nbjet in ['0','1']:
   fout.cd()
   qcd_os_data_aiso2.Divide(qcd_os_pred_aiso2)
 
-  polfit = 'pol3'
+  polfit = 'pol1'
 
   fout.cd()
   qcd_os_data_aiso2_fit, qcd_os_data_aiso2_uncert =  FitCorrection(qcd_os_data_aiso2, func=polfit)
@@ -647,7 +649,7 @@ for nbjet in ['0','1']:
   qcd_os_data_aiso2.Write()
   qcd_os_data_aiso2_fit.Write()
   qcd_os_data_aiso2_uncert.Write()
-  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
+  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='p_{T} (GeV)')
 
 tau1_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
 tau1_aiso_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
