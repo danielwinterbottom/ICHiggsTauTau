@@ -698,7 +698,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     httStitching.set_do_w_soup(true);
     if(era_type == era::data_2016) {
      httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6); 
-     httStitching.SetWInputYields(57402435+29514020, 45283121, 30064264+30374504, 39501912+19798117, 18751462+2073275+9116657);
+     httStitching.SetWInputYields(29514020+57402435, 45283121, 30064264+30374504, 39356879+19798117, 18751462+2073275+9116657);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
@@ -713,7 +713,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     httStitching.set_do_dy_soup(true);
     if(era_type == era::data_2016) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); 
-      httStitching.SetDYInputYields(49748967+96531428, 63730337, 19879279, 5857441, 4197868);
+      httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
