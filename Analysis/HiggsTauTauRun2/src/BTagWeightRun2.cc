@@ -24,7 +24,7 @@ namespace ic {
 
     if(era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) {
 
-      std::string name = "btag_calib";
+      std::string name = "btag_calib_promotedemote";
       if(ProductExists(name) && ProductExists(name+"_reader_incl") && ProductExists(name+"_reader_comb")){
         std::cout << "Getting BTagCalibration and BTagCalibrationReader objects from products." << std::endl;
         calib = GetProduct<const BTagCalibration *>(name);

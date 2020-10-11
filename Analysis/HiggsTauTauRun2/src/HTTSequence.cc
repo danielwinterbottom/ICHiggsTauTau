@@ -880,9 +880,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     TH2F othbtag_eff_alt;
  
 
-    TH2F deepjet_bbtag_eff;
-    TH2F deepjet_cbtag_eff;
-    TH2F deepjet_othbtag_eff;
+    TH2D deepjet_bbtag_eff;
+    TH2D deepjet_cbtag_eff;
+    TH2D deepjet_othbtag_eff;
  
     if (era_type == era::data_2016){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
@@ -893,9 +893,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2017) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
@@ -905,9 +905,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2018) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
@@ -917,9 +917,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
 
-      deepjet_bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
-      deepjet_cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
-      deepjet_othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     }
 
     BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
@@ -940,9 +940,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_era(era_type)
       .set_strategy(strategy_type)
       .set_jet_label(shift_jets_label)
-      .set_bbtag_eff(new TH2F(deepjet_bbtag_eff))
-      .set_cbtag_eff(new TH2F(deepjet_cbtag_eff))
-      .set_othbtag_eff(new TH2F(deepjet_othbtag_eff))
+      .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
+      .set_cbtag_eff((TH2F*)(new TH2D(deepjet_cbtag_eff)))
+      .set_othbtag_eff((TH2F*)(new TH2D(deepjet_othbtag_eff)))
       .set_do_reshape(do_reshape)
       .set_use_deep_jet(true)
       .set_use_deep_csv(false)
