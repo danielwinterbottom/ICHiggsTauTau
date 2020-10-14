@@ -1991,7 +1991,7 @@ namespace ic {
     ic::erase_if_not(loose_bjets, filterBTagSumLoose);
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
-    if (event->Exists("retag_result")) {
+    if (event->Exists("retag_result") && false) { // set false as we use deepjet now
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
@@ -2004,6 +2004,8 @@ namespace ic {
     } else{
       ic::erase_if_not(deepbjets, filterDeepJetBTag);
     } 
+
+    n_deepbjets_ = deepbjets.size();
 
     // Btag weights
     wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
