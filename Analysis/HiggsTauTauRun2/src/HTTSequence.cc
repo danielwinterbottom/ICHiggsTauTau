@@ -706,7 +706,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(70548058, 51017448, 23174717, 14351015, 10062198); 
+      httStitching.SetWInputYields(63389404, 31521085, 16766140, 13815650, 9874750); 
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -721,7 +721,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     } 
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482);
+      httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
     }
   }
   BuildModule(httStitching);   
