@@ -16,19 +16,28 @@ parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors f
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='./')
 parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
-parser.add_argument('--input_folder','-i', help= 'Name of output directory', default='/vols/cms/gu18/Offline/output/SUSY/Jan24_2018_SUSY/')
+parser.add_argument('--input_folder','-i', help= 'Name of output directory', default=None)
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
-parser.add_argument('--year','-y', help= 'year', default=2018)
+parser.add_argument('--year','-y', help= 'year', type=str, default='2018')
+parser.add_argument("--singletau", dest="singletau", action='store_true', help="Use single tau trigger in OR")
 args = parser.parse_args()
 
 wp = args.wp
 file_ext = args.file_ext
+
+file_ext=file_ext.replace('2018',args.year)
+
 output_folder=args.output_folder
 params_file=args.params
 input_folder=args.input_folder
 draw = int(args.draw) > 0
 year = args.year
 lumi=58826.8469
+
+if year == '2018':
+
+  if input_folder is None:
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2018/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -85,15 +94,19 @@ other_files = [
   'ZZTo4L'
 ]
 
-if year == 2017:
+
+if year == '2017':
 
   lumi=41530.
+
+  if input_folder is None:
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2017/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
   # read params from json
 
-  with open('scripts/params_2017.json') as jsonfile:
+  with open('scripts/params_mssm_2017.json') as jsonfile:
     params = json.load(jsonfile)
 
   data_files = [
@@ -111,15 +124,18 @@ if year == 2017:
   # Add MC sample names   
   other_files = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1','T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu','ZZTo2L2Nu','WWTo2L2Nu','ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','EWKZ2Jets']
 
-if year == 2016:  
+if year == '2016':  
 
   lumi=35920.
+
+  if input_folder is None:
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2016/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
   # read params from json
 
-  with open('scripts/params_leg2016.json') as jsonfile:
+  with open('scripts/params_mssm_2016.json') as jsonfile:
     params = json.load(jsonfile)
 
   data_files = [
@@ -142,8 +158,8 @@ if year == 2016:
   other_files = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO', 'T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
   
   
-string_0jet = '(n_lowpt_jets==0 || (n_lowpt_jets==1&&fabs(jeta_1)<2.4) || (n_lowpt_jets==2&&fabs(jeta_1)<2.4&&fabs(jeta_2)<2.4) )'
-string_1jet = '(n_lowpt_jets==0 || (n_lowpt_jets==1&&fabs(jeta_1)<2.4) || (n_lowpt_jets==2&&fabs(jeta_1)<2.4&&fabs(jeta_2)<2.4) )==0'
+string_0jet = 'n_prebjets==0'
+string_1jet = 'n_prebjets>0'
 
 pt_bins = {
 
@@ -460,6 +476,10 @@ draw_list=[]
 baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
+if args.singletau:
+  baseline_bothiso = baseline_bothiso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+  baseline_aiso1 = baseline_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+
 ff_list = {}
 to_write = []
 
@@ -476,6 +496,10 @@ for ptbin in pt_bins:
 
 baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+
+if args.singletau:
+  baseline_aiso2_iso = baseline_aiso2_iso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+  baseline_aiso2_aiso1 = baseline_aiso2_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
 
 for ptbin in pt_bins:
   name = ptbin
@@ -554,8 +578,8 @@ print tau1_string, '\n\n', tau1_aiso_string
 var='dR[0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0]'
 for nbjet in ['0','1']:
   cut = ''
-  if nbjet =='0': cut = 'n_bjets==0'
-  if nbjet =='1': cut = 'n_bjets>0'
+  if nbjet =='0': cut = 'n_deepbjets==0'
+  if nbjet =='1': cut = 'n_deepbjets>0'
 
   # ss region
   qcd_ss_data = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', 'ss_closure_nbjet%(nbjet)s' % vars(),input_folder,file_ext,False)
@@ -586,9 +610,9 @@ for nbjet in ['0','1']:
   qcd_ss_data_aiso2_uncert.Write()
   PlotFakeFactorCorrection(qcd_ss_data_aiso2, qcd_ss_data_aiso2_uncert, qcd_ss_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
 
-tau1_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('ss_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
 
-tau1_aiso_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('ss_aiso2_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_aiso2_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_aiso2_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_aiso2_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
 
 print 'iso FF'
 print tau1_string
@@ -599,11 +623,11 @@ print tau1_aiso_string
 # same sign correction from aiso data
 
 var='dR[0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0]'
-var_alt='pt_1[40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,250,300,400]'
+var_alt='pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200,400]'
 for nbjet in ['0','1']:
   cut = ''
-  if nbjet =='0': cut = 'n_bjets==0'
-  if nbjet =='1': cut = 'n_bjets>0'
+  if nbjet =='0': cut = 'n_deepbjets==0'
+  if nbjet =='1': cut = 'n_deepbjets>0'
 
   # os aiso2 region
   qcd_os_data_aiso2 = DrawHists(var, '('+baseline_aiso2_iso+')*('+cut+')', 'os_closure_nbjet%(nbjet)s' % vars(),input_folder,file_ext,doOS=True)
@@ -651,31 +675,33 @@ for nbjet in ['0','1']:
   qcd_os_data_aiso2_uncert.Write()
   PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='p_{T} (GeV)')
 
-tau1_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
-tau1_aiso_string+='*((n_bjets==0)*(%s) + (n_bjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
 
 
-## Make Fractions
-#
-#n_bjets_bins = {'n_bjets0':'n_bjets==0','n_bjets1':'n_bjets>=1'}
-#for n_bjets_name,n_bjets_cut in n_bjets_bins.items():
-#  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
-#  cuts = '(%(baseline_aiso1)s)*(%(n_bjets_cut)s)' % vars()
-#  name = 'tt_fracs_%(n_bjets_name)s' % vars()
-#  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
-#  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
-#  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
-#  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
-#  qcd_os.Divide(total_os)
-#  wjets_os.Divide(total_os)
-#  ttbar_os.Divide(total_os)
-#  qcd_ss.Divide(total_ss)
-#  wjets_ss.Divide(total_ss)
-#  ttbar_ss.Divide(total_ss)
-#  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
-#  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+# Make Fractions
 
+to_write=[]
 
+n_deepbjets_bins = {'n_deepbjets0':'n_deepbjets==0','n_deepbjets1':'n_deepbjets>=1'}
+for n_deepbjets_name,n_deepbjets_cut in n_deepbjets_bins.items():
+  var= 'pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200,400]'
+  cuts = '(%(baseline_aiso1)s)*(%(n_deepbjets_cut)s)' % vars()
+  name = 'tt_fracs_%(n_deepbjets_name)s' % vars()
+  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+  qcd_os.Divide(total_os)
+  wjets_os.Divide(total_os)
+  ttbar_os.Divide(total_os)
+  qcd_ss.Divide(total_ss)
+  wjets_ss.Divide(total_ss)
+  ttbar_ss.Divide(total_ss)
+  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
+fout.cd()
+for i in to_write: i.Write()
 
 fout.Close()
