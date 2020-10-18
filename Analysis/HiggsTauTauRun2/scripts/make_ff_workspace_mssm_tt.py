@@ -222,7 +222,7 @@ for njet in [0,1]:
 
 # systematic uncertainty from applying os/ss correction twice or not applying it 
 w.factory('expr::ff_total_qcd_syst_up("@0*@1*((@2!=0)*@3*@3 + (@2==0))", ff_tt_qcd, tt_qcd_ss_correction, os[1], tt_qcd_os_correction)' % vars())
-w.factory('expr::ff_total_qcd_syst_down("@0*@1", ff_tt_qcd, tt_qcd_ss_correction)' % vars())
+w.factory('expr::ff_total_qcd_syst_down("@0*@1", ff_tt_qcd, tt_qcd_ss_correction, os[1])' % vars())
 
 # statistical uncertainties on dR and pt closure corrections
 for i in [1,2]:
@@ -233,10 +233,10 @@ for i in [1,2]:
   w.factory('expr::ff_total_qcd_stat_pt_unc%(i)i_down("@0*@1", ff_total, tt_qcd_correction_pt_uncert%(i)i_down)' % vars())
 
 # systematics for wjet and ttbar by scaling the FF by 20% and 40%
-w.factory('expr::ff_total_wjets_syst_up("@0*(1+@1*0.2)", ff_tt_qcd, tt_fracs_wjets)' % vars())
-w.factory('expr::ff_total_wjets_syst_down("@0*(1-@1*0.2)", ff_tt_qcd, tt_fracs_wjets)' % vars())
-w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_tt_qcd, tt_fracs_ttbar)' % vars())
-w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_tt_qcd, tt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_wjets_syst_up("@0*(1+@1*0.2)", ff_total, tt_fracs_wjets)' % vars())
+w.factory('expr::ff_total_wjets_syst_down("@0*(1-@1*0.2)", ff_total, tt_fracs_wjets)' % vars())
+w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
 
 w.Print()
 w.writeToFile('fakefactors_ws_tt_mssm_%(year)s.root' % vars())

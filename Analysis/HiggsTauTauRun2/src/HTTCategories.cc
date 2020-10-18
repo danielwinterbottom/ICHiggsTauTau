@@ -264,8 +264,8 @@ namespace ic {
            
         if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
+          outtree_->Branch("wt_ff_mssm_1"  , &wt_ff_1_); 
           outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
-          outtree_->Branch("wt_ff_us_1"  , &wt_ff_us_1_);
  
           outtree_->Branch("w_frac",             &w_frac_);
           outtree_->Branch("qcd_frac",             &qcd_frac_);
@@ -420,56 +420,46 @@ namespace ic {
             outtree_->Branch("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1"  , &wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1_);
             outtree_->Branch("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1"  , &wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1_);
 
+            outtree_->Branch("wt_ff_mssm_qcd_syst_up_1"  , &wt_ff_mssm_qcd_syst_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_syst_down_1"  , &wt_ff_mssm_qcd_syst_down_1_);
+            outtree_->Branch("wt_ff_mssm_wjets_syst_up_1"  , &wt_ff_mssm_wjets_syst_up_1_);
+            outtree_->Branch("wt_ff_mssm_wjets_syst_down_1"  , &wt_ff_mssm_wjets_syst_down_1_);
+            outtree_->Branch("wt_ff_mssm_ttbar_syst_up_1"  , &wt_ff_mssm_ttbar_syst_up_1_);
+            outtree_->Branch("wt_ff_mssm_ttbar_syst_down_1"  , &wt_ff_mssm_ttbar_syst_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_dR_unc1_up_1"  , &wt_ff_mssm_qcd_stat_dR_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_dR_unc1_down_1"  , &wt_ff_mssm_qcd_stat_dR_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_dR_unc2_up_1"  , &wt_ff_mssm_qcd_stat_dR_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_dR_unc2_down_1"  , &wt_ff_mssm_qcd_stat_dR_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_pt_unc1_up_1"  , &wt_ff_mssm_qcd_stat_pt_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_pt_unc1_down_1"  , &wt_ff_mssm_qcd_stat_pt_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_pt_unc2_up_1"  , &wt_ff_mssm_qcd_stat_pt_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_pt_unc2_down_1"  , &wt_ff_mssm_qcd_stat_pt_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_down_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_down_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_up_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_up_1_);
+            outtree_->Branch("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_down_1"  , &wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_down_1_);
 
             if(channel_ == channel::mt || channel_ == channel::et) {
- 
-              // us group's FFs
-              outtree_->Branch("wt_ff_us_qcd_syst_osss_up_1", &wt_ff_us_qcd_syst_osss_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_osss_down_1", &wt_ff_us_qcd_syst_osss_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_mt_unc1_up_1", &wt_ff_us_wjets_syst_mt_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_mt_unc1_down_1", &wt_ff_us_wjets_syst_mt_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_mt_unc2_up_1", &wt_ff_us_wjets_syst_mt_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_mt_unc2_down_1", &wt_ff_us_wjets_syst_mt_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_low_up_1", &wt_ff_us_qcd_syst_closure_low_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_low_down_1", &wt_ff_us_qcd_syst_closure_low_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_closure_low_up_1", &wt_ff_us_wjets_syst_closure_low_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_closure_low_down_1", &wt_ff_us_wjets_syst_closure_low_down_1_);
-              outtree_->Branch("wt_ff_us_ttbar_syst_closure_low_up_1", &wt_ff_us_ttbar_syst_closure_low_up_1_);
-              outtree_->Branch("wt_ff_us_ttbar_syst_closure_low_down_1", &wt_ff_us_ttbar_syst_closure_low_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_high_up_1", &wt_ff_us_qcd_syst_closure_high_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_high_down_1", &wt_ff_us_qcd_syst_closure_high_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_closure_high_up_1", &wt_ff_us_wjets_syst_closure_high_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_syst_closure_high_down_1", &wt_ff_us_wjets_syst_closure_high_down_1_);
-              outtree_->Branch("wt_ff_us_ttbar_syst_closure_high_up_1", &wt_ff_us_ttbar_syst_closure_high_up_1_);
-              outtree_->Branch("wt_ff_us_ttbar_syst_closure_high_down_1", &wt_ff_us_ttbar_syst_closure_high_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_unc1_up_1", &wt_ff_us_qcd_stat_njets0_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_unc1_down_1", &wt_ff_us_qcd_stat_njets0_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_unc2_up_1", &wt_ff_us_qcd_stat_njets0_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_unc2_down_1", &wt_ff_us_qcd_stat_njets0_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_unc1_up_1", &wt_ff_us_qcd_stat_njets1_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_unc1_down_1", &wt_ff_us_qcd_stat_njets1_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_unc2_up_1", &wt_ff_us_qcd_stat_njets1_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_unc2_down_1", &wt_ff_us_qcd_stat_njets1_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_unc1_up_1", &wt_ff_us_qcd_stat_njets2_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_unc1_down_1", &wt_ff_us_qcd_stat_njets2_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_unc2_up_1", &wt_ff_us_qcd_stat_njets2_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_unc2_down_1", &wt_ff_us_qcd_stat_njets2_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets0_unc1_up_1", &wt_ff_us_wjets_stat_njets0_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets0_unc1_down_1", &wt_ff_us_wjets_stat_njets0_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets0_unc2_up_1", &wt_ff_us_wjets_stat_njets0_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets0_unc2_down_1", &wt_ff_us_wjets_stat_njets0_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets1_unc1_up_1", &wt_ff_us_wjets_stat_njets1_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets1_unc1_down_1", &wt_ff_us_wjets_stat_njets1_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets1_unc2_up_1", &wt_ff_us_wjets_stat_njets1_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets1_unc2_down_1", &wt_ff_us_wjets_stat_njets1_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets2_unc1_up_1", &wt_ff_us_wjets_stat_njets2_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets2_unc1_down_1", &wt_ff_us_wjets_stat_njets2_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets2_unc2_up_1", &wt_ff_us_wjets_stat_njets2_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_wjets_stat_njets2_unc2_down_1", &wt_ff_us_wjets_stat_njets2_unc2_down_1_);
-              outtree_->Branch("wt_ff_us_ttbar_stat_unc1_up_1", &wt_ff_us_ttbar_stat_unc1_up_1_);
-              outtree_->Branch("wt_ff_us_ttbar_stat_unc1_down_1", &wt_ff_us_ttbar_stat_unc1_down_1_);
-              outtree_->Branch("wt_ff_us_ttbar_stat_unc2_up_1", &wt_ff_us_ttbar_stat_unc2_up_1_);
-              outtree_->Branch("wt_ff_us_ttbar_stat_unc2_down_1", &wt_ff_us_ttbar_stat_unc2_down_1_);
 
               outtree_->Branch("wt_ff_qcd_l_pt_up_1"  , &wt_ff_qcd_l_pt_up_1_);
               outtree_->Branch("wt_ff_qcd_l_pt_down_1"  , &wt_ff_qcd_l_pt_down_1_);
@@ -607,22 +597,6 @@ namespace ic {
               outtree_->Branch("wt_ff_dmbins_wjets_stat_unc2_njet2_dm11_down_1"  , &wt_ff_dmbins_wjets_stat_unc2_njet2_dm11_down_1_);
             }
 
-            if(channel_ == channel::tt) {
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_up_1", &wt_ff_us_qcd_stat_njets0_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets0_down_1", &wt_ff_us_qcd_stat_njets0_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_up_1", &wt_ff_us_qcd_stat_njets1_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets1_down_1", &wt_ff_us_qcd_stat_njets1_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_up_1", &wt_ff_us_qcd_stat_njets2_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_stat_njets2_down_1", &wt_ff_us_qcd_stat_njets2_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets0_up_1", &wt_ff_us_qcd_syst_closure_njets0_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets0_down_1", &wt_ff_us_qcd_syst_closure_njets0_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets1_up_1", &wt_ff_us_qcd_syst_closure_njets1_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets1_down_1", &wt_ff_us_qcd_syst_closure_njets1_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets2_up_1", &wt_ff_us_qcd_syst_closure_njets2_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_closure_njets2_down_1", &wt_ff_us_qcd_syst_closure_njets2_down_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_osss_up_1", &wt_ff_us_qcd_syst_osss_up_1_);
-              outtree_->Branch("wt_ff_us_qcd_syst_osss_down_1", &wt_ff_us_qcd_syst_osss_down_1_);
-            }
           }
          }
       }
@@ -1467,73 +1441,10 @@ namespace ic {
       if(event->Exists("wt_ff_dmbins_qcd_1")) wt_ff_dmbins_qcd_1_ = event->Get<double>("wt_ff_dmbins_qcd_1");
       if(event->Exists("wt_ff_dmbins_wjets_1")) wt_ff_dmbins_wjets_1_ = event->Get<double>("wt_ff_dmbins_wjets_1");
       if(event->Exists("wt_ff_dmbins_ttbar_1")) wt_ff_dmbins_ttbar_1_ = event->Get<double>("wt_ff_dmbins_ttbar_1");
+      if(event->Exists("wt_ff_mssm_1")) wt_ff_mssm_1_ = event->Get<double>("wt_ff_mssm_1");
 
-      wt_ff_us_1_ = event->Exists("wt_ff_us_1") ? event->Get<double>("wt_ff_us_1") : 0.0;
 
       if(do_ff_systematics_){
-
-        // us groups FFs
-
-        wt_ff_us_qcd_syst_osss_up_1_ = event->Exists("wt_ff_us_qcd_syst_osss_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_osss_up_1") : 0.0;
-        wt_ff_us_qcd_syst_osss_down_1_ = event->Exists("wt_ff_us_qcd_syst_osss_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_osss_down_1") : 0.0;
-        wt_ff_us_wjets_syst_mt_unc1_up_1_ = event->Exists("wt_ff_us_wjets_syst_mt_unc1_up_1") ? event->Get<double>("wt_ff_us_wjets_syst_mt_unc1_up_1") : 0.0;
-        wt_ff_us_wjets_syst_mt_unc1_down_1_ = event->Exists("wt_ff_us_wjets_syst_mt_unc1_down_1") ? event->Get<double>("wt_ff_us_wjets_syst_mt_unc1_down_1") : 0.0;
-        wt_ff_us_wjets_syst_mt_unc2_up_1_ = event->Exists("wt_ff_us_wjets_syst_mt_unc2_up_1") ? event->Get<double>("wt_ff_us_wjets_syst_mt_unc2_up_1") : 0.0;
-        wt_ff_us_wjets_syst_mt_unc2_down_1_ = event->Exists("wt_ff_us_wjets_syst_mt_unc2_down_1") ? event->Get<double>("wt_ff_us_wjets_syst_mt_unc2_down_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_low_up_1_ = event->Exists("wt_ff_us_qcd_syst_closure_low_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_low_up_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_low_down_1_ = event->Exists("wt_ff_us_qcd_syst_closure_low_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_low_down_1") : 0.0;
-        wt_ff_us_wjets_syst_closure_low_up_1_ = event->Exists("wt_ff_us_wjets_syst_closure_low_up_1") ? event->Get<double>("wt_ff_us_wjets_syst_closure_low_up_1") : 0.0;
-        wt_ff_us_wjets_syst_closure_low_down_1_ = event->Exists("wt_ff_us_wjets_syst_closure_low_down_1") ? event->Get<double>("wt_ff_us_wjets_syst_closure_low_down_1") : 0.0;
-        wt_ff_us_ttbar_syst_closure_low_up_1_ = event->Exists("wt_ff_us_ttbar_syst_closure_low_up_1") ? event->Get<double>("wt_ff_us_ttbar_syst_closure_low_up_1") : 0.0;
-        wt_ff_us_ttbar_syst_closure_low_down_1_ = event->Exists("wt_ff_us_ttbar_syst_closure_low_down_1") ? event->Get<double>("wt_ff_us_ttbar_syst_closure_low_down_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_high_up_1_ = event->Exists("wt_ff_us_qcd_syst_closure_high_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_high_up_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_high_down_1_ = event->Exists("wt_ff_us_qcd_syst_closure_high_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_high_down_1") : 0.0;
-        wt_ff_us_wjets_syst_closure_high_up_1_ = event->Exists("wt_ff_us_wjets_syst_closure_high_up_1") ? event->Get<double>("wt_ff_us_wjets_syst_closure_high_up_1") : 0.0;
-        wt_ff_us_wjets_syst_closure_high_down_1_ = event->Exists("wt_ff_us_wjets_syst_closure_high_down_1") ? event->Get<double>("wt_ff_us_wjets_syst_closure_high_down_1") : 0.0;
-        wt_ff_us_ttbar_syst_closure_high_up_1_ = event->Exists("wt_ff_us_ttbar_syst_closure_high_up_1") ? event->Get<double>("wt_ff_us_ttbar_syst_closure_high_up_1") : 0.0;
-        wt_ff_us_ttbar_syst_closure_high_down_1_ = event->Exists("wt_ff_us_ttbar_syst_closure_high_down_1") ? event->Get<double>("wt_ff_us_ttbar_syst_closure_high_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets0_unc1_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_unc1_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_unc1_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets0_unc1_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_unc1_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_unc1_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets0_unc2_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_unc2_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_unc2_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets0_unc2_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_unc2_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_unc2_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_unc1_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_unc1_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_unc1_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_unc1_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_unc1_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_unc1_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_unc2_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_unc2_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_unc2_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_unc2_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_unc2_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_unc2_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_unc1_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_unc1_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_unc1_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_unc1_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_unc1_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_unc1_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_unc2_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_unc2_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_unc2_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_unc2_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_unc2_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_unc2_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets0_unc1_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets0_unc1_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets0_unc1_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets0_unc1_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets0_unc1_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets0_unc1_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets0_unc2_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets0_unc2_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets0_unc2_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets0_unc2_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets0_unc2_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets0_unc2_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets1_unc1_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets1_unc1_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets1_unc1_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets1_unc1_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets1_unc1_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets1_unc1_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets1_unc2_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets1_unc2_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets1_unc2_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets1_unc2_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets1_unc2_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets1_unc2_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets2_unc1_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets2_unc1_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets2_unc1_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets2_unc1_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets2_unc1_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets2_unc1_down_1") : 0.0;
-        wt_ff_us_wjets_stat_njets2_unc2_up_1_ = event->Exists("wt_ff_us_wjets_stat_njets2_unc2_up_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets2_unc2_up_1") : 0.0;
-        wt_ff_us_wjets_stat_njets2_unc2_down_1_ = event->Exists("wt_ff_us_wjets_stat_njets2_unc2_down_1") ? event->Get<double>("wt_ff_us_wjets_stat_njets2_unc2_down_1") : 0.0;
-        wt_ff_us_ttbar_stat_unc1_up_1_ = event->Exists("wt_ff_us_ttbar_stat_unc1_up_1") ? event->Get<double>("wt_ff_us_ttbar_stat_unc1_up_1") : 0.0;
-        wt_ff_us_ttbar_stat_unc1_down_1_ = event->Exists("wt_ff_us_ttbar_stat_unc1_down_1") ? event->Get<double>("wt_ff_us_ttbar_stat_unc1_down_1") : 0.0;
-        wt_ff_us_ttbar_stat_unc2_up_1_ = event->Exists("wt_ff_us_ttbar_stat_unc2_up_1") ? event->Get<double>("wt_ff_us_ttbar_stat_unc2_up_1") : 0.0;
-        wt_ff_us_ttbar_stat_unc2_down_1_ = event->Exists("wt_ff_us_ttbar_stat_unc2_down_1") ? event->Get<double>("wt_ff_us_ttbar_stat_unc2_down_1") : 0.0;
-
-        wt_ff_us_qcd_stat_njets0_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets0_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets0_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets0_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets1_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets1_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets1_down_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_up_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_up_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_up_1") : 0.0;
-        wt_ff_us_qcd_stat_njets2_down_1_ = event->Exists("wt_ff_us_qcd_stat_njets2_down_1") ? event->Get<double>("wt_ff_us_qcd_stat_njets2_down_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets0_up_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets0_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets0_up_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets0_down_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets0_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets0_down_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets1_up_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets1_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets1_up_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets1_down_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets1_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets1_down_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets2_up_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets2_up_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets2_up_1") : 0.0;
-        wt_ff_us_qcd_syst_closure_njets2_down_1_ = event->Exists("wt_ff_us_qcd_syst_closure_njets2_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_closure_njets2_down_1") : 0.0;
-        wt_ff_us_qcd_syst_osss_down_1_ = event->Exists("wt_ff_us_qcd_syst_osss_down_1") ? event->Get<double>("wt_ff_us_qcd_syst_osss_down_1") : 0.0;
 
         wt_ff_wjets_syst_up_1_ = event->Exists("wt_ff_wjets_syst_up_1") ? event->Get<double>("wt_ff_wjets_syst_up_1") : 0.0;
         wt_ff_wjets_syst_down_1_ = event->Exists("wt_ff_wjets_syst_down_1") ? event->Get<double>("wt_ff_wjets_syst_down_1") : 0.0;
@@ -1804,6 +1715,46 @@ namespace ic {
         wt_ff_dmbins_qcd_stat_unc2_njet1_dm11_down_1_ = event->Exists("wt_ff_dmbins_qcd_stat_unc2_njet1_dm11_down_1") ? event->Get<double>("wt_ff_dmbins_qcd_stat_unc2_njet1_dm11_down_1") : 0.0;
         wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1_ = event->Exists("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1") ? event->Get<double>("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1") : 0.0;
         wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1_ = event->Exists("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1") ? event->Get<double>("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1") : 0.0;
+
+        wt_ff_mssm_1_ = event->Exists("wt_ff_mssm_1") ? event->Get<double>("wt_ff_mssm_1") : 0.0;
+        wt_ff_mssm_qcd_syst_up_1_ = event->Exists("wt_ff_mssm_qcd_syst_up_1") ? event->Get<double>("wt_ff_mssm_qcd_syst_up_1") : 0.0;
+        wt_ff_mssm_qcd_syst_down_1_ = event->Exists("wt_ff_mssm_qcd_syst_down_1") ? event->Get<double>("wt_ff_mssm_qcd_syst_down_1") : 0.0;
+        wt_ff_mssm_wjets_syst_up_1_ = event->Exists("wt_ff_mssm_wjets_syst_up_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_up_1") : 0.0;
+        wt_ff_mssm_wjets_syst_down_1_ = event->Exists("wt_ff_mssm_wjets_syst_down_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_down_1") : 0.0;
+        wt_ff_mssm_ttbar_syst_up_1_ = event->Exists("wt_ff_mssm_ttbar_syst_up_1") ? event->Get<double>("wt_ff_mssm_ttbar_syst_up_1") : 0.0;
+        wt_ff_mssm_ttbar_syst_down_1_ = event->Exists("wt_ff_mssm_ttbar_syst_down_1") ? event->Get<double>("wt_ff_mssm_ttbar_syst_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_dR_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_dR_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_dR_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_dR_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_dR_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_dR_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_dR_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_dR_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_dR_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_dR_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_dR_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_dR_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_pt_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_pt_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_pt_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_pt_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_pt_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_pt_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_pt_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_pt_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_pt_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_pt_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_pt_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_pt_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc3_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_up_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc3_down_1") : 0.0;
       }
 
     }

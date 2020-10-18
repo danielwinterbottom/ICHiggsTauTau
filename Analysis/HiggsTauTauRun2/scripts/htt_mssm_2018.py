@@ -160,8 +160,9 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
+print 'test'
 
-FILELIST='filelists/May21_2018_MC_102X'
+FILELIST='filelists/Sep18_2018_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -181,7 +182,7 @@ if options.proc_sm or options.proc_all:
       'HZJ_HToWW',
       'HWminusJ_HToWW',
       'HWplusJ_HToWW',
-      'GluGluToHToTauTau_M-125',
+      'GluGluHToTauTau_M-125',
       'VBFHToTauTau_M-125-ext1',
       'WplusHToTauTau_M-125',
       'WminusHToTauTau_M-125',
@@ -409,7 +410,7 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan24_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
 
         job_num=0
         for FLATJSONPATCH in flatjsons:
@@ -455,13 +456,9 @@ if options.proc_bkg or options.proc_all:
 if options.mg_signal or options.proc_sm or options.proc_mssm:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
-        if options.proc_mssm:
-            user='guttley'
-        elif options.proc_sm:
-            user='dwinterb'
+        user='guttley'
         SIG_FILELIST = FILELIST
-        #SIG_DIR = 'Jan24_MC_102X_2018'
-        SIG_DIR = 'May21_MC_102X_2018'
+        SIG_DIR = 'Sep18_MC_102X_2018'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:

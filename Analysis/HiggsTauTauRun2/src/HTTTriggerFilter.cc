@@ -339,10 +339,17 @@ namespace ic {
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
         } else if(era_ == era::data_2017 || era_ == era::data_2018) {
-          singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
-          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
-          singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
-          singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+          if(is_embedded_) { 
+            singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
+            singletau_leg1_filter = "hltSingleL2Tau80eta2p2";
+            min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+            singletau_leg1_filter_2 = "";
+          } else {
+            singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
+            min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+            singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
+            singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+          }
         }
       }
         

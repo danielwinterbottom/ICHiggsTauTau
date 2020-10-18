@@ -12,6 +12,7 @@ OUTPUT=$2
 echo "Generating job $OUTPUT"
 
 echo "cd $PWD" &> $OUTPUT
+echo "source /vols/grid/cms/setup.sh" >> $OUTPUT
 #echo "export SCRAM_ARCH=slc5_amd64_gcc462" >> $OUTPUT
 echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
