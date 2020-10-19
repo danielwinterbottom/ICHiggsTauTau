@@ -264,7 +264,7 @@ namespace ic {
            
         if (strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16  || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
           outtree_->Branch("wt_ff_1"  , &wt_ff_1_); 
-          outtree_->Branch("wt_ff_mssm_1"  , &wt_ff_1_); 
+          outtree_->Branch("wt_ff_mssm_1"  , &wt_ff_mssm_1_); 
           outtree_->Branch("wt_ff_dmbins_1"  , &wt_ff_dmbins_1_);
  
           outtree_->Branch("w_frac",             &w_frac_);
@@ -1441,7 +1441,7 @@ namespace ic {
       if(event->Exists("wt_ff_dmbins_qcd_1")) wt_ff_dmbins_qcd_1_ = event->Get<double>("wt_ff_dmbins_qcd_1");
       if(event->Exists("wt_ff_dmbins_wjets_1")) wt_ff_dmbins_wjets_1_ = event->Get<double>("wt_ff_dmbins_wjets_1");
       if(event->Exists("wt_ff_dmbins_ttbar_1")) wt_ff_dmbins_ttbar_1_ = event->Get<double>("wt_ff_dmbins_ttbar_1");
-      if(event->Exists("wt_ff_mssm_1")) wt_ff_mssm_1_ = event->Get<double>("wt_ff_mssm_1");
+      wt_ff_mssm_1_ = event->Exists("wt_ff_mssm_1") ? event->Get<double>("wt_ff_mssm_1") : 0.0;
 
 
       if(do_ff_systematics_){
@@ -1716,7 +1716,6 @@ namespace ic {
         wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1_ = event->Exists("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1") ? event->Get<double>("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_up_1") : 0.0;
         wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1_ = event->Exists("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1") ? event->Get<double>("wt_ff_dmbins_qcd_stat_unc2_njet2_dm11_down_1") : 0.0;
 
-        wt_ff_mssm_1_ = event->Exists("wt_ff_mssm_1") ? event->Get<double>("wt_ff_mssm_1") : 0.0;
         wt_ff_mssm_qcd_syst_up_1_ = event->Exists("wt_ff_mssm_qcd_syst_up_1") ? event->Get<double>("wt_ff_mssm_qcd_syst_up_1") : 0.0;
         wt_ff_mssm_qcd_syst_down_1_ = event->Exists("wt_ff_mssm_qcd_syst_down_1") ? event->Get<double>("wt_ff_mssm_qcd_syst_down_1") : 0.0;
         wt_ff_mssm_wjets_syst_up_1_ = event->Exists("wt_ff_mssm_wjets_syst_up_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_up_1") : 0.0;
