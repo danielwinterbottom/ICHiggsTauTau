@@ -938,7 +938,7 @@ for add_name, corr_cut in njets_bins.items():
   (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False)
   (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_wjets_mc+")",doMC=True,doW=False,doQCD=False,doTT=False)
   fout.cd()
-  wjets_mc_data.Divide(wjets_pred) # check with George if this is right! -shoud be wjets_mc ?
+  wjets_mc_data.Divide(wjets_mc_pred) 
 
   wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol3')
 
@@ -948,7 +948,7 @@ for add_name, corr_cut in njets_bins.items():
   PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='MET (Gev)')
 
   w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(met,250)'))
-w_mc_corr_string = w_corr_string[:-1] + ')' # check with George if this is right! - should be w_mc_corr_string ? 
+w_mc_corr_string = w_mc_corr_string[:-1] + ')' 
 
 # get ttbar met / pt_1  non-closure correction
 
@@ -960,8 +960,6 @@ pt_1_regions = {'low_pt_1_tightmT':'pt_1<=%(crosstrg_pt)s&&mt_1<50' % vars(),'hi
 mt_1_regions = {'tightmT':'mt_1<50' % vars(),'loosemT':'mt_1>=50' % vars()}
 ttbar_mc_corr_string = "*("
 for add_name, add_cut in mt_1_regions.items():
-  print '!!!!!!!'
-  print add_name
   if add_name == 'low_pt_1':
     var = 'pt_1[0,%(crosstrg_pt)s]' % vars()
     pol_to_use = 'pol0'
@@ -1009,17 +1007,21 @@ ttbar_mc_corr_string = ttbar_mc_corr_string[:-1] + ')'
 # divide inclusive Wjets FF in data by MC to derive
 
 # mt_medium_inclusive_inclusive_pt_2_ff_wjets_mc_fit.pdf
-hmc = fout.Get('mt_medium_inclusive_inclusive_pt_2_ff_wjets_mc_fit')
-hdata = fout.Get('mt_medium_inclusive_inclusive_pt_2_ff_wjets_fit')
+hmc = fout.Get('%(channel)s_medium_inclusive_inclusive_pt_2_ff_wjets_mc')
+hdata = fout.Get('%(channel)s_medium_inclusive_inclusive_pt_2_ff_wjets')
+
+print hdata
+print hmc
 
 hdata.Divide(hmc)
-hdata.SetName('mt_%(wp)s_correction_ttbar' % vars())
+hdata.SetName('%(channel)s_%(wp)s_correction_ttbar' % vars())
 (hdata_fit, hdata_uncert, hdata) = FitFakeFactors(hdata)
 fout.cd()
 hdata.Write()
 hdata_uncert.Write()
 hdata_fit.Write()
 
+PlotFakeFactorCorrection(hdata, hdata_uncert, hdata.GetName(), output_folder, wp, x_title='p_{T} (Gev)')
 
 fout.Close()
 
