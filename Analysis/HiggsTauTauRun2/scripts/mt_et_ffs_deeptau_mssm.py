@@ -688,8 +688,6 @@ def WriteFakeFactorFunction(fout,njets_bins,jetpt_bins,proc='qcd',aiso=False):
           ff_params = ff_pol0.replace('p0','%f' % p[0])
         elif f.GetNpar()==2:
           ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
-        elif f.GetNpar() > 4:
-          ff_params = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
         elif f.GetNpar() == 5:
           ff_params = ff_eqn_1bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
         elif f.GetNpar() == 6:
@@ -1039,16 +1037,10 @@ qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 
 # SS to OS correction
 var = 'pt_1[20,25,40,60,80,100,120,160]'
-categories_nprebjets = {
-              'nbjets0_tightmt':"(n_deepbjets==0 && mt_1<50)",
-              'nbjets0_loosemt':"(n_deepbjets==0 && mt_1>50 && mt_1<70)",
-              'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<50)",
-              'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>50 && mt_1<70)"
-}
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string = "*("
 qcd_corr_string = "*("
-for add_name, corr_cut in categories_nprebjets.items():
+for add_name, corr_cut in categories.items():
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
   (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+qcd_aiso_corr_ff+")",doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
