@@ -30,7 +30,7 @@ file_ext = '_%(channel)s_%(year)s.root' % vars()
 
 # binning for fake factor determination
 njets_bins = {
-              #'inclusive':'(1)',
+              'inclusive':'(1)',
               '0jet':'(n_prebjets==0)',
               '1jet':'(n_prebjets>0)',
 }
