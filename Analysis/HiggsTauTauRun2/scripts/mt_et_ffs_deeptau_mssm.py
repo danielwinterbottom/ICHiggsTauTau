@@ -688,8 +688,6 @@ def WriteFakeFactorFunction(fout,njets_bins,jetpt_bins,proc='qcd',aiso=False):
           ff_params = ff_pol0.replace('p0','%f' % p[0])
         elif f.GetNpar()==2:
           ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
-        elif f.GetNpar() > 4:
-          ff_params = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
         elif f.GetNpar() == 5:
           ff_params = ff_eqn_1bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
         elif f.GetNpar() == 6:
