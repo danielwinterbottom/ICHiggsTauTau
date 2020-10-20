@@ -30,13 +30,13 @@ file_ext = '_%(channel)s_%(year)s.root' % vars()
 
 # binning for fake factor determination
 njets_bins = {
-              'inclusive':'(1)',
+              #'inclusive':'(1)',
               '0jet':'(n_prebjets==0)',
               '1jet':'(n_prebjets>0)',
 }
 
 jetpt_bins = {
-              'inclusive':'(1)',
+              #'inclusive':'(1)',
               'jet_pt_low':'(jet_pt_2<1.25*pt_2)',
               'jet_pt_med':'((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.6*pt_2))',
               'jet_pt_high': '(jet_pt_2>=1.6*pt_2)'
@@ -615,8 +615,11 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
   rep = True
   count = 0
   while rep:
-    if 'Erf' in func: fitresult = h.Fit("f1",'S')
-    else: fitresult = h.Fit("f1",'SI')
+    extra=''
+    if fit_range is not None:
+      extra='R'
+    if 'Erf' in func: fitresult = h.Fit("f1",'S'+extra)
+    else: fitresult = h.Fit("f1",'SI'+extra)
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -797,24 +800,24 @@ for ff in ff_list:
 
 # make fractions
  
-#nbjets_cats = {'nbjets0':'n_bjets==0','nbjets1':'n_bjets>0'}
+nbjets_cats = {'nbjets0':'n_deepbjets==0','nbjets1':'n_deepbjets>0'}
 
-#for nbjets_name,nbjets_cut in n_bjets_cats.items():
-#  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
-#  cuts = '(%(baseline_iso_fail)s)*(%(nbjets_cut)s)' % vars()
-#  name = 'mt_fracs_%(nbjets_name)s' % vars()
-#  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
-#  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
-#  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
-#  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
-#  qcd_os.Divide(total_os)
-#  wjets_os.Divide(total_os)
-#  ttbar_os.Divide(total_os)
-#  qcd_ss.Divide(total_ss)
-#  wjets_ss.Divide(total_ss)
-#  ttbar_ss.Divide(total_ss)
-#  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
-#  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+for nbjets_name,nbjets_cut in nbjets_cats.items():
+  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
+  cuts = '(%(baseline_iso_fail)s)*(%(nbjets_cut)s)' % vars()
+  name = '%(channel)s_fracs_%(nbjets_name)s' % vars()
+  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+  qcd_os.Divide(total_os)
+  wjets_os.Divide(total_os)
+  ttbar_os.Divide(total_os)
+  qcd_ss.Divide(total_ss)
+  wjets_ss.Divide(total_ss)
+  ttbar_ss.Divide(total_ss)
+  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
 
 # write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
@@ -965,7 +968,7 @@ for add_name, add_cut in mt_1_regions.items():
     pol_to_use = 'pol0'
   else:
     var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
-    pol_to_use = 'pol3'
+    pol_to_use = 'pol1'
   corr_cut = add_cut
   corr_name = add_name
   (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=True)
@@ -1002,26 +1005,6 @@ for add_name, add_cut in mt_1_regions.items():
 
   ttbar_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_ttbar_mc_fit').GetExpFormula('p')).replace('x','min(met,250)'))
 ttbar_mc_corr_string = ttbar_mc_corr_string[:-1] + ')'
-
-# corrections for MC / data differences
-# divide inclusive Wjets FF in data by MC to derive
-
-# mt_medium_inclusive_inclusive_pt_2_ff_wjets_mc_fit.pdf
-hmc = fout.Get('%(channel)s_medium_inclusive_inclusive_pt_2_ff_wjets_mc')
-hdata = fout.Get('%(channel)s_medium_inclusive_inclusive_pt_2_ff_wjets')
-
-print hdata
-print hmc
-
-hdata.Divide(hmc)
-hdata.SetName('%(channel)s_%(wp)s_correction_ttbar' % vars())
-(hdata_fit, hdata_uncert, hdata) = FitFakeFactors(hdata)
-fout.cd()
-hdata.Write()
-hdata_uncert.Write()
-hdata_fit.Write()
-
-PlotFakeFactorCorrection(hdata, hdata_uncert, hdata.GetName(), output_folder, wp, x_title='p_{T} (Gev)')
 
 fout.Close()
 
