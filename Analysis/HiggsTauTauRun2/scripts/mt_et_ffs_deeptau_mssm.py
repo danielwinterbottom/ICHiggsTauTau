@@ -1140,7 +1140,7 @@ print "W + Jets MC Fake Factors:"
 print "ff_string='((" + ff_wjets_mc + ")" + w_mc_corr_string + ")'"
 print "---------------------------------------------------------------------------------------------------"
 print "ttbar Fake Factors:"
-print "ff_string='((" + ff_ttbar_mc + "))'" + ttbar_mc_corr_string + ")'"
+print "ff_string='((" + ff_ttbar_mc + ")" + ttbar_mc_corr_string + ")'"
 print "---------------------------------------------------------------------------------------------------"
 
 
