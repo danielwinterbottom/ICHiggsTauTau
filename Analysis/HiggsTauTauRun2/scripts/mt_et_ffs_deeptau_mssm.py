@@ -1039,16 +1039,10 @@ qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 
 # SS to OS correction
 var = 'pt_1[20,25,40,60,80,100,120,160]'
-categories_nprebjets = {
-              'nbjets0_tightmt':"(n_deepbjets==0 && mt_1<50)",
-              'nbjets0_loosemt':"(n_deepbjets==0 && mt_1>50 && mt_1<70)",
-              'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<50)",
-              'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>50 && mt_1<70)"
-}
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string = "*("
 qcd_corr_string = "*("
-for add_name, corr_cut in categories_nprebjets.items():
+for add_name, corr_cut in categories.items():
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
   (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+qcd_aiso_corr_ff+")",doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
