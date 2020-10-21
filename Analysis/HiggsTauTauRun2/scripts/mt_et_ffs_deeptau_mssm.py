@@ -549,16 +549,17 @@ def CalculateFakeFactors(num,denum):
 def FitFakeFactors(h,usePol1=False,polOnly=None):
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,600)
-  if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())<0.5:
+  if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
     print h.GetName()
-    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)<0.5:
+    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140 && x<200)) + ([5]*(x>=200))",20,600)
     else:
       f2 = ROOT.TF1("f2","((x<200)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=200))",20,600)
   else:
-    h.SetBinContent(h.GetNbinsX(),0)
-    h.SetBinError(h.GetNbinsX(),0)
-    f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,600)
+    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
+      f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140))",20,600)
+    else:
+      f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,600)
 
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,400)
   if polOnly is not None:
@@ -682,19 +683,23 @@ def WriteFakeFactorFunction(fout,njets_bins,jetpt_bins,proc='qcd',aiso=False):
         fout.cd()
         extra=''
         if aiso: extra = '_aiso2_ss'
-        f = fout.Get('%(jetptbin_name)s_%(njetbin_name)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
-        p = f.GetParameters()
-        if f.GetNpar()==1:
-          ff_params = ff_pol0.replace('p0','%f' % p[0])
-        elif f.GetNpar()==2:
-          ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
-        elif f.GetNpar() == 5:
-          ff_params = ff_eqn_1bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
-        elif f.GetNpar() == 6:
-          ff_params = ff_eqn_2bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4]).replace('p5','%f' % p[5])
-        else:
-          ff_params = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
-          
+        #f = fout.Get('%(jetptbin_name)s_%(njetbin_name)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
+        #p = f.GetParameters()
+        #if f.GetNpar()==1:
+        #  ff_params = ff_pol0.replace('p0','%f' % p[0])
+        #elif f.GetNpar()==2:
+        #  ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+        #elif f.GetNpar() == 5:
+        #  ff_params = ff_eqn_1bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+        #elif f.GetNpar() == 6:
+        #  ff_params = ff_eqn_2bin.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4]).replace('p5','%f' % p[5])
+        #else:
+        #  ff_params = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+  
+        func = fout.Get('%(jetptbin_name)s_%(njetbin_name)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
+        ff = func.GetExpFormula('p')
+        ff_params = str(ff).replace('x','min(pt_2,599.)') 
+        
         ff_eqn_tot += '(%(njetbin_cut)s*%(jetptbin_cut)s*(%(ff_params)s))+' % vars()
         
   ff_eqn_tot = ff_eqn_tot[:-1]
@@ -713,16 +718,20 @@ def WriteFakeFactorFunctionTTbar(fout,njets_bins,jetpt_bins,proc='ttbar_mc'):
   for jetptbin_name,jetptbin_cut in jetpt_bins.items():
     if not (jetptbin_name == 'inclusive'):
       fout.cd()
-      f = fout.Get('%(jetptbin_name)s_inclusive_pt_2_ff_%(proc)s_fit' % vars())
-      p = f.GetParameters()
-      if f.GetNpar()==1:
-        ff_params = ff_pol0.replace('p0','%f' % p[0])
-      elif f.GetNpar()==2:
-        ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
-      elif f.GetNpar() > 4:
-        ff_params = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
-      else:
-        ff_params = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+      #f = fout.Get('%(jetptbin_name)s_inclusive_pt_2_ff_%(proc)s_fit' % vars())
+      #p = f.GetParameters()
+      #if f.GetNpar()==1:
+      #  ff_params = ff_pol0.replace('p0','%f' % p[0])
+      #elif f.GetNpar()==2:
+      #  ff_params = ff_pol1.replace('p0','%f' % p[0]).replace('p1','%f' % p[1])
+      #elif f.GetNpar() > 4:
+      #  ff_params = ff_eqn_alt.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3]).replace('p4','%f' % p[4])
+      #else:
+      #  ff_params = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
+
+      func = fout.Get('%(jetptbin_name)s_inclusive_pt_2_ff_%(proc)s_fit' % vars())
+      ff = func.GetExpFormula('p')
+      ff_params = str(ff).replace('x','min(pt_2,599.)')
 
       ff_eqn_tot += '(%(jetptbin_cut)s*(%(ff_params)s))+' % vars()
 
