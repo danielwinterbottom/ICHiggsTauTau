@@ -551,7 +551,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   f1 = ROOT.TF1("f1","landau",20,600)
   if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())<0.5:
     print h.GetName()
-    if 'wjets' in h.GetName() and 'mt' in h.GetName():
+    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)<0.5:
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140 && x<200)) + ([5]*(x>=200))",20,600)
     else:
       f2 = ROOT.TF1("f2","((x<200)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=200))",20,600)
