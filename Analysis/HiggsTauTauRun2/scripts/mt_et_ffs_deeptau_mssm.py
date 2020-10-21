@@ -547,6 +547,7 @@ def CalculateFakeFactors(num,denum):
   return ff
 
 def FitFakeFactors(h,usePol1=False,polOnly=None):
+  print "Getting fit for: {}".format(h.GetName())
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,600)
   if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
@@ -581,7 +582,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   h = h_clone
   if polOnly is None:
     # fit first with landau to get initial values for parameters - pol values set to 0 initially
-    h.Fit("f1",'IR')
+    h.Fit("f1",'IRQ')
     f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0); f2.SetParLimits(3,0,1)
     if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
@@ -589,7 +590,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'SIR')
+    fitresult = h.Fit("f2",'SIRQ')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -599,15 +600,15 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   fit.SetName(h.GetName()+'_fit')
 
   # Set binned value error to binned value error
-  if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:    
-    for i in range(0,1001):
+  for i in range(0,h_uncert.GetNbinsX()+1):
+    if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
       if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
         if h_uncert.GetBinLowEdge(i) >= 140 and (h_uncert.GetBinLowEdge(i) + h_uncert.GetBinWidth(i)) <= 200:
           h_uncert.SetBinError(i,h.GetBinError(h.GetNbinsX()-1))
         elif h_uncert.GetBinLowEdge(i) >= 200:
           h_uncert.SetBinError(i,h.GetBinError(h.GetNbinsX()))
       else:
-        if h_uncert.GetBinLowEdge(i) >= 140:
+        if h_uncert.GetBinLowEdge(i) >= 200:
           h_uncert.SetBinError(i,h.GetBinError(h.GetNbinsX()))
 
   return fit, h_uncert, h
@@ -650,6 +651,7 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
 
 def PlotFakeFactor(f, h, name, output_folder, wp):
   c1 = ROOT.TCanvas()
+  l = ROOT.TLegend(0.65,0.75,0.9,0.9);
   f.SetMinimum(0)
   if f.GetMaximum() > 1.: f.SetMaximum(1.)
   f.SetStats(0)
@@ -658,10 +660,16 @@ def PlotFakeFactor(f, h, name, output_folder, wp):
   f.SetTitle(name)
   f.SetLineColor(ROOT.kBlack)
   f.Draw()
+  h.SetLineColor(ROOT.kRed)
   h.SetStats(0)
   h.SetFillColor(ROOT.kBlue-10)
   h.Draw("e3 same")
   f.Draw("a sames")
+  l.AddEntry(f,"Observed","lep")
+  l.AddEntry(h,"Fit","l")
+  l.AddEntry(h,"Fit Uncertainty","f")
+  l.Draw()
+
   c1.Print(output_folder+'/'+channel+'_'+wp+'_'+name+'_fit.pdf')
   #time.sleep(2)
 
@@ -767,6 +775,7 @@ for njetbin in njets_bins:
 # calculate fake factors
 to_write = []
 for ff in ff_list:
+  print "Calculating fake factors for: {}".format(ff)
   wjets_mc_ff=None
   ttbar_mc_ff=None
   if draw:
@@ -1158,7 +1167,7 @@ print "W + Jets MC Fake Factors:"
 print "ff_string='((" + ff_wjets_mc + ")" + w_mc_corr_string + ")'"
 print "---------------------------------------------------------------------------------------------------"
 print "ttbar Fake Factors:"
-print "ff_string='((" + ff_ttbar_mc + "))'" + ttbar_mc_corr_string + ")'"
+print "ff_string='((" + ff_ttbar_mc + ")" + ttbar_mc_corr_string + ")'"
 print "---------------------------------------------------------------------------------------------------"
 
 
