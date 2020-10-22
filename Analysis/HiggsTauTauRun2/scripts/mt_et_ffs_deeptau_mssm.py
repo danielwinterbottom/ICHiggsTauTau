@@ -559,6 +559,8 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
     if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140))",20,600)
     else:
+      h.SetBinContent(h.GetNbinsX(),0)
+      h.SetBinError(h.GetNbinsX(),0)
       f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,600)
 
   if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,400)
@@ -1048,7 +1050,7 @@ qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 var = 'pt_1[20,25,40,60,80,100,120,160]'
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string = "*("
-qcd_corr_string = "*("
+qcd_corr_string += "*("
 for add_name, corr_cut in categories.items():
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
