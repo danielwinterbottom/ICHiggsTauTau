@@ -194,7 +194,6 @@ elif year == "2016":
       'SingleMuonH'
     ]
   elif channel == "et":
-    crosstrg_pt = 25
     data_files = [
       'SingleElectronB',
       'SingleElectronC',
@@ -268,7 +267,10 @@ if channel == "mt":
   crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
 elif channel == "et":
   deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
-  crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
+  if year == "2016":
+    crosstrg = 'trg_singleelectron'
+  else:
+    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
 other_sel = 'leptonveto==0 && wt<2'
 
 
@@ -892,7 +894,11 @@ print "-------------------------------------------------------------------------
 #### data ####
 
 # pt_1 correction
-pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
+if channel == "et" and year == "2016":
+  pt_1_regions = {'pt_1':'(1)'}
+else:
+  pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
+
 w_corr_string = "*("
 for njets_name, njets_cut in njets_bins.items():
   if "inclusive" not in njets_name:
@@ -900,9 +906,13 @@ for njets_name, njets_cut in njets_bins.items():
       if add_name == 'low_pt_1':
         var = 'pt_1[0,%(crosstrg_pt)s]' % vars()
         pol_to_use = 'pol0'
-      else:
+      elif add_name == 'high_pt_1':
         var = 'pt_1[%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
         pol_to_use = 'pol3'
+      else:
+        var = 'pt_1[0,25,40,60,80,100,120,160,200,300]' % vars()
+        pol_to_use = 'pol3'
+
       corr_cut = add_cut + "&&" + njets_cut
       corr_name = add_name + '_' + njets_name
       (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False)
@@ -945,7 +955,11 @@ w_corr_string = w_corr_string[:-1] + ')'
 #### mc ####
 
 # pt_1 correction
-pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
+if channel == "et" and year == "2016":
+  pt_1_regions = {'pt_1':'(1)'}
+else:
+  pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
+
 w_mc_corr_string = "*("
 for njets_name, njets_cut in njets_bins.items():
   if "inclusive" not in njets_name:
@@ -953,9 +967,13 @@ for njets_name, njets_cut in njets_bins.items():
       if add_name == 'low_pt_1':
         var = 'pt_1[0,%(crosstrg_pt)s]' % vars()
         pol_to_use = 'pol0'
-      else:
+      elif add_name == 'high_pt_1':
         var = 'pt_1[%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
         pol_to_use = 'pol3'
+      else:
+        var = 'pt_1[0,25,40,60,80,100,120,160,200,300]' % vars()
+        pol_to_use = 'pol3'
+
       corr_cut = add_cut + "&&" + njets_cut
       corr_name = add_name + '_' + njets_name
       (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False)
@@ -1004,8 +1022,9 @@ categories = {
               'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<50)",
               'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>50 && mt_1<70)"
 }
+var = 'pt_1[0,25,40,60,80,100,120,160,200,300]'
 for add_name, corr_cut in categories.items():
-  corr_name = 'met_' + add_name + '_dr_to_ar'
+  corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
   (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+w_mc_corr_ff+")",doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
   fout.cd()
@@ -1018,8 +1037,8 @@ for add_name, corr_cut in categories.items():
   wjets_mc_data_uncert.Write()
   PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='MET (GeV)')
 
-  w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(met,250)'))
-  w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(met,250)'))
+  w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
+  w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
 
 w_mc_corr_string += '(mt_1>70))'
 w_corr_string += '(mt_1>70))'
