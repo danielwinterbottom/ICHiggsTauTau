@@ -66,7 +66,7 @@ for task in histsToWrap:
      name=task[1])
 
 for i in ['qcd','wjets','ttbar']:
-  w.factory('expr::tt_fracs_%(i)s("(@0!=0)*((@1==0)*(@2)+(@1>=1)*@3)+(@0==0)*((@1==0)*(@4)+(@1>=1)*@5)", os[1],njets[0],tt_%(wp)s_fracs_nbjets0_os_%(i)s,tt_%(wp)s_fracs_nbjets1_os_%(i)s,tt_%(wp)s_fracs_nbjets0_ss_%(i)s,tt_%(wp)s_fracs_nbjets1_ss_%(i)s)' % vars())
+  w.factory('expr::tt_fracs_%(i)s("(@0!=0)*((@1==0)*(@2)+(@1>=1)*@3)+(@0==0)*((@1==0)*(@4)+(@1>=1)*@5)", os[1],nbjets[0],tt_%(wp)s_fracs_nbjets0_os_%(i)s,tt_%(wp)s_fracs_nbjets1_os_%(i)s,tt_%(wp)s_fracs_nbjets0_ss_%(i)s,tt_%(wp)s_fracs_nbjets1_ss_%(i)s)' % vars())
 
 # pT dependent fits
 

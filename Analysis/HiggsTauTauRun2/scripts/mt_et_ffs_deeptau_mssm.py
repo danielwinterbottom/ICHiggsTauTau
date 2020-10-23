@@ -564,15 +564,16 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
 
   #for jet_pt_high bins in et channel set maximum bin to 120 GeV as higher bins often aren't filled and when are filled are often not sensible (large statistical uncertainties etc)
   if channel == 'et' and 'jet_pt_high' in h.GetName():
+      'Zeroing bins > 130 for ', h.GetName()
       for i in range(1,h.GetNbinsX()+1):
-        if h.GetBinLowEdge()>=130:
+        if h.GetBinLowEdge(i)>=130:
           h.SetBinContent(h.GetNbinsX(),0)
           h.SetBinError(h.GetNbinsX(),0)
 
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,600)
   if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
-    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
+    if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5 and not ('wjets_mc' in h.GetName() and 'pt_low_1jet' in h.GetName() and year == '2016'):
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140 && x<200)) + ([5]*(x>=200))",20,600)
     else:
       f2 = ROOT.TF1("f2","((x<200)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=200))",20,600)
