@@ -279,11 +279,22 @@ baseline_aiso_fail = '(%(anti_iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s &
 
 
 def ZeroNegativeBins(h):
-  # if a bin of h1 is equal to the -ve of
+  # if a bin of h1 is equal to 0 ir negative then remove it
+  # also remove non zero bins with > 100% errors
   for i in range(1,h.GetNbinsX()+1):
     if h.GetBinContent(i) <= 0:
       h.SetBinContent(i,0)
       h.SetBinError(i,0)
+  return h
+
+def ZeroLargeErrorBins(h):
+  # remove non zero bins with > 100% errors
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) != 0:
+      if h.GetBinError(i)/h.GetBinContent(i) > 1.:
+        print 'error>1 for, ', h.GetName(), 'bin=', i
+        h.SetBinContent(i,0)
+        h.SetBinError(i,0)
   return h
 
 def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doTT=True,doIso=True,fullMT=False,lowMT=False,qcdMT='50'):
@@ -544,10 +555,20 @@ def CalculateFakeFactors(num,denum):
   ff = num.Clone()
   ff.SetName(name)
   ff.Divide(denum)
+  ff = ZeroLargeErrorBins(ff)
   return ff
 
 def FitFakeFactors(h,usePol1=False,polOnly=None):
+
   print "Getting fit for: {}".format(h.GetName())
+
+  #for jet_pt_high bins in et channel set maximum bin to 120 GeV as higher bins often aren't filled and when are filled are often not sensible (large statistical uncertainties etc)
+  if channel == 'et' and 'jet_pt_high' in h.GetName():
+      for i in range(1,h.GetNbinsX()+1):
+        if h.GetBinLowEdge()>=130:
+          h.SetBinContent(h.GetNbinsX(),0)
+          h.SetBinError(h.GetNbinsX(),0)
+
   h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
   f1 = ROOT.TF1("f1","landau",20,600)
   if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
