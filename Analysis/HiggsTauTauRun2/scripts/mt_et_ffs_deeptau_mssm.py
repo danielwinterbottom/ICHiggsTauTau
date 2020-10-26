@@ -194,6 +194,7 @@ elif year == "2016":
       'SingleMuonH'
     ]
   elif channel == "et":
+    crosstrg_pt = 25
     data_files = [
       'SingleElectronB',
       'SingleElectronC',
@@ -641,6 +642,9 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
 
 
 def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
+
+  h = ZeroLargeErrorBins(h)
+
   if is2D: 
     h_uncert = ROOT.TH2D(h.GetName()+'_uncert',"",100,h.GetXaxis().GetBinLowEdge(1),h.GetXaxis().GetBinLowEdge(h.GetNbinsX()+1),100,h.GetYaxis().GetBinLowEdge(1),h.GetYaxis().GetBinLowEdge(h.GetNbinsY()+1))
     f1 = ROOT.TF2("f1",func)
@@ -919,7 +923,7 @@ print "-------------------------------------------------------------------------
 
 # pt_1 correction
 if channel == "et" and year == "2016":
-  pt_1_regions = {'pt_1':'(1)'}
+  pt_1_regions = {'high_pt_1':'(1)'}
 else:
   pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
 
@@ -932,7 +936,8 @@ for njets_name, njets_cut in njets_bins.items():
         pol_to_use = 'pol0'
       elif add_name == 'high_pt_1':
         var = 'pt_1[%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
-        pol_to_use = 'pol3'
+        if '0jet' in njets_name: pol_to_use = 'pol1'
+        else: pol_to_use = 'pol3'
       else:
         var = 'pt_1[0,25,40,60,80,100,120,160,200,300]' % vars()
         pol_to_use = 'pol3'
@@ -951,7 +956,8 @@ for njets_name, njets_cut in njets_bins.items():
       wjets_data_uncert.Write()
       PlotFakeFactorCorrection(wjets_data, wjets_data_uncert, wjets_data.GetName(), output_folder, wp, x_title='p_{T}^{#mu} (GeV)')
 
-      w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
+      if '0jet' in njets_name: w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_fit').GetExpFormula('p')).replace('x','min(pt_1,160)'))
+      else: w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_fit').GetExpFormula('p')).replace('x','min(pt_1,200)'))
 w_corr_string = w_corr_string[:-1] + ')'
 
 
@@ -980,7 +986,7 @@ w_corr_string = w_corr_string[:-1] + ')'
 
 # pt_1 correction
 if channel == "et" and year == "2016":
-  pt_1_regions = {'pt_1':'(1)'}
+  pt_1_regions = {'high_pt_1':'(1)'}
 else:
   pt_1_regions = {'low_pt_1':'pt_1<=%(crosstrg_pt)s' % vars(),'high_pt_1':'pt_1>%(crosstrg_pt)s' % vars()}
 
@@ -993,7 +999,8 @@ for njets_name, njets_cut in njets_bins.items():
         pol_to_use = 'pol0'
       elif add_name == 'high_pt_1':
         var = 'pt_1[%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
-        pol_to_use = 'pol3'
+        if '0jet' in njets_name: pol_to_use = 'pol1' 
+        else: pol_to_use = 'pol3'
       else:
         var = 'pt_1[0,25,40,60,80,100,120,160,200,300]' % vars()
         pol_to_use = 'pol3'
@@ -1011,7 +1018,8 @@ for njets_name, njets_cut in njets_bins.items():
       wjets_mc_data_uncert.Write()
       PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='p_{T}^{#mu} (GeV)')
 
-      w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
+      if '0jet' in njets_name: w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,160)'))
+      else: w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,200)'))
 w_mc_corr_string = w_mc_corr_string[:-1] + ')'
 
 
@@ -1033,7 +1041,7 @@ for add_name, corr_cut in njets_bins.items():
     wjets_mc_data_uncert.Write()
     PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='MET (GeV)')
 
-    w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(met,250)'))
+    w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(met,200)'))
 w_mc_corr_string = w_mc_corr_string[:-1] + ')'
 
 # High-mT -> Low-mT MET corrections
@@ -1046,23 +1054,30 @@ categories = {
               'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<50)",
               'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>50 && mt_1<70)"
 }
-var = 'pt_1[0,25,40,60,80,100,120,160,200,300]'
+#var = 'pt_1[0,25,40,60,80,100,120,160,200,300]'
+var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
 for add_name, corr_cut in categories.items():
+  if 'nbjets1' in add_name: var = 'pt_1[20,%(crosstrg_pt)s,300]' % vars()
+  else: var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160,200,300]' % vars()
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
   (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+w_mc_corr_ff+")",doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
   fout.cd()
   wjets_mc_data.Divide(wjets_mc_pred)
 
-  wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol3')
+  if wjets_mc_data.GetBinContent(1) <=0: 
+    wjets_mc_data.SetBinContent(1,1.)
+
+  if 'nbjets1' in add_name: wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol0',fit_range=[crosstrg_pt,300.])
+  else: wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol1',fit_range=[crosstrg_pt,300.])
 
   wjets_mc_data.Write()
   wjets_mc_data_fit.Write()
   wjets_mc_data_uncert.Write()
-  PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='MET (GeV)')
+  PlotFakeFactorCorrection(wjets_mc_data, wjets_mc_data_uncert, wjets_mc_data.GetName(), output_folder, wp, x_title='p_{T}^{#mu} (GeV)')
 
-  w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
-  w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,250)'))
+  w_mc_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,200)'))
+  w_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_wjets_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,200)'))
 
 w_mc_corr_string += '(mt_1>70))'
 w_corr_string += '(mt_1>70))'
@@ -1081,14 +1096,14 @@ for add_name, corr_cut in njets_bins.items():
     fout.cd()
     qcd_data.Divide(qcd_pred)
 
-    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data,func='pol3')
+    qcd_data_fit, qcd_data_uncert =  FitCorrection(qcd_data,func='pol1')
 
     qcd_data.Write()
     qcd_data_fit.Write()
     qcd_data_uncert.Write()
     PlotFakeFactorCorrection(qcd_data, qcd_data_uncert, qcd_data.GetName(), output_folder, wp, x_title='MET (GeV)')
 
-    qcd_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_qcd_fit').GetExpFormula('p')).replace('x','min(met,250)'))
+    qcd_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_closure_qcd_fit').GetExpFormula('p')).replace('x','min(met,200)'))
 qcd_corr_string = qcd_corr_string[:-1] + ')'
 
 #### Anti-Isolated ####
@@ -1103,28 +1118,38 @@ for add_name, corr_cut in njets_bins.items():
     (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_qcd_aiso+")",doMC=False,doW=False,doQCD=True,doTT=False)
     fout.cd()
     qcd_aiso_data.Divide(qcd_aiso_pred)
-    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol3')
+    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol1')
 
     qcd_aiso_data.Write()
     qcd_aiso_data_fit.Write()
     qcd_aiso_data_uncert.Write()
     PlotFakeFactorCorrection(qcd_aiso_data, qcd_aiso_data_uncert, qcd_aiso_data.GetName(), output_folder, wp, x_title='MET (GeV)')
 
-    qcd_aiso_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_aiso_closure_qcd_fit').GetExpFormula('p')).replace('x','min(met,250)'))
+    qcd_aiso_corr_string += '((%s)*(%s))+' % (corr_cut,str(fout.Get(corr_name+'_aiso_closure_qcd_fit').GetExpFormula('p')).replace('x','min(met,200)'))
 qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 
 # SS to OS correction
-var = 'pt_1[20,25,40,60,80,100,120,160]'
+var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string += "*("
 qcd_corr_string += "*("
 for add_name, corr_cut in categories.items():
+  #if 'nbjets0' in add_name and False: var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
+  if 'nbjets0' in add_name: var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
+  else: var = 'pt_1[20,%(crosstrg_pt)s,160]' % vars()
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
   (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+qcd_aiso_corr_ff+")",doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
   fout.cd()
   qcd_aiso_data.Divide(qcd_aiso_pred)
-  qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol3')
+
+  if qcd_aiso_data.GetBinContent(1) <=0:
+    qcd_aiso_data.SetBinContent(1,1.)
+
+  if 'nbjets0' in add_name and False: 
+    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol1',fit_range=[crosstrg_pt,300.])
+  else: 
+    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol0',fit_range=[crosstrg_pt,300.])
 
   qcd_aiso_data.Write()
   qcd_aiso_data_fit.Write()
@@ -1161,7 +1186,7 @@ for add_name, add_cut in mt_1_regions.items():
   fout.cd()
   ttbar_mc_data.Divide(ttbar_mc_pred)
 
-  ttbar_mc_data_fit, ttbar_mc_data_uncert =  FitCorrection(ttbar_mc_data,func=pol_to_use,fit_range=[float(crosstrg_pt),300.])
+  ttbar_mc_data_fit, ttbar_mc_data_uncert =  FitCorrection(ttbar_mc_data,func=pol_to_use,fit_range=[crosstrg_pt,300.])
 
   ttbar_mc_data.Write()
   ttbar_mc_data_fit.Write()
