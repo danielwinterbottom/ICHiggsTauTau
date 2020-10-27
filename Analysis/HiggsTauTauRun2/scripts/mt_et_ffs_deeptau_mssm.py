@@ -452,21 +452,22 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h.Scale(scale)
       wjets.Add(h)
 
-    if doTT:
-      # draw ttbar when tau candidate is a jet fake 
-      for i in ttbar_files:
-        f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
-        t = f.Get('ntuple')
-        h = hout.Clone()
-        h.SetName('h')
-        t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(os==1)*(mt_1<70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
-        h = t.GetHistogram()
-        scale = lumi*params[i]['xs']/params[i]['evt']
-        h.Scale(scale)
-        ttbar.Add(h)
+     wjets = ZeroNegativeBins(wjets)
+
+  if doTT:
+    # draw ttbar when tau candidate is a jet fake 
+    for i in ttbar_files:
+      f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
+      t = f.Get('ntuple')
+      h = hout.Clone()
+      h.SetName('h')
+      t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(os==1)*(mt_1<70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
+      h = t.GetHistogram()
+      scale = lumi*params[i]['xs']/params[i]['evt']
+      h.Scale(scale)
+      ttbar.Add(h)
 
     wjets = ZeroNegativeBins(wjets)
-    ttbar = ZeroNegativeBins(ttbar)
 
   return (data_qcd, data_w, wjets, ttbar)
 
@@ -961,6 +962,7 @@ for njets_name, njets_cut in njets_bins.items():
 w_corr_string = w_corr_string[:-1] + ')'
 
 
+init_w_corr_string = w_corr_string[:]
 # MET correction
 var = 'met[0,30,45,60,80,100,120,160,200,300]'
 w_corr_string += "*("
@@ -968,7 +970,7 @@ for add_name, corr_cut in njets_bins.items():
   if "inclusive" not in add_name:
     corr_name = 'met_' + add_name
     (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False)
-    (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_wjets+")",doMC=False,doW=True,doQCD=False,doTT=False)
+    (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets+")"+init_w_corr_string+")",doMC=False,doW=True,doQCD=False,doTT=False)
     fout.cd()
     wjets_data.Divide(wjets_pred)
 
@@ -1025,12 +1027,13 @@ w_mc_corr_string = w_mc_corr_string[:-1] + ')'
 
 # MET correction
 var = 'met[0,30,45,60,80,100,120,160,200,300]'
+init_w_mc_corr_string = w_mc_corr_string[:]
 w_mc_corr_string += "*("
 for add_name, corr_cut in njets_bins.items():
   if "inclusive" not in add_name:
     corr_name = 'met_' + add_name
     (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False)
-    (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_wjets_mc+")",doMC=True,doW=False,doQCD=False,doTT=False)
+    (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+init_w_mc_corr_string+")",doMC=True,doW=False,doQCD=False,doTT=False)
     fout.cd()
     wjets_mc_data.Divide(wjets_mc_pred)
 
@@ -1129,7 +1132,10 @@ for add_name, corr_cut in njets_bins.items():
 qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 
 # SS to OS correction
+
 var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
+
+
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string += "*("
 qcd_corr_string += "*("
@@ -1181,8 +1187,8 @@ for add_name, add_cut in mt_1_regions.items():
     pol_to_use = 'pol1'
   corr_cut = add_cut
   corr_name = add_name
-  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=True)
-  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=True,doW=False,doQCD=False,doTT=True)
+  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True)
+  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True)
   fout.cd()
   ttbar_mc_data.Divide(ttbar_mc_pred)
 
@@ -1203,8 +1209,8 @@ mt_1_regions = {'tightmT':'mt_1<50' % vars(),'loosemT':'mt_1>=50' % vars()}
 for add_name, add_cut in mt_1_regions.items():
   corr_name = 'met_'+add_name
   corr_cut = add_cut
-  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=True)
-  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=True,doW=False,doQCD=False,doTT=True)
+  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True)
+  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True)
   fout.cd()
   ttbar_mc_data.Divide(ttbar_mc_pred)
   ttbar_mc_data_fit, ttbar_mc_data_uncert =  FitCorrection(ttbar_mc_data,func='pol3')
