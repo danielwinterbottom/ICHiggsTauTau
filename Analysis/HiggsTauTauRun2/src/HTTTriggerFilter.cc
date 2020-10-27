@@ -324,6 +324,7 @@ namespace ic {
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
           singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+          singletau_leg1_filter_2 = "";
         }
       }  
     } else {

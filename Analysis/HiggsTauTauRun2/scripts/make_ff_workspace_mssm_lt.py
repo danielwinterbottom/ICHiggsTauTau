@@ -215,6 +215,8 @@ w.factory('expr::ff_lt_ttbar_raw("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.
 # apply qcd corrections
 
 w.factory('expr::met_bounded("min(@0,199.9)",met[0])' % vars())
+w.factory('expr::met_bounded140("min(@0,139.9)",met[0])' % vars())
+w.factory('expr::l_pt_bounded100("min(@0,99.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded140("min(@0,139.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded160("min(@0,159.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded200("min(@0,199.9)",l_pt[20])' % vars())
@@ -230,9 +232,9 @@ for njet in [0,1]:
   func_os_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_loosemt_dr_to_ar_aiso_closure_qcd_fit' % vars())
   func_os_str_2=str(func_os_2.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-  w.factory('expr::lt_qcd_ss_njets%(njet)i_correction("max(%(func_ss_str)s,0.)",met_bounded)' % vars())
-  w.factory('expr::lt_qcd_os_nbjets%(njet)i_tightmt_correction("max(%(func_os_str_1)s,0.)",l_pt_bounded140)' % vars())
-  w.factory('expr::lt_qcd_os_nbjets%(njet)i_loosemt_correction("max(%(func_os_str_2)s,0.)",l_pt_bounded140)' % vars())
+  w.factory('expr::lt_qcd_ss_njets%(njet)i_correction("max(%(func_ss_str)s,0.)",met_bounded140)' % vars())
+  w.factory('expr::lt_qcd_os_nbjets%(njet)i_tightmt_correction("max(%(func_os_str_1)s,0.)",l_pt_bounded100)' % vars())
+  w.factory('expr::lt_qcd_os_nbjets%(njet)i_loosemt_correction("max(%(func_os_str_2)s,0.)",l_pt_bounded100)' % vars())
 
   # get stat uncertainties
 
@@ -242,21 +244,21 @@ for njet in [0,1]:
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_ss_nom)
 
-  wsptools.SafeWrapHist(w, ['met_bounded'], hist_ss_nom, name='lt_qcd_ss_njets%(njet)i_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_bounded140'], hist_ss_nom, name='lt_qcd_ss_njets%(njet)i_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['met_bounded140'], uncert1_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_bounded140'], uncert2_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up' % vars())
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_os_nom_1)
 
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], hist_os_nom_1, name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_os_nom_1, name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert2_hist_up' % vars())
   
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_os_nom_2)
 
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], hist_os_nom_2, name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded140'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_os_nom_2, name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert2_hist_up' % vars())
 
   w.factory('expr::lt_qcd_ss_njets%(njet)i_correction_uncert1_up("@0/@1", lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up, lt_qcd_ss_njets%(njet)i_correction_nom)' % vars())
   w.factory('expr::lt_qcd_ss_njets%(njet)i_correction_uncert2_up("@0/@1", lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up, lt_qcd_ss_njets%(njet)i_correction_nom)' % vars())
@@ -352,7 +354,8 @@ for njet in [0,1]:
   if lowpt_extrap_2<=0: lowpt_extrap_2 = 1.
 
 
-  w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_bounded)' % vars())
+  if njet ==0: w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_bounded140)' % vars())
+  else: w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_bounded)' % vars())
   if njet ==0: w.factory('expr::lt_wjets_l_pt_njets%(njet)i_correction("max(%(func_pt_str)s,0.)",l_pt_bounded160)' % vars())
   else: w.factory('expr::lt_wjets_l_pt_njets%(njet)i_correction("max(%(func_pt_str)s,0.)",l_pt_bounded200)' % vars())
   w.factory('expr::lt_wjets_low_l_pt_njets%(njet)i_correction("max(%(func_lowpt_str)s,0.)",l_pt_bounded200)' % vars())
@@ -368,9 +371,15 @@ for njet in [0,1]:
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met)
 
-  wsptools.SafeWrapHist(w, ['met_bounded'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
+ 
+  if njet ==0:
+    wsptools.SafeWrapHist(w, ['met_bounded140'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded140'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded140'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
+  else:
+    wsptools.SafeWrapHist(w, ['met_bounded'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
+    wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met)
 
