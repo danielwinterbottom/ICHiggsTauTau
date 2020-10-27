@@ -467,7 +467,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h.Scale(scale)
       ttbar.Add(h)
 
-    wjets = ZeroNegativeBins(wjets)
+    ttbar = ZeroNegativeBins(ttbar)
 
   return (data_qcd, data_w, wjets, ttbar)
 
