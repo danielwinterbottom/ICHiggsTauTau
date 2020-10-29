@@ -265,14 +265,16 @@ deeptau_jet_pass = 'deepTauVsJets_%(wp)s_2>0.5' % vars()
 deeptau_jet_fail = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars()
 if channel == "mt":
   deeptau_lep = 'deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5'
-  crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+  if year == "2016":
+    crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>25)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+  else: crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>32)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
 elif channel == "et":
   deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
   if year == "2016":
     crosstrg = 'trg_singleelectron'
   else:
-    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
-other_sel = 'leptonveto==0 && wt<2'
+    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s&&pt_2>35)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
+other_sel = 'leptonveto==0 && pt_2>30 && wt<2'
 
 
 baseline_iso_pass = '(%(iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()

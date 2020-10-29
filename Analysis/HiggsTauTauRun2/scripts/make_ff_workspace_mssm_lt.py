@@ -297,8 +297,8 @@ for njet in [0,1]:
         qcd_systs.append('qcd_stat_njet%(njet)i_%(jetpt)s_unc%(i)i' % vars())
 
 # systematic uncertainty from applying os/ss correction twice or not applying it 
-w.factory('expr::ff_lt_qcd_syst_up("@0*@1*((@2!=0)*@3*@3 + (@2==0))", ff_lt_qcd, lt_qcd_ss_correction, os[1], lt_qcd_os_correction)' % vars())
-w.factory('expr::ff_lt_qcd_syst_down("@0*@1", ff_lt_qcd, lt_qcd_ss_correction, os[1])' % vars())
+w.factory('expr::ff_lt_qcd_syst_up("@0*@1*((@2!=0)*@3*@3 + (@2==0))", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1], lt_qcd_os_correction)' % vars())
+w.factory('expr::ff_lt_qcd_syst_down("@0*@1", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1])' % vars())
 qcd_systs.append('qcd_syst')
 
 ## statistical uncertainties on os and ss closure corrections
@@ -381,7 +381,7 @@ for njet in [0,1]:
     wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
     wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
 
-  (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met)
+  (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_pt)
 
   if njet ==0:
     wsptools.SafeWrapHist(w, ['l_pt_bounded160'], hist_pt, name='lt_wjets_l_pt_njets%(njet)i_correction_nom' % vars())
@@ -433,7 +433,7 @@ for i in [1,2]:
   w.factory('expr::lt_wjets_extrap_correction_uncert%(i)i_down("2.-@0", lt_wjets_extrap_correction_uncert%(i)i_up)' % vars())
 
 # get final wjets fake factor
-w.factory('expr::ff_lt_wjets("@0*@1*@2", ff_lt_wjets_raw, lt_wjets_dr_correction, lt_wjets_extrap_correction)' % vars())
+w.factory('expr::ff_lt_wjets("@0*@1*@2", ff_lt_wjets_raw, lt_wjets_dr_correction, lt_wjets_extrap_correction, os[1])' % vars())
 
 wjets_systs=[]
 
@@ -529,8 +529,8 @@ for i in [1,2]:
 
 w.factory('expr::lt_ttbar_datamc_correction("(@0>=0)*((@1<1.25*@2)*@3/@4 + (@1>=1.25*@2&&@1<1.5*@2)*@5/@6 + (@1>=1.5*@2)*@7/@8)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_low_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_mc_pt140_fit)' % vars())
 
-# get final qcd fake factor
-w.factory('expr::ff_lt_ttbar("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction)' % vars())
+# get final ttbar fake factor
+w.factory('expr::ff_lt_ttbar("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, os[1], l_pt_bounded250, nbjets[0])' % vars())
 
 ttbar_systs=[]
 
