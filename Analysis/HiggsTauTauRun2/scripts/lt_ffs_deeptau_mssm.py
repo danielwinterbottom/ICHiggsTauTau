@@ -38,7 +38,6 @@ njets_bins = {
 jetpt_bins = {
               #'inclusive':'(1)',
               'jet_pt_low':'(jet_pt_2<1.25*pt_2)',
-              'jet_pt_low':'((jet_pt_2>=1.1*pt_2) && (jet_pt_2<1.25*pt_2))',
               'jet_pt_med':'((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))',
               'jet_pt_high': '(jet_pt_2>=1.5*pt_2)'
 }
