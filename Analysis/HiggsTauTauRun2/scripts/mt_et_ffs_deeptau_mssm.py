@@ -652,7 +652,8 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
     h_uncert = ROOT.TH2D(h.GetName()+'_uncert',"",100,h.GetXaxis().GetBinLowEdge(1),h.GetXaxis().GetBinLowEdge(h.GetNbinsX()+1),100,h.GetYaxis().GetBinLowEdge(1),h.GetYaxis().GetBinLowEdge(h.GetNbinsY()+1))
     f1 = ROOT.TF2("f1",func)
   else: 
-    h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+    if 'pol0' in func: h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
+    else: h_uncert = ROOT.TH1D(h.GetName()+'_uncert',"",1000,h.GetBinLowEdge(1),h.GetBinLowEdge(h.GetNbinsX()+1))
     if fit_range is not None:
       f1 = ROOT.TF1("f1",func,fit_range[0],fit_range[1])
     else:
@@ -661,6 +662,9 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
   if 'Erf' in func:
     f1.SetParameter(1,-1.5)
     f1.SetParameter(2,2)
+
+  if 'Erf((-x-[1])' in func:
+    for i in range(0,4): f1.SetParameter(i,1)
 
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
@@ -674,11 +678,22 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
     else: fitresult = h.Fit("f1",'SI'+extra)
     rep = int(fitresult) != 0
     if not rep or count>100:
-      ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
+      if 'pol0' not in func: ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
       fit = f1
       break
     count+=1
   fit.SetName(h.GetName()+'_fit')
+
+  if 'pol0' in func:
+    c = fit.GetParameter(0)
+    e = fit.GetParError(0)
+    print 'force pol0 error:'
+    print c, e
+    for i in range(1,h_uncert.GetNbinsX()+2):
+      h_uncert.SetBinContent(i,c)
+      h_uncert.SetBinError(i,e)
+      print i, h_uncert.GetBinLowEdge(i), c, e
+
   return fit, h_uncert
 
 
@@ -717,7 +732,7 @@ def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss}
   f.Draw()
   h.SetStats(0)
   h.SetFillColor(ROOT.kBlue-10)
-  h.Draw("e3 same")
+  h.Draw("e2 same")
   f.Draw("a sames")
   c1.Print(output_folder+'/'+channel+'_'+wp+'_'+name+'_fit.pdf')
 
@@ -1183,22 +1198,28 @@ low = qcd_aiso_data.GetBinContent(1)
 high = qcd_aiso_data.GetBinContent(2)
 
 qcd_aiso_corr_string += '((%(low).5f)*(pt_1<%(crosstrg_pt)s) + (%(high).5f)*(pt_1>=%(crosstrg_pt)s))+' % vars()
-qcd_aiso_corr_string = qcd_corr_string[:-1] + ')'
+qcd_aiso_corr_string = qcd_aiso_corr_string[:-1] + ')'
 
 # SS to OS correction
 
-var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
+var = 'pt_1[20,%(crosstrg_pt)s,35,40,50,60,80,100,120,160]' % vars()
 
 qcd_aiso_corr_ff = qcd_aiso_corr_string[:]
 qcd_aiso_corr_string += "*("
 qcd_corr_string += "*("
+
+print qcd_aiso_corr_ff
 
 categories = {
               'nbjets0':"(n_deepbjets==0 && mt_1<70)",
               'nbjets1':"(n_deepbjets>0 && mt_1<70)",
 }
 for add_name, corr_cut in categories.items():
-  if 'nbjets0' in add_name: var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160]' % vars()
+  #if 'nbjets0' in add_name and channel == 'et': 
+  #  if year == '2016': var = 'pt_1[25,30,35,40,80]' % vars()
+  #  if year == '2017': var = 'pt_1[20,%(crosstrg_pt)s,35,40,80]' % vars()
+  #  if year == '2018': var = 'pt_1[20,%(crosstrg_pt)s,35,40,80]' % vars()
+  if 'nbjets0' in add_name and channel == 'mt': var = 'pt_1[20,%(crosstrg_pt)s,35,40,50,60,80,100,120,160]' % vars()
   else: var = 'pt_1[20,%(crosstrg_pt)s,160]' % vars()
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
@@ -1210,9 +1231,10 @@ for add_name, corr_cut in categories.items():
     qcd_aiso_data.SetBinContent(1,1.)
 
   if 'nbjets0' in add_name and channel == 'mt': 
-    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol3',fit_range=[crosstrg_pt,300.])
+    #qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol3')#,fit_range=[crosstrg_pt,300.])
+    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='[0]*TMath::Erf((-x-[1])/[2])+[3]')#,fit_range=[crosstrg_pt,300.])
   else: 
-    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol0',fit_range=[crosstrg_pt,300.])
+    qcd_aiso_data_fit, qcd_aiso_data_uncert =  FitCorrection(qcd_aiso_data,func='pol0')#,fit_range=[crosstrg_pt,300.])
 
   qcd_aiso_data.Write()
   qcd_aiso_data_fit.Write()

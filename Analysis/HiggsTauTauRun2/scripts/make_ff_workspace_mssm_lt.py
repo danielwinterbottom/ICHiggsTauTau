@@ -53,7 +53,7 @@ wp = 'medium'
 
 # get fractions
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/ff_%(channel)s_%(year)s/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/ff_%(channel)s_%(year)s_new/' % vars()
 
 histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_qcd' % vars(),   'lt_fracs_nbjets0_os_qcd' % vars()),
                (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_qcd' % vars(),   'lt_fracs_nbjets1_os_qcd' % vars()),
@@ -214,75 +214,109 @@ w.factory('expr::ff_lt_ttbar_raw("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.
 
 # apply qcd corrections
 
-w.factory('expr::met_bounded("min(@0,199.9)",met[0])' % vars())
-w.factory('expr::met_bounded140("min(@0,139.9)",met[0])' % vars())
+w.factory('expr::met_var_qcd_bounded("max(min(@0,1.5),-3.5)",met_var_qcd[0])' % vars())
+w.factory('expr::met_var_w_bounded("max(min(@0,1.0),-3.5)",met_var_w[0])' % vars())
 w.factory('expr::l_pt_bounded100("min(@0,99.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded140("min(@0,139.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded160("min(@0,159.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded200("min(@0,199.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded250("min(@0,249.9)",l_pt[20])' % vars())
+w.factory('expr::iso_bounded("min(@0,0.5)",iso[0])' % vars())
 
 for njet in [0,1]:
   func_ss = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_%(njet)ijet_closure_qcd_fit' % vars())
   func_ss_str=str(func_ss.GetExpFormula('p')).replace('x','@0').replace(',false','')
   
-  func_os_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_tightmt_dr_to_ar_aiso_closure_qcd_fit' % vars())
+  func_os_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_dr_to_ar_aiso_closure_qcd_fit' % vars())
   func_os_str_1=str(func_os_1.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-  func_os_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_loosemt_dr_to_ar_aiso_closure_qcd_fit' % vars())
-  func_os_str_2=str(func_os_2.GetExpFormula('p')).replace('x','@0').replace(',false','')
-
-  w.factory('expr::lt_qcd_ss_njets%(njet)i_correction("max(%(func_ss_str)s,0.)",met_bounded140)' % vars())
-  w.factory('expr::lt_qcd_os_nbjets%(njet)i_tightmt_correction("max(%(func_os_str_1)s,0.)",l_pt_bounded100)' % vars())
-  w.factory('expr::lt_qcd_os_nbjets%(njet)i_loosemt_correction("max(%(func_os_str_2)s,0.)",l_pt_bounded100)' % vars())
+  w.factory('expr::lt_qcd_ss_njets%(njet)i_correction("max(%(func_ss_str)s,0.)",met_var_qcd_bounded)' % vars())
+  w.factory('expr::lt_qcd_os_nbjets%(njet)i_correction("max(%(func_os_str_1)s,0.)",l_pt_bounded100)' % vars())
 
   # get stat uncertainties
 
   hist_ss_nom = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_%(njet)ijet_closure_qcd_uncert' % vars())
-  hist_os_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_tightmt_dr_to_ar_aiso_closure_qcd_uncert' % vars())
-  hist_os_nom_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_loosemt_dr_to_ar_aiso_closure_qcd_uncert' % vars())
+  hist_os_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_dr_to_ar_aiso_closure_qcd_uncert' % vars())
+
+  #low_pt = hist_os_nom_1.GetBinContent(1) # might need a low pT correction for below the cross trigger threshold!
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_ss_nom)
 
-  wsptools.SafeWrapHist(w, ['met_bounded140'], hist_ss_nom, name='lt_qcd_ss_njets%(njet)i_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded140'], uncert1_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['met_bounded140'], uncert2_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_qcd_bounded'], hist_ss_nom, name='lt_qcd_ss_njets%(njet)i_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_qcd_bounded'], uncert1_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_qcd_bounded'], uncert2_up, name='lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up' % vars())
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_os_nom_1)
 
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_os_nom_1, name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_tightmt_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_os_nom_1, name='lt_qcd_os_nbjets%(njet)i_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_correction_uncert2_hist_up' % vars())
   
-  (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_os_nom_2)
-
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_os_nom_2, name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up,     name='lt_qcd_os_nbjets%(njet)i_loosemt_correction_uncert2_hist_up' % vars())
-
   w.factory('expr::lt_qcd_ss_njets%(njet)i_correction_uncert1_up("@0/@1", lt_qcd_ss_njets%(njet)i_correction_uncert1_hist_up, lt_qcd_ss_njets%(njet)i_correction_nom)' % vars())
   w.factory('expr::lt_qcd_ss_njets%(njet)i_correction_uncert2_up("@0/@1", lt_qcd_ss_njets%(njet)i_correction_uncert2_hist_up, lt_qcd_ss_njets%(njet)i_correction_nom)' % vars())
 
-  for x in ['loose', 'tight']:
-    w.factory('expr::lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_uncert1_up("@0/@1", lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_uncert1_hist_up, lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_nom)' % vars())
-    w.factory('expr::lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_uncert2_up("@0/@1", lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_uncert2_hist_up, lt_qcd_os_nbjets%(njet)i_%(x)smt_correction_nom)' % vars())
+  w.factory('expr::lt_qcd_os_nbjets%(njet)i_correction_uncert1_up("@0/@1", lt_qcd_os_nbjets%(njet)i_correction_uncert1_hist_up, lt_qcd_os_nbjets%(njet)i_correction_nom)' % vars())
+  w.factory('expr::lt_qcd_os_nbjets%(njet)i_correction_uncert2_up("@0/@1", lt_qcd_os_nbjets%(njet)i_correction_uncert2_hist_up, lt_qcd_os_nbjets%(njet)i_correction_nom)' % vars())
 
-w.factory('expr::lt_qcd_ss_correction("(@0==0)*@1 + (@0>0)*@2",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction )' % vars())
-w.factory('expr::lt_qcd_os_correction("(@0==0)*((@1<50)*@2 + (@1>=50)*@3) + (@0>0)*((@1<50)*@4 + (@1>=50)*@5)", nbjets[0], mt[0], lt_qcd_os_nbjets0_tightmt_correction, lt_qcd_os_nbjets0_loosemt_correction, lt_qcd_os_nbjets1_tightmt_correction, lt_qcd_os_nbjets1_loosemt_correction )' % vars())
+# iso>0.05 corrections and uncertainties
+#iso_inclusive_closure_qcd_alt_fit
+
+func_iso_alt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:iso_inclusive_closure_qcd_alt_fit' % vars())
+func_iso_alt_str=str(func_iso_alt.GetExpFormula('p')).replace('x','@0').replace(',false','')
+
+func_iso = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:iso_inclusive_closure_qcd_fit' % vars())
+func_iso_str=str(func_iso.GetExpFormula('p')).replace('x','@0').replace(',false','')
+hist_iso = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:iso_inclusive_closure_qcd_uncert' % vars())
+
+(uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_iso)
+
+wsptools.SafeWrapHist(w, ['iso_bounded'], hist_iso, name='lt_qcd_iso_correction_nom' % vars())
+wsptools.SafeWrapHist(w, ['iso_bounded'], uncert1_up,     name='lt_qcd_iso_correction_uncert1_hist_up' % vars())
+wsptools.SafeWrapHist(w, ['iso_bounded'], uncert2_up,     name='lt_qcd_iso_correction_uncert2_hist_up' % vars())
+
+w.factory('expr::lt_iso_correction("max(%(func_iso_str)s,0.)",iso_bounded )' % vars())
+w.factory('expr::lt_iso_correction_uncert1_up("@0/@1",lt_qcd_iso_correction_uncert1_hist_up, lt_qcd_iso_correction_nom)' % vars())
+w.factory('expr::lt_iso_correction_uncert2_up("@0/@1",lt_qcd_iso_correction_uncert2_hist_up, lt_qcd_iso_correction_nom)' % vars())
+w.factory('expr::lt_iso_correction_syst_up("max(%(func_iso_alt_str)s,0.)/@1",iso_bounded, lt_iso_correction)' % vars())
+
+w.factory('expr::lt_iso_correction_uncert1_down("2.-@0", lt_iso_correction_uncert1_up)' % vars())
+w.factory('expr::lt_iso_correction_uncert2_down("2.-@0", lt_iso_correction_uncert2_up)' % vars())
+w.factory('expr::lt_iso_correction_syst_down("2.-@0", lt_iso_correction_syst_up)' % vars())
+
+# add these as systs further down!
+
+######
+
+#pt closure
+
+hist_l_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_closure_qcd' % vars())
+l_pt_low = hist_l_pt.GetBinContent(1)
+l_pt_high = hist_l_pt.GetBinContent(2)
+l_pt_low_uncert = hist_l_pt.GetBinError(1)
+l_pt_high_uncert = hist_l_pt.GetBinError(2)
+
+w.factory('expr::lt_qcd_ss_correction("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*%(l_pt_low).5f + (@3>=%(crosstrg_pt)s)*%(l_pt_high).5f)*@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction )' % vars())
+w.factory('expr::lt_qcd_os_correction("(@0==0)*@1 + (@0>0)*@2", nbjets[0], lt_qcd_os_nbjets0_correction, lt_qcd_os_nbjets1_correction)' % vars())
+
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f+%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f-%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f+%(l_pt_high_uncert).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f-%(l_pt_high_uncert).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
+
 
 for i in [1,2]:
 
   w.factory('expr::lt_qcd_ss_correction_njets0_uncert%(i)i_up("(@0==0)*@1 + (@0!=0)", njets[0], lt_qcd_ss_njets0_correction_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_qcd_ss_correction_njets1_uncert%(i)i_up("(@0==0) + (@0!=0)*@1", njets[0], lt_qcd_ss_njets1_correction_uncert%(i)i_up)' % vars())
 
-  w.factory('expr::lt_qcd_os_correction_uncert%(i)i_up("(@0!=0)*((@1==0)*((@2<50)*@3 + (@2>=50)*@4) + (@1>0)*((@2<50)*@5 + (@2>=50)*@6)) + (@0==0) ",os[1], nbjets[0], mt[0], lt_qcd_os_nbjets0_tightmt_correction_uncert%(i)i_up, lt_qcd_os_nbjets0_loosemt_correction_uncert%(i)i_up, lt_qcd_os_nbjets1_tightmt_correction_uncert%(i)i_up, lt_qcd_os_nbjets1_loosemt_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::lt_qcd_os_correction_uncert%(i)i_up("(@0!=0)*((@1==0)*@2 + (@1>0)*@3) + (@0==0) ",os[1], nbjets[0], lt_qcd_os_nbjets0_correction_uncert%(i)i_up, lt_qcd_os_nbjets1_correction_uncert%(i)i_up)' % vars())
 
   w.factory('expr::lt_qcd_ss_correction_njets0_uncert%(i)i_down("2.-@0", lt_qcd_ss_correction_njets0_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_qcd_ss_correction_njets1_uncert%(i)i_down("2.-@0", lt_qcd_ss_correction_njets1_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_qcd_os_correction_uncert%(i)i_down("2.-@0", lt_qcd_os_correction_uncert%(i)i_up)' % vars())
 
 # get final qcd fake factor
-w.factory('expr::ff_lt_qcd("@0*@1*((@2!=0)*@3 + (@2==0))", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1], lt_qcd_os_correction)' % vars())
+w.factory('expr::ff_lt_qcd("@0*@1*((@2!=0)*@3 + (@2==0))", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1], lt_qcd_os_correction, met_var_w_bounded, mt[0])' % vars())
 
 qcd_systs=[]
 
@@ -315,10 +349,21 @@ for i in [1,2]:
   w.factory('expr::ff_lt_qcd_stat_os_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_qcd_os_correction_uncert%(i)i_down)' % vars())
   qcd_systs.append('qcd_stat_os_unc%(i)i' % vars())
 
+  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_up("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert1_up)' % vars())
+  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert1_down)' % vars())
+  qcd_systs.append('qcd_stat_l_pt_unc%(i)i' % vars())
+
+  w.factory('expr::ff_lt_qcd_stat_iso_unc%(i)i_up("@0*@1", ff_lt_qcd, lt_iso_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::ff_lt_qcd_stat_iso_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_iso_correction_uncert%(i)i_down)' % vars())
+  qcd_systs.append('qcd_stat_iso_unc%(i)i' % vars())
+
+
+w.factory('expr::ff_lt_qcd_syst_iso_up("@0*@1", ff_lt_qcd, lt_iso_correction_syst_up)' % vars())
+w.factory('expr::ff_lt_qcd_syst_iso_down("@0*@1", ff_lt_qcd, lt_iso_correction_syst_down)' % vars())
+qcd_systs.append('qcd_syst_iso' % vars())
+
 print 'qcd systematics:'
 print qcd_systs
-
-#TODO: add systematics for W+jets subtraction when measuring QCD FFs (only if we leave QCD DR as OS)
 
 #################
 
@@ -330,14 +375,8 @@ for njet in [0,1]:
   func_met = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_%(njet)ijet_closure_wjets_fit' % vars())
   func_met_str=str(func_met.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-  func_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:high_pt_1_%(njet)ijet_closure_wjets_fit' % vars())
-  if channel == 'et' and year == '2016':
-    # if 2016 make a dummy function for low pT bins since we have no cross trigger anyway
-    func_lowpt = ROOT.TF1(str(func_pt.GetName()).replace('high','low'), '1')
-  else:
-    func_lowpt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:low_pt_1_%(njet)ijet_closure_wjets_fit' % vars())
+  func_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_%(njet)ijet_closure_wjets_fit' % vars())
   func_pt_str=str(func_pt.GetExpFormula('p')).replace('x','@0').replace(',false','')
-  func_lowpt_str=str(func_lowpt.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
   func_extrap_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_tightmt_dr_to_ar_closure_wjets_mc_fit' % vars())
   hist_extrap_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_tightmt_dr_to_ar_closure_wjets_mc' % vars())
@@ -353,40 +392,41 @@ for njet in [0,1]:
   if lowpt_extrap_1<=0: lowpt_extrap_1 = 1.
   if lowpt_extrap_2<=0: lowpt_extrap_2 = 1.
 
+  lowpt_corr = 1.
+  if not (channel == 'et' and year == '2016'):
+    hist_l_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_%(njet)ijet_closure_wjets' % vars())
+    lowpt_corr = hist_l_pt.GetBinContent(1)
+ 
+  if lowpt_corr<=0: lowpt_corr = 1.
 
-  if njet ==0: w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_bounded140)' % vars())
-  else: w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_bounded)' % vars())
-  if njet ==0: w.factory('expr::lt_wjets_l_pt_njets%(njet)i_correction("max(%(func_pt_str)s,0.)",l_pt_bounded160)' % vars())
+
+  w.factory('expr::lt_wjets_met_njets%(njet)i_correction("max(%(func_met_str)s,0.)",met_var_w_bounded)' % vars())
+  if njet ==0: w.factory('expr::lt_wjets_l_pt_njets%(njet)i_correction("max(%(func_pt_str)s,0.)",l_pt_bounded100)' % vars())
   else: w.factory('expr::lt_wjets_l_pt_njets%(njet)i_correction("max(%(func_pt_str)s,0.)",l_pt_bounded200)' % vars())
-  w.factory('expr::lt_wjets_low_l_pt_njets%(njet)i_correction("max(%(func_lowpt_str)s,0.)",l_pt_bounded200)' % vars())
-  w.factory('expr::lt_wjets_extrap_nbjets%(njet)i_tightmt_correction("(@0<%(crosstrg_pt)s)*%(lowpt_extrap_1).5f + (@0>=%(crosstrg_pt)s)*max(%(func_extrap_str_1)s,0.)",l_pt_bounded250)' % vars())
-  w.factory('expr::lt_wjets_extrap_nbjets%(njet)i_loosemt_correction("(@0<%(crosstrg_pt)s)*%(lowpt_extrap_2).5f + (@0>=%(crosstrg_pt)s)*max(%(func_extrap_str_2)s,0.)",l_pt_bounded250)' % vars())
+  w.factory('expr::lt_wjets_low_l_pt_njets%(njet)i_correction("%(lowpt_corr)s",l_pt_bounded200)' % vars())
+  w.factory('expr::lt_wjets_extrap_nbjets%(njet)i_tightmt_correction("(@0<%(crosstrg_pt)s)*%(lowpt_extrap_1).5f + (@0>=%(crosstrg_pt)s)*max(%(func_extrap_str_1)s,0.)",l_pt_bounded200)' % vars())
+  w.factory('expr::lt_wjets_extrap_nbjets%(njet)i_loosemt_correction("(@0<%(crosstrg_pt)s)*%(lowpt_extrap_2).5f + (@0>=%(crosstrg_pt)s)*max(%(func_extrap_str_2)s,0.)",l_pt_bounded200)' % vars())
 
   # get stat uncertainties
 
   hist_met = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_%(njet)ijet_closure_wjets_uncert' % vars())
-  hist_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:high_pt_1_%(njet)ijet_closure_wjets_uncert' % vars())
+  hist_pt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_%(njet)ijet_closure_wjets_uncert' % vars())
   hist_extrap_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_tightmt_dr_to_ar_closure_wjets_mc_uncert' % vars())
   hist_extrap_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_loosemt_dr_to_ar_closure_wjets_mc_uncert' % vars())
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met)
 
  
-  if njet ==0:
-    wsptools.SafeWrapHist(w, ['met_bounded140'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
-    wsptools.SafeWrapHist(w, ['met_bounded140'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
-    wsptools.SafeWrapHist(w, ['met_bounded140'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
-  else:
-    wsptools.SafeWrapHist(w, ['met_bounded'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
-    wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
-    wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_w_bounded'], hist_met, name='lt_wjets_met_njets%(njet)i_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_w_bounded'], uncert1_up, name='lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['met_var_w_bounded'], uncert2_up, name='lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up' % vars())
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_pt)
 
   if njet ==0:
-    wsptools.SafeWrapHist(w, ['l_pt_bounded160'], hist_pt, name='lt_wjets_l_pt_njets%(njet)i_correction_nom' % vars())
-    wsptools.SafeWrapHist(w, ['l_pt_bounded160'], uncert1_up, name='lt_wjets_l_pt_njets%(njet)i_correction_uncert1_hist_up' % vars())
-    wsptools.SafeWrapHist(w, ['l_pt_bounded160'], uncert2_up, name='lt_wjets_l_pt_njets%(njet)i_correction_uncert2_hist_up' % vars())
+    wsptools.SafeWrapHist(w, ['l_pt_bounded100'], hist_pt, name='lt_wjets_l_pt_njets%(njet)i_correction_nom' % vars())
+    wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert1_up, name='lt_wjets_l_pt_njets%(njet)i_correction_uncert1_hist_up' % vars())
+    wsptools.SafeWrapHist(w, ['l_pt_bounded100'], uncert2_up, name='lt_wjets_l_pt_njets%(njet)i_correction_uncert2_hist_up' % vars())
   else:
     wsptools.SafeWrapHist(w, ['l_pt_bounded200'], hist_pt, name='lt_wjets_l_pt_njets%(njet)i_correction_nom' % vars())
     wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert1_up, name='lt_wjets_l_pt_njets%(njet)i_correction_uncert1_hist_up' % vars())
@@ -394,15 +434,13 @@ for njet in [0,1]:
 
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_extrap_1)
 
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], hist_extrap_1,  name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], uncert1_up,     name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], uncert2_up,     name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], hist_extrap_1,  name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert1_up,     name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert2_up,     name='lt_wjets_extrap_nbjets%(njet)i_tightmt_correction_uncert2_hist_up' % vars())
 
-  (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_os_nom_2)
-
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], hist_extrap_2,  name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_nom' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], uncert1_up,     name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_uncert1_hist_up' % vars())
-  wsptools.SafeWrapHist(w, ['l_pt_bounded250'], uncert2_up,     name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_uncert2_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], hist_extrap_2,  name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_nom' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert1_up,     name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_uncert1_hist_up' % vars())
+  wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert2_up,     name='lt_wjets_extrap_nbjets%(njet)i_loosemt_correction_uncert2_hist_up' % vars())
 
   w.factory('expr::lt_wjets_met_njets%(njet)i_correction_uncert1_up("@0/@1", lt_wjets_met_njets%(njet)i_correction_uncert1_hist_up, lt_wjets_met_njets%(njet)i_correction_nom)' % vars())
   w.factory('expr::lt_wjets_met_njets%(njet)i_correction_uncert2_up("@0/@1", lt_wjets_met_njets%(njet)i_correction_uncert2_hist_up, lt_wjets_met_njets%(njet)i_correction_nom)' % vars())
@@ -433,7 +471,7 @@ for i in [1,2]:
   w.factory('expr::lt_wjets_extrap_correction_uncert%(i)i_down("2.-@0", lt_wjets_extrap_correction_uncert%(i)i_up)' % vars())
 
 # get final wjets fake factor
-w.factory('expr::ff_lt_wjets("@0*@1*@2", ff_lt_wjets_raw, lt_wjets_dr_correction, lt_wjets_extrap_correction, os[1])' % vars())
+w.factory('expr::ff_lt_wjets("@0*@1*@2", ff_lt_wjets_raw, lt_wjets_dr_correction, lt_wjets_extrap_correction, os[1], met_var_qcd_bounded, iso_bounded)' % vars())
 
 wjets_systs=[]
 
@@ -480,57 +518,76 @@ print wjets_systs
 
 # apply ttbar corrections
 
-func_met_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_tightmT_closure_ttbar_mc_fit' % vars())
+func_met_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_closure_ttbar_mc_fit' % vars())
 func_met_str_1=str(func_met_1.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-func_met_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_loosemT_closure_ttbar_mc_fit' % vars())
-func_met_str_2=str(func_met_2.GetExpFormula('p')).replace('x','@0').replace(',false','')
-
-func_l_pt_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:tightmT_closure_ttbar_mc_fit' % vars())
+func_l_pt_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_tightmT_closure_ttbar_mc_fit' % vars())
 func_l_pt_str_1=str(func_l_pt_1.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-func_l_pt_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:loosemT_closure_ttbar_mc_fit' % vars())
+func_l_pt_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_loosemT_closure_ttbar_mc_fit' % vars())
 func_l_pt_str_2=str(func_l_pt_2.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-w.factory('expr::lt_ttbar_met_tightmt_correction("max(%(func_met_str_1)s,0.)",met_bounded)' % vars())
-w.factory('expr::lt_ttbar_met_loosemt_correction("max(%(func_met_str_2)s,0.)",met_bounded)' % vars())
+lowpt_corr_1 = 1.
+lowpt_corr_2 = 1.
+if not (channel == 'et' and year == '2016'):
+  hist_l_pt_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_tightmT_closure_ttbar_mc' % vars())
+  hist_l_pt_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_loosemT_closure_ttbar_mc' % vars())
+  lowpt_corr_1 = hist_l_pt_1.GetBinContent(1)
+  lowpt_corr_2 = hist_l_pt_2.GetBinContent(1)
+
+if lowpt_corr_1<=0: lowpt_corr_1 = 1.
+if lowpt_corr_2<=0: lowpt_corr_2 = 1.
+
+w.factory('expr::lt_ttbar_met_correction("max(%(func_met_str_1)s,0.)",met_var_w_bounded)' % vars())
 # note the l_pt ones are actually just for uncertainties
-w.factory('expr::lt_ttbar_l_pt_tightmt_correction("max(%(func_l_pt_str_1)s,0.)",l_pt_bounded250)' % vars())
-w.factory('expr::lt_ttbar_l_pt_loosemt_correction("max(%(func_l_pt_str_2)s,0.)",l_pt_bounded250)' % vars())
+w.factory('expr::lt_ttbar_l_pt_tightmt_correction("max((%(func_l_pt_str_1)s)*(@0>=%(crosstrg_pt)s) + %(lowpt_corr_1).5f*(@0<%(crosstrg_pt)s),0.)",l_pt_bounded200)' % vars())
+w.factory('expr::lt_ttbar_l_pt_loosemt_correction("max((%(func_l_pt_str_2)s)*(@0>=%(crosstrg_pt)s) + %(lowpt_corr_2).5f*(@0<%(crosstrg_pt)s),0.)",l_pt_bounded200)' % vars())
 
 # get stat uncertainties
 
-hist_met_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_tightmT_closure_ttbar_mc_uncert' % vars())
-hist_met_nom_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_loosemT_closure_ttbar_mc_uncert' % vars())
+hist_met_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_closure_ttbar_mc_uncert' % vars())
 
 (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met_nom_1)
 
-wsptools.SafeWrapHist(w, ['met_bounded'], hist_met_nom_1, name='lt_ttbar_tightmt_met_correction_nom' % vars())
-wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up,     name='lt_ttbar_tightmt_met_correction_uncert1_hist_up' % vars())
-wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up,     name='lt_ttbar_tightmt_met_correction_uncert2_hist_up' % vars())
+wsptools.SafeWrapHist(w, ['met_var_w_bounded'], hist_met_nom_1, name='lt_ttbar_met_correction_nom' % vars())
+wsptools.SafeWrapHist(w, ['met_var_w_bounded'], uncert1_up,     name='lt_ttbar_met_correction_uncert1_hist_up' % vars())
+wsptools.SafeWrapHist(w, ['met_var_w_bounded'], uncert2_up,     name='lt_ttbar_met_correction_uncert2_hist_up' % vars())
 
-(uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_met_nom_2)
+w.factory('expr::lt_ttbar_met_correction_uncert1_up("@0/@1", lt_ttbar_met_correction_uncert1_hist_up, lt_ttbar_met_correction_nom)' % vars())
+w.factory('expr::lt_ttbar_met_correction_uncert2_up("@0/@1", lt_ttbar_met_correction_uncert2_hist_up, lt_ttbar_met_correction_nom)' % vars())
 
-wsptools.SafeWrapHist(w, ['met_bounded'], hist_met_nom_2, name='lt_ttbar_loosemt_met_correction_nom' % vars())
-wsptools.SafeWrapHist(w, ['met_bounded'], uncert1_up,     name='lt_ttbar_loosemt_met_correction_uncert1_hist_up' % vars())
-wsptools.SafeWrapHist(w, ['met_bounded'], uncert2_up,     name='lt_ttbar_loosemt_met_correction_uncert2_hist_up' % vars())
+hist_l_pt_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_tightmT_closure_ttbar_mc_uncert' % vars())
+hist_l_pt_nom_2 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:l_pt_loosemT_closure_ttbar_mc_uncert' % vars())
 
-w.factory('expr::lt_ttbar_met_tightmt_correction_uncert1_up("@0/@1", lt_ttbar_tightmt_met_correction_uncert1_hist_up, lt_ttbar_tightmt_met_correction_nom)' % vars())
-w.factory('expr::lt_ttbar_met_tightmt_correction_uncert2_up("@0/@1", lt_ttbar_tightmt_met_correction_uncert2_hist_up, lt_ttbar_tightmt_met_correction_nom)' % vars())
-w.factory('expr::lt_ttbar_met_loosemt_correction_uncert1_up("@0/@1", lt_ttbar_loosemt_met_correction_uncert1_hist_up, lt_ttbar_loosemt_met_correction_nom)' % vars())
-w.factory('expr::lt_ttbar_met_loosemt_correction_uncert2_up("@0/@1", lt_ttbar_loosemt_met_correction_uncert2_hist_up, lt_ttbar_loosemt_met_correction_nom)' % vars())
+(uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_l_pt_nom_1)
 
-w.factory('expr::lt_ttbar_met_correction("(@0<50)*@1 + (@0>=50)*@2",mt[0], lt_ttbar_met_tightmt_correction, lt_ttbar_met_loosemt_correction )' % vars())
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], hist_l_pt_nom_1, name='lt_ttbar_tightmt_l_pt_correction_nom' % vars())
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert1_up,     name='lt_ttbar_tightmt_l_pt_correction_uncert1_hist_up' % vars())
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert2_up,     name='lt_ttbar_tightmt_l_pt_correction_uncert2_hist_up' % vars())
+
+(uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_l_pt_nom_2)
+
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], hist_l_pt_nom_2, name='lt_ttbar_loosemt_l_pt_correction_nom' % vars())
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert1_up,     name='lt_ttbar_loosemt_l_pt_correction_uncert1_hist_up' % vars())
+wsptools.SafeWrapHist(w, ['l_pt_bounded200'], uncert2_up,     name='lt_ttbar_loosemt_l_pt_correction_uncert2_hist_up' % vars())
+
+w.factory('expr::lt_ttbar_l_pt_tightmt_correction_uncert1_up("@0/@1", lt_ttbar_tightmt_l_pt_correction_uncert1_hist_up, lt_ttbar_tightmt_l_pt_correction_nom)' % vars())
+w.factory('expr::lt_ttbar_l_pt_tightmt_correction_uncert2_up("@0/@1", lt_ttbar_tightmt_l_pt_correction_uncert2_hist_up, lt_ttbar_tightmt_l_pt_correction_nom)' % vars())
+w.factory('expr::lt_ttbar_l_pt_loosemt_correction_uncert1_up("@0/@1", lt_ttbar_loosemt_l_pt_correction_uncert1_hist_up, lt_ttbar_loosemt_l_pt_correction_nom)' % vars())
+w.factory('expr::lt_ttbar_l_pt_loosemt_correction_uncert2_up("@0/@1", lt_ttbar_loosemt_l_pt_correction_uncert2_hist_up, lt_ttbar_loosemt_l_pt_correction_nom)' % vars())
+
 w.factory('expr::lt_ttbar_l_pt_correction("(@0<50)*@1 + (@0>=50)*@2",mt[0], lt_ttbar_l_pt_tightmt_correction, lt_ttbar_l_pt_loosemt_correction )' % vars())
 
 for i in [1,2]:
-  w.factory('expr::lt_ttbar_met_correction_uncert%(i)i_up("(@0<50)*@1 + (@0>=50)*@2", mt[0], lt_ttbar_met_tightmt_correction_uncert%(i)i_up, lt_ttbar_met_loosemt_correction_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_ttbar_met_correction_uncert%(i)i_down("2.-@0", lt_ttbar_met_correction_uncert%(i)i_up)' % vars())
+
+  w.factory('expr::lt_ttbar_l_pt_correction_uncert%(i)i_up("(@0<50)*@1 + (@0>=50)*@2", mt[0], lt_ttbar_l_pt_tightmt_correction_uncert%(i)i_up, lt_ttbar_l_pt_loosemt_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::lt_ttbar_l_pt_correction_uncert%(i)i_down("2.-@0", lt_ttbar_l_pt_correction_uncert%(i)i_up)' % vars())
 
 w.factory('expr::lt_ttbar_datamc_correction("(@0>=0)*((@1<1.25*@2)*@3/@4 + (@1>=1.25*@2&&@1<1.5*@2)*@5/@6 + (@1>=1.5*@2)*@7/@8)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_low_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_mc_pt140_fit)' % vars())
 
 # get final ttbar fake factor
-w.factory('expr::ff_lt_ttbar("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, os[1], l_pt_bounded250, nbjets[0])' % vars())
+w.factory('expr::ff_lt_ttbar("@0*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
 
 ttbar_systs=[]
 
@@ -551,23 +608,24 @@ for jetpt in jetpt_bins:
     ttbar_systs.append('ttbar_stat_%(jetpt)s_unc%(i)i' % vars())
 
 # systematic uncertainty from applying mc->data correction twice or not applying it 
-w.factory('expr::ff_lt_ttbar_syst_up("@0*@1*@2*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction)' % vars())
-w.factory('expr::ff_lt_ttbar_syst_down("@0*@1", ff_lt_ttbar_raw, lt_ttbar_met_correction)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_up("@0*@1*@2*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_down("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_l_pt_correction)' % vars())
 ttbar_systs.append('ttbar_syst')
 
 # systematic uncertainty from lepton pT non-closure
-w.factory('expr::ff_lt_ttbar_l_pt_syst_up("@0*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction)' % vars())
-w.factory('expr::ff_lt_ttbar_l_pt_syst_down("@0*@1*@2/@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction)' % vars())
-ttbar_systs.append('ttbar_l_pt_syst')
+#w.factory('expr::ff_lt_ttbar_l_pt_syst_up("@0*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction)' % vars())
+#w.factory('expr::ff_lt_ttbar_l_pt_syst_down("@0*@1*@2/@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction)' % vars())
+#ttbar_systs.append('ttbar_l_pt_syst')
 
 # statistical uncertainties on met correction
 for i in [1,2]:
   w.factory('expr::ff_lt_ttbar_stat_met_unc%(i)i_up("@0*@1", ff_lt_ttbar, lt_ttbar_met_correction_uncert%(i)i_up)' % vars())
   w.factory('expr::ff_lt_ttbar_stat_met_unc%(i)i_down("@0*@1", ff_lt_ttbar, lt_ttbar_met_correction_uncert%(i)i_down)' % vars())
-  w.factory('expr::ff_lt_ttbar_stat_met_unc%(i)i_up("@0*@1", ff_lt_ttbar, lt_ttbar_met_correction_uncert%(i)i_up)' % vars())
-  w.factory('expr::ff_lt_ttbar_stat_met_unc%(i)i_down("@0*@1", ff_lt_ttbar, lt_ttbar_met_correction_uncert%(i)i_down)' % vars())
+  w.factory('expr::ff_lt_ttbar_stat_l_pt_unc%(i)i_up("@0*@1", ff_lt_ttbar, lt_ttbar_l_pt_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::ff_lt_ttbar_stat_l_pt_unc%(i)i_down("@0*@1", ff_lt_ttbar, lt_ttbar_l_pt_correction_uncert%(i)i_down)' % vars())
 
   ttbar_systs.append('ttbar_stat_met_unc%(i)i' % vars())
+  ttbar_systs.append('ttbar_stat_l_pt_unc%(i)i' % vars())
 
 print 'ttbar systematics:'
 print ttbar_systs
@@ -579,6 +637,10 @@ w.factory('expr::ff_total_wjets_frac_up("(@0*@1 + @2*@3*1.1 + @4*@5)/(@1 + @3*1.
 w.factory('expr::ff_total_wjets_frac_down("(@0*@1 + @2*@3*0.9 + @4*@5)/(@1 + @3*0.9 + @5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 w.factory('expr::ff_total_ttbar_frac_up("(@0*@1 + @2*@3 + @4*@5*1.1)/(@1 + @3 + @5*1.1)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 w.factory('expr::ff_total_ttbar_frac_down("(@0*@1 + @2*@3 + @4*@5*0.9)/(@1 + @3 + @5*0.9)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
+
+# uncertainty for cross triggered part
+w.factory('expr::ff_total_low_pt_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*(1.2*(@6<%(crosstrg_pt)s)+(@6>=%(crosstrg_pt)s))", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar, l_pt_bounded200)' % vars())
+w.factory('expr::ff_total_low_pt_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*(0.8*(@6<%(crosstrg_pt)s)+(@6>=%(crosstrg_pt)s))", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar, l_pt_bounded200)' % vars())
 
 # add qcd systematics
 for s in qcd_systs:   
@@ -603,3 +665,5 @@ for s in wjets_systs:
 w.Print()
 w.writeToFile('fakefactors_ws_%(channel)s_mssm_%(year)s.root' % vars())
 w.Delete() 
+
+# check et_medium_pt_1_nbjets1_dr_to_ar_aiso_closure_qcd_fit uncertainty band
