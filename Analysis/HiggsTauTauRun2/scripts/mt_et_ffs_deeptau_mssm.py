@@ -664,7 +664,11 @@ def FitCorrection(h, func='pol1',is2D=False,fit_range=None):
     f1.SetParameter(2,2)
 
   if 'Erf((-x-[1])' in func:
-    for i in range(0,4): f1.SetParameter(i,1)
+    f1.SetParameter(0,0.1)
+    f1.SetParameter(1,-40)
+    f1.SetParameter(2,10)
+    f1.SetParameter(3,1)
+
 
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
@@ -1219,7 +1223,9 @@ for add_name, corr_cut in categories.items():
   #  if year == '2016': var = 'pt_1[25,30,35,40,80]' % vars()
   #  if year == '2017': var = 'pt_1[20,%(crosstrg_pt)s,35,40,80]' % vars()
   #  if year == '2018': var = 'pt_1[20,%(crosstrg_pt)s,35,40,80]' % vars()
-  if 'nbjets0' in add_name and channel == 'mt': var = 'pt_1[20,%(crosstrg_pt)s,35,40,50,60,80,100,120,160]' % vars()
+  if 'nbjets0' in add_name and channel == 'mt': 
+    if year == '2016': var = 'pt_1[20,%(crosstrg_pt)s,25,27,30,35,40,50,60,80,100,120,160]' % vars()
+    else: var = 'pt_1[20,%(crosstrg_pt)s,35,40,50,60,80,100,120,160]' % vars()
   else: var = 'pt_1[20,%(crosstrg_pt)s,160]' % vars()
   corr_name = 'pt_1_' + add_name + '_dr_to_ar'
   (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
