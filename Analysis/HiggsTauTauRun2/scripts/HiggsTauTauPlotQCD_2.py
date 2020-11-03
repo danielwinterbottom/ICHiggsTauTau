@@ -396,7 +396,9 @@ if options.analysis in ['sm','cpprod','cpdecay']:
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
         if options.era in ['cpsummer17','cp18']:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>20&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2  &&mva_dm_2>=0)' #32
+          cats['baseline'] = '(iso_1>0.05&&iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25&&pt_2>32)||(trg_singlemuon&&pt_1>25)) && wt<2 && pt_2>30)'# && n_deepbjets==0)'
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25&&pt_2>32)||(trg_singlemuon&&pt_1>25)) && wt<2 && pt_2>30)'# && n_deepbjets==0)'
+          #cats['baseline'] = '(iso_1<0.5 && iso_1>0.25 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && leptonveto==0 && ((trg_mutaucross&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2)'# && n_deepbjets==0)'
           # cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>25 && pt_2>30)'
           cats['baseline_aisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && leptonveto==0 && ((trg_mutaucross && pt_2>32&&pt_1<25)||(trg_singlemuon&&pt_1>25))&& pt_2>30)'
         if options.era in ['tauid2016']: 
@@ -473,10 +475,6 @@ elif options.channel == 'zee':
     if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
     if options.era in ['cp18']: 
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
-
-if options.analysis == 'cpdecay':
-  if options.channel in ['mt','et']: cats['baseline'] += ' && mva_dm_2>=0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0'
-  if options.channel in ['tt']: cats['baseline'] += ' && mva_dm_1>=0 && mva_dm_2>=0'
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -2475,10 +2473,15 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis == 'cpprod': 
               fake_factor_wt_string = "wt_ff_dmbins_qcd_1"
             else: 
-              #fake_factor_wt_string = "wt_ff_qcd_1"
-              fake_factor_wt_string = '((trg_singlemuon&&pt_1>25)*((n_jets==0)*((mva_dm_2==0&&ip_sig_2<1)*(1.087900*TMath::Landau(min(pt_2,100.),45.619820,21.262291)+-0.041129)+(mva_dm_2==0&&ip_sig_2>=1)*(3.452183*TMath::Landau(min(pt_2,100.),54.531148,49.792281)+-0.414158)+(mva_dm_2==1)*(0.984334*TMath::Landau(min(pt_2,100.),64.290799,29.430780)+-0.013762)+(mva_dm_2==2)*(1.999455*TMath::Landau(min(pt_2,100.),112.731374,82.346025)+-0.237705)+(mva_dm_2==10)*(0.370230*TMath::Landau(min(pt_2,100.),63.028358,16.592774)+0.051386)+(mva_dm_2==11)*(0.334857*TMath::Landau(min(pt_2,100.),107.648524,54.626449)+0.000000)) + (n_jets==1)*((mva_dm_2==0&&ip_sig_2<1)*(0.717214*TMath::Landau(min(pt_2,100.),68.943909,943.634597)+0.000427)+(mva_dm_2==0&&ip_sig_2>=1)*(23.264868*TMath::Landau(min(pt_2,100.),-23.009613,3.567393)+0.101239)+(mva_dm_2==1)*(0.184489*TMath::Landau(min(pt_2,100.),31.040402,2.948649)+0.108997)+(mva_dm_2==2)*(0.140396*TMath::Landau(min(pt_2,100.),32.620777,3.869156)+0.053509)+(mva_dm_2==10)*(0.357405*TMath::Landau(min(pt_2,100.),130.823273,45.133757)+0.062595)+(mva_dm_2==11)*(36.452595*TMath::Landau(min(pt_2,100.),717.604321,221.948497)+0.026253)) + (n_jets>1)*((mva_dm_2==0&&ip_sig_2<1)*(0.474135*TMath::Landau(min(pt_2,100.),26.079841,3.825657)+0.027251)+(mva_dm_2==0&&ip_sig_2>=1)*(5.907736*TMath::Landau(min(pt_2,100.),12.313428,1.083427)+0.126052)+(mva_dm_2==1)*(-42.761110*TMath::Landau(min(pt_2,100.),121.212336,8.960831)+0.107484)+(mva_dm_2==2)*(0.487584*TMath::Landau(min(pt_2,100.),394.755155,259.314297)+0.000006)+(mva_dm_2==10)*(7.592831*TMath::Landau(min(pt_2,100.),550.555601,191.085301)+0.031977)+(mva_dm_2==11)*(0.883707*TMath::Landau(min(pt_2,100.),66.460423,95.203215)+-0.127132))) + ((trg_singlemuon&&pt_1>25)==0)*((n_jets==0)*((mva_dm_2==0&&ip_sig_2<1)*(0.235361+0.001499*min(min(pt_2,100.),80.))+(mva_dm_2==0&&ip_sig_2>=1)*(0.454540+0.000959*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.234461+0.002602*min(min(pt_2,100.),80.))+(mva_dm_2==2)*(0.070482+0.002200*min(min(pt_2,100.),80.))+(mva_dm_2==10)*(0.032369+0.003436*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.023178+0.001242*min(min(pt_2,100.),80.))) + (n_jets==1)*((mva_dm_2==0&&ip_sig_2<1)*(0.200949+0.000007*min(min(pt_2,100.),80.))+(mva_dm_2==0&&ip_sig_2>=1)*(0.531046+-0.003072*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.124421+0.003728*min(min(pt_2,100.),80.))+(mva_dm_2==2)*(0.081362+0.001154*min(min(pt_2,100.),80.))+(mva_dm_2==10)*(0.043340+0.002985*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.053609+0.000261*min(min(pt_2,100.),80.))) + (n_jets>1)*((mva_dm_2==0&&ip_sig_2<1)*(0.345604+-0.002870*min(min(pt_2,100.),80.))+(mva_dm_2==0&&ip_sig_2>=1)*(0.439138+-0.001498*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.148078+0.001941*min(min(pt_2,100.),80.))+(mva_dm_2==2)*(0.165065+-0.000719*min(min(pt_2,100.),80.))+(mva_dm_2==10)*(0.130495+0.000332*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.054116+0.000075*min(min(pt_2,100.),80.)))))'
+               fake_factor_wt_string = "wt_ff_mssm_qcd_1"
+               #fake_factor_wt_string = "(((n_prebjets==0)*(jet_pt_2>=1.5*pt_2)*(0.137288*TMath::Landau(min(pt_2,599.),38.5526,12.34)+0.0313388))+((n_prebjets==0)*(jet_pt_2<1.25*pt_2)*(0.43472*TMath::Landau(min(pt_2,599.),34.7152,5.01943)+0.216603))+((n_prebjets==0)*((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))*(3.01329*TMath::Landau(min(pt_2,599.),-4.5651,4.03393)+0.104314))+((n_prebjets>0)*(jet_pt_2>=1.5*pt_2)*(0.276544*TMath::Landau(min(pt_2,599.),42.4395,43.0896)+8.22969e-06))+((n_prebjets>0)*(jet_pt_2<1.25*pt_2)*(1.96026*TMath::Landau(min(pt_2,599.),-192.238,172.337)+3.6026e-05))+((n_prebjets>0)*((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))*(12.0293*TMath::Landau(min(pt_2,599.),-25.1892,4.08191)+0.0684886)))"#*((((n_prebjets==0))*(1.06431+-0.0028122*pow(min(met,140),1)))+(((n_prebjets>0))*(1.03517+-0.00140375*pow(min(met,140),1))))"#*(((os==1)*((n_deepbjets>0 && mt_1<50))*(0.939202))+((os==1)*((n_deepbjets==0 && mt_1<50))*(1.53812+-0.0232308*pow(min(pt_1,140),1)+0.000233058*pow(min(pt_1,140),2)+-8.59094e-07*pow(min(pt_1,140),3)))+((os==1)*((n_deepbjets==0 && mt_1>50 && mt_1<70))*(1.11127+0.00624229*pow(min(pt_1,140),1)+-0.000315686*pow(min(pt_1,140),2)+2.15213e-06*pow(min(pt_1,140),3)))+((os==1)*((n_deepbjets>0 && mt_1>50 && mt_1<70))*(0.976139))+(os==0)))"
 
+               #fake_factor_wt_string = '(((n_prebjets==0)*(jet_pt_2>=1.5*pt_2)*(0.135245*TMath::Landau(min(pt_2,599.),40.8833,7.06325)+0.0332233))+((n_prebjets==0)*(jet_pt_2<1.25*pt_2)*(1.53582*TMath::Landau(min(pt_2,599.),39.7563,27.4695)+2.96138e-07))+((n_prebjets==0)*((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))*(3.77393*TMath::Landau(min(pt_2,599.),-289.624,60.3253)+0.0046372))+((n_prebjets>0)*(jet_pt_2>=1.5*pt_2)*(0.0665746*TMath::Landau(min(pt_2,599.),40.9092,6.43431)+0.0390216))+((n_prebjets>0)*(jet_pt_2<1.25*pt_2)*(3.89985*TMath::Landau(min(pt_2,599.),-275.815,93.0557)+0.000439936))+((n_prebjets>0)*((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))*(3.48607*TMath::Landau(min(pt_2,599.),-4.37987,4.58589)+0.0792131)))*((((n_prebjets==0))*(-0.91906*TMath::Erf((max(min(met*cos(met_dphi_2)/pt_2,1.5),-3.5)--21.593)/60.7206)+1.28846))+(((n_prebjets>0))*(-1.40593*TMath::Erf((max(min(met*cos(met_dphi_2)/pt_2,1.5),-3.5)--15.3696)/55.5461)+1.35943)))'
 #              fake_factor_wt_string = '((trg_singlemuon&&pt_1>25)*((n_jets==0)*((mva_dm_2==0&&ip_sig_2<1)*(1.087900*TMath::Landau(min(pt_2,100.),45.619820,21.262291)+-0.041129)+(mva_dm_2==0&&ip_sig_2>=1)*(2.981253*TMath::Landau(min(pt_2,100.),53.422521,45.994985)+-0.329226)+(mva_dm_2==1)*(0.984334*TMath::Landau(min(pt_2,100.),64.290799,29.430780)+-0.013762)+(mva_dm_2==2)*(1.999455*TMath::Landau(min(pt_2,100.),112.731374,82.346025)+-0.237705)+(mva_dm_2==10)*(0.370230*TMath::Landau(min(pt_2,100.),63.028358,16.592774)+0.051386)+(mva_dm_2==11)*(0.334748*TMath::Landau(min(pt_2,100.),107.903933,54.800854)+0.000001)) + (n_jets==1)*((mva_dm_2==0&&ip_sig_2<1)*(0.717214*TMath::Landau(min(pt_2,100.),68.943909,943.634597)+0.000427)+(mva_dm_2==0&&ip_sig_2>=1)*(23.264868*TMath::Landau(min(pt_2,100.),-23.009613,3.567393)+0.101239)+(mva_dm_2==1)*(0.105098+0.000529*min(pt_2,100.))+(mva_dm_2==2)*(0.140396*TMath::Landau(min(pt_2,100.),32.620777,3.869156)+0.053509)+(mva_dm_2==10)*(0.357405*TMath::Landau(min(pt_2,100.),130.823273,45.133757)+0.062595)+(mva_dm_2==11)*(0.020999+0.000588*min(pt_2,100.))) + (n_jets>1)*((mva_dm_2==0&&ip_sig_2<1)*(0.474135*TMath::Landau(min(pt_2,100.),26.079841,3.825657)+0.027251)+(mva_dm_2==0&&ip_sig_2>=1)*(5.907736*TMath::Landau(min(pt_2,100.),12.313428,1.083427)+0.126052)+(mva_dm_2==1)*(0.091757+0.000575*min(pt_2,100.))+(mva_dm_2==2)*(0.487584*TMath::Landau(min(pt_2,100.),394.755155,259.314297)+0.000006)+(mva_dm_2==10)*(7.592831*TMath::Landau(min(pt_2,100.),550.555601,191.085301)+0.031977)+(mva_dm_2==11)*(0.032124+-0.000033*min(pt_2,100.)))) + ((trg_singlemuon&&pt_1>25)==0)*((n_jets==0)*((mva_dm_2==0&&ip_sig_2<1)*(0.283435)+(mva_dm_2==0&&ip_sig_2>=1)*(0.454540+0.000959*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.321156)+(mva_dm_2==2)*(0.070482+0.002200*min(min(pt_2,100.),80.))+(mva_dm_2==10)*(0.032369+0.003436*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.023178+0.001242*min(min(pt_2,100.),80.))) + (n_jets==1)*((mva_dm_2==0&&ip_sig_2<1)*(0.200949+0.000007*min(min(pt_2,100.),80.))+(mva_dm_2==0&&ip_sig_2>=1)*(0.531046+-0.003072*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.124421+0.003728*min(min(pt_2,100.),80.))+(mva_dm_2==2)*(0.123253)+(mva_dm_2==10)*(0.043340+0.002985*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.063666)) + (n_jets>1)*((mva_dm_2==0&&ip_sig_2<1)*(0.345604+-0.002870*min(min(pt_2,100.),80.))+(mva_dm_2==0&&ip_sig_2>=1)*(0.439138+-0.001498*min(min(pt_2,100.),80.))+(mva_dm_2==1)*(0.217718)+(mva_dm_2==2)*(0.165065+-0.000719*min(min(pt_2,100.),80.))+(mva_dm_2==10)*(0.130495+0.000332*min(min(pt_2,100.),80.))+(mva_dm_2==11)*(0.056859))))'
+
+#               fake_factor_wt_string += "*((n_prebjets==0)*(0.108827*TMath::Erf((x--0.724628)/0.401302)+0.959064) + (n_prebjets>0)*(0.999253+0.00546467*x))".replace("x","met*cos(met_dphi_2)/pt_2")
+
+ #              fake_factor_wt_string += "*((n_prebjets==0)*(1.54266*(pt_1<25)+(0.925495)*(pt_1>=25)) + (n_prebjets>0)*((pt_1<25)*1.44801 + 0.952837*(pt_1>=25)))"
 
 #              fake_factor_wt_string+='*((n_jets==0)*(1.19955+0.364412*max(min((met*cos(met_dphi_2)/pt_2),-2.5),1.5) ) + (n_jets>0))'
 #              fake_factor_wt_string+='*(((n_jets==0)*(1.20538 + 0.364895*(met*cos(met_dphi_2)/pt_2) ) + (n_jets>0))'
@@ -3615,38 +3618,38 @@ while len(systematics) > 0:
           
       # Add all MC signal files
       
-      if options.analysis in ['sm','cpprod','cpdecay']:
-          signal_samples = sm_samples
-      elif options.analysis == 'mssm':
-          signal_samples = mssm_samples
-          if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
-          if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
-          if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
-      elif options.analysis == 'Hhh':
-          signal_samples = Hhh_samples
+      #if options.analysis in ['sm','cpprod','cpdecay']:
+      #elif options.analysis == 'mssm':
+      #    signal_samples = mssm_samples
+      #    if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+      #    if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
+      #    if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
+      #elif options.analysis == 'Hhh':
+      #    signal_samples = Hhh_samples
+      signal_samples = sm_samples
   
-      for samp in signal_samples:
-          if options.analysis in ['sm','cpprod','cpdecay']:
-              masses=sm_masses
-          elif samp == 'ggH':
-              masses = ggh_masses
-          elif (samp == 'bbH' and not options.bbh_nlo_masses) or samp == 'bbH-LO':
-              masses = bbh_masses
-          elif 'bbH' in samp:
-              masses = bbh_nlo_masses
-          if masses is not None:    
-              for mass in masses:
-                  sample_names=[]
-                  if isinstance(signal_samples[samp], (list,)): 
-                     for i in signal_samples[samp]: sample_names.append(i.replace('*',mass)) 
-                  else: sample_names = [signal_samples[samp].replace('*',mass)]
-                  tree_name = 'ntuple'
-                  if options.gen_signal: tree_name = 'gen_ntuple'
-                  for sample_name in sample_names: 
-                    #if 'amcatnloFXFX' in sample_name and False:
-                    #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
-                    #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
-                    ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
+      #for samp in signal_samples:
+      #    if options.analysis in ['sm','cpprod','cpdecay']:
+      #        masses=sm_masses
+      #    elif samp == 'ggH':
+      #        masses = ggh_masses
+      #    elif (samp == 'bbH' and not options.bbh_nlo_masses) or samp == 'bbH-LO':
+      #        masses = bbh_masses
+      #    elif 'bbH' in samp:
+      #        masses = bbh_nlo_masses
+      #    if masses is not None:    
+      #        for mass in masses:
+      #            sample_names=[]
+      #            if isinstance(signal_samples[samp], (list,)): 
+      #               for i in signal_samples[samp]: sample_names.append(i.replace('*',mass)) 
+      #            else: sample_names = [signal_samples[samp].replace('*',mass)]
+      #            tree_name = 'ntuple'
+      #            if options.gen_signal: tree_name = 'gen_ntuple'
+      #            for sample_name in sample_names: 
+      #              #if 'amcatnloFXFX' in sample_name and False:
+      #              #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
+      #              #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
+      #              ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
       if options.add_sm_background and options.analysis == 'mssm':
           for samp in sm_samples:
               sample_name = sm_samples[samp].replace('*',options.add_sm_background)
