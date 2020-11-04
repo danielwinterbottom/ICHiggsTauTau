@@ -2918,9 +2918,12 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
           if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = '('+ff_syst_weight+'_1)'
           else:
-            if options.analysis in ['cpprod','mssmrun2']: 
+            if options.analysis in ['cpprod']: 
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
+            elif options.analysis == 'mssmrun2':
+              fake_factor_wt_string = "wt_ff_mssm_qcd_syst_down_1"
+
             else: fake_factor_wt_string = "wt_ff_1"
         else:
           if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
