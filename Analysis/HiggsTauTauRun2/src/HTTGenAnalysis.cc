@@ -95,6 +95,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("gen_wt"       , &gen_wt_       );
       outtree_->Branch("wt_z_pol", &wt_z_pol_);
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
@@ -303,10 +304,14 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
+
     rand->SetSeed(event_);
     rand_ = rand->Uniform();   
  
     wt_ = eventInfo->total_weight();
+
+    gen_wt_ = wt_;
+    if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
 
     //std::cout << "================event " << event_ << "===================" << std::endl;
 
@@ -344,7 +349,11 @@ namespace ic {
       if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
       if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
     }
-
+    if (eventInfo->weight_defined("sm_weight")){
+      if(eventInfo->weight_defined("sm_weight")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight");
+      if(eventInfo->weight_defined("ps_weight")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight");
+      if(eventInfo->weight_defined("mm_weight")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight");
+    }
 
     wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
     wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
@@ -415,10 +424,10 @@ namespace ic {
     double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
+    std::vector<GenParticle*> outparts;
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
-      std::vector<GenParticle*> outparts;
       double largest_b_pt=-1;
       double lead_b_eta=-9999;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
@@ -437,17 +446,29 @@ namespace ic {
              if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
-      lead_b_pt_ = largest_b_pt;
-      lead_b_eta_ = lead_b_eta;
-      std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
-      if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
-      else parton_mjj_ = -9999;
-      if(outparts.size()>2){
-        double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M(); 
-        double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();  
-        if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
+    lead_b_pt_ = largest_b_pt;
+    lead_b_eta_ = lead_b_eta; 
+    } else {
+        partons_=0;
+        for (unsigned i = 0; i < gen_particles.size(); ++i) {
+          if (!(gen_particles[i]->statusFlags()[IsHardProcess])) continue;
+          if (gen_particles[i]->status()!=23) continue;
+          if(gen_particles[gen_particles[i]->mothers()[0]]->pdgid() == 2212) continue;
+          unsigned id = abs(gen_particles[i]->pdgid());
+          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21 ) {
+            partons_++;
+            parton_pt_vec.push_back(gen_particles[i]->pt());
+          }
+        }
+    }
+    std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
+    if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
+    else parton_mjj_ = -9999;
+    if(outparts.size()>2){
+      double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M(); 
+      double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();  
+      if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
    
-      }
     }
     std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
     std::reverse(parton_pt_vec.begin(),parton_pt_vec.end());
@@ -1705,13 +1726,13 @@ namespace ic {
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
         cp_channel_=5;
-        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+//        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
         std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
-        for (unsigned i = 0; i < vertex_vec.size(); i++) {
-          reco_pvx_ = vertex_vec[0]->vx();
-          reco_pvy_ = vertex_vec[0]->vy();
-          reco_pvz_ = vertex_vec[0]->vz();
-        }
+        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          //reco_pvx_ = vertex_vec[0]->vx();
+          //reco_pvy_ = vertex_vec[0]->vy();
+          //reco_pvz_ = vertex_vec[0]->vz();
+        //}
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();
@@ -1748,13 +1769,13 @@ namespace ic {
 //      aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
 
         cp_channel_=51;
-        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
         std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
-        for (unsigned i = 0; i < vertex_vec.size(); i++) {
-          reco_pvx_ = vertex_vec[0]->vx();
-          reco_pvy_ = vertex_vec[0]->vy();
-          reco_pvz_ = vertex_vec[0]->vz();
-        }
+        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
+          //reco_pvx_ = vertex_vec[0]->vx();
+          //reco_pvy_ = vertex_vec[0]->vy();
+          //reco_pvz_ = vertex_vec[0]->vz();
+        //}
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();
@@ -2084,26 +2105,26 @@ namespace ic {
 
     }
 
-    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
+    //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
     // std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("verticesBS"); 
-    std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+//    std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
     std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); 
 
  
-    if (vertex_vec.size() > 0) {
-      reco_pvx_ = vertex_vec[0]->vx();
-      reco_pvy_ = vertex_vec[0]->vy();
-      reco_pvz_ = vertex_vec[0]->vz();
-    }
-    if (vertex_bs_vec.size() > 0) {
-      reco_bs_pvx_ = vertex_bs_vec[0]->vx();
-      reco_bs_pvy_ = vertex_bs_vec[0]->vy();
-      reco_bs_pvz_ = vertex_bs_vec[0]->vz();
-    } else {
-      reco_bs_pvx_ = vertex_vec[0]->vx();
-      reco_bs_pvy_ = vertex_vec[0]->vy();
-      reco_bs_pvz_ = vertex_vec[0]->vz();
-    }
+    //if (vertex_vec.size() > 0) {
+      //reco_pvx_ = vertex_vec[0]->vx();
+      //reco_pvy_ = vertex_vec[0]->vy();
+      //reco_pvz_ = vertex_vec[0]->vz();
+    //}
+    //if (vertex_bs_vec.size() > 0) {
+    //  reco_bs_pvx_ = vertex_bs_vec[0]->vx();
+    //  reco_bs_pvy_ = vertex_bs_vec[0]->vy();
+    //  reco_bs_pvz_ = vertex_bs_vec[0]->vz();
+    //} else {
+      //reco_bs_pvx_ = vertex_vec[0]->vx();
+      //reco_bs_pvy_ = vertex_vec[0]->vy();
+      //reco_bs_pvz_ = vertex_vec[0]->vz();
+    //}
     if (gen_vertices.size() > 0) {
       gen_pvx_ = gen_vertices[0]->vx();
       gen_pvy_ = gen_vertices[0]->vy();

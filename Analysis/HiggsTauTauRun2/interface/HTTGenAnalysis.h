@@ -92,6 +92,7 @@ class HTTGenAnalysis : public ModuleBase {
   double wtzpt_;
   double mass_;
   double wt_;
+  double gen_wt_;
   double wt_z_pol_;
   double wt_cp_sm_;
   double wt_cp_ps_;

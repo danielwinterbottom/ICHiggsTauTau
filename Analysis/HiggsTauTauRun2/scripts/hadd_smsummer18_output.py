@@ -299,7 +299,7 @@ for sa in sample_list:
    #     file.write('\necho End of job &> jobs/hadd_%(sa)s_%(ch)s.log')
    #   os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
-  #if not batch and remove:
-  #  # if all channels and systematics were hadded sucsessfully then remove the input files
-  #  for x in to_remove:
-  #    os.system(x)
+  if not batch and remove:
+    # if all channels and systematics were hadded sucsessfully then remove the input files
+    for x in to_remove:
+      os.system(x)

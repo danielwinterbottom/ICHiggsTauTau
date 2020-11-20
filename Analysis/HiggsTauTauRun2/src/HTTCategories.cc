@@ -690,6 +690,11 @@ namespace ic {
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("ngenjets" , &ngenjets_);
+      outtree_->Branch("ngenjets20" , &ngenjets20_);
+      outtree_->Branch("genjetpt_1" , &genjetpt_1_);
+      outtree_->Branch("genjetpt_2" , &genjetpt_2_);
+      outtree_->Branch("genjeteta_1" , &genjeteta_1_);
+      outtree_->Branch("genjeteta_2" , &genjeteta_2_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
       outtree_->Branch("m_1", &m_1_, "m_1/F");
@@ -1182,6 +1187,16 @@ namespace ic {
       lOFile->cd();
       mvatree_ = new TTree("ntuple", "ntuple");
 
+      mvatree_->Branch("genM", &gen_m_);
+      mvatree_->Branch("genpT", &gen_pt_);
+
+      mvatree_->Branch("gen_nu_p_1",   &gen_nu_p_1_);
+      mvatree_->Branch("gen_nu_p_2",   &gen_nu_p_2_);
+      mvatree_->Branch("gen_nu_phi_1", &gen_nu_phi_1_);
+      mvatree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
+      mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
+      mvatree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
+
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
       mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
@@ -1239,10 +1254,27 @@ namespace ic {
       mvatree_->Branch("pi_py_1", &pi_py_1_);
       mvatree_->Branch("pi_pz_1", &pi_pz_1_);
       mvatree_->Branch("pi_E_1", &pi_E_1_);
+      mvatree_->Branch("pi2_px_1", &pi2_px_1_);
+      mvatree_->Branch("pi2_py_1", &pi2_py_1_);
+      mvatree_->Branch("pi2_pz_1", &pi2_pz_1_);
+      mvatree_->Branch("pi2_E_1", &pi2_E_1_);
+      mvatree_->Branch("pi3_px_1", &pi3_px_1_);
+      mvatree_->Branch("pi3_py_1", &pi3_py_1_);
+      mvatree_->Branch("pi3_pz_1", &pi3_pz_1_);
+      mvatree_->Branch("pi3_E_1", &pi3_E_1_);
       mvatree_->Branch("pi_px_2", &pi_px_2_);
       mvatree_->Branch("pi_py_2", &pi_py_2_);
       mvatree_->Branch("pi_pz_2", &pi_pz_2_);
       mvatree_->Branch("pi_E_2", &pi_E_2_);
+      mvatree_->Branch("pi2_px_2", &pi2_px_2_);
+      mvatree_->Branch("pi2_py_2", &pi2_py_2_);
+      mvatree_->Branch("pi2_pz_2", &pi2_pz_2_);
+      mvatree_->Branch("pi2_E_2", &pi2_E_2_);
+      mvatree_->Branch("pi3_px_2", &pi3_px_2_);
+      mvatree_->Branch("pi3_py_2", &pi3_py_2_);
+      mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
+      mvatree_->Branch("pi3_E_2", &pi3_E_2_);
+
       mvatree_->Branch("pi0_px_1", &pi0_px_1_);
       mvatree_->Branch("pi0_py_1", &pi0_py_1_);
       mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);
@@ -1291,6 +1323,12 @@ namespace ic {
       mvatree_->Branch("ip_x_2", &ip_x_2_);
       mvatree_->Branch("ip_y_2", &ip_y_2_);
       mvatree_->Branch("ip_z_2", &ip_z_2_);
+      mvatree_->Branch("sv_x_1", &sv_x_1_);
+      mvatree_->Branch("sv_y_1", &sv_y_1_);
+      mvatree_->Branch("sv_z_1", &sv_z_1_);
+      mvatree_->Branch("sv_x_2", &sv_x_2_);
+      mvatree_->Branch("sv_y_2", &sv_y_2_);
+      mvatree_->Branch("sv_z_2", &sv_z_2_);
       mvatree_->Branch("ipcov00_1", &ipcov00_1_);
       mvatree_->Branch("ipcov01_1", &ipcov01_1_);
       mvatree_->Branch("ipcov02_1", &ipcov02_1_);
@@ -1309,6 +1347,25 @@ namespace ic {
       mvatree_->Branch("ipcov20_2", &ipcov20_2_);
       mvatree_->Branch("ipcov21_2", &ipcov21_2_);
       mvatree_->Branch("ipcov22_2", &ipcov22_2_);
+
+      mvatree_->Branch("svcov00_1", &svcov00_1_);
+      mvatree_->Branch("svcov01_1", &svcov01_1_);
+      mvatree_->Branch("svcov02_1", &svcov02_1_);
+      mvatree_->Branch("svcov10_1", &svcov10_1_);
+      mvatree_->Branch("svcov11_1", &svcov11_1_);
+      mvatree_->Branch("svcov12_1", &svcov12_1_);
+      mvatree_->Branch("svcov20_1", &svcov20_1_);
+      mvatree_->Branch("svcov21_1", &svcov21_1_);
+      mvatree_->Branch("svcov22_1", &svcov22_1_);
+      mvatree_->Branch("svcov00_2", &svcov00_2_);
+      mvatree_->Branch("svcov01_2", &svcov01_2_);
+      mvatree_->Branch("svcov02_2", &svcov02_2_);
+      mvatree_->Branch("svcov10_2", &svcov10_2_);
+      mvatree_->Branch("svcov11_2", &svcov11_2_);
+      mvatree_->Branch("svcov12_2", &svcov12_2_);
+      mvatree_->Branch("svcov20_2", &svcov20_2_);
+      mvatree_->Branch("svcov21_2", &svcov21_2_);
+      mvatree_->Branch("svcov22_2", &svcov22_2_);
     }
     return 0;
   }
@@ -1850,6 +1907,11 @@ namespace ic {
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
 
     if(event->Exists("ngenjets")) ngenjets_ = event->Get<unsigned>("ngenjets");
+    if(event->Exists("ngenjets20")) ngenjets20_ = event->Get<unsigned>("ngenjets20");
+    if(event->Exists("genjetpt_1")) genjetpt_1_ = event->Get<double>("genjetpt_1");
+    if(event->Exists("genjetpt_2")) genjetpt_2_ = event->Get<double>("genjetpt_2");
+    if(event->Exists("genjeteta_1")) genjeteta_1_ = event->Get<double>("genjeteta_1");
+    if(event->Exists("genjeteta_2")) genjeteta_2_ = event->Get<double>("genjeteta_2");
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
     if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
     if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
@@ -2109,6 +2171,20 @@ namespace ic {
     met_phi_ = mets->vector().phi();
     event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
     event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
+
+    gen_nu_p_1_=-9999.;
+    gen_nu_p_2_=-9999.;
+    gen_nu_phi_1_=-9999.;
+    gen_nu_phi_2_=-9999.;
+    gen_nu_eta_1_=-9999.;
+    gen_nu_eta_2_=-9999.;
+
+    event->Exists("gen_nu_p_1")   ? gen_nu_p_1_   = event->Get<double>("gen_nu_p_1")   : -9999.;  
+    event->Exists("gen_nu_p_2")   ? gen_nu_p_2_   = event->Get<double>("gen_nu_p_2")   : -9999.; 
+    event->Exists("gen_nu_phi_1") ? gen_nu_phi_1_ = event->Get<double>("gen_nu_phi_1") : -9999.; 
+    event->Exists("gen_nu_phi_2") ? gen_nu_phi_2_ = event->Get<double>("gen_nu_phi_2") : -9999.; 
+    event->Exists("gen_nu_eta_1") ? gen_nu_eta_1_ = event->Get<double>("gen_nu_eta_1") : -9999.; 
+    event->Exists("gen_nu_eta_2") ? gen_nu_eta_2_ = event->Get<double>("gen_nu_eta_2") : -9999.; 
 
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -2617,12 +2693,12 @@ namespace ic {
     aco_angle_6_=-9999.;
     aco_angle_7_=-9999.;
     pv_angle_=-9999.;
-    sv_x_2_=-9999.;
-    sv_y_2_=-9999.;
-    sv_z_2_=-9999.;
-    sv_mag_2_=-9999.;
-    sv_dphi_2_=-9999.;
-    sv_deta_2_=-9999.;
+    sv_x_2_=0.;
+    sv_y_2_=-0.;
+    sv_z_2_=0.;
+    sv_mag_2_=0.;
+    sv_dphi_2_=0.;
+    sv_deta_2_=0.;
     hasSV_2_=false;
  
     y_1_1_=-9999.;
@@ -2631,80 +2707,124 @@ namespace ic {
     y_3_2_=-9999.;
     y_4_2_=-9999.;
 
-    pi_px_1_=-1;
-    pi_py_1_=-1;
-    pi_pz_1_=-1;
-    pi_E_1_=-1;
-    pi_px_2_=-1;
-    pi_py_2_=-1;
-    pi_pz_2_=-1;
-    pi_E_2_=-1;
-    pi0_px_1_=-1;
-    pi0_py_1_=-1;
-    pi0_pz_1_=-1;
-    pi0_E_1_=-1;
-    pi0_px_2_=-1;
-    pi0_py_2_=-1;
-    pi0_pz_2_=-1;
-    pi0_E_2_=-1;
-    gam1_px_1_=-1;
-    gam1_py_1_=-1;
-    gam1_pz_1_=-1;
-    gam1_E_1_=-1;
-    gam1_px_2_=-1;
-    gam1_py_2_=-1;
-    gam1_pz_2_=-1;
-    gam1_E_2_=-1;
-    gam2_px_1_=-1;
-    gam2_py_1_=-1;
-    gam2_pz_1_=-1;
-    gam2_E_1_=-1;
-    gam2_px_2_=-1;
-    gam2_py_2_=-1;
-    gam2_pz_2_=-1;
-    gam2_E_2_=-1;
-    gam3_px_1_=-1;
-    gam3_py_1_=-1;
-    gam3_pz_1_=-1;
-    gam3_E_1_=-1;
-    gam3_px_2_=-1;
-    gam3_py_2_=-1;
-    gam3_pz_2_=-1;
-    gam3_E_2_=-1;
-    gam4_px_1_=-1;
-    gam4_py_1_=-1;
-    gam4_pz_1_=-1;
-    gam4_E_1_=-1;
-    gam4_px_2_=-1;
-    gam4_py_2_=-1;
-    gam4_pz_2_=-1;
-    gam4_E_2_=-1;
+    pi_px_1_=0.;
+    pi_py_1_=0.;
+    pi_pz_1_=0.;
+    pi_E_1_=0.;
+    pi_px_2_=0.;
+    pi_py_2_=0.;
+    pi_pz_2_=0.;
+    pi_E_2_=0.;
+    pi2_px_1_=0.;
+    pi2_py_1_=0.;
+    pi2_pz_1_=0.;
+    pi2_E_1_=0.;
+    pi2_px_2_=0.;
+    pi2_py_2_=0.;
+    pi2_pz_2_=0.;
+    pi2_E_2_=0.;
+    pi3_px_1_=0.;
+    pi3_py_1_=0.;
+    pi3_pz_1_=0.;
+    pi3_E_1_=0.;
+    pi3_px_2_=0.;
+    pi3_py_2_=0.;
+    pi3_pz_2_=0.;
+    pi3_E_2_=0.;
+
+    pi0_px_1_=0.;
+    pi0_py_1_=0.;
+    pi0_pz_1_=0.;
+    pi0_E_1_=0.;
+    pi0_px_2_=0.;
+    pi0_py_2_=0.;
+    pi0_pz_2_=0.;
+    pi0_E_2_=0.;
+    gam1_px_1_=0.;
+    gam1_py_1_=0.;
+    gam1_pz_1_=0.;
+    gam1_E_1_=0.;
+    gam1_px_2_=0.;
+    gam1_py_2_=0.;
+    gam1_pz_2_=0.;
+    gam1_E_2_=0.;
+    gam2_px_1_=0.;
+    gam2_py_1_=0.;
+    gam2_pz_1_=0.;
+    gam2_E_1_=0.;
+    gam2_px_2_=0.;
+    gam2_py_2_=0.;
+    gam2_pz_2_=0.;
+    gam2_E_2_=0.;
+    gam3_px_1_=0.;
+    gam3_py_1_=0.;
+    gam3_pz_1_=0.;
+    gam3_E_1_=0.;
+    gam3_px_2_=0.;
+    gam3_py_2_=0.;
+    gam3_pz_2_=0.;
+    gam3_E_2_=0.;
+    gam4_px_1_=0.;
+    gam4_py_1_=0.;
+    gam4_pz_1_=0.;
+    gam4_E_1_=0.;
+    gam4_px_2_=0.;
+    gam4_py_2_=0.;
+    gam4_pz_2_=0.;
+    gam4_E_2_=0.;
     metx_= mets->vector().Px();
     mety_= mets->vector().Py();
-    ip_x_1_=-1;
-    ip_y_1_=-1;
-    ip_z_1_=-1;
-    ip_x_2_=-1;
-    ip_y_2_=-1;
-    ip_z_2_=-1;
-    ipcov00_1_=-1;
-    ipcov01_1_=-1;
-    ipcov02_1_=-1;
-    ipcov10_1_=-1;
-    ipcov11_1_=-1;
-    ipcov12_1_=-1;
-    ipcov20_1_=-1;
-    ipcov21_1_=-1;
-    ipcov22_1_=-1;
-    ipcov00_2_=-1;
-    ipcov01_2_=-1;
-    ipcov02_2_=-1;
-    ipcov10_2_=-1;
-    ipcov11_2_=-1;
-    ipcov12_2_=-1;
-    ipcov20_2_=-1;
-    ipcov21_2_=-1;
-    ipcov22_2_=-1;
+    ip_x_1_=0.;
+    ip_y_1_=0.;
+    ip_z_1_=0.;
+    ip_x_2_=0.;
+    ip_y_2_=0.;
+    ip_z_2_=0.;
+
+    sv_x_1_=0.;
+    sv_y_1_=0.;
+    sv_z_1_=0.;
+    sv_x_2_=0.;
+    sv_y_2_=0.;
+    sv_z_2_=0.;
+
+    ipcov00_1_=0;
+    ipcov01_1_=0;
+    ipcov02_1_=0;
+    ipcov10_1_=0;
+    ipcov11_1_=0;
+    ipcov12_1_=0;
+    ipcov20_1_=0;
+    ipcov21_1_=0;
+    ipcov22_1_=0;
+    ipcov00_2_=0;
+    ipcov01_2_=0;
+    ipcov02_2_=0;
+    ipcov10_2_=0;
+    ipcov11_2_=0;
+    ipcov12_2_=0;
+    ipcov20_2_=0;
+    ipcov21_2_=0;
+    ipcov22_2_=0;
+
+    svcov00_1_=0;
+    svcov01_1_=0;
+    svcov02_1_=0;
+    svcov10_1_=0;
+    svcov11_1_=0;
+    svcov12_1_=0;
+    svcov20_1_=0;
+    svcov21_1_=0;
+    svcov22_1_=0;
+    svcov00_2_=0;
+    svcov01_2_=0;
+    svcov02_2_=0;
+    svcov10_2_=0;
+    svcov11_2_=0;
+    svcov12_2_=0;
+    svcov20_2_=0;
+    svcov21_2_=0;
+    svcov22_2_=0;
 
     use_refitted_vertex_ = false;
 
@@ -2719,6 +2839,19 @@ namespace ic {
 
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_vec) {
+        if(v->id() == tau1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        }
+      }
+
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > pv_cov = refit_vertex->covariance();
 
       lead_pt_1_ =  tau1->lead_pt();
       lead_pt_2_ =  tau2->lead_pt();
@@ -2744,14 +2877,86 @@ namespace ic {
       if(hads2.size()>2) hads2 = GetA1 (tau2, pfcands).first;
 
 
-      pi_px_1_=pi_tau1->vector().Px();
-      pi_py_1_=pi_tau1->vector().Py();
-      pi_pz_1_=pi_tau1->vector().Pz();
-      pi_E_1_=pi_tau1->vector().E();
-      pi_px_2_=pi_tau2->vector().Px();
-      pi_py_2_=pi_tau2->vector().Py();
-      pi_pz_2_=pi_tau2->vector().Pz();
-      pi_E_2_=pi_tau2->vector().E();
+
+      if(tau_decay_mode_1_<3.) {
+        pi_px_1_=pi_tau1->vector().Px();
+        pi_py_1_=pi_tau1->vector().Py();
+        pi_pz_1_=pi_tau1->vector().Pz();
+        pi_E_1_=pi_tau1->vector().E();
+      } else if(hads1.size()>2) {
+        pi_px_1_=hads1[0]->vector().Px();
+        pi_py_1_=hads1[0]->vector().Py();
+        pi_pz_1_=hads1[0]->vector().Pz();
+        pi_E_1_=hads1[0]->vector().E();
+
+        pi2_px_1_=hads1[1]->vector().Px();
+        pi2_py_1_=hads1[1]->vector().Py();
+        pi2_pz_1_=hads1[1]->vector().Pz();
+        pi2_E_1_=hads1[1]->vector().E();
+
+        pi3_px_1_=hads1[2]->vector().Px();
+        pi3_py_1_=hads1[2]->vector().Py();
+        pi3_pz_1_=hads1[2]->vector().Pz();
+        pi3_E_1_=hads1[2]->vector().E();
+
+        if(tau1->hasSV()){
+          sv_x_1_ = tau1->secondary_vertex().X() - refit_vertex->vx();
+          sv_y_1_ = tau1->secondary_vertex().Y() - refit_vertex->vy();
+          sv_z_1_ = tau1->secondary_vertex().Z() - refit_vertex->vz();
+
+          ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > sv_cov = tau1->s_vtx_covariance()+pv_cov;
+
+          svcov00_1_ = sv_cov(0,0);
+          svcov01_1_ = sv_cov(0,1);
+          svcov02_1_ = sv_cov(0,2);
+          svcov10_1_ = sv_cov(1,0);
+          svcov11_1_ = sv_cov(1,1);
+          svcov12_1_ = sv_cov(1,2);
+          svcov20_1_ = sv_cov(2,0);
+          svcov21_1_ = sv_cov(2,1);
+          svcov22_1_ = sv_cov(2,2);
+        }
+       
+      }
+      if(tau_decay_mode_2_<3.) {
+        pi_px_2_=pi_tau2->vector().Px();
+        pi_py_2_=pi_tau2->vector().Py();
+        pi_pz_2_=pi_tau2->vector().Pz();
+        pi_E_2_=pi_tau2->vector().E();
+      } else if(hads2.size()>2) {
+        pi_px_2_=hads2[0]->vector().Px();
+        pi_py_2_=hads2[0]->vector().Py();
+        pi_pz_2_=hads2[0]->vector().Pz();
+        pi_E_2_=hads2[0]->vector().E();
+
+        pi2_px_2_=hads2[1]->vector().Px();
+        pi2_py_2_=hads2[1]->vector().Py();
+        pi2_pz_2_=hads2[1]->vector().Pz();
+        pi2_E_2_=hads2[1]->vector().E();
+
+        pi3_px_2_=hads2[2]->vector().Px();
+        pi3_py_2_=hads2[2]->vector().Py();
+        pi3_pz_2_=hads2[2]->vector().Pz();
+        pi3_E_2_=hads2[2]->vector().E();
+
+        if(tau2->hasSV()) {
+          sv_x_2_ = tau2->secondary_vertex().X() - refit_vertex->vx();
+          sv_y_2_ = tau2->secondary_vertex().Y() - refit_vertex->vy();
+          sv_z_2_ = tau2->secondary_vertex().Z() - refit_vertex->vz();
+
+          ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > sv_cov = tau2->s_vtx_covariance()+pv_cov;
+
+          svcov00_2_ = sv_cov(0,0);
+          svcov01_2_ = sv_cov(0,1);
+          svcov02_2_ = sv_cov(0,2);
+          svcov10_2_ = sv_cov(1,0);
+          svcov11_2_ = sv_cov(1,1);
+          svcov12_2_ = sv_cov(1,2);
+          svcov20_2_ = sv_cov(2,0);
+          svcov21_2_ = sv_cov(2,1);
+          svcov22_2_ = sv_cov(2,2);
+        }
+      }
       if(gammas1.size()>0 && tau_decay_mode_1_<2){
         pi0_px_1_=pi0_tau1->vector().Px();
         pi0_py_1_=pi0_tau1->vector().Py();
@@ -2803,16 +3008,6 @@ namespace ic {
       TLorentzVector lvec3;
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
-      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-      ic::Vertex* refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == tau1->id()+tau2->id()) {
-          refit_vertex = v; 
-          use_refitted_vertex_ = true;
-        }
-      }
 
       std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(tau1, refit_vertex, pfcands);
       std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(tau2, refit_vertex, pfcands);
@@ -3452,6 +3647,20 @@ namespace ic {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = new ic::Vertex();
+      if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_vec) {
+        if(v->id() == muon1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        }
+      }
+
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > pv_cov = refit_vertex->covariance();
+
       lead_pt_2_ =  tau2->lead_pt();
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
@@ -3470,10 +3679,45 @@ namespace ic {
       pi_py_1_=lep1->vector().Py();
       pi_pz_1_=lep1->vector().Pz();
       pi_E_1_=lep1->vector().E();
-      pi_px_2_=pi_tau2->vector().Px();
-      pi_py_2_=pi_tau2->vector().Py();
-      pi_pz_2_=pi_tau2->vector().Pz();
-      pi_E_2_=pi_tau2->vector().E();
+      if(tau_decay_mode_2_<3.) {
+        pi_px_2_=pi_tau2->vector().Px();
+        pi_py_2_=pi_tau2->vector().Py();
+        pi_pz_2_=pi_tau2->vector().Pz();
+        pi_E_2_=pi_tau2->vector().E();
+      } else if(hads2.size()>2) {
+        pi_px_2_=hads2[0]->vector().Px();
+        pi_py_2_=hads2[0]->vector().Py();
+        pi_pz_2_=hads2[0]->vector().Pz();
+        pi_E_2_=hads2[0]->vector().E();
+
+        pi2_px_2_=hads2[1]->vector().Px();
+        pi2_py_2_=hads2[1]->vector().Py();
+        pi2_pz_2_=hads2[1]->vector().Pz();
+        pi2_E_2_=hads2[1]->vector().E();
+
+        pi3_px_2_=hads2[2]->vector().Px();
+        pi3_py_2_=hads2[2]->vector().Py();
+        pi3_pz_2_=hads2[2]->vector().Pz();
+        pi3_E_2_=hads2[2]->vector().E();
+
+        if(tau2->hasSV()) {
+          sv_x_2_ = tau2->secondary_vertex().X() - refit_vertex->vx();
+          sv_y_2_ = tau2->secondary_vertex().Y() - refit_vertex->vy();
+          sv_z_2_ = tau2->secondary_vertex().Z() - refit_vertex->vz();
+
+          ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > sv_cov = tau2->s_vtx_covariance()+pv_cov;
+
+          svcov00_2_ = sv_cov(0,0);
+          svcov01_2_ = sv_cov(0,1);
+          svcov02_2_ = sv_cov(0,2);
+          svcov10_2_ = sv_cov(1,0);
+          svcov11_2_ = sv_cov(1,1);
+          svcov12_2_ = sv_cov(1,2);
+          svcov20_2_ = sv_cov(2,0);
+          svcov21_2_ = sv_cov(2,1);
+          svcov22_2_ = sv_cov(2,2);
+        }
+      }
 
       if(gammas2.size()>0 && tau_decay_mode_2_<2) {
         pi0_px_2_=pi0_tau2->vector().Px();
@@ -3504,18 +3748,6 @@ namespace ic {
       TLorentzVector lvec3;
       TLorentzVector lvec4;
       TLorentzVector pvtosv1;
-
-      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-      ic::Vertex* refit_vertex = new ic::Vertex();
-      if(vertex_vec.size()>0) refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == muon1->id()+tau2->id()) {
-          refit_vertex = v;
-          use_refitted_vertex_ = true;
-        }
-      }
 
       auto primary_vtx = refit_vertex;
 
@@ -3797,6 +4029,19 @@ namespace ic {
       Electron const* ele1 = dynamic_cast<Electron const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
 
+      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
+      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+      ic::Vertex* refit_vertex = vertex_vec[0];
+      for(auto v : refit_vertex_vec) {
+        if(v->id() == ele1->id()+tau2->id()) {
+          refit_vertex = v;
+          use_refitted_vertex_ = true;
+        }
+      }
+
+      ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > pv_cov = refit_vertex->covariance();
+
       lead_pt_2_ =  tau2->lead_pt();
       raw_pt_1_ = ele1->ecalTrkEnergyPreCorr()/ele1->energy()*pt_1_.var_float;
 
@@ -3815,10 +4060,46 @@ namespace ic {
       pi_py_1_=lep1->vector().Py();
       pi_pz_1_=lep1->vector().Pz();
       pi_E_1_=lep1->vector().E();
-      pi_px_2_=pi_tau2->vector().Px();
-      pi_py_2_=pi_tau2->vector().Py();
-      pi_pz_2_=pi_tau2->vector().Pz();
-      pi_E_2_=pi_tau2->vector().E();
+
+      if(tau_decay_mode_2_<3.) {
+        pi_px_2_=pi_tau2->vector().Px();
+        pi_py_2_=pi_tau2->vector().Py();
+        pi_pz_2_=pi_tau2->vector().Pz();
+        pi_E_2_=pi_tau2->vector().E();
+      } else if(hads2.size()>2) {
+        pi_px_2_=hads2[0]->vector().Px();
+        pi_py_2_=hads2[0]->vector().Py();
+        pi_pz_2_=hads2[0]->vector().Pz();
+        pi_E_2_=hads2[0]->vector().E();
+
+        pi2_px_2_=hads2[1]->vector().Px();
+        pi2_py_2_=hads2[1]->vector().Py();
+        pi2_pz_2_=hads2[1]->vector().Pz();
+        pi2_E_2_=hads2[1]->vector().E();
+
+        pi3_px_2_=hads2[2]->vector().Px();
+        pi3_py_2_=hads2[2]->vector().Py();
+        pi3_pz_2_=hads2[2]->vector().Pz();
+        pi3_E_2_=hads2[2]->vector().E();
+
+        if(tau2->hasSV()) {
+          sv_x_2_ = tau2->secondary_vertex().X() - refit_vertex->vx();
+          sv_y_2_ = tau2->secondary_vertex().Y() - refit_vertex->vy();
+          sv_z_2_ = tau2->secondary_vertex().Z() - refit_vertex->vz();
+
+          ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > sv_cov = tau2->s_vtx_covariance()+pv_cov;
+
+          svcov00_2_ = sv_cov(0,0);
+          svcov01_2_ = sv_cov(0,1);
+          svcov02_2_ = sv_cov(0,2);
+          svcov10_2_ = sv_cov(1,0);
+          svcov11_2_ = sv_cov(1,1);
+          svcov12_2_ = sv_cov(1,2);
+          svcov20_2_ = sv_cov(2,0);
+          svcov21_2_ = sv_cov(2,1);
+          svcov22_2_ = sv_cov(2,2);
+        }
+      }
 
       if(gammas2.size()>0 && tau_decay_mode_2_<2) {
         pi0_px_2_=pi0_tau2->vector().Px();
@@ -3849,17 +4130,6 @@ namespace ic {
       TLorentzVector lvec3;
       TLorentzVector lvec4;
       TLorentzVector pvtosv;
-
-      std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
-      //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
-      std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-      ic::Vertex* refit_vertex = vertex_vec[0];
-      for(auto v : refit_vertex_vec) {
-        if(v->id() == ele1->id()+tau2->id()) {
-          refit_vertex = v;
-          use_refitted_vertex_ = true;
-        } 
-      }
 
       auto primary_vtx = refit_vertex;
 

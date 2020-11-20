@@ -1975,6 +1975,7 @@ namespace ic {
         bool has_tau_daughter = false;
         bool has_lepton_daughter = false;
         unsigned count_pi0 =  0, count_pi = 0, count_tot = 0, count_k = 0, count_rho = 0;
+        ROOT::Math::PtEtaPhiEVector nuvec;
         for (unsigned j = 0; j < daughters.size(); ++j) {
           if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
           if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
@@ -1983,7 +1984,11 @@ namespace ic {
           if(pdgId == 211) count_pi++;
           if(pdgId == 213) count_rho++;
           if(pdgId == 321) count_k++;
-          if(pdgId!=12&&pdgId!=14&&pdgId!=16) count_tot++;
+          if(pdgId!=12&&pdgId!=14&&pdgId!=16) {
+            count_tot++;
+          } else {
+            nuvec+=daughters[j]->vector();
+          }
         }
         if (has_tau_daughter) continue;
         if (has_lepton_daughter && !include_leptonic) continue;
@@ -2011,6 +2016,8 @@ namespace ic {
         taus.back().set_constituents(id_vec);
         taus.back().set_flavour(tauFlag);
         taus.back().set_id(tau_id);
+        taus.back().set_nu_vector(nuvec);
+   
       }
     }
     return taus;

@@ -191,6 +191,7 @@ sample_list = [
     'ZHiggs0PHToTauTau',
     'ZHiggs0PHf05ph0ToTauTau',
     'ZHiggs0PMToTauTau',
+    'GluGluToHToTauTauPlusTwoJets_M125_minlo',
 	]
 
 
