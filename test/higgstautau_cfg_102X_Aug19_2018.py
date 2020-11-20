@@ -1207,6 +1207,22 @@ process.icDoubleMediumIsoTauHPS35TightIDObjectProducer = producers.icTriggerObje
     storeOnlyIfFired = cms.bool(False)
     )
 
+process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso"),
+    hltPath = cms.string("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso1pr"),
+    hltPath = cms.string("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
 # tt monitoring paths
 
 process.icMu24TightIsoTightIDTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1485,6 +1501,8 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icDoubleTightIsoTau40TightIDObjectProducer+
     process.icDoubleMediumIsoTauHPS35ObjectProducer+
     process.icDoubleMediumIsoTauHPS35TightIDObjectProducer+
+    process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer+
+    process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer+
     process.icMu24TightIsoTightIDTau35ObjectProducer+
     process.icMu24MediumIsoTau35ObjectProducer+
     process.icMu24MediumIsoTauHPS35ObjectProducer+
