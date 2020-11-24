@@ -160,7 +160,6 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-print 'test'
 
 FILELIST='filelists/Sep18_2018_MC_102X'
 
@@ -240,7 +239,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
 
-    DATAFILELIST="./filelists/Jan06_2018_Data_102X"
+    DATAFILELIST="./filelists/Sep18_2018_Data_102X"
 
     if options.calc_lumi:
         for sa in data_samples:
@@ -262,9 +261,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Jan06_2018_Data_102X"
+            DATAFILELIST="./filelists/Sep18_2018_Data_102X"
             JOB='%s_2018' % (sa)
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_Data_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
       
@@ -313,12 +312,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
-    EMBEDFILELIST="./filelists/Jan06_2018_MC_102X"
+    EMBEDFILELIST="./filelists/Sep18_2018_MC_102X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan06_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             #if 'ElTau' in sa: nperjob = 10

@@ -86,7 +86,7 @@ namespace ic {
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016.root";
       if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016.root";
       if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2017.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2017.root"; // change to 2018 when available!!!!!
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018.root";
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -188,7 +188,7 @@ namespace ic {
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016.root";
       if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016.root";
       if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017.root"; // change to 2018 when available!!!!!
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018.root"; // change to 2018 when available!!!!!
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -298,7 +298,7 @@ namespace ic {
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016.root";
       if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016.root";
       if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017.root"; // change to 2018 when available!!!!!
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018.root"; // change to 2018 when available!!!!!
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
