@@ -169,7 +169,7 @@ for i in range(0,scale):
    flatjsons.append(temp)
  
 #FILELIST='filelists/Jan24_MC_102X_2016'
-FILELIST='filelists/May21_2016_MC_102X'
+FILELIST='filelists/Sep18_2016_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -243,11 +243,11 @@ if options.proc_data or options.proc_all or options.calc_lumi:
            data_samples+=['Tau'+era]
         
 
-  DATAFILELIST="./filelists/May21_2016_Data_102X"
+  DATAFILELIST="./filelists/Sep18_2016_Data_102X"
 
   for sa in data_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/May21_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_Data_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
 
       # if 'TauB' in sa:
@@ -299,16 +299,16 @@ if options.proc_embed or options.proc_all:
 
 
         
-  EMBEDFILELISTZMM="./filelists/Jan06_MC_102X_2016"
+  EMBEDFILELISTZMM="./filelists/Sep18_MC_102X_2016"
 
-  EMBEDFILELIST="./filelists/May21_2016_MC_102X"
+  EMBEDFILELIST="./filelists/Sep18_2016_MC_102X"
   
   for sa in embed_samples:
     job_num=0  
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/May21_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     if 'EmbeddingMuMu' in sa:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELISTZMM)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/May21_2016_MC_102X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2016/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
     for FLATJSONPATCH in flatjsons: 
       nperjob = 20
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
@@ -382,13 +382,13 @@ if options.proc_bkg or options.proc_all:
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q', 
-    #'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
-    #'WWToLNuQQ-ext',
+    ##'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
+    ##'WWToLNuQQ-ext',
     'WZTo2L2Q',
     'WZTo1L3Nu',
     'WZTo1L1Nu2Q',
     'WZJToLLLNu',
-    #'ZZTo4L', # use amcat one below
+    ##'ZZTo4L', # use amcat one below
     'Tbar-tW',
     'T-tW',
     'Tbar-t',
@@ -458,21 +458,18 @@ if options.proc_bkg or options.proc_all:
 
 if options.proc_sm or options.proc_all or options.proc_mssm:
   SIG_FILELIST = FILELIST
-  if options.proc_mssm:
-    user = "guttley"
-  elif options.proc_sm:
-    user = 'guttley'
+  user = "guttley"
 
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
     if sa == "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered":
-        SIG_FILELIST="filelists/Feb05_MC_102X_2016"
-        user = "adow"
+        SIG_FILELIST="filelists/Sep18_MC_102X_2016"
+        user = "guttley"
     else:
         SIG_FILELIST = FILELIST
 
     #PREFIX = SIG_FILELIST.split('/')[1]
-    PREFIX = 'May21_MC_102X_2016'
+    PREFIX = 'Sep18_MC_102X_2016'
     # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
