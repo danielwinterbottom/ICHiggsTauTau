@@ -2387,7 +2387,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    wt_+='*((pt_2>100)*0.93*0.93/(idisoweight_1*idisoweight_2) + (pt_1>100&&pt_2<100)*0.93/idisoweight_1 + (pt_1<100))'
+    #wt_+='*((pt_2>100)*0.93*0.93/(idisoweight_1*idisoweight_2) + (pt_1>100&&pt_2<100)*0.93/idisoweight_1 + (pt_1<100))'
     #if options.channel == 'et': wt_+='*(((tau_decay_mode_2==0)*0.975 + (tau_decay_mode_2==1)*0.975*1.051 + (tau_decay_mode_2==10)*0.927 + (tau_decay_mode_2==11)*0.926*1.051)*0.965600)/idisoweight_2'
     #if options.channel == 'et': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
     #if options.channel == 'mt': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
