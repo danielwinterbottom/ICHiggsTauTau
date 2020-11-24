@@ -194,7 +194,7 @@ if options.proc_mssm or options.proc_all:
 
     M_GluGluBBH = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','600','700','800','900','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
     for mass in M_GluGluBBH:
-		signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
+        	signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
 
     M_GluGluBBH_NLO = ['80','90','100','110','120','125','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200','3500']
     for mass in M_GluGluBBH_NLO:
@@ -296,8 +296,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    #data_eras = ['A','B','C','D']
-    data_eras = ['D']
+    data_eras = ['A','B','C','D']
+    #data_eras = ['D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
