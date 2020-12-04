@@ -6,21 +6,28 @@ import json
 from array import array
 import argparse
 
+# python scripts/ff_closure_corr_plots.py --year=2016 --channel=tt --bin=os_closure_nbjet0 --bkg=qcd --xlabel='#Delta R' --low_bounded_val=0.5 --high_bounded_val=5
+
 parser = argparse.ArgumentParser()
-parser.add_argument('--year',help= 'Year to draw fits', default='2017')
-parser.add_argument('--channel',help= 'Channel to draw fits', default='et')
-parser.add_argument('--n_prebjets_bin',help= 'n_pre b-jets bin to draw fits', default='1jet')
-parser.add_argument('--jet_pt_bin',help= 'Jet-pt bin to draw fits', default='med')
-parser.add_argument('--bkg',help= 'Background to draw fits', default='ttbar_mc')
+parser.add_argument('--year',help= 'Year for correction', default='2017')
+parser.add_argument('--channel',help= 'Channel for correction', default='tt')
+parser.add_argument('--bin',help= 'Closure correction name', default='os_closure_nbjet0')
+parser.add_argument('--bkg',help= 'Background to draw fits', default='qcd')
+parser.add_argument('--xlabel',help= 'X axis label', default='p_{T}^{#tau_{h}} (GeV)')
+parser.add_argument('--low_bounded_val',help= '', default='0')
+parser.add_argument('--high_bounded_val',help= '', default='10000.0')
+parser.add_argument('--logx',help= '', default=False)
 args = parser.parse_args()
 
 year = args.year
 channel = args.channel
-n_prejets_bin = args.n_prebjets_bin
-jet_pt_bin = args.jet_pt_bin
+bin = args.bin
 bkg = args.bkg
+xlabel = args.xlabel
+low_bounded_val = float(args.low_bounded_val)
+high_bounded_val = float(args.high_bounded_val)
+logx = args.logx
 
-#file = 'fakefactor_fits/fakefactor_fits_%(channel)s_medium_%(year)s.root' % vars()
 file = 'fakefactor_fits_%(channel)s_medium_%(year)s.root' % vars()
 
 
@@ -166,38 +173,10 @@ def DrawCMSLogo(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, ex
 
 rf = ROOT.TFile.Open(file,"read")
 
-if channel == "tt":
-  lt = '1'
-else:
-  lt = '2'
-
-h = rf.Get("jet_pt_%(jet_pt_bin)s_%(n_prejets_bin)s_pt_%(lt)s_ff_%(bkg)s" % vars())
-f = rf.Get("jet_pt_%(jet_pt_bin)s_%(n_prejets_bin)s_pt_%(lt)s_ff_%(bkg)s_fit" % vars())
-print f
-u = rf.Get("jet_pt_%(jet_pt_bin)s_%(n_prejets_bin)s_pt_%(lt)s_ff_%(bkg)s_uncert" % vars())
-
-p0 = f.GetParameter(0)
-p1 = f.GetParameter(1)
-p2 = f.GetParameter(2)
-p3 = f.GetParameter(3)
-
-if 'high' not in jet_pt_bin:
-  high_bin = h.GetBinContent(h.FindBin(250.))
-  high_bin_err = h.GetBinError(h.FindBin(250.))
-else:
-   #high_bin = p0*ROOT.TMath.Landau(199.9,p1,p2)+p3
-   high_bin = u.GetBinContent(u.FindBin(199.9))
-   high_bin_err = u.GetBinError(u.FindBin(199.9))
-p0 = f.GetParameter(0)
-p1 = f.GetParameter(1)
-p2 = f.GetParameter(2)
-p3 = f.GetParameter(3)
-f = ROOT.TF1("f","(x<200)*({}*TMath::Landau(x,{},{})+{}) + ({})*(x>200)".format(p0,p1,p2,p3,high_bin),20,600)
-
-for i in range(1,u.GetNbinsX()+1):
-  if u.GetBinLowEdge(i) >= 200:
-    u.SetBinContent(i,high_bin)
-    u.SetBinError(i,high_bin_err)
+print "%(bin)s_%(bkg)s" % vars()
+h = rf.Get("%(bin)s_%(bkg)s" % vars())
+f = rf.Get("%(bin)s_%(bkg)s_fit" % vars())
+u = rf.Get("%(bin)s_%(bkg)s_uncert" % vars())
 
 
 if channel == "mt":
@@ -225,39 +204,65 @@ elif bkg == 'wjets_mc':
 elif bkg == 'qcd_aiso':
   bkg_string = 'QCD Anti-Isolated'
 
-if n_prejets_bin == '0jet':
-  n_prejets_string = 'n_{pre b-jets} = 0'
-elif n_prejets_bin == '1jet':
-  n_prejets_string = 'n_{pre b-jets} > 0'
-elif n_prejets_bin == 'inclusive':
-  n_prejets_string = ''
+#high_bounded_val = 5.0
+high_bin = u.GetBinContent(u.FindBin(high_bounded_val))
+high_bin_err = u.GetBinError(u.FindBin(high_bounded_val))
 
-if jet_pt_bin == 'low':
-  jet_pt_string = 'p_{T}^{jet}/p_{T}^{#tau_{h}} < 1.25'
-elif jet_pt_bin == 'med':
-  jet_pt_string = '1.25 #leq p_{T}^{jet}/p_{T}^{#tau_{h}} < 1.5'
-elif jet_pt_bin == 'high':
-  jet_pt_string = 'p_{T}^{jet}/p_{T}^{#tau_{h}} #geq 1.5'
+for i in range(1,u.GetNbinsX()+1):
+  if u.GetBinLowEdge(i) >= high_bounded_val:
+    u.SetBinContent(i,high_bin)
+    u.SetBinError(i,high_bin_err)
+
+#low_bounded_val = 0.5
+low_bin = u.GetBinContent(u.FindBin(low_bounded_val))
+low_bin_err = u.GetBinError(u.FindBin(low_bounded_val))
+
+for i in range(1,u.GetNbinsX()+1):
+  if u.GetBinLowEdge(i) <= low_bounded_val:
+    u.SetBinContent(i,low_bin)
+    u.SetBinError(i,low_bin_err)
+
+f.SetRange(low_bounded_val,high_bounded_val)
+
+f1 = ROOT.TF1('f1',"%(high_bin)s + 0*x" % vars(),high_bounded_val,u.GetBinLowEdge(u.GetNbinsX()+1))
+f2 = ROOT.TF1('f1',"%(low_bin)s + 0*x" % vars(),u.GetBinLowEdge(1),low_bounded_val)
+
 
 c = ROOT.TCanvas('c','c',700,700)
-h.SetStats(0)
+u.SetStats(0)
 c.SetLeftMargin(0.15)
 u.Draw('e3')
-c.SetLogx()
-u.GetXaxis().SetMoreLogLabels()
-u.GetXaxis().SetNoExponent()
+if logx:
+  c.SetLogx()
+  u.GetXaxis().SetMoreLogLabels()
+  u.GetXaxis().SetNoExponent()
 h.Draw('same')
+h.GetFunction("f1").Delete()
+f.Print("all")
+#f.SetRange(0,u.GetBinLowEdge(u.GetNbinsX()+1))
 f.Draw('same')
+f1.Draw('same')
+f2.Draw('same')
+f.SetLineColor(4)
+f1.SetLineColor(4)
+f2.SetLineColor(4)
 h.SetLineColor(1)
-u.SetLineColor(46)
-u.SetFillColorAlpha(46, 0.35)
-u.GetXaxis().SetTitle('p_{T}^{#tau_{h}} (GeV)')
+u.SetLineColor(38)
+u.SetFillColorAlpha(38, 0.35)
+u.GetXaxis().SetTitle(xlabel)
 u.GetXaxis().SetTitleOffset(1.2)
 u.GetYaxis().SetTitleOffset(1.6)
-u.GetYaxis().SetTitle('F_{F}')
-u.SetMaximum(1.7*max(u.GetMaximum(),h.GetMaximum()))
-u.SetMinimum(0)
+u.GetYaxis().SetTitle('Closure Correction')
+u.SetMaximum(1.5)
+u.SetMinimum(0.6)
 h.SetMarkerStyle(8)
+
+# Draw dashed line at y = 1
+line = ROOT.TLine(u.GetBinLowEdge(1),1,u.GetBinLowEdge(u.GetNbinsX()+1),1)
+line.SetLineWidth(1)
+line.SetLineStyle(2)
+line.SetLineColor(ROOT.kBlack)
+line.Draw()
 
 c.Update()
 
@@ -273,8 +278,8 @@ DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
 DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.3)
 DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 
-DrawTitle(c, jet_pt_string, 4, textSize=0.3,x=0.20,y=0.72)
-DrawTitle(c, n_prejets_string, 4, textSize=0.3,x=0.20,y=0.67)
+#DrawTitle(c, jet_pt_string, 4, textSize=0.3,x=0.20,y=0.72)
+#DrawTitle(c, n_prejets_string, 4, textSize=0.3,x=0.20,y=0.67)
 
-c.Print('ff_fit_%(jet_pt_bin)s_%(n_prejets_bin)s_%(bkg)s_%(channel)s_%(year)s.pdf' % vars())
+c.Print('ff_closure_%(bin)s_%(bkg)s_%(channel)s_%(year)s.pdf' % vars())
 

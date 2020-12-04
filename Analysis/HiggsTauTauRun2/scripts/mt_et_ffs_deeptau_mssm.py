@@ -46,8 +46,8 @@ jetpt_bins = {
 # get files and cross trigger pT threshold for relevant year
 if year == '2018':
   lumi = 58826.8469
-  params_file = 'scripts/params_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/SUSY/Jan24_2018_SUSY/'
+  params_file = 'scripts/params_mssm_2018.json'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -110,7 +110,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2017/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -180,7 +180,7 @@ elif year == "2017":
 elif year == "2016":
   lumi = 35920.
   params_file = 'scripts/params_mssm_2016.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2016/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016/'
 
   if channel == "mt":
     crosstrg_pt = 23
@@ -811,7 +811,7 @@ def WriteFakeFactorFunctionTTbar(fout,njets_bins,jetpt_bins,proc='ttbar_mc'):
   return ff_eqn_tot
 
 # variable and binningn used for fitting
-var1='pt_2[20,25,30,35,40,45,50,55,60,70,80,100,120,140,200,600]'
+var1='pt_2[30,35,40,45,50,55,60,70,80,100,120,140,200,600]'
 
 # set up histograms to draw
 ff_list = {}
