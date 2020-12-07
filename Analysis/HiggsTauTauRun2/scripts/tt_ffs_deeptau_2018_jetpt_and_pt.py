@@ -37,7 +37,7 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2018/' 
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -100,7 +100,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2017/'
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -129,7 +129,7 @@ if year == '2016':
   lumi=35920.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/ff_2016/'
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
