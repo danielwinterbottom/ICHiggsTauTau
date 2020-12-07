@@ -174,6 +174,9 @@ namespace ic {
       outtree_->Branch("wt_tau_id_mvadm", & wt_tau_id_mvadm_);
       outtree_->Branch("wt_tau_trg_ic",    &wt_tau_trg_ic_);
       outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
+      outtree_->Branch("wt_tau_trg_mssm_doubleonly",    &wt_tau_trg_mssm_doubleonly_);
+      outtree_->Branch("wt_tau_trg_mssm",    &wt_tau_trg_mssm_);
+      outtree_->Branch("wt_tau_id_mssm",    &wt_tau_id_mssm_);
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       if(!systematic_shift_){
@@ -879,7 +882,9 @@ namespace ic {
       outtree_->Branch("met_dphi_2",             &met_dphi_2_);
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
+      outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
+      outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -944,6 +949,7 @@ namespace ic {
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
@@ -1426,6 +1432,7 @@ namespace ic {
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_doubletau_mssm"))      trg_doubletau_mssm_      = event->Get<bool>("trg_doubletau_mssm");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
@@ -1527,6 +1534,10 @@ namespace ic {
     wt_tau_id_highpt_mvadm2_down_  = (event->Exists("wt_tau_id_highpt_mvadm2_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm2_down") : 1.0;
     wt_tau_id_highpt_mvadm10_down_ = (event->Exists("wt_tau_id_highpt_mvadm10_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm10_down") : 1.0;
     wt_tau_id_highpt_mvadm11_down_ = (event->Exists("wt_tau_id_highpt_mvadm11_down")) ? event->Get<double>("wt_tau_id_highpt_mvadm11_down") : 1.0;
+
+    wt_tau_trg_mssm_doubleonly_ =     (event->Exists("wt_tau_trg_mssm_doubleonly")) ?    event->Get<double>("wt_tau_trg_mssm_doubleonly") : 1.;
+    wt_tau_trg_mssm_ =     (event->Exists("wt_tau_trg_mssm")) ?    event->Get<double>("wt_tau_trg_mssm") : 1.;
+    wt_tau_id_mssm_ =     (event->Exists("wt_tau_id_mssm")) ?    event->Get<double>("wt_tau_id_mssm") : 1.;
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
@@ -2311,7 +2322,11 @@ namespace ic {
     newmet_ = newmet->pt();
     newmet_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep1->vector()));
     newmet_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep2->vector()));   
+    ROOT::Math::PtEtaPhiEVector fake_met_vec;  
+    event->Exists("fake_met_vec") ? fake_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("fake_met_vec") : fake_met_vec;
+    fake_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep2->vector()));   
  
+    event->Exists("fake_met") ? fake_met_ = event->Get<double>("fake_met") : 0.;
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
