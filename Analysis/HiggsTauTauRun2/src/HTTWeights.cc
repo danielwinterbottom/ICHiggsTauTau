@@ -349,6 +349,30 @@ int HTTWeights::PreAnalysis() {
     fns_["t_trg_35_embed_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_ditau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
+    /////////
+    // trigger SF for MSSM double+single tau
+
+    fns_["t_trg_2d_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_2d_ratio")->functor(w_->argSet("t_pt,t_dm,t_pt_2,t_dm_2")));
+    fns_["t_trg_2d_embed_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_2d_embed_ratio")->functor(w_->argSet("t_pt,t_dm,t_pt_2,t_dm_2")));
+    fns_["t_trg_2d_doubleonly_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_2d_doubleonly_ratio")->functor(w_->argSet("t_pt,t_dm,t_pt_2,t_dm_2")));
+    fns_["t_trg_2d_doubleonly_embed_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_2d_doubleonly_embed_ratio")->functor(w_->argSet("t_pt,t_dm,t_pt_2,t_dm_2")));
+
+    fns_["t_trg_single_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_single_data")->functor(w_->argSet("t_pt")));
+    fns_["t_trg_single_data_up"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_single_data_up")->functor(w_->argSet("t_pt")));
+    fns_["t_trg_single_data_down"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_single_data_down")->functor(w_->argSet("t_pt")));
+    fns_["t_trg_single_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_single_mc")->functor(w_->argSet("t_pt")));
+    fns_["t_trg_single_embed"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_single_embed")->functor(w_->argSet("t_pt")));
+    ////////
+
     // Mohammads trigger SFs
     //t_trg_ic_deeptau_medium_mvadm_ditau_ratio_mvadm1_down
 
@@ -554,6 +578,31 @@ int HTTWeights::PreAnalysis() {
       w_->function("t_id_dm_vloose")->functor(w_->argSet("t_dm")));
     fns_["t_deeptauid_pt_medium"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_pt_medium")->functor(w_->argSet("t_pt")));
+
+    // high pT tau ID efficiency for MSSM analysis
+    fns_["t_deeptauid_highpt"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_highpt")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_bin1_up"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_bin1_up")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_bin1_down"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_bin1_down")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_bin2_up"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_bin2_up")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_bin2_down"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_bin2_down")->functor(w_->argSet("t_pt")));
+
+    fns_["t_deeptauid_highpt_embed"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_highpt_embed")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_embed_bin1_up"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_embed_bin1_up")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_embed_bin1_down"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_embed_bin1_down")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_embed_bin2_up"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_embed_bin2_up")->functor(w_->argSet("t_pt")));
+    //fns_["t_deeptauid_highpt_embed_bin2_down"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_deeptauid_highpt_embed_bin2_down")->functor(w_->argSet("t_pt")));
+    fns_["t_deeptauid_highpt_tightvse_embed"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_deeptauid_highpt_tightvse_embed")->functor(w_->argSet("t_pt")));
 
     fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_pt_vvvloose")->functor(w_->argSet("t_pt")));
@@ -987,6 +1036,8 @@ int HTTWeights::Execute(TreeEvent *event) {
     ) {
     double tau_sf_1 = 1.0;
     double tau_sf_2 = 1.0;
+    double tau_sf_highpt_1 = 1.0;
+    double tau_sf_highpt_2 = 1.0;
     if (channel_ != channel::tt){
       unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
       Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
@@ -1001,6 +1052,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_pt = std::vector<double>{pt_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt.data()) : 1.0;
+        tau_sf_highpt_2 = (gen_match_2==5) ? fns_["t_deeptauid_highpt"]->eval(args_pt.data()) : 1.0;
 
 
         double tau_sf_2_bin1_up = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium_bin1_up"]->eval(args_pt.data())/tau_sf_2 : 1.0;
@@ -1055,6 +1107,8 @@ int HTTWeights::Execute(TreeEvent *event) {
         event->Add("wt_tau_id_mvadm",tau_sf_mvadm_2/tau_sf_2);
         event->Add("wt_tau_id_mvadm_sync",tau_sf_mvadm_2);
 
+        event->Add("wt_tau_id_mssm",pt_2>100 ? tau_sf_highpt_2/tau_sf_2 : 1.);
+
         event->Add("wt_tau_id_lowpt_mvadm0_up",tau_sf_mvadm_2_lowpt_mvadm0_up); 
         event->Add("wt_tau_id_lowpt_mvadm1_up",tau_sf_mvadm_2_lowpt_mvadm1_up); 
         event->Add("wt_tau_id_lowpt_mvadm2_up",tau_sf_mvadm_2_lowpt_mvadm2_up); 
@@ -1080,9 +1134,11 @@ int HTTWeights::Execute(TreeEvent *event) {
 
         auto args_pt = std::vector<double>{pt_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_embed_medium"]->eval(args_pt.data()) : 1.0;
+        tau_sf_highpt_2 = (gen_match_2==5) ? fns_["t_deeptauid_highpt_embed"]->eval(args_pt.data()) : 1.0;
 
         if(channel_== channel::et) {
           tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium"]->eval(args_pt.data()) : 1.0;
+          tau_sf_highpt_2 = (gen_match_2==5) ? fns_["t_deeptauid_highpt_tightvse_embed"]->eval(args_pt.data()) : 1.0;
           double et_tau_extra = (gen_match_2==5) ? fns_["t_deeptauid_pt_tightvse_embed_medium"]->eval(args_pt.data()) : 1.0;
           et_tau_extra/=tau_sf_2;
           event->Add("wt_tau_id_extra",et_tau_extra);
@@ -1161,6 +1217,8 @@ int HTTWeights::Execute(TreeEvent *event) {
         event->Add("wt_tau_id_mvadm",tau_sf_mvadm_2/tau_sf_2);
         event->Add("wt_tau_id_mvadm_sync",tau_sf_mvadm_2);
 
+        event->Add("wt_tau_id_mssm",pt_2>100 ? tau_sf_highpt_2/tau_sf_2 : 1.);
+
         event->Add("wt_tau_id_lowpt_mvadm0_up",tau_sf_mvadm_2_lowpt_mvadm0_up);
         event->Add("wt_tau_id_lowpt_mvadm1_up",tau_sf_mvadm_2_lowpt_mvadm1_up);
         event->Add("wt_tau_id_lowpt_mvadm2_up",tau_sf_mvadm_2_lowpt_mvadm2_up);
@@ -1197,6 +1255,8 @@ int HTTWeights::Execute(TreeEvent *event) {
       double eta_2 = tau2->eta();
       auto args_1 = std::vector<double>{pt_1,eta_1,decay_mode_1};
       auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
+      auto args_pt_1 = std::vector<double>{pt_1};
+      auto args_pt_2 = std::vector<double>{pt_2};
 
       double mvadm_1 = tau1->GetTauID("MVADM2017v1");
       double mvadm_2 = tau2->GetTauID("MVADM2017v1");
@@ -1240,6 +1300,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_dm_1 = std::vector<double>{decay_mode_1};
         tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_1.data()) : 1.0;
+        tau_sf_highpt_1 = (gen_match_2==5) ? fns_["t_deeptauid_highpt"]->eval(args_pt_1.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm10_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
@@ -1276,6 +1337,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       else if (is_embedded_) {
         auto args_dm_1 = std::vector<double>{decay_mode_1};
         tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_1.data()) : 1.0;
+        tau_sf_highpt_1 = (gen_match_2==5) ? fns_["t_deeptauid_highpt_embed"]->eval(args_pt_1.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm10_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
@@ -1321,6 +1383,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_dm_2 = std::vector<double>{decay_mode_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_2.data()) : 1.0;
+        tau_sf_highpt_2 = (gen_match_2==5) ? fns_["t_deeptauid_highpt"]->eval(args_pt_2.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm10_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
@@ -1357,6 +1420,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       else if (is_embedded_) {
         auto args_dm_2 = std::vector<double>{decay_mode_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_2.data()) : 1.0;
+        tau_sf_highpt_2 = (gen_match_2==5) ? fns_["t_deeptauid_highpt_embed"]->eval(args_pt_2.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         tau_sf_dm10_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
@@ -1410,6 +1474,9 @@ int HTTWeights::Execute(TreeEvent *event) {
       event->Add("wt_tau_id_dm11_down",tau_sf_dm11_down);      
 
       event->Add("wt_tau_id_mvadm",(tau_sf_mvadm_1*tau_sf_mvadm_2)/(tau_sf_1*tau_sf_2));
+      
+      event->Add("wt_tau_id_mssm",(pt_1>100 ? tau_sf_highpt_1/tau_sf_1 : 1.)*(pt_2>100 ? tau_sf_highpt_2/tau_sf_2 : 1.));
+
 
       event->Add("wt_tau_id_lowpt_mvadm0_up",tau_sf_mvadm_lowpt_mvadm0_up);
       event->Add("wt_tau_id_lowpt_mvadm1_up",tau_sf_mvadm_lowpt_mvadm1_up);
@@ -1787,6 +1854,28 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       eventInfo->set_weight("trigger", xtrg_OR_sf, false);
 
+      double xtau_pt = 35.;
+      if(era_ == era::data_2016) xtau_pt = 0.;
+      double xtrg_OR_mssm = ele_trg*(e_pt>=e_high_pt_cut)*(1.-tau_trg*(t_pt>=xtau_pt)) + ele_xtrg*tau_trg*(t_pt>=xtau_pt);
+      double xtrg_OR_mssm_mc = ele_trg_mc*(e_pt>=e_high_pt_cut)*(1.-tau_trg_mc*(t_pt>=xtau_pt)) + ele_xtrg_mc*tau_trg_mc*(t_pt>=xtau_pt);
+      xtrg_OR_mssm = xtrg_OR_mssm_mc>0. ?  xtrg_OR_mssm/xtrg_OR_mssm_mc : 0.;
+
+      auto args_5 = std::vector<double>{t_pt};
+      double singletau_trg = fns_["t_trg_single_data"]->eval(args_5.data());
+      double singletau_trg_mc=1.;
+      if(is_embedded_) singletau_trg_mc = fns_["t_trg_single_embed"]->eval(args_5.data());
+      else             singletau_trg_mc = fns_["t_trg_single_mc"]->eval(args_5.data());
+      double singletau_OR_sf = (ele_trg*(e_pt>=e_high_pt_cut) + singletau_trg - ele_trg*(e_pt>=e_high_pt_cut)*singletau_trg);
+      double singletau_OR_mc = (ele_trg_mc*(e_pt>=e_high_pt_cut) + singletau_trg_mc - ele_trg_mc*(e_pt>=e_high_pt_cut)*singletau_trg_mc);
+      singletau_OR_sf = singletau_OR_mc>0 ? singletau_OR_sf/singletau_OR_mc : 0.;
+
+      double singletau_pt = 180.;
+      if(era_ == era::data_2016) singletau_pt = 120.;
+
+      double wt_tau_trg_mssm = t_pt > singletau_pt ? singletau_OR_sf : xtrg_OR_mssm;
+      event->Add("wt_tau_trg_mssm", xtrg_OR_sf > 0. ? wt_tau_trg_mssm/xtrg_OR_sf : 0.);
+      event->Add("wt_tau_trg_mssm_doubleonly", xtrg_OR_sf > 0. ? xtrg_OR_mssm/xtrg_OR_sf : 0.);
+
       double trigweight_up=1., trigweight_down=1.;
       double tau_trg_dm0_up=1.;
       double tau_trg_dm1_up=1.;
@@ -1994,6 +2083,30 @@ int HTTWeights::Execute(TreeEvent *event) {
         xtrg_OR_sf = mu_trg*(1-tau_trg) + mu_xtrg*tau_trg;
         single_m_sf = mu_trg;
       }
+
+      double xtau_pt = 32.;
+      if(era_ == era::data_2016) xtau_pt = 25.;
+      double xtrg_OR_mssm = mu_trg*(pt>=m_high_pt_cut)*(1.-tau_trg*(t_pt>=xtau_pt)) + mu_xtrg*tau_trg*(t_pt>=xtau_pt);
+      double xtrg_OR_mssm_mc = mu_trg_mc*(pt>=m_high_pt_cut)*(1.-tau_trg_mc*(t_pt>=xtau_pt)) + mu_xtrg_mc*tau_trg_mc*(t_pt>=xtau_pt);
+      xtrg_OR_mssm = xtrg_OR_mssm_mc>0. ?  xtrg_OR_mssm/xtrg_OR_mssm_mc : 0.;
+
+      auto args_5 = std::vector<double>{t_pt};
+      double singletau_trg = fns_["t_trg_single_data"]->eval(args_5.data());
+      double singletau_trg_mc=1.;
+      if(is_embedded_) singletau_trg_mc = fns_["t_trg_single_embed"]->eval(args_5.data());
+      else             singletau_trg_mc = fns_["t_trg_single_mc"]->eval(args_5.data());
+      double singletau_OR_sf = (mu_trg*(pt>=m_high_pt_cut) + singletau_trg - mu_trg*(pt>=m_high_pt_cut)*singletau_trg);
+      double singletau_OR_mc = (mu_trg_mc*(pt>=m_high_pt_cut) + singletau_trg_mc - mu_trg_mc*(pt>=m_high_pt_cut)*singletau_trg_mc);
+      singletau_OR_sf = singletau_OR_mc>0 ? singletau_OR_sf/singletau_OR_mc : 0.;
+
+//if(t_pt>200) {std::cout<< mu_trg << "  " << singletau_trg << "  " << mu_trg_mc << "  " << singletau_trg_mc << std::endl;}
+
+      double singletau_pt = 180.;
+      if(era_ == era::data_2016) singletau_pt = 120.;
+
+      double wt_tau_trg_mssm = t_pt > singletau_pt ? singletau_OR_sf : xtrg_OR_mssm; 
+      event->Add("wt_tau_trg_mssm", xtrg_OR_sf > 0. ? wt_tau_trg_mssm/xtrg_OR_sf : 0.);
+      event->Add("wt_tau_trg_mssm_doubleonly", xtrg_OR_sf > 0. ? xtrg_OR_mssm/xtrg_OR_sf : 0.);
 
       tau_trg_ic = (tau_trg==0) ? tau_trg_ic : tau_trg_ic/tau_trg;
       tau_trg_mvadm = (tau_trg==0) ? tau_trg_mvadm : tau_trg_mvadm/tau_trg;
@@ -2352,7 +2465,24 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       event->Add("wt_tau_trg_ic",tau_trg_ic);
       event->Add("wt_tau_trg_mvadm",tau_trg_ic_mvadm);
-        
+
+      auto args_2d = std::vector<double>{pt_1,dm_1,pt_2,dm_2};
+
+      double tau_trg_mssm_double=1., tau_trg_mssm=1.;
+      if(is_embedded_) {
+        tau_trg_mssm_double = fns_["t_trg_2d_doubleonly_embed_ratio"]->eval(args_2d.data()); 
+        tau_trg_mssm        = fns_["t_trg_2d_embed_ratio"]->eval(args_2d.data()); 
+      } else {
+        tau_trg_mssm_double = fns_["t_trg_2d_doubleonly_ratio"]->eval(args_2d.data()); 
+        tau_trg_mssm        = fns_["t_trg_2d_ratio"]->eval(args_2d.data()); 
+      }
+
+      tau_trg_mssm_double = (trg_tot==0) ? tau_trg_mssm_double : tau_trg_mssm_double/trg_tot;
+      tau_trg_mssm = (trg_tot==0) ? tau_trg_mssm : tau_trg_mssm/trg_tot;
+
+      event->Add("wt_tau_trg_mssm_doubleonly",tau_trg_mssm_double);
+      event->Add("wt_tau_trg_mssm",tau_trg_mssm);
+ 
      if(trg_applied_in_mc_){
        tau1_trg = tau1_trg / tau1_trg_mc;
        tau2_trg = tau2_trg / tau2_trg_mc;

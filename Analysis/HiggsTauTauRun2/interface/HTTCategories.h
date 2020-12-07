@@ -167,7 +167,9 @@ class HTTCategories : public ModuleBase {
 
   double newmet_dphi_1_;
   double newmet_dphi_2_;
+  double fake_met_dphi_2_;
   double newmet_;
+  double fake_met_;
   double qcd_frac_score_, w_frac_score_;
   double w_frac_, qcd_frac_, ttbar_frac_;
 
@@ -755,6 +757,7 @@ class HTTCategories : public ModuleBase {
   bool trg_singlemuon_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
+  bool trg_doubletau_mssm_;
   bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
@@ -927,6 +930,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_mvadm2_down_;
   double wt_tau_trg_mvadm10_down_;
   double wt_tau_trg_mvadm11_down_;
+
+  double wt_tau_trg_mssm_doubleonly_, wt_tau_trg_mssm_, wt_tau_id_mssm_;
 
   double wt_tau_id_mvadm_;
   double wt_tau_id_lowpt_mvadm0_up_;

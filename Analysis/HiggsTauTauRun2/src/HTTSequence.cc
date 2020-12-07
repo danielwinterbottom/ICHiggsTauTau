@@ -400,6 +400,36 @@ void HTTSequence::BuildSequence(){
 
 if(!is_data && js["do_gen_analysis"].asBool()){
 
+  // do pu weights for MC samples
+
+  TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
+  TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
+  if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
+    BuildModule( PileupWeight("PileupWeight")
+        .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+  }
+
+  // do stitching for dy samples:
+  HTTStitching httStitching = HTTStitching("HTTStitching")
+      .set_era(era_type)
+      .set_fs(fs.get());
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+    httStitching.set_do_dy_soup(true);
+    if(era_type == era::data_2016) {
+      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
+    }
+    if(era_type == era::data_2017) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(48590164+49031214,42205667+33563494,88795+9871382,1147725+5740168,4317756);
+    }
+    if(era_type == era::data_2018) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
+    }
+  }
+  BuildModule(httStitching);
+
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
@@ -493,12 +523,15 @@ httPairSelector.set_gen_taus_label("genParticles");
 BuildModule(httPairSelector);
  
 if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
+
+  bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
   BuildModule(HTTTriggerFilter("HTTTriggerFilter")
       .set_channel(channel)
       .set_mc(mc_type)
       .set_era(era_type)
       .set_strategy(strategy_type)
       .set_is_data(is_data)
+      .set_tau_dataset(tau_dataset)
       .set_is_embedded(is_embedded)
       .set_do_singletau(js["do_singletau"].asBool())
       .set_do_filter(false)
