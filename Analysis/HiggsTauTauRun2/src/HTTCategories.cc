@@ -2160,7 +2160,10 @@ namespace ic {
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     std::vector<PFJet*> prebjets = lowpt_jets;
-    ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+
+    double eta_cut = 2.4;
+    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
