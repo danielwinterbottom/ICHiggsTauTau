@@ -24,7 +24,7 @@ param_files = {'2016':'scripts/params_mssm_2016.json',
               }
 
 datacard_base = '/vols/cms/gu18/CombineCMSSW/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy'
-cmssw_base = '/vols/cms/gu18/AnalyserCMSSW/CMSSW_8_0_25'
+cmssw_base = '/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19'
 
 def validate_channel(channel):
   assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
@@ -208,39 +208,39 @@ if not options.batch_name_changes:
     BINS_CONTROL = "[100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100]"
 
     categories_et = [
-                     #"inclusive",
+                     "inclusive",
                      "nobtag_tightmt",
                      "nobtag_loosemt",
                      "btag_tightmt",
                      "btag_loosemt",
-                     #"wjets_control",
+                     "wjets_control",
     ]
 
     categories_mt = [
-                     #"inclusive",
+                     "inclusive",
                      "nobtag_tightmt",
                      "nobtag_loosemt",
                      "btag_tightmt",
                      "btag_loosemt",
-                     #"wjets_control",
+                     "wjets_control",
     ]
 
     categories_tt = [
-                     #"inclusive",
+                     "inclusive",
                      "btag",
                      "nobtag",
-                     #"qcd_control",
+                     "qcd_control",
     ]
 
     categories_em = [
-                     #"inclusive",
+                     "inclusive",
                      "nobtag_highdzeta",
                      "nobtag_mediumdzeta",
                      "nobtag_lowdzeta",
                      "btag_highdzeta",
                      "btag_mediumdzeta",
                      "btag_lowdzeta",
-                     #"ttbar_control",
+                     "ttbar_control",
     ]
  
     ANA = 'mssm-vs-sm-Run%(year)s' % vars()
@@ -251,6 +251,61 @@ if not options.batch_name_changes:
       'em' : categories_em,
       'tt' : categories_tt
     }
+
+    ### Systematics ###
+
+    common_shape_systematics = (
+      ' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV"' # Tau ID efficiency
+      ' --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV"' # Tau Trigger efficiency
+      ' --syst_tau_scale_grouped="CMS_scale_t_*group_13TeV"' # Tau energy scale
+      ' --syst_zwt="CMS_htt_dyShape_13TeV"' # DY m_ll pT re-weighting
+      ' --syst_tquark="CMS_htt_ttbarShape_13TeV"' # Top pT re-weighting
+      ' --syst_prefire="CMS_PreFire_13TeV"' # Prefiring
+      ' --syst_qcd_scale="CMS_scale_gg_13TeV"' # QCD estimate uncertainties
+      ' --syst_ps="CMS_*PS_ggH_13TeV"'
+      ' --syst_res_j="CMS_res_j_13TeV"' # Jet energy resolution
+      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV"' # MET unclustered energy uncertainty
+      ' --syst_scale_met="CMS_htt_boson_scale_met_13TeV"'
+      ' --syst_res_met="CMS_htt_boson_reso_met_13TeV"'
+      ' --syst_scale_j="CMS_scale_j_13TeV"' # Jet energy scale
+      ' --syst_embedding_tt="CMS_ttbar_embeded_13TeV"' # ttbar contamination in embedding
+    )
+
+    # need lepton trigger efficiency
+    et_shape_systematics = (
+      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV"'
+      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV"'
+      ' --syst_e_scale="CMS_scale_e_13TeV"'
+    )
+
+    mt_shape_systematics = (
+      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV"'
+      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV"'
+      ' --syst_mu_scale="CMS_scale_mu_13TeV"'
+    )
+
+    tt_shape_systematics = (
+    )
+
+    # l to tau h fake energy scale?
+    # MET recoil correction uncertainties
+    # tau_h tracking efficiency in embedding
+    # Additional bin-by-bin uncertainties in embedded events in the emu channel
+    # Fake-factor uncertainties
+    # lepton to tau fake rate
+    # Bin-by-bin uncertainties
+    # Background normalization uncertainty
+    # Theory uncertainties
+
+    extra_channel = {
+        "et" : common_shape_systematics+et_shape_systematics,
+        "mt" : common_shape_systematics+mt_shape_systematics,
+        "tt" : common_shape_systematics+tt_shape_systematics,
+    }
+
+
 
     var     = 'mt_tot'
     dc_app  = '-mttot'
@@ -281,7 +336,8 @@ if not options.batch_name_changes:
 
         if control and 'control' not in cat:
           continue
-
+        
+        add_cond += extra_channel[ch]
         run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --wp=%(wp)s --no_plot %(add_cond)s' % vars()
         hadd_cmd = 'hadd -f %(out_fold)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()
         rm_dc_cmd = 'rm %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()      

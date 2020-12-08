@@ -61,7 +61,7 @@ defaults = {
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
-    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False
+    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":True
 
 }
 
@@ -389,6 +389,7 @@ print 'syst_scale_j      ='  ,  options.syst_scale_j
 print 'syst_eff_b        ='  ,  options.syst_eff_b
 print 'syst_fake_b       ='  ,  options.syst_fake_b
 print 'do_ff_systs       ='  ,  options.do_ff_systs
+print 'singletau         ='  ,  options.singletau
 print '###############################################'
 print ''
 
@@ -444,28 +445,30 @@ elif options.analysis == 'mssmrun2':
     wp = options.wp
     if options.channel == 'mt':
       if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if singletau:
+        if options.singletau:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&pt_2<120&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)))' % vars()
         else:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)))' % vars()
       if options.era in ['cpsummer17','cp18']:
-      if singletau:
-    	  cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)))' % vas()
-      else:
-        cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)))' % vars()
+        if options.singletau:
+    	    cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)))' % vars()
+        else:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)))' % vars()
     if options.channel == 'et':
       if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if singletau:
+        if options.singletau:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron ||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
         else:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron) && pt_2>30)' % vars()
       if options.era in ['cpsummer17']:
-        if singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
+        if options.singletau:
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
         else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30)' % vars()
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30)' % vars()
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
       if options.era in ['cp18']:
-        if singletau:
+        if options.singletau:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
         else:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)) && pt_2>30)' % vars()
@@ -503,7 +506,7 @@ if options.channel == 'tt':
 
     if options.analysis in ['mssmrun2']:
       wp = options.wp
-      if singletau:
+      if options.singletau:
         if options.era=='legacy16':
           cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>120 && trg_singletau_1) || (pt_2>120 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
         else:
