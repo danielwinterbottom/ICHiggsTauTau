@@ -287,6 +287,9 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_isr_down_;
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
+
+  double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
+  int gen_tau_dm_1_;
   
  public:
   HTTGenAnalysis(std::string const& name);

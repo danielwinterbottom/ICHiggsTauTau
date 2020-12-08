@@ -106,6 +106,9 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     mets = event->GetPtr<Met>("pfMET");
     double fake_met = (mets->vector() - neutrinos).Pt();
     event->Add("fake_met",fake_met);
+     ROOT::Math::PtEtaPhiEVector  fake_met_vec = (mets->vector() - neutrinos);
+    
+    event->Add("fake_met_vec",fake_met_vec);
 
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();

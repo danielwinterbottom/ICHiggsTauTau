@@ -142,6 +142,13 @@ namespace ic {
         outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
         outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
       }
+      outtree_->Branch("tau_pt_1_tt"        , &tau_pt_1_tt_        );
+      outtree_->Branch("tau_pt_1_mt"        , &tau_pt_1_mt_        );
+      outtree_->Branch("tau_pt_1_et"        , &tau_pt_1_et_        );
+      outtree_->Branch("tau_pt_1_sf"        , &tau_pt_1_sf_        );
+      outtree_->Branch("gen_tau_pt_1"        , &gen_tau_pt_1_        );
+      outtree_->Branch("gen_tau_eta_1"        , &gen_tau_eta_1_        );
+      outtree_->Branch("gen_tau_dm_1"        , &gen_tau_dm_1_        );
       outtree_->Branch("passed"       ,&passed_       );
       outtree_->Branch("pt_1"        , &pt_1_        );
       outtree_->Branch("pt_2"        , &pt_2_        );
@@ -398,7 +405,8 @@ namespace ic {
     else D0star_ = -9999;
     
     std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
-    std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
+    std::vector<ic::GenJet*> gen_jets;
+    if(event->ExistsInTree("genJets")) gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
 
     std::vector<ic::GenParticle> higgs_products;
     std::vector<ic::GenParticle> gen_taus;
@@ -664,6 +672,49 @@ namespace ic {
     for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
     ic::erase_if(gen_tau_jets_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
     std::sort(gen_tau_jets_ptr.begin(), gen_tau_jets_ptr.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+
+
+    tau_pt_1_tt_=-9999; 
+    tau_pt_1_mt_=-9999; 
+    tau_pt_1_et_=-9999; 
+    tau_pt_1_sf_=-9999; 
+    gen_tau_pt_1_=-9999;
+    gen_tau_dm_1_=-1;
+    gen_tau_eta_1_=-9999;
+    // match gen tau jets to taus passing selections for et, mt, and tt channels
+    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+      std::vector<GenJet *> lead_gen_tau = {gen_tau_jets_ptr[0]};
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      ic::erase_if(taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));         
+      std::vector<Tau *> taus_tt;
+      std::vector<Tau *> taus_mt;
+      std::vector<Tau *> taus_et;
+      std::vector<Tau *> taus_sf;
+
+      gen_tau_pt_1_ = lead_gen_tau[0]->pt();
+      gen_tau_eta_1_ = lead_gen_tau[0]->eta();
+      gen_tau_dm_1_ = lead_gen_tau[0]->flavour();
+
+      for(auto t : taus) {
+        if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) {
+        taus_tt.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSe") > 0.5 )  taus_et.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSmu") > 0.5 ) taus_mt.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSe") > 0.5 ) taus_sf.push_back(t);
+        }
+      }
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> mt_matches =  MatchByDR(lead_gen_tau,taus_mt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> et_matches =  MatchByDR(lead_gen_tau,taus_et,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> sf_matches =  MatchByDR(lead_gen_tau,taus_sf,0.5,true,true); 
+ 
+      if(tt_matches.size()>0) tau_pt_1_tt_=tt_matches[0].second->pt();
+      if(mt_matches.size()>0) tau_pt_1_mt_=mt_matches[0].second->pt();
+      if(et_matches.size()>0) tau_pt_1_et_=et_matches[0].second->pt();
+      if(sf_matches.size()>0) tau_pt_1_sf_=sf_matches[0].second->pt();
+ 
+    }
+
     cp_sign_1_ = 999;
     cp_sign_2_ = 999;
     cp_sign_3_ = 999;
@@ -1614,9 +1665,10 @@ namespace ic {
       //cp_channel_=1;
     }
 
+    std::vector<ic::Vertex*> gen_vertices;
+    if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");  
     if (pi_daughters.size()==2 && prho_daughters.size()==2){
         cp_channel_=1;
-        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
 
         TLorentzVector pvtosv1(
                 pi_daughters[0]->vtx().vx() - prho_daughters[0].second->vtx().vx(),
@@ -1649,7 +1701,6 @@ namespace ic {
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
         //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
         //for (unsigned i = 0; i < vertex_vec.size(); i++) {
         //  reco_pvx_ = vertex_vec[0]->vx();
         //  reco_pvy_ = vertex_vec[0]->vy();
@@ -1678,7 +1729,6 @@ namespace ic {
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
         //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
         //for (unsigned i = 0; i < vertex_vec.size(); i++) {
         //  reco_pvx_ = vertex_vec[0]->vx();
         //  reco_pvy_ = vertex_vec[0]->vy();
@@ -1706,7 +1756,6 @@ namespace ic {
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
         cp_channel_=5;
         std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
         for (unsigned i = 0; i < vertex_vec.size(); i++) {
           reco_pvx_ = vertex_vec[0]->vx();
           reco_pvy_ = vertex_vec[0]->vy();
@@ -1749,7 +1798,6 @@ namespace ic {
 
         cp_channel_=51;
         std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
         for (unsigned i = 0; i < vertex_vec.size(); i++) {
           reco_pvx_ = vertex_vec[0]->vx();
           reco_pvy_ = vertex_vec[0]->vy();
@@ -2087,7 +2135,6 @@ namespace ic {
     std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
     // std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("verticesBS"); 
     std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
-    std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); 
 
  
     if (vertex_vec.size() > 0) {

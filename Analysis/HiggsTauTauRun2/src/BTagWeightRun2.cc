@@ -104,7 +104,9 @@ namespace ic {
 
   int BTagWeightRun2::Execute(TreeEvent *event) {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
-    ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    double eta_cut = 2.4;
+    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     if (!do_reshape_){
       std::map<std::size_t, bool> retag_result = ReTag(embed_jets, btag_mode_, bfake_mode_);
       event->Add("retag_result"+add_name_, retag_result);

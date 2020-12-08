@@ -30,6 +30,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
+    std::cout << boost::format(param_fmt()) % "tau_dataset"         % tau_dataset_;
     std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
     std::cout << boost::format(param_fmt()) % "do_singletau"    % do_singletau_;
     std::cout << boost::format(param_fmt()) % "do_filter"       % do_filter_;
@@ -588,8 +589,6 @@ namespace ic {
       double pt = elec->pt();
       if(pt<40 && eta>1.479) passed_singleelectron = true;
     }
-    event->Add("trg_singlemuon", passed_singlemuon);
-    event->Add("trg_singleelectron", passed_singleelectron);
 
     // mutau cross triggers
     bool passed_mutaucross = false;
@@ -615,6 +614,11 @@ namespace ic {
         }
         if(passed_mutaucross || passed_mutaucross_alt) dileptons_pass.push_back(dileptons[i]);
       }
+    }
+
+    if(is_data_ && channel_ == channel::mt && tau_dataset_) {
+      passed_mutaucross=false;
+      passed_mutaucross_alt=false;
     }
     event->Add("trg_mutaucross", passed_mutaucross || passed_mutaucross_alt);
     
@@ -652,6 +656,8 @@ namespace ic {
       if(passed_etaucross) dileptons_pass.push_back(dileptons[i]);
       }
     }
+
+    if(is_data_ && channel_ == channel::et && tau_dataset_) passed_etaucross=false;
     event->Add("trg_etaucross", passed_etaucross);
 
    
@@ -727,6 +733,7 @@ namespace ic {
     event->Add("trg_muonelectron",   passed_muonelectron);
    
    bool passed_doubletau = false;
+   bool passed_doubletau_extra = false;
    bool passed_vbfdoubletau = false;
    bool match_l1_parts = false;
    bool jetleg1_match = false;
@@ -766,6 +773,24 @@ namespace ic {
               dileptons_pass.push_back(dileptons[i]);
             }
         }
+        if(era_ == era::data_2016 && is_embedded_){
+          std::string trig_obj_label_embed = "triggerObjectsDoubleMediumTau35";
+          std::string alt_trig_obj_label_embed = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
+
+          std::vector<TriggerObject *> objs_embed = event->GetPtrVec<TriggerObject>(trig_obj_label_embed);
+          std::vector<TriggerObject *> alt_objs_embed = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_embed);
+          std::string leg1_filter_embed = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
+          std::string leg2_filter_embed = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
+          std::string alt_leg1_filter_embed = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+          std::string alt_leg2_filter_embed = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+          bool leg1_match_embed = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs_embed, leg1_filter_embed, 0.5).first;
+          bool leg2_match_embed = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs_embed, leg2_filter_embed, 0.5).first;
+          bool alt_leg1_match_embed = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_embed, alt_leg1_filter_embed, 0.5).first;
+          bool alt_leg2_match_embed = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_embed, alt_leg2_filter_embed, 0.5).first;
+     
+          passed_doubletau_extra = (leg1_match_embed&&leg2_match_embed) || (alt_leg1_match_embed&&alt_leg2_match_embed);
+
+        } else passed_doubletau_extra = true;
         
         if(era_ == era::data_2017){
           // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
@@ -814,6 +839,7 @@ namespace ic {
       }
     }
     event->Add("trg_doubletau", passed_doubletau);
+    event->Add("trg_doubletau_mssm", (passed_doubletau&&passed_doubletau_extra));
     event->Add("trg_vbfdoubletau", passed_vbfdoubletau);
     
     bool passed_singletau_1 = false;
@@ -853,9 +879,27 @@ namespace ic {
         if(passed_singletau_1 || passed_singletau_2) dileptons_pass.push_back(dileptons[i]);
       }
     }
+
+    // when running on data we need to veto events in the Tau dataset that passed the single lepton triggers and veto events in the SingleLepton datasets that pass the singletau triggers  - so that events are not double counted
+    if(is_data_ && channel_ == channel::mt && ((passed_singlemuon && tau_dataset_) || !tau_dataset_)) {
+      passed_singletau_1 = false;
+      passed_singletau_2 = false;
+    }
+    if(is_data_ && channel_ == channel::et && ((passed_singleelectron && tau_dataset_) || !tau_dataset_)) {
+      passed_singletau_1 = false;
+      passed_singletau_2 = false;
+    }  
     event->Add("trg_singletau_1", passed_singletau_1);
     event->Add("trg_singletau_2", passed_singletau_2);
-    
+
+    if(is_data_ && (channel_ == channel::mt || channel_ == channel::et) && tau_dataset_) {
+      passed_singlemuon=false;
+      passed_singleelectron=false;
+    }
+
+    event->Add("trg_singlemuon", passed_singlemuon);
+    event->Add("trg_singleelectron", passed_singleelectron);
+ 
     if(!do_filter_){
       return 0;    
     }

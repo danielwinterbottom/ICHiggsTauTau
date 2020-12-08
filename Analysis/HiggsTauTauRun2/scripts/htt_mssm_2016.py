@@ -241,7 +241,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
            data_samples+=['MuonEG'+era]
       if 'tt' in chn:
            data_samples+=['Tau'+era]
-        
+    if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
+      for era in data_eras:
+        data_samples+=['Tau'+era]        
 
   DATAFILELIST="./filelists/Sep18_2016_Data_102X"
 
@@ -370,7 +372,7 @@ if options.proc_bkg or options.proc_all:
     'WGToLNuG-ext3',
     'WGstarToLNuMuMu',
     'WGstarToLNuEE',
-    'DYJetsToLL',
+    #'DYJetsToLL',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
     'DY1JetsToLL-LO',
@@ -382,8 +384,8 @@ if options.proc_bkg or options.proc_all:
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q', 
-    ##'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
-    ##'WWToLNuQQ-ext',
+    #'WWToLNuQQ', # didn't find filelist for these two...same as above anyway
+    #'WWToLNuQQ-ext',
     'WZTo2L2Q',
     'WZTo1L3Nu',
     'WZTo1L1Nu2Q',
