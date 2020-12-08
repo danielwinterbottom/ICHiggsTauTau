@@ -247,7 +247,7 @@ if not options.batch_name_changes:
 
     cat_schemes = {
       'et' : categories_et,
-      'mt' : categories_mt,
+     'mt' : categories_mt,
       'em' : categories_em,
       'tt' : categories_tt
     }
@@ -262,11 +262,8 @@ if not options.batch_name_changes:
       ' --syst_tquark="CMS_htt_ttbarShape_13TeV"' # Top pT re-weighting
       ' --syst_prefire="CMS_PreFire_13TeV"' # Prefiring
       ' --syst_qcd_scale="CMS_scale_gg_13TeV"' # QCD estimate uncertainties
-      ' --syst_ps="CMS_*PS_ggH_13TeV"'
       ' --syst_res_j="CMS_res_j_13TeV"' # Jet energy resolution
       ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV"' # MET unclustered energy uncertainty
-      ' --syst_scale_met="CMS_htt_boson_scale_met_13TeV"'
-      ' --syst_res_met="CMS_htt_boson_reso_met_13TeV"'
       ' --syst_scale_j="CMS_scale_j_13TeV"' # Jet energy scale
       ' --syst_embedding_tt="CMS_ttbar_embeded_13TeV"' # ttbar contamination in embedding
     )
@@ -274,37 +271,43 @@ if not options.batch_name_changes:
     # need lepton trigger efficiency
     et_shape_systematics = (
       ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV"'
-      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV"'
-      ' --syst_e_scale="CMS_scale_e_13TeV"'
+      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV"' # l to tau h fake energy scale
+      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV"' # l to tau h fake energy scale
+      ' --syst_e_scale="CMS_scale_e_13TeV"' # Election energy scale
+      ' --do_ff_systs' 
     )
 
     mt_shape_systematics = (
       ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV"'
-      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV"'
-      ' --syst_mu_scale="CMS_scale_mu_13TeV"'
+      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV"' # l to tau h fake energy scale
+      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV"' # l to tau h fake energy scale
+      ' --syst_mu_scale="CMS_scale_mu_13TeV"' # Muon energy scale - Not in analysis note
+      ' --do_ff_systs'
     )
 
     tt_shape_systematics = (
+      ' --do_ff_systs'
+    )
+   
+    em_shape_systematics = (
     )
 
-    # l to tau h fake energy scale?
+    
+    #### Missing Systematics ####
     # MET recoil correction uncertainties
-    # tau_h tracking efficiency in embedding
+    # tau h tracking efficiency in embedding
     # Additional bin-by-bin uncertainties in embedded events in the emu channel
-    # Fake-factor uncertainties
     # lepton to tau fake rate
     # Bin-by-bin uncertainties
     # Background normalization uncertainty
     # Theory uncertainties
 
     extra_channel = {
+        "em" : common_shape_systematics+em_shape_systematics,
         "et" : common_shape_systematics+et_shape_systematics,
         "mt" : common_shape_systematics+mt_shape_systematics,
         "tt" : common_shape_systematics+tt_shape_systematics,
     }
-
 
 
     var     = 'mt_tot'
