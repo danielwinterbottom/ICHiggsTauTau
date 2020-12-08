@@ -2367,19 +2367,60 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs={}
 
     for i in [1,2]:
-      tt_systs['ff_tt_qcd_stat_dR_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
-      tt_systs['ff_tt_qcd_stat_pt_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
-    tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
-    tt_systs['ff_tt_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    tt_systs['ff_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+      tt_systs['ff_mssm_tt_qcd_stat_dR_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
+      tt_systs['ff_mssm_tt_qcd_stat_pt_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
+    tt_systs['ff_mssm_tt_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    tt_systs['ff_mssm_tt_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    tt_systs['ff_mssm_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
-    for njet in ['0','1']:
+    for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
-          tt_systs[('ff_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars()
+          tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars()
 
     for template_name in tt_systs:
       weight_name = tt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+  elif options.channel in ['et','mt']:
+    lt_systs={}
+    ch = options.channel
+
+    for njet in [0,1]:
+      for i in [1,2]:
+        lt_systs['ff_mssm_%(ch)s_qcd_stat_ss_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['ff_mssm_%(ch)s_wjets_stat_met_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['ff_mssm_%(ch)s_wjets_stat_l_pt_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
+
+    for i in [1,2]:
+      lt_systs['ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_qcd_stat_iso_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_qcd_stat_iso_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_wjets_stat_extrap_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_wjets_stat_extrap_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_ttbar_stat_met_unc%(i)i' % vars()] = 'wt_ff_mssm_%(ch)s_ttbar_stat_met_unc%(i)i_' % vars()
+
+    lt_systs['ff_mssm_%(ch)s_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    lt_systs['ff_mssm_%(ch)s_qcd_syst_iso' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
+    lt_systs['ff_mssm_%(ch)s_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    lt_systs['ff_mssm_%(ch)s_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+
+    lt_systs['ff_mssm_%(ch)s_qcd_frac' % vars()] = 'wt_ff_mssm_qcd_frac_' % vars()
+    lt_systs['ff_mssm_%(ch)s_wjets_frac' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
+    lt_systs['ff_mssm_%(ch)s_ttbar_frac' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
+  
+    lt_systs['ff_mssm_%(ch)s_low_pt' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
+
+    for njet in [0,1]:
+      for jetpt in ['low','med','high']:
+        for i in [1,2,3]:
+          lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars()
+        for i in [1,2,3,4]:
+          lt_systs[('ff_mssm_%(ch)s_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars()
+        for i in [1,2,3]:
+          lt_systs[('ff_mssm_%(ch)s_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_jet_pt_%(jetpt)s_unc%(i)i' % vars()
+
+    for template_name in lt_systs:
+      weight_name = lt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
