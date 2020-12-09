@@ -55,31 +55,84 @@ wp = 'medium'
 
 loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/ff_%(channel)s_%(year)s_new/' % vars()
 
-histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_qcd' % vars(),   'lt_fracs_nbjets0_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_qcd' % vars(),   'lt_fracs_nbjets1_os_qcd' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_qcd' % vars(),   'lt_fracs_nbjets0_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_qcd' % vars(),   'lt_fracs_nbjets1_ss_qcd' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_wjets' % vars(), 'lt_fracs_nbjets0_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_wjets' % vars(), 'lt_fracs_nbjets1_os_wjets' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_wjets' % vars(), 'lt_fracs_nbjets0_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_wjets' % vars(), 'lt_fracs_nbjets1_ss_wjets' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_ttbar' % vars(), 'lt_fracs_nbjets0_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_ttbar' % vars(), 'lt_fracs_nbjets1_os_ttbar' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_ttbar' % vars(), 'lt_fracs_nbjets0_ss_ttbar' % vars()),
-               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_ttbar' % vars(), 'lt_fracs_nbjets1_ss_ttbar' % vars()),
+#histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_qcd' % vars(),   'lt_fracs_nbjets0_os_qcd' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_qcd' % vars(),   'lt_fracs_nbjets1_os_qcd' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_qcd' % vars(),   'lt_fracs_nbjets0_ss_qcd' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_qcd' % vars(),   'lt_fracs_nbjets1_ss_qcd' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_wjets' % vars(), 'lt_fracs_nbjets0_os_wjets' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_wjets' % vars(), 'lt_fracs_nbjets1_os_wjets' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_wjets' % vars(), 'lt_fracs_nbjets0_ss_wjets' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_wjets' % vars(), 'lt_fracs_nbjets1_ss_wjets' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_ttbar' % vars(), 'lt_fracs_nbjets0_os_ttbar' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_ttbar' % vars(), 'lt_fracs_nbjets1_os_ttbar' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_ss_ttbar' % vars(), 'lt_fracs_nbjets0_ss_ttbar' % vars()),
+#               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_ss_ttbar' % vars(), 'lt_fracs_nbjets1_ss_ttbar' % vars()),
+#              ]
+
+histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_os_qcd' % vars(),   'lt_fracs_tightmt_nbjets0_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_os_qcd' % vars(),   'lt_fracs_tightmt_nbjets1_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_ss_qcd' % vars(),   'lt_fracs_tightmt_nbjets0_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_ss_qcd' % vars(),   'lt_fracs_tightmt_nbjets1_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_os_wjets' % vars(), 'lt_fracs_tightmt_nbjets0_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_os_wjets' % vars(), 'lt_fracs_tightmt_nbjets1_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_ss_wjets' % vars(), 'lt_fracs_tightmt_nbjets0_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_ss_wjets' % vars(), 'lt_fracs_tightmt_nbjets1_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_os_ttbar' % vars(), 'lt_fracs_tightmt_nbjets0_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_os_ttbar' % vars(), 'lt_fracs_tightmt_nbjets1_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets0_ss_ttbar' % vars(), 'lt_fracs_tightmt_nbjets0_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_tightmt_nbjets1_ss_ttbar' % vars(), 'lt_fracs_tightmt_nbjets1_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_os_qcd' % vars(),   'lt_fracs_loosemt_nbjets0_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_os_qcd' % vars(),   'lt_fracs_loosemt_nbjets1_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_ss_qcd' % vars(),   'lt_fracs_loosemt_nbjets0_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_ss_qcd' % vars(),   'lt_fracs_loosemt_nbjets1_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_os_wjets' % vars(), 'lt_fracs_loosemt_nbjets0_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_os_wjets' % vars(), 'lt_fracs_loosemt_nbjets1_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_ss_wjets' % vars(), 'lt_fracs_loosemt_nbjets0_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_ss_wjets' % vars(), 'lt_fracs_loosemt_nbjets1_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_os_ttbar' % vars(), 'lt_fracs_loosemt_nbjets0_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_os_ttbar' % vars(), 'lt_fracs_loosemt_nbjets1_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets0_ss_ttbar' % vars(), 'lt_fracs_loosemt_nbjets0_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_loosemt_nbjets1_ss_ttbar' % vars(), 'lt_fracs_loosemt_nbjets1_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_os_qcd' % vars(),   'lt_fracs_control_nbjets0_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_os_qcd' % vars(),   'lt_fracs_control_nbjets1_os_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_ss_qcd' % vars(),   'lt_fracs_control_nbjets0_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_ss_qcd' % vars(),   'lt_fracs_control_nbjets1_ss_qcd' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_os_wjets' % vars(), 'lt_fracs_control_nbjets0_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_os_wjets' % vars(), 'lt_fracs_control_nbjets1_os_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_ss_wjets' % vars(), 'lt_fracs_control_nbjets0_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_ss_wjets' % vars(), 'lt_fracs_control_nbjets1_ss_wjets' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_os_ttbar' % vars(), 'lt_fracs_control_nbjets0_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_os_ttbar' % vars(), 'lt_fracs_control_nbjets1_os_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets0_ss_ttbar' % vars(), 'lt_fracs_control_nbjets0_ss_ttbar' % vars()),
+               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_control_nbjets1_ss_ttbar' % vars(), 'lt_fracs_control_nbjets1_ss_ttbar' % vars()),
               ]
+
+
+#for task in histsToWrap:
+#   wsptools.SafeWrapHist(
+#     w, ['expr::mt_max120("min(119.9,@0)",mt[0])'],
+#     GetFromTFile(task[0]),
+#     name=task[1])
+
+#for i in ['qcd','wjets','ttbar']:
+  #w.factory('expr::lt_fracs_%(i)s_nom("(@0!=0)*((@1==0)*(@2)+(@1>=1)*@3)+(@0==0)*((@1==0)*(@4)+(@1>=1)*@5)", os[1],nbjets[0],lt_fracs_nbjets0_os_%(i)s,lt_fracs_nbjets1_os_%(i)s,lt_fracs_nbjets0_ss_%(i)s,lt_fracs_nbjets1_ss_%(i)s)' % vars())
+
+  # if the fractions are set by the user then overwrite these values
+  #w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
 
 for task in histsToWrap:
    wsptools.SafeWrapHist(
-     w, ['expr::mt_max120("min(119.9,@0)",mt[0])'],
+     w, ['expr::mt_tot_max3000("min(2999.9,@0)",mt_tot[0])'],
      GetFromTFile(task[0]),
      name=task[1])
 
+
 for i in ['qcd','wjets','ttbar']:
-  w.factory('expr::lt_fracs_%(i)s_nom("(@0!=0)*((@1==0)*(@2)+(@1>=1)*@3)+(@0==0)*((@1==0)*(@4)+(@1>=1)*@5)", os[1],nbjets[0],lt_fracs_nbjets0_os_%(i)s,lt_fracs_nbjets1_os_%(i)s,lt_fracs_nbjets0_ss_%(i)s,lt_fracs_nbjets1_ss_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom("(@0!=0)*( (@1==0 && @2<40)*(@3)+ (@1==0 && @2>40 && @2<70)*(@4) + (@1==0 && @2>70)*(@5) ) + (@0==0)*( (@1>0 && @2<40)*(@6)+ (@1>0 && @2>40 && @2<70)*(@7) + (@1>0 && @2>70)*(@8) )", os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets0_os_%(i)s,lt_fracs_loosemt_nbjets0_os_%(i)s,lt_fracs_control_nbjets0_os_%(i)s,lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s,lt_fracs_tightmt_nbjets0_ss_%(i)s,lt_fracs_loosemt_nbjets0_ss_%(i)s,lt_fracs_control_nbjets0_ss_%(i)s,lt_fracs_tightmt_nbjets1_ss_%(i)s,lt_fracs_loosemt_nbjets1_ss_%(i)s,lt_fracs_control_nbjets1_ss_%(i)s)' % vars())
 
   # if the fractions are set by the user then overwrite these values
   w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
+
 
 w.factory('expr::pt_bounded("max(min(599.9,@0),20)",pt[0])' % vars())
 w.factory('expr::pt_bounded140("max(min(139.9,@0),20)",pt[0])' % vars())
