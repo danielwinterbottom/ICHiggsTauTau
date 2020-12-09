@@ -2,7 +2,7 @@
 
 # python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium
 # python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium --batch
-# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --name_changes --channels=tt --wp=medium --singletau --sf --batch 
+# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --name_changes --channels='tt,mt,et,em' --wp=medium --singletau --batch 
 
 import sys
 from optparse import OptionParser
@@ -22,6 +22,9 @@ param_files = {'2016':'scripts/params_mssm_2016.json',
                '2017':'scripts/params_mssm_2017.json',
                '2018':'scripts/params_mssm_2018.json',
               }
+
+datacard_base = '/vols/cms/gu18/CombineCMSSW/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy'
+cmssw_base = '/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19'
 
 def validate_channel(channel):
   assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
@@ -244,41 +247,85 @@ if not options.batch_name_changes:
 
     cat_schemes = {
       'et' : categories_et,
-      'mt' : categories_mt,
+     'mt' : categories_mt,
       'em' : categories_em,
       'tt' : categories_tt
     }
 
+    ### Systematics ###
+
+    common_shape_systematics = (
+      ' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV"' # Tau ID efficiency
+      ' --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV"' # Tau Trigger efficiency
+      ' --syst_tau_scale_grouped="CMS_scale_t_*group_13TeV"' # Tau energy scale
+      ' --syst_zwt="CMS_htt_dyShape_13TeV"' # DY m_ll pT re-weighting
+      ' --syst_tquark="CMS_htt_ttbarShape_13TeV"' # Top pT re-weighting
+      ' --syst_prefire="CMS_PreFire_13TeV"' # Prefiring
+      ' --syst_qcd_scale="CMS_scale_gg_13TeV"' # QCD estimate uncertainties
+      ' --syst_res_j="CMS_res_j_13TeV"' # Jet energy resolution
+      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV"' # MET unclustered energy uncertainty
+      ' --syst_scale_j="CMS_scale_j_13TeV"' # Jet energy scale
+      ' --syst_embedding_tt="CMS_ttbar_embeded_13TeV"' # ttbar contamination in embedding
+    )
+
+    # need lepton trigger efficiency
+    et_shape_systematics = (
+      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV"' # l to tau h fake energy scale
+      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV"' # l to tau h fake energy scale
+      ' --syst_e_scale="CMS_scale_e_13TeV"' # Election energy scale
+      ' --do_ff_systs' 
+    )
+
+    mt_shape_systematics = (
+      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV"' # l to tau h fake energy scale
+      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV"' # l to tau h fake energy scale
+      ' --syst_mu_scale="CMS_scale_mu_13TeV"' # Muon energy scale - Not in analysis note
+      ' --do_ff_systs'
+    )
+
+    tt_shape_systematics = (
+      ' --do_ff_systs'
+    )
+   
+    em_shape_systematics = (
+    )
+
+    
+    #### Missing Systematics ####
+    # MET recoil correction uncertainties
+    # tau h tracking efficiency in embedding
+    # Additional bin-by-bin uncertainties in embedded events in the emu channel
+    # lepton to tau fake rate
+    # Bin-by-bin uncertainties
+    # Background normalization uncertainty
+    # Theory uncertainties
+
+    extra_channel = {
+        "em" : common_shape_systematics+em_shape_systematics,
+        "et" : common_shape_systematics+et_shape_systematics,
+        "mt" : common_shape_systematics+mt_shape_systematics,
+        "tt" : common_shape_systematics+tt_shape_systematics,
+    }
+
+
     var     = 'mt_tot'
     dc_app  = '-mttot'
 
-    cmssw_base = '/vols/build/cms/gu18/Nov4_102X/CMSSW_8_0_25' 
-
     add_cond = '' 
     if singletau:
-      if sf:
-        add_cond = '--singletau'
-      else:
-        add_cond = '--singletau --add_wt=\'1/(trigweight_1*trigweight_2)\''
-    if no_sf:
-        add_cond = '--add_wt=\'1/(trigweight_1*trigweight_2)\''
+      add_cond = '--singletau --add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm\''
+    else:
+      add_cond = '--add_wt=\'wt_tau_trg_mssm_doubleonly*wt_tau_id_mssm\''
 
     for ch in channels:
       categories = cat_schemes[ch]
 
       if singletau:
-        if sf:
-          out_fold = '/vols/build/cms/gu18/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes_ICL_singletau_sf/%(year)s/%(ch)s' % vars()
-        else:
-          out_fold = '/vols/build/cms/gu18/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes_ICL_singletau_nosf/%(year)s/%(ch)s' % vars()
+        out_fold = '%(datacard_base)s/shapes_ICL_singletau/%(year)s/%(ch)s' % vars()
       else:
-        if no_sf:
-          out_fold = '/vols/build/cms/gu18/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes_ICL_nosf/%(year)s/%(ch)s' % vars()
-        else:
-          if wp == 'medium':
-            out_fold = '/vols/build/cms/gu18/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes_ICL/%(year)s/%(ch)s' % vars()
-          elif wp == 'tight':
-            out_fold = '/vols/build/cms/gu18/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes_tight_ICL/%(year)s/%(ch)s' % vars()
+        out_fold = '%(datacard_base)s/shapes_ICL/%(year)s/%(ch)s' % vars()
 
 
       for cat in categories:
@@ -292,7 +339,8 @@ if not options.batch_name_changes:
 
         if control and 'control' not in cat:
           continue
-
+        
+        add_cond += extra_channel[ch]
         run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --wp=%(wp)s --no_plot %(add_cond)s' % vars()
         hadd_cmd = 'hadd -f %(out_fold)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()
         rm_dc_cmd = 'rm %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()      

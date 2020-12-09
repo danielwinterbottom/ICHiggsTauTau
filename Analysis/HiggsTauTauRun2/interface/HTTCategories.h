@@ -608,6 +608,12 @@ class HTTCategories : public ModuleBase {
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1_;
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1_;
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_up_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_down_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc2_up_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc2_down_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc3_up_1_;
+  double wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc3_down_1_;
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_up_1_;
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc1_down_1_;
   double wt_ff_mssm_qcd_stat_njet0_jet_pt_high_unc2_up_1_;
@@ -620,6 +626,12 @@ class HTTCategories : public ModuleBase {
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc2_down_1_;
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_up_1_;
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_low_unc3_down_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc1_up_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc1_down_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc2_up_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc2_down_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc3_up_1_;
+  double wt_ff_mssm_qcd_stat_njet1_jet_pt_med_unc3_down_1_;
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_up_1_;
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc1_down_1_;
   double wt_ff_mssm_qcd_stat_njet1_jet_pt_high_unc2_up_1_;
