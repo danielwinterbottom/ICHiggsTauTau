@@ -604,9 +604,9 @@ namespace ic {
               outtree_->Branch("wt_ff_mssm_ttbar_stat_jet_pt_high_unc3_up_1"  , &wt_ff_mssm_ttbar_stat_jet_pt_high_unc3_up_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_jet_pt_high_unc3_down_1"  , &wt_ff_mssm_ttbar_stat_jet_pt_high_unc3_down_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc1_up_1"  , &wt_ff_mssm_ttbar_stat_l_pt_unc1_up_1_);
-              outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc1_down_1"  ,wt_ff_mssm_ttbar_stat_l_pt_unc1_down_1_);
+              outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc1_down_1"  , &wt_ff_mssm_ttbar_stat_l_pt_unc1_down_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc2_up_1"  , &wt_ff_mssm_ttbar_stat_l_pt_unc2_up_1_);
-              outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc2_down_1"  ,wt_ff_mssm_ttbar_stat_l_pt_unc2_down_1_);
+              outtree_->Branch("wt_ff_mssm_ttbar_stat_l_pt_unc2_down_1"  , &wt_ff_mssm_ttbar_stat_l_pt_unc2_down_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_met_unc1_up_1"  , &wt_ff_mssm_ttbar_stat_met_unc1_up_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_met_unc1_down_1"  , &wt_ff_mssm_ttbar_stat_met_unc1_down_1_);
               outtree_->Branch("wt_ff_mssm_ttbar_stat_met_unc2_up_1"  , &wt_ff_mssm_ttbar_stat_met_unc2_up_1_);
