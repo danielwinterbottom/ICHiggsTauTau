@@ -443,36 +443,37 @@ if options.analysis in ['sm','cpprod','cpdecay']:
 
 elif options.analysis == 'mssmrun2':
     wp = options.wp
-    if options.channel == 'mt':
-      if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&pt_2<120&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)))' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)))' % vars()
-      if options.era in ['cpsummer17','cp18']:
-        if options.singletau:
-    	    cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)))' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)))' % vars()
-    if options.channel == 'et':
-      if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron ||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron) && pt_2>30)' % vars()
-      if options.era in ['cpsummer17']:
-        if options.singletau:
-          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
-        else:
-          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30)' % vars()
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
-      if options.era in ['cp18']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)) && pt_2>30)' % vars()
 
+    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
+      m_lowpt=23
+      e_lowpt=26
+      t_highpt=120
+      t_lowpt_mt=25
+      t_lowpt_et=25
+    if options.era in ['cpsummer17']:
+      m_lowpt=25
+      e_lowpt=28
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+    if options.era in ['cp18']:
+      m_lowpt=25
+      e_lowpt=33
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+
+    if options.channel == 'mt':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)))' % vars()
+
+    if options.channel == 'et':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else: 
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -2154,6 +2155,10 @@ if options.syst_prefire != '':
     systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down/wt_prefire', ['QCD','jetFakes','EmbedZTT'], False)
 
 if options.syst_tau_id_diff != '':
+
+#CMS_eff_trigger_et_$ERA
+#CMS_eff_xtrigger_l_et_
+
     hist_name = options.syst_tau_id_diff
     if '*PT' in hist_name:
       for i in range(1,6):
