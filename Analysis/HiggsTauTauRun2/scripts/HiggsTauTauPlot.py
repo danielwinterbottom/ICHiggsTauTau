@@ -61,7 +61,7 @@ defaults = {
     "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
-    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":True
+    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False
 
 }
 
@@ -443,36 +443,37 @@ if options.analysis in ['sm','cpprod','cpdecay']:
 
 elif options.analysis == 'mssmrun2':
     wp = options.wp
-    if options.channel == 'mt':
-      if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&pt_2<120&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)))' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>25&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>23)))' % vars()
-      if options.era in ['cpsummer17','cp18']:
-        if options.singletau:
-    	    cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)))' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>32&&fabs(eta_2)<2.1)||(trg_singlemuon&&pt_1>25)))' % vars()
-    if options.channel == 'et':
-      if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron ||(trg_singletau_2&&pt_2>120&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && (trg_singleelectron) && pt_2>30)' % vars()
-      if options.era in ['cpsummer17']:
-        if options.singletau:
-          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
-        else:
-          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30)' % vars()
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)) && pt_2>30 && (pt_1<40 && fabs(eta_1)>1.479)==0)' % vars() #temporary fix
-      if options.era in ['cp18']:
-        if options.singletau:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_2<180&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)||(trg_singletau_2&&pt_2>180&&fabs(eta_2)<2.1)) && pt_2>30)' % vars()
-        else:
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)) && pt_2>30)' % vars()
 
+    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
+      m_lowpt=23
+      e_lowpt=26
+      t_highpt=120
+      t_lowpt_mt=25
+      t_lowpt_et=25
+    if options.era in ['cpsummer17']:
+      m_lowpt=25
+      e_lowpt=28
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+    if options.era in ['cp18']:
+      m_lowpt=25
+      e_lowpt=33
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+
+    if options.channel == 'mt':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)))' % vars()
+
+    if options.channel == 'et':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else: 
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -599,7 +600,10 @@ cats['btag_tightmt'] = '(n_deepbjets>0 && mt_1<40)'
 cats['btag_loosemt'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
 
 cats['wjets_control'] = '(mt_1>70 && n_deepbjets==0)'
-cats['qcd_control'] = '(1)'
+if options.channel == "tt":
+  cats['qcd_control'] = '(1)'
+elif options.channel in ["et","mt"]:
+  cats['qcd_control'] = 'mt_1<50 && iso_1>0.05'
 
 if options.cat == 'qcd_control':
   options.do_ss = True
@@ -2154,6 +2158,10 @@ if options.syst_prefire != '':
     systematics['syst_prefire_down'] = ('' , '_'+options.syst_prefire+'Down', 'wt*wt_prefire_down/wt_prefire', ['QCD','jetFakes','EmbedZTT'], False)
 
 if options.syst_tau_id_diff != '':
+
+#CMS_eff_trigger_et_$ERA
+#CMS_eff_xtrigger_l_et_
+
     hist_name = options.syst_tau_id_diff
     if '*PT' in hist_name:
       for i in range(1,6):
@@ -2367,25 +2375,67 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs={}
 
     for i in [1,2]:
-      tt_systs['ff_tt_qcd_stat_dR_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
-      tt_systs['ff_tt_qcd_stat_pt_unc%i' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
-    tt_systs['ff_tt_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
-    tt_systs['ff_tt_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    tt_systs['ff_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+      tt_systs['ff_mssm_tt_qcd_stat_dR_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
+      tt_systs['ff_mssm_tt_qcd_stat_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
+    tt_systs['ff_mssm_tt_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    tt_systs['ff_mssm_tt_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    tt_systs['ff_mssm_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
-    for njet in ['0','1']:
+    for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
-          tt_systs[('ff_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars()
+          tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
 
     for template_name in tt_systs:
       weight_name = tt_systs[template_name]
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
-  template_name = 'ff_%s_sub_syst' % (options.channel)
-  systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
-  systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  elif options.channel in ['et','mt']:
+    lt_systs={}
+    ch = options.channel
+
+    for njet in [0,1]:
+      for i in [1,2]:
+        lt_systs['ff_mssm_%(ch)s_qcd_stat_ss_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['ff_mssm_%(ch)s_wjets_stat_met_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['ff_mssm_%(ch)s_wjets_stat_l_pt_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
+
+    for i in [1,2]:
+      lt_systs['ff_mssm_%(ch)s_qcd_stat_os_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_qcd_stat_iso_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_wjets_stat_extrap_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_ttbar_stat_met_unc%(i)i' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
+      lt_systs['ff_mssm_%(ch)s_ttbar_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_ttbar_stat_l_pt_unc%(i)i_' % vars()
+
+    lt_systs['ff_mssm_%(ch)s_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    lt_systs['ff_mssm_%(ch)s_qcd_syst_iso' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
+    lt_systs['ff_mssm_%(ch)s_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    lt_systs['ff_mssm_%(ch)s_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+
+    lt_systs['ff_mssm_%(ch)s_wjets_frac' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
+    lt_systs['ff_mssm_%(ch)s_ttbar_frac' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
+  
+    lt_systs['ff_mssm_%(ch)s_low_pt' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
+
+    for njet in [0,1]:
+      for jetpt in ['low','med','high']:
+        for i in [1,2,3]:
+          lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+        for i in [1,2,3,4]:
+          lt_systs[('ff_mssm_%(ch)s_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+        for i in [1,2,3]:
+          lt_systs[('ff_mssm_%(ch)s_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+
+    for template_name in lt_systs:
+      weight_name = lt_systs[template_name]
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+
+  template_name = 'ff_mssm_%s_sub_syst' % (options.channel)
+  systematics['ff_mssm_sub_up']   = ('' , '_'+template_name+'_Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
+  systematics['ff_mssm_sub_down'] = ('' , '_'+template_name+'_Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
 
 if options.syst_qcd_bkg: 
@@ -2875,7 +2925,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   if options.channel == "em":
       wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
       subtract_node.AddNode(wg_node)
-  print(subtract_node.shape)
+  #print(subtract_node.shape)
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True,w_shift=None):

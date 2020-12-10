@@ -888,12 +888,39 @@ for ff in ff_list:
 
 # make fractions
  
-nbjets_cats = {'nbjets0':'n_deepbjets==0','nbjets1':'n_deepbjets>0'}
+#nbjets_cats = {'nbjets0':'n_deepbjets==0','nbjets1':'n_deepbjets>0'}
 
-for nbjets_name,nbjets_cut in nbjets_cats.items():
-  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
-  cuts = '(%(baseline_iso_fail)s)*(%(nbjets_cut)s)' % vars()
-  name = '%(channel)s_fracs_%(nbjets_name)s' % vars()
+#for nbjets_name,nbjets_cut in nbjets_cats.items():
+#  var= 'mt_1[0,10,20,30,40,50,60,70,80,90,100,120]'
+#  cuts = '(%(baseline_iso_fail)s)*(%(nbjets_cut)s)' % vars()
+#  name = '%(channel)s_fracs_%(nbjets_name)s' % vars()
+#  qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
+#  qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+#  total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
+#  total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
+#  qcd_os.Divide(total_os)
+#  wjets_os.Divide(total_os)
+#  ttbar_os.Divide(total_os)
+#  qcd_ss.Divide(total_ss)
+#  wjets_ss.Divide(total_ss)
+#  ttbar_ss.Divide(total_ss)
+#  to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
+#  to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+
+
+ana_cats = {
+  'tightmt_nbjets0':'n_deepbjets==0 && mt_1<40',
+  'tightmt_nbjets1':'n_deepbjets>0 && mt_1<40',
+  'loosemt_nbjets0':'n_deepbjets==0 && mt_1>40 && mt_1<70',
+  'loosemt_nbjets1':'n_deepbjets>0 && mt_1>40 && mt_1<70',
+  'control_nbjets0':'n_deepbjets==0 && mt_1>70',
+  'control_nbjets1':'n_deepbjets>0 && mt_1>70',
+  }
+
+for cat_name,cat_cut in ana_cats.items():
+  var= 'mt_tot[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2500,3000]'
+  cuts = '(%(baseline_iso_fail)s)*(%(cat_cut)s)' % vars()
+  name = '%(channel)s_fracs_%(cat_name)s' % vars()
   qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
   qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
   total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
@@ -906,6 +933,8 @@ for nbjets_name,nbjets_cut in nbjets_cats.items():
   ttbar_ss.Divide(total_ss)
   to_write.append(qcd_os); to_write.append(wjets_os); to_write.append(ttbar_os)
   to_write.append(qcd_ss); to_write.append(wjets_ss); to_write.append(ttbar_ss)
+
+
 
 # write everything to the output file
 fout = ROOT.TFile(out_file, 'RECREATE')
@@ -1050,10 +1079,10 @@ w_mc_corr_ff = w_mc_corr_string[:]
 w_mc_corr_string += "*("
 w_corr_string += "*("
 categories = {
-              'nbjets0_tightmt':"(n_deepbjets==0 && mt_1<50)",
-              'nbjets0_loosemt':"(n_deepbjets==0 && mt_1>50 && mt_1<70)",
-              'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<50)",
-              'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>50 && mt_1<70)"
+              'nbjets0_tightmt':"(n_deepbjets==0 && mt_1<40)",
+              'nbjets0_loosemt':"(n_deepbjets==0 && mt_1>40 && mt_1<70)",
+              'nbjets1_tightmt':"(n_deepbjets>0 && mt_1<40)",
+              'nbjets1_loosemt':"(n_deepbjets>0 && mt_1>40 && mt_1<70)"
 }
 var = 'pt_1[%(crosstrg_pt)s,35,40,45,50,60,70,80,100,120,140,160,180,200]' % vars()
 for add_name, corr_cut in categories.items():
@@ -1278,7 +1307,7 @@ init_ttbar_mc_corr_string = ttbar_mc_corr_string[:]
 
 # pt_1 correction
 var = 'pt_1[20,%(crosstrg_pt)s,35,40,45,50,60,70,80,100,120,140,160,180,200]' % vars()
-mt_1_regions = {'tightmT':'mt_1<50' % vars(),'loosemT':'mt_1>=50' % vars()}
+mt_1_regions = {'tightmT':'mt_1<40' % vars(),'loosemT':'mt_1>=40' % vars()}
 ttbar_mc_corr_string += "*("
 for add_name, add_cut in mt_1_regions.items():
   pol_to_use = 'pol1'

@@ -2,7 +2,7 @@
 
 # python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium
 # python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium --batch
-# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --name_changes --channels='tt,mt,et,em' --wp=medium --singletau --batch 
+# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --name_changes --channels='tt,mt,et' --wp=medium --output_folder='singletau_dc' --singletau --control --batch 
 
 import sys
 from optparse import OptionParser
@@ -152,6 +152,8 @@ parser.add_option("--out_fold", dest="out_fold", type='string', default='',
                   help="Output folder for name changes")
 parser.add_option("--control",dest="control", action='store_true', default=False,
                   help="If true will make control plots for control regions")
+parser.add_option("--syst",dest="syst", action='store_true', default=False,
+                  help="Run with systematics")
 
 
 
@@ -170,6 +172,7 @@ singletau = options.singletau
 sf = options.sf
 no_sf = options.no_sf
 control = options.control
+syst = options.syst
 
 print 'Processing channels:      %(channels)s' % vars()
 print 'Processing years:         %(years)s' % vars()
@@ -205,7 +208,7 @@ if not options.batch_name_changes:
 
     BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
     BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
-    BINS_CONTROL = "[100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100]"
+    BINS_CONTROL = "[100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,1120,1260,1410,1580,1780,2000,2240,2510,2820,3160]"
 
     categories_et = [
                      "inclusive",
@@ -214,6 +217,7 @@ if not options.batch_name_changes:
                      "btag_tightmt",
                      "btag_loosemt",
                      "wjets_control",
+                     "qcd_control",
     ]
 
     categories_mt = [
@@ -223,6 +227,7 @@ if not options.batch_name_changes:
                      "btag_tightmt",
                      "btag_loosemt",
                      "wjets_control",
+                     "qcd_control",
     ]
 
     categories_tt = [
@@ -255,8 +260,8 @@ if not options.batch_name_changes:
     ### Systematics ###
 
     common_shape_systematics = (
-      ' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV"' # Tau ID efficiency
-      ' --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV"' # Tau Trigger efficiency
+      ' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV"' # Tau ID efficiency - place holder
+      ' --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV"' # Tau Trigger efficiency - place holder
       ' --syst_tau_scale_grouped="CMS_scale_t_*group_13TeV"' # Tau energy scale
       ' --syst_zwt="CMS_htt_dyShape_13TeV"' # DY m_ll pT re-weighting
       ' --syst_tquark="CMS_htt_ttbarShape_13TeV"' # Top pT re-weighting
@@ -289,8 +294,7 @@ if not options.batch_name_changes:
       ' --do_ff_systs'
     )
    
-    em_shape_systematics = (
-    )
+    em_shape_systematics = ('')
 
     
     #### Missing Systematics ####
@@ -337,15 +341,14 @@ if not options.batch_name_changes:
 
         if control: bins = BINS_CONTROL
 
-        if control and 'control' not in cat:
-          continue
-        
-        add_cond += extra_channel[ch]
+        if syst:   
+          add_cond += extra_channel[ch]
+
         run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --wp=%(wp)s --no_plot %(add_cond)s' % vars()
         hadd_cmd = 'hadd -f %(out_fold)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()
         rm_dc_cmd = 'rm %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()      
 
-        if control: run_cmd = run_cmd.replace('--doMSSMReWeighting ','').replace('--no_plot','--log_x') 
+        if control and "control" in cat: run_cmd = run_cmd.replace('--doMSSMReWeighting ','').replace('--no_plot','--log_x') 
 
         if not options.batch:
           print run_cmd

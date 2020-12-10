@@ -176,7 +176,27 @@ namespace ic {
       outtree_->Branch("wt_tau_trg_mvadm",    &wt_tau_trg_mvadm_);
       outtree_->Branch("wt_tau_trg_mssm_doubleonly",    &wt_tau_trg_mssm_doubleonly_);
       outtree_->Branch("wt_tau_trg_mssm",    &wt_tau_trg_mssm_);
+      outtree_->Branch("wt_tau_trg_mssm_dm0_up",    &wt_tau_trg_mssm_dm0_up_);
+      outtree_->Branch("wt_tau_trg_mssm_dm0_down",    &wt_tau_trg_mssm_dm0_down_);
+      outtree_->Branch("wt_tau_trg_mssm_dm1_up",    &wt_tau_trg_mssm_dm1_up_);
+      outtree_->Branch("wt_tau_trg_mssm_dm1_down",    &wt_tau_trg_mssm_dm1_down_);
+      outtree_->Branch("wt_tau_trg_mssm_dm10_up",    &wt_tau_trg_mssm_dm10_up_);
+      outtree_->Branch("wt_tau_trg_mssm_dm10_down",    &wt_tau_trg_mssm_dm10_down_);
+      outtree_->Branch("wt_tau_trg_mssm_dm11_up",    &wt_tau_trg_mssm_dm11_up_);
+      outtree_->Branch("wt_tau_trg_mssm_dm11_down",    &wt_tau_trg_mssm_dm11_down_);
+      outtree_->Branch("wt_tau_trg_mssm_singletau_up",    &wt_tau_trg_mssm_singletau_up_);
+      outtree_->Branch("wt_tau_trg_mssm_singletau_down",    &wt_tau_trg_mssm_singletau_down_);
+      outtree_->Branch("wt_tau_trg_mssm_singlelep_up",    &wt_tau_trg_mssm_singlelep_up_);
+      outtree_->Branch("wt_tau_trg_mssm_singlelep_down",    &wt_tau_trg_mssm_singlelep_down_);
+      outtree_->Branch("wt_tau_trg_mssm_crosslep_up",    &wt_tau_trg_mssm_crosslep_up_);
+      outtree_->Branch("wt_tau_trg_mssm_crosslep_down",    &wt_tau_trg_mssm_crosslep_down_);
+
       outtree_->Branch("wt_tau_id_mssm",    &wt_tau_id_mssm_);
+      outtree_->Branch("wt_tau_id_mssm_bin5_up",    &wt_tau_id_mssm_bin5_up_);
+      outtree_->Branch("wt_tau_id_mssm_bin5_down",    &wt_tau_id_mssm_bin5_down_);
+      outtree_->Branch("wt_tau_id_mssm_bin6_up",    &wt_tau_id_mssm_bin6_up_);
+      outtree_->Branch("wt_tau_id_mssm_bin6_down",    &wt_tau_id_mssm_bin6_down_);
+
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       if(!systematic_shift_){
@@ -1549,7 +1569,27 @@ namespace ic {
 
     wt_tau_trg_mssm_doubleonly_ =     (event->Exists("wt_tau_trg_mssm_doubleonly")) ?    event->Get<double>("wt_tau_trg_mssm_doubleonly") : 1.;
     wt_tau_trg_mssm_ =     (event->Exists("wt_tau_trg_mssm")) ?    event->Get<double>("wt_tau_trg_mssm") : 1.;
+    wt_tau_trg_mssm_dm0_up_ =     (event->Exists("wt_tau_trg_mssm_dm0_up")) ?    event->Get<double>("wt_tau_trg_mssm_dm0_up") : 1.;
+    wt_tau_trg_mssm_dm0_down_ =     (event->Exists("wt_tau_trg_mssm_dm0_down")) ?    event->Get<double>("wt_tau_trg_mssm_dm0_down") : 1.;
+    wt_tau_trg_mssm_dm1_up_ =     (event->Exists("wt_tau_trg_mssm_dm1_up")) ?    event->Get<double>("wt_tau_trg_mssm_dm1_up") : 1.;
+    wt_tau_trg_mssm_dm1_down_ =     (event->Exists("wt_tau_trg_mssm_dm1_down")) ?    event->Get<double>("wt_tau_trg_mssm_dm1_down") : 1.;
+    wt_tau_trg_mssm_dm10_up_ =     (event->Exists("wt_tau_trg_mssm_dm10_up")) ?    event->Get<double>("wt_tau_trg_mssm_dm10_up") : 1.;
+    wt_tau_trg_mssm_dm10_down_ =     (event->Exists("wt_tau_trg_mssm_dm10_down")) ?    event->Get<double>("wt_tau_trg_mssm_dm10_down") : 1.;
+    wt_tau_trg_mssm_dm11_up_ =     (event->Exists("wt_tau_trg_mssm_dm11_up")) ?    event->Get<double>("wt_tau_trg_mssm_dm11_up") : 1.;
+    wt_tau_trg_mssm_dm11_down_ =     (event->Exists("wt_tau_trg_mssm_dm11_down")) ?    event->Get<double>("wt_tau_trg_mssm_dm11_down") : 1.;
+    wt_tau_trg_mssm_singletau_up_ =     (event->Exists("wt_tau_trg_mssm_singletau_up")) ?    event->Get<double>("wt_tau_trg_mssm_singletau_up") : 1.;
+    wt_tau_trg_mssm_singletau_down_ =     (event->Exists("wt_tau_trg_mssm_singletau_down")) ?    event->Get<double>("wt_tau_trg_mssm_singletau_down") : 1.;
+    wt_tau_trg_mssm_singlelep_up_ =     (event->Exists("wt_tau_trg_mssm_singlelep_up")) ?    event->Get<double>("wt_tau_trg_mssm_singlelep_up") : 1.;
+    wt_tau_trg_mssm_singlelep_down_ =     (event->Exists("wt_tau_trg_mssm_singlelep_down")) ?    event->Get<double>("wt_tau_trg_mssm_singlelep_down") : 1.;
+    wt_tau_trg_mssm_crosslep_up_ =     (event->Exists("wt_tau_trg_mssm_crosslep_up")) ?    event->Get<double>("wt_tau_trg_mssm_crosslep_up") : 1.;
+    wt_tau_trg_mssm_crosslep_down_ =     (event->Exists("wt_tau_trg_mssm_crosslep_down")) ?    event->Get<double>("wt_tau_trg_mssm_crosslep_down") : 1.;
+
     wt_tau_id_mssm_ =     (event->Exists("wt_tau_id_mssm")) ?    event->Get<double>("wt_tau_id_mssm") : 1.;
+    wt_tau_id_mssm_bin5_up_ =     (event->Exists("wt_tau_id_mssm_bin5_up")) ?    event->Get<double>("wt_tau_id_mssm_bin5_up") : 1.;
+    wt_tau_id_mssm_bin5_down_ =     (event->Exists("wt_tau_id_mssm_bin5_down")) ?    event->Get<double>("wt_tau_id_mssm_bin5_down") : 1.;
+    wt_tau_id_mssm_bin6_up_ =     (event->Exists("wt_tau_id_mssm_bin6_up")) ?    event->Get<double>("wt_tau_id_mssm_bin6_up") : 1.;
+    wt_tau_id_mssm_bin6_down_ =     (event->Exists("wt_tau_id_mssm_bin6_down")) ?    event->Get<double>("wt_tau_id_mssm_bin6_down") : 1.;
+
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
