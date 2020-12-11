@@ -171,9 +171,7 @@ sample_list = [
      'EmbeddingTauTauH',
      'GluGluHToTauTauUncorrelatedDecay',
      'GluGluHToTauTauUncorrelatedDecay_Filtered',
-     'GluGluHToWWTo2L2Nu_M-125',
      'GluGluToHToTauTauPlusTwoJets_M125_amcatnloFXFX',
-     'GluGluToHToTauTau_M-125',
      'GluGluToHToTauTau_M125_amcatnloFXFX',
      'GluGluToMaxmixHToTauTauPlusTwoJets_M125_amcatnloFXFX',
      'GluGluToMaxmixHToTauTau_M125_amcatnloFXFX',
@@ -201,8 +199,6 @@ sample_list = [
      'JJHiggs0Mf05ph0ToTauTau',
      'VBFHToTauTauUncorrelatedDecay',
      'VBFHToTauTauUncorrelatedDecay_Filtered',
-     'VBFHToTauTau_M-125',
-     'VBFHToWWTo2L2Nu_M-125',
      'VBFHiggs0L1_HToTauTau',
      'VBFHiggs0L1f05ph0_HToTauTau',
      'VBFHiggs0M_HToTauTau',
@@ -213,13 +209,10 @@ sample_list = [
      'WHiggs0L1_HToTauTau',
      'WminusHToTauTauUncorrelatedDecay',
      'WminusHToTauTauUncorrelatedDecay_Filtered',
-     'WminusHToTauTau_M-125',
      'WplusHToTauTauUncorrelatedDecay',
      'WplusHToTauTauUncorrelatedDecay_Filtered',
-     'WplusHToTauTau_M-125',
      'ZHToTauTauUncorrelatedDecay',
      'ZHToTauTauUncorrelatedDecay_Filtered',
-     'ZHToTauTau_M-125',
      'ZHiggs0L1fZH05ph0_HToTauTau',
      'ttHiggs0MToTauTau',
      'ttHiggs0Mf05ph0ToTauTau',
@@ -330,6 +323,8 @@ sample_list = [
      'ZHToTauTau_M-125',
      'ttHJetToTT',
     ]
+
+sample_list = list(set(sample_list))
 
 print sample_list
 

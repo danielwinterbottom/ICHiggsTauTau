@@ -298,6 +298,8 @@ sample_list = [
     'ttHToTauTau',
 	]
 
+sample_list = list(set(sample_list))
+
 channel = ['tt','mt','et','em']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

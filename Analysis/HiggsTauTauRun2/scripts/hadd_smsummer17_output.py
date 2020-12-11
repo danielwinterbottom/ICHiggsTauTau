@@ -296,6 +296,8 @@ sample_list = [
     'HZJ_HToWW',
     'HWminusJ_HToWW',
     'HWplusJ_HToWW',
+    'GluGluHToTauTau_M-125',
+    'GluGluHToTauTau_M-125-ext',
     'GluGluToHToTauTau_M-125',
     'GluGluToHToTauTau_M-125-ext',
     'VBFHToTauTau_M-125',
@@ -306,6 +308,7 @@ sample_list = [
 
 	]
 
+sample_list = list(set(sample_list))
 
 # channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 channel = ['et','em','mt','tt']
