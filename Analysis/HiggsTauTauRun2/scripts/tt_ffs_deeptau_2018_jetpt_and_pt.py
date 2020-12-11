@@ -37,7 +37,7 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/' 
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2018_v5/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -100,7 +100,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2017_v5/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -129,7 +129,7 @@ if year == '2016':
   lumi=35920.
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016/'
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2016_v5/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
@@ -473,12 +473,21 @@ def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss}
 draw_list=[]
 
 # tt plots
-baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
-if args.singletau:
-  baseline_bothiso = baseline_bothiso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
-  baseline_aiso1 = baseline_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+
+#if args.singletau:
+#  baseline_bothiso = baseline_bothiso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+#  baseline_aiso1 = baseline_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+
+if year == "2016":
+  baseline_bothiso = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>120 && trg_singletau_1) || (pt_2>120 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+  baseline_aiso1 = baseline_bothiso.replace("deepTauVsJets_%(wp)s_1>0.5" % vars(),"deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5" % vars())
+else:
+  baseline_aiso2_iso = baseline_bothiso.replace("deepTauVsJets_%(wp)s_2>0.5" % vars(),"deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5")
+  baseline_aiso2_aiso1 = baseline_aiso1.replace("deepTauVsJets_%(wp)s_2>0.5" % vars(),"deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5")
+
 
 ff_list = {}
 to_write = []
@@ -494,8 +503,8 @@ for ptbin in pt_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
 if args.singletau:
   baseline_aiso2_iso = baseline_aiso2_iso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')

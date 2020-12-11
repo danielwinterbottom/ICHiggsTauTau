@@ -47,7 +47,7 @@ jetpt_bins = {
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2018_v5/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -55,7 +55,11 @@ if year == '2018':
       'SingleMuonA',
       'SingleMuonB',
       'SingleMuonC',
-      'SingleMuonD'
+      'SingleMuonD',
+      'TauA',
+      'TauB',
+      'TauC',
+      'TauD'
     ]
   elif channel == "et":
     crosstrg_pt = 33
@@ -63,7 +67,11 @@ if year == '2018':
       'EGammaA',
       'EGammaB',
       'EGammaC',
-      'EGammaD'
+      'EGammaD',
+      'TauA',
+      'TauB',
+      'TauC',
+      'TauD'
     ]
 
   ttbar_files = [
@@ -110,7 +118,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2017_v5/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -119,7 +127,12 @@ elif year == "2017":
       'SingleMuonC',
       'SingleMuonD',
       'SingleMuonE',
-      'SingleMuonF'
+      'SingleMuonF',
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF'
     ]
   elif channel == "et":
     crosstrg_pt = 28
@@ -129,6 +142,11 @@ elif year == "2017":
       'SingleElectronD',
       'SingleElectronE',
       'SingleElectronF',
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF'
     ]
  
   ttbar_files = [
@@ -180,7 +198,7 @@ elif year == "2017":
 elif year == "2016":
   lumi = 35920.
   params_file = 'scripts/params_mssm_2016.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2016_v5/'
 
   if channel == "mt":
     crosstrg_pt = 23
@@ -191,7 +209,14 @@ elif year == "2016":
       'SingleMuonE',
       'SingleMuonF',
       'SingleMuonG',
-      'SingleMuonH'
+      'SingleMuonH',
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF',
+      'TauG',
+      'TauH'
     ]
   elif channel == "et":
     crosstrg_pt = 25
@@ -202,7 +227,14 @@ elif year == "2016":
       'SingleElectronE',
       'SingleElectronF',
       'SingleElectronG',
-      'SingleElectronH'
+      'SingleElectronH',
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF',
+      'TauG',
+      'TauH'
     ]
 
   ttbar_files = [
@@ -259,28 +291,143 @@ with open(params_file) as jsonfile:
   params = json.load(jsonfile)
 
 # Basline Selection
-iso = 'iso_1<0.15'
-anti_iso = 'iso_1<0.5 && iso_1>0.25'
-deeptau_jet_pass = 'deepTauVsJets_%(wp)s_2>0.5' % vars()
-deeptau_jet_fail = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars()
-if channel == "mt":
-  deeptau_lep = 'deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5'
-  if year == "2016":
-    crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>25)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
-  else: crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>32)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
-elif channel == "et":
-  deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
-  if year == "2016":
-    crosstrg = 'trg_singleelectron'
-  else:
-    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s&&pt_2>35)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
-other_sel = 'leptonveto==0 && pt_2>30 && wt<2'
+#iso = 'iso_1<0.15'
+#anti_iso = 'iso_1<0.5 && iso_1>0.25'
+#deeptau_jet_pass = 'deepTauVsJets_%(wp)s_2>0.5' % vars()
+#deeptau_jet_fail = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars()
+#if channel == "mt":
+#  deeptau_lep = 'deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5'
+#  if year == "2016":
+#    crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>25)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+#  else: crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>32)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+#elif channel == "et":
+#  deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
+#  if year == "2016":
+#    crosstrg = 'trg_singleelectron'
+#  else:
+#    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s&&pt_2>35)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
+#other_sel = 'leptonveto==0 && pt_2>30 && wt<2'
 
 
-baseline_iso_pass = '(%(iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
-baseline_iso_fail = '(%(iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
-baseline_aiso_pass = '(%(anti_iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
-baseline_aiso_fail = '(%(anti_iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+#baseline_iso_pass = '(%(iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+#baseline_iso_fail = '(%(iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+#baseline_aiso_pass = '(%(anti_iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+#baseline_aiso_fail = '(%(anti_iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+if year == "2016":
+  m_lowpt=23
+  e_lowpt=26
+  t_highpt=120
+  t_lowpt_mt=25
+  t_lowpt_et=25
+elif year == "2017":
+  m_lowpt=25
+  e_lowpt=28
+  t_highpt=180
+  t_lowpt_mt=32
+  t_lowpt_et=35
+elif year == "2018":
+  m_lowpt=25
+  e_lowpt=33
+  t_highpt=180
+  t_lowpt_mt=32
+  t_lowpt_et=35
+
+if channel == 'mt':
+  baseline_iso_pass = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+elif channel == 'et':
+  baseline_iso_pass = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        
+baseline_iso_fail = baseline_iso_pass.replace('deepTauVsJets_%(wp)s_2>0.5' % vars(),'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars())
+baseline_aiso_pass = baseline_iso_pass.replace('iso_1<0.15','iso_1<0.5 && iso_1>0.25')
+baseline_aiso_fail = baseline_iso_fail.replace('iso_1<0.15','iso_1<0.5 && iso_1>0.25')
+
+
+def fraction_rebinning(var,cat_name,qcd,wjets,ttbar):
+  bins_list = var.split('[')[1].split(']')[0].split(',')
+  hist_same = False
+  while not hist_same:
+    total = qcd.Clone(); total.Add(wjets); total.Add(ttbar)
+    qcd_frac = qcd.Clone()
+    wjets_frac = wjets.Clone()
+    ttbar_frac = ttbar.Clone()
+
+    qcd_frac.Divide(total)
+    wjets_frac.Divide(total)
+    ttbar_frac.Divide(total)
+
+    # Gets bins to remove from fractions
+    rm_list = []
+    bin_filled = False
+    bin_thesh = 0.1
+    for i in range(1,qcd_frac.GetNbinsX()+1):
+      if qcd_frac.GetBinContent(i)==0 and wjets_frac.GetBinContent(i)==0 and ttbar_frac.GetBinContent(i)==0:
+        rm_list.append(str(int(qcd_frac.GetBinLowEdge(i))))
+      elif 'nbjets0' in cat_name and (qcd_frac.GetBinError(i)>bin_thesh or wjets_frac.GetBinError(i)>bin_thesh) and bin_filled: # bin_filled to stop it removing lowest bin if low stat
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      elif 'nbjets0' in cat_name and (qcd_frac.GetBinContent(i)==0 and wjets_frac.GetBinError(i)>bin_thesh) and bin_filled:
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      elif 'nbjets0' in cat_name and (qcd_frac.GetBinError(i)>bin_thesh and wjets_frac.GetBinContent(i)==0) and bin_filled:
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      elif 'nbjets1' in cat_name and (ttbar_frac.GetBinError(i)>bin_thesh or wjets_frac.GetBinError(i)>bin_thesh) and bin_filled:
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      elif 'nbjets1' in cat_name and (ttbar_frac.GetBinContent(i)==0 or wjets_frac.GetBinError(i)>bin_thesh) and bin_filled:
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      elif 'nbjets1' in cat_name and (ttbar_frac.GetBinError(i)>bin_thesh or wjets_frac.GetBinContent(i)==0) and bin_filled:
+        rm_list.append(str(int(qcd.GetBinLowEdge(i))))
+      else:
+        bin_filled = True
+
+    for i in rm_list: bins_list.remove(i)
+
+    # Set up new histograms with new binning
+    new_bins = array('f', map(float,bins_list))
+    qcd_nb = ROOT.TH1D("qcd_nb","",len(new_bins)-1, new_bins)
+    ttbar_nb = ROOT.TH1D("ttbar_nb","",len(new_bins)-1, new_bins)
+    wjets_nb = ROOT.TH1D("wjets_nb","",len(new_bins)-1, new_bins)
+
+    # Get bin content for new histogram
+    for i in range(1,qcd.GetNbinsX()+1):
+      for j in range(1,qcd_nb.GetNbinsX()+1):
+        if qcd.GetBinLowEdge(i) == qcd_nb.GetBinLowEdge(j) and qcd.GetBinLowEdge(i+1) == qcd_nb.GetBinLowEdge(j+1):
+          qcd_nb.SetBinContent(j,qcd.GetBinContent(i))
+          qcd_nb.SetBinError(j,qcd.GetBinError(i))
+          wjets_nb.SetBinContent(j,wjets.GetBinContent(i))
+          wjets_nb.SetBinError(j,wjets.GetBinError(i))
+          ttbar_nb.SetBinContent(j,ttbar.GetBinContent(i))
+          ttbar_nb.SetBinError(j,ttbar.GetBinError(i))
+        elif qcd.GetBinLowEdge(i) == qcd_nb.GetBinLowEdge(j):
+          k = 0
+          new_bin_content_qcd = 0
+          new_bin_error2_qcd = 0
+          new_bin_content_wjets = 0
+          new_bin_error2_wjets = 0
+          new_bin_content_ttbar = 0
+          new_bin_error2_ttbar = 0
+          while qcd.GetBinLowEdge(i+k) <= qcd_nb.GetBinLowEdge(j+1):
+            new_bin_content_qcd += qcd.GetBinContent(i+k)
+            new_bin_error2_qcd += (qcd.GetBinError(i+k)**2)
+            new_bin_content_wjets += wjets.GetBinContent(i+k)
+            new_bin_error2_wjets += (wjets.GetBinError(i+k)**2)
+            new_bin_content_ttbar += ttbar.GetBinContent(i+k)
+            new_bin_error2_ttbar += (ttbar.GetBinError(i+k)**2)
+            k += 1
+          qcd_nb.SetBinContent(j,new_bin_content_qcd)
+          qcd_nb.SetBinError(j,new_bin_error2_qcd**0.5)
+          wjets_nb.SetBinContent(j,new_bin_content_wjets)
+          wjets_nb.SetBinError(j,new_bin_error2_wjets**0.5)
+          ttbar_nb.SetBinContent(j,new_bin_content_ttbar)
+          ttbar_nb.SetBinError(j,new_bin_error2_ttbar**0.5)
+
+    hist_same = True
+    for i in range(1,qcd_nb.GetNbinsX()+1):
+      if qcd.GetBinLowEdge(i) != qcd_nb.GetBinLowEdge(i):
+        hist_same = False
+
+    qcd = qcd_nb.Clone()
+    wjets = wjets_nb.Clone()
+    ttbar = ttbar_nb.Clone()
+
+  return (qcd, wjets, ttbar)
 
 
 def ZeroNegativeBins(h):
@@ -303,6 +450,7 @@ def ZeroLargeErrorBins(h):
   return h
 
 def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doTT=True,doIso=True,fullMT=False,lowMT=False,qcdMT='50'):
+  add_wt = "(" + add_wt + "*wt_tau_trg_mssm*wt_tau_id_mssm)"
   if ':' in var_input:
     #pass 2D inputs like x[],y[]
     var_input1 = var_input.split(':')[0]
@@ -474,6 +622,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   return (data_qcd, data_w, wjets, ttbar)
 
 def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
+  add_wt = "(wt_tau_trg_mssm*wt_tau_id_mssm)"
   var = var_input.split('[')[0]
   bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
   hout = ROOT.TH1D('hout','',len(bins)-1, bins)
@@ -493,7 +642,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'(%(cuts)s)*%(add_wt)s' % vars(),'goff')
     h = t.GetHistogram()
     data.Add(h)
 
@@ -503,7 +652,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -515,7 +664,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -527,7 +676,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -538,7 +687,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
     t = f.Get('ntuple')
     h = hout.Clone()
     h.SetName('h')
-    t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)*((%(gen_extra)s)==0)' % vars(),'goff')
+    t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)*((%(gen_extra)s)==0)' % vars(),'goff')
     h = t.GetHistogram()
     scale = lumi*params[i]['xs']/params[i]['evt']
     h.Scale(scale)
@@ -923,6 +1072,8 @@ for cat_name,cat_cut in ana_cats.items():
   name = '%(channel)s_fracs_%(cat_name)s' % vars()
   qcd_os, wjets_os, ttbar_os = DrawHistsForFractions(var, '%(cuts)s*(os==1)' % vars(), name+'_os', input_folder, file_ext)
   qcd_ss, wjets_ss, ttbar_ss = DrawHistsForFractions(var, '%(cuts)s*(os==0)' % vars(), name+'_ss', input_folder, file_ext)
+  qcd_os, wjets_os, ttbar_os = fraction_rebinning(var,cat_name,qcd_os,wjets_os,ttbar_os)
+  qcd_ss, wjets_ss, ttbar_ss = fraction_rebinning(var,cat_name,qcd_ss,wjets_ss,ttbar_ss)
   total_os = qcd_os.Clone(); total_os.Add(wjets_os); total_os.Add(ttbar_os) 
   total_ss = qcd_ss.Clone(); total_ss.Add(wjets_ss); total_ss.Add(ttbar_ss)
   qcd_os.Divide(total_os)
