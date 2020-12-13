@@ -10,9 +10,14 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--year','-y', help= 'year', type=str, default='2017')
+parser.add_argument('--input','-i', help= 'input', type=str, default='./')
+parser.add_argument('--output','-o', help= 'output', type=str, default='./')
+
 args = parser.parse_args()
 
 year = args.year
+input = args.input
+output = args.output
 
 cmssw_base = subprocess.check_output('echo $CMSSW_BASE', shell=True).replace('\n','')
 
@@ -40,7 +45,7 @@ wp = 'medium'
 
 # get fractions
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/ff_tt_%(year)s_single/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(input)s/' % vars()
 
 histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_%(year)s.root:tt_fracs_n_deepbjets0_os_qcd' % vars(), 'tt_%(wp)s_fracs_nbjets0_os_qcd' % vars()),
                (loc + 'fakefactor_fits_tt_%(wp)s_%(year)s.root:tt_fracs_n_deepbjets1_os_qcd' % vars(), 'tt_%(wp)s_fracs_nbjets1_os_qcd' % vars()),
@@ -145,7 +150,7 @@ w.factory('expr::ff_tt_qcd("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*
 # get closure corrections
 
 for nbjet in [0,1]:
-  w.factory('expr::dR_bounded("min(max(0.5,@0),5)",dR[3])' % vars())
+  w.factory('expr::dR_bounded("min(max(0.5,@0),4.5)",dR[3])' % vars())
 
   func_ss = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:ss_closure_nbjet%(nbjet)i_qcd_fit' % vars())
   func_ss_str=str(func_ss.GetExpFormula('p')).replace('x','@0').replace(',false','')
@@ -239,5 +244,5 @@ w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_total, tt_fracs_ttba
 w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('fakefactors_ws_tt_mssm_%(year)s.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s.root' % vars())
 w.Delete() 
