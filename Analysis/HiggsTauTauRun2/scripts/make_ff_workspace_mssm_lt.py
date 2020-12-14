@@ -11,10 +11,15 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--year','-y', help= 'year', type=str, default='2017')
 parser.add_argument('--channel','-c', help= 'channel', type=str, default='mt')
+parser.add_argument('--input','-i', help= 'input', type=str, default='./')
+parser.add_argument('--output','-o', help= 'output', type=str, default='./')
+
 args = parser.parse_args()
 
 year = args.year
 channel = args.channel
+input = args.input
+output = args.output
 
 crosstrg_pt = 0
 if channel == 'mt':
@@ -53,7 +58,7 @@ wp = 'medium'
 
 # get fractions
 
-loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/ff_%(channel)s_%(year)s_new/' % vars()
+loc = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(input)s/' % vars()
 
 #histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets0_os_qcd' % vars(),   'lt_fracs_nbjets0_os_qcd' % vars()),
 #               (loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channel)s_fracs_nbjets1_os_qcd' % vars(),   'lt_fracs_nbjets1_os_qcd' % vars()),
@@ -121,6 +126,7 @@ histsToWrap = [(loc + 'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(channe
   #w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
 
 for task in histsToWrap:
+   print task[0]
    wsptools.SafeWrapHist(
      w, ['expr::mt_tot_max3000("min(2999.9,@0)",mt_tot[0])'],
      GetFromTFile(task[0]),
@@ -267,8 +273,8 @@ w.factory('expr::ff_lt_ttbar_raw("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.
 
 # apply qcd corrections
 
-w.factory('expr::met_var_qcd_bounded("max(min(@0,1.5),-3.5)",met_var_qcd[0])' % vars())
-w.factory('expr::met_var_w_bounded("max(min(@0,1.0),-3.5)",met_var_w[0])' % vars())
+w.factory('expr::met_var_qcd_bounded("max(min(@0,1.5),-1.8)",met_var_qcd[0])' % vars())
+w.factory('expr::met_var_w_bounded("max(min(@0,1.0),-2.2)",met_var_w[0])' % vars())
 w.factory('expr::l_pt_bounded100("min(@0,99.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded140("min(@0,139.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded160("min(@0,159.9)",l_pt[20])' % vars())
@@ -716,7 +722,7 @@ for s in wjets_systs:
     w.factory('expr::ff_total_%(s)s_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_%(s)s_down, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('fakefactors_ws_%(channel)s_mssm_%(year)s.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s.root' % vars())
 w.Delete() 
 
 # check et_medium_pt_1_nbjets1_dr_to_ar_aiso_closure_qcd_fit uncertainty band

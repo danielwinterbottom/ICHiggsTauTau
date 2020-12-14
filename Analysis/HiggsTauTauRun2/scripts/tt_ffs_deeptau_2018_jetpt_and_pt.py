@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--wp',help= 'Tau ID working point to measure fake factors for', default='medium')
 parser.add_argument('--file_ext',help= 'Extension of files names', default='_tt_2018.root')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='./')
-parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_2018.json')
+parser.add_argument('--params',help= 'Parmaters file contaaining cross sections and event numbers', default='scripts/params_mssm_2018.json')
 parser.add_argument('--input_folder','-i', help= 'Name of output directory', default=None)
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 parser.add_argument('--year','-y', help= 'year', type=str, default='2018')
@@ -37,13 +37,13 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/' 
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2018_v5/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
 # read params from json
 
-with open(params_file) as jsonfile:
+with open('scripts/params_mssm_2018.json') as jsonfile:
   params = json.load(jsonfile)
 
 data_files = [
@@ -100,7 +100,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2017_v5/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -129,7 +129,7 @@ if year == '2016':
   lumi=35920.
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016/'
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2016_v5/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
@@ -366,7 +366,7 @@ def FitFakeFactors(h,pt_min,pt_max,usePol1=False,polOnly=None):
   h = h_clone
   if polOnly is None:
     # fit first with landau to get initial values for parameters - pol values set to 0 initially
-    h.Fit("f1",'R')
+    h.Fit("f1",'NR')
     f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0)
     # to get initial value for pol0 take last bin content
     for i in range(h.GetNbinsX(),0,-1): 
@@ -380,7 +380,7 @@ def FitFakeFactors(h,pt_min,pt_max,usePol1=False,polOnly=None):
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'SR')
+    fitresult = h.Fit("f2",'NSR')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
@@ -408,22 +408,113 @@ def FitCorrection(h, func='pol1'):
   fit.SetName(h.GetName()+'_fit')
   return fit, h_uncert
 
-def PlotFakeFactor(f, h, name, output_folder, wp):
-  c1 = ROOT.TCanvas()
-  f.SetMinimum(0)
-  #if f.GetMaximum() > 1.: f.SetMaximum(1.)
-  f.SetStats(0)
-  f.GetXaxis().SetTitle('Jet-p_{T} (GeV)')
-  f.GetYaxis().SetTitle('F_{F}')
-  f.SetTitle(name)
-  f.SetLineColor(ROOT.kBlack)
-  f.Draw()
-  h.SetStats(0)
-  h.SetFillColor(ROOT.kBlue-10)
-  h.Draw("e3 same")
-  f.Draw("a sames")
-  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
+#def PlotFakeFactor(f, h, name, output_folder, wp):
+#  c1 = ROOT.TCanvas()
+#  f.SetMinimum(0)
+#  #if f.GetMaximum() > 1.: f.SetMaximum(1.)
+#  f.SetStats(0)
+#  f.GetXaxis().SetTitle('Jet-p_{T} (GeV)')
+#  f.GetYaxis().SetTitle('F_{F}')
+#  f.SetTitle(name)
+#  f.SetLineColor(ROOT.kBlack)
+#  f.Draw()
+#  h.SetStats(0)
+#  h.SetFillColor(ROOT.kBlue-10)
+#  h.Draw("e3 same")
+#  f.Draw("a sames")
+#  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
   #time.sleep(2)
+
+def PlotFakeFactor(h, u, name, output_folder, wp, year):
+  print name
+  if 'jet_pt_high' not in name:
+    bin_cap = 200.
+    high_bin = h.GetBinContent(h.FindBin(250.))
+    high_bin_err = h.GetBinError(h.FindBin(250.))
+  else:
+    bin_cap = 600.
+    high_bin = u.GetBinContent(u.FindBin(599.9))
+    high_bin_err = u.GetBinError(u.FindBin(599.9))
+
+  for i in range(1,u.GetNbinsX()+1):
+    if u.GetBinLowEdge(i) >= bin_cap:
+      u.SetBinContent(i,high_bin)
+      u.SetBinError(i,high_bin_err)
+
+  channel_string = "#tau_{h}#tau_{h}"
+
+  if year == "2016":
+    lumi_string = "35.9 fb^{-1}"
+  elif year == "2017":
+    lumi_string = "41.5 fb^{-1}"
+  elif year == "2018":
+    lumi_string = "59.7 fb^{-1}"
+
+  if 'aiso2' in name:
+    bkg_string = 'QCD Anti-Isolated'
+  elif 'qcd' in name:
+    bkg_string = "QCD"
+  elif 'wjets_mc' in name:
+    bkg_string = 'W + Jets MC'
+  elif 'wjets' in name:
+    bkg_string = 'W + Jets'
+  elif 'ttbar' in name:
+    bkg_string = 't#bar{t}'
+
+  if '0jet' in name:
+    n_prejets_string = 'n_{pre b-jets} = 0'
+  elif '1jet' in name:
+    n_prejets_string = 'n_{pre b-jets} > 0'
+  else:
+    n_prejets_string = ''
+
+  if 'jet_pt_low' in name:
+    jet_pt_string = 'p_{T}^{jet}/p_{T}^{#tau_{h}} < 1.25'
+  elif 'jet_pt_med' in name:
+    jet_pt_string = '1.25 #leq p_{T}^{jet}/p_{T}^{#tau_{h}} < 1.5'
+  elif 'jet_pt_high' in name:
+    jet_pt_string = 'p_{T}^{jet}/p_{T}^{#tau_{h}} #geq 1.5'
+  else:
+    jet_pt_string = ''
+
+  c = ROOT.TCanvas('c','c',700,700)
+  u_fit = u.Clone()
+  h.SetStats(0)
+  u.SetStats(0)
+  c.SetLeftMargin(0.15)
+  u.Draw('e4')
+  c.SetLogx()
+  u.GetXaxis().SetMoreLogLabels()
+  u.GetXaxis().SetNoExponent()
+  h.Draw('a sames')
+  h.SetLineColor(1)
+  u.SetLineColor(46)
+  u.SetFillColorAlpha(46, 0.35)
+  u.GetXaxis().SetTitle('p_{T}^{#tau_{h}} (GeV)')
+  u.GetXaxis().SetTitleOffset(1.2)
+  u.GetYaxis().SetTitleOffset(1.6)
+  u.GetYaxis().SetTitle('F_{F}')
+  u.SetMaximum(1.7*max(u.GetMaximum(),h.GetMaximum()))
+  u.SetMinimum(0)
+  h.SetMarkerStyle(8)
+  u_fit.Draw("hist L same")
+  u_fit.SetLineColor(2)
+  u_fit.SetFillColorAlpha(46, 0)
+  c.Update()
+  l = ROOT.TLegend(0.55,0.75,0.87,0.88)
+  l.SetBorderSize(0)
+  l.SetTextSize(0.04)
+  l.AddEntry(h,'Observed','lep')
+  l.AddEntry(u_fit,'Fit','l')
+  l.AddEntry(u,'Fit Uncertainty','f')
+  l.Draw()
+  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.4)
+  DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.4)
+  DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.7)
+  DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.63)
+  c.Print('output_folder/ff_fit_%(name)s_tt_%(year)s.pdf' % vars())
+
 
 def VariableBinning(ptbin):
   binning = [40,45,50,55,60,65,70,80,90,100,120,140,200,400]
@@ -454,21 +545,248 @@ def WriteFunctionForApplyingFakeFactors(fout,inclusive=False,aiso=False):
 
   return '('+outstring+')'
 
+def DrawCMSLogo(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, extraText2='', cmsTextSize=0.8):
+    """Blah
+    
+    Args:
+        pad (TYPE): Description
+        cmsText (TYPE): Description
+        extraText (TYPE): Description
+        iPosX (TYPE): Description
+        relPosX (TYPE): Description
+        relPosY (TYPE): Description
+        relExtraDY (TYPE): Description
+        extraText2 (str): Description
+        cmsTextSize (float): Description
+    
+    Returns:
+        TYPE: Description
+    """
+    pad.cd()
+    cmsTextFont = 62  # default is helvetic-bold
 
-def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
-  c1 = ROOT.TCanvas()
-  f.SetMinimum(0)
-  f.SetStats(0)
-  f.GetXaxis().SetTitle(x_title)
-  f.GetYaxis().SetTitle('FF')
-  f.SetTitle(name)
-  f.SetLineColor(ROOT.kBlack)
-  f.Draw()
-  h.SetStats(0)
-  h.SetFillColor(ROOT.kBlue-10)
-  h.Draw("e3 same")
-  f.Draw("a sames")
-  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
+    writeExtraText = len(extraText) > 0
+    writeExtraText2 = len(extraText2) > 0
+    extraTextFont = 52
+
+    # text sizes and text offsets with respect to the top frame
+    # in unit of the top margin size
+    lumiTextOffset = 0.2
+    # cmsTextSize = 0.8
+    # float cmsTextOffset    = 0.1;  // only used in outOfFrame version
+
+    # ratio of 'CMS' and extra text size
+    extraOverCmsTextSize = 0.76
+
+    outOfFrame = False
+    if iPosX / 10 == 0:
+        outOfFrame = True
+
+    alignY_ = 3
+    alignX_ = 2
+    if (iPosX / 10 == 0):
+        alignX_ = 1
+    if (iPosX == 0):
+        alignX_ = 1
+    if (iPosX == 0):
+        alignY_ = 1
+    if (iPosX / 10 == 1):
+        alignX_ = 1
+    if (iPosX / 10 == 2):
+        alignX_ = 2
+    if (iPosX / 10 == 3):
+        alignX_ = 3
+    # if (iPosX == 0): relPosX = 0.14
+    align_ = 10 * alignX_ + alignY_
+
+    l = pad.GetLeftMargin()
+    t = pad.GetTopMargin()
+    r = pad.GetRightMargin()
+    b = pad.GetBottomMargin()
+
+    latex = ROOT.TLatex()
+    latex.SetNDC()
+    latex.SetTextAngle(0)
+    latex.SetTextColor(ROOT.kBlack)
+
+    extraTextSize = extraOverCmsTextSize * cmsTextSize
+    pad_ratio = (float(pad.GetWh()) * pad.GetAbsHNDC()) / \
+        (float(pad.GetWw()) * pad.GetAbsWNDC())
+    if (pad_ratio < 1.):
+        pad_ratio = 1.
+    if outOfFrame:
+        latex.SetTextFont(cmsTextFont)
+        latex.SetTextAlign(11)
+        latex.SetTextSize(cmsTextSize * t * pad_ratio)
+        latex.DrawLatex(l, 1 - t + lumiTextOffset * t, cmsText)
+
+    posX_ = 0
+    if iPosX % 10 <= 1:
+        posX_ = l + relPosX * (1 - l - r)
+    elif (iPosX % 10 == 2):
+        posX_ = l + 0.5 * (1 - l - r)
+    elif (iPosX % 10 == 3):
+        posX_ = 1 - r - relPosX * (1 - l - r)
+
+    posY_ = 1 - t - relPosY * (1 - t - b)
+    if not outOfFrame:
+        latex.SetTextFont(cmsTextFont)
+        latex.SetTextSize(cmsTextSize * t * pad_ratio)
+        latex.SetTextAlign(align_)
+        latex.DrawLatex(posX_, posY_, cmsText)
+        if writeExtraText:
+            latex.SetTextFont(extraTextFont)
+            latex.SetTextAlign(align_)
+            latex.SetTextSize(extraTextSize * t * pad_ratio)
+            latex.DrawLatex(
+                posX_, posY_ - relExtraDY * cmsTextSize * t, extraText)
+            if writeExtraText2:
+                latex.DrawLatex(
+                    posX_, posY_ - 1.8 * relExtraDY * cmsTextSize * t, extraText2)
+    elif writeExtraText:
+        if iPosX == 0:
+            posX_ = l + relPosX * (1 - l - r)
+            posY_ = 1 - t + lumiTextOffset * t
+        latex.SetTextFont(extraTextFont)
+        latex.SetTextSize(extraTextSize * t * pad_ratio)
+        latex.SetTextAlign(align_)
+        latex.DrawLatex(posX_, posY_, extraText)
+
+def DrawTitle(pad, text, align, textOffset=0.2,textSize=0.6,x=0,y=0):
+    pad_backup = ROOT.gPad
+    pad.cd()
+    t = pad.GetTopMargin()
+    l = pad.GetLeftMargin()
+    r = pad.GetRightMargin()
+
+    pad_ratio = (float(pad.GetWh()) * pad.GetAbsHNDC()) / \
+        (float(pad.GetWw()) * pad.GetAbsWNDC())
+    if pad_ratio < 1.:
+        pad_ratio = 1.
+
+    latex = ROOT.TLatex()
+    latex.SetNDC()
+    latex.SetTextAngle(0)
+    latex.SetTextColor(ROOT.kBlack)
+    latex.SetTextFont(42)
+    latex.SetTextSize(textSize * t * pad_ratio)
+
+    y_off = 1 - t + textOffset * t
+    if align == 1:
+        latex.SetTextAlign(11)
+        latex.DrawLatex(l, y_off, text)
+    elif align == 2:
+        latex.SetTextAlign(21)
+        latex.DrawLatex(l + (1 - l - r) * 0.5, y_off, text)
+    elif align == 3:
+        latex.SetTextAlign(31)
+        latex.DrawLatex(1 - r, y_off, text)
+    else:
+        latex.DrawLatex(x,y,text)
+    pad_backup.cd()
+
+
+#def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
+#  c1 = ROOT.TCanvas()
+#  f.SetMinimum(0)
+#  f.SetStats(0)
+#  f.GetXaxis().SetTitle(x_title)
+#  f.GetYaxis().SetTitle('FF')
+#  f.SetTitle(name)
+#  f.SetLineColor(ROOT.kBlack)
+#  f.Draw()
+#  h.SetStats(0)
+#  h.SetFillColor(ROOT.kBlue-10)
+#  h.Draw("e3 same")
+#  f.Draw("a sames")
+#  c1.Print(output_folder+'/tt_'+wp+'_'+name+'_fit.pdf')
+
+def PlotFakeFactorCorrection(h, u, name, output_folder, wp, year, low_bounded_val, high_bounded_val, x_title='E_{T}^{miss} (GeV)',logx=False):
+
+  channel_string = "#tau_{h}#tau_{h}"
+
+  if year == "2016":
+    lumi_string = "35.9 fb^{-1}"
+  elif year == "2017":
+    lumi_string = "41.5 fb^{-1}"
+  elif year == "2018":
+    lumi_string = "59.7 fb^{-1}"
+
+  if 'qcd_aiso' in name:
+    bkg_string = 'QCD Anti-Isolated'
+  elif 'qcd' in name:
+    bkg_string = "QCD"
+  elif 'wjets_mc' in name:
+    bkg_string = 'W + Jets MC'
+  elif 'wjets' in name:
+    bkg_string = 'W + Jets'
+  elif 'ttbar' in name:
+    bkg_string = 't#bar{t}'
+
+  high_bin = u.GetBinContent(u.FindBin(high_bounded_val))
+  high_bin_err = u.GetBinError(u.FindBin(high_bounded_val))
+
+  for i in range(1,u.GetNbinsX()+1):
+    if u.GetBinLowEdge(i) >= high_bounded_val:
+      u.SetBinContent(i,high_bin)
+      u.SetBinError(i,high_bin_err)
+
+  low_bin = u.GetBinContent(u.FindBin(low_bounded_val))
+  low_bin_err = u.GetBinError(u.FindBin(low_bounded_val))
+
+  for i in range(1,u.GetNbinsX()+1):
+    if u.GetBinLowEdge(i) <= low_bounded_val:
+      u.SetBinContent(i,low_bin)
+      u.SetBinError(i,low_bin_err)
+
+  c = ROOT.TCanvas('c','c',700,700)
+  u_fit = u.Clone()
+  u.SetStats(0)
+  c.SetLeftMargin(0.15)
+  u.Draw('e3')
+  if logx:
+    c.SetLogx()
+    u.GetXaxis().SetMoreLogLabels()
+    u.GetXaxis().SetNoExponent()
+  h.Draw('same')
+  h.GetFunction("f1").Delete()
+  h.SetLineColor(1)
+  u.SetLineColor(38)
+  u.SetFillColorAlpha(38, 0.35)
+  u.GetXaxis().SetTitle(x_title)
+  u.GetXaxis().SetTitleOffset(1.2)
+  u.GetYaxis().SetTitleOffset(1.6)
+  u.GetYaxis().SetTitle('Closure Correction')
+  u.SetMaximum(1.5)
+  u.SetMinimum(0.6)
+  h.SetMarkerStyle(8)
+  u_fit.Draw("hist L same")
+  u_fit.SetLineColor(4)
+  u_fit.SetFillColorAlpha(46, 0)
+
+  # Draw dashed line at y = 1
+  line = ROOT.TLine(u.GetBinLowEdge(1),1,u.GetBinLowEdge(u.GetNbinsX()+1),1)
+  line.SetLineWidth(1)
+  line.SetLineStyle(2)
+  line.SetLineColor(ROOT.kBlack)
+  line.Draw()
+
+  c.Update()
+
+  l = ROOT.TLegend(0.62,0.75,0.87,0.88)
+  l.SetBorderSize(0)
+  l.SetTextSize(0.03)
+  l.AddEntry(h,'Observed','lep')
+  l.AddEntry(u_fit,'Fit','l')
+  l.AddEntry(u,'Fit Uncertainty','f')
+  l.Draw()
+
+  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.3)
+  DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
+
+  c.Print('output_folder/ff_closure_%(name)s_tt_%(year)s.pdf' % vars())
+
 
 draw_list=[]
 
@@ -476,9 +794,20 @@ draw_list=[]
 baseline_bothiso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 baseline_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
-if args.singletau:
-  baseline_bothiso = baseline_bothiso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
-  baseline_aiso1 = baseline_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+
+#if args.singletau:
+#  baseline_bothiso = baseline_bothiso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+#  baseline_aiso1 = baseline_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+
+if year == "2016":
+  baseline_bothiso = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>120 && trg_singletau_1) || (pt_2>120 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+else:
+  baseline_bothiso = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>180 && trg_singletau_1) || (pt_2>180 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+
+baseline_aiso1 = baseline_bothiso.replace("deepTauVsJets_%(wp)s_1>0.5" % vars(),"deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5" % vars())
+baseline_aiso2_iso = baseline_bothiso.replace("deepTauVsJets_%(wp)s_2>0.5" % vars(),"deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5")
+baseline_aiso2_aiso1 = baseline_aiso1.replace("deepTauVsJets_%(wp)s_2>0.5" % vars(),"deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5")
+
 
 ff_list = {}
 to_write = []
@@ -494,12 +823,12 @@ for ptbin in pt_bins:
 
 # add aiso plots
 
-baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
-baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_aiso2_iso = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
+#baseline_aiso2_aiso1 = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vvloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
-if args.singletau:
-  baseline_aiso2_iso = baseline_aiso2_iso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
-  baseline_aiso2_aiso1 = baseline_aiso2_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+#if args.singletau:
+#  baseline_aiso2_iso = baseline_aiso2_iso.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
+#  baseline_aiso2_aiso1 = baseline_aiso2_aiso1.replace('trg_doubletau','(trg_doubletau || (pt_1>200 && trg_singletau_1) || (pt_2>200 && trg_singletau_2))')
 
 for ptbin in pt_bins:
   name = ptbin
@@ -554,10 +883,13 @@ for ff in ff_list:
 
   # do fitting
   print 'Fitting for ', ff
-  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,pt_min,pt_max,polOnly=polOnlyInFit_qcd)
+  if "low" not in ff:
+    (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,pt_min,pt_max,polOnly=polOnlyInFit_qcd)
+  else:
+    (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff,pt_min,pt_max,polOnly=polOnlyInFit_qcd,usePol1=True)
   to_write.append(qcd_fit)
   to_write.append(qcd_uncert)
-  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp)
+  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp, year)
 
 
 # write raw fake factors
@@ -600,7 +932,7 @@ for nbjet in ['0','1']:
   qcd_ss_data.Write()
   qcd_ss_data_fit.Write()
   qcd_ss_data_uncert.Write()
-  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp, x_title='#Delta R')
+  PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp, year, 0.5, 4.5, x_title='#Delta R')
 
   fout.cd()
   qcd_ss_data_aiso2_fit, qcd_ss_data_aiso2_uncert =  FitCorrection(qcd_ss_data_aiso2, func=polfit)
@@ -608,11 +940,11 @@ for nbjet in ['0','1']:
   qcd_ss_data_aiso2.Write()
   qcd_ss_data_aiso2_fit.Write()
   qcd_ss_data_aiso2_uncert.Write()
-  PlotFakeFactorCorrection(qcd_ss_data_aiso2, qcd_ss_data_aiso2_uncert, qcd_ss_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
+  PlotFakeFactorCorrection(qcd_ss_data_aiso2, qcd_ss_data_aiso2_uncert, qcd_ss_data_aiso2.GetName(), output_folder, wp, year, 0.5, 4.5, x_title='#Delta R')
 
-tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'), str(fout.Get('ss_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'))
 
-tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_aiso2_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('ss_aiso2_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('ss_aiso2_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(0.5,min(dR,4.5))'), str(fout.Get('ss_aiso2_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(0.5,min(dR,4.5))'))
 
 print 'iso FF'
 print tau1_string
@@ -655,7 +987,7 @@ for nbjet in ['0','1']:
   qcd_os_data_aiso2.Write()
   qcd_os_data_aiso2_fit.Write()
   qcd_os_data_aiso2_uncert.Write()
-  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='#Delta R')
+  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, year, 0.5, 4.5, x_title='#Delta R')
 
 
   #alternative parameterisation 
@@ -673,10 +1005,10 @@ for nbjet in ['0','1']:
   qcd_os_data_aiso2.Write()
   qcd_os_data_aiso2_fit.Write()
   qcd_os_data_aiso2_uncert.Write()
-  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, x_title='p_{T} (GeV)')
+  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, year, 0, 200, x_title='p_{T} (GeV)',logx=True)
 
-tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
-tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','min(dR,5.)'))
+tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'))
+tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'))
 
 
 # Make Fractions
