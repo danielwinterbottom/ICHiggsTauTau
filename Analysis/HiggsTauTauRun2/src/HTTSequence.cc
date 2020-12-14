@@ -864,15 +864,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
     if (era_type == era::data_2016) {
-      jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
+      jes_input_file = "input/jec/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2017) {
-      jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_file = "input/jec/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2018) {
-      jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_file = "input/jec/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
     
