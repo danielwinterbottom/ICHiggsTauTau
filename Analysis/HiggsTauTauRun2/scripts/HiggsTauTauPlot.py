@@ -2159,21 +2159,63 @@ if options.syst_prefire != '':
 
 if options.syst_tau_id_diff != '':
 
-#CMS_eff_trigger_et_$ERA
-#CMS_eff_xtrigger_l_et_
-
     hist_name = options.syst_tau_id_diff
-    if '*PT' in hist_name:
+
+    if options.analysis == 'mssmrun2':
+      if '*' in hist_name:
+        # add the usual pT binned uncerts for et and mt with pT<100 
+        if options.channel in ['et','mt']:
+
+          pt_bins = ["20-25", "25-30", "30-35", "35-40", "40-500", "500-1000", "1000-inf"]
+
+          for i in range(3,6):
+            bin_name = pt_bins[i-1]
+            hist_name_bini = hist_name.replace('*','%(bin_name)s' % vars())
+            systematics['syst_tau_id_diff_bin%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*(wt_tau_id_pt_bin%(i)i_up*(pt_2<100) + (pt_2>=100))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+            systematics['syst_tau_id_diff_bin%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*(wt_tau_id_pt_bin%(i)i_down*(pt_2<100) + (pt_2>=100))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+
+        if options.channel == 'tt':
+          # add the usual dm binned uncerts for tt with pt<100
+          for i in [0,1,10,11]:
+            hist_name_bini = hist_name.replace('*','dm%(i)i' % vars())
+            systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+            systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
+        # add the dedicated high pT uncerts which are common for both channels
+   
+        pt_bins = {5: "highpT_100-500",  6: "highpT_500-inf"}
+
+        for i in range(5,7):
+          bin_name = pt_bins[i]
+          hist_name_bini = hist_name.replace('*','%(bin_name)s' % vars())
+          systematics['syst_tau_id_diff_highpt_bin%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_mssm_bin%(i)i_up' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+          systematics['syst_tau_id_diff_highpt_bin%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_mssm_bin%(i)i_down' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
+
+        hist_name_pi0 = hist_name.replace('_eff_t','').replace('*','1ProngPi0Eff' % vars())
+        hist_name_pi = hist_name.replace('_eff_t','').replace('*','3ProngEff' % vars())
+        if options.channel in ['et','mt']:
+          systematics['syst_tau_id_diff_emb_trk_pi_up' % vars()] = ('' , '_'+hist_name_pi+'Up', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2<3)*1.008+(tau_decay_mode_2>9)*1.024))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False)
+          systematics['syst_tau_id_diff_emb_trk_pi_down' % vars()] = ('' , '_'+hist_name_pi+'Down', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2<3)*0.992+(tau_decay_mode_2>9)*0.976))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False)
+          systematics['syst_tau_id_diff_emb_trk_pi0_up' % vars()] = ('' , '_'+hist_name_pi0+'Up', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2==0 || tau_decay_mode_2==10) + ((tau_decay_mode_2==0 || tau_decay_mode_2==10)==0)*1.014))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False) 
+          systematics['syst_tau_id_diff_emb_trk_pi0_down' % vars()] = ('' , '_'+hist_name_pi0+'Down', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2==0 || tau_decay_mode_2==10) + ((tau_decay_mode_2==0 || tau_decay_mode_2==10)==0)*0.986))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False) 
+        if options.channel in ['tt']:
+          systematics['syst_tau_id_diff_emb_trk_pi_up' % vars()] = ('' , '_'+hist_name_pi+'Up', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2<3)*1.008+(tau_decay_mode_2>9)*1.024))*((pt_1>=100)+(pt_1<100)*((tau_decay_mode_1<3)*1.008+(tau_decay_mode_1>9)*1.024))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False)
+          systematics['syst_tau_id_diff_emb_trk_pi_down' % vars()] = ('' , '_'+hist_name_pi+'Down', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2<3)*0.992+(tau_decay_mode_2>9)*0.976))*((pt_1>=100)+(pt_1<100)*((tau_decay_mode_1<3)*0.992+(tau_decay_mode_1>9)*0.976))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False)
+          systematics['syst_tau_id_diff_emb_trk_pi0_up' % vars()] = ('' , '_'+hist_name_pi0+'Up', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2==0 || tau_decay_mode_2==10) + ((tau_decay_mode_2==0 || tau_decay_mode_2==10)==0)*1.014))*((pt_1>=100)+(pt_1<100)*((tau_decay_mode_1==0 || tau_decay_mode_1==10) + ((tau_decay_mode_1==0 || tau_decay_mode_1==10)==0)*1.014))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False)
+          systematics['syst_tau_id_diff_emb_trk_pi0_down' % vars()] = ('' , '_'+hist_name_pi0+'Down', 'wt*((pt_2>=100)+(pt_2<100)*((tau_decay_mode_2==0 || tau_decay_mode_2==10) + ((tau_decay_mode_2==0 || tau_decay_mode_2==10)==0)*0.986))*((pt_1>=100)+(pt_1<100)*((tau_decay_mode_1==0 || tau_decay_mode_1==10) + ((tau_decay_mode_1==0 || tau_decay_mode_1==10)==0)*0.986))' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes','ZTT','TTT','VVT'], False) 
+
+ 
+    elif '*PT' in hist_name:
       for i in range(1,6):
         hist_name_bini = hist_name.replace('*PT','bin%(i)i' % vars())
         systematics['syst_tau_id_diff_bin%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_pt_bin%(i)i_up' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
         systematics['syst_tau_id_diff_bin%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_pt_bin%(i)i_down' % vars(), ['ZLL','TTJ','ZL','ZJ','VVJ','W','jetFakes'], False)
-    if '*DM' in hist_name:
+    elif '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
         systematics['syst_tau_id_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_id_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
         systematics['syst_tau_id_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_id_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False) 
-    if '*MVADM' in hist_name:
+    elif '*MVADM' in hist_name:
       for i in [0,1,2,10,11]:
         if options.channel != 'tt':
           hist_name_bini = hist_name.replace('*MVADM','pTlow_MVADM%(i)i' % vars())
@@ -2187,7 +2229,46 @@ if options.syst_tau_id_diff != '':
 
 if options.syst_tau_trg_diff != '':
     hist_name = options.syst_tau_trg_diff
-    if '*DM' in hist_name:
+    chan = options.channel
+
+    if options.analysis == 'mssmrun2':
+      if '*'in hist_name:
+
+        # single tau uncerts
+        hist_name_bini = hist_name.replace('*','trigger_single_t' % vars())
+        systematics['syst_tau_trg_diff_singletau_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mssm_singletau_up' % vars(), ['QCD','jetFakes'], False)
+        systematics['syst_tau_trg_diff_singletau_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mssm_singletau_down'% vars(), ['QCD','jetFakes'], False)
+
+        if chan in ['mt','et']:
+
+          # single lepton uncerts
+          hist_name_bini = hist_name.replace('*','trigger_%(chan)s' % vars())
+          systematics['syst_tau_trg_diff_singlelep_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mssm_singlelep_up' % vars(), ['QCD','jetFakes'], False)
+          systematics['syst_tau_trg_diff_singlelep_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mssm_singlelep_down'% vars(), ['QCD','jetFakes'], False)
+
+          # cross lepton uncerts
+          hist_name_bini = hist_name.replace('*','xtrigger_l_%(chan)s' % vars())
+          systematics['syst_tau_trg_diff_crosslep_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mssm_crosslep_up' % vars(), ['QCD','jetFakes'], False)
+          systematics['syst_tau_trg_diff_crosslep_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mssm_crosslep_down'% vars(), ['QCD','jetFakes'], False)
+
+        # double-tau / cross-tau uncerts
+        for i in [0,1,10,11]:
+
+          hist_name_bini = hist_name.replace('*','xtrigger_t_%(chan)s_dm%(i)i' % vars())
+
+          systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mssm_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+          systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mssm_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
+          if chan == 'tt':
+            # for tt channels we decouple low and high pT so add additional uncertainty for high pT here
+            hist_name_bini = hist_name.replace('*','xtrigger_t_%(chan)s_dm%(i)i_highpT' % vars())
+            # change weight names eventually for high pT specific ones
+            systematics['syst_tau_trg_diff_dm%(i)i_highpt_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mssm_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
+            systematics['syst_tau_trg_diff_dm%(i)i_highpt_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mssm_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
+
+
+
+    elif '*DM' in hist_name:
       for i in [0,1,10,11]:
         hist_name_bini = hist_name.replace('*DM','DM%(i)i' % vars())
         if options.channel != 'tt':
@@ -2196,7 +2277,7 @@ if options.syst_tau_trg_diff != '':
         else: 
           systematics['syst_tau_trg_diff_dm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_dm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
           systematics['syst_tau_trg_diff_dm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_dm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
-    if '*MVADM' in hist_name:
+    elif '*MVADM' in hist_name:
 
       for i in [0,1,2,10,11]:
         hist_name_bini = hist_name.replace('*MVADM','MVADM%(i)i' % vars())

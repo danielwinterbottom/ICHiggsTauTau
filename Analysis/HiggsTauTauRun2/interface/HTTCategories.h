@@ -953,6 +953,14 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_mssm_dm10_down_;
   double wt_tau_trg_mssm_dm11_up_;
   double wt_tau_trg_mssm_dm11_down_;
+  double wt_tau_trg_mssm_highpt_dm0_up_;
+  double wt_tau_trg_mssm_highpt_dm0_down_;
+  double wt_tau_trg_mssm_highpt_dm1_up_;
+  double wt_tau_trg_mssm_highpt_dm1_down_;
+  double wt_tau_trg_mssm_highpt_dm10_up_;
+  double wt_tau_trg_mssm_highpt_dm10_down_;
+  double wt_tau_trg_mssm_highpt_dm11_up_;
+  double wt_tau_trg_mssm_highpt_dm11_down_;
   double wt_tau_trg_mssm_singletau_up_;
   double wt_tau_trg_mssm_singletau_down_;
   double wt_tau_trg_mssm_singlelep_up_;

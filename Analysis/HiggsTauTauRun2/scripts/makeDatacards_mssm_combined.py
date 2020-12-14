@@ -247,7 +247,7 @@ if not options.batch_name_changes:
 
     cat_schemes = {
       'et' : categories_et,
-     'mt' : categories_mt,
+      'mt' : categories_mt,
       'em' : categories_em,
       'tt' : categories_tt
     }
@@ -255,33 +255,44 @@ if not options.batch_name_changes:
     ### Systematics ###
 
     common_shape_systematics = (
-      ' --syst_tau_id_diff="CMS_eff_t_*MVADM_13TeV"' # Tau ID efficiency
-      ' --syst_tau_trg_diff="CMS_eff_t_trg_*MVADM_13TeV"' # Tau Trigger efficiency
-      ' --syst_tau_scale_grouped="CMS_scale_t_*group_13TeV"' # Tau energy scale
-      ' --syst_zwt="CMS_htt_dyShape_13TeV"' # DY m_ll pT re-weighting
-      ' --syst_tquark="CMS_htt_ttbarShape_13TeV"' # Top pT re-weighting
-      ' --syst_prefire="CMS_PreFire_13TeV"' # Prefiring
-      ' --syst_qcd_scale="CMS_scale_gg_13TeV"' # QCD estimate uncertainties
-      ' --syst_res_j="CMS_res_j_13TeV"' # Jet energy resolution
-      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_13TeV"' # MET unclustered energy uncertainty
-      ' --syst_scale_j="CMS_scale_j_13TeV"' # Jet energy scale
-      ' --syst_embedding_tt="CMS_ttbar_embeded_13TeV"' # ttbar contamination in embedding
+      ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars() # Tau ID efficiency
+      ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars() # Tau Trigger efficiency
+      ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars() # Tau energy scale
+      ' --syst_tquark="CMS_htt_ttbarShape"' # Top pT re-weighting
+      ' --syst_res_j="CMS_res_j_%(year)s"' % vars() # Jet energy resolution
+      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars() # MET unclustered energy uncertainty
+      ' --syst_scale_j_regrouped="CMS_scale_j_*group"' # Jet energy scale (grouped)
+      ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars() # ttbar contamination in embedding
     )
+
+    if year ! = '2018': 
+      common_shape_systematics += (
+        ' --syst_prefire="CMS_prefiring"'
+      )
+    if year == '2016':  
+      common_shape_systematics += (
+        ' --syst_zwt="CMS_htt_dyShape_2016"'
+      )
+    else:
+      common_shape_systematics += (
+        ' --syst_zwt="CMS_htt_dyShape"'
+      )
+
 
     # need lepton trigger efficiency
     et_shape_systematics = (
-      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_13TeV"' # l to tau h fake energy scale
-      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_13TeV"' # l to tau h fake energy scale
-      ' --syst_e_scale="CMS_scale_e_13TeV"' # Election energy scale
+      #' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars() # l to tau h fake energy scale
+      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars() # l to tau h fake energy scale
+      ' --syst_e_scale="CMS_scale_e"' # Election energy scale
       ' --do_ff_systs' 
     )
 
     mt_shape_systematics = (
-      ' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_13TeV"' # l to tau h fake energy scale
-      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_13TeV"' # l to tau h fake energy scale
-      ' --syst_mu_scale="CMS_scale_mu_13TeV"' # Muon energy scale - Not in analysis note
+      #' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
+      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars() # l to tau h fake energy scale
+      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars() # l to tau h fake energy scale
+      #' --syst_mu_scale="CMS_scale_mu_13TeV"' # Muon energy scale - Not in analysis note
       ' --do_ff_systs'
     )
 
@@ -315,9 +326,9 @@ if not options.batch_name_changes:
 
     add_cond = '' 
     if singletau:
-      add_cond = '--singletau --add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm\''
+      add_cond = '--singletau --add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
     else:
-      add_cond = '--add_wt=\'wt_tau_trg_mssm_doubleonly*wt_tau_id_mssm\''
+      add_cond = '--add_wt=\'wt_tau_trg_mssm_doubleonly*wt_tau_id_mssm*wt_prefire\''
 
     for ch in channels:
       categories = cat_schemes[ch]
