@@ -4270,7 +4270,35 @@ def NormSignals(outfile,add_name):
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
-    
+
+def RenameEmbedSysts(outfile):
+  chan = options.channel
+  renames = {
+   'CMS_eff_trigger_%(chan)s' % vars() : 'CMS_eff_trigger_emb_%(chan)s' % vars(),
+   'CMS_eff_xtrigger_l_%(chan)s' % vars() : 'CMS_eff_xtrigger_l_%(chan)s' % vars(),
+   'CMS_eff_xtrigger_t': 'CMS_eff_xtrigger_t_emb',
+   'CMS_eff_t': 'CMS_eff_t_emb',
+   'CMS_scale_e' : 'CMS_scale_e_emb',
+   'CMS_scale_t' : 'CMS_scale_t_emb',
+  }    
+  directory = outfile.Get(nodename)
+  for key in directory.GetListOfKeys():
+    name = key.GetName()
+    histo = directory.Get(name)
+    if not isinstance(histo,ROOT.TDirectory) and 'EmbedZTT' in name:
+      new_name = name.replace('EmbedZTT', 'EMB')
+      histo.SetName(new_name)
+      directory.cd()
+      #histo.Write(new_name,ROOT.TObject.kWriteDelete)
+      histo.Write(new_name)
+      for x in renames:
+        if x in new_name:
+          histo_clone = histo.Clone()
+          y = renames[x]
+          new_name_2 = new_name.replace(x,y)
+          histo_clone.SetName(new_name_2)
+          histo_clone.Write(new_name_2)
+          break
 
 # Create output file
 is_2d=False
@@ -4793,6 +4821,9 @@ outfile =  ROOT.TFile(output_name, 'UPDATE')
 for add_name in add_names: 
     if options.analysis in ['mssm','mssmrun2']:
         NormSignals(outfile,add_name)
+
+if options.analysis in ['mssmrun2']:
+  RenameEmbedSysts(outfile) 
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
