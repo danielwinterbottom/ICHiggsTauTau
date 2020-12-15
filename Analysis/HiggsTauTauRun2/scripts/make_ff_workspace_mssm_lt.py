@@ -134,7 +134,11 @@ for task in histsToWrap:
 
 
 for i in ['qcd','wjets','ttbar']:
-  w.factory('expr::lt_fracs_%(i)s_nom("(@0!=0)*( (@1==0 && @2<40)*(@3)+ (@1==0 && @2>40 && @2<70)*(@4) + (@1==0 && @2>70)*(@5) ) + (@0==0)*( (@1>0 && @2<40)*(@6)+ (@1>0 && @2>40 && @2<70)*(@7) + (@1>0 && @2>70)*(@8) )", os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets0_os_%(i)s,lt_fracs_loosemt_nbjets0_os_%(i)s,lt_fracs_control_nbjets0_os_%(i)s,lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s,lt_fracs_tightmt_nbjets0_ss_%(i)s,lt_fracs_loosemt_nbjets0_ss_%(i)s,lt_fracs_control_nbjets0_ss_%(i)s,lt_fracs_tightmt_nbjets1_ss_%(i)s,lt_fracs_loosemt_nbjets1_ss_%(i)s,lt_fracs_control_nbjets1_ss_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom_os_nbjets0("(@0!=0)*( (@1==0 && @2<40)*(@3)+ (@1==0 && @2>=40 && @2<70)*(@4) + (@1==0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets0_os_%(i)s,lt_fracs_loosemt_nbjets0_os_%(i)s,lt_fracs_control_nbjets0_os_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom_os_nbjets1("(@0!=0)*( (@1>0 && @2<40)*(@3)+ (@1>0 && @2>=40 && @2<70)*(@4) + (@1>0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom_ss_nbjets0("(@0==0)*( (@1==0 && @2<40)*(@3)+ (@1==0 && @2>=40 && @2<70)*(@4) + (@1==0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets0_os_%(i)s,lt_fracs_loosemt_nbjets0_os_%(i)s,lt_fracs_control_nbjets0_os_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom_ss_nbjets1("(@0==0)*( (@1>0 && @2<40)*(@3)+ (@1>0 && @2>=40 && @2<70)*(@4) + (@1>0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s)' % vars())
+  w.factory('expr::lt_fracs_%(i)s_nom("@1 + @2 + @3 + @4", lt_fracs_%(i)s_nom_os_nbjets0, lt_fracs_%(i)s_nom_os_nbjets1, lt_fracs_%(i)s_nom_ss_nbjets0, lt_fracs_%(i)s_nom_ss_nbjets1)')
 
   # if the fractions are set by the user then overwrite these values
   w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
