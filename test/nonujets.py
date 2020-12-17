@@ -7,16 +7,17 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-opts.register('file', 'root://xrootd-cms.infn.it//store/user/adow/PHMC_20Nov18/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/GluGluHToPseudoscalarTauTau_M125_13TeV_powheg_pythia8_2017-GEN_TEST/181121_113710/0000/HIG-RunIIFall17wmLHEGS-02619_12.root', parser.VarParsing.multiplicity.singleton,
-
+#opts.register('file', 'file:/vols/cms/dw515/minlo_hjj/CMSSW_9_2_8/src/gen.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/minlo_sm_lhe_v2/gen.root', parser.VarParsing.multiplicity.singleton,
+parser.VarParsing.varType.string, "input file")
+opts.register('output', 'EventTree.root', parser.VarParsing.multiplicity.singleton,parser.VarParsing.varType.string, "output file")
 #opts.register('file', 'root://xrootd.unl.edu//store/user/dwinterb/MG5MC/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/180702_190927/0001/test_gen_1412.root', parser.VarParsing.multiplicity.singleton,
 
-parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '94X_mc2017_realistic_v14', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '102X_mc2017_realistic_v7', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
+opts.register('LHEWeights', True, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
-opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
+opts.register('LHETag', 'source', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
 
 opts.parseArguments()
@@ -50,7 +51,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string(opts.output),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -61,7 +62,7 @@ process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32(-1)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 50
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.options   = cms.untracked.PSet(
   wantSummary = cms.untracked.bool(True)
@@ -143,6 +144,7 @@ process.options   = cms.untracked.PSet(
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
+
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 
@@ -176,7 +178,9 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
   input   = cms.InputTag("selectedGenJets"),
 )
 
-process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
+process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone(
+   input   = cms.InputTag(opts.LHETag)
+)
 
 process.icGenSequence += (
   process.icGenParticleProducer+
@@ -191,12 +195,14 @@ process.icGenSequence += (
 #################################################################
 ## EventInfo
 #################################################################
-if opts.LHETag: lheTag = opts.LHETag
-else: lheTag = 'externalLHEProducer'
+#if opts.LHETag: lheTag = opts.LHETag
+#else: lheTag = 'externalLHEProducer'
+lheTag = opts.LHETag
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeLHEWeights   = cms.bool(doLHEWeights),
   lheProducer         = cms.InputTag(lheTag),
+  lheSource           = cms.string(lheTag),
 )
 
 process.icEventInfoSequence = cms.Sequence(
@@ -208,13 +214,15 @@ process.icEventInfoSequence = cms.Sequence(
 ################################################################
 process.icEventProducer = producers.icEventProducer.clone()
 
-process.p = cms.Path(
-  process.icVertexSequence+
-  process.icGenSequence+
-  process.icEventInfoSequence+
-  process.icEventProducer
+
+process.path = cms.Path(
+    process.icVertexSequence+
+    process.icGenSequence+
+    process.icEventInfoSequence+
+    process.icEventProducer
 )
 
-process.schedule = cms.Schedule(process.p)
+
+process.schedule = cms.Schedule(process.path)
 
 

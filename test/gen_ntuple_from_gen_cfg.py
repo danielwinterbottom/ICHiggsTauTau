@@ -8,7 +8,7 @@ import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing('python')
-options.register('output','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('output','output.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('input','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('tauSpinner', False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Compute weights using tauspinner")
 
@@ -40,7 +40,7 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(500)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100

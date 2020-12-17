@@ -34,6 +34,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   ic::EventInfo *info_;
   std::string branch_;
   edm::InputTag lhe_collection_;
+  std::string lhe_name_;
   bool do_jets_rho_;
   edm::InputTag input_jets_rho_;
   bool do_leptons_rho_;
