@@ -3093,7 +3093,7 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.4,0.15,3,0.01)
+    legend = PositionedLegend(0.45,0.2,3,0.01)
     legend.SetTextFont(42)
     legend.SetTextSize(0.040)
     legend.SetFillColor(0)
