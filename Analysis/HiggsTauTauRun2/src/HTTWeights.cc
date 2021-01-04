@@ -365,7 +365,7 @@ int HTTWeights::PreAnalysis() {
       fns_["et_trg_embed_ratio"+s] = std::shared_ptr<RooFunctor>(w_->function(("et_trg_embed_ratio"+s).c_str())->functor(w_->argSet("e_pt,e_eta,e_iso,t_pt,t_dm,t_eta,t_phi")));
     }
 
-    systs = {"","_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down",
+    systs = {"","_singletau_up","_singletau_down","_lowpt_dm0_up","_lowpt_dm0_down","_lowpt_dm1_up","_lowpt_dm1_down","_lowpt_dm10_up","_lowpt_dm10_down","_lowpt_dm11_up","_lowpt_dm11_down",
     "_highpt_dm0_up", "_highpt_dm0_down","_highpt_dm1_up","_highpt_dm1_down","_highpt_dm10_up","_highpt_dm10_down","_highpt_dm11_up","_highpt_dm11_down"
     };
     for (auto s : systs){
@@ -2522,8 +2522,8 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       tau_trg_mssm_double = (trg_tot==0) ? tau_trg_mssm_double : tau_trg_mssm_double/trg_tot;
 
-      std::vector<std::string> systs = {"_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down",
-      "_highpt_dm0_up", "_highpt_dm0_down","_highpt_dm1_up","_highpt_dm1_down","_highpt_dm10_up","_highpt_dm10_down","_highpt_dm11_up","_highpt_dm11_down"
+      std::vector<std::string> systs = {"_singletau_up","_singletau_down","_lowpt_dm0_up","_lowpt_dm0_down","_lowpt_dm1_up","_lowpt_dm1_down","_lowpt_dm10_up","_lowpt_dm10_down","_lowpt_dm11_up","_lowpt_dm11_down",
+    "_highpt_dm0_up", "_highpt_dm0_down","_highpt_dm1_up","_highpt_dm1_down","_highpt_dm10_up","_highpt_dm10_down","_highpt_dm11_up","_highpt_dm11_down"
       };
 
       std::string extra = "";
