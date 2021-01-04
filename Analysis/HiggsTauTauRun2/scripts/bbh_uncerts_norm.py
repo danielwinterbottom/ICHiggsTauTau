@@ -57,6 +57,10 @@ t2 = f2.Get('gen_ntuple')
 f3=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_m%(mass)s_down_tt_2018.root' % vars())
 t3 = f3.Get('gen_ntuple')
 
+f4=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_mg_m%(mass)s_tt_2018.root' % vars())
+t4 = f4.Get('gen_ntuple')
+
+
 h0 = ROOT.TH1D('h0','',4,0,4)
 h1 = ROOT.TH1D('h1','',4,0,4)
 h2 = ROOT.TH1D('h2','',4,0,4)
@@ -67,6 +71,7 @@ h6 = ROOT.TH1D('h6','',4,0,4)
 
 h0_up = ROOT.TH1D('h0_up','',4,0,4)
 h0_down = ROOT.TH1D('h0_down','',4,0,4)
+hmg = ROOT.TH1D('hmg','',4,0,4)
 
 h10 = ROOT.TH1D('h10','',4,0,4)
 h11 = ROOT.TH1D('h11','',4,0,4)
@@ -290,9 +295,26 @@ h0_up = t2.GetHistogram()
 t3.Draw("n_bjets%(extra)s>>h0_down(4,0,4)" % vars(),"wt",'goff')
 h0_down = t3.GetHistogram()
 
+t4.Draw("n_bjets%(extra)s>>hmg(4,0,4)" % vars(),"wt",'goff')
+hmg = t4.GetHistogram()
+
 h0.Scale(1./h0.Integral(-1,-1))
 h0_up.Scale(1./h0_up.Integral(-1,-1))
 h0_down.Scale(1./h0_down.Integral(-1,-1))
+hmg.Scale(1./hmg.Integral(-1,-1))
+
+error_mg = ROOT.Double()
+error_ph = ROOT.Double()
+
+mg = hmg.IntegralAndError(2,-1,error_mg)
+ph = h0.IntegralAndError(2,-1,error_ph)
+
+comp = mg/ph
+comp_error = comp*np.sqrt((error_mg/mg)**2 + (error_ph/ph)**2)
+
+#print "MG vs PH nbtag>0 difference = %.3f +/- %.3f" % (comp, comp_error)
+#os.system('echo "%s : (%.3f, %.3f)" >> temp.out' % (mass, comp-1, comp_error))
+
 
 
 ps_uncert0 = (max(h0.Integral(1,1), h0_up.Integral(1,1), h0_down.Integral(1,1)) - min(h0.Integral(1,1), h0_up.Integral(1,1), h0_down.Integral(1,1)))/2
@@ -329,6 +351,25 @@ plotting.CompareHists([h0],
          uncert_hist=hdamp_uncert_hist,
          uncert_title='hdamp uncertainty')
 
+plotting.CompareHists([h0,hmg],
+         ['Powheg','Madgraph_aMC@NLO'],
+         "bbH %(mass)s GeV" % vars(),
+         True,
+         False,
+         False,
+         "0.9,1.1",
+         False,
+         10000,
+         0,
+         False,
+         10000,
+         0,
+         'N_{bjets}',
+         'a.u.',
+         0,
+         False,
+         'bbh_uncerts/bbH_mg_vs_ph_m%(mass)s_%(year)s' % vars())
+
 print 'Uncertainties for %(year)s M=%(mass)s:' % vars()
 
 print 'hdamp uncerts (0, >0) = ((+) %.3f (-) %.4f , (+) %.3f (-) %.3f)' % (1.+ps_uncert0_up, 1.+ps_uncert0_down, 1.+ps_uncert1_up, 1.+ps_uncert1_down)
@@ -350,5 +391,20 @@ out_scale+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_s
 out_pdf=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_pdf_up).3f)\n' % vars()
 out_pdf+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_pdf_up).3f)' % vars()
 
-os.system('echo "%(out_scale)s" >> bbh_scale.txt' % vars())
-os.system('echo "%(out_pdf)s" >> bbh_pdf.txt' % vars())
+nobtag_vs_up = hmg.Integral(1,1)/h0.Integral(1,1)
+btag_vs_up = hmg.Integral(2,-1)/h0.Integral(2,-1)
+
+out_vs=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_vs_up).3f)\n' % vars()
+out_vs+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_vs_up).3f)' % vars()
+
+#os.system('echo "%(out_scale)s" >> bbh_scale.txt' % vars())
+#os.system('echo "%(out_pdf)s" >> bbh_pdf.txt' % vars())
+#os.system('echo "%s %.3f" >> uncerts_scale.txt' % (mass, abs(scale_uncert1_up+ps_uncert1_up - (scale_uncert1_down+ps_uncert1_down))/2))
+#os.system('echo "%s %.3f" >> uncerts_pdf.txt' % (mass, btag_pdf_up-1.))
+
+#os.system('echo "%(out_vs)s" >> bbh_mg_vs_ph.txt' % vars())
+#os.system('echo "%(out_vs)s"' % vars())
+
+
+
+#os.system('echo "%s : %.3f" >> temp.out' % (mass, (abs(btag_scale_up-1.)+abs(btag_scale_down-1.))/2 ))
