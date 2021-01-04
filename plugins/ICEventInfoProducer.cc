@@ -273,11 +273,12 @@ void ICEventInfoProducer::produce(edm::Event& event,
     }
     if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
+      info_->set_weight("lhe_nominal", nominal_wt, false);
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
         info_->set_weight(lhe_handle->weights()[i].id,
                           lhe_handle->weights()[i].wgt / nominal_wt, false);
 
-        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
+        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt << "  " <<  nominal_wt << "    " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
       }
     }
   }
