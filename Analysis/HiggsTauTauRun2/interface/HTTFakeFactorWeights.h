@@ -66,7 +66,7 @@ class HTTFakeFactorWeights : public ModuleBase {
 
   TMVA::Reader *reader_;
   float met_, pt_1_, pt_2_, mva_dm_2_, mt_1_, m_vis_, pt_tt_, mjj_, n_jets_;
-  float n_prebjets_, n_deepbjets_, jet_pt_1_, jet_pt_2_; 
+  float n_prebjets_, n_deepbjets_, jet_pt_1_, jet_pt_2_, mt_2_, mt_lep_, mt_tot_;
  
 };
 

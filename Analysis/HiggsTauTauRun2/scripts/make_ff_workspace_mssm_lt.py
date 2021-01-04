@@ -138,7 +138,7 @@ for i in ['qcd','wjets','ttbar']:
   w.factory('expr::lt_fracs_%(i)s_nom_os_nbjets1("(@0!=0)*( (@1>0 && @2<40)*(@3)+ (@1>0 && @2>=40 && @2<70)*(@4) + (@1>0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s)' % vars())
   w.factory('expr::lt_fracs_%(i)s_nom_ss_nbjets0("(@0==0)*( (@1==0 && @2<40)*(@3)+ (@1==0 && @2>=40 && @2<70)*(@4) + (@1==0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets0_os_%(i)s,lt_fracs_loosemt_nbjets0_os_%(i)s,lt_fracs_control_nbjets0_os_%(i)s)' % vars())
   w.factory('expr::lt_fracs_%(i)s_nom_ss_nbjets1("(@0==0)*( (@1>0 && @2<40)*(@3)+ (@1>0 && @2>=40 && @2<70)*(@4) + (@1>0 && @2>=70)*(@5) )",os[1],nbjets[0],mt[0],lt_fracs_tightmt_nbjets1_os_%(i)s,lt_fracs_loosemt_nbjets1_os_%(i)s,lt_fracs_control_nbjets1_os_%(i)s)' % vars())
-  w.factory('expr::lt_fracs_%(i)s_nom("@1 + @2 + @3 + @4", lt_fracs_%(i)s_nom_os_nbjets0, lt_fracs_%(i)s_nom_os_nbjets1, lt_fracs_%(i)s_nom_ss_nbjets0, lt_fracs_%(i)s_nom_ss_nbjets1)')
+  w.factory('expr::lt_fracs_%(i)s_nom("@0 + @1 + @2 + @3", lt_fracs_%(i)s_nom_os_nbjets0, lt_fracs_%(i)s_nom_os_nbjets1, lt_fracs_%(i)s_nom_ss_nbjets0, lt_fracs_%(i)s_nom_ss_nbjets1)' % vars())
 
   # if the fractions are set by the user then overwrite these values
   w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
@@ -516,7 +516,7 @@ for njet in [0,1]:
     w.factory('expr::lt_wjets_extrap_nbjets%(njet)i_%(x)smt_correction_uncert2_up("@0/@1", lt_wjets_extrap_nbjets%(njet)i_%(x)smt_correction_uncert2_hist_up, lt_wjets_extrap_nbjets%(njet)i_%(x)smt_correction_nom)' % vars())
 
 w.factory('expr::lt_wjets_dr_correction("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*((@0==0)*@4 + (@0>0)*@5) + (@3>=%(crosstrg_pt)s)*((@0==0)*@6 + (@0>0)*@7))",njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction )' % vars())
-w.factory('expr::lt_wjets_extrap_correction("(@0>=70) + (@0<70&&@0>=50)*((@1==0)*@2 + (@1>0)*@3) + (@0<50)*((@1==0)*@4 + (@1>0)*@5)", mt[0], nbjets[0], lt_wjets_extrap_nbjets0_loosemt_correction, lt_wjets_extrap_nbjets1_loosemt_correction, lt_wjets_extrap_nbjets0_tightmt_correction, lt_wjets_extrap_nbjets1_tightmt_correction )' % vars())
+w.factory('expr::lt_wjets_extrap_correction("(@0>=70) + (@0<70&&@0>=40)*((@1==0)*@2 + (@1>0)*@3) + (@0<40)*((@1==0)*@4 + (@1>0)*@5)", mt[0], nbjets[0], lt_wjets_extrap_nbjets0_loosemt_correction, lt_wjets_extrap_nbjets1_loosemt_correction, lt_wjets_extrap_nbjets0_tightmt_correction, lt_wjets_extrap_nbjets1_tightmt_correction )' % vars())
 
 for i in [1,2]:
 
@@ -525,7 +525,7 @@ for i in [1,2]:
   w.factory('expr::lt_wjets_l_pt_correction_njets0_uncert%(i)i_up("((@0==0)*@1 + (@0!=0))*(@2>=%(crosstrg_pt)s) + (@2<%(crosstrg_pt)s)", njets[0], lt_wjets_l_pt_njets0_correction_uncert%(i)i_up, l_pt_bounded200)' % vars())
   w.factory('expr::lt_wjets_l_pt_correction_njets1_uncert%(i)i_up("((@0==0) + (@0!=0)*@1)*(@2>=%(crosstrg_pt)s) + (@2<%(crosstrg_pt)s)", njets[0], lt_wjets_l_pt_njets1_correction_uncert%(i)i_up, l_pt_bounded200)' % vars())
 
-  w.factory('expr::lt_wjets_extrap_correction_uncert%(i)i_up("(@0>=70) + (@0<70&&@0>=50)*((@1==0)*@2 + (@1>0)*@3) + (@0<50)*((@1==0)*@4 + (@1>0)*@5) ",mt[0], nbjets[0], lt_wjets_extrap_nbjets0_loosemt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets1_loosemt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets0_tightmt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets1_tightmt_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::lt_wjets_extrap_correction_uncert%(i)i_up("(@0>=70) + (@0<70&&@0>=40)*((@1==0)*@2 + (@1>0)*@3) + (@0<40)*((@1==0)*@4 + (@1>0)*@5) ",mt[0], nbjets[0], lt_wjets_extrap_nbjets0_loosemt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets1_loosemt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets0_tightmt_correction_uncert%(i)i_up, lt_wjets_extrap_nbjets1_tightmt_correction_uncert%(i)i_up)' % vars())
 
   w.factory('expr::lt_wjets_met_correction_njets0_uncert%(i)i_down("2.-@0", lt_wjets_met_correction_njets0_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_wjets_met_correction_njets1_uncert%(i)i_down("2.-@0", lt_wjets_met_correction_njets1_uncert%(i)i_up)' % vars())
@@ -639,12 +639,12 @@ w.factory('expr::lt_ttbar_l_pt_tightmt_correction_uncert2_up("@0/@1", lt_ttbar_t
 w.factory('expr::lt_ttbar_l_pt_loosemt_correction_uncert1_up("@0/@1", lt_ttbar_loosemt_l_pt_correction_uncert1_hist_up, lt_ttbar_loosemt_l_pt_correction_nom)' % vars())
 w.factory('expr::lt_ttbar_l_pt_loosemt_correction_uncert2_up("@0/@1", lt_ttbar_loosemt_l_pt_correction_uncert2_hist_up, lt_ttbar_loosemt_l_pt_correction_nom)' % vars())
 
-w.factory('expr::lt_ttbar_l_pt_correction("(@0<50)*@1 + (@0>=50)*@2",mt[0], lt_ttbar_l_pt_tightmt_correction, lt_ttbar_l_pt_loosemt_correction )' % vars())
+w.factory('expr::lt_ttbar_l_pt_correction("(@0<40)*@1 + (@0>=40)*@2",mt[0], lt_ttbar_l_pt_tightmt_correction, lt_ttbar_l_pt_loosemt_correction )' % vars())
 
 for i in [1,2]:
   w.factory('expr::lt_ttbar_met_correction_uncert%(i)i_down("2.-@0", lt_ttbar_met_correction_uncert%(i)i_up)' % vars())
 
-  w.factory('expr::lt_ttbar_l_pt_correction_uncert%(i)i_up("(@0<50)*@1 + (@0>=50)*@2", mt[0], lt_ttbar_l_pt_tightmt_correction_uncert%(i)i_up, lt_ttbar_l_pt_loosemt_correction_uncert%(i)i_up)' % vars())
+  w.factory('expr::lt_ttbar_l_pt_correction_uncert%(i)i_up("(@0<40)*@1 + (@0>=40)*@2", mt[0], lt_ttbar_l_pt_tightmt_correction_uncert%(i)i_up, lt_ttbar_l_pt_loosemt_correction_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_ttbar_l_pt_correction_uncert%(i)i_down("2.-@0", lt_ttbar_l_pt_correction_uncert%(i)i_up)' % vars())
 
 w.factory('expr::lt_ttbar_datamc_correction("(@0>=0)*((@1<1.25*@2)*@3/@4 + (@1>=1.25*@2&&@1<1.5*@2)*@5/@6 + (@1>=1.5*@2)*@7/@8)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_low_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_med_1jet_pt_2_ff_wjets_mc_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_pt140_fit, lt_jet_pt_high_1jet_pt_2_ff_wjets_mc_pt140_fit)' % vars())
