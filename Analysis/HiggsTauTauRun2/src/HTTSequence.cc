@@ -661,7 +661,7 @@ if(!is_data) {
     .set_write_plots(false)
     .set_ditau_label("ditau")
     .set_channel(channel)
-    .set_ngenjets(do_ngenjets));
+    .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }
 
 std::string scalefactor_file;
