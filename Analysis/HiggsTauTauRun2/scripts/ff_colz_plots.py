@@ -5,8 +5,8 @@ import time
 import json
 from array import array
 
-year = '2016'
-channel = 'et'
+year = '2017'
+channel = 'tt'
 
 wp = 'medium'
 alt_wp = 'vvvloose'
@@ -197,8 +197,11 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   if doQCD:
     print "Drawing QCD distribution:"
     # draw data for QCD
-    if not doIso:  qcd_cuts = 'mt_1<%(qcdMT)s&&iso_1>0.05' % vars()
-    else: qcd_cuts = 'mt_1<%(qcdMT)s' % vars()
+    if qcdMT != None:
+      if not doIso:  qcd_cuts = 'mt_1<%(qcdMT)s&&iso_1>0.05' % vars()
+      else: qcd_cuts = 'mt_1<%(qcdMT)s' % vars()
+    else: 
+      qcd_cuts = '(1)'
     print "- Drawing data."
     for i in data_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
@@ -217,6 +220,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     # only subtract non j->tau fake component
     print "- Drawing subtracted background."
     for i in other_files+wjets_files+ttbar_files:
+      print i
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
       h = hout.Clone()
@@ -226,7 +230,13 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       else:
         t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s)*((os==1)))*(%(qcd_cuts)s)*(%(add_wt)s)' % vars(),'goff')
       h = t.GetHistogram()
+      print t
+      print h
       scale = lumi*params[i]['xs']/params[i]['evt']
+      print lumi
+      print params[i]['xs']
+      print params[i]['evt']
+      print scale
       h.Scale(scale)
       bkgs_qcd.Add(h)
 
@@ -239,9 +249,9 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   else: mt_cut='mt_1>70'
   if doW:
     print "Drawing W + Jets distribution:"
+    print "- Drawing data."
     # draw data for W+jets
     for i in data_files:
-      print "- Drawing data."
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
       h = hout.Clone()
@@ -370,8 +380,8 @@ def CalculateFakeFactors(num,denum):
 
 if year == '2018':
   lumi = 58826.8469
-  params_file = 'scripts/params_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/'
+  params_file = 'scripts/params_mssm_2018.json'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018_v2/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -389,6 +399,13 @@ if year == '2018':
       'EGammaC',
       'EGammaD'
     ]
+  elif channel == "tt":
+    data_files = [
+      'TauB',
+      'TauC',
+      'TauD',
+    ]
+
 
   ttbar_files = [
     'TTTo2L2Nu',
@@ -434,7 +451,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v2/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -453,6 +470,14 @@ elif year == "2017":
       'SingleElectronD',
       'SingleElectronE',
       'SingleElectronF',
+    ]
+  elif channel == "tt":
+    data_files = [
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF',
     ]
  
   ttbar_files = [
@@ -482,7 +507,7 @@ elif year == "2017":
     'DY3JetsToLL-LO',
     'DY3JetsToLL-LO-ext',
     'DY4JetsToLL-LO',
-    'DYJetsToLL_M-10-50-LO',
+    #'DYJetsToLL_M-10-50-LO',
     'DYJetsToLL_M-10-50-LO-ext1',
     'T-tW', 
     'Tbar-tW',
@@ -527,6 +552,16 @@ elif year == "2016":
       'SingleElectronF',
       'SingleElectronG',
       'SingleElectronH'
+    ]
+  elif channel == "tt":
+    data_files = [
+      'TauB',
+      'TauC',
+      'TauD',
+      'TauE',
+      'TauF',
+      'TauG',
+      'TauH'
     ]
 
   ttbar_files = [
@@ -583,32 +618,42 @@ with open(params_file) as jsonfile:
   params = json.load(jsonfile)
 
 # Basline Selection
-iso = 'iso_1<0.15'
-anti_iso = 'iso_1<0.5 && iso_1>0.25'
-deeptau_jet_pass = 'deepTauVsJets_%(wp)s_2>0.5' % vars()
-deeptau_jet_fail = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars()
-if channel == "mt":
-  deeptau_lep = 'deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5'
-  if year == "2016":
-    crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>25)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
-  else: crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>32)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
-elif channel == "et":
-  deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
-  if year == "2016":
-    crosstrg = 'trg_singleelectron'
-  else:
-    crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s&&pt_2>35)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
-other_sel = 'leptonveto==0 && pt_2>30 && wt<2'
+if channel == "mt" or channel == "et":
+  leading_tau = '2'
+  iso = 'iso_1<0.15'
+  anti_iso = 'iso_1<0.5 && iso_1>0.25'
+  deeptau_jet_pass = 'deepTauVsJets_%(wp)s_2>0.5' % vars()
+  deeptau_jet_fail = 'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_%(alt_wp)s_2>0.5' % vars()
+  if channel == "mt":
+    deeptau_lep = 'deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5'
+    if year == "2016":
+      crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>25)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+    else: crosstrg = '((trg_mutaucross&&pt_1<%(crosstrg_pt)s&&pt_2>32)||(trg_singlemuon&&pt_1>%(crosstrg_pt)s))' % vars()
+  elif channel == "et":
+    deeptau_lep = "deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5"
+    if year == "2016":
+      crosstrg = 'trg_singleelectron'
+    else:
+      crosstrg = "((trg_etaucross&&pt_1<%(crosstrg_pt)s&&pt_2>35)||(trg_singleelectron&&pt_1>%(crosstrg_pt)s))" % vars() 
+  other_sel = 'leptonveto==0 && pt_2>30 && wt<2'
+  baseline_iso_pass = '(%(iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+  baseline_iso_fail = '(%(iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
+elif channel == "tt":
+  leading_tau = '1'
+  baseline_iso_pass = 'deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()  
+  baseline_iso_fail = 'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_%(alt_wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_1 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2 && leptonveto==0 && trg_doubletau' % vars()
 
 
-baseline_iso_pass = '(%(iso)s && %(deeptau_jet_pass)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
-baseline_iso_fail = '(%(iso)s && %(deeptau_jet_fail)s && %(deeptau_lep)s && %(crosstrg)s && %(other_sel)s)' % vars()
 
-var_input = 'jet_pt_2[30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]:pt_2[30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]'
+var_input = 'jet_pt_%(leading_tau)s[30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]:pt_%(leading_tau)s[30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]' % vars()
 
 
-(data_qcd_pass, data_w_pass, wjets_pass, ttbar_pass) = DrawHists(var_input, baseline_iso_pass, 'pass', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=False,doTT=True,doIso=False,fullMT=False,lowMT=False,qcdMT='50')
-(data_qcd_fail, data_w_fail, wjets_fail, ttbar_fail) = DrawHists(var_input, baseline_iso_fail, 'fail', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=False,doTT=True,doIso=False,fullMT=False,lowMT=False,qcdMT='50')
+if channel == "et" or channel == "mt":
+  (data_qcd_pass, data_w_pass, wjets_pass, ttbar_pass) = DrawHists(var_input, baseline_iso_pass, 'pass', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=False,doTT=True,doIso=False,fullMT=False,lowMT=False,qcdMT='50')
+  (data_qcd_fail, data_w_fail, wjets_fail, ttbar_fail) = DrawHists(var_input, baseline_iso_fail, 'fail', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=False,doTT=True,doIso=False,fullMT=False,lowMT=False,qcdMT='50')
+elif channel == "tt":
+  (data_qcd_pass, data_w_pass, wjets_pass, ttbar_pass) = DrawHists(var_input, baseline_iso_pass, 'pass', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=False,doMC=False,doTT=False,qcdMT=None)
+  (data_qcd_fail, data_w_fail, wjets_fail, ttbar_fail) = DrawHists(var_input, baseline_iso_fail, 'fail', input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=False,doMC=False,doTT=False,qcdMT=None)
 
 
 ff_data_qcd = ZeroNegativeBins(ZeroLargeErrorBins(CalculateFakeFactors(data_qcd_pass,data_qcd_fail)))
@@ -621,9 +666,12 @@ min_y_bin = 30.
 max_x_bin = 350.
 
 if channel == "mt":
-  channel_string = "#mu#tau_{h}"
+  channel_string = "#tau_{#mu}#tau_{h}"
 elif channel == "et":
-  channel_string = "e#tau_{h}"
+  channel_string = "#tau_{e}#tau_{h}"
+elif channel == "tt":
+  channel_string = "#tau_{h}#tau_{h}"
+
 
 if year == "2016":
   lumi_string = "35.9 fb^{-1}"
@@ -640,8 +688,8 @@ ff_data_qcd.Draw('colz')
 ff_data_qcd.SetStats(0)
 ff_data_qcd.SetMinimum(0)
 ff_data_qcd.SetMaximum(0.4)
-ff_data_qcd.GetYaxis().SetTitle('Tau-p_{T} (GeV)')
-ff_data_qcd.GetXaxis().SetTitle('Jet-p_{T} (GeV)')
+ff_data_qcd.GetYaxis().SetTitle('p_{T}^{#tau_{h}} (GeV)')
+ff_data_qcd.GetXaxis().SetTitle('p_{T}^{jet} (GeV)')
 ff_data_qcd.GetYaxis().SetTitleOffset(1.4)
 ff_data_qcd.GetZaxis().SetTitle('F_{F}')
 ff_data_qcd.GetZaxis().SetTitleOffset(1.4)
@@ -663,8 +711,8 @@ line2.Draw()
 l = ROOT.TLegend(0.45,0.75,0.65,0.88)
 l.SetBorderSize(0)
 l.SetTextSize(0.03)
-l.AddEntry(line1,'Jet-p_{T}/Tau-p_{T}=1.25','l')
-l.AddEntry(line2,'Jet-p_{T}/Tau-p_{T}=1.5','l')
+l.AddEntry(line1,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.25','l')
+l.AddEntry(line2,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.5','l')
 l.Draw()
 
 DrawCMSLogo(c_qcd, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
@@ -674,95 +722,92 @@ DrawTitle(c_qcd, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 c_qcd.Print('ff_colz_qcd_%(channel)s_%(year)s.pdf' % vars())
 
 
-### w plot ###
+if channel == "mt" or channel == "et":
+  ### w plot ###
 
-c_w = ROOT.TCanvas('c_w','c_w',700,700)
-c_w.SetRightMargin(0.15)
-ff_data_w.Draw('colz')
-ff_data_w.SetStats(0)
-ff_data_w.SetMinimum(0)
-ff_data_w.SetMaximum(0.4)
-ff_data_w.GetYaxis().SetTitle('Tau-p_{T} (GeV)')
-ff_data_w.GetXaxis().SetTitle('Jet-p_{T} (GeV)')
-ff_data_w.GetYaxis().SetTitleOffset(1.4)
-ff_data_w.GetZaxis().SetTitle('F_{F}')
-ff_data_w.GetZaxis().SetTitleOffset(1.4)
+  c_w = ROOT.TCanvas('c_w','c_w',700,700)
+  c_w.SetRightMargin(0.15)
+  ff_data_w.Draw('colz')
+  ff_data_w.SetStats(0)
+  ff_data_w.SetMinimum(0)
+  ff_data_w.SetMaximum(0.4)
+  ff_data_w.GetYaxis().SetTitle('p_{T}^{#tau_{h}} (GeV)')
+  ff_data_w.GetXaxis().SetTitle('p_{T}^{jet} (GeV)')
+  ff_data_w.GetYaxis().SetTitleOffset(1.4)
+  ff_data_w.GetZaxis().SetTitle('F_{F}')
+  ff_data_w.GetZaxis().SetTitleOffset(1.4)
 
-c_w.Update()
+  c_w.Update()
 
-line1 = ROOT.TLine(1.25*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.25)
-line1.SetLineColor(2)
-line1.SetLineWidth(2)
-line1.SetLineStyle(2)
-line1.Draw()
+  line1 = ROOT.TLine(1.25*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.25)
+  line1.SetLineColor(2)
+  line1.SetLineWidth(2)
+  line1.SetLineStyle(2)
+  line1.Draw()
 
-line2 = ROOT.TLine(1.5*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.5)
-line2.SetLineColor(1)
-line2.SetLineWidth(2)
-line2.SetLineStyle(2)
-line2.Draw()
+  line2 = ROOT.TLine(1.5*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.5)
+  line2.SetLineColor(1)
+  line2.SetLineWidth(2)
+  line2.SetLineStyle(2)
+  line2.Draw()
 
-l = ROOT.TLegend(0.45,0.75,0.65,0.88)
-l.SetBorderSize(0)
-l.SetTextSize(0.03)
-l.AddEntry(line1,'Jet-p_{T}/Tau-p_{T}=1.25','l')
-l.AddEntry(line2,'Jet-p_{T}/Tau-p_{T}=1.5','l')
-l.Draw()
+  l = ROOT.TLegend(0.45,0.75,0.65,0.88)
+  l.SetBorderSize(0)
+  l.SetTextSize(0.03)
+  l.AddEntry(line1,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.25','l')
+  l.AddEntry(line2,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.5','l')
+  l.Draw()
 
-DrawCMSLogo(c_w, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
-DrawTitle(c_w, '%(channel_string)s W + Jets DR' % vars(), 1, textSize=0.3)
-DrawTitle(c_w, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
+  DrawCMSLogo(c_w, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  DrawTitle(c_w, '%(channel_string)s W + Jets DR' % vars(), 1, textSize=0.3)
+  DrawTitle(c_w, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 
-c_w.Print('ff_colz_wjets_%(channel)s_%(year)s.pdf' % vars())
+  c_w.Print('ff_colz_wjets_%(channel)s_%(year)s.pdf' % vars())
 
 
-### ttbar plot ###
+  ### ttbar plot ###
 
-c_tt = ROOT.TCanvas('c_tt','c_tt',700,700)
-c_tt.SetLeftMargin(0.15)
-ff_ttbar.SetStats(0)
-ff_ttbar.Draw('')
-ff_ttbar.GetXaxis().SetTitle('p_{T} (GeV)')
-ff_ttbar.GetXaxis().SetTitle('n_{jets}')
-ff_ttbar.GetYaxis().SetTitleOffset(1.8)
-ff_ttbar.GetYaxis().SetTitle('F_{F}')
+  c_tt = ROOT.TCanvas('c_tt','c_tt',700,700)
+  c_tt.SetLeftMargin(0.15)
+  ff_ttbar.SetStats(0)
+  ff_ttbar.Draw('')
 
-c_tt.SetRightMargin(0.15)
-ff_ttbar.Draw('colz')
-ff_ttbar.SetStats(0)
-ff_ttbar.SetMinimum(0)
-ff_ttbar.SetMaximum(0.4)
-ff_ttbar.GetYaxis().SetTitle('Tau-p_{T} (GeV)')
-ff_ttbar.GetXaxis().SetTitle('Jet-p_{T} (GeV)')
-ff_ttbar.GetYaxis().SetTitleOffset(1.4)
-ff_ttbar.GetZaxis().SetTitle('F_{F}')
-ff_ttbar.GetZaxis().SetTitleOffset(1.4)
+  c_tt.SetRightMargin(0.15)
+  ff_ttbar.Draw('colz')
+  ff_ttbar.SetStats(0)
+  ff_ttbar.SetMinimum(0)
+  ff_ttbar.SetMaximum(0.4)
+  ff_ttbar.GetYaxis().SetTitle('p_{T}^{#tau_{h}} (GeV)')
+  ff_ttbar.GetXaxis().SetTitle('p_{T}^{jet} (GeV)')
+  ff_ttbar.GetYaxis().SetTitleOffset(1.4)
+  ff_ttbar.GetZaxis().SetTitle('F_{F}')
+  ff_ttbar.GetZaxis().SetTitleOffset(1.4)
 
-c_tt.Update()
+  c_tt.Update()
 
-line1 = ROOT.TLine(1.25*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.25)
-line1.SetLineColor(2)
-line1.SetLineWidth(2)
-line1.SetLineStyle(2)
-line1.Draw()
+  line1 = ROOT.TLine(1.25*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.25)
+  line1.SetLineColor(2)
+  line1.SetLineWidth(2)
+  line1.SetLineStyle(2)
+  line1.Draw()
 
-line2 = ROOT.TLine(1.5*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.5)
-line2.SetLineColor(1)
-line2.SetLineWidth(2)
-line2.SetLineStyle(2)
-line2.Draw()
+  line2 = ROOT.TLine(1.5*min_y_bin,min_y_bin,max_x_bin,max_x_bin/1.5)
+  line2.SetLineColor(1)
+  line2.SetLineWidth(2)
+  line2.SetLineStyle(2)
+  line2.Draw()
 
-l = ROOT.TLegend(0.45,0.75,0.65,0.88)
-l.SetBorderSize(0)
-l.SetTextSize(0.03)
-l.AddEntry(line1,'Jet-p_{T}/Tau-p_{T}=1.25','l')
-l.AddEntry(line2,'Jet-p_{T}/Tau-p_{T}=1.5','l')
-l.Draw()
+  l = ROOT.TLegend(0.45,0.75,0.65,0.88)
+  l.SetBorderSize(0)
+  l.SetTextSize(0.03)
+  l.AddEntry(line1,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.25','l')
+  l.AddEntry(line2,'p_{T}^{jet}/p_{T}^{#tau_{h}}=1.5','l')
+  l.Draw()
 
-DrawCMSLogo(c_tt, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
-DrawTitle(c_tt, '%(channel_string)s t#bar{t} DR' % vars(), 1, textSize=0.3)
-DrawTitle(c_tt, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
+  DrawCMSLogo(c_tt, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  DrawTitle(c_tt, '%(channel_string)s t#bar{t} DR' % vars(), 1, textSize=0.3)
+  DrawTitle(c_tt, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 
-c_tt.Print('ff_colz_ttbar_%(channel)s_%(year)s.pdf' % vars())
+  c_tt.Print('ff_colz_ttbar_%(channel)s_%(year)s.pdf' % vars())
 
 

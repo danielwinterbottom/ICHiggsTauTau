@@ -36,7 +36,7 @@ njets_bins = {
 }
 
 jetpt_bins = {
-              'inclusive':'(1)',
+#              'inclusive':'(1)',
               'jet_pt_low':'(jet_pt_2<1.25*pt_2)',
               'jet_pt_med':'((jet_pt_2>=1.25*pt_2) && (jet_pt_2<1.5*pt_2))',
               'jet_pt_high': '(jet_pt_2>=1.5*pt_2)'
@@ -731,18 +731,26 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   if h.GetBinContent(h.GetNbinsX()) > 0 and h.GetBinError(h.GetNbinsX())/h.GetBinContent(h.GetNbinsX()) <0.5:
     if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5 and not ('wjets_mc' in h.GetName() and 'pt_low_1jet' in h.GetName() and year == '2016'):
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140 && x<200)) + ([5]*(x>=200))",20,600)
+      bin_type = 1
     else:
       f2 = ROOT.TF1("f2","((x<200)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=200))",20,600)
+      bin_type = 2 
   else:
     if 'wjets' in h.GetName() and channel == 'mt' and h.GetBinContent(h.GetNbinsX()-1) > 0 and h.GetBinError(h.GetNbinsX()-1)/h.GetBinContent(h.GetNbinsX()-1)<0.5:
       f2 = ROOT.TF1("f2","((x<140)*([0]*TMath::Landau(x,[1],[2])+[3])) + ([4]*(x>=140))",20,600)
+      bin_type = 3
     else:
       just_fit = 	True
       h.SetBinContent(h.GetNbinsX(),0)
       h.SetBinError(h.GetNbinsX(),0)
       f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]",20,600)
+      bin_type = 0
 
-  if usePol1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,400)
+  if usePol1: 
+    if bin_type == 0: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x",20,600)
+    elif bin_type == 1: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x + ([5]*(x>=140 && x<200)) + ([6]*(x>=200))",20,600)
+    elif bin_type == 2: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x + ([5]*(x>=200))",20,600)
+    elif bin_type == 3: f2 = ROOT.TF1("f2","[0]*TMath::Landau(x,[1],[2])+[3]+[4]*x + ([5]*(x>=140))",20,600)
   if polOnly is not None:
     if polOnly == 0:
       f1 = ROOT.TF1("f1","pol0",20,200)
@@ -763,19 +771,27 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
   h = h_clone
   if polOnly is None:
     # fit first with landau to get initial values for parameters - pol values set to 0 initially
-    h.Fit("f1",'NIRQ')
-    f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0); f2.SetParLimits(3,0,1)
-    if usePol1: f2.SetParameter(4,0)
+    status = h.Fit("f1",'SNIR')
+    if int(status) != 0:
+      print "Doing new fit because other fit failed"
+      if bin_type == 0: f2 = ROOT.TF1("f2","[0]+[1]*x",20,600)
+      elif bin_type == 1: f2 = ROOT.TF1("f2","([0]+[1]*x)*(x<140) + ([2]*(x>=140 && x<200)) + ([3]*(x>=200))",20,600)
+      elif bin_type == 2: f2 = ROOT.TF1("f2","([0]+[1]*x)*(x<200) + ([2]*(x>=200))",20,600)
+      elif bin_type == 3: f2 = ROOT.TF1("f2","([0]+[1]*x)*(x<140) + ([2]*(x>=140))",20,600)
+    else:
+      f2.SetParameter(0,f1.GetParameter(0)); f2.SetParameter(1,f1.GetParameter(1)); f2.SetParameter(2,f1.GetParameter(2)); f2.SetParameter(3,0); f2.SetParLimits(3,0,1)
+      if usePol1: f2.SetParameter(4,0)
   # now fit with the full functions
   # repeat fit up to 100 times until the fit converges properly
   rep = True
   count = 0
   while rep:
-    fitresult = h.Fit("f2",'NSIRQ')
+    fitresult = h.Fit("f2",'NSIR')
     rep = int(fitresult) != 0
     if not rep or count>100:
       ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
       fit = f2
+      f2.Print("all")
       break
     count+=1
   fit.SetName(h.GetName()+'_fit')
@@ -798,12 +814,16 @@ def FitFakeFactors(h,usePol1=False,polOnly=None):
       if h.GetBinContent(i) > 0:
         break
     max_bin = h.GetBinLowEdge(i+1)
-    p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-    fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(max_bin)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
+    if int(status) != 0:
+      p0,p1 = fit.GetParameter(0),fit.GetParameter(1)
+      f2 = ROOT.TF1(h.GetName()+'_fit',"%(p0)s+%(p1)s*x" % vars(),20,600)
+    else:
+      p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
+      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(max_bin)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
     for j in range(0,h_uncert.GetNbinsX()+1):
       if h_uncert.GetBinLowEdge(j) >= max_bin:
-        h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(max_bin-0.1)))
-        h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(max_bin-0.1)))
+        h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(max_bin)))
+        h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(max_bin)))
 
   return fit, h_uncert, h
 
@@ -1381,18 +1401,24 @@ for ff in ff_list:
   wjets_mc_ff=None
   ttbar_mc_ff=None
   if draw:
-    (qcd_iso, wjets_iso, wjets_mc_iso, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff),doIso=False)
-    (qcd_aiso, wjets_aiso, wjets_mc_aiso, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff),doIso=False)
+    if "inclusive" not in ff:
+      (qcd_iso, wjets_iso, wjets_mc_iso, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff),doIso=False)
+      (qcd_aiso, wjets_aiso, wjets_mc_aiso, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=(not 'aiso2' in ff),doMC=(not 'aiso2' in ff),doIso=False)
 
-    qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
-    to_write.append(qcd_ff)
+      qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
+      to_write.append(qcd_ff)
 
     if not 'aiso2' in ff:
-      wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
-      to_write.append(wjets_ff)
+      if "inclusive" not in ff:
+        wjets_ff = CalculateFakeFactors(wjets_iso, wjets_aiso)
+        to_write.append(wjets_ff)
 
-      wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
-      to_write.append(wjets_mc_ff)
+        wjets_mc_ff = CalculateFakeFactors(wjets_mc_iso, wjets_mc_aiso)
+        to_write.append(wjets_mc_ff)
+
+    if "inclusive" in ff:
+      (_, _, _, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False)
+      (_, _, _, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False)
 
       ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
       to_write.append(ttbar_mc_ff)
@@ -1416,21 +1442,23 @@ for ff in ff_list:
 
 
   # fit fake factors
-  (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff)
-  to_write.append(qcd_fit)
-  to_write.append(qcd_uncert)
-  PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp, channel, year)
+  if "inclusive" not in ff:
+    (qcd_fit, qcd_uncert, qcd_ff) = FitFakeFactors(qcd_ff)
+    to_write.append(qcd_fit)
+    to_write.append(qcd_uncert)
+    PlotFakeFactor(qcd_ff, qcd_uncert, qcd_ff.GetName(), output_folder, wp, channel, year)
 
   if not 'aiso2' in ff:
-    (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
-    to_write.append(wjets_fit)
-    to_write.append(wjets_uncert)
-    PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp, channel, year)
-    (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff)
-    to_write.append(wjets_mc_fit)
-    to_write.append(wjets_mc_uncert)
-    PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp, channel, year)
-    if ttbar_mc_ff:
+    if "inclusive" not in ff:
+      (wjets_fit, wjets_uncert, wjets_ff) = FitFakeFactors(wjets_ff)
+      to_write.append(wjets_fit)
+      to_write.append(wjets_uncert)
+      PlotFakeFactor(wjets_ff, wjets_uncert, wjets_ff.GetName(), output_folder, wp, channel, year)
+      (wjets_mc_fit, wjets_mc_uncert, wjets_mc_ff) = FitFakeFactors(wjets_mc_ff)
+      to_write.append(wjets_mc_fit)
+      to_write.append(wjets_mc_uncert)
+      PlotFakeFactor(wjets_mc_ff, wjets_mc_uncert, wjets_mc_ff.GetName(), output_folder, wp, channel, year)
+    if "inclusive" in ff:
       (ttbar_mc_fit, ttbar_mc_uncert, ttbar_mc_ff) = FitFakeFactors(ttbar_mc_ff)
       to_write.append(ttbar_mc_fit)
       to_write.append(ttbar_mc_uncert)
