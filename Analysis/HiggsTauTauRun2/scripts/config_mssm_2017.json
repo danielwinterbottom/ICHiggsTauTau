@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep18_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    //"channels":     ["tt","mt","et","em"],
-    "channels":     ["tt"],
+    "channels":     ["tt","mt","et","em"],
+    //"channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {  
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "era"           : "data_2017",
     "mc"            : "mc2017",
     "strategy"      : "cpdecays17",
@@ -60,7 +60,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/gen_2017/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v3/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2017_svfit_output/",

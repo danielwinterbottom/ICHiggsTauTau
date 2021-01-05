@@ -33,6 +33,7 @@
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
       lhe_collection_(config.getParameter<edm::InputTag>("lheProducer")),
+      lhe_name_(config.getParameter<std::string>("lheSource")),
       do_jets_rho_(config.getParameter<bool>("includeJetRho")),
       input_jets_rho_(config.getParameter<edm::InputTag>("inputJetRho")),
       do_leptons_rho_(config.getParameter<bool>("includeLeptonRho")),
@@ -57,7 +58,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
        htxsSrc_ = consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification"));
 #endif
 #if CMSSW_MAJOR_VERSION >= 7
-      consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
+      consumes<LHERunInfoProduct, edm::InRun>({lhe_name_});
 #endif
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
@@ -65,7 +66,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       consumes<double>(input_jets_rho_);
       consumes<edm::View<reco::Vertex>>(input_vertices_);
       consumes<reco::BeamHaloSummary>(input_csc_filter_);
-      consumes<edm::TriggerResults>(filtersfromtrig_input_);
+     
+      if(do_filtersfromtrig_) consumes<edm::TriggerResults>(filtersfromtrig_input_);
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -139,7 +141,7 @@ void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es)
   if (!do_lhe_weights_) return;
   if (lhe_weight_labels_.size()) return;
   edm::Handle<LHERunInfoProduct> lhe_info;
-  run.getByLabel("externalLHEProducer", lhe_info);
+  run.getByLabel(lhe_name_, lhe_info);
   bool record = false;
   for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
        ++it) {
@@ -232,6 +234,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
   if(!event.isRealData()){
     event.getByLabel("generator",gen_info_handle);
     if(gen_info_handle.isValid()){
+      info_->set_weight("gen_weight",gen_info_handle->weight(),false);
       if(gen_info_handle->weight()>=0){
         info_->set_weight("wt_mc_sign",1);
       } else info_->set_weight("wt_mc_sign",-1);
@@ -270,11 +273,12 @@ void ICEventInfoProducer::produce(edm::Event& event,
     }
     if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
+      info_->set_weight("lhe_nominal", nominal_wt, false);
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
         info_->set_weight(lhe_handle->weights()[i].id,
                           lhe_handle->weights()[i].wgt / nominal_wt, false);
 
-        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
+        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt << "  " <<  nominal_wt << "    " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
       }
     }
   }

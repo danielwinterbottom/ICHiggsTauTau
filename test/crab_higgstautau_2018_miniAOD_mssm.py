@@ -16,7 +16,7 @@ config.JobType.allowUndistributedCMSSW = True
 #config.Data.unitsPerJob = 1
 #config.Data.splitting = 'FileBased'
 config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
-config.Data.unitsPerJob = 100000
+config.Data.unitsPerJob = 50000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.allowNonValidInputDataset = True
@@ -50,27 +50,34 @@ if __name__ == '__main__':
 
     tasks=list()
     
-    # ggH-LO
-    ggH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in ggH_LO_masses:
-        task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+#    # ggH-LO
+#    ggH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+#    for mass in ggH_LO_masses:
+#        task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
+#        file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
+#
+#    # bbH-LO
+#    bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+#    for mass in bbH_LO_masses:
+#        task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
+#        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
+#
+#    # bbH-NLO
+#    bbH_NLO_masses = [80,90,100,110,120,125,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500]
+#    for mass in bbH_NLO_masses:
+#        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
+#        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
 
-    # bbH-LO
-    bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in bbH_LO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
+    bbh_masses_missing     = [100, 140, 180, 200, 250, 300, 350, 450, 500, 700, 1000, 1200, 1400, 2000]
 
-    # bbH-NLO
-    bbH_NLO_masses = [80,90,100,110,120,125,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500]
-    for mass in bbH_NLO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+    for mass in bbh_masses_ph:
+      if mass in bbh_masses_missing: continue
 
+      tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM' % vars()))
 
     for task in tasks:
         print(task[0])

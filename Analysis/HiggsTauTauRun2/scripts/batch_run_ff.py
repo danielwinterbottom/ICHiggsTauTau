@@ -15,7 +15,8 @@ parser.add_option("--channel", dest="channel", type='string', default='all',help
 year = options.year
 channel = options.channel
 
-cmssw_base = "/vols/cms/gu18/AnalyserCMSSW/CMSSW_8_0_25"
+#cmssw_base = "/vols/cms/gu18/AnalyserCMSSW/CMSSW_8_0_25"
+cmssw_base = "/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19"
 
 if year == "all":
   year_list = ["2016","2017","2018"]

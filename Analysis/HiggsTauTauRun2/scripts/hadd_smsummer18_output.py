@@ -391,3 +391,7 @@ for sa in sample_list:
       if remove: file.write("\n%s" % rm_command)
       file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+  if not batch and remove:
+    # if all channels and systematics were hadded sucsessfully then remove the input files
+    for x in to_remove:
+      os.system(x)
