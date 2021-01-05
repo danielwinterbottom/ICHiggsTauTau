@@ -6,7 +6,7 @@ import os
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May21_MC_102X_2017'
+config.General.workArea='Sep18_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -15,7 +15,7 @@ config.JobType.maxMemoryMB = 4000
 cfgParams = ['isData=0', 'globalTag=102X_mc2017_realistic_v7','doHT=0','LHEWeights=False']
 config.JobType.allowUndistributedCMSSW = True
 
-config.Data.unitsPerJob = 100000
+config.Data.unitsPerJob = 50000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
