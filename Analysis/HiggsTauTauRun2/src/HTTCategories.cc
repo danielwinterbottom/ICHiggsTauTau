@@ -287,7 +287,35 @@ namespace ic {
         outtree_->Branch("wt_ggH_i", &wt_ggH_i_);
         outtree_->Branch("wt_ggA_t", &wt_ggA_t_);
         outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
-        outtree_->Branch("wt_ggA_i", &wt_ggA_i_);    
+        outtree_->Branch("wt_ggA_i", &wt_ggA_i_);   
+
+        outtree_->Branch("wt_ggh_t_scale_up", &wt_ggh_t_scale_up_);
+        outtree_->Branch("wt_ggh_b_scale_up", &wt_ggh_b_scale_up_);
+        outtree_->Branch("wt_ggh_i_scale_up", &wt_ggh_i_scale_up_);
+        outtree_->Branch("wt_ggA_t_scale_up", &wt_ggA_t_scale_up_);
+        outtree_->Branch("wt_ggA_b_scale_up", &wt_ggA_b_scale_up_);
+        outtree_->Branch("wt_ggA_i_scale_up", &wt_ggA_i_scale_up_); 
+
+        outtree_->Branch("wt_ggh_t_scale_down", &wt_ggh_t_scale_down_);
+        outtree_->Branch("wt_ggh_b_scale_down", &wt_ggh_b_scale_down_);
+        outtree_->Branch("wt_ggh_i_scale_down", &wt_ggh_i_scale_down_);
+        outtree_->Branch("wt_ggA_t_scale_down", &wt_ggA_t_scale_down_);
+        outtree_->Branch("wt_ggA_b_scale_down", &wt_ggA_b_scale_down_);
+        outtree_->Branch("wt_ggA_i_scale_down", &wt_ggA_i_scale_down_);
+
+        outtree_->Branch("wt_ggh_t_hdamp_up", &wt_ggh_t_hdamp_up_);
+        outtree_->Branch("wt_ggh_b_hdamp_up", &wt_ggh_b_hdamp_up_);
+        outtree_->Branch("wt_ggh_i_hdamp_up", &wt_ggh_i_hdamp_up_);
+        outtree_->Branch("wt_ggA_t_hdamp_up", &wt_ggA_t_hdamp_up_);
+        outtree_->Branch("wt_ggA_b_hdamp_up", &wt_ggA_b_hdamp_up_);
+        outtree_->Branch("wt_ggA_i_hdamp_up", &wt_ggA_i_hdamp_up_);
+
+        outtree_->Branch("wt_ggh_t_hdamp_down", &wt_ggh_t_hdamp_down_);
+        outtree_->Branch("wt_ggh_b_hdamp_down", &wt_ggh_b_hdamp_down_);
+        outtree_->Branch("wt_ggh_i_hdamp_down", &wt_ggh_i_hdamp_down_);
+        outtree_->Branch("wt_ggA_t_hdamp_down", &wt_ggA_t_hdamp_down_);
+        outtree_->Branch("wt_ggA_b_hdamp_down", &wt_ggA_b_hdamp_down_);
+        outtree_->Branch("wt_ggA_i_hdamp_down", &wt_ggA_i_hdamp_down_);
       }
       
       // fake-factor weights
@@ -1616,7 +1644,35 @@ namespace ic {
       wt_ggH_i_ = event->Exists("wt_ggH_i") ? event->Get<double>("wt_ggH_i") : 1.0;
       wt_ggA_t_ = event->Exists("wt_ggA_t") ? event->Get<double>("wt_ggA_t") : 1.0;
       wt_ggA_b_ = event->Exists("wt_ggA_b") ? event->Get<double>("wt_ggA_b") : 1.0;
-      wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
+      wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;  
+
+      wt_ggh_t_scale_up_ = event->Exists("wt_ggh_t_scale_up") ? event->Get<double>("wt_ggh_t_scale_up") : 1.0;
+      wt_ggh_b_scale_up_ = event->Exists("wt_ggh_b_scale_up") ? event->Get<double>("wt_ggh_b_scale_up") : 1.0;
+      wt_ggh_i_scale_up_ = event->Exists("wt_ggh_i_scale_up") ? event->Get<double>("wt_ggh_i_scale_up") : 1.0;
+      wt_ggA_t_scale_up_ = event->Exists("wt_ggA_t_scale_up") ? event->Get<double>("wt_ggA_t_scale_up") : 1.0;
+      wt_ggA_b_scale_up_ = event->Exists("wt_ggA_b_scale_up") ? event->Get<double>("wt_ggA_b_scale_up") : 1.0;
+      wt_ggA_i_scale_up_ = event->Exists("wt_ggA_i_scale_up") ? event->Get<double>("wt_ggA_i_scale_up") : 1.0;
+
+      wt_ggh_t_scale_down_ = event->Exists("wt_ggh_t_scale_down") ? event->Get<double>("wt_ggh_t_scale_down") : 1.0;
+      wt_ggh_b_scale_down_ = event->Exists("wt_ggh_b_scale_down") ? event->Get<double>("wt_ggh_b_scale_down") : 1.0;
+      wt_ggh_i_scale_down_ = event->Exists("wt_ggh_i_scale_down") ? event->Get<double>("wt_ggh_i_scale_down") : 1.0;
+      wt_ggA_t_scale_down_ = event->Exists("wt_ggA_t_scale_down") ? event->Get<double>("wt_ggA_t_scale_down") : 1.0;
+      wt_ggA_b_scale_down_ = event->Exists("wt_ggA_b_scale_down") ? event->Get<double>("wt_ggA_b_scale_down") : 1.0;
+      wt_ggA_i_scale_down_ = event->Exists("wt_ggA_i_scale_down") ? event->Get<double>("wt_ggA_i_scale_down") : 1.0;
+
+      wt_ggh_t_hdamp_up_ = event->Exists("wt_ggh_t_hdamp_up") ? event->Get<double>("wt_ggh_t_hdamp_up") : 1.0;
+      wt_ggh_b_hdamp_up_ = event->Exists("wt_ggh_b_hdamp_up") ? event->Get<double>("wt_ggh_b_hdamp_up") : 1.0;
+      wt_ggh_i_hdamp_up_ = event->Exists("wt_ggh_i_hdamp_up") ? event->Get<double>("wt_ggh_i_hdamp_up") : 1.0;
+      wt_ggA_t_hdamp_up_ = event->Exists("wt_ggA_t_hdamp_up") ? event->Get<double>("wt_ggA_t_hdamp_up") : 1.0;
+      wt_ggA_b_hdamp_up_ = event->Exists("wt_ggA_b_hdamp_up") ? event->Get<double>("wt_ggA_b_hdamp_up") : 1.0;
+      wt_ggA_i_hdamp_up_ = event->Exists("wt_ggA_i_hdamp_up") ? event->Get<double>("wt_ggA_i_hdamp_up") : 1.0;
+
+      wt_ggh_t_hdamp_down_ = event->Exists("wt_ggh_t_hdamp_down") ? event->Get<double>("wt_ggh_t_hdamp_down") : 1.0;
+      wt_ggh_b_hdamp_down_ = event->Exists("wt_ggh_b_hdamp_down") ? event->Get<double>("wt_ggh_b_hdamp_down") : 1.0;
+      wt_ggh_i_hdamp_down_ = event->Exists("wt_ggh_i_hdamp_down") ? event->Get<double>("wt_ggh_i_hdamp_down") : 1.0;
+      wt_ggA_t_hdamp_down_ = event->Exists("wt_ggA_t_hdamp_down") ? event->Get<double>("wt_ggA_t_hdamp_down") : 1.0;
+      wt_ggA_b_hdamp_down_ = event->Exists("wt_ggA_b_hdamp_down") ? event->Get<double>("wt_ggA_b_hdamp_down") : 1.0;
+      wt_ggA_i_hdamp_down_ = event->Exists("wt_ggA_i_hdamp_down") ? event->Get<double>("wt_ggA_i_hdamp_down") : 1.0; 
     }
     wt_quarkmass_ = 1.0;
     wt_fullquarkmass_ =1.0;

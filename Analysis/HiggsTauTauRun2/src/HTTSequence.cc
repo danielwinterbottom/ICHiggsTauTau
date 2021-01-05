@@ -448,6 +448,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_mssm_mass(mass_str)
+    .set_era(era_type)
   );
   return;  
 }
@@ -713,7 +714,8 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 }
 if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
   httWeights.set_do_mssm_higgspt(true); 
-  httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2_mssm_mode.root");
+  if(era_type == era::data_2016) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v0.root");
+  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v0.root");
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));

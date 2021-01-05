@@ -796,7 +796,35 @@ class HTTCategories : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
-  
+ 
+  double wt_ggh_t_scale_up_;
+  double wt_ggh_b_scale_up_;
+  double wt_ggh_i_scale_up_;
+  double wt_ggA_t_scale_up_;
+  double wt_ggA_b_scale_up_;
+  double wt_ggA_i_scale_up_;
+
+  double wt_ggh_t_scale_down_;
+  double wt_ggh_b_scale_down_;
+  double wt_ggh_i_scale_down_;
+  double wt_ggA_t_scale_down_;
+  double wt_ggA_b_scale_down_;
+  double wt_ggA_i_scale_down_;
+ 
+  double wt_ggh_t_hdamp_up_;
+  double wt_ggh_b_hdamp_up_;
+  double wt_ggh_i_hdamp_up_;
+  double wt_ggA_t_hdamp_up_;
+  double wt_ggA_b_hdamp_up_;
+  double wt_ggA_i_hdamp_up_;
+
+  double wt_ggh_t_hdamp_down_;
+  double wt_ggh_b_hdamp_down_;
+  double wt_ggh_i_hdamp_down_;
+  double wt_ggA_t_hdamp_down_;
+  double wt_ggA_b_hdamp_down_;
+  double wt_ggA_i_hdamp_down_;
+
   double wt_qcdscale_up_;
   double wt_qcdscale_down_;
   double wt_ps_isr_up_  ;
