@@ -118,8 +118,8 @@ git config --global user.github [GitHub account name]
 #This extra line is not needed at CERN. Anywhere else if you see a fatal error message relating to SSL certificate problems it may be required
 
 <p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
-<p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc6_amd64_gcc700
-# Or newer, e.g. slc7_amd64_gcc700 (for setting up 10_2_X on lx02 you need to use this!)
+<p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc7_amd64_gcc700
+# The SCRAM_ARCH parameter will depend on what CMSSW release you are trying to use. For ntuple production we currently use CMSSW_10_2_19 which uses slc7_amd64_gcc700 as above, but for using CMSSW_8_0_25 for running the analyser use slc6_amd64_gcc530
 # If you are creating a CMSSW area to run the analyser then it is recomended to use CMSSW_8_0_25 - later versions of CMSSW are currently incompatible with the analyser (it would be useful if someone could fix this) 
 # For using the CMSSW facing part of the code you should use the appropiate CMSSW version: the current recomendation for ntuple production is CMSSW_10_2_19
 scramv1 project CMSSW CMSSW_X_Y_Z
