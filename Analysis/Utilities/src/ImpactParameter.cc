@@ -162,7 +162,7 @@ ROOT::Math::SMatrix<double,3,3, ROOT::Math::MatRepStd< double, 3, 3 >> ImpactPar
 	ROOT::Math::SMatrix<double,6,6, ROOT::Math::MatRepStd< double, 6, 6 >> pointOnHelixPVCovariance;
 	for(int i = 0; i < 6; i++){
 		for(int j = 0; j < 6; j++){
-			switch( ((i < 3) * (j < 3))? 1:0 | ((i >= 3) * (j>=3))? 2:0 ){
+			switch( ((i < 3) && (j < 3))? 1:0 | ((i >= 3) && (j>=3))? 2:0 ){
 				case 0: break;
 				case 1: pointOnHelixPVCovariance(i,j) = pointOnHelixCovariance(i, j); break;
 				case 2: pointOnHelixPVCovariance(i,j) = primaryVertexCovariance(i-3, j-3); break;

@@ -5,7 +5,7 @@ from multiprocessing import Process
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May21_MC_102X_2016'
+config.General.workArea='Sep18_MC_102X_2016'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_Leg2016.py'
 config.JobType.pluginName = 'Analysis'
@@ -47,35 +47,44 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    # ggH-LO
-    ggH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in ggH_LO_masses:
-        task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+#    # ggH-LO
+#    ggH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+#    for mass in ggH_LO_masses:
+#        task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
+#        file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
+#
+#    # bbH-LO
+#    bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+#    for mass in bbH_LO_masses:
+#        task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
+#        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
+#
+#    # bbH-NLO
+#    # Named samples v3-v2
+#    bbH_NLO_masses = [80,90,110,120,130,140,160,180,200,250,350,400,450,500,600,700,800,900,1000,1400,1600,1800,2000,2900]
+#    for mass in bbH_NLO_masses:
+#        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
+#        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
+#
+#    # bbH-NLO
+#    # Named samples v3-v3
+#    bbH_NLO_masses = [1200,2300,2600,3200]
+#    for mass in bbH_NLO_masses:
+#        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
+#        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-94X_mcRun2_asymptotic_v3-v3/MINIAODSIM'.format(mass)
+#        tasks.append((task_name,file_location))
 
-    # bbH-LO
-    bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in bbH_LO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
+    bbh_masses_missing     = [1000]
 
-    # bbH-NLO
-    # Named samples v3-v2
-    bbH_NLO_masses = [80,90,110,120,130,140,160,180,200,250,350,400,450,500,600,700,800,900,1000,1400,1600,1800,2000,2900]
-    for mass in bbH_NLO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+    for mass in bbh_masses_ph:
+      if mass in bbh_masses_missing: continue
 
-    # bbH-NLO
-    # Named samples v3-v3
-    bbH_NLO_masses = [1200,2300,2600,3200]
-    for mass in bbH_NLO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-94X_mcRun2_asymptotic_v3-v3/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+      tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM' % vars()))
+
     
     for task in tasks:
         print task[0]

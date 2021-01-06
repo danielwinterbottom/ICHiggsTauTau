@@ -270,7 +270,7 @@ class HTTCategories : public ModuleBase {
   double aco_angle_6_;
   double aco_angle_7_;
   double pv_angle_;
-  double sv_x_2_, sv_y_2_, sv_z_2_, sv_mag_2_;
+  double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
   bool hasSV_2_;
   double lead_pt_1_, lead_pt_2_;
@@ -796,7 +796,35 @@ class HTTCategories : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
-  
+ 
+  double wt_ggh_t_scale_up_;
+  double wt_ggh_b_scale_up_;
+  double wt_ggh_i_scale_up_;
+  double wt_ggA_t_scale_up_;
+  double wt_ggA_b_scale_up_;
+  double wt_ggA_i_scale_up_;
+
+  double wt_ggh_t_scale_down_;
+  double wt_ggh_b_scale_down_;
+  double wt_ggh_i_scale_down_;
+  double wt_ggA_t_scale_down_;
+  double wt_ggA_b_scale_down_;
+  double wt_ggA_i_scale_down_;
+ 
+  double wt_ggh_t_hdamp_up_;
+  double wt_ggh_b_hdamp_up_;
+  double wt_ggh_i_hdamp_up_;
+  double wt_ggA_t_hdamp_up_;
+  double wt_ggA_b_hdamp_up_;
+  double wt_ggA_i_hdamp_up_;
+
+  double wt_ggh_t_hdamp_down_;
+  double wt_ggh_b_hdamp_down_;
+  double wt_ggh_i_hdamp_down_;
+  double wt_ggA_t_hdamp_down_;
+  double wt_ggA_b_hdamp_down_;
+  double wt_ggA_i_hdamp_down_;
+
   double wt_qcdscale_up_;
   double wt_qcdscale_down_;
   double wt_ps_isr_up_  ;
@@ -872,7 +900,8 @@ class HTTCategories : public ModuleBase {
 
   double mt_1_nomu_, mu_pt_;
 
-  unsigned ngenjets_, gen_sjdphi_;
+  unsigned ngenjets_, ngenjets20_, gen_sjdphi_;
+  double genjetpt_1_, genjetpt_2_, genjeteta_1_, genjeteta_2_;
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
   double ipx_1_;
   double ipy_1_;
@@ -1009,6 +1038,8 @@ class HTTCategories : public ModuleBase {
 
   // additional variables needed for MVA training for CP master projects
   double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_; 
+  double pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_; 
+  double pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_; 
   double pi0_px_1_, pi0_py_1_, pi0_pz_1_, pi0_E_1_, pi0_px_2_, pi0_py_2_, pi0_pz_2_, pi0_E_2_; 
   double gam1_px_1_, gam1_py_1_, gam1_pz_1_, gam1_E_1_, gam1_px_2_, gam1_py_2_, gam1_pz_2_, gam1_E_2_; 
   double gam2_px_1_, gam2_py_1_, gam2_pz_1_, gam2_E_1_, gam2_px_2_, gam2_py_2_, gam2_pz_2_, gam2_E_2_; 
@@ -1016,8 +1047,18 @@ class HTTCategories : public ModuleBase {
   double gam4_px_1_, gam4_py_1_, gam4_pz_1_, gam4_E_1_, gam4_px_2_, gam4_py_2_, gam4_pz_2_, gam4_E_2_; 
   double metx_, mety_; 
   double ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_; 
+  double sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_; 
   double ipcov00_1_, ipcov01_1_, ipcov02_1_, ipcov10_1_, ipcov11_1_, ipcov12_1_, ipcov20_1_, ipcov21_1_, ipcov22_1_; 
   double ipcov00_2_, ipcov01_2_, ipcov02_2_, ipcov10_2_, ipcov11_2_, ipcov12_2_, ipcov20_2_, ipcov21_2_, ipcov22_2_; 
+  double svcov00_1_, svcov01_1_, svcov02_1_, svcov10_1_, svcov11_1_, svcov12_1_, svcov20_1_, svcov21_1_, svcov22_1_;
+  double svcov00_2_, svcov01_2_, svcov02_2_, svcov10_2_, svcov11_2_, svcov12_2_, svcov20_2_, svcov21_2_, svcov22_2_;
+
+  double gen_nu_p_1_;
+  double gen_nu_p_2_;
+  double gen_nu_phi_1_;
+  double gen_nu_phi_2_;
+  double gen_nu_eta_1_;
+  double gen_nu_eta_2_;
 
  public:
   HTTCategories(std::string const& name);

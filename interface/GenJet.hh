@@ -31,6 +31,8 @@ class GenJet : public Candidate {
   inline std::vector<std::size_t> const& constituents() const {
     return constituents_;
   }
+
+  inline ROOT::Math::PtEtaPhiEVector const& nu_vector() const { return nu_vector_; }
   /**@}*/
 
   /// @name Setters
@@ -47,16 +49,19 @@ class GenJet : public Candidate {
   inline void set_constituents(std::vector<std::size_t> const& constituents) {
     constituents_ = constituents;
   }
+
+  inline void set_nu_vector(ROOT::Math::PtEtaPhiEVector const& nu_vector) { nu_vector_ = nu_vector; }
   /**@}*/
 
  private:
   int flavour_;
   unsigned n_constituents_;
   std::vector<std::size_t> constituents_;
+  ROOT::Math::PtEtaPhiEVector nu_vector_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(GenJet, 2);
+  ClassDef(GenJet, 3);
  #endif
 };
 

@@ -6,7 +6,7 @@ import os
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May21_MC_102X_2017'
+config.General.workArea='Sep18_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'
@@ -15,7 +15,7 @@ config.JobType.maxMemoryMB = 4000
 cfgParams = ['isData=0', 'globalTag=102X_mc2017_realistic_v7','doHT=0','LHEWeights=False']
 config.JobType.allowUndistributedCMSSW = True
 
-config.Data.unitsPerJob = 100000
+config.Data.unitsPerJob = 50000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
@@ -49,26 +49,34 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    # ggH-LO
-    ggH_LO_masses = [80,90,100,110,120,130,140,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in ggH_LO_masses:
-        task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+   # # ggH-LO
+   # ggH_LO_masses = [80,90,100,110,120,130,140,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+   # for mass in ggH_LO_masses:
+   #     task_name = 'SUSYGluGluToHToTauTau_M-{}'.format(mass)
+   #     file_location = '/SUSYGluGluToHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
+   #     tasks.append((task_name,file_location))
 
-    # bbH-LO
-    bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
-    for mass in bbH_LO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+   # # bbH-LO
+   # bbH_LO_masses = [80,90,100,110,120,130,140,160,180,200,250,300,350,400,450,600,700,800,900,1200,1400,1500,1600,1800,2000,2300,2600,2900,3200]
+   # for mass in bbH_LO_masses:
+   #     task_name = 'SUSYGluGluToBBHToTauTau_M-{}'.format(mass)
+   #     file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
+   #     tasks.append((task_name,file_location))
 
-    # bbH-NLO
-    bbH_NLO_masses = [80,90,110,120,125,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500]
-    for mass in bbH_NLO_masses:
-        task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
-        file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
-        tasks.append((task_name,file_location))
+   # # bbH-NLO
+   # bbH_NLO_masses = [80,90,110,120,125,130,140,160,180,200,250,300,350,400,450,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500]
+   # for mass in bbH_NLO_masses:
+   #     task_name = 'SUSYGluGluToBBHToTauTau_M-{}-NLO'.format(mass)
+   #     file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
+   #     tasks.append((task_name,file_location))
+
+    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
+    bbh_masses_missing = [60, 350, 3500]
+
+    for mass in bbh_masses_ph:
+      if mass in bbh_masses_missing: continue
+ 
+      tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM' % vars()))
 
     for task in tasks:
         print task[0]

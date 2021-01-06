@@ -63,7 +63,7 @@ struct PtComparatorGenPart{
   
 namespace ic {
 
-  HTTGenAnalysis::HTTGenAnalysis(std::string const& name) : ModuleBase(name) {
+  HTTGenAnalysis::HTTGenAnalysis(std::string const& name) : ModuleBase(name), era_(era::data_2018) {
     fs_ = NULL;
     bbtag_eff_ = nullptr;
   }
@@ -95,6 +95,8 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("gen_wt"       , &gen_wt_       );
+      outtree_->Branch("wt_nnlops"       , &wt_nnlops_       );
       outtree_->Branch("wt_z_pol", &wt_z_pol_);
       outtree_->Branch("wt_stitch"       , &wt_stitch_       );
       outtree_->Branch("wt_topmass"       , &wt_topmass_       );
@@ -141,6 +143,64 @@ namespace ic {
         outtree_->Branch("wt_mur0p5_muf1",  &scale7_);
         outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
         outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
+
+        outtree_->Branch("wt_pdf_0", &pdfweight_0_);
+        outtree_->Branch("wt_pdf_1", &pdfweight_1_);
+        outtree_->Branch("wt_pdf_2", &pdfweight_2_);
+        outtree_->Branch("wt_pdf_3", &pdfweight_3_);
+        outtree_->Branch("wt_pdf_4", &pdfweight_4_);
+        outtree_->Branch("wt_pdf_5", &pdfweight_5_);
+        outtree_->Branch("wt_pdf_6", &pdfweight_6_);
+        outtree_->Branch("wt_pdf_7", &pdfweight_7_);
+        outtree_->Branch("wt_pdf_8", &pdfweight_8_);
+        outtree_->Branch("wt_pdf_9", &pdfweight_9_);
+        outtree_->Branch("wt_pdf_10", &pdfweight_10_);
+        outtree_->Branch("wt_pdf_11", &pdfweight_11_);
+        outtree_->Branch("wt_pdf_12", &pdfweight_12_);
+        outtree_->Branch("wt_pdf_13", &pdfweight_13_);
+        outtree_->Branch("wt_pdf_14", &pdfweight_14_);
+        outtree_->Branch("wt_pdf_15", &pdfweight_15_);
+        outtree_->Branch("wt_pdf_16", &pdfweight_16_);
+        outtree_->Branch("wt_pdf_17", &pdfweight_17_);
+        outtree_->Branch("wt_pdf_18", &pdfweight_18_);
+        outtree_->Branch("wt_pdf_19", &pdfweight_19_);
+        outtree_->Branch("wt_pdf_20", &pdfweight_20_);
+        outtree_->Branch("wt_pdf_21", &pdfweight_21_);
+        outtree_->Branch("wt_pdf_22", &pdfweight_22_);
+        outtree_->Branch("wt_pdf_23", &pdfweight_23_);
+        outtree_->Branch("wt_pdf_24", &pdfweight_24_);
+        outtree_->Branch("wt_pdf_25", &pdfweight_25_);
+        outtree_->Branch("wt_pdf_26", &pdfweight_26_);
+        outtree_->Branch("wt_pdf_27", &pdfweight_27_);
+        outtree_->Branch("wt_pdf_28", &pdfweight_28_);
+        outtree_->Branch("wt_pdf_29", &pdfweight_29_);
+        outtree_->Branch("wt_pdf_30", &pdfweight_30_);
+
+        outtree_->Branch("wt_h_tb",    &wt_h_tb_);
+        outtree_->Branch("wt_h_t",     &wt_h_t_);
+        outtree_->Branch("wt_h_b",     &wt_h_b_);
+        outtree_->Branch("wt_A_tb",    &wt_A_tb_);
+        outtree_->Branch("wt_A_t",     &wt_A_t_);
+        outtree_->Branch("wt_A_b",     &wt_A_b_);
+        outtree_->Branch("wt_H_tb",    &wt_H_tb_);
+        outtree_->Branch("wt_H_t",     &wt_H_t_);
+        outtree_->Branch("wt_H_b",     &wt_H_b_);
+
+        outtree_->Branch("wt_h_tb_msbar",    &wt_h_tb_msbar_);
+        outtree_->Branch("wt_h_t_msbar",     &wt_h_t_msbar_);
+        outtree_->Branch("wt_h_b_msbar",     &wt_h_b_msbar_);
+        outtree_->Branch("wt_A_tb_msbar",    &wt_A_tb_msbar_);
+        outtree_->Branch("wt_A_t_msbar",     &wt_A_t_msbar_);
+        outtree_->Branch("wt_A_b_msbar",     &wt_A_b_msbar_);
+        outtree_->Branch("wt_H_tb_msbar",    &wt_H_tb_msbar_);
+        outtree_->Branch("wt_H_t_msbar",     &wt_H_t_msbar_);
+        outtree_->Branch("wt_H_b_msbar",     &wt_H_b_msbar_);
+
+        outtree_->Branch("wt_hfact_nom",     &wt_hfact_nom_);
+        outtree_->Branch("wt_hfact_up",     &wt_hfact_up_);
+        outtree_->Branch("wt_hfact_down",     &wt_hfact_down_);
+
+        outtree_->Branch("wt_lhe_nominal",     &wt_lhe_nominal_);
       }
       outtree_->Branch("tau_pt_1_tt"        , &tau_pt_1_tt_        );
       outtree_->Branch("tau_pt_1_mt"        , &tau_pt_1_mt_        );
@@ -165,7 +225,10 @@ namespace ic {
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
       outtree_->Branch("n_bjets"     , &n_bjets_     );
+      outtree_->Branch("n_bjets_pt25"     , &n_bjets_pt25_     );
+      outtree_->Branch("n_bjets_eta2p5"     , &n_bjets_eta2p5_     );
       outtree_->Branch("n_bjets_noscale"     , &n_bjets_noscale_);
+      outtree_->Branch("n_bjets_eta2p5_noscale"     , &n_bjets_eta2p5_noscale_);
       outtree_->Branch("n_jets"      , &n_jets_      );
       outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
@@ -185,6 +248,7 @@ namespace ic {
       outtree_->Branch("geneta_2"    , &geneta_2_       );
       outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
+      outtree_->Branch("HpT"     , &pT_A_     );
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("partons_lhe"     , &partons_lhe_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
@@ -301,74 +365,162 @@ namespace ic {
     /* ps_2jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_up"); */
     /* ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down"); */
     /* ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up"); */
-    /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */   
-    return 0;
-  }
+    /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */  
 
-  int HTTGenAnalysis::Execute(TreeEvent *event) {
+    std::string csv_file_path = "";
+
+    if (era_==era::data_2016)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+	    else if (era_==era::data_2017)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
+	    else if (era_==era::data_2018)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
+
+	    //calib  = new const BTagCalibration("deepjet",csv_file_path);
+
+
+	    //reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
+	    //reader_comb->load(*calib,BTagEntry::FLAV_B,"comb"); 
+
+
+
+            std::string file = "input/ggh_weights/NNLOPS_reweight.root";
+            ggh_weights_ = new TFile(file.c_str());
+            ggh_weights_->cd();
+        
+            ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
+            ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
+            ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
+            ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
+        
+            ggh_weights_->Close();
+	    return 0;
+	  }
+
+	  int HTTGenAnalysis::Execute(TreeEvent *event) {
+	    
+	    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+	    event_ = (unsigned long long) eventInfo->event();
+	    wt_ = 1;
+	    rand->SetSeed(event_);
+	    rand_ = rand->Uniform();   
+	 
+	    wt_ = eventInfo->total_weight();
     
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    event_ = (unsigned long long) eventInfo->event();
-    wt_ = 1;
-    rand->SetSeed(event_);
-    rand_ = rand->Uniform();   
- 
-    wt_ = eventInfo->total_weight();
+            if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
 
-    //std::cout << "================event " << event_ << "===================" << std::endl;
+	    //std::cout << "================event " << event_ << "===================" << std::endl;
 
-    wt_cp_sm_=0.0; 
-    wt_cp_ps_=0.0; 
-    wt_cp_mm_=0.0; 
+	    wt_cp_sm_=0.0; 
+	    wt_cp_ps_=0.0; 
+	    wt_cp_mm_=0.0; 
 
-    // test tauspinner weights
-    if(event->ExistsInTree("tauspinner")){
-      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+	    // test tauspinner weights
+	    if(event->ExistsInTree("tauspinner")){
+	      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
 
-      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
+	      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
 
-      if (tauspinner->weight_defined("wt_cp_0")){
-        wt_cp_sm_ = tauspinner->weight("wt_cp_0");
-        wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
-        wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+	      if (tauspinner->weight_defined("wt_cp_0")){
+		wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+		wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
+		wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
 
-        //wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
-        //wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
-        //wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
-        //WTm_ = tauspinner->weight("WTm");
-        //WTp_ = tauspinner->weight("WTp");
-      }
+		//wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+		//wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+		//wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+		//WTm_ = tauspinner->weight("WTm");
+		//WTp_ = tauspinner->weight("WTp");
+	      }
 
-    }
+	    }
 
 
-    wt_cp_prod_sm_=0.0;
-    wt_cp_prod_ps_=0.0;
-    wt_cp_prod_mm_=0.0;
+	    wt_cp_prod_sm_=0.0;
+	    wt_cp_prod_ps_=0.0;
+	    wt_cp_prod_mm_=0.0;
 
-    if (eventInfo->weight_defined("sm_weight_nlo")){
-      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
-      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
-      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
-    }
+	    if (eventInfo->weight_defined("sm_weight_nlo")){
+	      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+	      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+	      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
+	    }
 
 
-    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
-    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
-    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
-    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
+	    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
+	    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
+	    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
+	    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
 
-    if(do_theory_uncert_){
-      // note some of these labels may be generator dependent so need to make sure you check before using them
-      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
-      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
-      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
-      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
-      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
-      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
-      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
-      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
-      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
+	    if(do_theory_uncert_){
+	      // note some of these labels may be generator dependent so need to make sure you check before using them
+	      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+	      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+	      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+	      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+	      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+	      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+	      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+	      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+	      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
+
+
+        if(eventInfo->weight_defined("5000")) pdfweight_0_ = eventInfo->weight("5000"); else if(eventInfo->weight_defined("10000")) pdfweight_0_ = eventInfo->weight("10000"); else pdfweight_0_=1.0;
+        if(eventInfo->weight_defined("5001")) pdfweight_1_ = eventInfo->weight("5001"); else if(eventInfo->weight_defined("10001")) pdfweight_1_ = eventInfo->weight("10001"); else pdfweight_1_=1.0;
+        if(eventInfo->weight_defined("5002")) pdfweight_2_ = eventInfo->weight("5002"); else if(eventInfo->weight_defined("10002")) pdfweight_2_ = eventInfo->weight("10002"); else pdfweight_2_=1.0;
+        if(eventInfo->weight_defined("5003")) pdfweight_3_ = eventInfo->weight("5003"); else if(eventInfo->weight_defined("10003")) pdfweight_3_ = eventInfo->weight("10003"); else pdfweight_3_=1.0;
+        if(eventInfo->weight_defined("5004")) pdfweight_4_ = eventInfo->weight("5004"); else if(eventInfo->weight_defined("10004")) pdfweight_4_ = eventInfo->weight("10004"); else pdfweight_4_=1.0;
+        if(eventInfo->weight_defined("5005")) pdfweight_5_ = eventInfo->weight("5005"); else if(eventInfo->weight_defined("10005")) pdfweight_5_ = eventInfo->weight("10005"); else pdfweight_5_=1.0;
+        if(eventInfo->weight_defined("5006")) pdfweight_6_ = eventInfo->weight("5006"); else if(eventInfo->weight_defined("10006")) pdfweight_6_ = eventInfo->weight("10006"); else pdfweight_6_=1.0;
+        if(eventInfo->weight_defined("5007")) pdfweight_7_ = eventInfo->weight("5007"); else if(eventInfo->weight_defined("10007")) pdfweight_7_ = eventInfo->weight("10007"); else pdfweight_7_=1.0;
+        if(eventInfo->weight_defined("5008")) pdfweight_8_ = eventInfo->weight("5008"); else if(eventInfo->weight_defined("10008")) pdfweight_8_ = eventInfo->weight("10008"); else pdfweight_8_=1.0;
+        if(eventInfo->weight_defined("5009")) pdfweight_9_ = eventInfo->weight("5009"); else if(eventInfo->weight_defined("10009")) pdfweight_9_ = eventInfo->weight("10009"); else pdfweight_9_=1.0;
+        if(eventInfo->weight_defined("5010")) pdfweight_10_ = eventInfo->weight("5010"); else if(eventInfo->weight_defined("10010")) pdfweight_10_ = eventInfo->weight("10010"); else pdfweight_10_=1.0;
+        if(eventInfo->weight_defined("5011")) pdfweight_11_ = eventInfo->weight("5011"); else if(eventInfo->weight_defined("10011")) pdfweight_11_ = eventInfo->weight("10011"); else pdfweight_11_=1.0;
+        if(eventInfo->weight_defined("5012")) pdfweight_12_ = eventInfo->weight("5012"); else if(eventInfo->weight_defined("10012")) pdfweight_12_ = eventInfo->weight("10012"); else pdfweight_12_=1.0;
+        if(eventInfo->weight_defined("5013")) pdfweight_13_ = eventInfo->weight("5013"); else if(eventInfo->weight_defined("10013")) pdfweight_13_ = eventInfo->weight("10013"); else pdfweight_13_=1.0;
+        if(eventInfo->weight_defined("5014")) pdfweight_14_ = eventInfo->weight("5014"); else if(eventInfo->weight_defined("10014")) pdfweight_14_ = eventInfo->weight("10014"); else pdfweight_14_=1.0;
+        if(eventInfo->weight_defined("5015")) pdfweight_15_ = eventInfo->weight("5015"); else if(eventInfo->weight_defined("10015")) pdfweight_15_ = eventInfo->weight("10015"); else pdfweight_15_=1.0;
+        if(eventInfo->weight_defined("5016")) pdfweight_16_ = eventInfo->weight("5016"); else if(eventInfo->weight_defined("10016")) pdfweight_16_ = eventInfo->weight("10016"); else pdfweight_16_=1.0;
+        if(eventInfo->weight_defined("5017")) pdfweight_17_ = eventInfo->weight("5017"); else if(eventInfo->weight_defined("10017")) pdfweight_17_ = eventInfo->weight("10017"); else pdfweight_17_=1.0;
+        if(eventInfo->weight_defined("5018")) pdfweight_18_ = eventInfo->weight("5018"); else if(eventInfo->weight_defined("10018")) pdfweight_18_ = eventInfo->weight("10018"); else pdfweight_18_=1.0;
+        if(eventInfo->weight_defined("5019")) pdfweight_19_ = eventInfo->weight("5019"); else if(eventInfo->weight_defined("10019")) pdfweight_19_ = eventInfo->weight("10019"); else pdfweight_19_=1.0;
+        if(eventInfo->weight_defined("5020")) pdfweight_20_ = eventInfo->weight("5020"); else if(eventInfo->weight_defined("10020")) pdfweight_20_ = eventInfo->weight("10020"); else pdfweight_20_=1.0;
+        if(eventInfo->weight_defined("5021")) pdfweight_21_ = eventInfo->weight("5021"); else if(eventInfo->weight_defined("10021")) pdfweight_21_ = eventInfo->weight("10021"); else pdfweight_21_=1.0;
+        if(eventInfo->weight_defined("5022")) pdfweight_22_ = eventInfo->weight("5022"); else if(eventInfo->weight_defined("10022")) pdfweight_22_ = eventInfo->weight("10022"); else pdfweight_22_=1.0;
+        if(eventInfo->weight_defined("5023")) pdfweight_23_ = eventInfo->weight("5023"); else if(eventInfo->weight_defined("10023")) pdfweight_23_ = eventInfo->weight("10023"); else pdfweight_23_=1.0;
+        if(eventInfo->weight_defined("5024")) pdfweight_24_ = eventInfo->weight("5024"); else if(eventInfo->weight_defined("10024")) pdfweight_24_ = eventInfo->weight("10024"); else pdfweight_24_=1.0;
+        if(eventInfo->weight_defined("5025")) pdfweight_25_ = eventInfo->weight("5025"); else if(eventInfo->weight_defined("10025")) pdfweight_25_ = eventInfo->weight("10025"); else pdfweight_25_=1.0;
+        if(eventInfo->weight_defined("5026")) pdfweight_26_ = eventInfo->weight("5026"); else if(eventInfo->weight_defined("10026")) pdfweight_26_ = eventInfo->weight("10026"); else pdfweight_26_=1.0;
+        if(eventInfo->weight_defined("5027")) pdfweight_27_ = eventInfo->weight("5027"); else if(eventInfo->weight_defined("10027")) pdfweight_27_ = eventInfo->weight("10027"); else pdfweight_27_=1.0;
+        if(eventInfo->weight_defined("5028")) pdfweight_28_ = eventInfo->weight("5028"); else if(eventInfo->weight_defined("10028")) pdfweight_28_ = eventInfo->weight("10028"); else pdfweight_28_=1.0;
+        if(eventInfo->weight_defined("5029")) pdfweight_29_ = eventInfo->weight("5029"); else if(eventInfo->weight_defined("10029")) pdfweight_29_ = eventInfo->weight("10029"); else pdfweight_29_=1.0;
+        if(eventInfo->weight_defined("5030")) pdfweight_30_ = eventInfo->weight("5030"); else if(eventInfo->weight_defined("10030")) pdfweight_30_ = eventInfo->weight("10030"); else pdfweight_30_=1.0;
+
+      if(eventInfo->weight_defined("h_tb")) wt_h_tb_ = eventInfo->weight("h_tb"); else wt_h_tb_=1.0;
+      if(eventInfo->weight_defined("h_t"))  wt_h_t_ = eventInfo->weight("h_t"); else wt_h_t_=1.0;
+      if(eventInfo->weight_defined("h_b"))  wt_h_b_ = eventInfo->weight("h_b"); else wt_h_b_=1.0;
+      if(eventInfo->weight_defined("A_tb")) wt_A_tb_ = eventInfo->weight("A_tb"); else wt_A_tb_=1.0;
+      if(eventInfo->weight_defined("A_t"))  wt_A_t_ = eventInfo->weight("A_t"); else wt_A_t_=1.0;
+      if(eventInfo->weight_defined("A_b"))  wt_A_b_ = eventInfo->weight("A_b"); else wt_A_b_=1.0;
+      if(eventInfo->weight_defined("H_tb")) wt_H_tb_ = eventInfo->weight("H_tb"); else wt_H_tb_=1.0;
+      if(eventInfo->weight_defined("H_t"))  wt_H_t_ = eventInfo->weight("H_t"); else wt_H_t_=1.0;
+      if(eventInfo->weight_defined("H_b"))  wt_H_b_ = eventInfo->weight("H_b"); else wt_H_b_=1.0;
+
+      if(eventInfo->weight_defined("h_tb_msbar")) wt_h_tb_msbar_ = eventInfo->weight("h_tb_msbar"); else wt_h_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("h_t_msbar"))  wt_h_t_msbar_ = eventInfo->weight("h_t_msbar"); else wt_h_t_msbar_=1.0;
+      if(eventInfo->weight_defined("h_b_msbar"))  wt_h_b_msbar_ = eventInfo->weight("h_b_msbar"); else wt_h_b_msbar_=1.0;
+      if(eventInfo->weight_defined("A_tb_msbar")) wt_A_tb_msbar_ = eventInfo->weight("A_tb_msbar"); else wt_A_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("A_t_msbar"))  wt_A_t_msbar_ = eventInfo->weight("A_t_msbar"); else wt_A_t_msbar_=1.0;
+      if(eventInfo->weight_defined("A_b_msbar"))  wt_A_b_msbar_ = eventInfo->weight("A_b_msbar"); else wt_A_b_msbar_=1.0;
+      if(eventInfo->weight_defined("H_tb_msbar")) wt_H_tb_msbar_ = eventInfo->weight("H_tb_msbar"); else wt_H_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("H_t_msbar"))  wt_H_t_msbar_ = eventInfo->weight("H_t_msbar"); else wt_H_t_msbar_=1.0;
+      if(eventInfo->weight_defined("H_b_msbar"))  wt_H_b_msbar_ = eventInfo->weight("H_b_msbar"); else wt_H_b_msbar_=1.0;
+
+
+      if(eventInfo->weight_defined("lhe_nominal")) wt_lhe_nominal_ = eventInfo->weight("lhe_nominal"); else wt_lhe_nominal_=1.0;
+
+      if(eventInfo->weight_defined("hfact_nominal")) wt_hfact_nom_ = eventInfo->weight("hfact_nominal"); else wt_hfact_nom_=1.0;
+      if(eventInfo->weight_defined("hfact_up")) wt_hfact_up_ = eventInfo->weight("hfact_up"); else wt_hfact_up_=1.0;
+      if(eventInfo->weight_defined("hfact_down")) wt_hfact_down_ = eventInfo->weight("hfact_down"); else wt_hfact_down_=1.0;
+
 
       // 1005 = up
       // 1009 = down 
@@ -420,13 +572,13 @@ namespace ic {
     partons_=0;
     parton_mjj_=-9999;
     parton_HpT_=-9999;
-    double higgs_eta = 0;
+    //double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
+    std::vector<GenParticle*> outparts;
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
-      std::vector<GenParticle*> outparts;
       double largest_b_pt=-1;
       double lead_b_eta=-9999;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
@@ -445,17 +597,29 @@ namespace ic {
              if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
-      lead_b_pt_ = largest_b_pt;
-      lead_b_eta_ = lead_b_eta;
-      std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
-      if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
-      else parton_mjj_ = -9999;
-      if(outparts.size()>2){
-        double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M(); 
-        double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();  
-        if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
+    lead_b_pt_ = largest_b_pt;
+    lead_b_eta_ = lead_b_eta; 
+    } else {
+        partons_=0;
+        for (unsigned i = 0; i < gen_particles.size(); ++i) {
+          if (!(gen_particles[i]->statusFlags()[IsHardProcess])) continue;
+          if (gen_particles[i]->status()!=23) continue;
+          if(gen_particles[gen_particles[i]->mothers()[0]]->pdgid() == 2212) continue;
+          unsigned id = abs(gen_particles[i]->pdgid());
+          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21 ) {
+            partons_++;
+            parton_pt_vec.push_back(gen_particles[i]->pt());
+          }
+        }
+    }
+    std::sort(outparts.begin(),outparts.end(),PtComparatorGenPart());
+    if(outparts.size()>1) parton_mjj_ = (outparts[0]->vector()+outparts[1]->vector()).M();
+    else parton_mjj_ = -9999;
+    if(outparts.size()>2){
+      double parton_mjj_2 = (outparts[0]->vector()+outparts[2]->vector()).M(); 
+      double parton_mjj_3 = (outparts[1]->vector()+outparts[2]->vector()).M();  
+      if(parton_mjj_ < std::max(parton_mjj_2, parton_mjj_3)) parton_mjj_ = std::max(parton_mjj_2, parton_mjj_3);
    
-      }
     }
     std::sort(parton_pt_vec.begin(),parton_pt_vec.end());
     std::reverse(parton_pt_vec.begin(),parton_pt_vec.end());
@@ -477,7 +641,7 @@ namespace ic {
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
-           higgs_eta = gen_particles[i]->eta();
+           //higgs_eta = gen_particles[i]->eta();
            //wt_topmass_ = topmass_wts_toponly_.GetBinContent(topmass_wts_toponly_.FindBin(HiggsPt_))*1.006;
            //wt_topmass_2_ = topmass_wts_.GetBinContent(topmass_wts_.FindBin(HiggsPt_))*0.985; //*sm = 0.985022, mix= 0.985167 ps=0.985076 -> all = 0.985 to 3dp so use thsi number
       }
@@ -499,7 +663,7 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
-      if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]){
+      if((genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
@@ -766,8 +930,8 @@ namespace ic {
       pzeta_ = -9999;
     }
     
-    std::vector<ic::GenJet> filtered_jets;
-    std::vector<ic::GenJet> bjets;
+    std::vector<ic::GenJet*> filtered_jets;
+    std::vector<ic::GenJet*> bjets;
     
     std::vector<GenParticle *> sel_bquarks;
     for (unsigned i=0; i < gen_particles.size(); ++i){
@@ -779,44 +943,75 @@ namespace ic {
     }
      
     for(unsigned i=0; i<gen_jets.size(); ++i){
-      ic::GenJet jet = *gen_jets[i];
-      double jetPt = jet.vector().Pt();
-      double jetEta = std::fabs(jet.vector().Rapidity());
+      ic::GenJet *jet = gen_jets[i];
+      double jetPt = jet->vector().Pt();
+      double jetEta = std::fabs(jet->vector().Rapidity());
       if(jetPt > min_jet_pt_ && jetEta < max_jet_eta_) filtered_jets.push_back(jet); 
-      if(jetPt > 20 && jetEta < 2.4){
+      if(jetPt > 20 && jetEta < 2.5){
           bool MatchedToB = false;
-          for(unsigned j=0; j<sel_bquarks.size(); ++j) if(DRLessThan(std::make_pair(&jet, sel_bquarks[j]),0.5)) MatchedToB = true;
+          for(unsigned j=0; j<sel_bquarks.size(); ++j) if(DRLessThan(std::make_pair(jet, sel_bquarks[j]),0.5)) MatchedToB = true;
           if(MatchedToB) bjets.push_back(jet); 
       }
     }
     
     for(unsigned i=0; i<bjets.size(); ++i){
-      ic::GenJet jet = bjets[i];
+      ic::GenJet *jet = bjets[i];
       bool MatchedToPrompt = false;
       for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
       }
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) bjets.erase (bjets.begin()+i);
     }
-    
-    n_bjets_noscale_ = bjets.size();
-    
+   
+    std::vector<ic::GenJet*> bjets_eta2p4 = bjets;
+    std::vector<ic::GenJet*> bjets_25 = bjets;
+
+    ic::erase_if(bjets_eta2p4,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    ic::erase_if(bjets_25,!boost::bind(MinPtMaxEta, _1, 25.0, 2.4));
+ 
+    n_bjets_pt25_ = bjets_25.size();
+    n_bjets_eta2p5_noscale_ = bjets.size();
+    n_bjets_noscale_ = bjets_eta2p4.size();
+
+    if(bbtag_eff_ != nullptr) {
+      for(unsigned i=0; i<bjets.size(); ++i){
+        ic::GenJet *jet = bjets[i];
+        bool fail = false;
+        double eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(jet->pt()),bbtag_eff_->GetYaxis()->FindBin(fabs(jet->eta()))); 
+        //double sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, jet->eta(), jet->pt());
+        double sf=1.;
+        //std::cout << eff << "    " << sf << std::endl;
+
+        double r = rand->Uniform();   
+        if(r>eff*sf) fail = true;
+        //remove jets that do not pass btagging
+        if(fail) bjets.erase(bjets.begin()+i);
+      }
+    }
+
+    bjets_eta2p4 = bjets;
+    ic::erase_if(bjets_eta2p4,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+
+    n_bjets_ = bjets_eta2p4.size();
+    n_bjets_eta2p5_ = bjets.size();
+   
+ 
     for(unsigned i=0; i<filtered_jets.size(); ++i){
-      ic::GenJet jet = filtered_jets[i];
+      ic::GenJet *jet = filtered_jets[i];
       bool MatchedToPrompt = false;
       for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
       }
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
 
     for(unsigned i=0; i<gen_jets.size(); ++i){
-      ic::GenJet jet = *(gen_jets[i]);
+      ic::GenJet *jet = gen_jets[i];
       bool MatchedToPrompt = false;
       for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
       }
       //remove jets that are matched to Higgs decay products
             if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
@@ -844,54 +1039,54 @@ namespace ic {
     jdeta_       = -9999;
     n_jetsingap_ = 9999;
     if(n_jets_ > 0){
-      jpt_1_  = filtered_jets[0].vector().Pt();
-      jeta_1_ = filtered_jets[0].vector().Rapidity();
-      jphi_1_ = filtered_jets[0].vector().Phi();
+      jpt_1_  = filtered_jets[0]->vector().Pt();
+      jeta_1_ = filtered_jets[0]->vector().Rapidity();
+      jphi_1_ = filtered_jets[0]->vector().Phi();
     }
     if(n_jets_ > 1){
-      jpt_2_  = filtered_jets[1].vector().Pt();
-      jeta_2_ = filtered_jets[1].vector().Rapidity();
-      jphi_2_ = filtered_jets[1].vector().Phi();
-      mjj_   = (filtered_jets[0].vector()+filtered_jets[1].vector()).M();
-      jdeta_  = std::fabs(filtered_jets[0].vector().Rapidity() - filtered_jets[1].vector().Rapidity());
+      jpt_2_  = filtered_jets[1]->vector().Pt();
+      jeta_2_ = filtered_jets[1]->vector().Rapidity();
+      jphi_2_ = filtered_jets[1]->vector().Phi();
+      mjj_   = (filtered_jets[0]->vector()+filtered_jets[1]->vector()).M();
+      jdeta_  = std::fabs(filtered_jets[0]->vector().Rapidity() - filtered_jets[1]->vector().Rapidity());
       double max_jeta = std::max(jeta_1_,jeta_2_);
       double min_jeta = std::min(jeta_1_,jeta_2_);
       n_jetsingap_ = 0;
       for(unsigned i=2; i<n_jets_; ++i){
-         double jeta_3 = filtered_jets[i].vector().Rapidity();
+         double jeta_3 = filtered_jets[i]->vector().Rapidity();
          if(jeta_3 > min_jeta && jeta_3 < max_jeta) n_jetsingap_++;    
       }
     }
     if(n_jets_ > 2){
-      jpt_3_  = filtered_jets[2].vector().Pt();      
+      jpt_3_  = filtered_jets[2]->vector().Pt();      
     }
 
     n_pjets_=0;    
     if(filtered_jets.size()>=2){
-      if(filtered_jets[0].eta() > filtered_jets[1].eta()){
-        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[0].vector(), filtered_jets[1].vector());
+      if(filtered_jets[0]->eta() > filtered_jets[1]->eta()){
+        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[0]->vector(), filtered_jets[1]->vector());
       }
       else{
-        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[1].vector(), filtered_jets[0].vector());
+        sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[1]->vector(), filtered_jets[0]->vector());
       }
-      // sort jets higher and lower than higgs eta_1
-      std::vector<GenJet> jets_high;
-      std::vector<GenJet> jets_low;
-      for (unsigned i=0; i<filtered_jets.size(); ++i){
-        if (filtered_jets[i].eta() > higgs_eta) jets_high.push_back(filtered_jets[i]);
-        else jets_low.push_back(filtered_jets[i]);
-      }
-      if(jets_low.size()>0) n_pjets_++;
-      if(jets_high.size()>0) n_pjets_++;
-      Candidate pseudo_jet_a;
-      Candidate pseudo_jet_b;
-      for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j.vector());
-      for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j.vector());
-      spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
-      for (unsigned i=0; i<filtered_jets.size(); ++i){
-        double dEta = std::fabs(higgs_eta - filtered_jets[i].eta());
-        if(i==0 || dEta<ysep_) ysep_ = dEta;
-      }
+     // // sort jets higher and lower than higgs eta_1
+     // std::vector<GenJet> jets_high;
+     // std::vector<GenJet> jets_low;
+     // for (unsigned i=0; i<filtered_jets.size(); ++i){
+     //   if (filtered_jets[i]->eta() > higgs_eta) jets_high.push_back(filtered_jets[i]);
+     //   else jets_low.push_back(filtered_jets[i]);
+     // }
+     // if(jets_low.size()>0) n_pjets_++;
+     // if(jets_high.size()>0) n_pjets_++;
+     // Candidate pseudo_jet_a;
+     // Candidate pseudo_jet_b;
+     // for (auto j : jets_low) pseudo_jet_a.set_vector(pseudo_jet_a.vector()+j.vector());
+     // for (auto j : jets_high) pseudo_jet_b.set_vector(pseudo_jet_b.vector()+j.vector());
+     // spjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(pseudo_jet_a.vector(),pseudo_jet_b.vector());
+     // for (unsigned i=0; i<filtered_jets.size(); ++i){
+     //   double dEta = std::fabs(higgs_eta - filtered_jets[i]->eta());
+     //   if(i==0 || dEta<ysep_) ysep_ = dEta;
+     // }
     } else {
       sjdphi_ = -9999;
       spjdphi_ = -9999;
@@ -917,6 +1112,12 @@ namespace ic {
     /* } */
     //wt_ue_up_ = ue_up_  .GetBinContent(ue_up_  .FindBin(n_jets_)); 
     //wt_ue_down_ = ue_down_  .GetBinContent(ue_down_  .FindBin(n_jets_)); 
+
+    if (n_jets_      == 0) wt_nnlops_ = ggh_ph_0jet_->Eval(std::min(pT_A_, 125.));
+    else if (n_jets_ == 1) wt_nnlops_ = ggh_ph_1jet_->Eval(std::min(pT_A_, 625.));
+    else if (n_jets_ == 2) wt_nnlops_ = ggh_ph_2jet_->Eval(std::min(pT_A_, 800.));
+    else if (n_jets_ >= 3) wt_nnlops_ = ggh_ph_3jet_->Eval(std::min(pT_A_, 925.));
+    else wt_nnlops_ = 1.;
 
 
     std::vector<PileupInfo *> puInfo;
@@ -1755,7 +1956,8 @@ namespace ic {
 
     else if (rho_daughters.size()==1 && l_daughters.size()==1){
         cp_channel_=5;
-        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> vertex_vec = {};
+        if(event->ExistsInTree("vertices")) vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
         for (unsigned i = 0; i < vertex_vec.size(); i++) {
           reco_pvx_ = vertex_vec[0]->vx();
           reco_pvy_ = vertex_vec[0]->vy();
@@ -1797,7 +1999,8 @@ namespace ic {
 //      aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
 
         cp_channel_=51;
-        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        std::vector<ic::Vertex*> vertex_vec = {};
+        if(event->ExistsInTree("vertices")) vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
         for (unsigned i = 0; i < vertex_vec.size(); i++) {
           reco_pvx_ = vertex_vec[0]->vx();
           reco_pvy_ = vertex_vec[0]->vy();
@@ -2132,9 +2335,11 @@ namespace ic {
 
     }
 
-    std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
+    std::vector<ic::Vertex*> vertex_vec = {}; 
+    if(event->ExistsInTree("vertices")) vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); 
     // std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("verticesBS"); 
-    std::vector<ic::Vertex*> & vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
+    std::vector<ic::Vertex*> vertex_bs_vec = {};
+    if(event->ExistsInTree("refittedVerticesBS")) vertex_bs_vec = event->GetPtrVec<ic::Vertex>("refittedVerticesBS");
 
  
     if (vertex_vec.size() > 0) {
@@ -2146,7 +2351,7 @@ namespace ic {
       reco_bs_pvx_ = vertex_bs_vec[0]->vx();
       reco_bs_pvy_ = vertex_bs_vec[0]->vy();
       reco_bs_pvz_ = vertex_bs_vec[0]->vz();
-    } else {
+    } else if(vertex_vec.size() > 0) {
       reco_bs_pvx_ = vertex_vec[0]->vx();
       reco_bs_pvy_ = vertex_vec[0]->vy();
       reco_bs_pvz_ = vertex_vec[0]->vz();

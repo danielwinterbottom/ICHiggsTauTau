@@ -306,6 +306,17 @@ sample_list = [
     'ZHToTauTau_M-125',
     'ttHToTauTau',
 
+    'ZHiggs0L1ToTauTau',
+    'ZHiggs0L1ZgToTauTau',
+    'ZHiggs0L1Zgf05ph0ToTauTau',
+    'ZHiggs0L1f05ph0ToTauTau',
+    'ZHiggs0MToTauTau',
+    'ZHiggs0Mf05ph0ToTauTau',
+    'ZHiggs0PHToTauTau',
+    'ZHiggs0PHf05ph0ToTauTau',
+    'ZHiggs0PMToTauTau',
+    'GluGluToHToTauTauPlusTwoJets_M125_minlo',
+>>>>>>> origin/master
 	]
 
 sample_list = list(set(sample_list))

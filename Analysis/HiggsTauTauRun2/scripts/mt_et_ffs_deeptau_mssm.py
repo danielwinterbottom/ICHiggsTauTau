@@ -15,6 +15,7 @@ parser.add_argument('--alt_wp',help= 'Alternative tau ID working point to measur
 parser.add_argument('--channel',help= 'Channel to get fake factors for (mt or et)', default='mt')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='./')
 parser.add_argument('--year', help= 'Name of input year', default='2018')
+parser.add_argument('--cms_label', help= 'Draw cms label', default=False)
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 args = parser.parse_args()
 
@@ -31,8 +32,8 @@ file_ext = '_%(channel)s_%(year)s.root' % vars()
 # binning for fake factor determination
 njets_bins = {
               'inclusive':'(1)',
-              '0jet':'(n_prebjets==0)',
-              '1jet':'(n_prebjets>0)',
+#              '0jet':'(n_prebjets==0)',
+#              '1jet':'(n_prebjets>0)',
 }
 
 jetpt_bins = {
@@ -997,11 +998,17 @@ def PlotFakeFactor(h, u, name, output_folder, wp, channel, year):
   l.AddEntry(u_fit,'Fit','l')
   l.AddEntry(u,'Fit Uncertainty','f')
   l.Draw()
-  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  if args.cms_label:
+    DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
   DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.4)
   DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.4)
-  DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.7)
-  DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.63)
+  if args.cms_label:
+    DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.7)
+    DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.63)
+  else:
+    DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.83)
+    DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.76)
+
   c.Print('%(output_folder)s/ff_fit_%(name)s_%(channel)s_%(year)s.pdf' % vars())
 
 
@@ -1106,7 +1113,9 @@ def PlotFakeFactorCorrection(h, u, name, output_folder, wp, channel, year, low_b
   l.AddEntry(u,'Fit Uncertainty','f')
   l.Draw()
 
-  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  if args.cms_label:
+    DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+
   DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.3)
   DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 
@@ -1141,7 +1150,6 @@ def WriteFakeFactorFunction(fout,njets_bins,jetpt_bins,proc='qcd',aiso=False):
         #else:
         #  ff_params = ff_eqn.replace('p0','%f' % p[0]).replace('p1','%f' % p[1]).replace('p2','%f' % p[2]).replace('p3','%f' % p[3])
  
-        print '%(jetptbin_name)s_%(njetbin_name)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars() 
         func = fout.Get('%(jetptbin_name)s_%(njetbin_name)s%(extra)s_pt_2_ff_%(proc)s_fit' % vars())
         ff = func.GetExpFormula('p')
         ff_params = str(ff).replace('x','min(pt_2,599.)') 
@@ -1372,8 +1380,8 @@ def draw_fraction(cat_name,new_bins,output_folder,channel,year,qcd_frac,wjets_fr
   l.AddEntry(wjets_frac,'W + Jets','f')
   l.AddEntry(ttbar_frac,'t#bar{t}','f')
   l.Draw()
-
-  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  if args.cms_label:
+    DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
   DrawTitle(c, '%(channel_string)s' % vars(), 1, textSize=0.4)
   DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.4)
 
@@ -1489,10 +1497,10 @@ for ff in ff_list:
 ana_cats = {
   'tightmt_nbjets0':'n_deepbjets==0 && mt_1<40',
   'tightmt_nbjets1':'n_deepbjets>0 && mt_1<40',
-  'loosemt_nbjets0':'n_deepbjets==0 && mt_1>40 && mt_1<70',
-  'loosemt_nbjets1':'n_deepbjets>0 && mt_1>40 && mt_1<70',
-  'control_nbjets0':'n_deepbjets==0 && mt_1>70',
-  'control_nbjets1':'n_deepbjets>0 && mt_1>70',
+  'loosemt_nbjets0':'n_deepbjets==0 && mt_1>=40 && mt_1<70',
+  'loosemt_nbjets1':'n_deepbjets>0 && mt_1>=40 && mt_1<70',
+  'control_nbjets0':'n_deepbjets==0 && mt_1>=70',
+  'control_nbjets1':'n_deepbjets>0 && mt_1>=70',
   }
 
 for cat_name,cat_cut in ana_cats.items():
