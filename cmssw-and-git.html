@@ -119,11 +119,9 @@ git config --global user.github [GitHub account name]
 
 <p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
 <p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc7_amd64_gcc700
-# The SCRAM_ARCH parameter will depend on what CMSSW release you are trying to use. For ntuple production we currently use CMSSW_10_2_19 which uses slc7_amd64_gcc700 as above, but for using CMSSW_8_0_25 for running the analyser use slc6_amd64_gcc530
-# If you are creating a CMSSW area to run the analyser then it is recomended to use CMSSW_8_0_25 - later versions of CMSSW are currently incompatible with the analyser (it would be useful if someone could fix this) 
-# For using the CMSSW facing part of the code you should use the appropiate CMSSW version: the current recomendation for ntuple production is CMSSW_10_2_19
-scramv1 project CMSSW CMSSW_X_Y_Z
-cd CMSSW_X_Y_Z/src/
+# The SCRAM_ARCH parameter will depend on what CMSSW release you are trying to use. For both using the analyser and ntuple production we currently use CMSSW_10_2_19 which uses slc7_amd64_gcc700 as above
+scramv1 project CMSSW CMSSW_10_2_19
+cd CMSSW_10_2_19/src/
 cmsenv
 </pre><p>Initialise this area for git by adding a single package: </p><pre class="fragment">git cms-addpkg FWCore/Version
 # If you are not running on a machine based at CERN, this script will ask if you want to create a new reference repository.
@@ -139,7 +137,7 @@ git pull ic-cmssw from-CMSSW_10_2_19
 # explicitly made visible.  This is important, as we don't want to have to compile every single package.
 # To make the packages visible that have been modified from the release tag, run these commands:
 
-git cms-sparse-checkout CMSSW_X_Y_Z HEAD
+git cms-sparse-checkout CMSSW_10_2_19 HEAD
 git read-tree -mu HEAD
 
 </pre><p>Next, add the IC analysis code package: </p><pre class="fragment">git clone git@github.com:danielwinterbottom/ICHiggsTauTau.git UserCode/ICHiggsTauTau
