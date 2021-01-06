@@ -471,7 +471,7 @@ if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 
     .set_input_label("genParticles")
     .set_predicate(
       (bind(&GenParticle::status,_1) == 44) &&
-      (bind(::abs,(bind(&GenParticle::pdgid, _1))) == 22))
+      (bind(&GenParticle::pdgid, _1) == 22))
     .set_min(0).set_max(0);
  
   BuildModule(wgammaStarFilter);

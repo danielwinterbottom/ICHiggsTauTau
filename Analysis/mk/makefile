@@ -82,7 +82,8 @@ USERINCLUDES += -isystem $(PYSYS)
 
 CXX=g++
 LD=g++
-CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++0x -g
+#CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++0x -g
+CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++17 -g
 LDFLAGS= -shared -Wall -Wextra
 CXXFLAGS += $(EXTRAFLAGS)
 
