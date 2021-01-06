@@ -20,6 +20,7 @@ parser.add_argument('--input_folder','-i', help= 'Name of output directory', def
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 parser.add_argument('--year','-y', help= 'year', type=str, default='2018')
 parser.add_argument("--singletau", dest="singletau", action='store_true', help="Use single tau trigger in OR")
+parser.add_argument("--cms_label", help="If true will draw CMS label")
 args = parser.parse_args()
 
 wp = args.wp
@@ -508,12 +509,17 @@ def PlotFakeFactor(h, u, name, output_folder, wp, year):
   l.AddEntry(u_fit,'Fit','l')
   l.AddEntry(u,'Fit Uncertainty','f')
   l.Draw()
-  DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
+  if args.cms_label:
+    DrawCMSLogo(c, 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 0.6)
   DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.4)
   DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.4)
-  DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.7)
-  DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.63)
-  c.Print('output_folder/ff_fit_%(name)s_tt_%(year)s.pdf' % vars())
+  if args.cms_label:
+    DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.7)
+    DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.63)
+  else:
+    DrawTitle(c, jet_pt_string, 4, textSize=0.4,x=0.20,y=0.83)
+    DrawTitle(c, n_prejets_string, 4, textSize=0.4,x=0.20,y=0.76)
+  c.Print('%(output_folder)s/ff_fit_%(name)s_tt_%(year)s.pdf' % vars())
 
 
 def VariableBinning(ptbin):
@@ -785,7 +791,7 @@ def PlotFakeFactorCorrection(h, u, name, output_folder, wp, year, low_bounded_va
   DrawTitle(c, '%(channel_string)s %(bkg_string)s' % vars(), 1, textSize=0.3)
   DrawTitle(c, '%(year)s: %(lumi_string)s (13 TeV)' % vars(), 3, textSize=0.3)
 
-  c.Print('output_folder/ff_closure_%(name)s_tt_%(year)s.pdf' % vars())
+  c.Print('%(output_folder)s/ff_closure_%(name)s_tt_%(year)s.pdf' % vars())
 
 
 draw_list=[]
