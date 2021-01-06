@@ -20,6 +20,9 @@
 #include <string>
 #include "Utilities/interface/FnRootTools.h"
 
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagCalibrationStandalone.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/interface/BTagWeightRun2.h"
+
 namespace ic {
   
 class HTTGenAnalysis : public ModuleBase {
@@ -38,7 +41,8 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
   CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
   CLASS_MEMBER(HTTGenAnalysis, std::string, mssm_mass  )
-  
+  CLASS_MEMBER(HTTGenAnalysis, ic::era, era) 
+ 
   TTree *outtree_;
   TRandom3  *rand;
   
@@ -67,7 +71,10 @@ class HTTGenAnalysis : public ModuleBase {
   double mt_2_;
   double pzeta_;
   double n_bjets_;
+  double n_bjets_eta2p5_;
   double n_bjets_noscale_;
+  double n_bjets_eta2p5_noscale_;
+  double n_bjets_pt25_;
   unsigned n_jets_nofilter_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
@@ -175,7 +182,64 @@ class HTTGenAnalysis : public ModuleBase {
   double scale7_;
   double scale8_;
   double scale9_;
-  
+ 
+  double pdfweight_0_;
+  double pdfweight_1_;
+  double pdfweight_2_;
+  double pdfweight_3_;
+  double pdfweight_4_;
+  double pdfweight_5_;
+  double pdfweight_6_;
+  double pdfweight_7_;
+  double pdfweight_8_;
+  double pdfweight_9_;
+  double pdfweight_10_;
+  double pdfweight_11_;
+  double pdfweight_12_;
+  double pdfweight_13_;
+  double pdfweight_14_;
+  double pdfweight_15_;
+  double pdfweight_16_;
+  double pdfweight_17_;
+  double pdfweight_18_;
+  double pdfweight_19_;
+  double pdfweight_20_;
+  double pdfweight_21_;
+  double pdfweight_22_;
+  double pdfweight_23_;
+  double pdfweight_24_;
+  double pdfweight_25_;
+  double pdfweight_26_;
+  double pdfweight_27_;
+  double pdfweight_28_;
+  double pdfweight_29_;
+  double pdfweight_30_;
+
+  double wt_lhe_nominal_;
+  double wt_h_tb_;
+  double wt_h_t_;
+  double wt_h_b_;
+  double wt_A_tb_;
+  double wt_A_t_;
+  double wt_A_b_;
+  double wt_H_tb_;
+  double wt_H_t_;
+  double wt_H_b_; 
+
+  double wt_h_tb_msbar_;
+  double wt_h_t_msbar_;
+  double wt_h_b_msbar_;
+  double wt_A_tb_msbar_;
+  double wt_A_t_msbar_;
+  double wt_A_b_msbar_;
+  double wt_H_tb_msbar_;
+  double wt_H_t_msbar_;
+  double wt_H_b_msbar_;
+
+  double wt_hfact_nom_;
+  double wt_hfact_up_;
+  double wt_hfact_down_;
+
   std::shared_ptr<RooWorkspace> mssm_w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
   
@@ -291,7 +355,18 @@ class HTTGenAnalysis : public ModuleBase {
 
   double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
   int gen_tau_dm_1_;
-  
+ 
+  const BTagCalibration *calib;
+  BTagCalibrationReader* reader_incl;
+  BTagCalibrationReader* reader_comb;
+
+  TFile *ggh_weights_;
+  TGraph *ggh_ph_0jet_;
+  TGraph *ggh_ph_1jet_;
+  TGraph *ggh_ph_2jet_;
+  TGraph *ggh_ph_3jet_;
+  double wt_nnlops_;
+ 
  public:
   HTTGenAnalysis(std::string const& name);
   virtual ~HTTGenAnalysis();
