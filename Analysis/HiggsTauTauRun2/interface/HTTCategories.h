@@ -587,6 +587,9 @@ class HTTCategories : public ModuleBase {
   double wt_ff_dmbins_ttbar_syst_up_1_;
   double wt_ff_dmbins_ttbar_syst_down_1_;
 
+  double ff_frac_mssm_wjets_;
+  double ff_frac_mssm_qcd_;
+  double ff_frac_mssm_ttbar_;
   double wt_ff_mssm_1_;
   double wt_ff_mssm_qcd_syst_up_1_;
   double wt_ff_mssm_qcd_syst_down_1_;
