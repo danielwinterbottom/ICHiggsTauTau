@@ -355,7 +355,7 @@ if not options.batch_name_changes:
         if syst:   
           add_cond += extra_channel[ch]
 
-        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --wp=%(wp)s --no_plot %(add_cond)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --wp=%(wp)s --no_plot %(add_cond)s' % vars()
         hadd_cmd = 'hadd -f %(out_fold)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()
         rm_dc_cmd = 'rm %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()      
 
