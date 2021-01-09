@@ -193,9 +193,7 @@ namespace ic {
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_mssm.Close();
-      std::cout << mssm_file_ << std::endl;
       for(auto s : systs_mssm_) {
-        std::cout << s << std::endl;
         fns_["ff_total"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_mssm_->function(("ff_total"+s).c_str())->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso,mt_tot")));
       }

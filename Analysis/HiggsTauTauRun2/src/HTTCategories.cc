@@ -541,6 +541,10 @@ namespace ic {
               outtree_->Branch("wt_ff_mssm_ttbar_1"  , &wt_ff_mssm_ttbar_1_);
               outtree_->Branch("wt_ff_mssm_wjets_1"  , &wt_ff_mssm_wjets_1_);
 
+              outtree_->Branch("ff_frac_mssm_wjets"  , &ff_frac_mssm_wjets_);
+              outtree_->Branch("ff_frac_mssm_ttbar"  , &ff_frac_mssm_ttbar_);
+              outtree_->Branch("ff_frac_mssm_qcd"  , &ff_frac_mssm_qcd_);
+
               outtree_->Branch("wt_ff_mssm_qcd_stat_ss_njets0_unc1_up_1"  , &wt_ff_mssm_qcd_stat_ss_njets0_unc1_up_1_);
               outtree_->Branch("wt_ff_mssm_qcd_stat_ss_njets0_unc1_down_1"  , &wt_ff_mssm_qcd_stat_ss_njets0_unc1_down_1_);
               outtree_->Branch("wt_ff_mssm_qcd_stat_ss_njets1_unc1_up_1"  , &wt_ff_mssm_qcd_stat_ss_njets1_unc1_up_1_);
