@@ -373,6 +373,8 @@ print 'do_ff_systs       ='  ,  options.do_ff_systs
 print '###############################################'
 print ''
 
+options.singletau = True
+
 # vbf_background = False
 vbf_background = options.vbf_background
 
@@ -422,6 +424,39 @@ if options.analysis in ['sm','cpprod','cpdecay']:
         if options.era in ['cp18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && pt_2>30 && wt<2)'
 #          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_1<33)||(trg_singleelectron&&pt_1>33)) && wt<2)'
+elif options.analysis == 'mssmrun2':
+    wp = 'medium'
+
+    if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
+      m_lowpt=23
+      e_lowpt=26
+      t_highpt=120
+      t_lowpt_mt=25
+      t_lowpt_et=25
+    if options.era in ['cpsummer17']:
+      m_lowpt=25
+      e_lowpt=28
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+    if options.era in ['cp18']:
+      m_lowpt=25
+      e_lowpt=33
+      t_highpt=180
+      t_lowpt_mt=32
+      t_lowpt_et=35
+
+    if options.channel == 'mt':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)))' % vars()
+
+    if options.channel == 'et':
+        if options.singletau:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+        else:
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -452,6 +487,16 @@ if options.channel == 'tt':
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_2)'
     if options.era in ['cpsummer17','cp18']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
+    if options.analysis in ['mssmrun2']:
+      wp = 'medium'
+      if options.singletau:
+        if options.era=='legacy16':
+          cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>120 && trg_singletau_1) || (pt_2>120 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+        else:
+          cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>180 && trg_singletau_1) || (pt_2>180 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+      else:
+        cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     if options.era == 'mssmsummer16':
@@ -3357,7 +3402,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
             if options.analysis == 'cpdecay' and options.sm_masses!="": GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
             else: GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
-        elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
+        elif options.analysis in ['mssm','mssmrun2'] and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''
             if options.bbh_nlo_masses: bbh_add_name = '-LO'
             GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
@@ -3365,9 +3410,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
-        if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
+        if options.analysis in ['mssm','mssmrun2'] and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
-        if options.analysis == 'mssm' and options.doMSSMReWeighting:
+        if options.analysis in ['mssm','mssmrun2'] and options.doMSSMReWeighting:
           GenerateReWeightedMSSMSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss) 
           
     if options.syst_embedding_tt and options.embedding and systematic == 'default':
@@ -3449,7 +3494,7 @@ def NormSignals(outfile,add_name):
                         sm_hist = outfile.Get(nodename+'/'+samp_name+mass+add_name)
                         sm_hist.Scale(sf)
                         sm_hist.Write("",ROOT.TObject.kOverwrite)
-        if options.analysis == "mssm":
+        if options.analysis in ['mssm','mssmrun2']:
             for samp in mssm_samples:
                 if samp == 'ggH':
                     masses = ggh_masses
@@ -3604,7 +3649,7 @@ while len(systematics) > 0:
       
       if options.analysis in ['sm','cpprod','cpdecay']:
           signal_samples = sm_samples
-      elif options.analysis == 'mssm':
+      elif options.analysis in ['mssm','mssmrun2']:
           signal_samples = mssm_samples
           if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
           if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
@@ -3634,7 +3679,7 @@ while len(systematics) > 0:
                     #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
                     #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
                     ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
-      if options.add_sm_background and options.analysis == 'mssm':
+      if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
           for samp in sm_samples:
               sample_name = sm_samples[samp].replace('*',options.add_sm_background)
               ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
@@ -3997,7 +4042,7 @@ if not options.no_plot:
 #norm signal yields on datacards to 1pb AFTER plotting    
 outfile =  ROOT.TFile(output_name, 'UPDATE')
 for add_name in add_names: 
-    if options.analysis == 'mssm':
+    if options.analysis in ['mssm','mssmrun2']:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
