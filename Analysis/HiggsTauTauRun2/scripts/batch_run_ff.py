@@ -10,10 +10,12 @@ from subprocess import Popen, PIPE
 parser = OptionParser()
 parser.add_option("--year", dest="year", type='string', default='all',help="years to run fake factors for")
 parser.add_option("--channel", dest="channel", type='string', default='all',help="channels to run fake factors for")
+parser.add_option("--dry_run", dest="dry_run", type='string', default='all',help="will only create only job and will not run")
 (options, args) = parser.parse_args()
 
 year = options.year
 channel = options.channel
+dry_run = options.dry_run
 
 #cmssw_base = "/vols/cms/gu18/AnalyserCMSSW/CMSSW_8_0_25"
 cmssw_base = "/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19"
@@ -74,7 +76,8 @@ for ch in channel_list:
     if os.path.exists(error_file): os.system('rm %(error_file)s' % vars())
     if os.path.exists(output_file): os.system('rm %(output_file)s' % vars())
     
-    os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
+    if not dry_run:
+      os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
 
 
 

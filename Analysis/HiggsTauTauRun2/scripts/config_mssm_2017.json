@@ -60,7 +60,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v3/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v4/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2017_svfit_output/",

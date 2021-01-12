@@ -192,9 +192,7 @@ namespace ic {
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f_mssm.Close();
-      std::cout << mssm_file_ << std::endl;
       for(auto s : systs_mssm_) {
-        std::cout << s << std::endl;
         fns_["ff_total"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_mssm_->function(("ff_total"+s).c_str())->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso,mt_tot")));
       }
@@ -204,6 +202,12 @@ namespace ic {
             ff_ws_mssm_->function("ff_lt_wjets")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
       fns_["ff_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_mssm_->function("ff_lt_ttbar")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["wjets_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_wjets_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["qcd_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_qcd_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["ttbar_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_ttbar_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot"))); 
       return 0;
     }
 
@@ -314,6 +318,12 @@ namespace ic {
             ff_ws_mssm_->function("ff_lt_wjets")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
       fns_["ff_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_mssm_->function("ff_lt_ttbar")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["wjets_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_wjets_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["qcd_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_qcd_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["ttbar_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_ttbar_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot"))); 
       return 0;
 
     }
@@ -888,6 +898,14 @@ namespace ic {
           event->Add("wt_ff_mssm_wjets_1",  ff_nom);
           ff_nom = fns_["ff_ttbar"]->eval(args_mssm.data());
           event->Add("wt_ff_mssm_ttbar_1",  ff_nom);
+
+          auto args_mssm_frac = std::vector<double>{n_deepbjets_, os, mt_1_, mt_tot_};
+          double ff_frac_wjets = fns_["wjets_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_wjets",  ff_frac_wjets);
+          double ff_frac_qcd = fns_["qcd_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_qcd",  ff_frac_qcd);
+          double ff_frac_ttbar = fns_["ttbar_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_ttbar",  ff_frac_ttbar);
 
 
           if(do_systematics_) {
