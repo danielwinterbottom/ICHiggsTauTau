@@ -38,7 +38,7 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2018_v5/' 
+    input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2018_jan06/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -691,6 +691,77 @@ def DrawTitle(pad, text, align, textOffset=0.2,textSize=0.6,x=0,y=0):
         latex.DrawLatex(x,y,text)
     pad_backup.cd()
 
+def PlotDistributionComparison(var,x_label,dist_1,dist_1_name,dist_2,dist_2_name,output_folder,save_name):
+  # ratio is dist_1/dist_2
+  bins = array('f', map(float,var.split('[')[1].split(']')[0].split(',')))
+  var = var.split('[')[0]
+
+  dist_2_ratio = dist_2.Clone()
+  dist_2_ratio.Divide(dist_2)
+
+  dist_1_ratio = dist_1.Clone()
+  dist_1_ratio.Divide(dist_2)
+
+  c = ROOT.TCanvas('c','c',1400,700)
+
+  pad1 = ROOT.TPad("pad1","pad1",0,0.3,1,1)
+  pad1.SetBottomMargin(0.03)
+  if 'mt_tot' in var or 'm_vis' in var:
+    pad1.SetLogx()
+  pad1.Draw()
+  pad1.cd()
+
+  dist_2.Draw("BAR")
+  dist_2.SetStats(0)
+  dist_2.SetFillColor(38)
+  dist_2.GetXaxis().SetTitle(x_label)
+  dist_2.GetYaxis().SetTitle('Events')
+  dist_2.GetYaxis().SetTitleOffset(0.8)
+  dist_2.GetYaxis().SetTitleSize(0.04)
+  dist_2.GetXaxis().SetLabelSize(0)
+
+  dist_1.Draw("E SAME")
+  dist_1.SetMarkerColor(1)
+  dist_1.SetLineColor(1)
+  dist_1.SetMarkerStyle(19)
+
+  l = ROOT.TLegend(0.65,0.75,0.9,0.9);
+  l.AddEntry(dist_1,dist_1_name,"lep")
+  l.AddEntry(dist_2,dist_2_name,"f");
+  l.Draw()
+
+  c.cd()
+  pad2 = ROOT.TPad("pad2","pad2",0,0,1,0.28)
+  pad2.SetTopMargin(0)
+  pad2.SetBottomMargin(0.2)
+  if 'mt_tot' in var or 'm_vis' in var:
+    pad2.SetLogx()
+  pad2.Draw()
+  pad2.cd()
+
+  dist_2_ratio.SetFillColor(16)
+  dist_2_ratio.Draw("E3")
+  dist_2_ratio.SetAxisRange(0.6,1.4,'Y')
+  dist_2_ratio.SetStats(0)
+  dist_2_ratio.GetXaxis().SetLabelSize(0.08)
+  dist_2_ratio.GetYaxis().SetLabelSize(0.08)
+  dist_2_ratio.GetXaxis().SetTitle(x_label)
+  dist_2_ratio.GetYaxis().SetTitle("Obs/Pred")
+  dist_2_ratio.GetYaxis().SetTitleSize(0.1)
+  dist_2_ratio.GetYaxis().SetTitleOffset(0.2)
+  dist_2_ratio.GetXaxis().SetTitleSize(0.1)
+  dist_2_ratio.GetXaxis().SetTitleOffset(0.9)
+
+  dist_1_ratio.Draw("E SAME")
+  dist_1_ratio.SetMarkerColor(1)
+  dist_1_ratio.SetLineColor(1)
+  dist_1_ratio.SetMarkerStyle(19)
+
+  c.Update()
+  name = '%(output_folder)s/%(var)s_%(save_name)s_dist.pdf' % vars()
+  c.Print(name)
+  c.Close()
+
 
 #def PlotFakeFactorCorrection(f, h, name, output_folder, wp,x_title='E_{T}^{miss} (GeV)'):
 #  c1 = ROOT.TCanvas()
@@ -1016,6 +1087,33 @@ for nbjet in ['0','1']:
 tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'))
 tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'), str(fout.Get('os_closure_nbjet1_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(dR,4.5),0.5)'))
 
+print "fake_factor_wt_string_1 = \"" + tau1_string + "\""
+# Adding additional closure correction
+#var_alt = 'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]'
+#for nbjet in ['0','1']:
+#  cut = ''
+#  if nbjet =='0': cut = 'n_deepbjets==0'
+#  if nbjet =='1': cut = 'n_deepbjets>0'
+#
+#  qcd_os_data_aiso2 = DrawHists(var_alt, '('+baseline_aiso2_iso+')*('+cut+')', 'os_closure_nbjet%(nbjet)s_corr2' % vars(),input_folder,file_ext,doOS=True)
+#  qcd_os_pred_aiso2 = DrawHists(var_alt, '('+baseline_aiso2_aiso1+')*('+cut+')', 'os_closure_nbjet%(nbjet)s_aiso2_corr2_pred' % vars(),input_folder,file_ext,doOS=True,add_wt=tau1_aiso_string)
+#  fout.cd()
+#  qcd_os_data_aiso2.Divide(qcd_os_pred_aiso2)
+#
+#  polfit = 'pol3'
+#
+#  fout.cd()
+#  qcd_os_data_aiso2_fit, qcd_os_data_aiso2_uncert =  FitCorrection(qcd_os_data_aiso2, func=polfit)
+#
+#  qcd_os_data_aiso2.Write()
+#  qcd_os_data_aiso2_fit.Write()
+#  qcd_os_data_aiso2_uncert.Write()
+#  PlotFakeFactorCorrection(qcd_os_data_aiso2, qcd_os_data_aiso2_uncert, qcd_os_data_aiso2.GetName(), output_folder, wp, year, 0, 800, x_title='m_{vis} (GeV)',logx=True)
+#
+#tau1_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_corr2_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(mt_tot,800.),20.)'), str(fout.Get('os_closure_nbjet1_corr2_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(mt_tot,800.),20.)'))
+#tau1_aiso_string+='*((n_deepbjets==0)*(%s) + (n_deepbjets>0)*(%s))' % (str(fout.Get('os_closure_nbjet0_corr2_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(mt_tot,800.),20.)'), str(fout.Get('os_closure_nbjet1_corr2_qcd_fit' % vars()).GetExpFormula('p')).replace('x','max(min(mt_tot,800.),20.)'))
+
+#print "fake_factor_wt_string_1 = \"" + tau1_string + "\""
 
 # Make Fractions
 

@@ -48,7 +48,7 @@ jetpt_bins = {
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2018_v5/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2018_jan06/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -608,13 +608,16 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   if doTT:
     # draw ttbar when tau candidate is a jet fake 
     for i in ttbar_files:
+      print i
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
       h = hout.Clone()
       h.SetName('h')
       t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(os==1)*(mt_1<70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
       h = t.GetHistogram()
+      h.Print("all")
       scale = lumi*params[i]['xs']/params[i]['evt']
+      print scale
       h.Scale(scale)
       ttbar.Add(h)
 

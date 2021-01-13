@@ -59,15 +59,17 @@ def SetAxisTitles(plot, channel):
   #    bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
-  titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
-  titles['iso_2'] = ['iso_{'+lep2_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep2_label+'}']
+  titles['iso_1'] = ['I^{'+lep1_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep1_label+'}_{rel}']
+  titles['iso_2'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
   titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
-  titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
-  titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
+  titles['mt_tot'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)']
+  titles['mt_1'] = ['m_{T}(p_{T}^{'+lep1_label+'},p_{T}^{miss}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep1_label+'},p_{T}^{miss}) (1/GeV)']
+  titles['mt_2'] = ['m_{T}(p_{T}^{'+lep2_label+'},p_{T}^{miss}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep2_label+'},p_{T}^{miss}) (1/GeV)']
+  titles['mt_lep'] = ['m_{T}(p_{T}^{'+lep1_label+'},p_{T}^{'+lep2_label+'}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep1_label+'},p_{T}^{'+lep2_label+'}) (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['svfit_mass'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
@@ -75,6 +77,8 @@ def SetAxisTitles(plot, channel):
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
+  titles['n_deepbjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
+  titles['n_prebjets'] = ['N_{pre b-jets}','Events', 'dN/dN_{pre b-jets}']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
   titles['n_btag'] = ['N_{b-tag}^{tight}','Events', 'dN/dN_{b-tag}^{tight}']
   titles['n_loose_btag'] = ['N_{b-tag}^{loose}','Events', 'dN/dN_{b-tag}^{loose}']
@@ -2139,6 +2143,8 @@ def HTTPlot(nodename,
             cat="",
             split_taus=False,
             auto_blind=True,
+            discrete_x_axis=False,
+            discrete_x_labels=None,
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2331,11 +2337,33 @@ def HTTPlot(nodename,
         h = R.TH1F()
         for j,k in enumerate(plots):
             if not (isinstance(infile.Get(nodename+'/'+k),R.TH1D) or isinstance(infile.Get(nodename+'/'+k),R.TH1F)): continue
+
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
+
+        if discrete_x_axis:
+          # get current binning
+          curr_binning = []
+          for r in range(1,h.GetNbinsX()+2):
+            curr_binning.append(h.GetBinLowEdge(r))
+
+          new_binning = []
+          for r in curr_binning:
+            if r == curr_binning[-1]:
+              new_binning.append(r)
+              new_binning.append(2*curr_binning[-1] - curr_binning[-2])
+            else:
+              new_binning.append(r)
+          new_bins = array('f', map(float,new_binning))
+          h_clone = h.Clone()
+          h = R.TH1F(h_clone.GetName(),"",len(new_bins)-1, new_bins)
+          for r in range(1,h.GetNbinsX()+2):
+             h.SetBinContent(r,h_clone.GetBinContent(r))
+             h.SetBinError(r,h_clone.GetBinError(r))
+            
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
@@ -2393,11 +2421,20 @@ def HTTPlot(nodename,
     
             axish[0].GetXaxis().SetTitleSize(0)
             axish[0].GetXaxis().SetLabelSize(0)
+            if(log_x):
+              axish[1].GetXaxis().SetMoreLogLabels()
+              axish[1].GetXaxis().SetNoExponent()
             if custom_x_range:
               axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
               axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
             if custom_y_range:
               axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+            if discrete_x_axis:
+              for i in range(0,len(discrete_x_labels)):
+                discrete_x_labels[i] = discrete_x_labels[i].replace('>=','#geq ')
+                axish[1].GetXaxis().SetBinLabel(i+1,discrete_x_labels[i])
+                axish[1].GetXaxis().SetLabelSize(0.05)
+                axish[1].GetYaxis().SetTitleOffset(1.2)
         elif threePads:
             axish = createAxisHists(3,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
 
@@ -2432,6 +2469,9 @@ def HTTPlot(nodename,
         axish[0].GetXaxis().SetTitle(x_title)
         axish[0].GetXaxis().SetTitleSize(0.04)
         axish[0].GetXaxis().SetLabelSize(0.03)
+        if(log_x):
+              axish[0].GetXaxis().SetMoreLogLabels()
+              axish[0].GetXaxis().SetNoExponent()
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:                                                                
@@ -2587,10 +2627,31 @@ def HTTPlot(nodename,
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
-          
+         
+    if discrete_x_axis:
+      # get current binning
+      curr_binning = []
+      for r in range(1,blind_datahist.GetNbinsX()+2):
+        curr_binning.append(blind_datahist.GetBinLowEdge(r))
+
+      new_binning = []
+      for r in curr_binning:
+        if r == curr_binning[-1]:
+          new_binning.append(r)
+          new_binning.append(2*curr_binning[-1] - curr_binning[-2])
+        else:
+          new_binning.append(r)
+      new_bins = array('f', map(float,new_binning))
+      blind_datahist_clone = blind_datahist.Clone()
+      blind_datahist = R.TH1F(blind_datahist_clone.GetName(),"",len(new_bins)-1, new_bins)
+      for r in range(1,blind_datahist.GetNbinsX()+1):
+         blind_datahist.SetBinContent(r,blind_datahist_clone.GetBinContent(r))
+         blind_datahist.SetBinError(r,blind_datahist_clone.GetBinError(r))
+
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
+
     
     #Setup legend
     legend = PositionedLegend(0.37,0.3,3,0.03) 
@@ -2600,7 +2661,7 @@ def HTTPlot(nodename,
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
-    else: legend.AddEntry(blind_datahist,"Observation","PE")
+    elif not blind: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[scheme].reverse()
