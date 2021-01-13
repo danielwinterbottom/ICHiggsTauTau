@@ -179,6 +179,12 @@ def SetAxisTitles2D(plot, channel):
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events','']
   titles['mva_dm_2'] = ['#tau MVA decay mode','Events', 'Events','']
+  titles['mt_1'] = ['m_{T}^{2} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{2} (1/GeV)','GeV']
+  titles['mt_lep'] = ['m_{T}^{lep} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{lep} (1/GeV)','GeV']
+  titles['dphi'] = ['#Delta#phi(lep1,lep2)','Events / '+bin_width, 'dN/d#Delta#phi','']
+  titles['met_dphi_1'] = ['#Delta#phi(lep1,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
+  titles['met_dphi_2'] = ['#Delta#phi(lep2,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
+
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events','']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events','']
@@ -194,6 +200,7 @@ def SetAxisTitles2D(plot, channel):
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{#tau#tau} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
+  titles['n_deepbjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['aco_angle_mod'] = ['#phi#mbox{*}_{CP}','Events', 'dN/d#phi#mbox{*}_{CP}','']
