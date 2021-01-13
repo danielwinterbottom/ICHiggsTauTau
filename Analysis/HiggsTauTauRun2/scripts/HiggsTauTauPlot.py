@@ -43,7 +43,7 @@ defaults = {
     "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False,
     "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10,
     "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False,
-    "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", 
+    "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Background uncertainty", 
     "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0,
     "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"",
     "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"",
@@ -3389,10 +3389,10 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           ff_total_node = SummedNode('jetFakes'+add_name)
           f1_total_node = SummedNode('data')
           f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot_unmodified, full_selection_1))
-          f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
+          #f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
           f2_total_node = SummedNode('total_bkg')
           f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,sel+'*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
-          f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+          #f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,sel+'*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         if options.channel=='tt':
           #if options.analysis == 'cpprod': full_selection_extra = BuildCutString(wt+'*wt_ff_us_2', sel+'*(gen_match_2==6)', ff_cat_2_data, OSSS, '')
@@ -3630,7 +3630,7 @@ def FixBins(ana,outfile='output.root'):
         if hist.Integral() == 0.0:
             hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
             hist.SetBinError(hist.GetNbinsX()/2, 0.00001)
-            hist.Write()
+            hist.Write(hist.GetName(),ROOT.TObject.kWriteDelete)
         outfile.cd()
 
                                                                                                                                 
@@ -3932,49 +3932,51 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     nodes = ana.nodes[nodename].SubNodes()
     nodenames=[]
     for node in nodes: nodenames.append(node.name)
-    for i in ['TT', 'VV', 'Z']:
-        j = 'T'
-        outname = i+add_name
-        first_hist=True
-        if options.channel == 'em' and i is 'Z':
-            if first_hist and 'ZLL'+add_name in nodenames: 
-                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
-                first_hist=False
-            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            if first_hist and'ZTT'+add_name in nodenames: 
-                sum_hist = ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone()
-                first_hist=False
-            elif 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
-            if not first_hist:
-                sum_hist.SetName(outname)
-                sum_hist.Write()
-        elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
-            if first_hist and 'ZLL'+add_name in nodenames:
-                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
-                first_hist=False
-            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            if not first_hist:
-                sum_hist.SetName(outname)
-                sum_hist.Write()
-        else: 
-            if i is 'Z':
-                outname = 'ZLL'+add_name
-                j = 'L'
-            if i+'J' or i+j in [node.name for node in nodes]:
-                if first_hist and i+'J'+add_name in nodenames: 
-                    sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
-                    first_hist=False
-                elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
-                if first_hist and i+j+add_name in nodenames:
-                    sum_hist = ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone()    
-                    first_hist=False
-                elif i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
-            if not first_hist:    
-                sum_hist.SetName(outname)
-                sum_hist.Write()
+   # for i in ['TT', 'VV', 'Z']:
+   #     j = 'T'
+   #     outname = i+add_name
+   #     first_hist=True
+   #     if options.channel == 'em' and i is 'Z':
+   #         if first_hist and 'ZLL'+add_name in nodenames: 
+   #             sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+   #             first_hist=False
+   #         elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+   #         if first_hist and'ZTT'+add_name in nodenames: 
+   #             sum_hist = ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone()
+   #             first_hist=False
+   #         elif 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
+   #         if not first_hist:
+   #             sum_hist.SetName(outname)
+   #             sum_hist.Write()
+   #     elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
+   #         if first_hist and 'ZLL'+add_name in nodenames:
+   #             sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+   #             first_hist=False
+   #         elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+   #         if not first_hist:
+   #             sum_hist.SetName(outname)
+   #             sum_hist.Write()
+   #     else: 
+   #         if i is 'Z':
+   #             outname = 'ZLL'+add_name
+   #             j = 'L'
+   #         if i+'J' or i+j in [node.name for node in nodes]:
+   #             if first_hist and i+'J'+add_name in nodenames: 
+   #                 sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
+   #                 first_hist=False
+   #             elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
+   #             if first_hist and i+j+add_name in nodenames:
+   #                 sum_hist = ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone()    
+   #                 first_hist=False
+   #             elif i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
+   #         if not first_hist:    
+   #             sum_hist.SetName(outname)
+   #             sum_hist.Write()
     first_hist=True
     for node in nodes:
-        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1 and not node.name.endswith('Up') and not node.name.endswith('Down'):
+            if options.embedding and node.name.startswith('ZTT'): continue
+            if 'embed_syst' in node.name: continue
             if options.method == 18 and 'jetFakes' == node.name: continue
             if options.channel == 'em' and node.name == 'W': continue
             if add_name not in node.name: continue
@@ -4328,6 +4330,38 @@ def RenameEmbedSysts(outfile):
           histo_clone.Write(new_name_2)
           break
 
+def TotalUnc(h0, hists=[]):
+  #sum in quadrature several systematic uncertainties to form total uncertainty band
+  hout = h0.Clone()
+  hup = h0.Clone()
+  hdown = h0.Clone()
+  hout.SetName(h0.GetName()+'_uncerts_total')
+  hup.SetName(h0.GetName()+'_uncerts_total_up')
+  hdown.SetName(h0.GetName()+'_uncerts_total_down')
+  for i in range(1,h0.GetNbinsX()+1):
+    x0 = h0.GetBinContent(i)
+    uncerts_up = [0.]
+    uncerts_down = [0.]
+    for h in hists:
+      x = h.GetBinContent(i)
+      if x>x0: uncerts_up.append(x-x0)
+      if x<x0: uncerts_down.append(x0-x)
+    up = 0.
+    down = 0.
+    for u in uncerts_up: up+=u**2
+    for u in uncerts_down: down+=u**2
+    up = up**.5
+    down = down**.5
+
+    hup.SetBinContent(i,x0+up)
+    hdown.SetBinContent(i,x0-down)
+    c = (x0+up + x0-down)/2
+    u = (up+down)/2
+    hout.SetBinContent(i,c)
+    hout.SetBinError(i,u)
+  return (hout, hup, hdown)
+
+
 # Create output file
 is_2d=False
 is_3d=False
@@ -4360,6 +4394,8 @@ else: nodename = options.channel+'_'+options.cat
 add_names = []
 cats_unmodified = copy.deepcopy(cats)
 
+syst_names = {}
+
 max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
 while len(systematics) > 0:
   ana = Analysis()
@@ -4381,6 +4417,7 @@ while len(systematics) > 0:
 
   prev_dir=None    
   for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
+      syst_names[systematic] = systematics[systematic][1]
       if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
       prev_dir = systematics[systematic][0]
       print "Processing:", systematic
@@ -4513,7 +4550,7 @@ while len(systematics) > 0:
 
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
-if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+#if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if (options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8) or options.era in ["tauid2016"]: NormWFakeSysts(ana,outfile)
 #NormEmbedToMC(ana,outfile) # this is to check embedding sensitivity after scaling embedding to MC yields
 
@@ -4631,6 +4668,99 @@ if is_3d and options.do_unrolling:
         if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
+
+# make systematic uncertainty histograms
+
+custom_uncerts_up_name = options.custom_uncerts_up_name
+custom_uncerts_down_name = options.custom_uncerts_down_name
+#if len(syst_names)>1 and options.do_custom_uncerts:
+if options.do_custom_uncerts:
+
+  custom_uncerts_up_name = 'total_bkg_uncerts_total_up' 
+  custom_uncerts_down_name = 'total_bkg_uncerts_total_down' 
+
+  directory = outfile.Get(nodename)
+  h0 = directory.Get('total_bkg')
+  hists=[]
+
+  for x in syst_names:
+    if x == 'default': continue
+    h=h0.Clone()
+    syst = syst_names[x]
+    #print 'add syst', x, syst, h0.Integral()
+    h.SetName(h0.GetName()+syst)
+    for key in directory.GetListOfKeys():
+      name = key.GetName()
+      histo = directory.Get(name)
+      if not isinstance(histo,ROOT.TDirectory) and name.endswith(syst) and not name.startswith('jetFakes_norm'):
+        #print name.replace(syst,''), name, histo.Integral() 
+        histo_nom = directory.Get(name.replace(syst,''))
+        histo.Add(histo_nom,-1)
+        h.Add(histo)
+    hists.append(h.Clone())
+
+  norm_systs = {}
+  if options.embedding: 
+    norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
+    norm_systs['dy_xs'] = (0.02,['ZL'])
+    norm_systs['lumi'] = (0.025,['TTT','VVT','ZL'])
+  else: 
+    norm_systs['dy_xs'] = (0.02,['ZL','ZTT'])
+    norm_systs['lumi'] = (0.025,['TTT','VVT','ZL','ZTT'])
+  norm_systs['ttbar_xs'] = (0.04,['TTT'])
+  norm_systs['vv_xs'] = (0.05,['VVT'])
+  if options.channel == 'tt':
+    if options.embedding: norm_systs['tau_id'] = (0.06,['EmbedZTT'])
+    else: norm_systs['tau_id'] = (0.06,['ZTT'])
+    norm_systs['wfakes_yield'] = (0.2,['Wfakes'])
+    norm_systs['l_fakerate'] = (0.05,['VVT','ZL','TTT'])
+  if options.channel in ['et','mt']:
+    if options.embedding: 
+      norm_systs['tau_id'] = (0.03,['EmbedZTT'])
+      norm_systs['l_id'] = (0.02,['EmbedZTT','TTT','VVT','ZL'])
+    else: 
+      norm_systs['tau_id'] = (0.02,['ZTT'])
+      norm_systs['l_id'] = (0.02,['ZTT','TTT','VVT','ZL'])
+    norm_systs['l_fakerate'] = (0.2,['ZL'])
+  if options.channel in ['em']:
+    if options.embedding: 
+      norm_systs['m_id'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
+      norm_systs['e_id'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
+      norm_systs['m_trg'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
+      norm_systs['e_trg'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
+    else:
+      norm_systs['m_id'] = (0.02,['ZTT','TT','VV','ZL','W'])
+      norm_systs['e_id'] = (0.02,['ZTT','TT','VV','ZL','W'])
+      norm_systs['m_trg'] = (0.02,['ZTT','TT','VV','ZL','W'])
+      norm_systs['e_trg'] = (0.02,['ZTT','TT','VV','ZL','W'])
+    norm_systs['l_fakerate'] = (0.2,['ZL','W'])
+  
+  for syst in norm_systs:
+  
+    val = norm_systs[syst][0]
+    procs = norm_systs[syst][1]
+    h1 = h0.Clone()
+    h2 = h0.Clone()
+    h1.SetName(h0.GetName()+syst)
+    h2.SetName(h0.GetName()+syst)
+    for p in procs:
+      hup = directory.Get(p).Clone()
+      hnom = directory.Get(p).Clone()
+      hup.Scale(val)
+      #print syst, p, hnom.Integral(), hup.Integral()
+      h1 = h0.Clone()
+      h2 = h0.Clone()
+      h1.Add(hup)
+      h2.Add(hup,-1)
+    hists.append(h1.Clone())
+    hists.append(h2.Clone())
+
+  (uncert, up, down) = TotalUnc(h0, hists)
+  outfile.cd(nodename)
+  uncert.Write()
+  up.Write()
+  down.Write()
+
 outfile.Close()
 
 
@@ -4652,9 +4782,10 @@ plot_file = ROOT.TFile(output_name, 'READ')
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
     custom_uncerts_down_name = "total_bkg_custom_uncerts_down"
-else:
+elif options.custom_uncerts_up_name != '':
     custom_uncerts_up_name = options.custom_uncerts_up_name
     custom_uncerts_down_name = options.custom_uncerts_down_name
+
 
 if not options.no_plot:
     if options.extra_name != '': vname = options.extra_name

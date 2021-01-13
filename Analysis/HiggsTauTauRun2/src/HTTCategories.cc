@@ -13,6 +13,7 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
+
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
         return cos(x)*cos(x)*sm + sin(x)*sin(x)*ps + 2*cos(x)*sin(x)*(mm-sm/2-ps/2);
@@ -20,6 +21,14 @@ double CPWeight(double x, double sm, double ps, double mm ){
 }
 
 namespace ic {
+
+  void HTTCategories::CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
+    double metx = met->vector().px() - shift.px();
+    double mety = met->vector().py() - shift.py();
+    double metet = sqrt(metx*metx + mety*mety);
+    ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+    met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+  }
 
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
       channel_(channel::et), 
@@ -840,6 +849,12 @@ namespace ic {
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &met_.var_double);
+      outtree_->Branch("pf_met",               &pf_met_);
+      outtree_->Branch("pf_met_fix",               &pf_met_fix_);
+      outtree_->Branch("pf_met_and_taus",               &pf_met_and_taus_);
+      outtree_->Branch("pf_met_and_taus_2",               &pf_met_and_taus_2_);
+      outtree_->Branch("met_fix",               &met_fix_);
+      outtree_->Branch("met_noscale",               &met_noscale_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_deepbjets",       &n_deepbjets_);
@@ -962,6 +977,7 @@ namespace ic {
       outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
       outtree_->Branch("fake_met",             &fake_met_);
+      outtree_->Branch("gen_met",             &gen_met_);
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -1096,6 +1112,11 @@ namespace ic {
         outtree_->Branch("wt_ps_isr_down" , &wt_ps_isr_down_ );
         outtree_->Branch("wt_ps_fsr_up" , &wt_ps_fsr_up_ );
         outtree_->Branch("wt_ps_fsr_down" , &wt_ps_fsr_down_ );
+
+        outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
+        outtree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
+        outtree_->Branch("d0_2", &d0_2_.var_float, "d0_2/F");
+        outtree_->Branch("dZ_2", &dz_2_.var_float, "dz_2/F");
 
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
@@ -2067,7 +2088,7 @@ namespace ic {
         wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_up_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc2_down_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_up_1") : 0.0;
-        wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc3_down_1") : 0.0;
+        wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc3_down_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_up_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_down_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_down_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc1_down_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc2_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc2_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_med_unc2_up_1") : 0.0;
@@ -2535,6 +2556,7 @@ namespace ic {
     fake_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep2->vector()));   
  
     event->Exists("fake_met") ? fake_met_ = event->Get<double>("fake_met") : 0.;
+    event->Exists("fake_met") ? gen_met_ = event->Get<double>("gen_met") : 0.;
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
@@ -2599,6 +2621,11 @@ namespace ic {
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
     if (event->Exists("met_phi_norecoil")) uncorrmet_phi_ = event->Get<double>("met_phi_norecoil");
+    if (event->Exists("met_noscale")) met_noscale_ = event->Get<double>("met_noscale");
+    else met_noscale_ = met_.var_double;
+    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+    pf_met_ = pfMet_vec[0]->pt();
+    Met *pf_met = pfMet_vec[0];
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();
@@ -2824,9 +2851,16 @@ namespace ic {
     subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(uncleaned_jets, leading_lepton, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
+
+    ROOT::Math::PxPyPzEVector shift_before; 
+    ROOT::Math::PxPyPzEVector shift_after; 
+
     if(mu_matches.size() > 0) {
         jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
         jet_pt_1_ = (mu_matches.at(0)).first->pt();
+
+        shift_before += (mu_matches.at(0)).first->vector();
+        shift_after += (mu_matches.at(0)).first->vector()*(mu_matches.at(0)).first->uncorrected_energy()/(mu_matches.at(0)).first->energy();
     } else {
       jet_flav_1_ = -9999;
       jet_pt_1_ = -9999;
@@ -2834,6 +2868,10 @@ namespace ic {
     if(tau_matches.size() > 0) {
         jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
         jet_pt_2_ = (tau_matches.at(0)).first->pt();
+
+        shift_before += (tau_matches.at(0)).first->vector();
+        shift_after += (tau_matches.at(0)).first->vector()*(tau_matches.at(0)).first->uncorrected_energy()/(tau_matches.at(0)).first->energy();
+
     } else {
       jet_flav_2_ = -9999;
       jet_pt_2_ = -9999;
@@ -2841,7 +2879,36 @@ namespace ic {
     if(jets.size() > 0) {
         jet_flav_3_ = jets[0]->parton_flavour();
     } else jet_flav_3_ = -9999;
-   
+  
+    ROOT::Math::PxPyPzEVector shift = shift_after - shift_before;
+
+    ROOT::Math::PxPyPzEVector shift_taus = (ROOT::Math::PxPyPzEVector)(lep1->vector() + lep2->vector());
+
+    Met * puppi_met = new Met();
+
+    //std::cout << "!!!!!!!" << std::endl;
+    puppi_met->set_vector(mets->vector());
+    //std::cout << puppi_met->vector().Px() << "  " << puppi_met->vector().Py() << std::endl;
+    //std::cout << shift.Px() << "  " << shift.Py() << std::endl;
+    //std::cout << shift_before.Px() << "  " << shift_before.Py() << std::endl;
+    // undo jec corrections for jets matched to taus
+    
+    Met * pfmet_new = new Met();
+    pfmet_new->set_vector(pf_met->vector());
+    this->CorrectMETForShift(pfmet_new, shift_taus);
+    pf_met_and_taus_ = pfmet_new->pt();    
+
+    this->CorrectMETForShift(pfmet_new, -shift_taus);
+    this->CorrectMETForShift(pfmet_new, -shift_taus);
+    pf_met_and_taus_2_ = pfmet_new->pt();
+
+    this->CorrectMETForShift(puppi_met, shift);
+    this->CorrectMETForShift(pf_met, shift);
+    //std::cout << puppi_met->vector().Px() << "  " << puppi_met->vector().Py() << std::endl;
+    //std::cout << met_.var_double << "  " << mets->pt() << "  " << puppi_met->pt() << std::endl;
+    met_fix_ = puppi_met->pt();
+    pf_met_fix_ = pf_met->pt();
+ 
     //std::cout << pt_1_.var_double << "    " << jet_pt_1_ << "    " << pt_2_.var_double << "    " << jet_pt_2_ << std::endl;
  
     if (n_lowpt_jets_ >= 1) {
