@@ -358,6 +358,7 @@ parser.add_argument("--singletau", dest="singletau", action='store_true',
     help="If set then use singletau baseline (only works for mssmrun2).")
 
 
+
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -392,6 +393,30 @@ print 'do_ff_systs       ='  ,  options.do_ff_systs
 print 'singletau         ='  ,  options.singletau
 print '###############################################'
 print ''
+
+# discrete x labels
+discrete_x_axis = False
+plot_var = options.var
+discrete_x_labels = plot_var.split('[')[1].split(']')[0].split(',')
+for i in discrete_x_labels:
+  if ">=" in i:
+    discrete_x_axis = True
+
+if discrete_x_axis:
+  run_bins = '['
+  for i in range(0,len(discrete_x_labels)):
+    if i < len(discrete_x_labels)-1:
+      run_bins += discrete_x_labels[i] + ','
+    else:
+      if ">=" not in discrete_x_labels[i]:
+        run_bins += discrete_x_labels[i]+']'
+      else:
+        run_bins += discrete_x_labels[i].split("=")[1] + ']'
+  options.var = plot_var.split('[')[0] + run_bins
+else:
+  discrete_x_labels = None 
+      
+  
 
 # vbf_background = False
 vbf_background = options.vbf_background
@@ -598,6 +623,9 @@ cats['nobtag_tightmt'] = '(n_deepbjets==0 && mt_1<40)'
 cats['nobtag_loosemt'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
 cats['btag_tightmt'] = '(n_deepbjets>0 && mt_1<40)'
 cats['btag_loosemt'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
+
+cats['tightmt'] = '(mt_1<40)'
+cats['loosemt'] = '(mt_1>40 && mt_1<70)'
 
 cats['wjets_control'] = '(mt_1>70 && n_deepbjets==0)'
 if options.channel == "tt":
@@ -3160,7 +3188,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
               if options.wp == 'medium':
-                fake_factor_wt_string = "wt_ff_mssm_1"
+                fake_factor_wt_string = "wt_ff_dmbins_1"
               elif options.wp == 'tight':
                 fake_factor_wt_string = "wt_ff_mssm_tight_1"
 
@@ -3285,7 +3313,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             elif options.analysis == 'mssmrun2':
               fake_factor_wt_string_2='0'
               if options.wp == 'medium':
-                fake_factor_wt_string_1 = "wt_ff_mssm_1"
+                fake_factor_wt_string_1 = "wt_ff_dmbins_1"
               elif options.wp == 'tight':
                 fake_factor_wt_string_1 = "wt_ff_mssm_tight_1"
                 #fake_factor_wt_string_1 = '((n_prebjets==0 && jet_pt_1<1.25*pt_1)*((pt_1<200)*(15.4087*TMath::Landau(min(pt_1,199.),-15.7496,4.82075)+0.0870211) + (pt_1>=200)*0.27557) + (n_prebjets==0 && jet_pt_1>=1.25*pt_1&&jet_pt_1<1.5*pt_1)*((pt_1<200)*(-411615*TMath::Landau(min(pt_1,199.),-110.218,-14.0548)+0.084284) + (pt_1>=200)*0.28273) + (n_prebjets==0 &&jet_pt_1>=1.5*pt_1)*(0.0392299) + (n_prebjets>0&&jet_pt_1<1.25*pt_1)*((pt_1<200)*(11.7652*TMath::Landau(min(pt_1,199.),-12.9921,5.06968)+0.077124) + (pt_1>=200)*0.13219) + (n_prebjets>0&&jet_pt_1>=1.25*pt_1&&jet_pt_1<1.5*pt_1)*((pt_1<200)*(144.787*TMath::Landau(min(pt_1,199.),14.249,0.467844)+0.0529324) + (pt_1>=200)*0.07516) + (n_prebjets>0&&jet_pt_1>=1.5*pt_1)*(-51.0159*TMath::Landau(min(pt_1,199.),-142.619,-346.505)+0.0294523))*((n_deepbjets==0)*((0.950911+-0.05705*min(dR,5.)+0.0159116*pow(min(dR,5.),2)+0.00199494*pow(min(dR,5.),3))) + (n_deepbjets>0)*((2.53701+-2.23664*min(dR,5.)+0.87535*pow(min(dR,5.),2)+-0.101159*pow(min(dR,5.),3))))'
@@ -4836,6 +4864,7 @@ if not options.no_plot:
         options.signal_scheme
         )
     elif scheme != 'signal':
+      auto_blind=False
       plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
@@ -4875,7 +4904,10 @@ if not options.no_plot:
         options.split_sm_scheme,
         options.ggh_scheme,
         options.cat,
-        split_taus
+        split_taus,
+        auto_blind,
+        discrete_x_axis,
+        discrete_x_labels
         )
     else:    
       plotting.HTTPlotSignal(nodename, 

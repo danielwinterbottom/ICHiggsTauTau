@@ -10,7 +10,7 @@ from subprocess import Popen, PIPE
 parser = OptionParser()
 parser.add_option("--year", dest="year", type='string', default='all',help="years to run fake factors for")
 parser.add_option("--channel", dest="channel", type='string', default='all',help="channels to run fake factors for")
-parser.add_option("--dry_run", dest="dry_run", type='string', default='all',help="will only create only job and will not run")
+parser.add_option("--dry_run", dest="dry_run", action='store_true',help="will only create only job and will not run")
 (options, args) = parser.parse_args()
 
 year = options.year
@@ -46,6 +46,7 @@ for ch in channel_list:
     if not os.path.isdir('fake_factor_output/%(ch)s/%(yr)s' % vars()):
       os.system("mkdir fake_factor_output/%(ch)s/%(yr)s" % vars())
       os.system("mkdir fake_factor_output/%(ch)s/%(yr)s" % vars())
+
 
 for ch in channel_list:
   for yr in year_list:
