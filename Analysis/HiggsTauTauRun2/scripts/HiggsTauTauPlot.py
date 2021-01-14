@@ -2491,9 +2491,13 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs['ff_mssm_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
     for njet in [0,1]:
-      for jetpt in ['low','med','high']:
+      #for jetpt in ['low','med','high']:
+      for jetpt in ['low','high']: # current trees empty of med syst, problem should be resolved
         for i in [1,2,3]:
-          tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          #tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          if not (jetpt == 'low' and njet == 0 and i == 3): # current trees empty of this, should now be resolved
+            tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+            
 
     for template_name in tt_systs:
       weight_name = tt_systs[template_name]
@@ -3188,7 +3192,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
               if options.wp == 'medium':
-                fake_factor_wt_string = "wt_ff_dmbins_1"
+                fake_factor_wt_string = "wt_ff_mssm_1"
               elif options.wp == 'tight':
                 fake_factor_wt_string = "wt_ff_mssm_tight_1"
 
@@ -3313,7 +3317,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             elif options.analysis == 'mssmrun2':
               fake_factor_wt_string_2='0'
               if options.wp == 'medium':
-                fake_factor_wt_string_1 = "wt_ff_dmbins_1"
+                fake_factor_wt_string_1 = "wt_ff_mssm_1"
               elif options.wp == 'tight':
                 fake_factor_wt_string_1 = "wt_ff_mssm_tight_1"
                 #fake_factor_wt_string_1 = '((n_prebjets==0 && jet_pt_1<1.25*pt_1)*((pt_1<200)*(15.4087*TMath::Landau(min(pt_1,199.),-15.7496,4.82075)+0.0870211) + (pt_1>=200)*0.27557) + (n_prebjets==0 && jet_pt_1>=1.25*pt_1&&jet_pt_1<1.5*pt_1)*((pt_1<200)*(-411615*TMath::Landau(min(pt_1,199.),-110.218,-14.0548)+0.084284) + (pt_1>=200)*0.28273) + (n_prebjets==0 &&jet_pt_1>=1.5*pt_1)*(0.0392299) + (n_prebjets>0&&jet_pt_1<1.25*pt_1)*((pt_1<200)*(11.7652*TMath::Landau(min(pt_1,199.),-12.9921,5.06968)+0.077124) + (pt_1>=200)*0.13219) + (n_prebjets>0&&jet_pt_1>=1.25*pt_1&&jet_pt_1<1.5*pt_1)*((pt_1<200)*(144.787*TMath::Landau(min(pt_1,199.),14.249,0.467844)+0.0529324) + (pt_1>=200)*0.07516) + (n_prebjets>0&&jet_pt_1>=1.5*pt_1)*(-51.0159*TMath::Landau(min(pt_1,199.),-142.619,-346.505)+0.0294523))*((n_deepbjets==0)*((0.950911+-0.05705*min(dR,5.)+0.0159116*pow(min(dR,5.),2)+0.00199494*pow(min(dR,5.),3))) + (n_deepbjets>0)*((2.53701+-2.23664*min(dR,5.)+0.87535*pow(min(dR,5.),2)+-0.101159*pow(min(dR,5.),3))))'
@@ -4338,7 +4342,7 @@ def TotalUnc(h0, hists=[]):
   hout.SetName(h0.GetName()+'_uncerts_total')
   hup.SetName(h0.GetName()+'_uncerts_total_up')
   hdown.SetName(h0.GetName()+'_uncerts_total_down')
-  for i in range(1,h0.GetNbinsX()+1):
+  for i in range(1,h0.GetNbinsX()+2):
     x0 = h0.GetBinContent(i)
     uncerts_up = [0.]
     uncerts_down = [0.]

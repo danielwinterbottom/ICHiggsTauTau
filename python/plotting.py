@@ -74,6 +74,9 @@ def SetAxisTitles(plot, channel):
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['svfit_mass'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)']
+  titles['dphi'] = ['#Delta#phi(lep1,lep2)','Events / '+bin_width, 'dN/d#Delta#phi','']
+  titles['met_dphi_1'] = ['#Delta#phi(lep1,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
+  titles['met_dphi_2'] = ['#Delta#phi(lep2,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
@@ -2370,11 +2373,10 @@ def HTTPlot(nodename,
           for r in range(1,h.GetNbinsX()+2):
              h.SetBinContent(r,h_clone.GetBinContent(r))
              h.SetBinError(r,h_clone.GetBinError(r))
-            
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
-    
+
         if norm_bins:
             h.Scale(1.0,"width")
         if h.GetName() == '': continue     
@@ -2655,6 +2657,7 @@ def HTTPlot(nodename,
          blind_datahist.SetBinContent(r,blind_datahist_clone.GetBinContent(r))
          blind_datahist.SetBinError(r,blind_datahist_clone.GetBinError(r))
 
+
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
@@ -2828,6 +2831,17 @@ def HTTPlot(nodename,
         if do_custom_uncerts:
             # bkg_uncert_up.SetLineColor(R.TColor.GetColor("#1f78b4"))
             # bkg_uncert_down.SetLineColor(R.TColor.GetColor("#ff7f00"))
+          if discrete_x_axis:
+            bkg_uncert_up_clone = bkg_uncert_up.Clone()
+            bkg_uncert_down_clone = bkg_uncert_down.Clone()
+            bkg_uncert_up = R.TH1F(bkg_uncert_up_clone.GetName(),"",len(new_bins)-1, new_bins)
+            bkg_uncert_down = R.TH1F(bkg_uncert_down_clone.GetName(),"",len(new_bins)-1, new_bins)
+            for r in range(1,bkg_uncert_up_clone.GetNbinsX()+2):
+               bkg_uncert_up.SetBinContent(r,bkg_uncert_up_clone.GetBinContent(r))
+               bkg_uncert_up.SetBinError(r,bkg_uncert_up_clone.GetBinError(r))
+               bkg_uncert_down.SetBinContent(r,bkg_uncert_down_clone.GetBinContent(r))
+               bkg_uncert_down.SetBinError(r,bkg_uncert_down_clone.GetBinError(r))
+           
             bkg_uncert_up.SetLineColor(CreateTransparentColor(12,0.4))
             bkg_uncert_down.SetLineColor(CreateTransparentColor(12,0.4))
             bkg_uncert_up.SetLineWidth(0)
