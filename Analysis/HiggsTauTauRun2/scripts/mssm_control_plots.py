@@ -90,6 +90,7 @@ for year in years:
             elif channel in ["tt"]:
               add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
 
+
           if year in ["2016","2017"]:
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
           else: 
