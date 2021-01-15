@@ -2616,6 +2616,19 @@ def HTTPlot(nodename,
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+
+      if discrete_x_axis:
+        bkg_uncert_up_clone = bkg_uncert_up.Clone()
+        bkg_uncert_down_clone = bkg_uncert_down.Clone()
+        bkg_uncert_up = R.TH1F(bkg_uncert_up_clone.GetName(),"",len(new_bins)-1, new_bins)
+        bkg_uncert_down = R.TH1F(bkg_uncert_down_clone.GetName(),"",len(new_bins)-1, new_bins)
+        for r in range(1,bkg_uncert_up_clone.GetNbinsX()+2):
+           bkg_uncert_up.SetBinContent(r,bkg_uncert_up_clone.GetBinContent(r))
+           bkg_uncert_up.SetBinError(r,bkg_uncert_up_clone.GetBinError(r))
+           bkg_uncert_down.SetBinContent(r,bkg_uncert_down_clone.GetBinContent(r))
+           bkg_uncert_down.SetBinError(r,bkg_uncert_down_clone.GetBinError(r))
+
+
       if norm_bins:
         bkg_uncert_up.Scale(1.0,"width")
         bkg_uncert_down.Scale(1.0,"width")
@@ -2656,7 +2669,6 @@ def HTTPlot(nodename,
       for r in range(1,blind_datahist.GetNbinsX()+1):
          blind_datahist.SetBinContent(r,blind_datahist_clone.GetBinContent(r))
          blind_datahist.SetBinError(r,blind_datahist_clone.GetBinError(r))
-
 
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
@@ -2831,25 +2843,25 @@ def HTTPlot(nodename,
         if do_custom_uncerts:
             # bkg_uncert_up.SetLineColor(R.TColor.GetColor("#1f78b4"))
             # bkg_uncert_down.SetLineColor(R.TColor.GetColor("#ff7f00"))
-          if discrete_x_axis:
-            bkg_uncert_up_clone = bkg_uncert_up.Clone()
-            bkg_uncert_down_clone = bkg_uncert_down.Clone()
-            bkg_uncert_up = R.TH1F(bkg_uncert_up_clone.GetName(),"",len(new_bins)-1, new_bins)
-            bkg_uncert_down = R.TH1F(bkg_uncert_down_clone.GetName(),"",len(new_bins)-1, new_bins)
-            for r in range(1,bkg_uncert_up_clone.GetNbinsX()+2):
-               bkg_uncert_up.SetBinContent(r,bkg_uncert_up_clone.GetBinContent(r))
-               bkg_uncert_up.SetBinError(r,bkg_uncert_up_clone.GetBinError(r))
-               bkg_uncert_down.SetBinContent(r,bkg_uncert_down_clone.GetBinContent(r))
-               bkg_uncert_down.SetBinError(r,bkg_uncert_down_clone.GetBinError(r))
+          #if discrete_x_axis:
+          #  bkg_uncert_up_clone = bkg_uncert_up.Clone()
+          #  bkg_uncert_down_clone = bkg_uncert_down.Clone()
+          #  bkg_uncert_up = R.TH1F(bkg_uncert_up_clone.GetName(),"",len(new_bins)-1, new_bins)
+          #  bkg_uncert_down = R.TH1F(bkg_uncert_down_clone.GetName(),"",len(new_bins)-1, new_bins)
+          #  for r in range(1,bkg_uncert_up_clone.GetNbinsX()+2):
+          #     bkg_uncert_up.SetBinContent(r,bkg_uncert_up_clone.GetBinContent(r))
+          #     bkg_uncert_up.SetBinError(r,bkg_uncert_up_clone.GetBinError(r))
+          #     bkg_uncert_down.SetBinContent(r,bkg_uncert_down_clone.GetBinContent(r))
+          #     bkg_uncert_down.SetBinError(r,bkg_uncert_down_clone.GetBinError(r))
            
-            bkg_uncert_up.SetLineColor(CreateTransparentColor(12,0.4))
-            bkg_uncert_down.SetLineColor(CreateTransparentColor(12,0.4))
-            bkg_uncert_up.SetLineWidth(0)
-            bkg_uncert_down.SetLineWidth(0)
-            bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
-            bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
-            bkg_uncert_up.Draw('histsame')
-            bkg_uncert_down.Draw('histsame')
+          bkg_uncert_up.SetLineColor(CreateTransparentColor(12,0.4))
+          bkg_uncert_down.SetLineColor(CreateTransparentColor(12,0.4))
+          bkg_uncert_up.SetLineWidth(0)
+          bkg_uncert_down.SetLineWidth(0)
+          bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
+          bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
+          bkg_uncert_up.Draw('histsame')
+          bkg_uncert_down.Draw('histsame')
 
         pads[1].RedrawAxis("G")
 

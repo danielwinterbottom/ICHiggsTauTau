@@ -2516,7 +2516,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
 
     for i in [1,2]:
       lt_systs['ff_mssm_%(ch)s_qcd_stat_os_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
+      #lt_systs['ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars() #broken in current trees
       lt_systs['ff_mssm_%(ch)s_qcd_stat_iso_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
       lt_systs['ff_mssm_%(ch)s_wjets_stat_extrap_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
       lt_systs['ff_mssm_%(ch)s_ttbar_stat_met_unc%(i)i' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
@@ -2535,7 +2535,9 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
-          lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          #lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          if not (jetpt == 'low' and njet == 0 and i == 3): # current trees empty of this, should now be resolved
+            lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
         for i in [1,2,3,4]:
           lt_systs[('ff_mssm_%(ch)s_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
         for i in [1,2,3]:
@@ -3641,7 +3643,7 @@ def FixBins(ana,outfile='output.root'):
 def NormFFSysts(ana,outfile='output.root'):
     nominal_hist = outfile.Get(nodename+'/jetFakes')
     if isinstance(nominal_hist,ROOT.TH2): nominal_scale = nominal_hist.Integral(-1,-1,-1,-1)
-    else: nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+    else: nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+2)
     directory = outfile.Get(nodename)
     outfile.cd(nodename)
     hists_to_add=[]
@@ -3652,7 +3654,7 @@ def NormFFSysts(ana,outfile='output.root'):
            if 'jetFakes' not in hist_name: continue
            if hist_name == 'jetFakes': continue
            if isinstance(hist,ROOT.TH2): norm = nominal_scale/hist.Integral(-1,-1,-1,-1)
-           else: norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
+           else: norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+2)
            hist.Scale(norm)
            norm_hist_name = hist_name
            norm_hist_name = norm_hist_name.replace('jetFakes','jetFakes_norm')
@@ -3884,7 +3886,7 @@ def ScaleUncertBand(nodename='',outfile='output.root',NormScales=True):
     down_hist = nom_hist.Clone()
     up_hist.SetName('ScaleUp')
     down_hist.SetName('ScaleDown')
-    for i in range (1,nom_hist.GetNbinsX()+1):
+    for i in range (1,nom_hist.GetNbinsX()+2):
         for hist in hists:
           max_content = up_hist.GetBinContent(i)
           min_content = down_hist.GetBinContent(i)
@@ -3905,7 +3907,7 @@ def DYUncertBand(outfile='output.root',ScaleToData=True):
     up_hist.SetName('total_bkg_up')
     down_hist.SetName('total_bkg_down')
     shifts=['_ES', '_TT', '_Stat0', '_Stat40', '_Stat80']
-    for i in range(1,nominal_hist.GetNbinsX()+1):
+    for i in range(1,nominal_hist.GetNbinsX()+2):
       nom_content = nominal_hist.GetBinContent(i)
       bkg_content = bkg_hist.GetBinContent(i)
       uncert=0
@@ -4009,11 +4011,11 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
 def CompareShapes(compare_w_shapes, compare_qcd_shapes):
     if compare_w_shapes:
       nominal_hist = outfile.Get(nodename+'/W')
-      nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+      nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+2)
       directory = outfile.Get(nodename)
       outfile.cd(nodename)
       shape_hist = outfile.Get(nodename+'/W_shape')
-      shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
+      shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+2)
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
     if compare_qcd_shapes:

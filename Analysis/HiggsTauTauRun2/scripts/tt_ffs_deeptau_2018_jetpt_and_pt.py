@@ -101,7 +101,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2017_v5/'
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v4/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -130,7 +130,7 @@ if year == '2016':
   lumi=35920.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2016_v5/'
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016_v4/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 

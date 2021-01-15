@@ -32,8 +32,8 @@ file_ext = '_%(channel)s_%(year)s.root' % vars()
 # binning for fake factor determination
 njets_bins = {
               'inclusive':'(1)',
-#              '0jet':'(n_prebjets==0)',
-#              '1jet':'(n_prebjets>0)',
+              '0jet':'(n_prebjets==0)',
+              '1jet':'(n_prebjets>0)',
 }
 
 jetpt_bins = {
@@ -119,7 +119,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2017_v5/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2017_v4/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -199,7 +199,7 @@ elif year == "2017":
 elif year == "2016":
   lumi = 35920.
   params_file = 'scripts/params_mssm_2016.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/trg_check_2016_v5/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2016_v4/'
 
   if channel == "mt":
     crosstrg_pt = 23
@@ -509,6 +509,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     # draw all backgrounds to be subtracted from data for QCD estimation
     # only subtract non j->tau fake component
     for i in other_files+wjets_files+ttbar_files:
+      print i
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
       h = hout.Clone()
@@ -615,9 +616,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h.SetName('h')
       t.Draw('%(var)s>>h' % vars(),'wt*((%(cuts)s))*(os==1)*(mt_1<70)*(%(gen_extra)s)*(%(add_wt)s)' % vars(),'goff')
       h = t.GetHistogram()
-      h.Print("all")
       scale = lumi*params[i]['xs']/params[i]['evt']
-      print scale
       h.Scale(scale)
       ttbar.Add(h)
 

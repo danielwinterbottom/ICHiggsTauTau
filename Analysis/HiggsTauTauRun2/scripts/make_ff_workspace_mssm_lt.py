@@ -359,12 +359,15 @@ l_pt_low_uncert = hist_l_pt.GetBinError(1)
 l_pt_high_uncert = hist_l_pt.GetBinError(2)
 
 w.factory('expr::lt_qcd_ss_correction("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*%(l_pt_low).5f + (@3>=%(crosstrg_pt)s)*%(l_pt_high).5f)*@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction )' % vars())
+
 w.factory('expr::lt_qcd_os_correction("(@0==0)*@1 + (@0>0)*@2", nbjets[0], lt_qcd_os_nbjets0_correction, lt_qcd_os_nbjets1_correction)' % vars())
 
-w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f+%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
-w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f-%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
-w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f+%(l_pt_high_uncert).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
-w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f-%(l_pt_high_uncert).5f))/@4",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_qcd_ss_correction)' % vars())
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f+%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))*@4/@5",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction, lt_qcd_ss_correction)' % vars())
+
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert1_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f-%(l_pt_low_uncert).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f))*@4/@5",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction, lt_qcd_ss_correction)' % vars())
+
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_up("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f+%(l_pt_high_uncert).5f))*@4/@5",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction, lt_qcd_ss_correction)' % vars())
+w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f-%(l_pt_high_uncert).5f))*@4/@5",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction, lt_qcd_ss_correction)' % vars())
 
 
 for i in [1,2]:
@@ -412,8 +415,8 @@ for i in [1,2]:
   w.factory('expr::ff_lt_qcd_stat_os_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_qcd_os_correction_uncert%(i)i_down)' % vars())
   qcd_systs.append('qcd_stat_os_unc%(i)i' % vars())
 
-  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_up("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert1_up)' % vars())
-  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert1_down)' % vars())
+  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_up("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert%(i)i_up)' % vars())
+  w.factory('expr::ff_lt_qcd_stat_l_pt_unc%(i)i_down("@0*@1", ff_lt_qcd, lt_qcd_ss_correction_l_pt_uncert%(i)i_down)' % vars())
   qcd_systs.append('qcd_stat_l_pt_unc%(i)i' % vars())
 
   w.factory('expr::ff_lt_qcd_stat_iso_unc%(i)i_up("@0*@1", ff_lt_qcd, lt_iso_correction_uncert%(i)i_up)' % vars())
