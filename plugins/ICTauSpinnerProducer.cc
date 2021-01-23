@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -31,9 +32,13 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   CMSENE=13000.0;
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
+  outFile.open("weights.csv");
 }
 
-ICTauSpinnerProducer::~ICTauSpinnerProducer() {}
+ICTauSpinnerProducer::~ICTauSpinnerProducer()
+{
+	outFile.close();
+}
 
 std::vector<std::pair<std::string,double>> ICTauSpinnerProducer::SplitString(std::string instring){
   std::vector<std::pair<std::string,double>> out;
@@ -108,6 +113,11 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
     if(daughter_pdgid == 22 || daughter_pdgid == 111 || daughter_pdgid == 211 || daughter_pdgid == 321 || daughter_pdgid == 130 || daughter_pdgid == 310 || daughter_pdgid == 11 || daughter_pdgid == 12 || daughter_pdgid == 13 || daughter_pdgid == 14 || daughter_pdgid == 16){
       if(daughter_pdgid == 11) type = 1;
       if(daughter_pdgid == 13) type = 2;
+      //neutrino smearing
+      if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
+      reco::Particle::PolarLorentzVector p(daughter.energy(), daughter.eta(), daughter.phi(), daughter.pt());
+      daughter.setP4(p);
+      } 
       tau_daughters.push_back(daughter);
     }
     else getTauDaughters(tau_daughters, type, daughter, parts_handle);
@@ -236,8 +246,9 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     Tauolapp::Tauola::setNewCurrents(1);
     double weight_2_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
     info_->set_weight(weight_name_+"_alt",weight_2_,false);
-
+    outFile << weight_ << "," << weight_2_ << ",";
   }
+  outFile << std::endl;
 
 }
 
