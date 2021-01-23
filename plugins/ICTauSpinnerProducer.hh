@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <TFile.h>
+#include <TTree.h>
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -16,6 +18,7 @@
 #include "TauSpinner/SimpleParticle.h"
 #include "TauSpinner/tau_reweight_lib.h"
 #include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
+
 
 
 enum pdgId {
@@ -72,6 +75,9 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   
   std::ofstream outFile;
   TFile *rootFile;
+  TTree *outTree;
+  double *weight1Array;
+  double *weight2Array;
 };
 
 #endif
