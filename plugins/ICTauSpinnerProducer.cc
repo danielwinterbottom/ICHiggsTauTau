@@ -20,7 +20,8 @@
 ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
-      theta_(config.getParameter<std::string>("theta")){
+      theta_(config.getParameter<std::string>("theta"))
+{
   consumes<edm::View<reco::GenParticle>>(input_);
 
   PrintHeaderWithProduces(config, input_, branch_);
@@ -33,6 +34,7 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
   outFile.open("weights.csv");
+  rootFile = new TFile("smearingEffects.root", "RECREATE");
 }
 
 ICTauSpinnerProducer::~ICTauSpinnerProducer()

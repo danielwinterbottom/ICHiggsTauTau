@@ -71,6 +71,7 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   double CMSENE;
   
   std::ofstream outFile;
+  TFile *rootFile;
 };
 
 #endif
