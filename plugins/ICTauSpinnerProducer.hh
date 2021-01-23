@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <fstream>
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -68,6 +69,8 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   int nonSM2;
   int nonSMN;
   double CMSENE;
+  
+  std::ofstream outFile;
 };
 
 #endif
