@@ -78,6 +78,9 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   TTree *outTree;
   double *weight1Array;
   double *weight2Array;
+  double smearingArray[6];
+  double tau1DaughtersArray[10][5];
+  double tau2DaughtersArray[10][5];
 };
 
 #endif
