@@ -39,7 +39,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("EventTree.root"),
+    fileName = cms.string("EventTree22.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 

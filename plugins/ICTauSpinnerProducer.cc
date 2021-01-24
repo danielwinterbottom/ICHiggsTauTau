@@ -117,10 +117,11 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
       //neutrino smearing
       //if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
       
-      reco::Particle::LorentzVector pppp(1.0, 2.0, 3.0, 4.0);
+      reco::Particle::PolarLorentzVector pppp(100.0, 200.0, 300.0, 400.0);
       std::cout << "Old pt:" << daughter.pt() << '\n';
       daughter.setP4(pppp);
-      std::cout << "New pt:" << daughter.pt() << '\n';
+      std::cout << "New mass:" << daughter.mass() << '\n';
+      std::cout << "New energy:" << daughter.p() << '\n';
       tau_daughters.push_back(daughter);
     }
     else getTauDaughters(tau_daughters, type, daughter, parts_handle);
