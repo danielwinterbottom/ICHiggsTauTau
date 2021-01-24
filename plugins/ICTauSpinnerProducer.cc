@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "Tauola/Tauola.h"
-
+#include <TRandom3.h>
 
 ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -119,10 +119,13 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
       if(daughter_pdgid == 11) type = 1;
       if(daughter_pdgid == 13) type = 2;
       //neutrino smearing
-      if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
-      reco::Particle::PolarLorentzVector p(daughter.energy(), daughter.eta(), daughter.phi(), daughter.pt());
-      daughter.setP4(p);
-      } 
+      //if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
+      
+      //reco::Particle::PolarLorentzVector pppp(100.0, 200.0, 0.5, 400.0);
+      //std::cout << "Old pt:" << daughter.pt() << '\n';
+      //daughter.setP4(pppp);
+      //std::cout << "New mass:" << daughter.mass() << '\n';
+      //std::cout << "New phi:" << daughter.phi() << '\n';
       tau_daughters.push_back(daughter);
     }
     else getTauDaughters(tau_daughters, type, daughter, parts_handle);
@@ -130,7 +133,7 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
 }
 
 void ICTauSpinnerProducer::removeGammas(std::vector<TauSpinner::SimpleParticle> &tau_daughters){
-  for(int i=tau_daughters.size()-1; i>=0; --i){
+    for(int i=tau_daughters.size()-1; i>=0; --i){
     int pdgid = fabs(tau_daughters[i].pdgid());
     if(pdgid == 22) {
       tau_daughters.erase(tau_daughters.begin()+i);
@@ -213,12 +216,43 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
   std::vector<TauSpinner::SimpleParticle> simple_tau2_daughters;
   
-  for(unsigned i=0; i<tau1_daughters.size(); ++i)
+  
+  TRandom3 rndm;
+  for(unsigned i=0; i<tau1_daughters.size(); ++i){
+// SMearing nautrinos:
+    int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
+    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12)
+    {
+      double smearing_nu1_pt = rndm.Gaus(1.,0.1);
+      double smearing_nu1_eta = rndm.Gaus(1., 0.1);
+      double smearing_nu1_phi = rndm.Gaus(1., 0.1);
+      smearingArray[0] = smearing_nu1_pt;
+      smearingArray[1] = smearing_nu1_eta;
+      smearingArray[2] = smearing_nu1_phi;
+      std::cout << "Random value:" << smearing_nu1_pt << " pt1 " << smearing_nu1_eta<< " eta1 " << smearing_nu1_phi << " phi1 " << '\n';
+      reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
+      tau1_daughters[i].setP4(smeared_nu1_4vector);
+    }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
+    // ideal scenario: have the phi, eta, pt and mass of all the tau1_daughters saved as well as the 3 smearing params. 
+  }
   
-  for(unsigned i=0; i<tau2_daughters.size(); ++i)
-  
+  for(unsigned i=0; i<tau2_daughters.size(); ++i) {
+    int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
+    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 12)
+    {
+      double smearing_nu2_pt = rndm.Gaus(1.,0.1);
+      double smearing_nu2_eta = rndm.Gaus(1., 0.1);
+      double smearing_nu2_phi = rndm.Gaus(1., 0.1);
+      smearingArray[3] = smearing_nu2_pt;
+      smearingArray[4] = smearing_nu2_eta;
+      smearingArray[5] = smearing_nu2_phi;
+      std::cout << "Random value:" << smearing_nu2_pt << " pt2 " << smearing_nu2_eta<< " eta2 " << smearing_nu2_phi << " phi2 " << '\n';
+      reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
+      tau2_daughters[i].setP4(smeared_nu2_4vector);
+    }
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
+	}
 
 	TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
 
@@ -266,6 +300,9 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
 
 void ICTauSpinnerProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &info_);
+  theta_vec_ = SplitString(theta_);  
+  initialize();
+  std::cout << "Hello World" << '\n';  
   theta_vec_ = SplitString(theta_);
   // Create arrays to store values for each event
   weight1Array = new double[theta_vec_.size()];
@@ -299,7 +336,7 @@ void ICTauSpinnerProducer::beginJob() {
   }
   std::cout << "Branches registered." << std::endl;
   
-  initialize();  
+  initialize();
 }
 
 void ICTauSpinnerProducer::endJob()

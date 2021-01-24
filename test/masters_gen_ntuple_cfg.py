@@ -39,7 +39,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("EventTree.root"),
+    fileName = cms.string("EventTree22.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -47,10 +47,10 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(10000)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 50
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 
 ################################################################
@@ -187,6 +187,7 @@ process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
 )
 
 if opts.tauSpinner:
+    print('\nUsing Tauspinner\n')
     process.icTauSpinnerSequence = cms.Sequence(
         process.icTauSpinnerProducer
     )
