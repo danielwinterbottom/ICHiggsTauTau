@@ -210,6 +210,9 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   getTauDaughters(tau1_daughters,type1,taus[0],parts_handle);  
   getTauDaughters(tau2_daughters,type2,taus[1],parts_handle); 
   
+  //Check: can we get the parents tau eta and phi components ? That would help to give the 'default neutrino values'
+  std::cout << "\nThe pt of the mother of the first tau decay product: " << tau1_daughters[0].mother()->pt() << '\n';  
+ 
   TauSpinner::SimpleParticle simple_boson = ConvertToSimplePart(boson);
   TauSpinner::SimpleParticle simple_tau1 = ConvertToSimplePart(taus[0]);
   TauSpinner::SimpleParticle simple_tau2 = ConvertToSimplePart(taus[1]);
@@ -222,12 +225,17 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
 // SMearing nautrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
     if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12){
-      double smearing_nu1_pt = rndm.Gaus(1.,0.1);
-      double smearing_nu1_eta = rndm.Gaus(1., 0.1);
-      double smearing_nu1_phi = rndm.Gaus(1., 0.1);
-      std::cout << "Random value:" << smearing_nu1_pt << " pt1 " << smearing_nu1_eta<< " eta1 " << smearing_nu1_phi << " phi1 " << '\n';
-      reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
-      tau1_daughters[i].setP4(smeared_nu1_4vector);
+      //Typical smearing observed from reconstructing the neutrinos with NN method
+      //double smearing_nu1_pt = rndm.Gaus(1.65, 32.56);
+      //double smearing_nu1_eta = rndm.Gaus(-0.01, 0.09);
+      //double smearing_nu1_phi = rndm.Gaus(0.09, 0.96);
+      //reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
+      //tau1_daughters[i].setP4(smeared_nu1_4vector);
+      
+      //Generic/best guess value
+      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, tau1_daughters[i].mother()->eta(), tau1_daughters[i].mother()->phi(), 0);
+      tau1_daughters[i].setP4(generic_nu1_4vector);
+
     }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
     // ideal scenario: have the phi, eta, pt and mass of all the tau1_daughters saved as well as the 3 smearing params. 
@@ -236,15 +244,22 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   for(unsigned i=0; i<tau2_daughters.size(); ++i) {
     int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
     if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 12){
-      double smearing_nu2_pt = rndm.Gaus(1.,0.1);
-      double smearing_nu2_eta = rndm.Gaus(1., 0.1);
-      double smearing_nu2_phi = rndm.Gaus(1., 0.1);
-      std::cout << "Random value:" << smearing_nu2_pt << " pt2 " << smearing_nu2_eta<< " eta2 " << smearing_nu2_phi << " phi2 " << '\n';
-      reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
-      tau2_daughters[i].setP4(smeared_nu2_4vector);
+      //Typical smearing observed from reconstructing the neutrinos with NN method
+      //double smearing_nu2_pt = rndm.Gaus(1.20, 29.41);
+      //double smearing_nu2_eta = rndm.Gaus(0.12, 5.01);
+      //double smearing_nu2_phi = rndm.Gaus(0.03, 0.74);
+      //double smearing_nu2_pt = rndm.Gaus(0., 0.);
+      //double smearing_nu2_eta = rndm.Gaus(0., 0.);
+      //double smearing_nu2_phi = rndm.Gaus(0., 0.);      
+      //reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
+      //tau2_daughters[i].setP4(smeared_nu2_4vector);
+  
+      //If we want the 'generic'/best guess neutrinos
+      reco::Particle::PolarLorentzVector generic_nu2_4vector(13.6, tau2_daughters[i].mother()->eta(), tau2_daughters[i].mother()->phi(), 0);
+      tau2_daughters[i].setP4(generic_nu2_4vector);
     }
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
-    }
+  }
 
 	TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
 
