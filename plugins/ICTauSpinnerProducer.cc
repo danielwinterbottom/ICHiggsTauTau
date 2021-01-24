@@ -106,6 +106,7 @@ std::vector<reco::GenParticle> ICTauSpinnerProducer::getTaus(reco::GenParticle b
 }
 
 void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, unsigned &type, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle){
+  std::cout << "Hello Hello Hello\n";
   for (unsigned i = 0; i < tau.daughterRefVector().size(); ++i) {
     int daughter_index = static_cast<int>(tau.daughterRefVector().at(i).key());
     reco::GenParticle daughter = parts_handle->at(daughter_index);
@@ -114,10 +115,12 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
       if(daughter_pdgid == 11) type = 1;
       if(daughter_pdgid == 13) type = 2;
       //neutrino smearing
-      if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
-      reco::Particle::PolarLorentzVector p(daughter.energy(), daughter.eta(), daughter.phi(), daughter.pt());
-      daughter.setP4(p);
-      } 
+      //if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
+      
+      reco::Particle::LorentzVector pppp(1.0, 2.0, 3.0, 4.0);
+      std::cout << "Old pt:" << daughter.pt() << '\n';
+      daughter.setP4(pppp);
+      std::cout << "New pt:" << daughter.pt() << '\n';
       tau_daughters.push_back(daughter);
     }
     else getTauDaughters(tau_daughters, type, daughter, parts_handle);
@@ -255,7 +258,8 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
 void ICTauSpinnerProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &info_);
   theta_vec_ = SplitString(theta_);  
-  initialize();  
+  initialize();
+  std::cout << "Hello World" << '\n';  
 }
 
 void ICTauSpinnerProducer::endJob() {}
