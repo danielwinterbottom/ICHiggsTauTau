@@ -222,16 +222,29 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
 // SMearing nautrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
     if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12){
-      double c = rndm.Gaus(1.,0.1);
-      std::cout << "Random value : c" << c;
-      reco::Particle::PolarLorentzVector pppp(tau1_daughters[i].pt()+c, tau1_daughters[i].eta()+c, tau1_daughters[i].phi()+c, tau1_daughters[i].mass()+c);
-      tau1_daughters[i].setP4(pppp);
+      double smearing_nu1_pt = rndm.Gaus(1.,0.1);
+      double smearing_nu1_eta = rndm.Gaus(1., 0.1);
+      double smearing_nu1_phi = rndm.Gaus(1., 0.1);
+      std::cout << "Random value:" << smearing_nu1_pt << " pt1 " << smearing_nu1_eta<< " eta1 " << smearing_nu1_phi << " phi1 " << '\n';
+      reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
+      tau1_daughters[i].setP4(smeared_nu1_4vector);
     }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
+    // ideal scenario: have the phi, eta, pt and mass of all the tau1_daughters saved as well as the 3 smearing params. 
   }
   
-  for(unsigned i=0; i<tau2_daughters.size(); ++i)
+  for(unsigned i=0; i<tau2_daughters.size(); ++i) {
+    int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
+    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 12){
+      double smearing_nu2_pt = rndm.Gaus(1.,0.1);
+      double smearing_nu2_eta = rndm.Gaus(1., 0.1);
+      double smearing_nu2_phi = rndm.Gaus(1., 0.1);
+      std::cout << "Random value:" << smearing_nu2_pt << " pt2 " << smearing_nu2_eta<< " eta2 " << smearing_nu2_phi << " phi2 " << '\n';
+      reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
+      tau2_daughters[i].setP4(smeared_nu2_4vector);
+    }
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
+    }
 
 	TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
 
