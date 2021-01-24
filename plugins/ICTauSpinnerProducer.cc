@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "Tauola/Tauola.h"
-
+#include <TRandom3.h>
 
 ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -111,7 +111,6 @@ std::vector<reco::GenParticle> ICTauSpinnerProducer::getTaus(reco::GenParticle b
 }
 
 void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, unsigned &type, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle){
-  std::cout << "Hello Hello Hello\n";
   for (unsigned i = 0; i < tau.daughterRefVector().size(); ++i) {
     int daughter_index = static_cast<int>(tau.daughterRefVector().at(i).key());
     reco::GenParticle daughter = parts_handle->at(daughter_index);
@@ -122,11 +121,11 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
       //neutrino smearing
       //if (daughter_pdgid == 12 || daughter_pdgid == 14 || daughter_pdgid == 16){
       
-      reco::Particle::PolarLorentzVector pppp(100.0, 200.0, 300.0, 400.0);
-      std::cout << "Old pt:" << daughter.pt() << '\n';
-      daughter.setP4(pppp);
-      std::cout << "New mass:" << daughter.mass() << '\n';
-      std::cout << "New energy:" << daughter.p() << '\n';
+      //reco::Particle::PolarLorentzVector pppp(100.0, 200.0, 0.5, 400.0);
+      //std::cout << "Old pt:" << daughter.pt() << '\n';
+      //daughter.setP4(pppp);
+      //std::cout << "New mass:" << daughter.mass() << '\n';
+      //std::cout << "New phi:" << daughter.phi() << '\n';
       tau_daughters.push_back(daughter);
     }
     else getTauDaughters(tau_daughters, type, daughter, parts_handle);
@@ -134,7 +133,7 @@ void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_d
 }
 
 void ICTauSpinnerProducer::removeGammas(std::vector<TauSpinner::SimpleParticle> &tau_daughters){
-  for(int i=tau_daughters.size()-1; i>=0; --i){
+    for(int i=tau_daughters.size()-1; i>=0; --i){
     int pdgid = fabs(tau_daughters[i].pdgid());
     if(pdgid == 22) {
       tau_daughters.erase(tau_daughters.begin()+i);
@@ -217,8 +216,19 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
   std::vector<TauSpinner::SimpleParticle> simple_tau2_daughters;
   
-  for(unsigned i=0; i<tau1_daughters.size(); ++i)
+  
+  TRandom3 rndm;
+  for(unsigned i=0; i<tau1_daughters.size(); ++i){
+// SMearing nautrinos:
+    int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
+    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12){
+      double c = rndm.Gaus(1.,0.1);
+      std::cout << "Random value : c" << c;
+      reco::Particle::PolarLorentzVector pppp(tau1_daughters[i].pt()+c, tau1_daughters[i].eta()+c, tau1_daughters[i].phi()+c, tau1_daughters[i].mass()+c);
+      tau1_daughters[i].setP4(pppp);
+    }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
+  }
   
   for(unsigned i=0; i<tau2_daughters.size(); ++i)
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
