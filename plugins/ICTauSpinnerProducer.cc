@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <TFile.h>
+#include <TTree.h>
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -20,7 +22,8 @@
 ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
-      theta_(config.getParameter<std::string>("theta")){
+      theta_(config.getParameter<std::string>("theta"))
+{
   consumes<edm::View<reco::GenParticle>>(input_);
 
   PrintHeaderWithProduces(config, input_, branch_);
@@ -33,6 +36,8 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
   outFile.open("weights.csv");
+  rootFile = new TFile("smearingEffects.root", "RECREATE");
+  outTree = new TTree("outTree", "outTree");
 }
 
 ICTauSpinnerProducer::~ICTauSpinnerProducer()
@@ -212,32 +217,35 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
   std::vector<TauSpinner::SimpleParticle> simple_tau2_daughters;
   
-  for(unsigned i=0; i<tau1_daughters.size(); ++i) simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
-  for(unsigned i=0; i<tau2_daughters.size(); ++i) simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
+  for(unsigned i=0; i<tau1_daughters.size(); ++i)
+    simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
+  
+  for(unsigned i=0; i<tau2_daughters.size(); ++i)
+    simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
 
-    TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
+	TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
 
-    Tauolapp::Tauola::setNewCurrents(0);
+	Tauolapp::Tauola::setNewCurrents(0);
 
-    TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
+	TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
 
-    double WTp = TauSpinner::getWtamplitP();
-    double WTm = TauSpinner::getWtamplitM();
+	double WTp = TauSpinner::getWtamplitP();
+	double WTm = TauSpinner::getWtamplitM();
 
-    Tauolapp::Tauola::setNewCurrents(1);
+	Tauolapp::Tauola::setNewCurrents(1);
 
-    TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
+	TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
 
-    //std::cout << "--------" << std::endl;
-    //std::cout << simple_tau1_daughters.size() << "    " << simple_tau2_daughters.size() << std::endl;
-    //std::cout << TauSpinner::getWtamplitP() << "    " << WTp << "    " << TauSpinner::getWtamplitP()/WTp <<  std::endl;
-    //std::cout << TauSpinner::getWtamplitM() << "    " << WTm << "    " << TauSpinner::getWtamplitM()/WTm <<std::endl;
+	//std::cout << "--------" << std::endl;
+	//std::cout << simple_tau1_daughters.size() << "    " << simple_tau2_daughters.size() << std::endl;
+	//std::cout << TauSpinner::getWtamplitP() << "    " << WTp << "    " << TauSpinner::getWtamplitP()/WTp <<  std::endl;
+	//std::cout << TauSpinner::getWtamplitM() << "    " << WTm << "    " << TauSpinner::getWtamplitM()/WTm <<std::endl;
 
-    WTp = TauSpinner::getWtamplitP()/WTp;
-    WTm = TauSpinner::getWtamplitM()/WTm;
- 
-    info_->set_weight("WTp",WTp,false);
-    info_->set_weight("WTm",WTm,false);
+	WTp = TauSpinner::getWtamplitP()/WTp;
+	WTm = TauSpinner::getWtamplitM()/WTm;
+
+	info_->set_weight("WTp",WTp,false);
+	info_->set_weight("WTm",WTm,false);
 
   for(unsigned i=0; i<theta_vec_.size(); ++i){
     double theta_val_ = theta_vec_[i].second;
@@ -250,10 +258,13 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     Tauolapp::Tauola::setNewCurrents(1);
     double weight_2_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
     info_->set_weight(weight_name_+"_alt",weight_2_,false);
+    
     outFile << weight_ << "," << weight_2_ << ",";
+    weight1Array[i] = weight_;
+    weight2Array[i] = weight_2_;
   }
   outFile << std::endl;
-
+	outTree->Fill();
 }
 
 void ICTauSpinnerProducer::beginJob() {
@@ -261,9 +272,27 @@ void ICTauSpinnerProducer::beginJob() {
   theta_vec_ = SplitString(theta_);  
   initialize();
   std::cout << "Hello World" << '\n';  
+  theta_vec_ = SplitString(theta_);
+  // Create arrays to store spin weights for each event
+  weight1Array = new double[theta_vec_.size()];
+  weight2Array = new double[theta_vec_.size()];
+  
+  // Register branches
+  for(unsigned int i=0; i<theta_vec_.size(); i++)
+  {
+  	outTree->Branch((theta_vec_[i].first+"_1").c_str(), &weight1Array[i], (theta_vec_[i].first+"_1"+"/D").c_str());
+  	outTree->Branch((theta_vec_[i].first+"_2").c_str(), &weight2Array[i], (theta_vec_[i].first+"_2"+"/D").c_str());
+  }
+  std::cout << "Branches registered." << std::endl;
+  
+  initialize();
 }
 
-void ICTauSpinnerProducer::endJob() {}
+void ICTauSpinnerProducer::endJob()
+{
+	rootFile->Write();
+	rootFile->Close();
+}
 
 DEFINE_FWK_MODULE(ICTauSpinnerProducer);
 
