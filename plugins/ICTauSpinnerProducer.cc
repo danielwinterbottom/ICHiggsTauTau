@@ -36,7 +36,7 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
   outFile.open("weights.csv");
-  rootFile = new TFile("smearingEffects.root", "RECREATE");
+  rootFile = new TFile("smearingEffects_generic.root", "RECREATE");
   outTree = new TTree("outTree", "outTree");
 }
 
@@ -224,7 +224,8 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   for(unsigned i=0; i<tau1_daughters.size(); ++i){
 // SMearing nautrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
-    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12){
+    // we should only do this for tau neutrinos ! the other ones we can 'normally' smear - CHANGE
+    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 16){
       //Typical smearing observed from reconstructing the neutrinos with NN method
       //double smearing_nu1_pt = rndm.Gaus(1.65, 32.56);
       //double smearing_nu1_eta = rndm.Gaus(-0.01, 0.09);
@@ -233,7 +234,14 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
       //tau1_daughters[i].setP4(smeared_nu1_4vector);
       
       //Generic/best guess value
-      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, tau1_daughters[i].mother()->eta(), tau1_daughters[i].mother()->phi(), 0);
+      //First get the visible decay products i.e. tau - nu_tau - this is a disgusting way of doing it
+      double visible_energy = tau1_daughters[i].mother()->energy()-tau1_daughters[i].energy();
+      double visible_px = tau1_daughters[i].mother()->px()-tau1_daughters[i].px();
+      double visible_py = tau1_daughters[i].mother()->py()-tau1_daughters[i].py();
+      double visible_pz = tau1_daughters[i].mother()->pz()-tau1_daughters[i].pz();
+ 
+      reco::Particle::LorentzVector visible_4vector(visible_energy, visible_px, visible_py, visible_pz);
+      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, visible_4vector.eta(), visible_4vector.phi(), 0);
       tau1_daughters[i].setP4(generic_nu1_4vector);
 
     }
@@ -243,7 +251,7 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   
   for(unsigned i=0; i<tau2_daughters.size(); ++i) {
     int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
-    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 12){
+    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 16){
       //Typical smearing observed from reconstructing the neutrinos with NN method
       //double smearing_nu2_pt = rndm.Gaus(1.20, 29.41);
       //double smearing_nu2_eta = rndm.Gaus(0.12, 5.01);
