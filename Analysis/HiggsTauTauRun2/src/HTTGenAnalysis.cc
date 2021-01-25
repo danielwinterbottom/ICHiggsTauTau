@@ -89,6 +89,76 @@ namespace ic {
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt"))); 
     }
 
+    if(make_mva_ntuple_) {
+
+      lOFile = new TFile(mva_output_name_.c_str(), "RECREATE");
+      lOFile->cd();
+      mvatree_ = new TTree("ntuple", "ntuple");
+
+      mvatree_->Branch("rand", &rand_);
+
+      mvatree_->Branch("wt_cp_sm"       , &wt_cp_sm_);
+      mvatree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
+      mvatree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
+
+      mvatree_->Branch("pi_px_1", &pi_px_1_);
+      mvatree_->Branch("pi_py_1", &pi_py_1_);
+      mvatree_->Branch("pi_pz_1", &pi_pz_1_);
+      mvatree_->Branch("pi_E_1", &pi_E_1_);
+      mvatree_->Branch("pi2_px_1", &pi2_px_1_);
+      mvatree_->Branch("pi2_py_1", &pi2_py_1_);
+      mvatree_->Branch("pi2_pz_1", &pi2_pz_1_);
+      mvatree_->Branch("pi2_E_1", &pi2_E_1_);
+      mvatree_->Branch("pi3_px_1", &pi3_px_1_);
+      mvatree_->Branch("pi3_py_1", &pi3_py_1_);
+      mvatree_->Branch("pi3_pz_1", &pi3_pz_1_);
+      mvatree_->Branch("pi3_E_1", &pi3_E_1_);
+      mvatree_->Branch("pi_px_2", &pi_px_2_);
+      mvatree_->Branch("pi_py_2", &pi_py_2_);
+      mvatree_->Branch("pi_pz_2", &pi_pz_2_);
+      mvatree_->Branch("pi_E_2", &pi_E_2_);
+      mvatree_->Branch("pi2_px_2", &pi2_px_2_);
+      mvatree_->Branch("pi2_py_2", &pi2_py_2_);
+      mvatree_->Branch("pi2_pz_2", &pi2_pz_2_);
+      mvatree_->Branch("pi2_E_2", &pi2_E_2_);
+      mvatree_->Branch("pi3_px_2", &pi3_px_2_);
+      mvatree_->Branch("pi3_py_2", &pi3_py_2_);
+      mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
+      mvatree_->Branch("pi3_E_2", &pi3_E_2_);
+
+      mvatree_->Branch("pi0_px_1", &pi0_px_1_);
+      mvatree_->Branch("pi0_py_1", &pi0_py_1_);
+      mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);
+      mvatree_->Branch("pi0_E_1", &pi0_E_1_);
+      mvatree_->Branch("pi0_px_2", &pi0_px_2_);
+      mvatree_->Branch("pi0_py_2", &pi0_py_2_);
+      mvatree_->Branch("pi0_pz_2", &pi0_pz_2_);
+      mvatree_->Branch("pi0_E_2", &pi0_E_2_);
+
+      //mvatree_->Branch("nu_px_1", &nu_px_1_);
+      //mvatree_->Branch("nu_py_1", &nu_py_1_);
+      //mvatree_->Branch("nu_pz_1", &nu_pz_1_);
+      //mvatree_->Branch("nu_E_1",  &nu_E_1_);
+      //mvatree_->Branch("nu_px_2", &nu_px_2_);
+      //mvatree_->Branch("nu_py_2", &nu_py_2_);
+      //mvatree_->Branch("nu_pz_2", &nu_pz_2_);
+      //mvatree_->Branch("nu_E_2",  &nu_E_2_);
+
+      mvatree_->Branch("sv_x_1", &sv_x_1_);
+      mvatree_->Branch("sv_y_1", &sv_y_1_);
+      mvatree_->Branch("sv_z_1", &sv_z_1_);
+      mvatree_->Branch("sv_x_2", &sv_x_2_);
+      mvatree_->Branch("sv_y_2", &sv_y_2_);
+      mvatree_->Branch("sv_z_2", &sv_z_2_);
+
+      mvatree_->Branch("dm_1", &tauFlag_1_);
+      mvatree_->Branch("dm_2", &tauFlag_2_);
+
+
+      mvatree_->Branch("metx"         , &metx_         );
+      mvatree_->Branch("mety"         , &mety_         );
+
+    }
       
     rand = new TRandom3(0);
     if(fs_){  
@@ -405,7 +475,58 @@ namespace ic {
     else DCP_ = -9999; 
     if(D0_!=-9999&&DCP_!=-9999) D0star_ = D0_*DCP_/fabs(DCP_);
     else D0star_ = -9999;
-    
+   
+    pi_px_1_=0.;
+    pi_py_1_=0.;
+    pi_pz_1_=0.;
+    pi_E_1_=0.;
+    pi_px_2_=0.;
+    pi_py_2_=0.;
+    pi_pz_2_=0.;
+    pi_E_2_=0.;
+    pi2_px_1_=0.;
+    pi2_py_1_=0.;
+    pi2_pz_1_=0.;
+    pi2_E_1_=0.;
+    pi2_px_2_=0.;
+    pi2_py_2_=0.;
+    pi2_pz_2_=0.;
+    pi2_E_2_=0.;
+    pi3_px_1_=0.;
+    pi3_py_1_=0.;
+    pi3_pz_1_=0.;
+    pi3_E_1_=0.;
+    pi3_px_2_=0.;
+    pi3_py_2_=0.;
+    pi3_pz_2_=0.;
+    pi3_E_2_=0.;
+
+    pi0_px_1_=0.;
+    pi0_py_1_=0.;
+    pi0_pz_1_=0.;
+    pi0_E_1_=0.;
+    pi0_px_2_=0.;
+    pi0_py_2_=0.;
+    pi0_pz_2_=0.;
+    pi0_E_2_=0.;
+
+    nu_px_1_=0.;
+    nu_py_1_=0.;
+    nu_pz_1_=0.;
+    nu_E_1_=0.;
+    nu_px_2_=0.;
+    nu_py_2_=0.;
+    nu_pz_2_=0.;
+    nu_E_2_=0.;
+
+    sv_x_1_=0.;
+    sv_y_1_=0.;
+    sv_z_1_=0.;
+    sv_x_2_=0.;
+    sv_y_2_=0.;
+    sv_z_2_=0.;
+
+ 
     std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
     std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
 
@@ -1329,6 +1450,8 @@ namespace ic {
     fakea1_dR_ = -1;
     rho_dR_ = -1;
 
+
+
     if(rho_daughters.size()==1) {
       rho_dR_ = ROOT::Math::VectorUtil::DeltaR(rho_daughters[0].first->vector(),rho_daughters[0].second->vector());
     }
@@ -1344,6 +1467,159 @@ namespace ic {
       fakea1_dR_ = ROOT::Math::VectorUtil::DeltaR(neutral_vec,charged_vec);
     }
     
+
+    // fill vars for MVA training ntuple if option requested
+    std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
+    if(make_mva_ntuple_ && gen_vertices.size()>0) {
+
+      tauFlag_1_=-1, tauFlag_2_=-1;
+
+      if (rho_daughters.size()>=1) {
+        pi_px_1_ = rho_daughters[0].first->vector().Px();
+        pi_py_1_ = rho_daughters[0].first->vector().Py();
+        pi_pz_1_ = rho_daughters[0].first->vector().Pz();
+        pi_E_1_ =  rho_daughters[0].first->vector().E();
+
+        pi0_px_1_ = rho_daughters[0].second->vector().Px();
+        pi0_py_1_ = rho_daughters[0].second->vector().Py();
+        pi0_pz_1_ = rho_daughters[0].second->vector().Pz();
+        pi0_E_1_ =  rho_daughters[0].second->vector().E();
+
+        sv_x_1_ = rho_daughters[0].first->vtx().vx() - gen_vertices[0]->vx();
+        sv_y_1_ = rho_daughters[0].first->vtx().vy() - gen_vertices[0]->vy();
+        sv_z_1_ = rho_daughters[0].first->vtx().vz() - gen_vertices[0]->vz();
+        tauFlag_1_=1;
+
+        if (pi_daughters.size()>=1) {
+          pi_px_2_ = pi_daughters[0]->vector().Px();
+          pi_py_2_ = pi_daughters[0]->vector().Py();
+          pi_pz_2_ = pi_daughters[0]->vector().Pz();
+          pi_E_2_ =  pi_daughters[0]->vector().E();
+          sv_x_2_ = pi_daughters[0]->vtx().vx() - gen_vertices[0]->vx();
+          sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
+          sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
+          tauFlag_2_=0;
+        }
+
+        if (a1_daughters.size()>=1) {
+          std::vector<GenParticle*> a1_daughters_sorted_1 = SortA1Products(a1_daughters[0]);
+          pi_px_2_ = a1_daughters_sorted_1[0]->vector().Px();
+          pi_py_2_ = a1_daughters_sorted_1[0]->vector().Py();
+          pi_pz_2_ = a1_daughters_sorted_1[0]->vector().Pz();
+          pi_E_2_ =  a1_daughters_sorted_1[0]->vector().E();
+          pi2_px_2_ = a1_daughters_sorted_1[1]->vector().Px();
+          pi2_py_2_ = a1_daughters_sorted_1[1]->vector().Py();
+          pi2_pz_2_ = a1_daughters_sorted_1[1]->vector().Pz();
+          pi2_E_2_ =  a1_daughters_sorted_1[1]->vector().E();
+          pi3_px_2_ = a1_daughters_sorted_1[2]->vector().Px();
+          pi3_py_2_ = a1_daughters_sorted_1[2]->vector().Py();
+          pi3_pz_2_ = a1_daughters_sorted_1[2]->vector().Pz();
+          pi3_E_2_ =  a1_daughters_sorted_1[2]->vector().E();
+
+          sv_x_2_ = a1_daughters_sorted_1[0]->vtx().vx() - gen_vertices[0]->vx();
+          sv_y_2_ = a1_daughters_sorted_1[0]->vtx().vy() - gen_vertices[0]->vy();
+          sv_z_2_ = a1_daughters_sorted_1[0]->vtx().vz() - gen_vertices[0]->vz();
+          tauFlag_2_=10;
+
+        }
+
+        if (rho_daughters.size()>1) {
+          pi_px_2_ = rho_daughters[1].first->vector().Px();
+          pi_py_2_ = rho_daughters[1].first->vector().Py();
+          pi_pz_2_ = rho_daughters[1].first->vector().Pz();
+          pi_E_2_ =  rho_daughters[1].first->vector().E();
+
+          pi0_px_2_ = rho_daughters[1].second->vector().Px();
+          pi0_py_2_ = rho_daughters[1].second->vector().Py();
+          pi0_pz_2_ = rho_daughters[1].second->vector().Pz();
+          pi0_E_2_ =  rho_daughters[1].second->vector().E();
+
+          sv_x_2_ = rho_daughters[1].first->vtx().vx() - gen_vertices[0]->vx();
+          sv_y_2_ = rho_daughters[1].first->vtx().vy() - gen_vertices[0]->vy();
+          sv_z_2_ = rho_daughters[1].first->vtx().vz() - gen_vertices[0]->vz();
+          tauFlag_2_=1;
+        }
+      } else if (a1_daughters.size()>=1) {
+
+          std::vector<GenParticle*> a1_daughters_sorted_1 = SortA1Products(a1_daughters[0]);
+          pi_px_1_ = a1_daughters_sorted_1[0]->vector().Px();
+          pi_py_1_ = a1_daughters_sorted_1[0]->vector().Py();
+          pi_pz_1_ = a1_daughters_sorted_1[0]->vector().Pz();
+          pi_E_1_ =  a1_daughters_sorted_1[0]->vector().E();
+          pi2_px_1_ = a1_daughters_sorted_1[1]->vector().Px();
+          pi2_py_1_ = a1_daughters_sorted_1[1]->vector().Py();
+          pi2_pz_1_ = a1_daughters_sorted_1[1]->vector().Pz();
+          pi2_E_1_ =  a1_daughters_sorted_1[1]->vector().E();
+          pi3_px_1_ = a1_daughters_sorted_1[2]->vector().Px();
+          pi3_py_1_ = a1_daughters_sorted_1[2]->vector().Py();
+          pi3_pz_1_ = a1_daughters_sorted_1[2]->vector().Pz();
+          pi3_E_1_ =  a1_daughters_sorted_1[2]->vector().E();
+
+          sv_x_1_ = a1_daughters_sorted_1[0]->vtx().vx() - gen_vertices[0]->vx();
+          sv_y_1_ = a1_daughters_sorted_1[0]->vtx().vy() - gen_vertices[0]->vy();
+          sv_z_1_ = a1_daughters_sorted_1[0]->vtx().vz() - gen_vertices[0]->vz();
+          tauFlag_1_=10;
+
+          if (pi_daughters.size()>=1) {
+            pi_px_2_ = pi_daughters[0]->vector().Px();
+            pi_py_2_ = pi_daughters[0]->vector().Py();
+            pi_pz_2_ = pi_daughters[0]->vector().Pz();
+            pi_E_2_ =  pi_daughters[0]->vector().E();
+            sv_x_2_ = pi_daughters[0]->vtx().vx() - gen_vertices[0]->vx();
+            sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
+            sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
+            tauFlag_2_=0;
+          }
+
+          if (a1_daughters.size()>1) {
+            std::vector<GenParticle*> a1_daughters_sorted_2 = SortA1Products(a1_daughters[1]);
+            pi_px_2_ = a1_daughters_sorted_2[0]->vector().Px();
+            pi_py_2_ = a1_daughters_sorted_2[0]->vector().Py();
+            pi_pz_2_ = a1_daughters_sorted_2[0]->vector().Pz();
+            pi_E_2_ =  a1_daughters_sorted_2[0]->vector().E();
+            pi2_px_2_ = a1_daughters_sorted_2[1]->vector().Px();
+            pi2_py_2_ = a1_daughters_sorted_2[1]->vector().Py();
+            pi2_pz_2_ = a1_daughters_sorted_2[1]->vector().Pz();
+            pi2_E_2_ =  a1_daughters_sorted_2[1]->vector().E();
+            pi3_px_2_ = a1_daughters_sorted_2[2]->vector().Px();
+            pi3_py_2_ = a1_daughters_sorted_2[2]->vector().Py();
+            pi3_pz_2_ = a1_daughters_sorted_2[2]->vector().Pz();
+            pi3_E_2_ =  a1_daughters_sorted_2[2]->vector().E();
+
+            sv_x_2_ = a1_daughters_sorted_2[0]->vtx().vx() - gen_vertices[0]->vx();
+            sv_y_2_ = a1_daughters_sorted_2[0]->vtx().vy() - gen_vertices[0]->vy();
+            sv_z_2_ = a1_daughters_sorted_2[0]->vtx().vz() - gen_vertices[0]->vz();
+            tauFlag_2_=10;
+
+          }
+      } else if (pi_daughters.size()>=1) {
+
+          pi_px_1_ = pi_daughters[0]->vector().Px();
+          pi_py_1_ = pi_daughters[0]->vector().Py();
+          pi_pz_1_ = pi_daughters[0]->vector().Pz();
+          pi_E_1_ =  pi_daughters[0]->vector().E();
+          tauFlag_1_=0;
+
+          sv_x_1_ = pi_daughters[0]->vtx().vx() - gen_vertices[0]->vx();
+          sv_y_1_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
+          sv_z_1_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
+
+          if (pi_daughters.size()>1) {
+            pi_px_2_ = pi_daughters[1]->vector().Px();
+            pi_py_2_ = pi_daughters[1]->vector().Py();
+            pi_pz_2_ = pi_daughters[1]->vector().Pz();
+            pi_E_2_ =  pi_daughters[1]->vector().E();
+
+            sv_x_2_ = pi_daughters[1]->vtx().vx() - gen_vertices[0]->vx();
+            sv_y_2_ = pi_daughters[1]->vtx().vy() - gen_vertices[0]->vy();
+            sv_z_2_ = pi_daughters[1]->vtx().vz() - gen_vertices[0]->vz();
+            tauFlag_2_=0;
+
+          }
+
+      }
+    }
+
 
     TLorentzVector lvec1;
     TLorentzVector lvec2;
@@ -2142,6 +2418,12 @@ namespace ic {
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
     std::cout << "count taus = " << count_taus_ << std::endl;
+
+    if(make_mva_ntuple_) {
+      lOFile->cd();
+      mvatree_->Write();
+      lOFile->Close();
+    }
 
     return 0;
   }

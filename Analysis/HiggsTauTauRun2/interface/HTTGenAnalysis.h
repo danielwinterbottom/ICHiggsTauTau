@@ -38,6 +38,8 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
   CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
   CLASS_MEMBER(HTTGenAnalysis, std::string, mssm_mass  )
+  CLASS_MEMBER(HTTGenAnalysis, bool, make_mva_ntuple)
+  CLASS_MEMBER(HTTGenAnalysis, std::string, mva_output_name)
   
   TTree *outtree_;
   TRandom3  *rand;
@@ -288,6 +290,14 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_isr_down_;
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
+
+  double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_;
+  double pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_;
+  double pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_;
+  double pi0_px_1_, pi0_py_1_, pi0_pz_1_, pi0_E_1_, pi0_px_2_, pi0_py_2_, pi0_pz_2_, pi0_E_2_;
+  double nu_px_1_, nu_py_1_, nu_pz_1_, nu_E_1_, nu_px_2_, nu_py_2_, nu_pz_2_, nu_E_2_;
+  double sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_;
+  double metx_, mety_;
   
  public:
   HTTGenAnalysis(std::string const& name);

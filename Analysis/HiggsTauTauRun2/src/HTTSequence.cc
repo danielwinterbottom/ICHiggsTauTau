@@ -417,6 +417,8 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_mssm_mass(mass_str)
+    .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
+    .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
   );
   return;  
 }
