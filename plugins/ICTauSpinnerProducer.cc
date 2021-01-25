@@ -216,12 +216,10 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
   std::vector<TauSpinner::SimpleParticle> simple_tau2_daughters;
   
-  
-  TRandom3 rndm;
   for(unsigned i=0; i<tau1_daughters.size(); ++i){
 // SMearing nautrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
-    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 12)
+    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 16)
     {
       double smearing_nu1_pt = rndm.Gaus(1.,0.1);
       double smearing_nu1_eta = rndm.Gaus(1., 0.1);
@@ -235,11 +233,17 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
     // ideal scenario: have the phi, eta, pt and mass of all the tau1_daughters saved as well as the 3 smearing params. 
+    // Save tau1daughters to .root:
+    tau1DaughtersArray[i][0] = tau1_daughters[i].energy();
+    tau1DaughtersArray[i][1] = tau1_daughters[i].px();
+    tau1DaughtersArray[i][2] = tau1_daughters[i].py();
+    tau1DaughtersArray[i][3] = tau1_daughters[i].pz();
+    tau1DaughtersArray[i][4] = tau1_daughters[i].pdgId();
   }
   
   for(unsigned i=0; i<tau2_daughters.size(); ++i) {
     int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
-    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 12)
+    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 16)
     {
       double smearing_nu2_pt = rndm.Gaus(1.,0.1);
       double smearing_nu2_eta = rndm.Gaus(1., 0.1);
@@ -252,6 +256,12 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
       tau2_daughters[i].setP4(smeared_nu2_4vector);
     }
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
+    // Save tau2daughters to .root:
+    tau2DaughtersArray[i][0] = tau2_daughters[i].energy();
+    tau2DaughtersArray[i][1] = tau2_daughters[i].px();
+    tau2DaughtersArray[i][2] = tau2_daughters[i].py();
+    tau2DaughtersArray[i][3] = tau2_daughters[i].pz();
+    tau2DaughtersArray[i][4] = tau2_daughters[i].pdgId();
 	}
 
 	TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
@@ -322,17 +332,17 @@ void ICTauSpinnerProducer::beginJob() {
   }
   
   for(unsigned int i=0; i<10; i++){
-  	outTree->Branch(("tau1Daughter_E_"+std::to_string(i)).c_str(), &tau1DaughtersArray[5*i+0][0], ("tau1Daughter_E_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau1Daughter_px_"+std::to_string(i)).c_str(), &tau1DaughtersArray[5*i+1][1], ("tau1Daughter_px_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau1Daughter_py_"+std::to_string(i)).c_str(), &tau1DaughtersArray[5*i+2][2], ("tau1Daughter_py_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau1Daughter_pz_"+std::to_string(i)).c_str(), &tau1DaughtersArray[5*i+3][3], ("tau1Daughter_pz_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau1Daughter_pdgID_"+std::to_string(i)).c_str(), &tau1DaughtersArray[5*i+4][4], ("tau1Daughter_pdgID_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau1Daughter_E_"+std::to_string(i)).c_str(), &tau1DaughtersArray[i][0], ("tau1Daughter_E_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau1Daughter_px_"+std::to_string(i)).c_str(), &tau1DaughtersArray[i][1], ("tau1Daughter_px_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau1Daughter_py_"+std::to_string(i)).c_str(), &tau1DaughtersArray[i][2], ("tau1Daughter_py_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau1Daughter_pz_"+std::to_string(i)).c_str(), &tau1DaughtersArray[i][3], ("tau1Daughter_pz_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau1Daughter_pdgID_"+std::to_string(i)).c_str(), &tau1DaughtersArray[i][4], ("tau1Daughter_pdgID_"+std::to_string(i)+"/D").c_str());
   	
-  	outTree->Branch(("tau2Daughter_E_"+std::to_string(i)).c_str(), &tau2DaughtersArray[5*i+0][0], ("tau2Daughter_E_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau2Daughter_px_"+std::to_string(i)).c_str(), &tau2DaughtersArray[5*i+1][1], ("tau2Daughter_px_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau2Daughter_py_"+std::to_string(i)).c_str(), &tau2DaughtersArray[5*i+2][2], ("tau2Daughter_py_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau2Daughter_pz_"+std::to_string(i)).c_str(), &tau2DaughtersArray[5*i+3][3], ("tau2Daughter_pz_"+std::to_string(i)+"/D").c_str());
-  	outTree->Branch(("tau2Daughter_pdgID_"+std::to_string(i)).c_str(), &tau2DaughtersArray[5*i+4][4], ("tau2Daughter_pdgID_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau2Daughter_E_"+std::to_string(i)).c_str(), &tau2DaughtersArray[i][0], ("tau2Daughter_E_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau2Daughter_px_"+std::to_string(i)).c_str(), &tau2DaughtersArray[i][1], ("tau2Daughter_px_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau2Daughter_py_"+std::to_string(i)).c_str(), &tau2DaughtersArray[i][2], ("tau2Daughter_py_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau2Daughter_pz_"+std::to_string(i)).c_str(), &tau2DaughtersArray[i][3], ("tau2Daughter_pz_"+std::to_string(i)+"/D").c_str());
+  	outTree->Branch(("tau2Daughter_pdgID_"+std::to_string(i)).c_str(), &tau2DaughtersArray[i][4], ("tau2Daughter_pdgID_"+std::to_string(i)+"/D").c_str());
   }
   std::cout << "Branches registered." << std::endl;
   
