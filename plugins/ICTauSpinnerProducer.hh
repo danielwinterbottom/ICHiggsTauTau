@@ -18,7 +18,7 @@
 #include "TauSpinner/SimpleParticle.h"
 #include "TauSpinner/tau_reweight_lib.h"
 #include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
-
+#include <TRandom3.h>
 
 
 enum pdgId {
@@ -73,11 +73,15 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   int nonSMN;
   double CMSENE;
   
+  TRandom3 rndm;
   std::ofstream outFile;
   TFile *rootFile;
   TTree *outTree;
   double *weight1Array;
   double *weight2Array;
+  double smearingArray[6];
+  double tau1DaughtersArray[10][5];
+  double tau2DaughtersArray[10][5];
 };
 
 #endif
