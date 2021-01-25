@@ -36,7 +36,7 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
   outFile.open("weights.csv");
-  rootFile = new TFile("smearingEffects_generic.root", "RECREATE");
+  rootFile = new TFile("smearingEffects_smearing1.root", "RECREATE");
   outTree = new TTree("outTree", "outTree");
 }
 
@@ -211,7 +211,7 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   getTauDaughters(tau2_daughters,type2,taus[1],parts_handle); 
   
   //Check: can we get the parents tau eta and phi components ? That would help to give the 'default neutrino values'
-  std::cout << "\nThe pt of the mother of the first tau decay product: " << tau1_daughters[0].mother()->pt() << '\n';  
+  //std::cout << "\nThe pt of the mother of the first tau decay product: " << tau1_daughters[0].mother()->pt() << '\n';  
  
   TauSpinner::SimpleParticle simple_boson = ConvertToSimplePart(boson);
   TauSpinner::SimpleParticle simple_tau1 = ConvertToSimplePart(taus[0]);
@@ -229,41 +229,31 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   for(unsigned i=0; i<tau1_daughters.size(); ++i){
 		// Smearing neutrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
-    // we should only do this for tau neutrinos ! the other ones we can 'normally' smear - CHANGE
-    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 16){
-      //Typical smearing observed from reconstructing the neutrinos with NN method
-      //double smearing_nu1_pt = rndm.Gaus(1.65, 32.56);
-      //double smearing_nu1_eta = rndm.Gaus(-0.01, 0.09);
-      //double smearing_nu1_phi = rndm.Gaus(0.09, 0.96);
-      //reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
-      //tau1_daughters[i].setP4(smeared_nu1_4vector);
-      
-      //Generic/best guess value
-      //First get the visible decay products i.e. tau - nu_tau - this is a disgusting way of doing it
-      double visible_energy = tau1_daughters[i].mother()->energy()-tau1_daughters[i].energy();
-      double visible_px = tau1_daughters[i].mother()->px()-tau1_daughters[i].px();
-      double visible_py = tau1_daughters[i].mother()->py()-tau1_daughters[i].py();
-      double visible_pz = tau1_daughters[i].mother()->pz()-tau1_daughters[i].pz();
- 
-      reco::Particle::LorentzVector visible_4vector(visible_energy, visible_px, visible_py, visible_pz);
-      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, visible_4vector.eta(), visible_4vector.phi(), 0);
-    if (daughter1_pdgid == 12 || daughter1_pdgid == 14 || daughter1_pdgid == 16)
+    // we should only do this for tau neutrinos !
+    if (daughter1_pdgid == 16)
     {
-    	/*
-      double smearing_nu1_pt = rndm.Gaus(1.,0.1);
-      double smearing_nu1_eta = rndm.Gaus(1., 0.1);
-      double smearing_nu1_phi = rndm.Gaus(1., 0.1);
+      //smearing
+      double smearing_nu1_pt = rndm.Gaus(1.65,32.56);
+      double smearing_nu1_eta = rndm.Gaus(-0.01, 0.09);
+      double smearing_nu1_phi = rndm.Gaus(0.09, 0.96);
       smearingArray[0] = smearing_nu1_pt;
       smearingArray[1] = smearing_nu1_eta;
       smearingArray[2] = smearing_nu1_phi;
       std::cout << "Random value:" << smearing_nu1_pt << " pt1 " << smearing_nu1_eta<< " eta1 " << smearing_nu1_phi << " phi1 " << '\n';
       reco::Particle::PolarLorentzVector smeared_nu1_4vector(tau1_daughters[i].pt()+smearing_nu1_pt, tau1_daughters[i].eta()+smearing_nu1_eta, tau1_daughters[i].phi()+smearing_nu1_phi, tau1_daughters[i].mass());
       tau1_daughters[i].setP4(smeared_nu1_4vector);
-      */
-      
-      // Generic/best guess value
-      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, tau1_daughters[i].mother()->eta(), tau1_daughters[i].mother()->phi(), 0);
-      tau1_daughters[i].setP4(generic_nu1_4vector);
+ 
+     
+/* // Generic/best guess value
+      double visible1_energy = tau1_daughters[i].mother()->energy()-tau1_daughters[i].energy();
+      double visible1_px = tau1_daughters[i].mother()->px()-tau1_daughters[i].px();
+      double visible1_py = tau1_daughters[i].mother()->py()-tau1_daughters[i].py();
+      double visible1_pz = tau1_daughters[i].mother()->pz()-tau1_daughters[i].pz();
+
+      reco::Particle::LorentzVector visible1_4vector(visible1_energy, visible1_px, visible1_py, visible1_pz);
+      reco::Particle::PolarLorentzVector generic_nu1_4vector(13.6, visible1_4vector.eta(), visible1_4vector.phi(), 0);
+      tau1_daughters[i].setP4(generic_nu1_4vector); 
+*/
     }
     simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i])); 
     // Save tau1daughters to .root:
@@ -276,37 +266,30 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   
   for(unsigned i=0; i<tau2_daughters.size(); ++i) {
     int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
-    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 16){
-      //Typical smearing observed from reconstructing the neutrinos with NN method
-      //double smearing_nu2_pt = rndm.Gaus(1.20, 29.41);
-      //double smearing_nu2_eta = rndm.Gaus(0.12, 5.01);
-      //double smearing_nu2_phi = rndm.Gaus(0.03, 0.74);
-      //double smearing_nu2_pt = rndm.Gaus(0., 0.);
-      //double smearing_nu2_eta = rndm.Gaus(0., 0.);
-      //double smearing_nu2_phi = rndm.Gaus(0., 0.);      
-      //reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
-      //tau2_daughters[i].setP4(smeared_nu2_4vector);
-  
-      //If we want the 'generic'/best guess neutrinos
-      reco::Particle::PolarLorentzVector generic_nu2_4vector(13.6, tau2_daughters[i].mother()->eta(), tau2_daughters[i].mother()->phi(), 0);
-      tau2_daughters[i].setP4(generic_nu2_4vector);
-    if (daughter2_pdgid == 12 || daughter2_pdgid == 14 || daughter2_pdgid == 16)
+    if (daughter2_pdgid == 16)
     {
-    	/*
-      double smearing_nu2_pt = rndm.Gaus(1.,0.1);
-      double smearing_nu2_eta = rndm.Gaus(1., 0.1);
-      double smearing_nu2_phi = rndm.Gaus(1., 0.1);
+      //smearing
+      double smearing_nu2_pt = rndm.Gaus(1.20,29.41);
+      double smearing_nu2_eta = rndm.Gaus(0.12, 5.01);
+      double smearing_nu2_phi = rndm.Gaus(0.03, 0.74);
       smearingArray[3] = smearing_nu2_pt;
       smearingArray[4] = smearing_nu2_eta;
       smearingArray[5] = smearing_nu2_phi;
       std::cout << "Random value:" << smearing_nu2_pt << " pt2 " << smearing_nu2_eta<< " eta2 " << smearing_nu2_phi << " phi2 " << '\n';
       reco::Particle::PolarLorentzVector smeared_nu2_4vector(tau2_daughters[i].pt()+smearing_nu2_pt, tau2_daughters[i].eta()+smearing_nu2_eta, tau2_daughters[i].phi()+smearing_nu2_phi, tau2_daughters[i].mass());
       tau2_daughters[i].setP4(smeared_nu2_4vector);
-      */
+     
       
-    	// If we want the 'generic'/best guess neutrinos
-    	reco::Particle::PolarLorentzVector generic_nu2_4vector(13.6, tau2_daughters[i].mother()->eta(), tau2_daughters[i].mother()->phi(), 0);
-    	tau2_daughters[i].setP4(generic_nu2_4vector);
+/*    	// If we want the 'generic'/best guess neutrinos
+      double visible2_energy = tau2_daughters[i].mother()->energy()-tau2_daughters[i].energy();
+      double visible2_px = tau2_daughters[i].mother()->px()-tau2_daughters[i].px();
+      double visible2_py = tau2_daughters[i].mother()->py()-tau2_daughters[i].py();
+      double visible2_pz = tau2_daughters[i].mother()->pz()-tau2_daughters[i].pz();
+
+      reco::Particle::LorentzVector visible2_4vector(visible2_energy, visible2_px, visible2_py, visible2_pz);
+      reco::Particle::PolarLorentzVector generic_nu2_4vector(10.6, visible2_4vector.eta(), visible2_4vector.phi(), 0);
+      tau2_daughters[i].setP4(generic_nu2_4vector);
+*/
     }
     simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
     // Save tau2daughters to .root:
