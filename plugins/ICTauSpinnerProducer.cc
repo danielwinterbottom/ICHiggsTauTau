@@ -219,6 +219,13 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
   std::vector<TauSpinner::SimpleParticle> simple_tau2_daughters;
   
+  // Set pdgIDs to 0 before adding existing particles
+  for(unsigned int i=0; i<10; i++)
+  {
+  	tau1DaughtersArray[i][4] = 0;
+  	tau2DaughtersArray[i][4] = 0;
+  }
+  
   for(unsigned i=0; i<tau1_daughters.size(); ++i){
 		// Smearing neutrinos:
     int daughter1_pdgid = fabs(tau1_daughters[i].pdgId());
