@@ -6,8 +6,6 @@
 #include "TauSpinner/tau_reweight_lib.h"
 
 int main(/*int argc, char* argv[]*/) {
-
-  std::cout << "hello world!" << std::endl;
   
   // Initalise here (open input file, create output, initalise tauspinner etc...)
 
