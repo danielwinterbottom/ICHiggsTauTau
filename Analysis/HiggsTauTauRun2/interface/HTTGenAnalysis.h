@@ -43,7 +43,9 @@ class HTTGenAnalysis : public ModuleBase {
   
   TTree *outtree_;
   TRandom3  *rand;
-  
+  TTree *mvatree_;
+  TFile *lOFile; 
+ 
   unsigned long long event_;
 
   unsigned n_rho_;
@@ -261,11 +263,6 @@ class HTTGenAnalysis : public ModuleBase {
   double Pfrac_1_; 
   double Pfrac_2_;
 
-  double pi0_E_1_;
-  double pi0_E_2_;
-  double pi_E_1_;
-  double pi_E_2_;
-
   double reco_pvx_;
   double reco_pvy_;
   double reco_pvz_;
@@ -298,7 +295,21 @@ class HTTGenAnalysis : public ModuleBase {
   double nu_px_1_, nu_py_1_, nu_pz_1_, nu_E_1_, nu_px_2_, nu_py_2_, nu_pz_2_, nu_E_2_;
   double sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_;
   double metx_, mety_;
-  
+ 
+  double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
+  int gen_tau_dm_1_;
+ 
+  const BTagCalibration *calib;
+  BTagCalibrationReader* reader_incl;
+  BTagCalibrationReader* reader_comb;
+
+  TFile *ggh_weights_;
+  TGraph *ggh_ph_0jet_;
+  TGraph *ggh_ph_1jet_;
+  TGraph *ggh_ph_2jet_;
+  TGraph *ggh_ph_3jet_;
+  double wt_nnlops_;
+ 
  public:
   HTTGenAnalysis(std::string const& name);
   virtual ~HTTGenAnalysis();
