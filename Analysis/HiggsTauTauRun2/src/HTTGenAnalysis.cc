@@ -741,7 +741,7 @@ namespace ic {
       std::vector<ic::Electron*> reco_electrons = {};//event->GetPtrVec<ic::Electron>("electrons");
       std::vector<ic::Muon*> reco_muons = {};//event->GetPtrVec<ic::Muon>("muons");     
 
-      // add neutrinos 4-vectors to get gen met
+      // add tau_neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16){
         met.set_vector(met.vector() + part.vector());
         continue;
@@ -1423,7 +1423,7 @@ namespace ic {
     std::vector<std::pair<GenParticle*, GenParticle*>> rho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> prho_daughters;
     std::vector<std::pair<GenParticle*, GenParticle*>> l_daughters;
-    std::vector<GenParticle*> neutrinos;
+    std::vector<GenParticle*> tau_neutrinos;
     std::vector<std::vector<GenParticle*>> a1_daughters;
     std::vector<std::vector<GenParticle*>> fakea1_daughters;
     std::vector<std::vector<GenParticle*>> charged_daughters;
@@ -1463,25 +1463,27 @@ namespace ic {
         charged_vec.push_back(gen_particles[i]);
         //std::cout << "tau: " << gen_particles[i] << std::endl;
         for (unsigned d : daughters){
+          std::vector<bool> status_flags = gen_particles[d]->statusFlags(); 
           unsigned daughter_id = fabs(gen_particles[d]->pdgid());
           //std::cout << "ID in other function: " << gen_particles[d]->pdgid() << std::endl;
           int daughter_charge = gen_particles[d]->charge();
           if(daughter_id == 12 || daughter_id == 14 || daughter_id == 16) {
-            neutrinos.push_back(gen_particles[d]);
-            std::cout << "neutrino " << gen_particles[d]->pdgid() << std::endl;
+            if(status_flags[IsDirectPromptTauDecayProduct] && daughter_id==16) tau_neutrinos.push_back(gen_particles[d]);
+            //tau_neutrinos.push_back(gen_particles[d]);
+            //std::cout << "neutrino " << gen_particles[d]->pdgid() << std::endl;
             continue;
           }
-          ++count_hadr;
           if(daughter_id == 11 || daughter_id == 13) {
             ++count_lep;
             lep.first = gen_particles[d];
-            pi = gen_particles[d];
+            //pi = gen_particles[d];
             lep.second = tau;
             prho.first = pi;
             prho.second = tau;
 
             continue;
           }
+          ++count_hadr;
           if(daughter_charge!=0) {
             ++count_charged;
             charged_vec.push_back(gen_particles[d]);
@@ -1519,53 +1521,53 @@ namespace ic {
             //std::cout << "pi zero " << gen_particles[d]->vector() << std::endl;
             continue;
           }
-          if (daughter_id == 213) {
-            //std::cout << "found 213 rho " << daughter_id << std::endl;
-            count_pi0 = 0;
-            count_pi = 0;
-            count_K = 0;
-            count_hadr=0;
-            count_gamma=0;
-            std::vector<int> gdaughters = gen_particles[d]->daughters(); 
-            for (unsigned g : gdaughters){
-              unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
-              ++count_hadr;
-              if (gdaughter_id == 22) {
-                ++count_gamma;
-                continue;
-              }
-              if (gdaughter_id == 211) {
-                ++count_pi;
-                rho.first = gen_particles[g];
-                continue;
-              }
-              if (gdaughter_id == 111) {
-                ++count_pi0;
-                rho.second = gen_particles[g];
-                continue;
-              }
-            }
-            foundRho = true;
-            break;
-          }
+          //if (daughter_id == 213) {
+          //  //std::cout << "found 213 rho " << daughter_id << std::endl;
+          //  count_pi0 = 0;
+          //  count_pi = 0;
+          //  count_K = 0;
+          //  count_hadr=0;
+          //  count_gamma=0;
+          //  std::vector<int> gdaughters = gen_particles[d]->daughters(); 
+          //  for (unsigned g : gdaughters){
+          //    unsigned gdaughter_id = fabs(gen_particles[g]->pdgid());
+          //    ++count_hadr;
+          //    if (gdaughter_id == 22) {
+          //      ++count_gamma;
+          //      continue;
+          //    }
+          //    if (gdaughter_id == 211) {
+          //      ++count_pi;
+          //      rho.first = gen_particles[g];
+          //      continue;
+          //    }
+          //    if (gdaughter_id == 111) {
+          //      ++count_pi0;
+          //      rho.second = gen_particles[g];
+          //      continue;
+          //    }
+          //  }
+          //  foundRho = true;
+          //  break;
+          //}
         }
         foundRho = foundRho || (count_hadr-count_gamma==2 && count_pi==1 && count_pi0==1);
         foundPi = (count_hadr-count_gamma==1 && count_pi==1 && count_pi0==0);
-        foundLep = count_lep==1;
-        foundA1 = foundA1 || (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
-        found3Pi1P0 = found3Pi1P0 || (count_hadr-count_gamma==4 && count_pi==3 && count_pi0==1);
-        foundA1_2 = foundA1_2 || (count_hadr-count_gamma==3 && count_pi==1 && count_pi0==2);
+        foundLep = count_lep>0;
+        foundA1 = (count_hadr-count_gamma==3 && count_pi==3 && count_pi0==0);
+        found3Pi1P0 = (count_hadr-count_gamma==4 && count_pi==3 && count_pi0==1);
+        foundA1_2 = (count_hadr-count_gamma==3 && count_pi==1 && count_pi0==2);
         if (count_hadr==1 && count_K==1 && count_pi0==0 && count_pi==0) {
           kaon_daughters.push_back(kaon);
           prho_daughters.push_back(prho);
         }
-        if(foundRho) {
+        if(foundRho&&!foundLep) {
           rho_daughters.push_back(rho);
           Candidate * tauvis = new Candidate();
           tauvis->set_vector(rho.first->vector()+rho.second->vector());
           tau_rhos.push_back(tauvis);
         }
-        if(foundPi) {
+        if(foundPi&&!foundLep) {
           prho_daughters.push_back(prho);
           pi_daughters.push_back(pi);
         }
@@ -1574,17 +1576,17 @@ namespace ic {
         //  prho_daughters.push_back(prho);
         //  pi_daughters.push_back(pi);
         }
-        if(foundA1){
+        if(foundA1&&!foundLep){
           a1_daughters.push_back(a1);
         }
-        if(found3Pi1P0){
+        if(found3Pi1P0&&!foundLep){
           fakea1_daughters.push_back(fakea1);
         }
-        if(count_charged==3) {
+        if(count_charged==3&&!foundLep) {
           charged_daughters.push_back(charged_vec);
         }
 
-        if(foundA1_2){
+        if(foundA1_2&&!foundLep){
           a1_2_daughters.push_back(a1_2); 
         }
       }
@@ -1666,10 +1668,10 @@ namespace ic {
 
     std::vector<ic::Vertex*> gen_vertices;
     if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
-    if(make_mva_ntuple_ && gen_vertices.size()>0) {
+    if(make_mva_ntuple_ && gen_vertices.size()>0 && tau_neutrinos.size()==2) {
 
+      int tau1_charge=0, tau2_charge=0;
       tauFlag_1_=-1, tauFlag_2_=-1;
-
       if (rho_daughters.size()>=1) {
         pi_px_1_ = rho_daughters[0].first->vector().Px();
         pi_py_1_ = rho_daughters[0].first->vector().Py();
@@ -1685,6 +1687,16 @@ namespace ic {
         sv_y_1_ = rho_daughters[0].first->vtx().vy() - gen_vertices[0]->vy();
         sv_z_1_ = rho_daughters[0].first->vtx().vz() - gen_vertices[0]->vz();
         tauFlag_1_=1;
+ 
+        tau1_charge = rho_daughters[0].first->charge();
+        for (auto n: tau_neutrinos) {
+          if(tau1_charge*n->pdgid()>=0) continue; 
+          nu_px_1_ = n->vector().Px();
+          nu_py_1_ = n->vector().Py();
+          nu_pz_1_ = n->vector().Pz();
+          nu_E_1_ = n->vector().E();
+          break;
+        }
 
         if (pi_daughters.size()>=1) {
           pi_px_2_ = pi_daughters[0]->vector().Px();
@@ -1695,6 +1707,16 @@ namespace ic {
           sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
           sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_2_=0;
+
+          tau2_charge = pi_daughters[0]->charge();
+          for (auto n: tau_neutrinos) {
+            if(tau2_charge*n->pdgid()>=0) continue;               
+            nu_px_2_ = n->vector().Px();
+            nu_py_2_ = n->vector().Py();
+            nu_pz_2_ = n->vector().Pz();
+            nu_E_2_ = n->vector().E();
+            break;
+          }
         }
 
         if (a1_daughters.size()>=1) {
@@ -1717,6 +1739,17 @@ namespace ic {
           sv_z_2_ = a1_daughters_sorted_1[0]->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_2_=10;
 
+          tau2_charge = a1_daughters_sorted_1[0]->charge()+a1_daughters_sorted_1[1]->charge()+a1_daughters_sorted_1[2]->charge();
+          for (auto n: tau_neutrinos) {
+            if(tau2_charge*n->pdgid()>=0) continue;
+            nu_px_2_ = n->vector().Px();
+            nu_py_2_ = n->vector().Py();
+            nu_pz_2_ = n->vector().Pz();
+            nu_E_2_ = n->vector().E();
+            //std::cout << (n->vector()+a1_daughters_sorted_1[0]->vector()+a1_daughters_sorted_1[1]->vector()+a1_daughters_sorted_1[2]->vector()).M() << std::endl;
+            break;
+          }
+
         }
 
         if (rho_daughters.size()>1) {
@@ -1734,6 +1767,17 @@ namespace ic {
           sv_y_2_ = rho_daughters[1].first->vtx().vy() - gen_vertices[0]->vy();
           sv_z_2_ = rho_daughters[1].first->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_2_=1;
+
+          tau2_charge = rho_daughters[1].first->charge();
+          for (auto n: tau_neutrinos) {
+            if(tau2_charge*n->pdgid()>=0) continue;
+            nu_px_2_ = n->vector().Px();
+            nu_py_2_ = n->vector().Py();
+            nu_pz_2_ = n->vector().Pz();
+            nu_E_2_ = n->vector().E();
+            //std::cout << (n->vector()+rho_daughters[1].first->vector()+rho_daughters[1].second->vector()).M() << std::endl;
+            break;
+          }
         }
       } else if (a1_daughters.size()>=1) {
 
@@ -1756,6 +1800,17 @@ namespace ic {
           sv_z_1_ = a1_daughters_sorted_1[0]->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_1_=10;
 
+          tau1_charge = a1_daughters_sorted_1[0]->charge()+a1_daughters_sorted_1[1]->charge()+a1_daughters_sorted_1[2]->charge();
+          for (auto n: tau_neutrinos) {
+            if(tau1_charge*n->pdgid()>=0) continue;
+            nu_px_1_ = n->vector().Px();
+            nu_py_1_ = n->vector().Py();
+            nu_pz_1_ = n->vector().Pz();
+            nu_E_1_ = n->vector().E();
+            //std::cout << (n->vector()+a1_daughters_sorted_1[0]->vector()+a1_daughters_sorted_1[1]->vector()+a1_daughters_sorted_1[2]->vector()).M() << std::endl;
+            break;
+          }
+
           if (pi_daughters.size()>=1) {
             pi_px_2_ = pi_daughters[0]->vector().Px();
             pi_py_2_ = pi_daughters[0]->vector().Py();
@@ -1765,6 +1820,17 @@ namespace ic {
             sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
             sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
             tauFlag_2_=0;
+
+            tau2_charge = pi_daughters[0]->charge();
+            for (auto n: tau_neutrinos) {
+              if(tau2_charge*n->pdgid()>=0) continue;
+              nu_px_2_ = n->vector().Px();
+              nu_py_2_ = n->vector().Py();
+              nu_pz_2_ = n->vector().Pz();
+              nu_E_2_ = n->vector().E();
+              //std::cout << (n->vector()+pi_daughters[0]->vector()).M() << std::endl;
+              break;
+            }
           }
 
           if (a1_daughters.size()>1) {
@@ -1787,6 +1853,17 @@ namespace ic {
             sv_z_2_ = a1_daughters_sorted_2[0]->vtx().vz() - gen_vertices[0]->vz();
             tauFlag_2_=10;
 
+            tau2_charge = a1_daughters_sorted_2[0]->charge()+a1_daughters_sorted_2[1]->charge()+a1_daughters_sorted_2[2]->charge();
+            for (auto n: tau_neutrinos) {
+              if(tau2_charge*n->pdgid()>=0) continue;
+              nu_px_2_ = n->vector().Px();
+              nu_py_2_ = n->vector().Py();
+              nu_pz_2_ = n->vector().Pz();
+              nu_E_2_ = n->vector().E();
+              //std::cout << (n->vector()+a1_daughters_sorted_2[0]->vector()+a1_daughters_sorted_2[1]->vector()+a1_daughters_sorted_2[2]->vector()).M() << std::endl;
+              break;
+            }
+
           }
       } else if (pi_daughters.size()>=1) {
 
@@ -1795,6 +1872,17 @@ namespace ic {
           pi_pz_1_ = pi_daughters[0]->vector().Pz();
           pi_E_1_ =  pi_daughters[0]->vector().E();
           tauFlag_1_=0;
+
+          tau1_charge = pi_daughters[0]->charge();
+          for (auto n: tau_neutrinos) {
+            if(tau1_charge*n->pdgid()>=0) continue;
+            nu_px_1_ = n->vector().Px();
+            nu_py_1_ = n->vector().Py();
+            nu_pz_1_ = n->vector().Pz();
+            nu_E_1_ = n->vector().E();
+            //std::cout << (n->vector()+pi_daughters[0]->vector()).M() << std::endl;
+            break;
+          }
 
           sv_x_1_ = pi_daughters[0]->vtx().vx() - gen_vertices[0]->vx();
           sv_y_1_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
@@ -1805,6 +1893,17 @@ namespace ic {
             pi_py_2_ = pi_daughters[1]->vector().Py();
             pi_pz_2_ = pi_daughters[1]->vector().Pz();
             pi_E_2_ =  pi_daughters[1]->vector().E();
+
+            tau2_charge = pi_daughters[1]->charge();
+            for (auto n: tau_neutrinos) {
+              if(tau2_charge*n->pdgid()>=0) continue;
+              nu_px_2_ = n->vector().Px();
+              nu_py_2_ = n->vector().Py();
+              nu_pz_2_ = n->vector().Pz();
+              nu_E_2_ = n->vector().E();
+              //std::cout << (n->vector()+pi_daughters[1]->vector()).M() << std::endl;
+              break;
+            }
 
             sv_x_2_ = pi_daughters[1]->vtx().vx() - gen_vertices[0]->vx();
             sv_y_2_ = pi_daughters[1]->vtx().vy() - gen_vertices[0]->vy();
@@ -2602,6 +2701,7 @@ namespace ic {
     }
 
     if(fs_) outtree_->Fill();
+    if(make_mva_ntuple_ && tauFlag_1_>=0 && tauFlag_2_>=0) mvatree_->Fill();
     return 0;
   }
   int HTTGenAnalysis::PostAnalysis() {
@@ -2612,6 +2712,12 @@ namespace ic {
     std::cout << "mt count = " << count_mt_ << std::endl;
     std::cout << "tt count = " << count_tt_ << std::endl;
     std::cout << "count taus = " << count_taus_ << std::endl;
+
+    if(make_mva_ntuple_) {
+      lOFile->cd();
+      mvatree_->Write();
+      lOFile->Close();
+    }
 
     return 0;
   }
