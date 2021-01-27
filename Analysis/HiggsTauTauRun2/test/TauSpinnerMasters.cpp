@@ -59,7 +59,7 @@ int main(/*int argc, char* argv[]*/)
 	Particle pi_1, pi_2, pi0_1, pi0_2;
 	setupParticle(tree, "pi", pi_1, -211, 1);
 	setupParticle(tree, "pi", pi_2, 211, 2);
-	setupParticle(tree, "pi0", pi0_1, -111, 1);
+	setupParticle(tree, "pi0", pi0_1, 111, 1);
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
 	// Set neutrinos fixed for now
 	Particle nu_1{0, 3, 4, 5, 16};
@@ -98,15 +98,17 @@ int main(/*int argc, char* argv[]*/)
 			
 			// Make simple_tau_daughters vectors
 			std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
-			simple_tau1_daughters.push_back(convertToSimplePart(pi_1));
-			simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
-			simple_tau1_daughters.push_back(convertToSimplePart(a1_1));
 			simple_tau1_daughters.push_back(convertToSimplePart(nu_1));
+			simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
+			simple_tau1_daughters.push_back(convertToSimplePart(pi_1));
+			// Don't include a1 in tau daughters
+			//simple_tau1_daughters.push_back(convertToSimplePart(a1_1));
 			
-			simple_tau2_daughters.push_back(convertToSimplePart(pi_2));
-			simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
-			simple_tau2_daughters.push_back(convertToSimplePart(a1_2));
 			simple_tau2_daughters.push_back(convertToSimplePart(nu_2));
+			simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
+			simple_tau2_daughters.push_back(convertToSimplePart(pi_2));
+			// Don't include a1 in tau daughters
+			//simple_tau2_daughters.push_back(convertToSimplePart(a1_2));
 			
 			auto simple_tau1 = convertToSimplePart(tau_1);
 			auto simple_tau2 = convertToSimplePart(tau_2);
