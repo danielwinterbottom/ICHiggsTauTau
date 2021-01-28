@@ -16,9 +16,9 @@ struct Particle
 	int pdgID;
 };
 
-struct PtEtaPhi
+struct PEtaPhi
 {
-	double Pt;
+	double P;
 	double Eta;
 	double Phi;
 	int pdgID;
@@ -41,12 +41,12 @@ void setupParticle(TTree *a_tree, std::string a_name, Particle &a_particle, int 
 }
 
 /** Function to set neutrino values to be read from a_tree */
-void setupNeutrino(TTree *a_tree, std::string a_name, PtEtaPhi &a_PtEtaPhi, int a_pdgID, int a_fromTau)
+void setupNeutrino(TTree *a_tree, std::string a_name, PEtaPhi &a_PEtaPhi, int a_pdgID, int a_fromTau)
 {
-	a_tree->SetBranchAddress((a_name+"_p_"+std::to_string(a_fromTau)).c_str(), &a_PtEtaPhi.Pt);
-	a_tree->SetBranchAddress((a_name+"_eta_"+std::to_string(a_fromTau)).c_str(), &a_PtEtaPhi.Eta);
-	a_tree->SetBranchAddress((a_name+"_phi_"+std::to_string(a_fromTau)).c_str(), &a_PtEtaPhi.Phi);
-	a_PtEtaPhi.pdgID = a_pdgID;
+	a_tree->SetBranchAddress((a_name+"_p_"+std::to_string(a_fromTau)).c_str(), &a_PEtaPhi.P);
+	a_tree->SetBranchAddress((a_name+"_eta_"+std::to_string(a_fromTau)).c_str(), &a_PEtaPhi.Eta);
+	a_tree->SetBranchAddress((a_name+"_phi_"+std::to_string(a_fromTau)).c_str(), &a_PEtaPhi.Phi);
+	a_PEtaPhi.pdgID = a_pdgID;
 }
 
 TauSpinner::SimpleParticle convertToSimplePart(const Particle &a_particle)
@@ -54,11 +54,11 @@ TauSpinner::SimpleParticle convertToSimplePart(const Particle &a_particle)
   return TauSpinner::SimpleParticle(a_particle.px, a_particle.py, a_particle.pz, a_particle.E, a_particle.pdgID);
 }
 
-TauSpinner::SimpleParticle neutrinoToSimplePart(const PtEtaPhi &a_PtEtaPhi)
+TauSpinner::SimpleParticle neutrinoToSimplePart(const PEtaPhi &a_PEtaPhi)
 {
-	//auto particle = ROOT::Math::PtEtaPhiMVector(PtEtaPhi.Pt, PtEtaPhi.Eta, PtEtaPhi.Phi, 0);
-	ROOT::Math::PtEtaPhiM4D<double> particle(a_PtEtaPhi.Pt, a_PtEtaPhi.Eta, a_PtEtaPhi.Phi, 0);
-  return TauSpinner::SimpleParticle(particle.Px(), particle.Py(), particle.Pz(), particle.E(), a_PtEtaPhi.pdgID);
+	double pt = a_PEtaPhi.P/std::cosh(a_PEtaPhi.Eta);
+	ROOT::Math::PtEtaPhiM4D<double> particle(pt, a_PEtaPhi.Eta, a_PEtaPhi.Phi, 0);
+  return TauSpinner::SimpleParticle(particle.Px(), particle.Py(), particle.Pz(), particle.E(), a_PEtaPhi.pdgID);
 }
 
 int main(/*int argc, char* argv[]*/)
@@ -87,7 +87,7 @@ int main(/*int argc, char* argv[]*/)
 	setupParticle(tree, "pi0", pi0_1, 111, 1);
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
 	// Set neutrinos to read from gen for now
-	PtEtaPhi nu_1, nu_2;
+	PEtaPhi nu_1, nu_2;
 	setupNeutrino(tree, "gen_nu", nu_1, 16, 1);
 	setupNeutrino(tree, "gen_nu", nu_2, -16, 2);
 	
