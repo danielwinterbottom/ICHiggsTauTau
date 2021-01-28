@@ -24,13 +24,6 @@ struct PtEtaPhi
 	int pdgID;
 };
 
-/** Function to add two particles into a mother particle, must specify pdgID of new particle. */
-
-Particle addParticles(Particle a, Particle b, int result_pdgID)
-{
-	return Particle{a.px+b.px, a.py+b.py, a.pz+b.pz, a.E+b.E, result_pdgID};
-}
-
 /** Add two simple particles resulting in a third simple particles. Must specify new pdgID */
 TauSpinner::SimpleParticle addSimpleParticles(TauSpinner::SimpleParticle &a, TauSpinner::SimpleParticle &b, int result_pdgID)
 {
@@ -122,15 +115,6 @@ int main(/*int argc, char* argv[]*/)
   			 && tau_decay_mode_1 == 1 && tau_decay_mode_2 == 1
   	) // Event Selection
   	{
-			//std::cout << "pi_px_1 = " << pi_1.px << std::endl;
-			/*
-			Particle a1_1 = addParticles(pi_1, pi0_1, -213);//20213);
-			Particle a1_2 = addParticles(pi_2, pi0_2, 213);//-20213);
-			Particle tau_1 = addParticles(a1_1, nu_1, 15);
-			Particle tau_2 = addParticles(a1_2, nu_2, -15);
-			Particle Higgs = addParticles(tau_1, tau_2, 25);
-			*/
-			
 			auto pi_1_simple = convertToSimplePart(pi_1);
 			auto pi_2_simple = convertToSimplePart(pi_2);
 			auto pi0_1_simple = convertToSimplePart(pi0_1);
