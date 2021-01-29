@@ -79,6 +79,15 @@ int main(/*int argc, char* argv[]*/)
 	tree->SetBranchAddress("tau_decay_mode_2", &tau_decay_mode_2);
 	tree->SetBranchAddress("mva_dm_1", &mva_dm_1);
 	tree->SetBranchAddress("mva_dm_2", &mva_dm_2);
+	// Gen selectors
+	int tauFlag_1, tauFlag_2;
+	tree->SetBranchAddress("tauFlag_1", &tauFlag_1);
+	tree->SetBranchAddress("tauFlag_2", &tauFlag_2);
+	// Stored weights
+	double stored_wt_cp_sm, stored_wt_cp_mm, stored_wt_cp_ps;
+	tree->SetBranchAddress("wt_cp_sm", &stored_wt_cp_sm);
+	tree->SetBranchAddress("wt_cp_mm", &stored_wt_cp_mm);
+	tree->SetBranchAddress("wt_cp_ps", &stored_wt_cp_ps);
 	
 	// Setup particles
 	Particle pi_1, pi_2, pi0_1, pi0_2;
@@ -111,34 +120,38 @@ int main(/*int argc, char* argv[]*/)
   {
   	tree->GetEntry(i);
   	//std::cout << i << std::endl;
-  	if ( mva_dm_1 == 1 && mva_dm_2 == 1
-  			 && tau_decay_mode_1 == 1 && tau_decay_mode_2 == 1
+  	if (
+  			 //mva_dm_1 == 1 && mva_dm_2 == 1
+  			 //&& tau_decay_mode_1 == 1 && tau_decay_mode_2 == 1
+  			 tauFlag_1 == 0 && tauFlag_2 == 0
   	) // Event Selection
   	{
 			auto pi_1_simple = convertToSimplePart(pi_1);
 			auto pi_2_simple = convertToSimplePart(pi_2);
-			auto pi0_1_simple = convertToSimplePart(pi0_1);
-			auto pi0_2_simple = convertToSimplePart(pi0_2);
+			//auto pi0_1_simple = convertToSimplePart(pi0_1);
+			//auto pi0_2_simple = convertToSimplePart(pi0_2);
 			auto nu_1_simple = neutrinoToSimplePart(nu_1);
 			auto nu_2_simple = neutrinoToSimplePart(nu_2);
 			
 			//std::cout << "nu_2_Epxpypz, E=" << nu_2_simple.e() << "\tpx=" << nu_2_simple.px() << "\tpy=" << nu_2_simple.py() << "\tpz=" << nu_2_simple.pz() << std::endl;
 			
-			auto a1_1_simple = addSimpleParticles(pi_1_simple, pi0_1_simple, -213);
-			auto a1_2_simple = addSimpleParticles(pi_2_simple, pi0_2_simple, 213);
-			auto tau_1_simple = addSimpleParticles(a1_1_simple, nu_1_simple, 15);
-			auto tau_2_simple = addSimpleParticles(a1_2_simple, nu_2_simple, -15);
+			//auto a1_1_simple = addSimpleParticles(pi_1_simple, pi0_1_simple, -213);
+			//auto a1_2_simple = addSimpleParticles(pi_2_simple, pi0_2_simple, 213);
+			//auto tau_1_simple = addSimpleParticles(a1_1_simple, nu_1_simple, 15);
+			//auto tau_2_simple = addSimpleParticles(a1_2_simple, nu_2_simple, -15);
+			auto tau_1_simple = addSimpleParticles(pi_1_simple, nu_1_simple, 15);
+			auto tau_2_simple = addSimpleParticles(pi_2_simple, nu_2_simple, -15);
 			auto Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
 			//std::cout << "Higgs mass = " << std::sqrt(Higgs_simple.e()*Higgs_simple.e() - Higgs_simple.px()*Higgs_simple.px() - Higgs_simple.py()*Higgs_simple.py() - Higgs_simple.pz()*Higgs_simple.pz()) << std::endl;
 			
 			// Make simple_tau_daughters vectors
 			std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
 			simple_tau1_daughters.push_back(nu_1_simple);
-			simple_tau1_daughters.push_back(pi0_1_simple);
+			//simple_tau1_daughters.push_back(pi0_1_simple);
 			simple_tau1_daughters.push_back(pi_1_simple);
 			
 			simple_tau2_daughters.push_back(nu_2_simple);
-			simple_tau2_daughters.push_back(pi0_2_simple);
+			//simple_tau2_daughters.push_back(pi0_2_simple);
 			simple_tau2_daughters.push_back(pi_2_simple);
 			
 			//double wt_prod, wt_P, wt_M;//, wt_EW, wt_EW0;
@@ -165,6 +178,7 @@ int main(/*int argc, char* argv[]*/)
 			std::cout << "Other weights CP: " << wt_prod << wt_P << wt_M << std::endl;// << wt_EW << wt_EW0 << std::endl;
 			*/
 			std::cout << "Event " << i << " weights: sm = " << weight_sm << "\tweight_mm = " << weight_mm << "\tweightcp = " << weight_cp << std::endl;
+			std::cout << "Stored weights: sm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl;
   	} // Event selection
 	} // Event loop
   
