@@ -214,6 +214,7 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   //std::cout << "\nThe pt of the mother of the first tau decay product: " << tau1_daughters[0].mother()->pt() << '\n';  
  
   TauSpinner::SimpleParticle simple_boson = ConvertToSimplePart(boson);
+  std::cout << "Higgs mass = " << std::sqrt(simple_boson.e()*simple_boson.e() - simple_boson.px()*simple_boson.px() - simple_boson.py()*simple_boson.py() - simple_boson.pz()*simple_boson.pz()) << std::endl;
   TauSpinner::SimpleParticle simple_tau1 = ConvertToSimplePart(taus[0]);
   TauSpinner::SimpleParticle simple_tau2 = ConvertToSimplePart(taus[1]);
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
