@@ -100,7 +100,7 @@ int main(/*int argc, char* argv[]*/)
   double CMSENE=13000.0;
 	
 	// Initialise TauSpinner
-  Tauolapp::Tauola::setNewCurrents(0);
+  Tauolapp::Tauola::setNewCurrents(1);
   Tauolapp::Tauola::initialize();
   LHAPDF::initPDFSetByName(TauSpinnerSettingsPDF);
   TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);
@@ -111,7 +111,7 @@ int main(/*int argc, char* argv[]*/)
   {
   	tree->GetEntry(i);
   	//std::cout << i << std::endl;
-  	if ( mva_dm_1 == 2 && mva_dm_2 == 2
+  	if ( mva_dm_1 == 1 && mva_dm_2 == 1
   			 && tau_decay_mode_1 == 1 && tau_decay_mode_2 == 1
   	) // Event Selection
   	{
@@ -122,11 +122,14 @@ int main(/*int argc, char* argv[]*/)
 			auto nu_1_simple = neutrinoToSimplePart(nu_1);
 			auto nu_2_simple = neutrinoToSimplePart(nu_2);
 			
+			//std::cout << "nu_2_Epxpypz, E=" << nu_2_simple.e() << "\tpx=" << nu_2_simple.px() << "\tpy=" << nu_2_simple.py() << "\tpz=" << nu_2_simple.pz() << std::endl;
+			
 			auto a1_1_simple = addSimpleParticles(pi_1_simple, pi0_1_simple, -213);
 			auto a1_2_simple = addSimpleParticles(pi_2_simple, pi0_2_simple, 213);
 			auto tau_1_simple = addSimpleParticles(a1_1_simple, nu_1_simple, 15);
 			auto tau_2_simple = addSimpleParticles(a1_2_simple, nu_2_simple, -15);
 			auto Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
+			//std::cout << "Higgs mass = " << std::sqrt(Higgs_simple.e()*Higgs_simple.e() - Higgs_simple.px()*Higgs_simple.px() - Higgs_simple.py()*Higgs_simple.py() - Higgs_simple.pz()*Higgs_simple.pz()) << std::endl;
 			
 			// Make simple_tau_daughters vectors
 			std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
@@ -138,13 +141,29 @@ int main(/*int argc, char* argv[]*/)
 			simple_tau2_daughters.push_back(pi0_2_simple);
 			simple_tau2_daughters.push_back(pi_2_simple);
 			
+			//double wt_prod, wt_P, wt_M;//, wt_EW, wt_EW0;
 			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0), cos(2*M_PI*0), -sin(2*M_PI*0), -sin(2*M_PI*0));
 			double weight_sm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+			/*
+			wt_prod = TauSpinner::getWtNonSM();
+			wt_P = TauSpinner::getWtamplitP();
+			wt_M = TauSpinner::getWtamplitM();
+			//wt_EW = TauSpinner::getEWwt();
+			//wt_EW0 = TauSpinner::getEWwt0();
+			std::cout << "Other weights SM: " << wt_prod << wt_P << wt_M << std::endl;// << wt_EW << wt_EW0 << std::endl;
+			*/
 			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.25), cos(2*M_PI*0.25), -sin(2*M_PI*0.25), -sin(2*M_PI*0.25));
 			double weight_mm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
 			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
 			double weight_cp = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-			
+			/*
+			wt_prod = TauSpinner::getWtNonSM();
+			wt_P = TauSpinner::getWtamplitP();
+			wt_M = TauSpinner::getWtamplitM();
+			//wt_EW = TauSpinner::getEWwt();
+			//wt_EW0 = TauSpinner::getEWwt0();
+			std::cout << "Other weights CP: " << wt_prod << wt_P << wt_M << std::endl;// << wt_EW << wt_EW0 << std::endl;
+			*/
 			std::cout << "Event " << i << " weights: sm = " << weight_sm << "\tweight_mm = " << weight_mm << "\tweightcp = " << weight_cp << std::endl;
   	} // Event selection
 	} // Event loop
