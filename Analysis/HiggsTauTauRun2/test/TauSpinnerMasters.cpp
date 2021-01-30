@@ -141,12 +141,8 @@ int main(/*int argc, char* argv[]*/)
 			simple_tau1_daughters.push_back(pi_1_simple);
 			simple_tau2_daughters.push_back(pi_2_simple);
 			
-			// First tau decay mode
-			if ( mva_dm_1 == 0 ) // pi
-			{
-				// nothing to do
-			}
-			else if (mva_dm_1 == 1 || mva_dm_1 == 2) // rho/pi+2pi0
+			// Handle first tau decay modes
+			if (mva_dm_1 == 1 || mva_dm_1 == 2) // rho/pi+2pi0
 			{
 				simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
 			}
@@ -166,12 +162,8 @@ int main(/*int argc, char* argv[]*/)
 				// don't know what to do
 			}
 			
-			// Second tau decay mode
-			if ( mva_dm_2 == 0 ) // pi
-			{
-				// nothing to do
-			}
-			else if (mva_dm_2 == 1 || mva_dm_2 == 2) // rho/pi+2pi0
+			// Handle second tau decay modes
+			if (mva_dm_2 == 1 || mva_dm_2 == 2) // rho/pi+2pi0
 			{
 				simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
 			}
