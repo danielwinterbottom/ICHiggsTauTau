@@ -61,6 +61,25 @@ TauSpinner::SimpleParticle neutrinoToSimplePart(const PEtaPhi &a_PEtaPhi)
   return TauSpinner::SimpleParticle(particle.Px(), particle.Py(), particle.Pz(), particle.E(), a_PEtaPhi.pdgID);
 }
 
+inline void setupTauDaughters(int decayMode, std::vector<TauSpinner::SimpleParticle> &daughters, Particle &pi0, Particle &pi2, Particle &pi3)
+{
+	if (decayMode == 1 || decayMode == 2) // rho/pi+2pi0
+	{
+		daughters.push_back(convertToSimplePart(pi0));
+	}
+	else if (decayMode == 10) // 3pi
+	{
+		daughters.push_back(convertToSimplePart(pi2));
+		daughters.push_back(convertToSimplePart(pi3));
+	}
+	else if (decayMode == 11) // 3pi+pi0
+	{
+		daughters.push_back(convertToSimplePart(pi2));
+		daughters.push_back(convertToSimplePart(pi3));
+		daughters.push_back(convertToSimplePart(pi0));
+	}
+}
+
 int main(/*int argc, char* argv[]*/)
 {
   // Initalise here (open input file, create output, initalise tauspinner etc...)
@@ -141,47 +160,9 @@ int main(/*int argc, char* argv[]*/)
 			simple_tau1_daughters.push_back(pi_1_simple);
 			simple_tau2_daughters.push_back(pi_2_simple);
 			
-			// Handle first tau decay modes
-			if (mva_dm_1 == 1 || mva_dm_1 == 2) // rho/pi+2pi0
-			{
-				simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
-			}
-			else if (mva_dm_1 == 10) // 3pi
-			{
-				simple_tau1_daughters.push_back(convertToSimplePart(pi2_1));
-				simple_tau1_daughters.push_back(convertToSimplePart(pi3_1));
-			}
-			else if (mva_dm_1 == 11) // 3pi+pi0
-			{
-				simple_tau1_daughters.push_back(convertToSimplePart(pi2_1));
-				simple_tau1_daughters.push_back(convertToSimplePart(pi3_1));
-				simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
-			}
-			else // other decay
-			{
-				// don't know what to do
-			}
-			
-			// Handle second tau decay modes
-			if (mva_dm_2 == 1 || mva_dm_2 == 2) // rho/pi+2pi0
-			{
-				simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
-			}
-			else if (mva_dm_2 == 10) // 3pi
-			{
-				simple_tau2_daughters.push_back(convertToSimplePart(pi2_2));
-				simple_tau2_daughters.push_back(convertToSimplePart(pi3_2));
-			}
-			else if (mva_dm_2 == 11) // 3pi+pi0
-			{
-				simple_tau2_daughters.push_back(convertToSimplePart(pi2_2));
-				simple_tau2_daughters.push_back(convertToSimplePart(pi3_2));
-				simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
-			}
-			else // other decay
-			{
-				// don't know what to do
-			}
+			// Handle tau decay modes
+			setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
+			setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
 			
 			// add up tau_1
 			for(auto daughter : simple_tau1_daughters)
