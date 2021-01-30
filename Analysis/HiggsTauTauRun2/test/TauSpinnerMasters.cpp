@@ -89,9 +89,14 @@ int main(/*int argc, char* argv[]*/)
 	tree->SetBranchAddress("wt_cp_ps", &stored_wt_cp_ps);
 	
 	// Setup particles
-	Particle pi_1, pi_2, pi0_1, pi0_2;
+	Particle pi_1, pi2_1, pi3_1, pi0_1;
+	Particle pi_2, pi2_2, pi3_2, pi0_2;
 	setupParticle(tree, "pi", pi_1, -211, 1);
 	setupParticle(tree, "pi", pi_2, 211, 2);
+	setupParticle(tree, "pi2", pi2_1, -211, 1);
+	setupParticle(tree, "pi2", pi2_2, 211, 2);
+	setupParticle(tree, "pi3", pi3_1, 211, 1);
+	setupParticle(tree, "pi3", pi3_2, -211, 2);
 	setupParticle(tree, "pi0", pi0_1, 111, 1);
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
 	// Set neutrinos to read from gen for now
@@ -147,11 +152,14 @@ int main(/*int argc, char* argv[]*/)
 			}
 			else if (mva_dm_1 == 10) // 3pi
 			{
-				//simple_tau1_daughters.push_back(
+				simple_tau1_daughters.push_back(convertToSimplePart(pi2_1));
+				simple_tau1_daughters.push_back(convertToSimplePart(pi3_1));
 			}
 			else if (mva_dm_1 == 11) // 3pi+pi0
 			{
-				//tau3pipi0Decay()
+				simple_tau1_daughters.push_back(convertToSimplePart(pi2_1));
+				simple_tau1_daughters.push_back(convertToSimplePart(pi3_1));
+				simple_tau1_daughters.push_back(convertToSimplePart(pi0_1));
 			}
 			else // other decay
 			{
@@ -165,15 +173,18 @@ int main(/*int argc, char* argv[]*/)
 			}
 			else if (mva_dm_2 == 1 || mva_dm_2 == 2) // rho/pi+2pi0
 			{
-				simple_tau1_daughters.push_back(convertToSimplePart(pi0_2));
+				simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
 			}
 			else if (mva_dm_2 == 10) // 3pi
 			{
-				//simple_tau1_daughters.push_back(
+				simple_tau2_daughters.push_back(convertToSimplePart(pi2_2));
+				simple_tau2_daughters.push_back(convertToSimplePart(pi3_2));
 			}
 			else if (mva_dm_2 == 11) // 3pi+pi0
 			{
-				//tau3pipi0Decay()
+				simple_tau2_daughters.push_back(convertToSimplePart(pi2_2));
+				simple_tau2_daughters.push_back(convertToSimplePart(pi3_2));
+				simple_tau2_daughters.push_back(convertToSimplePart(pi0_2));
 			}
 			else // other decay
 			{
