@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <string>
 #include "TFile.h"
 #include "TTree.h"
@@ -84,16 +83,22 @@ inline void setupTauDaughters(int decayMode, std::vector<TauSpinner::SimpleParti
 int main(/*int argc, char* argv[]*/)
 {
   // Initalise here (open input file, create output, initalise tauspinner etc...)
-	TFile file("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
-  if (file.IsZombie())
+	TFile oldFile("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
+  if (oldFile.IsZombie())
 	{
 		std::cerr << "File didn't load correctly." << std::endl;
 		return -1;
 	}
-	TTree *tree = static_cast<TTree*>(file.Get("ntuple"));
-	std::ofstream outfile;
-	outfile.open("weights.csv");
-	outfile << "event,tau_dm_1,tau_dm_2,sm_calc,sm_stored,mm_calc,mm_stored,ps_calc,ps_stored" << std::endl;
+	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
+	
+	TFile newFile("MVAFILE_AllHiggs_tt_pseudo.root", "recreate");
+	TTree *tree = oldTree->CloneTree();
+	
+	// Setup branches to write to ntuple
+	double weight_sm, weight_mm, weight_ps;
+	TBranch *weight_sm_branch = tree->Branch("pseudo_wt_cp_sm", &weight_sm, "pseudo_wt_cp_sm/D");
+	TBranch *weight_mm_branch = tree->Branch("pseudo_wt_cp_mm", &weight_mm, "pseudo_wt_cp_mm/D");
+	TBranch *weight_ps_branch = tree->Branch("pseudo_wt_cp_ps", &weight_ps, "pseudo_wt_cp_ps/D");
 	
 	// Setup variables to read from branches
 	int tau_decay_mode_1, tau_decay_mode_2, mva_dm_1, mva_dm_2;
@@ -143,68 +148,67 @@ int main(/*int argc, char* argv[]*/)
   
   // Event loop
   for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
-  //for (int i = 0, nEntries = 1000000; i < nEntries; i++)
+  //for (int i = 0, nEntries = 100; i < nEntries; i++)
   {
   	tree->GetEntry(i);
-  	// Only hadronic events at the moment
-  	if (tau_decay_mode_1 == 1 && tau_decay_mode_2 == 1)
-  	{
-			//std::cout << i << std::endl;
-			
-			// Standard for all hadronic decays
-			TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
-			TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
-			TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1);
-			TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2);
-			
-			TauSpinner::SimpleParticle tau_1_simple, tau_2_simple, Higgs_simple;
-			std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
-			simple_tau1_daughters.push_back(nu_1_simple);
-			simple_tau2_daughters.push_back(nu_2_simple);
-			simple_tau1_daughters.push_back(pi_1_simple);
-			simple_tau2_daughters.push_back(pi_2_simple);
-			
-			// Handle tau decay modes
-			setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
-			setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
-			
-			// add up tau_1
-			for(auto daughter : simple_tau1_daughters)
-			{
-				tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
-			}
-			tau_1_simple.setPdgid(15);
-			
-			// add up tau_2
-			for(auto daughter : simple_tau2_daughters)
-			{
-				tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
-			}
-			tau_2_simple.setPdgid(-15);
-			
-			// add up Higgs
-			Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
-			
-			// Calculate different weights: sm, mm, ps
-			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0), cos(2*M_PI*0), -sin(2*M_PI*0), -sin(2*M_PI*0));
-			double weight_sm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.25), cos(2*M_PI*0.25), -sin(2*M_PI*0.25), -sin(2*M_PI*0.25));
-			double weight_mm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
-			double weight_cp = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-			
-			if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
-			{
-				std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_cp << std::endl;
-				std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
-			}
-			outfile << i << "," << mva_dm_1 << "," << mva_dm_2 << "," << weight_sm << "," << stored_wt_cp_sm << "," << weight_mm << "," << stored_wt_cp_mm << "," << weight_cp << "," << stored_wt_cp_ps << std::endl;
-  	} // Hadronic selection
+		//std::cout << i << std::endl;
+		
+		// Standard for all hadronic decays
+		TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
+		TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
+		TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1);
+		TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2);
+		
+		TauSpinner::SimpleParticle tau_1_simple, tau_2_simple, Higgs_simple;
+		std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
+		simple_tau1_daughters.push_back(nu_1_simple);
+		simple_tau2_daughters.push_back(nu_2_simple);
+		simple_tau1_daughters.push_back(pi_1_simple);
+		simple_tau2_daughters.push_back(pi_2_simple);
+		
+		// Handle tau decay modes
+		setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
+		setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
+		
+		// add up tau_1
+		for(auto daughter : simple_tau1_daughters)
+		{
+			tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
+		}
+		tau_1_simple.setPdgid(15);
+		
+		// add up tau_2
+		for(auto daughter : simple_tau2_daughters)
+		{
+			tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
+		}
+		tau_2_simple.setPdgid(-15);
+		
+		// add up Higgs
+		Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
+		
+		// Calculate different weights: sm, mm, ps
+		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0), cos(2*M_PI*0), -sin(2*M_PI*0), -sin(2*M_PI*0));
+		weight_sm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.25), cos(2*M_PI*0.25), -sin(2*M_PI*0.25), -sin(2*M_PI*0.25));
+		weight_mm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
+		weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+		
+		// Fill branches
+		weight_sm_branch->Fill();
+		weight_mm_branch->Fill();
+		weight_ps_branch->Fill();
+		
+		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
+		{
+			std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
+			std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
+		}
 	} // Event loop
   
-  outfile.close();
-  
   // Write new trees here
+  tree->Write("", TObject::kOverwrite);
   
   return 0;
 }
