@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "TFile.h"
 #include "TTree.h"
@@ -90,6 +91,9 @@ int main(/*int argc, char* argv[]*/)
 		return -1;
 	}
 	TTree *tree = static_cast<TTree*>(file.Get("ntuple"));
+	std::ofstream outfile;
+	outfile.open("weights.csv");
+	outfile << "event,tau_dm_1,tau_dm_2,sm_calc,sm_stored,mm_calc,mm_stored,ps_calc,ps_stored" << std::endl;
 	
 	// Setup variables to read from branches
 	int tau_decay_mode_1, tau_decay_mode_2, mva_dm_1, mva_dm_2;
@@ -138,8 +142,8 @@ int main(/*int argc, char* argv[]*/)
   TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);
   
   // Event loop
-  //for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
-  for (int i = 0, nEntries = 1000; i < nEntries; i++)
+  for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
+  //for (int i = 0, nEntries = 1000000; i < nEntries; i++)
   {
   	tree->GetEntry(i);
   	// Only hadronic events at the moment
@@ -194,8 +198,11 @@ int main(/*int argc, char* argv[]*/)
 				std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_cp << std::endl;
 				std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
 			}
+			outfile << i << "," << mva_dm_1 << "," << mva_dm_2 << "," << weight_sm << "," << stored_wt_cp_sm << "," << weight_mm << "," << stored_wt_cp_mm << "," << weight_cp << "," << stored_wt_cp_ps << std::endl;
   	} // Hadronic selection
 	} // Event loop
+  
+  outfile.close();
   
   // Write new trees here
   
