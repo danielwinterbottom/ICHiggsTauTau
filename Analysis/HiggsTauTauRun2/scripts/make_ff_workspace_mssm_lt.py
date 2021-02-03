@@ -21,6 +21,16 @@ channel = args.channel
 input = args.input
 output = args.output
 
+
+def ZeroNegativeBinContent(h):
+  # if a bin of h1 is equal to 0 ir negative then remove it
+  # also remove non zero bins with > 100% errors
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) <= 0:
+      h.SetBinContent(i,0.0001)
+  return h
+
+
 crosstrg_pt = 0
 if channel == 'mt':
   if year == '2016':
@@ -38,6 +48,7 @@ if channel == 'et':
 
 cmssw_base = subprocess.check_output('echo $CMSSW_BASE', shell=True).replace('\n','')
 
+print '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/workspaceTools.py' % vars()
 wsptools = imp.load_source('wsptools', '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/workspaceTools.py' % vars())
 
 def GetFromTFile(str):
@@ -277,12 +288,16 @@ w.factory('expr::ff_lt_ttbar_raw("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.
 
 # apply qcd corrections
 
-w.factory('expr::met_var_qcd_bounded("max(min(@0,1.5),-1.8)",met_var_qcd[0])' % vars())
-w.factory('expr::met_var_w_bounded("max(min(@0,1.0),-2.2)",met_var_w[0])' % vars())
-w.factory('expr::l_pt_bounded100("min(@0,99.9)",l_pt[20])' % vars())
+
+
+w.factory('expr::met_var_qcd_bounded("@0",met_var_qcd[0])' % vars())
+w.factory('expr::met_var_w_bounded("@0",met_var_w[0])' % vars())
+#w.factory('expr::l_pt_bounded100("min(@0,99.9)",l_pt[20])' % vars())
+w.factory('expr::l_pt_bounded100("min(@0,199.9)",l_pt[20])' % vars()) # hacky change
 w.factory('expr::l_pt_bounded140("min(@0,139.9)",l_pt[20])' % vars())
 w.factory('expr::l_pt_bounded160("min(@0,159.9)",l_pt[20])' % vars())
-w.factory('expr::l_pt_bounded200("min(@0,199.9)",l_pt[20])' % vars())
+#w.factory('expr::l_pt_bounded200("min(@0,199.9)",l_pt[20])' % vars())
+w.factory('expr::l_pt_bounded200("min(@0,299.9)",l_pt[20])' % vars()) # hacky change
 w.factory('expr::l_pt_bounded250("min(@0,249.9)",l_pt[20])' % vars())
 w.factory('expr::iso_bounded("min(@0,0.5)",iso[0])' % vars())
 
@@ -298,11 +313,13 @@ for njet in [0,1]:
 
   # get stat uncertainties
 
+  print 'met_%(njet)ijet_closure_qcd_uncert' % vars()
   hist_ss_nom = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:met_%(njet)ijet_closure_qcd_uncert' % vars())
   hist_os_nom_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:pt_1_nbjets%(njet)i_dr_to_ar_aiso_closure_qcd_uncert' % vars())
 
-  #low_pt = hist_os_nom_1.GetBinContent(1) # might need a low pT correction for below the cross trigger threshold!
+  hist_ss_nom = ZeroNegativeBinContent(hist_ss_nom)
 
+  #low_pt = hist_os_nom_1.GetBinContent(1) # might need a low pT correction for below the cross trigger threshold!
   (uncert1_up, uncert1_down, uncert2_up, uncert_2_down) = wsptools.SplitUncert(hist_ss_nom)
 
   wsptools.SafeWrapHist(w, ['met_var_qcd_bounded'], hist_ss_nom, name='lt_qcd_ss_njets%(njet)i_correction_nom' % vars())
@@ -729,7 +746,7 @@ for s in wjets_systs:
     w.factory('expr::ff_total_%(s)s_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_%(s)s_down, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v2.root' % vars())
 w.Delete() 
 
 # check et_medium_pt_1_nbjets1_dr_to_ar_aiso_closure_qcd_fit uncertainty band

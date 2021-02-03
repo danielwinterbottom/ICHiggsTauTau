@@ -74,9 +74,9 @@ def SetAxisTitles(plot, channel):
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['svfit_mass'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)']
-  titles['dphi'] = ['#Delta#phi(lep1,lep2)','Events / '+bin_width, 'dN/d#Delta#phi','']
-  titles['met_dphi_1'] = ['#Delta#phi(lep1,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
-  titles['met_dphi_2'] = ['#Delta#phi(lep2,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
+  titles['dphi'] = ['#Delta#phi('+lep1_label+','+lep2_label+')','Events / '+bin_width, 'dN/d#Delta#phi','']
+  titles['met_dphi_1'] = ['#Delta#phi('+lep1_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
+  titles['met_dphi_2'] = ['#Delta#phi('+lep2_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
@@ -2155,6 +2155,8 @@ def HTTPlot(nodename,
             auto_blind=True,
             discrete_x_axis=False,
             discrete_x_labels=None,
+            qcd_ff_closure=False,
+            w_ff_closure=False,
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2245,7 +2247,6 @@ def HTTPlot(nodename,
             'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
             'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
             'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))]}
-
     else:
       background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
       'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -2264,7 +2265,7 @@ def HTTPlot(nodename,
     'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))],
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
-    if FF:
+    if FF and not w_ff_closure and not qcd_ff_closure:
         background_schemes = {
                 'mt':[
                     backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
@@ -2294,6 +2295,71 @@ def HTTPlot(nodename,
                     backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))
                     ]
         }
+    elif FF and qcd_ff_closure:
+        background_schemes = {
+                'mt':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),
+                    backgroundComp("QCD jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Other jet#rightarrow#tau", ["W_res","VVJ_res","ZJ_res","TTJ_res"], R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),
+                    ],
+                'et':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),
+                    backgroundComp("QCD jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Other jet#rightarrow#tau", ["W_res","VVJ_res","ZJ_res","TTJ_res"], R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),
+                    ],
+                'tt':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes","Wfakes"],R.TColor.GetColor(192,232,100)),
+#                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+                    ],
+                'ff_comp':[
+                    backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))
+                    ]
+        }
+    elif FF and w_ff_closure:
+        background_schemes = {
+                'mt':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),
+                    backgroundComp("W jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Other jet#rightarrow#tau", ["QCD_res","VVJ_res","ZJ_res","TTJ_res"],R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),
+                    ], 
+                'et':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),
+                    backgroundComp("W jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Other jet#rightarrow#tau", ["QCD_res","VVJ_res","ZJ_res","TTJ_res"],R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),
+                    ],
+                'tt':[
+                    backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes","Wfakes"],R.TColor.GetColor(192,232,100)),
+#                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+                    ],
+                'ff_comp':[
+                    backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),
+                    backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+                    backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),
+                    backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))
+                    ]
+        }
+
 
     # if vbf_background:
     #     for key in background_schemes: 
@@ -2376,10 +2442,9 @@ def HTTPlot(nodename,
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
-
         if norm_bins:
             h.Scale(1.0,"width")
-        if h.GetName() == '': continue     
+        if h.GetName() == '': continue    
         bkg_histos.append(h)
         
     stack = R.THStack("hs","")
@@ -2580,6 +2645,7 @@ def HTTPlot(nodename,
 
             else:
                 stack.Draw("histsame")
+    
 
     # Auto blinding option
     if auto_blind:

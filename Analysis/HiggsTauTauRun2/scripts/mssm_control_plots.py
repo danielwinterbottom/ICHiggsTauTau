@@ -6,7 +6,8 @@ import os
 # Things to loop over
 channels = ['et', 'mt','tt']
 methods = ['17']
-years = ['2016','2017']
+years = ['2016','2017','2018']
+#years = ['2018']
 all_ch_variables = [
              'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
              'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
@@ -47,7 +48,7 @@ config_files = {'2016':'scripts/plot_mssm_2016.cfg',
                }
 
 
-add_options = '--embedding --ggh_masses=\'\' --bbh_nlo_masses=\'\' --ratio --norm_bins --ratio_range=\'0.8,1.2\''
+add_options = '--embedding --ggh_masses=\'\' --bbh_nlo_masses=\'\' --ratio --norm_bins --ratio_range=\'0.6,1.4\''
  
 cmssw_base = os.getcwd()
 
@@ -62,22 +63,24 @@ for year in years:
    
         cfg = config_files[year]
         run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s' % vars()
-        run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlotW_2.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --sel=\'mt_1>70 && n_deepbjets==0\'' % vars()
-        if channel in ["et","mt"]:
-          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlotQCD_2.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --do_ss --sel=\'mt_1<50 && iso_1>0.05\'' % vars()
-        elif channel in ["tt"]:
-          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --do_ss' % vars()
+        run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+        run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
 
-        if channel in ["et","mt"]: run_list = [run_cmd,run_cmd_w_closure,run_cmd_qcd_closure]
-        elif channel in ["tt"]: run_list = [run_cmd,run_cmd_qcd_closure]
+        if channel in ["et","mt"]: 
+          #run_list = [run_cmd,run_cmd_w_closure,run_cmd_qcd_closure]
+          run_list = [run_cmd_w_closure,run_cmd_qcd_closure]
+        elif channel in ["tt"]: 
+          #run_list = [run_cmd,run_cmd_qcd_closure]
+          run_list = [run_cmd_qcd_closure]
+
         
         for cmd in run_list:
          
-          if "W_2" in cmd: 
+          if "w_ff_closure" in cmd: 
             add_name = '_w_dr'
             output_folder = 'mssm_control_plots/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
-          elif "do_ss" in cmd: 
+          elif "qcd_ff_closure" in cmd or 'do_ss' in cmd: 
             add_name = '_qcd_dr' 
             output_folder = 'mssm_control_plots/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
@@ -98,7 +101,7 @@ for year in years:
 
           extra_name = '%(var_string)s%(add_name)s' % vars()
           cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s %(wt)s' % vars()
-          if var_string in ["mt_tot","m_vis","pt_1","pt_2"]: cmd += ' --log_x'
+          if var_string in ["mt_tot","m_vis","pt_1","pt_2","met"]: cmd += ' --log_x'
           job_file = 'jobs/mssm_control_plot_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
           if os.path.exists(job_file): os.system('rm %(job_file)s' % vars())
           os.system('echo "#!/bin/bash" >> %(job_file)s' % vars())
@@ -119,7 +122,11 @@ for year in years:
           if os.path.exists(error_file): os.system('rm %(error_file)s' % vars())
           if os.path.exists(output_file): os.system('rm %(output_file)s' % vars())
 
-          os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
+          if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file:
+            os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
+          else:
+            os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=6:0:0 -cwd %(job_file)s' % vars())
+
            
     
 

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium
-# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et,em' --wp=medium --batch
-# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --name_changes --channels='tt,mt,et' --wp=medium --output_folder='singletau_dc' --singletau --control --batch 
+# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et' --dry_run --batch
+# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et'
+# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et' --batch
+# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et' --batch --syst
+# python scripts/makeDatacards_mssm_combined.py --years=2018 --name_changes --channels='tt,mt,et' --batch --syst --dry_run
 
 import sys
 from optparse import OptionParser
@@ -23,7 +25,7 @@ param_files = {'2016':'scripts/params_mssm_2016.json',
                '2018':'scripts/params_mssm_2018.json',
               }
 
-datacard_base = '/vols/cms/gu18/CombineCMSSW/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy'
+datacard_base = '/vols/cms/gu18/NewCombineCMSSW/CMSSW_10_2_21/src/CombineHarvester/MSSMvsSMRun2Legacy'
 cmssw_base = '/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19'
 
 def validate_channel(channel):
@@ -138,20 +140,10 @@ parser.add_option("--name_changes",dest="name_changes", action='store_true', def
                   help="Does name changes")
 parser.add_option("--years", dest="years", type='string', default='2016,2017,2018',
                   help="Year input")
-parser.add_option("--wp", dest="wp", type='string', default='medium',
-                  help="Tau ID WP")
 parser.add_option("--cat", dest="cat", type='string', default='medium',
                   help="Category to do name change for")
-parser.add_option("--singletau",dest="singletau", action='store_true', default=False,
-                  help="Use singletau baseline")
-parser.add_option("--sf",dest="sf", action='store_true', default=False,
-                  help="Use scale factors for triggering")
-parser.add_option("--no_sf",dest="no_sf", action='store_true', default=False,
-                  help="No scale factors for triggering without singletau")
 parser.add_option("--out_fold", dest="out_fold", type='string', default='',
                   help="Output folder for name changes")
-parser.add_option("--control",dest="control", action='store_true', default=False,
-                  help="If true will make control plots for control regions")
 parser.add_option("--syst",dest="syst", action='store_true', default=False,
                   help="Run with systematics")
 
@@ -159,7 +151,6 @@ parser.add_option("--syst",dest="syst", action='store_true', default=False,
 
 
 (options, args) = parser.parse_args()
-wp = options.wp
 output_folder = options.output_folder
 output = options.output
 if output: 
@@ -168,10 +159,6 @@ if output:
 
 channels = options.channels
 years = options.years
-singletau = options.singletau
-sf = options.sf
-no_sf = options.no_sf
-control = options.control
 syst = options.syst
 
 print 'Processing channels:      %(channels)s' % vars()
@@ -208,7 +195,6 @@ if not options.batch_name_changes:
 
     BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
     BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
-    BINS_CONTROL = "[100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,1120,1260,1410,1580,1780,2000,2240,2510,2820,3160]"
 
     categories_et = [
                      "inclusive",
@@ -216,8 +202,6 @@ if not options.batch_name_changes:
                      "nobtag_loosemt",
                      "btag_tightmt",
                      "btag_loosemt",
-                     "wjets_control",
-                     "qcd_control",
     ]
 
     categories_mt = [
@@ -226,15 +210,12 @@ if not options.batch_name_changes:
                      "nobtag_loosemt",
                      "btag_tightmt",
                      "btag_loosemt",
-                     "wjets_control",
-                     "qcd_control",
     ]
 
     categories_tt = [
                      "inclusive",
                      "btag",
                      "nobtag",
-                     "qcd_control",
     ]
 
     categories_em = [
@@ -259,63 +240,52 @@ if not options.batch_name_changes:
 
     ### Systematics ###
 
-    common_shape_systematics = (
-      ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars() # Tau ID efficiency
-      ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars() # Tau Trigger efficiency
-      ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars() # Tau energy scale
-      ' --syst_tquark="CMS_htt_ttbarShape"' # Top pT re-weighting
-      ' --syst_res_j="CMS_res_j_%(year)s"' % vars() # Jet energy resolution
-      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars() # MET unclustered energy uncertainty
-      ' --syst_scale_j_regrouped="CMS_scale_j_*group"' # Jet energy scale (grouped)
-      ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars() # ttbar contamination in embedding
-    )
+    common_shape_systematics = [
+      ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars(), # Tau ID efficiency
+      ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Tau Trigger efficiency
+      ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
+      ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
+      ' --syst_res_j="CMS_res_j_%(year)s"' % vars(), # Jet energy resolution
+      ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars(), # MET unclustered energy uncertainty
+      ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
+      ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
+    ]
 
-    if year ! = '2018': 
-      common_shape_systematics += (
+    if year != '2018': 
+      common_shape_systematics += [
         ' --syst_prefire="CMS_prefiring"'
-      )
+      ]
     if year == '2016':  
-      common_shape_systematics += (
+      common_shape_systematics += [
         ' --syst_zwt="CMS_htt_dyShape_2016"'
-      )
+      ]
     else:
-      common_shape_systematics += (
+      common_shape_systematics += [
         ' --syst_zwt="CMS_htt_dyShape"'
-      )
+      ]
 
 
     # need lepton trigger efficiency
-    et_shape_systematics = (
-      #' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars() # l to tau h fake energy scale
-      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars() # l to tau h fake energy scale
-      ' --syst_e_scale="CMS_scale_e"' # Election energy scale
+    et_shape_systematics = [
+      ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
+      ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
+      ' --syst_e_scale="CMS_scale_e"', # Election energy scale
+      ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
       ' --do_ff_systs' 
-    )
+    ]
 
-    mt_shape_systematics = (
-      #' --syst_eff_b_weights="CMS_eff_b_13TeV"' # B-tagging efficiency
-      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars() # l to tau h fake energy scale
-      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars() # l to tau h fake energy scale
-      #' --syst_mu_scale="CMS_scale_mu_13TeV"' # Muon energy scale - Not in analysis note
+    mt_shape_systematics = [
+      ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
+      ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
+      ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
       ' --do_ff_systs'
-    )
+    ]
 
-    tt_shape_systematics = (
+    tt_shape_systematics = [
       ' --do_ff_systs'
-    )
+    ]
    
-    em_shape_systematics = ('')
-
-    
-    #### Missing Systematics ####
-    # MET recoil correction uncertainties
-    # tau h tracking efficiency in embedding
-    # Additional bin-by-bin uncertainties in embedded events in the emu channel
-    # lepton to tau fake rate
-    # Bin-by-bin uncertainties
-    # Background normalization uncertainty
-    # Theory uncertainties
+    em_shape_systematics = ['']
 
     extra_channel = {
         "em" : common_shape_systematics+em_shape_systematics,
@@ -328,19 +298,12 @@ if not options.batch_name_changes:
     var     = 'mt_tot'
     dc_app  = '-mttot'
 
-    add_cond = '' 
-    if singletau:
-      add_cond = '--singletau --add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
-    else:
-      add_cond = '--add_wt=\'wt_tau_trg_mssm_doubleonly*wt_tau_id_mssm*wt_prefire\''
+    add_cond = '--singletau --add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
 
     for ch in channels:
       categories = cat_schemes[ch]
 
-      if singletau:
-        out_fold = '%(datacard_base)s/shapes_ICL_singletau/%(year)s/%(ch)s' % vars()
-      else:
-        out_fold = '%(datacard_base)s/shapes_ICL/%(year)s/%(ch)s' % vars()
+      out_fold = '%(datacard_base)s/shapes/%(year)s/%(ch)s' % vars()
 
 
       for cat in categories:
@@ -350,16 +313,13 @@ if not options.batch_name_changes:
         if cat.startswith("btag"): bins = BINS
         else: bins = BINS_FINE
 
-        if control: bins = BINS_CONTROL
+        if syst:
+          for i in extra_channel[ch]:   
+            add_cond += i
 
-        if syst:   
-          add_cond += extra_channel[ch]
-
-        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --wp=%(wp)s --no_plot %(add_cond)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
         hadd_cmd = 'hadd -f %(out_fold)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()
         rm_dc_cmd = 'rm %(output_folder)s/datacard_*_%(cat)s_%(ch)s_%(YEAR)s.root' % vars()      
-
-        if control and "control" in cat: run_cmd = run_cmd.replace('--doMSSMReWeighting ','').replace('--no_plot','--log_x') 
 
         if not options.batch:
           print run_cmd
@@ -370,7 +330,7 @@ if not options.batch_name_changes:
             if options.name_changes:
               name_changes(out_fold,ch,cat,ANA,dc_app,output,year)
         elif options.batch:
-          job_file = 'jobs/mssm_datacard_%(cat)s_%(wp)s_%(ch)s_%(YEAR)s.sh' % vars()
+          job_file = 'jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
           if os.path.exists(job_file): os.system('rm %(job_file)s' % vars())
           os.system('echo "#!/bin/bash" >> %(job_file)s' % vars())
           os.system('echo "cd %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2" >> %(job_file)s' % vars())
@@ -382,7 +342,7 @@ if not options.batch_name_changes:
           os.system('echo "%(run_cmd)s" >> %(job_file)s' % vars())
           os.system('echo "%(hadd_cmd)s" >> %(job_file)s' % vars())
           os.system('echo "%(rm_dc_cmd)s" >> %(job_file)s' % vars())
-          os.system('echo "python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/makeDatacards_mssm_combined.py --batch_name_changes --channels=%(ch)s --years=%(YEAR)s --cat=%(cat)s --wp=%(wp)s --out_fold=%(out_fold)s" >> %(job_file)s' % vars())
+          os.system('echo "python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/makeDatacards_mssm_combined.py --batch_name_changes --channels=%(ch)s --years=%(YEAR)s --cat=%(cat)s --out_fold=%(out_fold)s" >> %(job_file)s' % vars())
           os.system('chmod +x %(job_file)s' % vars())
           if not options.dry_run:
             error_file = job_file.replace('.sh','_error.log')

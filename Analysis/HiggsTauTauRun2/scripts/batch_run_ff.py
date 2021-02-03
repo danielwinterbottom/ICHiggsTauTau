@@ -20,6 +20,11 @@ dry_run = options.dry_run
 #cmssw_base = "/vols/cms/gu18/AnalyserCMSSW/CMSSW_8_0_25"
 cmssw_base = "/vols/cms/gu18/CrabCMSSW/CMSSW_10_2_19"
 
+os.system('rm -r fake_factor_output/*/*/*.pdf')
+os.system('rm -r fake_factor_output/workspaces/*')
+os.system('rm -r fake_factor_output/jobs/*')
+
+
 if year == "all":
   year_list = ["2016","2017","2018"]
 else:
