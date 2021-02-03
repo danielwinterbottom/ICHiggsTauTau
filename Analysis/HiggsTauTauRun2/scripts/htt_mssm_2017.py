@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# python scripts/htt_mssm_2017.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 h_vmem=24G"'
+
 import sys
 from optparse import OptionParser
 import os
@@ -74,11 +76,19 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
+parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
+                  help="Do JES, JER, and MET uncertainties")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
+
+jetuncert_string=''
+if options.jetmetuncerts:
+  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+else:
+  jetuncert_string='\\"do_jetmet_uncerts\\": false'
 
 def getParaJobSubmit(N):
   if not options.submit: return 'true'
@@ -148,6 +158,12 @@ flatjsons = []
 #    flatjsonlistdysig.remove(i)
 #    scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
 #    if scale < 1: scale = 1
+if options.jetmetuncerts:
+# when we do the jet met uncertainties we do not want to run additional systematics in the same job 
+  for i in flatjsonlistdysig:
+    if 'default' in i:
+      flatjsons.append('job:sequences:all:'+i)
+      flatjsonlistdysig.remove(i)
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
@@ -402,7 +418,7 @@ if options.proc_bkg or options.proc_all:
       JOB='%s_2017' % (sa)
       #PREFIX = FILELIST.split("/")[1]
       PREFIX='Sep18_MC_102X_2017'
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\"}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\",%(jetuncert_string)s}}' "%vars());
       if "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
           JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())
 
@@ -419,6 +435,8 @@ if options.proc_bkg or options.proc_all:
         if n_scales*n_channels>=24: nperjob = 10
         if n_scales*n_channels>=48: nperjob=5
         # nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
+        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
+
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -454,7 +472,7 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
       user='dwinterb'
 
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\",%(jetuncert_string)s}}' "%vars());
     if "WminusHToTauTau_M-125" in sa or "WplusHToTauTau_M-125" in sa or "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
         JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())
 
@@ -473,6 +491,7 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
           nperjob = int(math.ceil(float(nperjob)/5))
 
         nperjob=1
+        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
  
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

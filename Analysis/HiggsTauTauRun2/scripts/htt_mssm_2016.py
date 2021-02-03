@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# python scripts/htt_mssm_2016.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 h_vmem=24G"'
+
 import sys
 from optparse import OptionParser
 import os
@@ -81,11 +83,19 @@ parser.add_option("--config", dest="config", type='string', default='',
                   help="Config file")
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
+parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
+                  help="Do JES, JER, and MET uncertainties")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
+
+jetuncert_string=''
+if options.jetmetuncerts:
+  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+else:
+  jetuncert_string='\\"do_jetmet_uncerts\\": false'
 
 def getParaJobSubmit(N):
   if not options.submit: return 'true'
@@ -159,6 +169,12 @@ flatjsons = []
 #    flatjsonlistdysig.remove(i)
 #    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
 #    if scale < 1: scale = 1
+if options.jetmetuncerts:
+# when we do the jet met uncertainties we do not want to run additional systematics in the same job 
+  for i in flatjsonlistdysig:
+    if 'default' in i:
+      flatjsons.append('job:sequences:all:'+i)
+      flatjsonlistdysig.remove(i)
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
@@ -415,7 +431,7 @@ if options.proc_bkg or options.proc_all:
 
   for sa in central_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20
@@ -432,6 +448,7 @@ if options.proc_bkg or options.proc_all:
           nperjob = 15 
           if n_scales*n_channels>24: nperjob = 5
           if n_scales*n_channels>48: nperjob = 2
+        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
 
         #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -473,7 +490,7 @@ if options.proc_sm or options.proc_all or options.proc_mssm:
     #PREFIX = SIG_FILELIST.split('/')[1]
     PREFIX = 'Sep18_MC_102X_2016'
     # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
@@ -490,7 +507,7 @@ if options.proc_sm or options.proc_all or options.proc_mssm:
           nperjob = int(math.ceil(float(nperjob)/5))
 
         nperjob = min(2,nperjob)
-        print nperjob
+        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2)
 
         #if 'filter' in sa: nperjob = 2
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

@@ -3664,7 +3664,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
         if options.channel == 'em' and node.name == 'W': continue
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
-        print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err, node.shape.rate.n/nodes[0].shape.rate.n 
+        print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err 
         if True in [node.name.find(add_name) != -1 and add_name is not '' for add_name in add_names]: continue
         if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name.find("_SM"+options.add_sm_background) ==-1:
             sig_total += node.shape.rate
