@@ -200,11 +200,19 @@ int main(/*int argc, char* argv[]*/)
 		weight_mm_branch->Fill();
 		weight_ps_branch->Fill();
 		
+		/*
 		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
 		{
 			std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
 			std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
 		}
+		*/
+		
+		if(nEntries%100000==0)
+		{
+			std::cout << "Entry " << i << " calculated." << std::endl;
+		}
+		
 	} // Event loop
   
   // Write new trees here
