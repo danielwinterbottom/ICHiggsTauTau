@@ -1,5 +1,9 @@
 #!/bin/bash
+export X509_USER_PROXY=/home/hep/ktc17/cms.proxy
 source /vols/grid/cms/setup.sh
-export LD_LIBRARY_PATH=/vols/cms/ktc17/CMSSW_10_2_19/biglib/slc7_amd64_gcc700:/vols/cms/ktc17/CMSSW_10_2_19/lib/slc7_amd64_gcc700:/vols/cms/ktc17/CMSSW_10_2_19/external/slc7_amd64_gcc700/lib:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_19/biglib/slc7_amd64_gcc700:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_19/lib/slc7_amd64_gcc700:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_19/external/slc7_amd64_gcc700/lib:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/llvm/6.0.0-ogkkac/lib64:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/gcc/7.0.0-omkpbe2/lib64:/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/gcc/7.0.0-omkpbe2/lib:/usr/lib64:/cvmfs/grid.cern.ch/centos7-umd4-ui-4.0.3-1_191004/lib64:/cvmfs/grid.cern.ch/centos7-umd4-ui-4.0.3-1_191004/lib:/cvmfs/grid.cern.ch/centos7-umd4-ui-4.0.3-1_191004/usr/lib64:/cvmfs/grid.cern.ch/centos7-umd4-ui-4.0.3-1_191004/usr/lib:$LD_LIBRARY_PATH
+export SCRAM_ARCH=slc7_amd64_gcc700
+eval `scramv1 runtime -sh`
+source /vols/cms/ktc17/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/setup_libs.sh
+ulimit -c 0
+lx03.hep.ph.ic.ac.uk
 ./bin/TauSpinnerMasters
-
