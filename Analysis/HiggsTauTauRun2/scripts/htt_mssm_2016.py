@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/htt_mssm_2016.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 h_vmem=24G"'
+# python scripts/htt_mssm_2016.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
 
 import sys
 from optparse import OptionParser
@@ -507,10 +507,10 @@ if options.proc_sm or options.proc_all or options.proc_mssm:
           nperjob = int(math.ceil(float(nperjob)/5))
 
         nperjob = min(2,nperjob)
-        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2)
+        if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
 
         #if 'filter' in sa: nperjob = 2
-        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        for i in range(0,int(math.ceil(float(nfiles)/float(nperjob)))):
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
           if not parajobs and not options.condor:
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())

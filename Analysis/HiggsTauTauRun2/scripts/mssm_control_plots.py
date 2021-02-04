@@ -1,13 +1,27 @@
 #!/usr/bin/env python
 
-import os
+# python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2016,2017,2018' --output='control_plots_mssm'
 
+import os
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--channel',help= 'Name of input channels', default='mt,et,tt')
+parser.add_argument('--year', help= 'Name of input years', default='2016,2017,2018')
+parser.add_argument('--method', help= 'Name of input methods', default='17')
+parser.add_argument('--output', help= 'Name of output folder to create', default='mssm_control_plots')
+parser.add_argument('--ff_closures', help= 'Draw fake factor DR closure plots', default=False)
+parser.add_argument('--control_plots', help= 'Draw control plots (Set as false if you only want ff closures)', default=True)
+parser.add_argument('--add_systs', help= 'Add systematic', default=True)
+parser.add_argument('--dry_run', help= 'Only create jobs, does not run them', default=False)
+args = parser.parse_args()
       
 # Things to loop over
-channels = ['et', 'mt','tt']
-methods = ['17']
-years = ['2016','2017','2018']
-#years = ['2018']
+channels = args.channel.split(',')
+methods = args.method.split(',')
+years = args.year.split(',')
+output = args.output
+
 all_ch_variables = [
              'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
              'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
@@ -50,8 +64,36 @@ config_files = {'2016':'scripts/plot_mssm_2016.cfg',
 
 add_options = '--embedding --ggh_masses=\'\' --bbh_nlo_masses=\'\' --ratio --norm_bins --ratio_range=\'0.6,1.4\''
  
+# Set up output directories
+
 cmssw_base = os.getcwd()
 
+if not os.path.isdir('%(cmssw_base)s/%(output)s' % vars()):
+  os.system("mkdir %(cmssw_base)s/%(output)s" % vars())
+
+if not os.path.isdir('%(cmssw_base)s/%(output)s/jobs' % vars()):
+  os.system("mkdir %(cmssw_base)s/%(output)s/jobs" % vars())
+
+for channel in channels:
+  if not os.path.isdir('%(cmssw_base)s/%(output)s/%(channel)s' % vars()):
+    os.system("mkdir %(cmssw_base)s/%(output)s/%(channel)s" % vars())
+  for year in years:
+    if not os.path.isdir('%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()):
+      os.system("mkdir %(cmssw_base)s/%(output)s/%(channel)s/%(year)s" % vars())
+
+if args.ff_closures:
+  if not os.path.isdir('%(cmssw_base)s/%(output)s/closure_plots' % vars()):
+    os.system("mkdir %(cmssw_base)s/%(output)s/closure_plots" % vars())
+
+  for channel in channels:
+    if not os.path.isdir('%(cmssw_base)s/%(output)s/closure_plots/%(channel)s' % vars()):
+      os.system("mkdir %(cmssw_base)s/%(output)s/closure_plots/%(channel)s" % vars())
+    for year in years:
+      if not os.path.isdir('%(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s' % vars()):
+        os.system("mkdir %(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s" % vars())
+
+
+# Job loop
 
 for year in years:
   for channel in channels:
@@ -66,33 +108,44 @@ for year in years:
         run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
         run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
 
+        run_list = []
         if channel in ["et","mt"]: 
-          #run_list = [run_cmd,run_cmd_w_closure,run_cmd_qcd_closure]
-          run_list = [run_cmd_w_closure,run_cmd_qcd_closure]
+           if args.ff_closures:
+             run_list.append(run_cmd_w_closure)
+             run_list.append(run_cmd_qcd_closure)
+           if args.control_plots:
+             run_list.append(run_cmd)
         elif channel in ["tt"]: 
-          #run_list = [run_cmd,run_cmd_qcd_closure]
-          run_list = [run_cmd_qcd_closure]
+           if args.ff_closures:
+             run_list.append(run_cmd_qcd_closure)
+           if args.control_plots:
+             run_list.append(run_cmd)
 
         
         for cmd in run_list:
          
           if "w_ff_closure" in cmd: 
             add_name = '_w_dr'
-            output_folder = 'mssm_control_plots/closure_plots/%(channel)s/%(year)s' % vars()
+            output_folder = '%(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
           elif "qcd_ff_closure" in cmd or 'do_ss' in cmd: 
             add_name = '_qcd_dr' 
-            output_folder = 'mssm_control_plots/closure_plots/%(channel)s/%(year)s' % vars()
+            output_folder = '%(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
           else:
             add_name = ''
-            output_folder = 'mssm_control_plots/control_plots/%(channel)s/%(year)s' % vars()
+            output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
             if channel in ["mt","et"]:
-              add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
+              if args.add_systs: 
+                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
+              else:
+                add_syst = ''
               cmd += " --sel=\'mt_1<70\'"
             elif channel in ["tt"]:
-              add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
-
+              if args.add_systs:
+                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
+              else:
+                add_syst = ''
 
           if year in ["2016","2017"]:
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
@@ -102,7 +155,7 @@ for year in years:
           extra_name = '%(var_string)s%(add_name)s' % vars()
           cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s %(wt)s' % vars()
           if var_string in ["mt_tot","m_vis","pt_1","pt_2","met"]: cmd += ' --log_x'
-          job_file = 'jobs/mssm_control_plot_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
+          job_file = '%(cmssw_base)s/%(output)s/jobs/mssm_control_plot_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
           if os.path.exists(job_file): os.system('rm %(job_file)s' % vars())
           os.system('echo "#!/bin/bash" >> %(job_file)s' % vars())
           os.system('echo "cd %(cmssw_base)s" >> %(job_file)s' % vars())
@@ -122,10 +175,11 @@ for year in years:
           if os.path.exists(error_file): os.system('rm %(error_file)s' % vars())
           if os.path.exists(output_file): os.system('rm %(output_file)s' % vars())
 
-          if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file:
-            os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
-          else:
-            os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=6:0:0 -cwd %(job_file)s' % vars())
+          if not args.dry_run:
+            if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file or not args.add_systs:
+              os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
+            else:
+              os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=6:0:0 -cwd %(job_file)s' % vars())
 
            
     
