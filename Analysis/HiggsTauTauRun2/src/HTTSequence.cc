@@ -562,7 +562,7 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-if(do_met_filters && is_data){
+if(do_met_filters && (is_data || is_embedded)){
   BuildModule(GenericModule("MetFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");

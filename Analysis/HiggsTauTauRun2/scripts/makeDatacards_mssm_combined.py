@@ -247,6 +247,8 @@ if not options.batch_name_changes:
       ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
       ' --syst_res_j="CMS_res_j_%(year)s"' % vars(), # Jet energy resolution
       ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars(), # MET unclustered energy uncertainty
+      ' --syst_scale_met="CMS_htt_boson_scale_met_%(year)s"' % vars(), # MET recoil correction uncertainty
+      ' --syst_res_met="CMS_htt_boson_reso_met_%(year)s"' % vars(),  # MET recoil correction uncertainty
       ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
       ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
     ]

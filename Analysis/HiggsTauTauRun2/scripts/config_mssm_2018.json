@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     "channels":     ["tt","mt","et"],
-    //"channels":     ["mt"],
+    //"channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
