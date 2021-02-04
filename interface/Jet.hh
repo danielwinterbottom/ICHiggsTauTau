@@ -37,7 +37,7 @@ class Jet : public Candidate {
    * depends on the jet four-momentum already being corrected to the previous
    * level.
    */
-  inline std::map<std::size_t, float> const& jec_factors() const {
+  inline std::map<std::string, float> const& jec_factors() const {
     return jec_factors_;
   }
 
@@ -107,7 +107,7 @@ class Jet : public Candidate {
   /// @name Setters
   /**@{*/
   /// @copybrief jec_factors()
-  inline void set_jec_factors(std::map<std::size_t, float> const& jec_factors) {
+  inline void set_jec_factors(std::map<std::string, float> const& jec_factors) {
     jec_factors_ = jec_factors;
   }
 
@@ -172,7 +172,7 @@ class Jet : public Candidate {
   /**@}*/
 
  private:
-  UFmap jec_factors_;
+  std::map<std::string, float> jec_factors_;
   UFmap b_discriminators_;
   std::vector<std::size_t> gen_particles_;
   std::vector<std::size_t> secondary_vertices_;
@@ -189,7 +189,7 @@ class Jet : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Jet, 4);
+  ClassDef(Jet, 5);
  #endif
 };
 

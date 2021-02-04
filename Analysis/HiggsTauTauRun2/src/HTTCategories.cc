@@ -850,11 +850,6 @@ namespace ic {
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &met_.var_double);
       outtree_->Branch("pf_met",               &pf_met_);
-      outtree_->Branch("pf_met_fix",               &pf_met_fix_);
-      outtree_->Branch("pf_met_and_taus",               &pf_met_and_taus_);
-      outtree_->Branch("pf_met_and_taus_2",               &pf_met_and_taus_2_);
-      outtree_->Branch("met_fix",               &met_fix_);
-      outtree_->Branch("met_noscale",               &met_noscale_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_deepbjets",       &n_deepbjets_);
@@ -970,14 +965,23 @@ namespace ic {
       outtree_->Branch("beta_2",            &beta_2_.var_float);
       outtree_->Branch("bcsv_1",            &bcsv_1_.var_float);
       outtree_->Branch("bcsv_2",            &bcsv_2_);
+      outtree_->Branch("uncorrmet", &uncorrmet_.var_float, "met/F");
+      outtree_->Branch("uncorrmetphi", &uncorrmet_phi_.var_float, "met_phi/F");
       outtree_->Branch("met_dphi_1",             &met_dphi_1_);
       outtree_->Branch("met_dphi_2",             &met_dphi_2_);
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
+      outtree_->Branch("fake_met_dphi_1",             &fake_met_dphi_1_);
       outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
       outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("gen_met",             &gen_met_);
+
+      outtree_->Branch("fake_tau_met_dphi_1",             &fake_tau_met_dphi_1_);
+      outtree_->Branch("fake_tau_met_dphi_2",             &fake_tau_met_dphi_2_);
+      outtree_->Branch("fake_tau_met",             &fake_tau_met_);
+      outtree_->Branch("gen_tau_met",             &gen_tau_met_);
+
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -2553,10 +2557,22 @@ namespace ic {
     newmet_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(newmet->vector(),lep2->vector()));   
     ROOT::Math::PtEtaPhiEVector fake_met_vec;  
     event->Exists("fake_met_vec") ? fake_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("fake_met_vec") : fake_met_vec;
+    fake_met_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep1->vector()));   
     fake_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep2->vector()));   
+
+
+    ROOT::Math::PtEtaPhiEVector fake_tau_met_vec;
+    event->Exists("fake_tau_met_vec") ? fake_tau_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("fake_tau_met_vec") : fake_tau_met_vec;
+    fake_tau_met_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep1->vector()));
+    fake_tau_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep2->vector()));
+
  
     event->Exists("fake_met") ? fake_met_ = event->Get<double>("fake_met") : 0.;
-    event->Exists("fake_met") ? gen_met_ = event->Get<double>("gen_met") : 0.;
+    event->Exists("gen_met") ? gen_met_ = event->Get<double>("gen_met") : 0.;
+
+    event->Exists("fake_tau_met") ? fake_tau_met_ = event->Get<double>("fake_tau_met") : 0.;
+    event->Exists("gen_tau_met") ? gen_tau_met_ = event->Get<double>("gen_tau_met") : 0.;
+
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
@@ -2569,6 +2585,11 @@ namespace ic {
 
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
+
+    
+    
+
+
     mt_1_ = MT(lep1, mets);
     mt_2_ = MT(lep2, mets);
     mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
@@ -2621,11 +2642,10 @@ namespace ic {
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
     if (event->Exists("met_phi_norecoil")) uncorrmet_phi_ = event->Get<double>("met_phi_norecoil");
-    if (event->Exists("met_noscale")) met_noscale_ = event->Get<double>("met_noscale");
-    else met_noscale_ = met_.var_double;
+
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();
-    Met *pf_met = pfMet_vec[0];
+
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();
@@ -2836,7 +2856,6 @@ namespace ic {
     } else {
       tau_decay_mode_2_ = 0;
     }
-    //std::cout << tau_decay_mode_2_ << std::endl;
 
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
@@ -2879,37 +2898,7 @@ namespace ic {
     if(jets.size() > 0) {
         jet_flav_3_ = jets[0]->parton_flavour();
     } else jet_flav_3_ = -9999;
-  
-    ROOT::Math::PxPyPzEVector shift = shift_after - shift_before;
-
-    ROOT::Math::PxPyPzEVector shift_taus = (ROOT::Math::PxPyPzEVector)(lep1->vector() + lep2->vector());
-
-    Met * puppi_met = new Met();
-
-    //std::cout << "!!!!!!!" << std::endl;
-    puppi_met->set_vector(mets->vector());
-    //std::cout << puppi_met->vector().Px() << "  " << puppi_met->vector().Py() << std::endl;
-    //std::cout << shift.Px() << "  " << shift.Py() << std::endl;
-    //std::cout << shift_before.Px() << "  " << shift_before.Py() << std::endl;
-    // undo jec corrections for jets matched to taus
-    
-    Met * pfmet_new = new Met();
-    pfmet_new->set_vector(pf_met->vector());
-    this->CorrectMETForShift(pfmet_new, shift_taus);
-    pf_met_and_taus_ = pfmet_new->pt();    
-
-    this->CorrectMETForShift(pfmet_new, -shift_taus);
-    this->CorrectMETForShift(pfmet_new, -shift_taus);
-    pf_met_and_taus_2_ = pfmet_new->pt();
-
-    this->CorrectMETForShift(puppi_met, shift);
-    this->CorrectMETForShift(pf_met, shift);
-    //std::cout << puppi_met->vector().Px() << "  " << puppi_met->vector().Py() << std::endl;
-    //std::cout << met_.var_double << "  " << mets->pt() << "  " << puppi_met->pt() << std::endl;
-    met_fix_ = puppi_met->pt();
-    pf_met_fix_ = pf_met->pt();
  
-    //std::cout << pt_1_.var_double << "    " << jet_pt_1_ << "    " << pt_2_.var_double << "    " << jet_pt_2_ << std::endl;
  
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();

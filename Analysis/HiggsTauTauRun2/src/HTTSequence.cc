@@ -340,13 +340,14 @@ void HTTSequence::BuildSequence(){
   {
   };   
   if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
-    std::ifstream file;
-    file.open((js["event_check_file"].asString()).c_str());
+    std::ifstream file((js["event_check_file"].asString()).c_str());
     if (!file.is_open()) {
       std::cerr << "Warning: File " << js["event_check_file"].asString() << " cannot be opened." << std::endl;
     } 
     int nums;
-    while(file >> nums){
+    std::string line;
+    while(std::getline(file, line)){
+      nums = std::atoi(line.c_str());
       to_check.push_back(nums);
       std::cout << nums << std::endl;
     }
@@ -582,7 +583,7 @@ if(do_met_filters){
         "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
         "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
       };
-      if (era_type == era::data_2016 || era_type == era::data_2017) {
+      if (era_type == era::data_2016) {
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
@@ -662,6 +663,7 @@ if(!is_data) {
     .set_write_plots(false)
     .set_ditau_label("ditau")
     .set_channel(channel)
+    .set_is_embedded(is_embedded)
     .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }
 
@@ -1035,6 +1037,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );
+
   }
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;

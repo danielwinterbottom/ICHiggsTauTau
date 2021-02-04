@@ -156,6 +156,8 @@ int main(int argc, char* argv[]) {
                  output_name.find("EmbeddingElTau") == output_name.npos ) ||
                 (channel_str.find("tt") != channel_str.npos &&
                  output_name.find("EmbeddingTauTau") == output_name.npos) ||
+                (channel_str.find("zmm") != channel_str.npos &&
+                 output_name.find("EmbeddingMuMu") == output_name.npos ) ||
                 (channel_str.find("tpzmm") != channel_str.npos &&
                  output_name.find("EmbeddingMuMu") == output_name.npos ) ||
                 (channel_str.find("tpzee") != channel_str.npos &&

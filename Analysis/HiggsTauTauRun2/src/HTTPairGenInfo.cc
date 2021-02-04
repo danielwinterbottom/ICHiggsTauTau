@@ -32,12 +32,13 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
   return gen_ip;
 }
 
-  HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name), channel_(channel::mt) {
+  HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name), channel_(channel::mt), era_(era::data_2018) {
     ditau_label_ = "ditau";
     fs_ = NULL;
     write_plots_ = false;
     hists_.resize(1);
     ngenjets_=false;
+    is_embedded_=false;
   }
 
   HTTPairGenInfo::~HTTPairGenInfo() {
@@ -53,6 +54,31 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
         hists_[i]->Create("relpt_vs_drlep_sublead", 50, 0, 10, 20, 0, 0.5);
         hists_[i]->Create("relpt_vs_drtau_sublead", 50, 0, 10, 20, 0, 0.5);
       }
+    }
+
+    if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)) {
+
+      // Retrieve file with TGraphs of corrections
+      std::string file = "input/recoilfits/embed_fake_met_corrections.root";
+      embed_corr_ = new TFile(file.c_str());
+      embed_corr_->cd();
+      std::string graph_name = "rms_corr";
+      if(channel_==channel::em) graph_name+="_em";
+      if(channel_==channel::et) graph_name+="_et";
+      if(channel_==channel::mt) graph_name+="_mt";
+      if(channel_==channel::tt) graph_name+="_tt";
+
+      
+      if(era_ == era::data_2016) graph_name+="_2016";
+      if(era_ == era::data_2017) graph_name+="_2017";
+      if(era_ == era::data_2018) graph_name+="_2018";
+
+      gr_met_corr_ = (TGraph*)gDirectory->Get(graph_name.c_str());
+      std::cout << "Input TGraph for embedded MET correction: " << graph_name << std::endl;
+      //gr_met_corr_up_ = (TGraph*)gDirectory->Get((graph_name+"_up").c_str());
+      //gr_met_corr_down_ = (TGraph*)gDirectory->Get((graph_name+"_down").c_str());
+
+      embed_corr_->Close();
     }
 
     return 0;
@@ -78,6 +104,9 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     double gen_match_undecayed_1_eta = -1;
     double gen_match_undecayed_2_eta = -1;
     double gen_met=0.;
+    GenParticle *gen_match_undecayed_1_;
+    GenParticle *gen_match_undecayed_2_;
+
 
     TVector3 gen_ip_1(0.,0.,0.);
     TVector3 gen_ip_2(0.,0.,0.);
@@ -85,38 +114,62 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     GenParticle *h = new GenParticle();
 
     ROOT::Math::PtEtaPhiEVector neutrinos; 
+    ROOT::Math::PtEtaPhiEVector tau_neutrinos; 
  
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_particles.push_back(particles[i]);
       }
-      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
+      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14)||(abs(particles[i]->pdgid()) == 16)) && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
+      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14)||(abs(particles[i]->pdgid()) == 16)) && (status_flags_start[IsDirectPromptTauDecayProduct])) tau_neutrinos+=particles[i]->vector();
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
-
       if(status_flags_start[IsLastCopy] && (abs(particles[i]->pdgid()) == 23 || abs(particles[i]->pdgid()) == 24 || abs(particles[i]->pdgid()) == 25 || abs(particles[i]->pdgid()) == 35 || abs(particles[i]->pdgid()) == 6) ) {h = particles[i]; foundboson=true; }
 
     }
 
+
     gen_met=neutrinos.Pt();
+    double gen_tau_met=tau_neutrinos.Pt();
 
     event->Add("gen_met",gen_met);
-    Met const* mets = NULL;
+    event->Add("gen_tau_met",gen_tau_met);
+    Met *mets = NULL;
     mets = event->GetPtr<Met>("pfMET");
+
     double fake_met = (mets->vector() - neutrinos).Pt();
+    double fake_tau_met = (mets->vector() - tau_neutrinos).Pt();
     event->Add("fake_met",fake_met);
-     ROOT::Math::PtEtaPhiEVector  fake_met_vec = (mets->vector() - neutrinos);
+    event->Add("fake_tau_met",fake_tau_met);
+    ROOT::Math::PtEtaPhiEVector  fake_met_vec = (mets->vector() - neutrinos);
+    ROOT::Math::PtEtaPhiEVector  fake_tau_met_vec = (mets->vector() - tau_neutrinos);
     
     event->Add("fake_met_vec",fake_met_vec);
+    event->Add("fake_tau_met_vec",fake_tau_met_vec);
+
+    if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)) {
+      Met *old_met = new Met(*mets);
+      event->Add("pfMET_uncorr", old_met);
+      double scale = gr_met_corr_->Eval(min(mets->pt(),300.)); 
+      fake_met_vec*=scale;
+      double new_pt = (fake_met_vec + neutrinos).Pt();
+      double new_phi = (fake_met_vec + neutrinos).Phi();
+      ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);
+      mets->set_vector(new_met_vec);
+    }
 
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
       gen_match_undecayed_1_eta = undecayed_taus[0]->eta();
+      gen_match_undecayed_1_=undecayed_taus[0];
+      event->Add("gen_match_undecayed_1", gen_match_undecayed_1_);
     }
     if(undecayed_taus.size()>1){
       gen_match_undecayed_2_pt = undecayed_taus[1]->pt();
       gen_match_undecayed_2_eta = undecayed_taus[1]->eta();
+      gen_match_undecayed_2_=undecayed_taus[1];
+      event->Add("gen_match_undecayed_2", gen_match_undecayed_2_);
     }
 
     int tauFlag1 = 0;

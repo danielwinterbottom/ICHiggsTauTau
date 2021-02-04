@@ -66,7 +66,10 @@ USERLIBS += -L$(BOOSTSYS)/lib -lboost_regex -lboost_program_options -lboost_file
 
 # Can set CMSSW=0 to disable include/linking to CMSSW
 ifneq ($(CMSSW), 0)
-# USERINCLUDES += -I$(CMSSW_BASE)/src
+        USERINCLUDES += -I$(shell scram tool tag tauolapp INCLUDE)
+        USERINCLUDES += -I$(shell scram tool tag lhapdf INCLUDE)
+	USERLIBS += -L$(shell scram tool tag tauolapp LIBDIR) -lTauolaCxxInterface -lTauolaTauSpinner
+	USERLIBS += -L$(shell scram tool tag lhapdf LIBDIR) -lLHAPDF
 	USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
 # CMSSW user area
 USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH)
@@ -83,7 +86,7 @@ USERINCLUDES += -isystem $(PYSYS)
 CXX=g++
 LD=g++
 #CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++0x -g
-CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++17 -g
+CXXFLAGS= -Wall -Wextra -Werror -O2 --param max-vartrack-size=100000000 -std=c++17 -g -Wno-unused-parameter -Wno-ignored-qualifiers 
 LDFLAGS= -shared -Wall -Wextra
 CXXFLAGS += $(EXTRAFLAGS)
 

@@ -317,7 +317,7 @@ if options.proc_embed or options.proc_all:
 
 
         
-  EMBEDFILELISTZMM="./filelists/Sep18_MC_102X_2016"
+  EMBEDFILELISTZMM="./filelists/Sep18_2016_MC_102X"
 
   EMBEDFILELIST="./filelists/Sep18_2016_MC_102X"
   

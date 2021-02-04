@@ -246,7 +246,7 @@ if options.proc_sm or options.proc_all:
        'ZHiggs0PHToTauTau',
        'ZHiggs0PHf05ph0ToTauTau',
        'ZHiggs0PMToTauTau',
-      'VBFHToTauTau_M125_withDipoleRecoil'
+       'VBFHToTauTau_M125_withDipoleRecoil'
     ]
 
 

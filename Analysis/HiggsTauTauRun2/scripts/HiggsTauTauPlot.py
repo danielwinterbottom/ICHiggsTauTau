@@ -402,10 +402,12 @@ print ''
 # discrete x labels
 discrete_x_axis = False
 plot_var = options.var
-discrete_x_labels = plot_var.split('[')[1].split(']')[0].split(',')
-for i in discrete_x_labels:
-  if ">=" in i:
-    discrete_x_axis = True
+discrete_x_labels=None
+if  '[' in plot_var and ']' in plot_var:
+  discrete_x_labels = plot_var.split('[')[1].split(']')[0].split(',')
+  for i in discrete_x_labels:
+    if ">=" in i:
+      discrete_x_axis = True
 
 if discrete_x_axis:
   run_bins = '['
@@ -1494,7 +1496,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
         if options.era == "legacy16": 
           data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
-          if options.analysis=='mssmrun2': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH'] 
+          if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH'] 
     if options.channel == 'em':
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
         if options.era == "legacy16": data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
@@ -1502,7 +1504,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
         if options.era == "legacy16": 
           data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
-          if options.analysis=='mssmrun2': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+          if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
     if options.channel == 'tt':
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
         if options.era == "legacy16": data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
@@ -1588,12 +1590,13 @@ if options.era in ['cpsummer17','tauid2017']:
  
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-        if options.analysis=='mssmrun2': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
     if options.channel == 'et' or options.channel == 'zee': 
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-        if options.analysis=='mssmrun2': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF']
 
@@ -1637,12 +1640,12 @@ if options.era in ['cp18']:
  
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-        if options.analysis=='mssmrun2': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'em':
         data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
     if options.channel == 'et' or options.channel == 'zee':
         data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
-        if options.analysis=='mssmrun2': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
@@ -2690,15 +2693,9 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    #wt_+='*((pt_2>100)*0.93*0.93/(idisoweight_1*idisoweight_2) + (pt_1>100&&pt_2<100)*0.93/idisoweight_1 + (pt_1<100))'
-    #if options.channel == 'et': wt_+='*(((tau_decay_mode_2==0)*0.975 + (tau_decay_mode_2==1)*0.975*1.051 + (tau_decay_mode_2==10)*0.927 + (tau_decay_mode_2==11)*0.926*1.051)*0.965600)/idisoweight_2'
-    #if options.channel == 'et': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
-    #if options.channel == 'mt': wt_+='*((pt_2>=40)*(0.983) + (pt_2<40)*(1.018))/idisoweight_2'
-#'*0.98' # this is a tempoary fix for the different rates at which embedded taus pass the tight anti electron discriminator!
-#    if options.channel == 'et': wt_+='*((fabs(eta_1)<1.479) + (fabs(eta_1)>=1.479)/1.16)'#'*0.98' # this is a tempoary fix for the different rates at which embedded taus pass the tight anti electron discriminator!
-#    if options.channel == 'em' and options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
-#    elif options.channel != 'em' and options.era in  ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.05'
-#    elif options.era == 'cpsummer17': wt_+='*0.97'
+    if options.analysis=='mssmrun2':
+      if options.channel == 'tt': wt_+='*(pt_1/gen_match_1_pt<1.5&&pt_2/gen_match_2_pt<1.5)'
+      if options.channel in ['et','mt']: wt_+='*(pt_2/gen_match_2_pt<1.5)'
     if options.channel == 'em':
       #for em channel there are non-closures wrt data and MC which are corrected here with these additional correction factors
       if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.106'
@@ -4131,9 +4128,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
-            if do_data: GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+            if do_data: GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
         if 'TT' not in samples_to_skip:    
@@ -4142,8 +4139,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016']: 
             #GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
-        #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis == 'cpprod':
-        #  GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)
+        if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis == 'cpprod':
+          GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)
         if 'W' not in samples_to_skip and options.channel=='tt' and options.analysis in ['cpprod','cpdecay','mssmrun2'] and 'VV' not in samples_to_skip and 'ZTT' not in samples_to_skip:
             GenerateW(ana, 'fakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel+'&&gen_match_1!=6&&gen_match_2==6', cat, cat_data, 8, qcd_os_ss_ratio, not options.do_ss)
         if options.channel in ['mt','et']:
@@ -4846,7 +4843,7 @@ if options.do_custom_uncerts:
 
 outfile.Close()
 
-
+if options.do_unrolling==0: exit(0)
 if is_2d and not options.do_unrolling: exit(0) # add options for is_3d as well!
 plot_file = ROOT.TFile(output_name, 'READ')
 

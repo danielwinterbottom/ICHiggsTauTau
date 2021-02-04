@@ -136,6 +136,7 @@ with open(CONFIG,"r") as input:
         output.close()
     input.close()
 
+n_channels=4
 with open("config_for_python_channels.json") as config_file:
     cfg = json.load(config_file)
     n_channels=len(cfg["job"]["channels"])
@@ -360,7 +361,7 @@ if options.proc_embed or options.proc_all:
               nperjob = 300
               if n_scales*n_channels>=28: nperjob = 150
               if n_scales*n_channels>=56: nperjob=75
-            if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/5))  
+            if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/10))  
             if 'ElTau' in sa and 'ElTauD' not in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
@@ -449,6 +450,7 @@ if options.proc_bkg or options.proc_all:
             if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
 
             #if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
+            if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

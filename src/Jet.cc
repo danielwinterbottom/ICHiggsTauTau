@@ -19,19 +19,19 @@ Jet::~Jet() {}
   void Jet::Print() const {
     Candidate::Print();
     std::cout << "--JEC Factors--" << std::endl;
-    UFmap::const_iterator uf_it;
+    std::map<std::string, float>::const_iterator uf_it;
     for (uf_it = jec_factors_.begin(); uf_it != jec_factors_.end(); ++uf_it) {
       std::cout << boost::format("%-30s %-30s\n") %
-                       UnHashJecFactor(uf_it->first) % uf_it->second;
+                       uf_it->first % uf_it->second;
     }
   }
 
   void Jet::SetJecFactor(std::string const& name, float const& factor) {
-    jec_factors_[CityHash64(name)] = factor;
+    jec_factors_[name] = factor;
   }
 
   float Jet::GetJecFactor(std::string const& name) const {
-    UFmap::const_iterator iter = jec_factors_.find(CityHash64(name));
+    std::map<std::string, float>::const_iterator iter = jec_factors_.find(name);
     if (iter != jec_factors_.end()) {
       return iter->second;
     } else {
