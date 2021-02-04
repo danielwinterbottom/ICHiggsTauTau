@@ -1076,18 +1076,7 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_1_;
   double gen_nu_eta_2_;
 
-  double met_noscale_;
   double pf_met_;
-  double pf_met_fix_;
-  double met_fix_;
-
-  double pf_met_notype1_;
-  double puppi_met_notype1_;
-
-  bool EmbedMuonVetoLoose_;
-  bool EmbedMuonVeto_;
-  bool EmbedMuonVetoVLoose_;
-  bool EmbedMuonVetoVVLoose_;
 
  public:
   HTTCategories(std::string const& name);

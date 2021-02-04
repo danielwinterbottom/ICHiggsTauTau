@@ -850,13 +850,6 @@ namespace ic {
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &met_.var_double);
       outtree_->Branch("pf_met",               &pf_met_);
-      outtree_->Branch("pf_met_fix",               &pf_met_fix_);
-
-      outtree_->Branch("pf_met_notype1",               &pf_met_notype1_);
-      outtree_->Branch("puppi_met_notype1",               &puppi_met_notype1_);
-
-      outtree_->Branch("met_fix",               &met_fix_);
-      outtree_->Branch("met_noscale",               &met_noscale_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_deepbjets",       &n_deepbjets_);
@@ -987,10 +980,6 @@ namespace ic {
       outtree_->Branch("newmet",             &newmet_);
       outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("gen_met",             &gen_met_);
-      outtree_->Branch("EmbedMuonVeto",             &EmbedMuonVeto_);
-      outtree_->Branch("EmbedMuonVetoLoose",             &EmbedMuonVetoLoose_);
-      outtree_->Branch("EmbedMuonVetoVLoose",             &EmbedMuonVetoVLoose_);
-      outtree_->Branch("EmbedMuonVetoVVLoose",             &EmbedMuonVetoVVLoose_);
 
       outtree_->Branch("fake_tau_met_dphi_1",             &fake_tau_met_dphi_1_);
       outtree_->Branch("fake_tau_met_dphi_2",             &fake_tau_met_dphi_2_);
@@ -2671,8 +2660,6 @@ namespace ic {
       uncorrmet_dphi_0_ += 2.0*M_PI;
     }
 
-    if (event->Exists("met_noscale")) met_noscale_ = event->Get<double>("met_noscale");
-    else met_noscale_ = met_.var_double;
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();
     Met *pf_met = pfMet_vec[0];
@@ -2887,7 +2874,6 @@ namespace ic {
     } else {
       tau_decay_mode_2_ = 0;
     }
-    //std::cout << tau_decay_mode_2_ << std::endl;
 
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
@@ -2930,28 +2916,7 @@ namespace ic {
     if(jets.size() > 0) {
         jet_flav_3_ = jets[0]->parton_flavour();
     } else jet_flav_3_ = -9999;
-  
-    ROOT::Math::PxPyPzEVector shift = shift_after - shift_before;
-
-    Met * puppi_met = new Met();
-
-    puppi_met->set_vector(mets->vector());
-
-//    pf_met_notype1_ = pf_met->GetCorrectedMet("Raw").pt();
-//    puppi_met_notype1_ = mets->GetCorrectedMet("Raw").pt();
-
-    // undo jec corrections for jets matched to taus
-    
-    Met * pfmet_new = new Met();
-    pfmet_new->set_vector(pf_met->vector());
-
-    this->CorrectMETForShift(puppi_met, shift);
-    this->CorrectMETForShift(pf_met, shift);
-    met_fix_ = puppi_met->pt();
-    pf_met_fix_ = pf_met->pt();
-
  
-    //std::cout << pt_1_.var_double << "    " << jet_pt_1_ << "    " << pt_2_.var_double << "    " << jet_pt_2_ << std::endl;
  
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
@@ -5073,81 +5038,6 @@ namespace ic {
     aco_angle_5_ = aco_angle_5_!=aco_angle_5_ ? -9999. : aco_angle_5_;
     aco_angle_6_ = aco_angle_6_!=aco_angle_6_ ? -9999. : aco_angle_6_;
     aco_angle_7_ = aco_angle_7_!=aco_angle_7_ ? -9999. : aco_angle_7_;
-
-    // checks extra muons in embedded samples:
-    //
-    //
-    EmbedMuonVeto_ = false;
-    EmbedMuonVetoLoose_ = false;
-    EmbedMuonVetoVLoose_ = false;
-    EmbedMuonVetoVVLoose_ = false;
-    std::vector<Muon *> all_muons;
-    if(event->ExistsInTree("muons")) all_muons = event->GetPtrVec<Muon>("muons");
-    std::vector<GenParticle *> gentaus;
-    if(event->Exists("gen_match_undecayed_1")){
-      GenParticle * gentau1 = event->GetPtr<GenParticle>("gen_match_undecayed_1");
-      gentaus.push_back(gentau1); 
-     }
-    if(event->Exists("gen_match_undecayed_2")){
-      GenParticle * gentau2 = event->GetPtr<GenParticle>("gen_match_undecayed_2");
-      gentaus.push_back(gentau2);
-     }
-    
-    std::vector<std::pair<Muon*, GenParticle*> > muon_matches;
-    if(all_muons.size()>0 && gentaus.size()>0) muon_matches = MatchByDR(all_muons, gentaus, 0.2, false, false);
-    for (auto p: muon_matches) {
-      Muon *m = p.first;
-      EmbedMuonVetoVVLoose_ = EmbedMuonVetoVVLoose_ || (!(m->id()==lep1->id() || m->id()==lep2->id()) && m->pt()>10. && !(m->is_global() || m->is_tracker()));
-      EmbedMuonVeto_ = EmbedMuonVeto_ || (fabs(m->dxy_vertex())<0.045 && fabs(m->dz_vertex())>0.2 && !(m->is_global() || m->is_tracker()) && m->is_pf());
-      EmbedMuonVetoLoose_ = EmbedMuonVetoLoose_ || (fabs(m->dxy_vertex())<0.045 && (fabs(m->dz_vertex())>0.2 || !(m->is_global() || m->is_tracker())) && m->is_pf());
-    }
-
-    std::vector<std::pair<Muon*, GenParticle*> > muon_matches_2;
-    if(all_muons.size()>0 && gentaus.size()>0) muon_matches_2 = MatchByDR(all_muons, gentaus, 0.1, false, false);
-    for (auto p: muon_matches_2) {
-      Muon *m = p.first;
-      EmbedMuonVetoVLoose_ = EmbedMuonVetoVLoose_ || (!(m->id()==lep1->id() || m->id()==lep2->id()) && m->pt()>10. && !(m->is_global() || m->is_tracker()));
-    }
-
-    //std::cout << "!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-    //double dR1 = -9999;
-    //double dR2 = -9999;
-    //std::vector<Candidate*> lep1_vec = {ditau->GetCandidate("lepton1")};
-    //std::vector<Candidate*> lep2_vec = {ditau->GetCandidate("lepton2")};
-    //std::vector<std::pair<Candidate*, GenParticle*> > lep1_matches = MatchByDR(lep1_vec, gentaus, 1000, false, false);
-    //std::vector<std::pair<Candidate*, GenParticle*> > lep2_matches = MatchByDR(lep2_vec, gentaus, 1000, false, false);
-    //if(lep1_matches.size()>0) dR1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1_matches[0].first->vector(), lep1_matches[0].second->vector()));
-    //if(lep2_matches.size()>0) dR2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2_matches[0].first->vector(), lep2_matches[0].second->vector()));
-    //std::cout << event_ << "  " << lumi_ << "  " << run_ << std::endl;
-    //if(gentaus.size()>1){
-    //  std::cout << "GenTau1 pT, eta, phi: " << gentaus[0]->pt() << " , " << gentaus[0]->eta()  << " , " << gentaus[0]->phi() << std::endl;
-    // 
-    //  std::cout << "GenTau2 pT, eta, phi: " << gentaus[1]->pt() << " , " << gentaus[1]->eta()  << " , " << gentaus[1]->phi() << std::endl; 
-    //  std::cout << "Singal Muons (pT, dR, eta, phi): (" << lep1->pt() << " , " <<  dR1 << " , " << lep1->eta() << " , " << lep1->phi() << ")  (" << lep2->pt() << " , " << dR2 << " , " << lep2->eta() << " , " << lep2->phi() << ")" << std::endl; 
-    //  int count=0;
-    //  for(auto m : all_muons) {
-    //    if(m->pt()!=lep1->pt()&&m->pt()!=lep2->pt()){
-    //      count++;
-    //      double dR = -9999;
-    //      std::vector<Muon*> mu_vec = {m};
-    //      std::vector<std::pair<Muon*, GenParticle*> > matches = MatchByDR(mu_vec, gentaus, 1000, false, false);
-    //      if(matches.size()>0) dR = std::fabs(ROOT::Math::VectorUtil::DeltaR(matches[0].first->vector(), matches[0].second->vector())); 
-    //      std::cout << "Muon " << count << std::endl;
-    //      std::cout << "pT: "  << m->pt() << std::endl;
-    //      std::cout << "eta , phi: "  << m->eta() << " , " << m->phi() << std::endl;
-    //      std::cout << "dR: "  << dR << std::endl;
-    //      std::cout << "dxy: " << fabs(m->dxy_vertex()) << std::endl;
-    //      std::cout << "dz: " << fabs(m->dz_vertex()) << std::endl;
-    //      std::cout << "Medium: " << MuonMedium(m) << std::endl;
-    //      std::cout << "isPF: " << m->is_pf() << std::endl;
-    //      std::cout << "isGlobal: " << m->is_global() << std::endl;
-    //      std::cout << "isTracker: " << m->is_tracker() << std::endl;
-    //      std::cout << "isStandalone: " << m->is_standalone() << std::endl;
-    //      std::cout << "isCalo: " << m->is_calo() << std::endl;
-    //      std::cout << "vetos: " << EmbedMuonVetoVVLoose_ << "  " << EmbedMuonVetoVLoose_ << std::endl; 
-    //    }
-    //  }
-    //}
  
     if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
