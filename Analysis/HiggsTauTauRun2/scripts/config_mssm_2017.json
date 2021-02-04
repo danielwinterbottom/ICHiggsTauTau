@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep18_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","mt","et","em"],
+    "channels":     ["tt","mt","et"],
     //"channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
@@ -60,7 +60,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v4/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v7/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2017_svfit_output/",

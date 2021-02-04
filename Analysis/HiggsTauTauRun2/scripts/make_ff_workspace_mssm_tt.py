@@ -244,5 +244,5 @@ w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_total, tt_fracs_ttba
 w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s_v2.root' % vars())
 w.Delete() 
