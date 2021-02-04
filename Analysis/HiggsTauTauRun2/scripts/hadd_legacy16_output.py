@@ -329,7 +329,7 @@ sample_list = list(set(sample_list))
 print sample_list
 
 #channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-channel = ['et','em','mt','tt']
+channel = ['et','em','mt','tt','zmm']
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

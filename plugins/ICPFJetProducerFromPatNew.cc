@@ -64,6 +64,13 @@ void ICPFJetProducerFromPatNew::constructSpecificWithSmear(
     dest.set_jerup_shift(1.);
     dest.set_jerdown_shift(1.);
 
+    std::map<std::string, float> jec_factors;
+    for (auto s : src.availableJECLevels()) {
+      jec_factors.insert(std::pair<std::string,float>((std::string)s,src.jecFactor(s,"NONE"))); 
+    }
+    dest.set_jec_factors(jec_factors);
+    //for (auto [key, val] : jec_factors) std::cout << key << "    " << val << std::endl;
+
     if (doSmear_) {
       // Find nominal smear jet matching
       for (unsigned j = 0; j < smearjets_handle->size(); ++j) {

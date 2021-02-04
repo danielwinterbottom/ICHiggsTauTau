@@ -164,13 +164,25 @@ class HTTCategories : public ModuleBase {
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
+  double met_dphi_0_;
+  double uncorrmet_dphi_0_;
+  double met_perp_;
 
   double newmet_dphi_1_;
   double newmet_dphi_2_;
+  double fake_met_dphi_1_;
   double fake_met_dphi_2_;
+  double fake_met_dphi_0_;
   double newmet_;
   double fake_met_;
   double gen_met_;
+
+  double fake_tau_met_dphi_1_;
+  double fake_tau_met_dphi_2_;
+  double fake_tau_met_dphi_0_;
+  double fake_tau_met_;
+  double gen_tau_met_;
+
   double qcd_frac_score_, w_frac_score_;
   double w_frac_, qcd_frac_, ttbar_frac_;
 
@@ -1068,8 +1080,14 @@ class HTTCategories : public ModuleBase {
   double pf_met_;
   double pf_met_fix_;
   double met_fix_;
-  double pf_met_and_taus_;
-  double pf_met_and_taus_2_;
+
+  double pf_met_notype1_;
+  double puppi_met_notype1_;
+
+  bool EmbedMuonVetoLoose_;
+  bool EmbedMuonVeto_;
+  bool EmbedMuonVetoVLoose_;
+  bool EmbedMuonVetoVVLoose_;
 
  public:
   HTTCategories(std::string const& name);

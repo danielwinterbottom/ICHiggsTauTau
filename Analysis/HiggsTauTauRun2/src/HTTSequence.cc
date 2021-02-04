@@ -340,13 +340,18 @@ void HTTSequence::BuildSequence(){
   {
   };   
   if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
-    std::ifstream file;
-    file.open((js["event_check_file"].asString()).c_str());
+    //std::ifstream file;
+    //file.open((js["event_check_file"].asString()).c_str());
+    std::ifstream file((js["event_check_file"].asString()).c_str());
     if (!file.is_open()) {
       std::cerr << "Warning: File " << js["event_check_file"].asString() << " cannot be opened." << std::endl;
     } 
     int nums;
-    while(file >> nums){
+    std::string line;
+    while(std::getline(file, line)){
+    //while(file >> nums){
+      std::cout << ".." << line << ".." << std::endl;
+      nums = std::atoi(line.c_str());
       to_check.push_back(nums);
       std::cout << nums << std::endl;
     }
@@ -395,7 +400,7 @@ void HTTSequence::BuildSequence(){
   httPrint.set_skip_events(false);
   if (to_check.size() > 0){
   BuildModule(eventChecker);
-  BuildModule(httPrint);  
+  //BuildModule(httPrint);  
 }
 
 if(!is_data && js["do_gen_analysis"].asBool()){
@@ -562,7 +567,7 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-if(do_met_filters && is_data){
+if(do_met_filters && (is_data || is_embedded)){
   BuildModule(GenericModule("MetFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -582,7 +587,7 @@ if(do_met_filters){
         "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
         "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
       };
-      if (era_type == era::data_2016 || era_type == era::data_2017) {
+      if (era_type == era::data_2016) {
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
@@ -662,6 +667,7 @@ if(!is_data) {
     .set_write_plots(false)
     .set_ditau_label("ditau")
     .set_channel(channel)
+    .set_is_embedded(is_embedded)
     .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }
 
@@ -1035,6 +1041,26 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );
+
+    //if(is_embedded) {
+    //  BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrectorEmbedding")
+    //   .set_sample(output_name)
+    //   .set_channel(channel)
+    //   .set_mc(mc_type)
+    //   .set_met_label(shift_met_label)
+    //   .set_jets_label(shift_jets_label)
+    //   .set_strategy(strategy_type)
+    //   .set_use_quantile_map(true) // use quantile mapping now
+    //   .set_use_puppimet(true)
+    //   .set_met_scale_mode(metscale_mode_)
+    //   .set_met_res_mode(metres_mode_)
+    //   .set_store_boson_pt(js["make_sync_ntuple"].asBool())
+    //   .set_njets_mode(njets_mode)
+    //   .set_do_recoil(true)
+    //   .set_embed_recoil(true)
+    //   );
+    //}
+
   }
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;

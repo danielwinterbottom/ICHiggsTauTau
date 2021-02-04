@@ -250,9 +250,10 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
     ),
-  includeMetCorrections = cms.bool(False),
+  includeMetCorrections = cms.bool(True),
+  #includeMetCorrections = cms.bool(False),
   metcorrections = cms.vstring(
-        'Raw','Type1','Type01','TypeXY','Type1XY','Type01XY','Type1Smear','Type01Smear','Type1SmearXY','Type01SmearXY','RawCalo'),
+        'Raw','Type1','Type01','TypeXY','Type1XY','Type01XY','Type1Smear','Type01Smear','Type1SmearXY','Type01SmearXY','RawCalo','RawChs','RawTrk'),
   includeMetUncertainties = cms.bool(False),
   metuncertainties = cms.vstring(
         'JetResUp','JetResDown','JetEnUp','JetEnDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown','PhotonEnUp','PhotonEnDown','NoShift')

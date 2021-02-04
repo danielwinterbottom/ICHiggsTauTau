@@ -119,6 +119,7 @@ sample_list = [
     'EmbeddingTauTauD',
     'EmbeddingTauTauA',
 
+
     'GluGluHToTauTauUncorrelatedDecay',
     'GluGluHToTauTauUncorrelatedDecay_Filtered',
     'GluGluHToTauTau_M-125',
@@ -298,9 +299,19 @@ sample_list = [
     'ttHToTauTau',
 	]
 
+for i in range(0,7):
+
+  sample_list += [
+    #'EmbeddingElMuD_corr%i' % i,
+    #'EmbeddingElTauD_corr%i' % i,
+    'EmbeddingMuMuD_corr%i' % i,
+    #'EmbeddingMuTauD_corr%i' % i,
+    'EmbeddingTauTauD_corr%i' % i,
+  ]
+
 sample_list = list(set(sample_list))
 
-channel = ['tt','mt','et','em']
+channel = ['tt','mt','et','em','zmm']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
@@ -391,7 +402,3 @@ for sa in sample_list:
       if remove: file.write("\n%s" % rm_command)
       file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
-  if not batch and remove:
-    # if all channels and systematics were hadded sucsessfully then remove the input files
-    for x in to_remove:
-      os.system(x)

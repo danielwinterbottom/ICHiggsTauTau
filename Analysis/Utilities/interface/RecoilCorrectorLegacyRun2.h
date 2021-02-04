@@ -137,54 +137,54 @@ class RecoilCorrectorLegacyRun2 {
   int _nZPtBins;
   int _nJetsBins;
 
-  TF1 * _metZParalData[5][3];
-  TF1 * _metZPerpData[5][3];
-  TF1 * _metZParalMC[5][3];
-  TF1 * _metZPerpMC[5][3];
+  TF1 * _metZParalData[10][3];
+  TF1 * _metZPerpData[10][3];
+  TF1 * _metZParalMC[10][3];
+  TF1 * _metZPerpMC[10][3];
 
-  TH1D * _metZParalDataHist[5][3];
-  TH1D * _metZPerpDataHist[5][3];
-  TH1D * _metZParalMCHist[5][3];
-  TH1D * _metZPerpMCHist[5][3];
+  TH1D * _metZParalDataHist[10][3];
+  TH1D * _metZPerpDataHist[10][3];
+  TH1D * _metZParalMCHist[10][3];
+  TH1D * _metZPerpMCHist[10][3];
 
-  float _meanMetZParalData[5][3];
-  float _meanMetZParalMC[5][3];
-  float _meanMetZPerpData[5][3];
-  float _meanMetZPerpMC[5][3];
+  float _meanMetZParalData[10][3];
+  float _meanMetZParalMC[10][3];
+  float _meanMetZPerpData[10][3];
+  float _meanMetZPerpMC[10][3];
   
-  float _rmsMetZParalData[5][3];
-  float _rmsLeftMetZParalData[5][3];
-  float _rmsRightMetZParalData[5][3];
+  float _rmsMetZParalData[10][3];
+  float _rmsLeftMetZParalData[10][3];
+  float _rmsRightMetZParalData[10][3];
   
-  float _rmsMetZParalMC[5][3];
-  float _rmsLeftMetZParalMC[5][3];
-  float _rmsRightMetZParalMC[5][3];
+  float _rmsMetZParalMC[10][3];
+  float _rmsLeftMetZParalMC[10][3];
+  float _rmsRightMetZParalMC[10][3];
 
-  float _rmsMetZPerpData[5][3];
-  float _rmsLeftMetZPerpData[5][3];
-  float _rmsRightMetZPerpData[5][3];
+  float _rmsMetZPerpData[10][3];
+  float _rmsLeftMetZPerpData[10][3];
+  float _rmsRightMetZPerpData[10][3];
   
-  float _rmsMetZPerpMC[5][3];
-  float _rmsLeftMetZPerpMC[5][3];
-  float _rmsRightMetZPerpMC[5][3];
+  float _rmsMetZPerpMC[10][3];
+  float _rmsLeftMetZPerpMC[10][3];
+  float _rmsRightMetZPerpMC[10][3];
   
-  float _xminMetZPerp[5][3];
-  float _xmaxMetZPerp[5][3];
+  float _xminMetZPerp[10][3];
+  float _xmaxMetZPerp[10][3];
 
-  float _xminMetZPerpData[5][3];
-  float _xmaxMetZPerpData[5][3];
+  float _xminMetZPerpData[10][3];
+  float _xmaxMetZPerpData[10][3];
 
-  float _xminMetZPerpMC[5][3];
-  float _xmaxMetZPerpMC[5][3];
+  float _xminMetZPerpMC[10][3];
+  float _xmaxMetZPerpMC[10][3];
 
-  float _xminMetZParal[5][3];
-  float _xmaxMetZParal[5][3];
+  float _xminMetZParal[10][3];
+  float _xmaxMetZParal[10][3];
 
-  float _xminMetZParalData[5][3];
-  float _xmaxMetZParalData[5][3];
+  float _xminMetZParalData[10][3];
+  float _xmaxMetZParalData[10][3];
 
-  float _xminMetZParalMC[5][3];
-  float _xmaxMetZParalMC[5][3];
+  float _xminMetZParalMC[10][3];
+  float _xmaxMetZParalMC[10][3];
 
 };
 

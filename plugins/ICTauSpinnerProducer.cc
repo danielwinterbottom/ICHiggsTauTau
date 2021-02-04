@@ -171,7 +171,7 @@ TauSpinner::SimpleParticle ICTauSpinnerProducer::ConvertToSimplePart(reco::GenPa
 }
 
 void ICTauSpinnerProducer::initialize(){
-  Tauolapp::Tauola::setNewCurrents(1);
+  Tauolapp::Tauola::setNewCurrents(0);
   Tauolapp::Tauola::initialize();
   LHAPDF::initPDFSetByName(TauSpinnerSettingsPDF);
   TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);

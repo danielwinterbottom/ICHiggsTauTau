@@ -257,7 +257,7 @@ void ICMetProducer<pat::MET>::constructSpecific(
 	dest.set_sum_et(src.genMET()->sumEt());
 	return;
       }
-      
+      //std::cout << src.pt() << std::endl;
       dest.set_pt(src.pt());
       dest.set_eta(src.eta());
       dest.set_phi(src.phi());
@@ -278,6 +278,7 @@ void ICMetProducer<pat::MET>::constructSpecific(
 	  tmp.px = src.corPx(static_cast<pat::MET::METCorrectionLevel>(j));
 	  tmp.py = src.corPy(static_cast<pat::MET::METCorrectionLevel>(j));
 	  tmp.sumet = src.corSumEt(static_cast<pat::MET::METCorrectionLevel>(j));
+          //std::cout << metcorrections_[j] << "  " << tmp.pt() << std::endl;
 	  dest.SetCorrectedMet(metcorrections_[j],tmp);
 	}
 

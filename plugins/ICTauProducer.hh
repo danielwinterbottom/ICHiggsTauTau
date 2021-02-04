@@ -212,7 +212,7 @@ void ICTauProducer<reco::PFTau>::constructSpecific(
      //reco::PFTau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
     reco::PFTauRef const& ref = taus_handle->refAt(i).castTo<reco::PFTauRef>();
-    if(taus_handle->at(i).decayMode()==1) std::cout << "N pi0s = " << taus_handle->at(i).signalPiZeroCandidates().size() << std::endl;
+    //if(taus_handle->at(i).decayMode()==1) std::cout << "N pi0s = " << taus_handle->at(i).signalPiZeroCandidates().size() << std::endl;
     for (unsigned j = 0; j < tau_ids_.size(); ++j) {
       dest.SetTauID(tau_ids_[j].first, (*(id_handles[j]))[ref]);
       observed_id_[tau_ids_[j].first] = CityHash64(tau_ids_[j].first);
@@ -295,10 +295,13 @@ void ICTauProducer<pat::Tau>::constructSpecific(
     }
 
     if (request_cands_) {
+      //std::cout << "tau candidates:" << std::endl; 
+      //std::cout << "charged:" << std::endl; 
       if (src.signalChargedHadrCands().isNonnull()) {
         auto cands = src.signalChargedHadrCands();
         std::vector<std::size_t> ids;
         for (unsigned c = 0; c < cands.size(); ++c) {
+          //std::cout << cands[c].get()->pt() << std::endl;
           cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
           ids.push_back(cand_hasher_(&(*(cands[c]))));
         }
@@ -315,10 +318,12 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_iso_charged_cands(ids);
       }
 
+      //std::cout << "gammas:" << std::endl; 
       if (src.signalGammaCands().isNonnull()) {
         auto cands = src.signalGammaCands();
         std::vector<std::size_t> ids;
         for (unsigned c = 0; c < cands.size(); ++c) {
+          //std::cout << cands[c].get()->pt() << std::endl;
           cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
           ids.push_back(cand_hasher_(&(*(cands[c]))));
         }

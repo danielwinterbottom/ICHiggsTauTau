@@ -32,4 +32,5 @@ PFJet::PFJet()
 PFJet::~PFJet() {}
 
 void PFJet::Print() const { Candidate::Print(); }
+
 }

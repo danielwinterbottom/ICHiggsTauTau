@@ -1927,6 +1927,13 @@ int HTTWeights::Execute(TreeEvent *event) {
         extra="_embed";
       }
 
+      if(era_ == era::data_2017){
+        // in 2017 these is an additional factor recommended by the EGammas POG to correct electron triggers
+        xtrg_OR_sf*=0.991;
+        single_e_sf*=0.991;
+        xtrg_et_sf*=0.991;
+      }
+
       std::vector<std::string> systs = {"_crosslep_up","_crosslep_down","_singlelep_up","_singlelep_down","_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down"};
 
       double wt_tau_trg_mssm = fns_["et_trg"+extra+"_ratio"]->eval(args_etau.data());
@@ -2056,13 +2063,6 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       event->Add("trigweight_up", trigweight_up);
       event->Add("trigweight_down", trigweight_down);
-
-      if(era_ == era::data_2017){
-        // in 2017 these is an additional factor recommended by the EGammas POG to correct electron triggers
-        xtrg_OR_sf*=0.991;
-        single_e_sf*=0.991;
-        xtrg_et_sf*=0.991;
-      }
 
       // have xtrg OR as default but save others to check 
       event->Add("single_l_sf", xtrg_OR_sf==0 ? single_e_sf : single_e_sf/xtrg_OR_sf );
