@@ -92,13 +92,16 @@ int main(/*int argc, char* argv[]*/)
 	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
 	
 	TFile newFile("MVAFILE_AllHiggs_tt_pseudo.root", "recreate");
+	std::cout << "Beginning cloning tree." << std::endl;
 	TTree *tree = oldTree->CloneTree();
+	std::cout << "Clone finished." << std::endl;
 	
 	// Setup branches to write to ntuple
-	double weight_sm, weight_mm, weight_ps;
+	double weight_sm, weight_mm, weight_ps, max_theta;
 	TBranch *weight_sm_branch = tree->Branch("pseudo_wt_cp_sm", &weight_sm, "pseudo_wt_cp_sm/D");
 	TBranch *weight_mm_branch = tree->Branch("pseudo_wt_cp_mm", &weight_mm, "pseudo_wt_cp_mm/D");
 	TBranch *weight_ps_branch = tree->Branch("pseudo_wt_cp_ps", &weight_ps, "pseudo_wt_cp_ps/D");
+	TBranch *phitt_branch = tree->Branch("pseudo_phitt", &max_theta, "pseudo_phitt/D");
 	
 	// Setup variables to read from branches
 	int tau_decay_mode_1, tau_decay_mode_2, mva_dm_1, mva_dm_2;
@@ -199,6 +202,7 @@ int main(/*int argc, char* argv[]*/)
 		weight_sm_branch->Fill();
 		weight_mm_branch->Fill();
 		weight_ps_branch->Fill();
+		phitt_branch->Fill();
 		
 		/*
 		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
@@ -207,6 +211,22 @@ int main(/*int argc, char* argv[]*/)
 			std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
 		}
 		*/
+		
+		double max_weight = -1;
+		for(double x = 0; x < 3.14159; x+=0.005 )
+		{
+			// calculate weight for this event given mixing angle theta
+			const double sm = weight_sm;
+			const double mm = weight_mm;
+			const double ps = weight_ps;
+			double event_weight = std::log(std::cos(x)*std::cos(x)*sm + std::sin(x)*std::sin(x)*ps + 2*std::cos(x)*std::sin(x)*(mm-sm/2-ps/2));
+
+			if(event_weight > max_weight)
+			{
+				max_weight = event_weight;
+				max_theta = x;
+			}
+		} // theta loop
 		
 		if(nEntries%100000==0)
 		{
