@@ -164,22 +164,18 @@ class HTTCategories : public ModuleBase {
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
-  double met_dphi_0_;
-  double uncorrmet_dphi_0_;
   double met_perp_;
 
   double newmet_dphi_1_;
   double newmet_dphi_2_;
   double fake_met_dphi_1_;
   double fake_met_dphi_2_;
-  double fake_met_dphi_0_;
   double newmet_;
   double fake_met_;
   double gen_met_;
 
   double fake_tau_met_dphi_1_;
   double fake_tau_met_dphi_2_;
-  double fake_tau_met_dphi_0_;
   double fake_tau_met_;
   double gen_tau_met_;
 

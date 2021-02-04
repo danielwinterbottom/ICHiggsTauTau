@@ -969,21 +969,17 @@ namespace ic {
       outtree_->Branch("uncorrmetphi", &uncorrmet_phi_.var_float, "met_phi/F");
       outtree_->Branch("met_dphi_1",             &met_dphi_1_);
       outtree_->Branch("met_dphi_2",             &met_dphi_2_);
-      outtree_->Branch("met_dphi_0",             &met_dphi_0_);
-      outtree_->Branch("uncorrmet_dphi_0",             &uncorrmet_dphi_0_);
       outtree_->Branch("met_perp",             &met_perp_);
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
       outtree_->Branch("fake_met_dphi_1",             &fake_met_dphi_1_);
       outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
-      outtree_->Branch("fake_met_dphi_0",             &fake_met_dphi_0_);
       outtree_->Branch("newmet",             &newmet_);
       outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("gen_met",             &gen_met_);
 
       outtree_->Branch("fake_tau_met_dphi_1",             &fake_tau_met_dphi_1_);
       outtree_->Branch("fake_tau_met_dphi_2",             &fake_tau_met_dphi_2_);
-      outtree_->Branch("fake_tau_met_dphi_0",             &fake_tau_met_dphi_0_);
       outtree_->Branch("fake_tau_met",             &fake_tau_met_);
       outtree_->Branch("gen_tau_met",             &gen_tau_met_);
 
@@ -2564,7 +2560,6 @@ namespace ic {
     event->Exists("fake_met_vec") ? fake_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("fake_met_vec") : fake_met_vec;
     fake_met_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep1->vector()));   
     fake_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,lep2->vector()));   
-    fake_met_dphi_0_ = ROOT::Math::VectorUtil::DeltaPhi(fake_met_vec,(lep1->vector()+lep2->vector()));
 
 
     ROOT::Math::PtEtaPhiEVector fake_tau_met_vec;
@@ -2572,7 +2567,6 @@ namespace ic {
     fake_tau_met_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep1->vector()));
     fake_tau_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep2->vector()));
 
-    fake_tau_met_dphi_0_ = ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,(lep1->vector()+lep2->vector()));
  
     event->Exists("fake_met") ? fake_met_ = event->Get<double>("fake_met") : 0.;
     event->Exists("gen_met") ? gen_met_ = event->Get<double>("gen_met") : 0.;
@@ -2594,11 +2588,7 @@ namespace ic {
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
 
     
-    met_dphi_0_ = ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),(lep1->vector()+lep2->vector()));
     
-    //met_perp_ = std::fabs(ROOT::Math::VectorUtil::Perp(mets->vector(),(lep1->vector()+lep2->vector())));
-
-    //RotateX()
 
 
     mt_1_ = MT(lep1, mets);
@@ -2653,12 +2643,6 @@ namespace ic {
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
     uncorrmet_phi_ = met_phi_;
     if (event->Exists("met_phi_norecoil")) uncorrmet_phi_ = event->Get<double>("met_phi_norecoil");
-    uncorrmet_dphi_0_ = (lep1->vector()+lep2->vector()).Phi() - uncorrmet_phi_.var_float;
-    if ( uncorrmet_dphi_0_ > M_PI ) {
-      uncorrmet_dphi_0_ -= 2.0*M_PI;
-    } else if ( uncorrmet_dphi_0_ <= -M_PI ) {
-      uncorrmet_dphi_0_ += 2.0*M_PI;
-    }
 
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();

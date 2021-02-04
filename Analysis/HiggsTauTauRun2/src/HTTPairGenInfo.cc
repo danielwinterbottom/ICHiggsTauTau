@@ -157,10 +157,6 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       double new_phi = (fake_met_vec + neutrinos).Phi();
       ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);
       mets->set_vector(new_met_vec);
-      //std::cout << "---------" << std::endl;
-      //std::cout << scale << std::endl;
-      //std::cout << old_met->pt() << "  " << new_met_vec.Pt() << std::endl; 
-      //std::cout << old_met->phi() << "  " << new_met_vec.Phi() << std::endl; 
     }
 
     if(undecayed_taus.size()>0){

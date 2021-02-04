@@ -60,7 +60,6 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2017_jan06_embedcorr/",
     "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2017_v7_embed_met_fix/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

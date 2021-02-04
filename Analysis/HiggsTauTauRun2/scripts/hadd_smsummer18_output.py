@@ -119,7 +119,6 @@ sample_list = [
     'EmbeddingTauTauD',
     'EmbeddingTauTauA',
 
-
     'GluGluHToTauTauUncorrelatedDecay',
     'GluGluHToTauTauUncorrelatedDecay_Filtered',
     'GluGluHToTauTau_M-125',
@@ -299,15 +298,6 @@ sample_list = [
     'ttHToTauTau',
 	]
 
-for i in range(0,7):
-
-  sample_list += [
-    #'EmbeddingElMuD_corr%i' % i,
-    #'EmbeddingElTauD_corr%i' % i,
-    'EmbeddingMuMuD_corr%i' % i,
-    #'EmbeddingMuTauD_corr%i' % i,
-    'EmbeddingTauTauD_corr%i' % i,
-  ]
 
 sample_list = list(set(sample_list))
 

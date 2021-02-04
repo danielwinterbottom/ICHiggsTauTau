@@ -92,20 +92,14 @@ void RecoilCorrectorLegacyRun2::InitMEtWeights(TFile * _file,
     std::string newPerpZStr  = std::string(_perpZStr);
     std::string newParalZStr = std::string(_paralZStr);
 
-    std::cout << newPerpZStr << "  " << newParalZStr << std::endl;
-
-    for (int idx=0; idx<nZPtBins+1; ++idx) {
+    for (int idx=0; idx<nZPtBins+1; ++idx) 
       newZPtBins.push_back(ZPtBins[idx]);
-      std::cout << ZPtBins[idx] << std::endl;
-}
-    for (int idx=0; idx<nZPtBins; ++idx ) {
+    for (int idx=0; idx<nZPtBins; ++idx ) 
       newZPtStr.push_back(std::string(_ZPtStr[idx]));
-      std::cout << std::string(_ZPtStr[idx]) << std::endl;
-}
-    for (int idx=0; idx<nJetsBins; ++idx){
+
+    for (int idx=0; idx<nJetsBins; ++idx)
       newNJetsStr.push_back(std::string(_nJetsStr[idx]));
-      std::cout << std::string(_nJetsStr[idx]) << std::endl;
-}
+
     InitMEtWeights(_file,
                newZPtBins,
                newPerpZStr,
@@ -150,21 +144,21 @@ void RecoilCorrectorLegacyRun2::InitMEtWeights(TFile * _fileMet,
 
       // checking functions
       if (_metZParalData[ZPtBin][jetBin]==NULL) {
-     std::cout << "Function with name " << binStrParalData
-          << " is not found in file " << _fileName << "... quitting program..." << std::endl;
+    // std::cout << "Function with name " << binStrParalData
+    //      << " is not found in file " << _fileName << "... quitting program..." << std::endl;
     exit(-1);
 
       }
       if (_metZPerpData[ZPtBin][jetBin]==NULL) {
-     std::cout << "Function with name " << binStrPerpData
-          << " is not found in file " << _fileName << "... quitting program..." << std::endl;
+    // std::cout << "Function with name " << binStrPerpData
+    //      << " is not found in file " << _fileName << "... quitting program..." << std::endl;
     exit(-1);
     
       }
 
       if (_metZParalMC[ZPtBin][jetBin]==NULL) {
-     std::cout << "Function with name " << binStrParalMC
-          << " is not found in file " << _fileName << "... quitting program..." << std::endl;
+    // std::cout << "Function with name " << binStrParalMC
+    //      << " is not found in file " << _fileName << "... quitting program..." << std::endl;
     exit(-1);
 
       }
@@ -293,10 +287,6 @@ void RecoilCorrectorLegacyRun2::CorrectWithHist(float MetPx,
   if (Zpt>1000.0)
     Zpt = 999.0;
 
-//if(Zpt>100. && njets>0) {
-//std::cout << "----" << std::endl;
-//std::cout << U1 << " " << U2 << std::endl;
-//}
   if (njets>=_nJetsBins)
     njets = _nJetsBins - 1;
 
@@ -390,11 +380,6 @@ void RecoilCorrectorLegacyRun2::CorrectWithHist(float MetPx,
   
   CalculateMetFromU1U2(U1,U2,genVPx,genVPy,visVPx,visVPy,MetCorrPx,MetCorrPy);
 
-  double met_old = sqrt(MetPx*MetPx + MetPy*MetPy);
-  double met_new = sqrt(MetCorrPx*MetCorrPx + MetCorrPy*MetCorrPy);
-  if(met_old>150) std::cout << met_old << "  " << met_new << std::endl;
-
-//if(Zpt>100.&& njets>0) std::cout << U1 << " " << U2 << std::endl;
 }
 
 void RecoilCorrectorLegacyRun2::Correct(float MetPx,

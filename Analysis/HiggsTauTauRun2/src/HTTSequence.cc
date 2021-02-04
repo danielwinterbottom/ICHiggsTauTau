@@ -340,8 +340,6 @@ void HTTSequence::BuildSequence(){
   {
   };   
   if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
-    //std::ifstream file;
-    //file.open((js["event_check_file"].asString()).c_str());
     std::ifstream file((js["event_check_file"].asString()).c_str());
     if (!file.is_open()) {
       std::cerr << "Warning: File " << js["event_check_file"].asString() << " cannot be opened." << std::endl;
@@ -349,8 +347,6 @@ void HTTSequence::BuildSequence(){
     int nums;
     std::string line;
     while(std::getline(file, line)){
-    //while(file >> nums){
-      std::cout << ".." << line << ".." << std::endl;
       nums = std::atoi(line.c_str());
       to_check.push_back(nums);
       std::cout << nums << std::endl;
@@ -400,7 +396,7 @@ void HTTSequence::BuildSequence(){
   httPrint.set_skip_events(false);
   if (to_check.size() > 0){
   BuildModule(eventChecker);
-  //BuildModule(httPrint);  
+  BuildModule(httPrint);  
 }
 
 if(!is_data && js["do_gen_analysis"].asBool()){
@@ -1041,25 +1037,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );
-
-    //if(is_embedded) {
-    //  BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrectorEmbedding")
-    //   .set_sample(output_name)
-    //   .set_channel(channel)
-    //   .set_mc(mc_type)
-    //   .set_met_label(shift_met_label)
-    //   .set_jets_label(shift_jets_label)
-    //   .set_strategy(strategy_type)
-    //   .set_use_quantile_map(true) // use quantile mapping now
-    //   .set_use_puppimet(true)
-    //   .set_met_scale_mode(metscale_mode_)
-    //   .set_met_res_mode(metres_mode_)
-    //   .set_store_boson_pt(js["make_sync_ntuple"].asBool())
-    //   .set_njets_mode(njets_mode)
-    //   .set_do_recoil(true)
-    //   .set_embed_recoil(true)
-    //   );
-    //}
 
   }
   

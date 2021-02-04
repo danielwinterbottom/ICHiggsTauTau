@@ -778,7 +778,6 @@ process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.in
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
-    #input                     = cms.InputTag("slimmedJets"),
     inputSmear                = cms.InputTag("slimmedJetsSmeared"),
     inputSmearDown            = cms.InputTag("slimmedJetsSmearedDown"),
     inputSmearUp              = cms.InputTag("slimmedJetsSmearedUp"),
@@ -806,15 +805,6 @@ else:
 
 
 process.icPFJetSequence = cms.Sequence()
-
-#process.icPFJetSequence += cms.Sequence(
-#   process.patJetCorrFactorsUpdatedJEC+
-#   process.updatedPatJetsUpdatedJEC+
-#   process.selectedUpdatedPatJetsUpdatedJEC+
-#   process.selectedSlimmedJetsAK4+
-#   process.unpackedTracksAndVertices+
-   #process.icPFJetProducerFromPat
-#   )
 
 
 process.icPFJetSequence += cms.Sequence(

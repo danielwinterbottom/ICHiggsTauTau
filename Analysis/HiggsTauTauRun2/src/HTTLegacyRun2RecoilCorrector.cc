@@ -26,7 +26,6 @@ namespace ic {
     met_res_mode_ = 0;
     njets_mode_ = 0;  
     do_recoil_=true;
-    embed_recoil_=false;
   }
 
   HTTLegacyRun2RecoilCorrector::~HTTLegacyRun2RecoilCorrector() {
@@ -71,8 +70,6 @@ namespace ic {
       if (use_puppimet_){
         process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/Type1_PuppiMET_2017.root";
         syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/PuppiMETSys_2017.root";
-        if(embed_recoil_) process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/recoilfits/EmbedPuppiMET_corr_2017.root";
-
       }
 
     } else if (strategy_ == strategy::cpdecays18) {
@@ -103,12 +100,8 @@ namespace ic {
     if (sample_.find("HToTauTau")!=sample_.npos || sample_.find("VBFH")!=sample_.npos || sample_.find("GluGluH")!=sample_.npos || sample_.find("WHiggs")!=sample_.npos || sample_.find("ZHiggs")!=sample_.npos || sample_.find("JJH")!=sample_.npos){ 
      disable_recoil_corrs = false;
     }
-   
- 
+    
     disable_recoil_corrs = disable_recoil_corrs || !do_recoil_;
-
-    if(embed_recoil_) disable_recoil_corrs = false;
-
     std::cout<<"disable recoil ? "<< disable_recoil_corrs<<std::endl;
     if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;

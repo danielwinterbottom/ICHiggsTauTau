@@ -252,7 +252,6 @@ namespace ic {
     typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
     if (/*scale_met_for_tau_ &&*/ channel_ != channel::em && channel_ != channel::tt && channel_ != channel::zmm && channel_ != channel::zee) {
       Met * met = event->GetPtr<Met>(met_label_);
-      event->Add("met_noscale", met->pt());
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       //double t_scale = tau_scale_;
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
@@ -301,7 +300,6 @@ namespace ic {
    // ************************************************************************
     if (/*scale_met_for_tau_ && */channel_ == channel::tt) {
       Met * met = event->GetPtr<Met>(met_label_);
-      event->Add("met_noscale", met->pt());
       Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
       Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
@@ -324,7 +322,6 @@ namespace ic {
     if (scale_met_for_tau_ && channel_ == channel::em) {
       //Still to be moved to the better method used above
       Met * met = event->GetPtr<Met>(met_label_);
-      event->Add("met_noscale", met->pt());
       double t_scale_ = tau_scale_;
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
       if (event->Exists("elec_scales")) {

@@ -295,13 +295,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
     }
 
     if (request_cands_) {
-      //std::cout << "tau candidates:" << std::endl; 
-      //std::cout << "charged:" << std::endl; 
       if (src.signalChargedHadrCands().isNonnull()) {
         auto cands = src.signalChargedHadrCands();
         std::vector<std::size_t> ids;
         for (unsigned c = 0; c < cands.size(); ++c) {
-          //std::cout << cands[c].get()->pt() << std::endl;
           cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
           ids.push_back(cand_hasher_(&(*(cands[c]))));
         }
@@ -318,12 +315,10 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_iso_charged_cands(ids);
       }
 
-      //std::cout << "gammas:" << std::endl; 
       if (src.signalGammaCands().isNonnull()) {
         auto cands = src.signalGammaCands();
         std::vector<std::size_t> ids;
         for (unsigned c = 0; c < cands.size(); ++c) {
-          //std::cout << cands[c].get()->pt() << std::endl;
           cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
           ids.push_back(cand_hasher_(&(*(cands[c]))));
         }
