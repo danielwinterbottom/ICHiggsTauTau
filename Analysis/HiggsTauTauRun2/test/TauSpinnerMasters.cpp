@@ -80,6 +80,31 @@ inline void setupTauDaughters(int decayMode, std::vector<TauSpinner::SimpleParti
 	}
 }
 
+inline double findPhitt(double sm, double mm, double ps)
+{
+	// only do calculation if everything input is finite
+	if(std::isfinite(sm) && std::isfinite(mm) && std::isfinite(ps))
+	{
+		double max_weight = -1;
+		double max_theta = -1;
+		for(double x = 0; x < 3.14159; x+=0.001 )
+		{
+			// calculate weight for this event given mixing angle theta
+			double event_weight = std::log(std::cos(x)*std::cos(x)*sm + std::sin(x)*std::sin(x)*ps + 2*std::cos(x)*std::sin(x)*(mm-sm/2-ps/2));
+
+			if(event_weight > max_weight)
+			{
+				max_weight = event_weight;
+				max_theta = x;
+			}
+		}
+		return max_theta;
+	}
+	
+	// if something isn't finite return nan
+	return std::numeric_limits<double>::quiet_NaN();
+}
+
 int main(/*int argc, char* argv[]*/)
 {
   // Initalise here (open input file, create output, initalise tauspinner etc...)
@@ -198,12 +223,6 @@ int main(/*int argc, char* argv[]*/)
 		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
 		weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
 		
-		// Fill branches
-		weight_sm_branch->Fill();
-		weight_mm_branch->Fill();
-		weight_ps_branch->Fill();
-		phitt_branch->Fill();
-		
 		/*
 		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
 		{
@@ -212,21 +231,13 @@ int main(/*int argc, char* argv[]*/)
 		}
 		*/
 		
-		double max_weight = -1;
-		for(double x = 0; x < 3.14159; x+=0.005 )
-		{
-			// calculate weight for this event given mixing angle theta
-			const double sm = weight_sm;
-			const double mm = weight_mm;
-			const double ps = weight_ps;
-			double event_weight = std::log(std::cos(x)*std::cos(x)*sm + std::sin(x)*std::sin(x)*ps + 2*std::cos(x)*std::sin(x)*(mm-sm/2-ps/2));
-
-			if(event_weight > max_weight)
-			{
-				max_weight = event_weight;
-				max_theta = x;
-			}
-		} // theta loop
+		max_theta = findPhitt(weight_sm, weight_mm, weight_ps);
+		
+		// Fill branches
+		weight_sm_branch->Fill();
+		weight_mm_branch->Fill();
+		weight_ps_branch->Fill();
+		phitt_branch->Fill();
 		
 		if(nEntries%100000==0)
 		{
