@@ -969,7 +969,6 @@ namespace ic {
       outtree_->Branch("uncorrmetphi", &uncorrmet_phi_.var_float, "met_phi/F");
       outtree_->Branch("met_dphi_1",             &met_dphi_1_);
       outtree_->Branch("met_dphi_2",             &met_dphi_2_);
-      outtree_->Branch("met_perp",             &met_perp_);
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
       outtree_->Branch("fake_met_dphi_1",             &fake_met_dphi_1_);
@@ -2646,7 +2645,6 @@ namespace ic {
 
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();
-    Met *pf_met = pfMet_vec[0];
 
 
     metCov00_ = mets->xx_sig();

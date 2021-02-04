@@ -164,7 +164,6 @@ class HTTCategories : public ModuleBase {
   double dR_;
   double met_dphi_1_;
   double met_dphi_2_;
-  double met_perp_;
 
   double newmet_dphi_1_;
   double newmet_dphi_2_;
