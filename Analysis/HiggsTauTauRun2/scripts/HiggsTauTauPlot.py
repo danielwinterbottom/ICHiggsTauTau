@@ -3218,21 +3218,18 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
         if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
           if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = '('+ff_syst_weight+'_1)'
-          elif options.w_ff_closure:
-            fake_factor_wt_string = "wt_ff_mssm_wjets_1"
-          elif options.qcd_ff_closure:
-            fake_factor_wt_string = "wt_ff_mssm_qcd_1"
           else:
             if options.analysis in ['cpprod']: 
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
-              json_name = 'scripts/ff_strings.json'
-              with open(json_name) as json_file:
-                ff_dict = json.load(json_file)
+              #if options.w_ff_closure or options.qcd_ff_closure:
+                #json_name = 'scripts/ff_strings.json'
+                #with open(json_name) as json_file:
+                  #ff_dict = json.load(json_file)
               if options.w_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_wjets_1"
-                #fake_factor_wt_string = ff_dict[channel][year]['wjets']
+                #fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
               elif options.qcd_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_qcd_1"
                 #fake_factor_wt_string = ff_dict[channel][year]['qcd']
@@ -4441,6 +4438,16 @@ def TotalUnc(h0, hists=[]):
     hout.SetBinError(i,u)
   return (hout, hup, hdown)
 
+def RawFFFromString(string):
+  string = string[1:-1]
+  bracket_count = 0
+  new_string = ''
+  for i in string:
+    if i == '(': bracket_count += 1
+    elif i == ')': bracket_count -= 1
+    new_string += i
+    if bracket_count == 0: break
+  return new_string
 
 # Create output file
 is_2d=False
