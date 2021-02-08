@@ -88,9 +88,9 @@ if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 jetuncert_string=''
 if options.jetmetuncerts:
-  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+  jetuncert_string='\\"do_jetmet_uncerts\\":true'
 else:
-  jetuncert_string='\\"do_jetmet_uncerts\\": false'
+  jetuncert_string='\\"do_jetmet_uncerts\\":false'
 
 def getParaJobSubmit(N):
   if not options.submit: return 'true'

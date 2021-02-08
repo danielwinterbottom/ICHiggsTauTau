@@ -88,9 +88,9 @@ if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 jetuncert_string=''
 if options.jetmetuncerts:
-  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+  jetuncert_string='\\"do_jetmet_uncerts\\":true'
 else:
-  jetuncert_string='\\"do_jetmet_uncerts\\": false'
+  jetuncert_string='\\"do_jetmet_uncerts\\":false'
 
 def getParaJobSubmit(N):
     if not options.submit: return 'true'
@@ -338,7 +338,7 @@ if options.proc_embed or options.proc_all:
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             #if 'ElTau' in sa: nperjob = 10
@@ -355,6 +355,9 @@ if options.proc_embed or options.proc_all:
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
 
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
+
+            if options.jetmetuncerts and 'default' in FLATJSONPATCH: n_scales +=2
+
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
             if 'MuTauD' in sa or 'TauTauD' in sa:
@@ -364,6 +367,7 @@ if options.proc_embed or options.proc_all:
             if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/10))  
             if 'ElTau' in sa and 'ElTauD' not in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
+
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
