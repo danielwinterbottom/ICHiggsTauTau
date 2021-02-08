@@ -107,8 +107,22 @@ inline double findPhitt(double sm, double mm, double ps)
 
 int main(/*int argc, char* argv[]*/)
 {
+	
+	const bool reco = false;
+	
+	std::string level;
+	if(reco)
+	{
+		level = "reco";
+	}
+	else
+	{
+		level = "gen";
+	}
+
   // Initalise here (open input file, create output, initalise tauspinner etc...)
-	TFile oldFile("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
+	//TFile oldFile("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
+  TFile oldFile("MVAFILE_AllHiggs_tt_reco.root", "READ");
   if (oldFile.IsZombie())
 	{
 		std::cerr << "File didn't load correctly." << std::endl;
@@ -116,17 +130,17 @@ int main(/*int argc, char* argv[]*/)
 	}
 	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
 	
-	TFile newFile("MVAFILE_AllHiggs_tt_pseudo.root", "recreate");
+	TFile newFile(("MVAFILE_AllHiggs_tt_"+level+"_phitt.root").c_str(), "recreate");
 	std::cout << "Beginning cloning tree." << std::endl;
 	TTree *tree = oldTree->CloneTree();
 	std::cout << "Clone finished." << std::endl;
 	
 	// Setup branches to write to ntuple
 	double weight_sm, weight_mm, weight_ps, max_theta;
-	TBranch *weight_sm_branch = tree->Branch("pseudo_wt_cp_sm", &weight_sm, "pseudo_wt_cp_sm/D");
-	TBranch *weight_mm_branch = tree->Branch("pseudo_wt_cp_mm", &weight_mm, "pseudo_wt_cp_mm/D");
-	TBranch *weight_ps_branch = tree->Branch("pseudo_wt_cp_ps", &weight_ps, "pseudo_wt_cp_ps/D");
-	TBranch *phitt_branch = tree->Branch("pseudo_phitt", &max_theta, "pseudo_phitt/D");
+	TBranch *weight_sm_branch = tree->Branch((level+"_wt_cp_sm").c_str(), &weight_sm, (level+"_wt_cp_sm/D").c_str());
+	TBranch *weight_mm_branch = tree->Branch((level+"_wt_cp_mm").c_str(), &weight_mm, (level+"_wt_cp_mm/D").c_str());
+	TBranch *weight_ps_branch = tree->Branch((level+"_wt_cp_ps").c_str(), &weight_ps, (level+"_wt_cp_ps/D").c_str());
+	TBranch *phitt_branch = tree->Branch((level+"_phitt").c_str(), &max_theta, (level+"_phitt/D").c_str());
 	
 	// Setup variables to read from branches
 	int tau_decay_mode_1, tau_decay_mode_2, mva_dm_1, mva_dm_2;
@@ -134,15 +148,19 @@ int main(/*int argc, char* argv[]*/)
 	tree->SetBranchAddress("tau_decay_mode_2", &tau_decay_mode_2);
 	tree->SetBranchAddress("mva_dm_1", &mva_dm_1);
 	tree->SetBranchAddress("mva_dm_2", &mva_dm_2);
+	
+	/*
 	// Gen selectors
 	int tauFlag_1, tauFlag_2;
 	tree->SetBranchAddress("tauFlag_1", &tauFlag_1);
 	tree->SetBranchAddress("tauFlag_2", &tauFlag_2);
+	
 	// Stored weights
 	double stored_wt_cp_sm, stored_wt_cp_mm, stored_wt_cp_ps;
 	tree->SetBranchAddress("wt_cp_sm", &stored_wt_cp_sm);
 	tree->SetBranchAddress("wt_cp_mm", &stored_wt_cp_mm);
 	tree->SetBranchAddress("wt_cp_ps", &stored_wt_cp_ps);
+	*/
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1, pi0_1;
@@ -157,8 +175,8 @@ int main(/*int argc, char* argv[]*/)
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
 	// Set neutrinos to read from gen for now
 	PEtaPhi nu_1, nu_2;
-	setupNeutrino(tree, "gen_nu", nu_1, 16, 1);
-	setupNeutrino(tree, "gen_nu", nu_2, -16, 2);
+	setupNeutrino(tree, (level+"_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (level+"_nu").c_str(), nu_2, -16, 2);
 	
 	// Variables for initialising TauSpinner
   std::string TauSpinnerSettingsPDF="NNPDF30_nlo_as_0118";
