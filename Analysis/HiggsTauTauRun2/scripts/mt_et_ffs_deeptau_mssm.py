@@ -998,7 +998,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
   elif bin_type == 1:
     if (int(status) != 0 and not use_erf) or large_uncert:
       p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-      fit = ROOT.TF1(h.GetName()+'_fit',"(%(p0)s+(%(p1)s*min(x,%(minbin_val)s))*(x<140))+(%(p2)s*(x>=140 && x<200)) + (%(p3)s*(x>=200))" % vars(),20,600)
+      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+(%(p2)s*(x>=140 && x<200)) + (%(p3)s*(x>=200))" % vars(),20,600)
     elif not use_erf:
       p0,p1,p2,p3,p4,p5 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5)
       fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140))+(%(p4)s*(x>=140 && x<200)) + (%(p5)s*(x>=200))" % vars(),20,600)
@@ -1010,7 +1010,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
   elif bin_type == 2:
     if (int(status) != 0 and not use_erf) or large_uncert:
       p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
-      fit = ROOT.TF1(h.GetName()+'_fit',"(%(p0)s+(%(p1)s*min(x,%(minbin_val)s))*(x<200))+ (%(p2)s*(x>=200))" % vars(),20,600)
+      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<200))+ (%(p2)s*(x>=200))" % vars(),20,600)
     elif not use_erf:
       p0,p1,p2,p3,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
       fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<200)) + (%(p4)s*(x>=200))" % vars(),20,600)
@@ -1022,7 +1022,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
   elif bin_type == 3:
     if (int(status) != 0 and not use_erf) or large_uncert:
       p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
-      fit = ROOT.TF1(h.GetName()+'_fit',"(%(p0)s+(%(p1)s*min(x,%(minbin_val)s))*(x<140))+ (%(p2)s*(x>=140))" % vars(),20,600)
+      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+ (%(p2)s*(x>=140))" % vars(),20,600)
     elif not use_erf:
       p0,p1,p2,p3,p4,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
       fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140)) + (%(p4)s*(x>=140))" % vars(),20,600)
