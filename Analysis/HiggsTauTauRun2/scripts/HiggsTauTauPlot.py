@@ -2128,10 +2128,8 @@ if options.syst_qcd_shape_wsf != '':
             ]:
         w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
-#    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
-#    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
-    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
-    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
 if options.syst_scale_met_clustered != '':
     systematics['syst_scale_met_clustered_up'] = ('METCL_UP' , '_'+options.syst_scale_met_clustered+'Up', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
     systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
@@ -2690,8 +2688,6 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
-    print '!!!!!!!!'
-    print samples
     return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
 def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
@@ -4132,8 +4128,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
-            #if do_data: 
-        GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+            if do_data: GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
@@ -4187,8 +4182,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               GenerateEmbedded(ana, '_fail'+add_name, embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
         if 'ZTT' not in samples_to_skip and not options.embedding:
           GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        #if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
-        GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+        if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
+          GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
@@ -4555,8 +4550,8 @@ while len(systematics) > 0:
       
       # Add all MC background files
       for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
-          #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
+          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+          #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
  
       # Add embedded samples if using
       if options.embedding: 
