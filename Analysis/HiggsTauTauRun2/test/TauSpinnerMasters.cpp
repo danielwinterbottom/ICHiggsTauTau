@@ -98,6 +98,13 @@ inline double findPhitt(double sm, double mm, double ps)
 				max_theta = x;
 			}
 		}
+		
+		max_theta *= 180/M_PI;
+		if(max_theta>90)
+		{
+			max_theta -= 180;
+		}
+		
 		return max_theta;
 	}
 	
