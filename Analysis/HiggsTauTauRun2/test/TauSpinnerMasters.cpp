@@ -105,24 +105,30 @@ inline double findPhitt(double sm, double mm, double ps)
 	return std::numeric_limits<double>::quiet_NaN();
 }
 
-int main(/*int argc, char* argv[]*/)
+int main(int argc, char* argv[])
 {
 	
-	const bool reco = false;
+	if(argc < 4)
+	{
+		std::cerr << "Usage: ./TauSpinnerMasters [level:{pseudo, reco}] [input_file] [output_file]" << std::endl;
+		return 1;
+	}
 	
-	std::string level;
-	if(reco)
+	std::string level(argv[1]);
+	std::string inputFilename(argv[2]);
+	std::string outputFilename(argv[3]);
+	
+	if(level!="reco" && level!="pseudo")
 	{
-		level = "reco";
+		std::cerr << "Level arguement must be either \"reco\" or \"pseudo\"" << std::endl;
+		return 2;
 	}
-	else
-	{
-		level = "gen";
-	}
-
+	
+	std::cout << level << inputFilename << outputFilename << std::endl;
+	
   // Initalise here (open input file, create output, initalise tauspinner etc...)
 	//TFile oldFile("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
-  TFile oldFile("MVAFILE_AllHiggs_tt_reco.root", "READ");
+  TFile oldFile(inputFilename.c_str(), "READ");
   if (oldFile.IsZombie())
 	{
 		std::cerr << "File didn't load correctly." << std::endl;
@@ -130,7 +136,7 @@ int main(/*int argc, char* argv[]*/)
 	}
 	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
 	
-	TFile newFile(("MVAFILE_AllHiggs_tt_"+level+"_phitt.root").c_str(), "recreate");
+	TFile newFile(outputFilename.c_str(), "recreate");
 	std::cout << "Beginning cloning tree." << std::endl;
 	TTree *tree = oldTree->CloneTree();
 	std::cout << "Clone finished." << std::endl;
