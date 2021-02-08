@@ -781,8 +781,11 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
 }   
 
 std::vector<std::string> jet_met_uncerts = {""};
-if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="") { // only loop for nominal case
+if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="" && !is_embedded) { // only loop for nominal case
   jet_met_uncerts = {"","scale_met_lo","scale_met_hi","res_met_lo","res_met_hi","scale_j_relbal_lo","scale_j_relbal_hi","scale_j_abs_lo","scale_j_abs_hi","scale_j_abs_year_lo","scale_j_abs_year_hi","scale_j_flav_lo","scale_j_flav_hi","scale_j_bbec1_lo","scale_j_bbec1_hi","scale_j_bbec1_year_lo","scale_j_bbec1_year_hi","scale_j_ec2_lo","scale_j_ec2_hi","scale_j_ec2_year_lo","scale_j_ec2_year_hi","scale_j_hf_lo","scale_j_hf_hi","scale_j_hf_year_lo","scale_j_hf_year_hi","scale_j_relsamp_year_lo","scale_j_relsamp_year_hi","res_j_lo","res_j_hi","met_uncl_lo","met_uncl_hi"};
+}
+if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="" && is_embedded) { // only loop for nominal case
+  jet_met_uncerts = {"","scale_embed_met_hi","scale_embed_met_lo"};
 }
 
 for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
@@ -794,6 +797,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   int metscale_mode_ = metscale_mode;
   int metres_mode_ = metres_mode;
   int metuncl_mode_ = 0;
+  int embed_metscale_mode_ = 0;
 
   std::string svfit_folder_ = svfit_folder; 
   std::string add_dir = ""; 
@@ -805,7 +809,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     if(uncert.find("res_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
     if(uncert.find("scale_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("met_uncl")!=std::string::npos) metuncl_mode_ = unmod_js["sequences"][uncert]["baseline"]["metuncl_mode"].asUInt();
-
+    if(uncert.find("scale_embed_met")!=std::string::npos) embed_metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["embed_metscale_mode"].asUInt();
 
     std::string add_dir = unmod_js["sequences"][uncert]["baseline"]["addit_output_folder"].asString(); 
  
@@ -832,9 +836,13 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   std::string shift_met_label = met_label+"_uncert_"+uncert; 
   BuildModule(CopyCollection<PFJet>("CopyJetsForUncert_"+uncert,jets_label,shift_jets_label,true));
 
+  std::string ext = "";
+  if(is_embedded && embed_metscale_mode_==1) ext = "_down";
+  if(is_embedded && embed_metscale_mode_==2) ext = "_up";
+
   BuildModule(GenericModule("CopyMetForUncert_"+uncert)
     .set_function([=](ic::TreeEvent *event){
-       Met* met = event->GetPtr<Met>(met_label);
+       Met* met = event->GetPtr<Met>(met_label+ext);
        Met *met_copy = new Met(*met);
        event->Add(shift_met_label,met_copy);
        return 0;

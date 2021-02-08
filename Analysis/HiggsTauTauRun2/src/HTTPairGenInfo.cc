@@ -150,13 +150,42 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
 
     if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)) {
       Met *old_met = new Met(*mets);
-      event->Add("pfMET_uncorr", old_met);
-      double scale = gr_met_corr_->Eval(min(mets->pt(),300.)); 
+      // up uncertainty is uncorrected met so first copy this and add to the event
+      event->Add("pfMET_up", old_met);
+      double scale =1.;
+ 
+      if(channel_==channel::tt) {
+        if(era_ == era::data_2016) scale = 0.949;
+        if(era_ == era::data_2017) scale = 0.918;
+        if(era_ == era::data_2018) scale = 0.900;
+      } else if (channel_==channel::et){
+        if(era_ == era::data_2016) scale = 0.958;
+        if(era_ == era::data_2017) scale = 0.960;
+        if(era_ == era::data_2018) scale = 0.935;
+      } else if (channel_==channel::mt){
+        if(era_ == era::data_2016) scale = 0.962;
+        if(era_ == era::data_2017) scale = 0.952;
+        if(era_ == era::data_2018) scale = 0.931;
+      } else if (channel_==channel::em){
+        if(era_ == era::data_2016) scale = 0.992;
+        if(era_ == era::data_2017) scale = 0.955;
+        if(era_ == era::data_2018) scale = 0.957;
+      }
       fake_met_vec*=scale;
       double new_pt = (fake_met_vec + neutrinos).Pt();
       double new_phi = (fake_met_vec + neutrinos).Phi();
       ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);
       mets->set_vector(new_met_vec);
+
+      // now repeat procedure again for down uncertainty variation (scale applied twice)
+      fake_met_vec*=scale;
+      double new_pt_down = (fake_met_vec + neutrinos).Pt();
+      double new_phi_down = (fake_met_vec + neutrinos).Phi();
+      ROOT::Math::PtEtaPhiEVector new_met_vec_down(new_pt_down,0., new_phi_down, new_pt_down);
+      Met *met_down = new Met(*mets);
+      met_down->set_vector(new_met_vec_down);
+      event->Add("pfMET_down", met_down);
+
     }
 
     if(undecayed_taus.size()>0){

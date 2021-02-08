@@ -86,9 +86,9 @@ if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 jetuncert_string=''
 if options.jetmetuncerts:
-  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+  jetuncert_string='\\"do_jetmet_uncerts\\":true'
 else:
-  jetuncert_string='\\"do_jetmet_uncerts\\": false'
+  jetuncert_string='\\"do_jetmet_uncerts\\":false'
 
 def getParaJobSubmit(N):
   if not options.submit: return 'true'
@@ -327,7 +327,7 @@ if options.proc_embed or options.proc_all:
   for sa in embed_samples:
     job_num=0
     JOB='%s_2017' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(EMBEDPREFIX)s//\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(EMBEDPREFIX)s//\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
     for FLATJSONPATCH in flatjsons:
       nperjob = 20
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
@@ -338,6 +338,7 @@ if options.proc_embed or options.proc_all:
       if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
       if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
       n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
+      if options.jetmetuncerts and 'default' in FLATJSONPATCH: n_scales +=2
       if n_scales*n_channels>28: nperjob = 10
       if n_scales*n_channels>56: nperjob=5
       # nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
