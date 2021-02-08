@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# python scripts/htt_mssm_2018.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
-
-
 import sys
 from optparse import OptionParser
 import os
@@ -78,19 +75,11 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
-parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
-                  help="Do JES, JER, and MET uncertainties")
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
-
-jetuncert_string=''
-if options.jetmetuncerts:
-  jetuncert_string='\\"do_jetmet_uncerts\\":true'
-else:
-  jetuncert_string='\\"do_jetmet_uncerts\\":false'
 
 def getParaJobSubmit(N):
     if not options.submit: return 'true'
@@ -163,12 +152,6 @@ flatjsons = []
 #    flatjsonlistdysig.remove(i)
 #    scale = int(math.ceil(float((n_scales-2)*n_channels)/50))
 #    if scale < 1: scale = 1
-if options.jetmetuncerts:
-# when we do the jet met uncertainties we do not want to run additional systematics in the same job 
-  for i in flatjsonlistdysig:
-    if 'default' in i:
-      flatjsons.append('job:sequences:all:'+i)
-      flatjsonlistdysig.remove(i)
 # split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
@@ -316,20 +299,55 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_embed or options.proc_all:
 
     embed_samples = []
-    data_eras = ['A','B','C','D']
-    #data_eras = ['D']
+    #data_eras = ['A','B','C','D']
+    data_eras = ['D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
                 embed_samples+=['EmbeddingElMu'+era]
+                embed_samples+=['EmbeddingElMu'+era+'_corr0']
+                embed_samples+=['EmbeddingElMu'+era+'_corr1']
+                embed_samples+=['EmbeddingElMu'+era+'_corr2']
+                embed_samples+=['EmbeddingElMu'+era+'_corr3']
+                embed_samples+=['EmbeddingElMu'+era+'_corr4']
+                embed_samples+=['EmbeddingElMu'+era+'_corr5']
+                embed_samples+=['EmbeddingElMu'+era+'_corr6']
             if 'et' in chn:
                 embed_samples+=['EmbeddingElTau'+era]
+                embed_samples+=['EmbeddingElTau'+era+'_corr0']
+                embed_samples+=['EmbeddingElTau'+era+'_corr1']
+                embed_samples+=['EmbeddingElTau'+era+'_corr2']
+                embed_samples+=['EmbeddingElTau'+era+'_corr3']
+                embed_samples+=['EmbeddingElTau'+era+'_corr4']
+                embed_samples+=['EmbeddingElTau'+era+'_corr5']
+                embed_samples+=['EmbeddingElTau'+era+'_corr6']
             if 'mt' in chn:
                 embed_samples+=['EmbeddingMuTau'+era]
+                embed_samples+=['EmbeddingMuTau'+era+'_corr0']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr1']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr2']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr3']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr4']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr5']
+                embed_samples+=['EmbeddingMuTau'+era+'_corr6']
             if 'tt' in chn:
                 embed_samples+=['EmbeddingTauTau'+era]
+                embed_samples+=['EmbeddingTauTau'+era+'_corr0']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr1']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr2']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr3']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr4']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr5']
+                embed_samples+=['EmbeddingTauTau'+era+'_corr6']
             if 'zmm' in chn:
                 embed_samples+=['EmbeddingMuMu'+era]
+                embed_samples+=['EmbeddingMuMu'+era+'_corr0']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr1']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr2']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr3']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr4']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr5']
+                embed_samples+=['EmbeddingMuMu'+era+'_corr6']
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl'+era]
 
@@ -338,7 +356,12 @@ if options.proc_embed or options.proc_all:
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
+        if '_corr' in sa: 
+          EMBEDFILELIST="./filelists/EmbedMETFix_2018_MC_102X"
+          JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/EmbedMETFix_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
+        else: 
+          EMBEDFILELIST="./filelists/Sep18_2018_MC_102X"
+          JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             #if 'ElTau' in sa: nperjob = 10
@@ -355,9 +378,6 @@ if options.proc_embed or options.proc_all:
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
 
             n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-
-            if options.jetmetuncerts and 'default' in FLATJSONPATCH: n_scales +=2
-
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
             if 'MuTauD' in sa or 'TauTauD' in sa:
@@ -367,7 +387,6 @@ if options.proc_embed or options.proc_all:
             if 'MuTau' in sa: nperjob = int(math.ceil(float(nperjob)/10))  
             if 'ElTau' in sa and 'ElTauD' not in sa: nperjob = int(math.ceil(float(nperjob)/5))  
 #            nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
-
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -434,7 +453,7 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Sep18_MC_102X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
 
         job_num=0
         for FLATJSONPATCH in flatjsons:
@@ -451,9 +470,6 @@ if options.proc_bkg or options.proc_all:
             if n_scales*n_channels>=24: nperjob = 10
             if n_scales*n_channels>=48: nperjob=5
 
-            if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
-
-            #if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             if 'TTTo' in sa: nperjob = int(math.ceil(float(nperjob)/2)) 
             #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
             nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
@@ -487,7 +503,7 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
         SIG_FILELIST = FILELIST
         SIG_DIR = 'Sep18_MC_102X_2018'
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
             # use input/pileup/2018/pileup_2018_DYJetsToLL-2017.root in this case
@@ -508,8 +524,6 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/5)) 
-
-                if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
  
                 #if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
                 for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
