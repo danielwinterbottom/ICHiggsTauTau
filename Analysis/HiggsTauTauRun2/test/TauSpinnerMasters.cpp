@@ -275,10 +275,8 @@ int main(int argc, char* argv[])
 		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
 		weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
 		
-		//std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl << std::endl << std::endl;
-		
 		/*
-		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
+		if (true) // mva_dm_1 == 0 && mva_dm_2 == 0 ) // Print selected weights
 		{
 			std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
 			std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
