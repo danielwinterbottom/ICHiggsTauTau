@@ -121,15 +121,25 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 	
+	std::string neutrinoLevel;
 	std::string level(argv[1]);
 	std::string inputFilename(argv[2]);
 	std::string outputFilename(argv[3]);
 	
-	if(level!="reco" && level!="pseudo")
+	if(level=="pseudo")
+	{
+		neutrinoLevel = "gen";
+	}
+	else if(level=="reco")
+	{
+		neutrinoLevel = "reco";
+	}
+	else
 	{
 		std::cerr << "Level arguement must be either \"reco\" or \"pseudo\"" << std::endl;
 		return 2;
 	}
+	
 	
 	std::cout << level << inputFilename << outputFilename << std::endl;
 	
@@ -145,7 +155,7 @@ int main(int argc, char* argv[])
 	
 	TFile newFile(outputFilename.c_str(), "recreate");
 	std::cout << "Beginning cloning tree." << std::endl;
-	TTree *tree = oldTree->CloneTree();
+	TTree *tree = oldTree->CloneTree(100);
 	std::cout << "Clone finished." << std::endl;
 	
 	// Setup branches to write to ntuple
@@ -162,7 +172,7 @@ int main(int argc, char* argv[])
 	tree->SetBranchAddress("mva_dm_1", &mva_dm_1);
 	tree->SetBranchAddress("mva_dm_2", &mva_dm_2);
 	
-	/*
+	
 	// Gen selectors
 	int tauFlag_1, tauFlag_2;
 	tree->SetBranchAddress("tauFlag_1", &tauFlag_1);
@@ -173,7 +183,7 @@ int main(int argc, char* argv[])
 	tree->SetBranchAddress("wt_cp_sm", &stored_wt_cp_sm);
 	tree->SetBranchAddress("wt_cp_mm", &stored_wt_cp_mm);
 	tree->SetBranchAddress("wt_cp_ps", &stored_wt_cp_ps);
-	*/
+	
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1, pi0_1;
@@ -188,8 +198,8 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
 	// Set neutrinos to read from gen for now
 	PEtaPhi nu_1, nu_2;
-	setupNeutrino(tree, (level+"_nu").c_str(), nu_1, 16, 1);
-	setupNeutrino(tree, (level+"_nu").c_str(), nu_2, -16, 2);
+	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
 	
 	// Variables for initialising TauSpinner
   std::string TauSpinnerSettingsPDF="NNPDF30_nlo_as_0118";
@@ -206,11 +216,11 @@ int main(int argc, char* argv[])
   TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);
   
   // Event loop
-  for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
-  //for (int i = 0, nEntries = 100; i < nEntries; i++)
+  //for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
+  for (int i = 0, nEntries = 100; i < nEntries; i++)
   {
   	tree->GetEntry(i);
-		//std::cout << i << std::endl;
+		std::cout << "Entry: " << i << std::endl;
 		
 		// Standard for all hadronic decays
 		TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
@@ -229,16 +239,26 @@ int main(int argc, char* argv[])
 		setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
 		setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
 		
+		std::cout << std::endl;
+		std::cout << "mva_dm_1 = " << mva_dm_1 << std::endl;
+		std::cout << "tauFlag_1 = " << tauFlag_1 << std::endl;
+		std::cout << "Tau 1 daughters:" << std::endl;
 		// add up tau_1
 		for(auto daughter : simple_tau1_daughters)
 		{
+			std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
 			tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
 		}
 		tau_1_simple.setPdgid(15);
 		
+		std::cout << std::endl;
+		std::cout << "mva_dm_2 = " << mva_dm_2 << std::endl;
+		std::cout << "tauFlag_2 = " << tauFlag_2 << std::endl;
+		std::cout << "Tau 2 daughters:" << std::endl;
 		// add up tau_2
 		for(auto daughter : simple_tau2_daughters)
 		{
+			std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
 			tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
 		}
 		tau_2_simple.setPdgid(-15);
@@ -254,6 +274,8 @@ int main(int argc, char* argv[])
 		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
 		weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
 		
+		std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl << std::endl << std::endl;
+		
 		/*
 		if ( mva_dm_1 == 1 && mva_dm_2 == 1 ) // Print selected weights
 		{
@@ -265,15 +287,11 @@ int main(int argc, char* argv[])
 		max_theta = findPhitt(weight_sm, weight_mm, weight_ps);
 		
 		// Fill branches
+		std::cout << "Filling branches, entry " << i << std::endl;
 		weight_sm_branch->Fill();
 		weight_mm_branch->Fill();
 		weight_ps_branch->Fill();
 		phitt_branch->Fill();
-		
-		if(nEntries%100000==0)
-		{
-			std::cout << "Entry " << i << " calculated." << std::endl;
-		}
 		
 	} // Event loop
   
