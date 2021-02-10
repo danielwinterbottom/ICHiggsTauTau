@@ -90,7 +90,7 @@ inline double findPhitt(double sm, double mm, double ps)
 		for(double x = 0; x < 3.14159; x+=0.001 )
 		{
 			// calculate weight for this event given mixing angle theta
-			double event_weight = std::log(std::cos(x)*std::cos(x)*sm + std::sin(x)*std::sin(x)*ps + 2*std::cos(x)*std::sin(x)*(mm-sm/2-ps/2));
+			double event_weight = std::cos(x)*std::cos(x)*sm + std::sin(x)*std::sin(x)*ps + 2*std::cos(x)*std::sin(x)*(mm-sm/2-ps/2);
 
 			if(event_weight > max_weight)
 			{
