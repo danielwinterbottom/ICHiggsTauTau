@@ -86,7 +86,7 @@ inline double findPhitt(double sm, double mm, double ps)
 	if(std::isfinite(sm) && std::isfinite(mm) && std::isfinite(ps))
 	{
 		double max_weight = -1;
-		double max_theta = -1;
+		double max_theta = -9999;
 		for(double x = 0; x < 3.14159; x+=0.001 )
 		{
 			// calculate weight for this event given mixing angle theta
