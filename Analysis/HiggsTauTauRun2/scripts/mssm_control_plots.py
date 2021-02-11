@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2016,2017,2018' --output='control_plots_mssm'
+# python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2016,2017,2018' --output='new_closure_plots' --control_plots=False --ff_closures=True --dry_run=True
 
 import os
 import argparse
@@ -10,10 +11,10 @@ parser.add_argument('--channel',help= 'Name of input channels', default='mt,et,t
 parser.add_argument('--year', help= 'Name of input years', default='2016,2017,2018')
 parser.add_argument('--method', help= 'Name of input methods', default='17')
 parser.add_argument('--output', help= 'Name of output folder to create', default='mssm_control_plots')
-parser.add_argument('--ff_closures', help= 'Draw fake factor DR closure plots', default=False)
-parser.add_argument('--control_plots', help= 'Draw control plots (Set as false if you only want ff closures)', default=True)
-parser.add_argument('--add_systs', help= 'Add systematic', default=True)
-parser.add_argument('--dry_run', help= 'Only create jobs, does not run them', default=False)
+parser.add_argument('--ff_closures', help= 'Draw fake factor DR closure plots', default='False')
+parser.add_argument('--control_plots', help= 'Draw control plots (Set as false if you only want ff closures)', default='True')
+parser.add_argument('--add_systs', help= 'Add systematic', default='False')
+parser.add_argument('--dry_run', help= 'Only create jobs, does not run them', default='False')
 args = parser.parse_args()
       
 # Things to loop over
@@ -81,7 +82,7 @@ for channel in channels:
     if not os.path.isdir('%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()):
       os.system("mkdir %(cmssw_base)s/%(output)s/%(channel)s/%(year)s" % vars())
 
-if args.ff_closures:
+if eval(args.ff_closures):
   if not os.path.isdir('%(cmssw_base)s/%(output)s/closure_plots' % vars()):
     os.system("mkdir %(cmssw_base)s/%(output)s/closure_plots" % vars())
 
@@ -105,22 +106,24 @@ for year in years:
    
         cfg = config_files[year]
         run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s' % vars()
-        run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
-        run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+        #run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+        run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure' % vars()
+        #run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+        run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure' % vars()
+
 
         run_list = []
         if channel in ["et","mt"]: 
-           if args.ff_closures:
+           if eval(args.ff_closures):
              run_list.append(run_cmd_w_closure)
              run_list.append(run_cmd_qcd_closure)
-           if args.control_plots:
+           if eval(args.control_plots):
              run_list.append(run_cmd)
         elif channel in ["tt"]: 
-           if args.ff_closures:
+           if eval(args.ff_closures):
              run_list.append(run_cmd_qcd_closure)
-           if args.control_plots:
+           if eval(args.control_plots):
              run_list.append(run_cmd)
-
         
         for cmd in run_list:
          
@@ -128,7 +131,7 @@ for year in years:
             add_name = '_w_dr'
             output_folder = '%(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
-          elif "qcd_ff_closure" in cmd or 'do_ss' in cmd: 
+          elif "qcd_ff_closure" in cmd: 
             add_name = '_qcd_dr' 
             output_folder = '%(cmssw_base)s/%(output)s/closure_plots/%(channel)s/%(year)s' % vars()
             add_syst = ''
@@ -136,13 +139,13 @@ for year in years:
             add_name = ''
             output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
             if channel in ["mt","et"]:
-              if args.add_systs: 
+              if eval(args.add_systs): 
                 add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
               else:
                 add_syst = ''
               cmd += " --sel=\'mt_1<70\'"
             elif channel in ["tt"]:
-              if args.add_systs:
+              if eval(args.add_systs):
                 add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
               else:
                 add_syst = ''
@@ -175,8 +178,8 @@ for year in years:
           if os.path.exists(error_file): os.system('rm %(error_file)s' % vars())
           if os.path.exists(output_file): os.system('rm %(output_file)s' % vars())
 
-          if not args.dry_run:
-            if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file or not args.add_systs:
+          if not eval(args.dry_run):
+            if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file or not eval(args.add_systs):
               os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
             else:
               os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=6:0:0 -cwd %(job_file)s' % vars())
