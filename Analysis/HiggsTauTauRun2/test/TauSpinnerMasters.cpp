@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <random>
 #include "TFile.h"
 #include "TTree.h"
 #include "Math/GenVector/PtEtaPhiM4D.h"
@@ -54,11 +55,15 @@ TauSpinner::SimpleParticle convertToSimplePart(const Particle &a_particle)
   return TauSpinner::SimpleParticle(a_particle.px, a_particle.py, a_particle.pz, a_particle.E, a_particle.pdgID);
 }
 
-TauSpinner::SimpleParticle neutrinoToSimplePart(const PEtaPhi &a_PEtaPhi)
+TauSpinner::SimpleParticle neutrinoToSimplePart(const PEtaPhi &a_PEtaPhi, std::normal_distribution<double> &a_smearDist, std::mt19937 &a_rng)
 {
 	double pt = a_PEtaPhi.P/std::cosh(a_PEtaPhi.Eta);
 	ROOT::Math::PtEtaPhiM4D<double> particle(pt, a_PEtaPhi.Eta, a_PEtaPhi.Phi, 0);
-  return TauSpinner::SimpleParticle(particle.Px(), particle.Py(), particle.Pz(), particle.E(), a_PEtaPhi.pdgID);
+	double px = particle.Px() + a_smearDist(a_rng);
+	double py = particle.Py() + a_smearDist(a_rng);
+	double pz = particle.Pz() + a_smearDist(a_rng);
+	double E = std::sqrt(px*px + py*py + pz*pz);
+  return TauSpinner::SimpleParticle(px, py, pz, E, a_PEtaPhi.pdgID);
 }
 
 inline void setupTauDaughters(int decayMode, std::vector<TauSpinner::SimpleParticle> &daughters, Particle &pi0, Particle &pi2, Particle &pi3)
@@ -117,7 +122,7 @@ int main(int argc, char* argv[])
 	
 	if(argc < 4)
 	{
-		std::cerr << "Usage: ./TauSpinnerMasters [level:{pseudo, reco}] [input_file] [output_file]" << std::endl;
+		std::cerr << "Usage: ./TauSpinnerMasters level:{pseudo, reco} input_file output_file [smearing]" << std::endl;
 		return 1;
 	}
 	
@@ -140,6 +145,18 @@ int main(int argc, char* argv[])
 		return 2;
 	}
 	
+	// Only set smearing if the arguement is specified
+	double smearing = 0;
+	if(argc>4)
+	{
+		smearing = std::stod(argv[4], nullptr);
+	}
+	
+	// Partially seed mt19937
+	std::mt19937 rng(std::random_device{}());
+	std::normal_distribution<double> smearDist(0, smearing);
+	std::cout << "Using smearing = " << smearing << std::endl;
+	
   // Initalise here (open input file, create output, initalise tauspinner etc...)
 	//TFile oldFile("/vols/cms/ktc17/MVAFILE_AllHiggs_tt.root", "READ");
   TFile oldFile(inputFilename.c_str(), "READ");
@@ -152,6 +169,7 @@ int main(int argc, char* argv[])
 	
 	TFile newFile(outputFilename.c_str(), "recreate");
 	std::cout << "Beginning cloning tree." << std::endl;
+	//TTree *tree = oldTree->CloneTree(10000);
 	TTree *tree = oldTree->CloneTree();
 	std::cout << "Clone finished." << std::endl;
 	
@@ -214,7 +232,7 @@ int main(int argc, char* argv[])
   
   // Event loop
   for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
-  //for (int i = 0, nEntries = 100; i < nEntries; i++)
+  //for (int i = 0, nEntries = 10000; i < nEntries; i++)
   {
   	tree->GetEntry(i);
 		//std::cout << "Entry: " << i << std::endl;
@@ -222,8 +240,8 @@ int main(int argc, char* argv[])
 		// Standard for all hadronic decays
 		TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
 		TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
-		TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1);
-		TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2);
+		TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1, smearDist, rng);
+		TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2, smearDist, rng);
 		
 		TauSpinner::SimpleParticle tau_1_simple, tau_2_simple, Higgs_simple;
 		std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
