@@ -24,8 +24,8 @@ years = args.year.split(',')
 output = args.output
 
 all_ch_variables = [
-             'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
-             'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000]',
+             'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
+             'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
              'met[0,10,20,30,40,50,60,70,80,90,100,120,140,200,400]',
              'n_jets[0,1,>=2]',
              'n_prebjets[0,1,>=2]', 
@@ -106,11 +106,13 @@ for year in years:
    
         cfg = config_files[year]
         run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s' % vars()
-        #run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
-        run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure' % vars()
-        #run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
-        run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure' % vars()
 
+        if eval(args.add_systs):
+          run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
+        else:
+          run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure' % vars()
+          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure' % vars()
 
         run_list = []
         if channel in ["et","mt"]: 
@@ -138,22 +140,35 @@ for year in years:
           else:
             add_name = ''
             output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
-            if channel in ["mt","et"]:
+            if channel in ["mt"]:
               if eval(args.add_systs): 
-                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
+                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
               else:
                 add_syst = ''
               cmd += " --sel=\'mt_1<70\'"
+            elif channel in ["et"]:
+              if eval(args.add_systs): 
+                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s" --syst_e_scale="CMS_scale_e" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
+              else:
+                add_syst = ''
+              cmd += " --sel=\'mt_1<70\'"
+
             elif channel in ["tt"]:
               if eval(args.add_systs):
-                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"'
+                add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group"' % vars()
               else:
                 add_syst = ''
 
-          if year in ["2016","2017"]:
+          if year == "2016":
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
-          else: 
+            add_syst += ' --syst_zwt="CMS_htt_dyShape_2016" --syst_prefire="CMS_prefiring"'
+          elif year == "2017":
+            wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
+            add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
+          elif year == "2018":
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm\'"
+            add_syst += ' --syst_zwt="CMS_htt_dyShape"'
+ 
 
           extra_name = '%(var_string)s%(add_name)s' % vars()
           cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s %(wt)s' % vars()
@@ -182,7 +197,7 @@ for year in years:
             if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file or not eval(args.add_systs):
               os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
             else:
-              os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=6:0:0 -cwd %(job_file)s' % vars())
+              os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=10:0:0 -cwd %(job_file)s' % vars())
 
            
     
