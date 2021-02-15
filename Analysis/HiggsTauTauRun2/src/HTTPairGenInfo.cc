@@ -172,6 +172,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
         if(era_ == era::data_2018) scale = 0.957;
       }
       fake_met_vec*=scale;
+      event->ForceAdd("fake_tau_met_vec",fake_met_vec);
       double new_pt = (fake_met_vec + neutrinos).Pt();
       double new_phi = (fake_met_vec + neutrinos).Phi();
       ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);

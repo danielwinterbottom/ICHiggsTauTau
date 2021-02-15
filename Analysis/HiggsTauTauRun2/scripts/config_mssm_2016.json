@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["em","mt","et","tt"],
+    "channels":      ["mt","et","tt"],
     //"channels":      ["tt"],
     "sequences": {
       "all":  ["default"]
@@ -59,11 +59,11 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_v7_embed_met_fix/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802/",
     //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2016_svfit_output/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802_svfit/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "./output/",
@@ -74,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
@@ -917,7 +917,18 @@
         "jes_corr_mode" : 2
       }
     },
-    //
+    "scale_embed_met_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_DOWN",
+        "embed_metscale_mode" : 1
+      }
+    },
+    "scale_embed_met_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_UP",
+        "embed_metscale_mode" : 2
+      }
+    },
     "scale_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_DOWN",

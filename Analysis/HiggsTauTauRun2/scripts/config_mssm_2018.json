@@ -64,8 +64,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2018_v7_embed_met_fix/",
+    "output_folder" : "output/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2018_v7_embed_met_fix/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/gu18/Offline/output/SUSY/Jan24_2018_svfit_output/",
@@ -803,7 +803,18 @@
         "jes_corr_mode" : 2
       }
     },
-    //
+    "scale_embed_met_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_DOWN",
+        "embed_metscale_mode" : 1
+      }
+    },
+    "scale_embed_met_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_UP",
+        "embed_metscale_mode" : 2
+      }
+    },
     "scale_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_DOWN",
