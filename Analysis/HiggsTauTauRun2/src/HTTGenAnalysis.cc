@@ -151,11 +151,37 @@ namespace ic {
       mvatree_->Branch("sv_y_2", &sv_y_2_);
       mvatree_->Branch("sv_z_2", &sv_z_2_);
 
+      mvatree_->Branch("ip_x_1", &ip_x_1_);
+      mvatree_->Branch("ip_y_1", &ip_y_1_);
+      mvatree_->Branch("ip_z_1", &ip_z_1_);
+      mvatree_->Branch("ip_x_2", &ip_x_2_);
+      mvatree_->Branch("ip_y_2", &ip_y_2_);
+      mvatree_->Branch("ip_z_2", &ip_z_2_);
+
+
       mvatree_->Branch("dm_1", &tauFlag_1_);
       mvatree_->Branch("dm_2", &tauFlag_2_);
 
       mvatree_->Branch("metx"         , &metx_         );
       mvatree_->Branch("mety"         , &mety_         );
+
+      mvatree_->Branch("reco_sv_x_1", &reco_sv_x_1_);
+      mvatree_->Branch("reco_sv_y_1", &reco_sv_y_1_);
+      mvatree_->Branch("reco_sv_z_1", &reco_sv_z_1_);
+      mvatree_->Branch("reco_ip_x_1", &reco_ip_x_1_);
+      mvatree_->Branch("reco_ip_y_1", &reco_ip_y_1_);
+      mvatree_->Branch("reco_ip_z_1", &reco_ip_z_1_);
+      mvatree_->Branch("reco_dm_1",  &reco_dm_1_);
+      mvatree_->Branch("reco_metx"         , &reco_metx_         );
+      mvatree_->Branch("reco_mety"         , &reco_mety_         );
+      mvatree_->Branch("reco_pi_px_1",  &reco_pi_px_1_);
+      mvatree_->Branch("reco_pi_py_1",  &reco_pi_py_1_);
+      mvatree_->Branch("reco_pi_pz_1",  &reco_pi_pz_1_);
+      mvatree_->Branch("reco_pi_E_1",   &reco_pi_E_1_);
+      mvatree_->Branch("reco_pi0_px_1", &reco_pi0_px_1_);
+      mvatree_->Branch("reco_pi0_py_1", &reco_pi0_py_1_);
+      mvatree_->Branch("reco_pi0_pz_1", &reco_pi0_pz_1_);
+      mvatree_->Branch("reco_pi0_E_1",  &reco_pi0_E_1_);
 
     }
 
@@ -1666,11 +1692,12 @@ namespace ic {
     metx_   = met.vector().Px();
     mety_   = met.vector().Py();
 
+    int tau1_charge=0, tau2_charge=0;
+
     std::vector<ic::Vertex*> gen_vertices;
     if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
     if(make_mva_ntuple_ && gen_vertices.size()>0 && tau_neutrinos.size()==2) {
 
-      int tau1_charge=0, tau2_charge=0;
       tauFlag_1_=-1, tauFlag_2_=-1;
       if (rho_daughters.size()>=1) {
         pi_px_1_ = rho_daughters[0].first->vector().Px();
@@ -1687,6 +1714,11 @@ namespace ic {
         sv_y_1_ = rho_daughters[0].first->vtx().vy() - gen_vertices[0]->vy();
         sv_z_1_ = rho_daughters[0].first->vtx().vz() - gen_vertices[0]->vz();
         tauFlag_1_=1;
+        TVector3 gen_ip_1 = GetGenImpactParam (*(gen_vertices[0]), rho_daughters[0].first->vtx(), rho_daughters[0].first->vector());
+        ip_x_1_ = gen_ip_1.X();
+        ip_y_1_ = gen_ip_1.Y();
+        ip_z_1_ = gen_ip_1.Z();
+
  
         tau1_charge = rho_daughters[0].first->charge();
         for (auto n: tau_neutrinos) {
@@ -1707,6 +1739,11 @@ namespace ic {
           sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
           sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_2_=0;
+
+          TVector3 gen_ip_2 = GetGenImpactParam (*(gen_vertices[0]), pi_daughters[0]->vtx(), pi_daughters[0]->vector());
+          ip_x_2_ = gen_ip_2.X();
+          ip_y_2_ = gen_ip_2.Y();
+          ip_z_2_ = gen_ip_2.Z();
 
           tau2_charge = pi_daughters[0]->charge();
           for (auto n: tau_neutrinos) {
@@ -1768,6 +1805,11 @@ namespace ic {
           sv_z_2_ = rho_daughters[1].first->vtx().vz() - gen_vertices[0]->vz();
           tauFlag_2_=1;
 
+          TVector3 gen_ip_2 = GetGenImpactParam (*(gen_vertices[0]), rho_daughters[1].first->vtx(), rho_daughters[1].first->vector());
+          ip_x_2_ = gen_ip_2.X();
+          ip_y_2_ = gen_ip_2.Y();
+          ip_z_2_ = gen_ip_2.Z();
+
           tau2_charge = rho_daughters[1].first->charge();
           for (auto n: tau_neutrinos) {
             if(tau2_charge*n->pdgid()>=0) continue;
@@ -1820,6 +1862,11 @@ namespace ic {
             sv_y_2_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
             sv_z_2_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
             tauFlag_2_=0;
+
+            TVector3 gen_ip_2 = GetGenImpactParam (*(gen_vertices[0]), pi_daughters[0]->vtx(), pi_daughters[0]->vector());
+            ip_x_2_ = gen_ip_2.X();
+            ip_y_2_ = gen_ip_2.Y();
+            ip_z_2_ = gen_ip_2.Z();
 
             tau2_charge = pi_daughters[0]->charge();
             for (auto n: tau_neutrinos) {
@@ -1888,6 +1935,12 @@ namespace ic {
           sv_y_1_ = pi_daughters[0]->vtx().vy() - gen_vertices[0]->vy();
           sv_z_1_ = pi_daughters[0]->vtx().vz() - gen_vertices[0]->vz();
 
+          TVector3 gen_ip_1 = GetGenImpactParam (*(gen_vertices[0]), pi_daughters[0]->vtx(), pi_daughters[0]->vector());
+          ip_x_1_ = gen_ip_1.X();
+          ip_y_1_ = gen_ip_1.Y();
+          ip_z_1_ = gen_ip_1.Z();
+
+
           if (pi_daughters.size()>1) {
             pi_px_2_ = pi_daughters[1]->vector().Px();
             pi_py_2_ = pi_daughters[1]->vector().Py();
@@ -1909,6 +1962,11 @@ namespace ic {
             sv_y_2_ = pi_daughters[1]->vtx().vy() - gen_vertices[0]->vy();
             sv_z_2_ = pi_daughters[1]->vtx().vz() - gen_vertices[0]->vz();
             tauFlag_2_=0;
+
+            TVector3 gen_ip_2 = GetGenImpactParam (*(gen_vertices[0]), pi_daughters[1]->vtx(), pi_daughters[1]->vector());
+            ip_x_2_ = gen_ip_2.X();
+            ip_y_2_ = gen_ip_2.Y();
+            ip_z_2_ = gen_ip_2.Z();
 
           }
 
@@ -2699,6 +2757,88 @@ namespace ic {
       gen_pvy_ = gen_vertices[0]->vy();
       gen_pvz_ = gen_vertices[0]->vz();
     }
+
+    reco_pi_px_1_=-9999, reco_pi_py_1_=-9999, reco_pi_pz_1_=-9999, reco_pi_E_1_=-9999;
+    reco_pi0_px_1_=-9999, reco_pi0_py_1_=-9999, reco_pi0_pz_1_=-9999, reco_pi0_E_1_=-9999;
+    reco_sv_x_1_=-9999, reco_sv_y_1_=-9999, reco_sv_z_1_=-9999; 
+    reco_ip_x_1_=-9999, reco_ip_y_1_=-9999, reco_ip_z_1_=-9999;
+    reco_metx_=-9999, reco_mety_=-9999; 
+    reco_dm_1_=-9999; 
+
+    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+      std::vector<GenJet *> lead_gen_tau;
+      if(tau1_charge == gen_tau_jets_ptr[0]->charge()) lead_gen_tau = {gen_tau_jets_ptr[0]};
+      if(gen_tau_jets_ptr.size()>1) {
+        if(tau1_charge == gen_tau_jets_ptr[1]->charge()) lead_gen_tau = {gen_tau_jets_ptr[1]};
+      }
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      ic::erase_if(taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));         
+      
+      std::vector<Tau *> taus_tt;
+
+      for(auto t : taus) {
+        if(t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) {
+        taus_tt.push_back(t);
+        }
+      }
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+
+      if (tt_matches.size()>0) {
+
+        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
+        ic::Vertex* refit_vertex = vertex_vec[0];
+
+        ic::Tau *reco_tau = tt_matches[0].second;
+        std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+
+        std::vector<Met*> reco_met_vec = event->GetPtrVec<Met>("puppiMet");
+        Met *reco_met = reco_met_vec.at(0);
+        reco_metx_ = reco_met->vector().Px();
+        reco_mety_ = reco_met->vector().Py();
+      
+        int tau_decay_mode_1_ = reco_tau->decay_mode();
+ 
+        reco_dm_1_ = reco_tau->HasTauID("MVADM2017v1") ? reco_tau->GetTauID("MVADM2017v1") : 0.0;
+        if(tau_decay_mode_1_==0&&reco_dm_1_>0) reco_dm_1_=-1;
+
+        if(tau_decay_mode_1_<3){
+          std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(reco_tau, refit_vertex, pfcands);
+          TVector3 ip_1 = ipandsig_1.first;
+          reco_ip_x_1_ = ip_1.X();
+          reco_ip_y_1_ = ip_1.Y();
+          reco_ip_z_1_ = ip_1.Z();
+        }
+
+        if(tau_decay_mode_1_<3) {
+          reco_pi_px_1_=reco_tau->vector().Px();
+          reco_pi_py_1_=reco_tau->vector().Py();
+          reco_pi_pz_1_=reco_tau->vector().Pz();
+          reco_pi_E_1_ =reco_tau->vector().E(); 
+        }
+        if(tau_decay_mode_1_==1) {
+          std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(reco_tau, pfcands);
+          ic::Candidate *pi_tau1 = rho1.first;
+          ic::Candidate *pi0_tau1 = rho1.second;
+          reco_pi_px_1_=pi_tau1->vector().Px();
+          reco_pi_py_1_=pi_tau1->vector().Py();
+          reco_pi_pz_1_=pi_tau1->vector().Pz();
+          reco_pi_E_1_=pi_tau1->vector().E(); 
+          reco_pi0_px_1_=pi0_tau1->vector().Px();
+          reco_pi0_py_1_=pi0_tau1->vector().Py();
+          reco_pi0_pz_1_=pi0_tau1->vector().Pz();
+          reco_pi0_E_1_=pi0_tau1->vector().E();
+        }
+        if(tau_decay_mode_1_==10){
+          if(reco_tau->hasSV()){
+            reco_sv_x_1_ = reco_tau->secondary_vertex().X() - refit_vertex->vx();
+            reco_sv_y_1_ = reco_tau->secondary_vertex().Y() - refit_vertex->vy();
+            reco_sv_z_1_ = reco_tau->secondary_vertex().Z() - refit_vertex->vz();
+          }
+        }
+      }
+    }
+
+
 
     if(fs_) outtree_->Fill();
     if(make_mva_ntuple_ && tauFlag_1_>=0 && tauFlag_2_>=0) mvatree_->Fill();

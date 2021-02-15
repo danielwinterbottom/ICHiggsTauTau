@@ -139,6 +139,15 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    double gen_nu_eta_1=-9999.;
    double gen_nu_eta_2=-9999.;    
 
+   double gen_vis_p_1=-9999.;
+   double gen_vis_p_2=-9999.;
+   double gen_vis_phi_1=-9999.;
+   double gen_vis_phi_2=-9999.;
+   double gen_vis_eta_1=-9999.;
+   double gen_vis_eta_2=-9999.;
+   double gen_vis_E_1=-9999.;
+   double gen_vis_E_2=-9999.;
+
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
    int leptonsize = leading_lepton_match.size();
@@ -207,6 +216,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_nu_p_1=leading_tau_match.at(0).second->nu_vector().P();
        gen_nu_phi_1=leading_tau_match.at(0).second->nu_vector().Phi();
        gen_nu_eta_1=leading_tau_match.at(0).second->nu_vector().Rapidity();
+
+       gen_vis_p_1=leading_tau_match.at(0).second->vector().P();
+       gen_vis_E_1=leading_tau_match.at(0).second->vector().E();
+       gen_vis_phi_1=leading_tau_match.at(0).second->vector().Phi();
+       gen_vis_eta_1=leading_tau_match.at(0).second->vector().Rapidity();
       }
    
 //Now for subleading lepton:
@@ -274,6 +288,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_nu_p_2=subleading_tau_match.at(0).second->nu_vector().P();
        gen_nu_phi_2=subleading_tau_match.at(0).second->nu_vector().Phi();
        gen_nu_eta_2=subleading_tau_match.at(0).second->nu_vector().Rapidity();
+
+       gen_vis_p_2=subleading_tau_match.at(0).second->vector().P();
+       gen_vis_E_2=subleading_tau_match.at(0).second->vector().E();
+       gen_vis_phi_2=subleading_tau_match.at(0).second->vector().Phi();
+       gen_vis_eta_2=subleading_tau_match.at(0).second->vector().Rapidity();
       }
 
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
@@ -302,6 +321,15 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    event->Add("gen_nu_p_2",gen_nu_p_2);
    event->Add("gen_nu_phi_2",gen_nu_phi_2);
    event->Add("gen_nu_eta_2",gen_nu_eta_2);
+
+   event->Add("gen_vis_p_1",  gen_vis_p_1);
+   event->Add("gen_vis_E_1",  gen_vis_E_1);
+   event->Add("gen_vis_phi_1",gen_vis_phi_1);
+   event->Add("gen_vis_eta_1",gen_vis_eta_1);
+   event->Add("gen_vis_p_2",  gen_vis_p_2);
+   event->Add("gen_vis_E_2",  gen_vis_E_2);
+   event->Add("gen_vis_phi_2",gen_vis_phi_2);
+   event->Add("gen_vis_eta_2",gen_vis_eta_2);
 
     if(ngenjets_){
       //Get gen-jets collection, filter Higgs decay products and add Njets variable to event

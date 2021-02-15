@@ -1197,6 +1197,15 @@ namespace ic {
       mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
       mvatree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
 
+      mvatree_->Branch("gen_vis_p_1",   &gen_vis_p_1_);
+      mvatree_->Branch("gen_vis_p_2",   &gen_vis_p_2_);
+      mvatree_->Branch("gen_vis_E_1",   &gen_vis_E_1_);
+      mvatree_->Branch("gen_vis_E_2",   &gen_vis_E_2_);
+      mvatree_->Branch("gen_vis_phi_1", &gen_vis_phi_1_);
+      mvatree_->Branch("gen_vis_phi_2", &gen_vis_phi_2_);
+      mvatree_->Branch("gen_vis_eta_1", &gen_vis_eta_1_);
+      mvatree_->Branch("gen_vis_eta_2", &gen_vis_eta_2_);
+
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
       mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
@@ -2179,12 +2188,30 @@ namespace ic {
     gen_nu_eta_1_=-9999.;
     gen_nu_eta_2_=-9999.;
 
+    gen_vis_p_1_=-9999.;
+    gen_vis_p_2_=-9999.;
+    gen_vis_E_1_=-9999.;
+    gen_vis_E_2_=-9999.;
+    gen_vis_phi_1_=-9999.;
+    gen_vis_phi_2_=-9999.;
+    gen_vis_eta_1_=-9999.;
+    gen_vis_eta_2_=-9999.;
+
     event->Exists("gen_nu_p_1")   ? gen_nu_p_1_   = event->Get<double>("gen_nu_p_1")   : -9999.;  
     event->Exists("gen_nu_p_2")   ? gen_nu_p_2_   = event->Get<double>("gen_nu_p_2")   : -9999.; 
     event->Exists("gen_nu_phi_1") ? gen_nu_phi_1_ = event->Get<double>("gen_nu_phi_1") : -9999.; 
     event->Exists("gen_nu_phi_2") ? gen_nu_phi_2_ = event->Get<double>("gen_nu_phi_2") : -9999.; 
     event->Exists("gen_nu_eta_1") ? gen_nu_eta_1_ = event->Get<double>("gen_nu_eta_1") : -9999.; 
     event->Exists("gen_nu_eta_2") ? gen_nu_eta_2_ = event->Get<double>("gen_nu_eta_2") : -9999.; 
+
+    event->Exists("gen_vis_p_1")   ? gen_vis_p_1_   = event->Get<double>("gen_vis_p_1")   : -9999.;
+    event->Exists("gen_vis_p_2")   ? gen_vis_p_2_   = event->Get<double>("gen_vis_p_2")   : -9999.;
+    event->Exists("gen_vis_E_1")   ? gen_vis_E_1_   = event->Get<double>("gen_vis_E_1")   : -9999.;
+    event->Exists("gen_vis_E_2")   ? gen_vis_E_2_   = event->Get<double>("gen_vis_E_2")   : -9999.;
+    event->Exists("gen_vis_phi_1") ? gen_vis_phi_1_ = event->Get<double>("gen_vis_phi_1") : -9999.;
+    event->Exists("gen_vis_phi_2") ? gen_vis_phi_2_ = event->Get<double>("gen_vis_phi_2") : -9999.;
+    event->Exists("gen_vis_eta_1") ? gen_vis_eta_1_ = event->Get<double>("gen_vis_eta_1") : -9999.;
+    event->Exists("gen_vis_eta_2") ? gen_vis_eta_2_ = event->Get<double>("gen_vis_eta_2") : -9999.;
 
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");

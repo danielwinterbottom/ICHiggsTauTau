@@ -2487,7 +2487,7 @@ namespace ic {
   TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec){
     TVector3 x(secondary_vtx.vx()-primary_vtx.vx(),secondary_vtx.vy()-primary_vtx.vy(),secondary_vtx.vz()-primary_vtx.vz());
     TVector3 unit_vec = ConvertToTVector3(part_vec).Unit();
-    TVector3 u = -(x - x.Dot(unit_vec)*unit_vec);
+    TVector3 u = (x - x.Dot(unit_vec)*unit_vec);
     return u;    
   }
   

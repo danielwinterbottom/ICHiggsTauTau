@@ -883,6 +883,15 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_1_;
   double gen_nu_eta_2_;
 
+  double gen_vis_p_1_;
+  double gen_vis_p_2_;
+  double gen_vis_E_1_;
+  double gen_vis_E_2_;
+  double gen_vis_phi_1_;
+  double gen_vis_phi_2_;
+  double gen_vis_eta_1_;
+  double gen_vis_eta_2_;
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();
