@@ -34,6 +34,9 @@ def parse_arguments():
 
 def main(args):
 
+    cwd = os.getcwd()
+    os.system('mkdir -p svfitout')
+
     sample_list = {}
     with open("scripts/sample_list_{}.yaml".format(args.year), "r") as f:
         try:
@@ -62,17 +65,10 @@ def main(args):
         'JER_UP','JER_DOWN',
     ]
 
-
-#    qsub_command = (
-#        'qsub -e /dev/null -o /dev/null -cwd -V -l h_rt=3:0:0'
-#        ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
-#        'channel="{}",year="{}"'
-#        )
-
     qsub_command = (
         'qsub -e svfitout/ -o svfitout/ -cwd -V -l h_rt=3:0:0'
         ' -q hep.q -v input="{}",svfit_path="{}",path="{}",tag="{}",'
-        'channel="{}",year="{}",extra="{}"'
+        'channel="{}",year="{}",extra="{}",dir="{}"'
         )
 
 
@@ -94,16 +90,16 @@ def main(args):
 
                     run_command(
                         qsub_command.format(sample, args.svfit_path+'/'+subdir+'/', 
-                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir, cwd)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
                     print( qsub_command.format(sample, args.svfit_path+'/'+subdir+'/',
-                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir, cwd)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
                     f = open('jobs/%s_%s_%s_%s_svfit.sh' % (sample, args.channel, args.year , subdir ),'w')
                     f.write( qsub_command.format(sample, args.svfit_path+'/'+subdir+'/',
-                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir)
+                        args.path+'/'+subdir+'/', args.tag, args.channel, args.year,subdir, cwd)
                         + ' ./scripts/batch_addSVFits.sh'
                     )
                     f.close()
