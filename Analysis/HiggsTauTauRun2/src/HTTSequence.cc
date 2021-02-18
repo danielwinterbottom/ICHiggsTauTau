@@ -717,7 +717,7 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
   httWeights.set_do_mssm_higgspt(true); 
   if(era_type == era::data_2016) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v0.root");
-  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v0.root");
+  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v1.root");
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));
