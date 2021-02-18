@@ -391,7 +391,7 @@ sample_list = list(set(sample_list))
 #out=''
 #for s in sorted(sample_list): out+='    - %s\n' %s
 
-print out
+#print out
 #print sample_list
 
 #channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
