@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 # python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2016,2017,2018' --output='control_plots_mssm'
-# python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2016,2017,2018' --output='new_closure_plots' --control_plots=False --ff_closures=True --dry_run=True
+# python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2018' --output='control_plots_mssm_new' --control_plots=True --ff_closures=True --add_systs=True --dry_run=True
 
 import os
 import argparse
+import math as math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--channel',help= 'Name of input channels', default='mt,et,tt')
@@ -23,39 +24,103 @@ methods = args.method.split(',')
 years = args.year.split(',')
 output = args.output
 
+def myround(x, base=5):
+    return base * round(x/base)
+
+def GetBinning(var,min_bin,max_bin,num_bins,log=False,round=1,final_bin_start=None):
+  bins = []
+  if not log:
+    if final_bin_start == None:
+      range_bins = max_bin - min_bin
+    else:
+      range_bins = final_bin_start - min_bin
+    bin_interval = range_bins/num_bins
+    for i in range(0,num_bins+1):
+      bins.append(myround(min_bin+(i*bin_interval),base=round))
+  else:
+    if min_bin == 0: min_bin = 0.001
+    min_bin_log = math.log(min_bin,10)
+    if final_bin_start == None:
+      max_bin_log = math.log(max_bin,10)
+      range_bins_log = max_bin_log - min_bin_log
+    else:
+      final_bin_start_log = math.log(final_bin_start,10)
+      range_bins_log = final_bin_start_log - min_bin_log
+    bin_interval_log = range_bins_log/num_bins
+    for i in range(0,num_bins+1):
+      bins.append(myround(10**(min_bin_log+(i*bin_interval_log)),base=round))
+
+  if final_bin_start != None: bins.append(max_bin)
+  return var+str(bins).strip()
+
 all_ch_variables = [
-             'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
-             'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
-             'met[0,10,20,30,40,50,60,70,80,90,100,120,140,200,400]',
-             'n_jets[0,1,>=2]',
-             'n_prebjets[0,1,>=2]', 
-             'n_deepbjets[0,>=1]',
-             'mt_1[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
-             'mt_2[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
-             'mt_lep[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
-             'eta_1[-2.2,-2.0,-1.8,-1.6,-1.4,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2]',
-             'eta_2[-2.2,-2.0,-1.8,-1.6,-1.4,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2]',
-             'met_dphi_1[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]',
-             'met_dphi_2[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]',
-             'dphi[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]'
-            ]
+                    GetBinning('mt_tot',20,3200,50,log=True,round=1,final_bin_start=1000),
+                    GetBinning('m_vis',20,3200,50,log=True,round=1,final_bin_start=1000),
+                    GetBinning('met',10,600,40,log=True,round=1,final_bin_start=None),
+                    'n_jets[0,1,>=2]',
+                    'n_prebjets[0,1,>=2]', 
+                    'n_deepbjets[0,>=1]',
+                    GetBinning('mt_1',0,400,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('mt_2',0,400,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('mt_lep',0,400,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('eta_1',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('eta_2',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('met_dphi_1',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('met_dphi_2',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('dphi',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    ]
+
+
+#all_ch_variables = [
+#             'mt_tot[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
+#             'm_vis[20,30,40,50,60,70,80,90,100,110,125,140,160,175,200,225,250,280,320,350,400,450,500,560,630,710,800,890,1000,4000]',
+#             'met[0,10,20,30,40,50,60,70,80,90,100,120,140,200,400]',
+#             'n_jets[0,1,>=2]',
+#             'n_prebjets[0,1,>=2]', 
+#             'n_deepbjets[0,>=1]',
+#             'mt_1[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
+#             'mt_2[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
+#             'mt_lep[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]',
+#             'eta_1[-2.2,-2.0,-1.8,-1.6,-1.4,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2]',
+#             'eta_2[-2.2,-2.0,-1.8,-1.6,-1.4,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2]',
+#             'met_dphi_1[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]',
+#             'met_dphi_2[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]',
+#             'dphi[0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3,3.2]'
+#            ]
 
 
 ch_dep_var = {"mt":[
-                    'pt_1[20,25,30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
-                    'pt_2[30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
-                    'iso_1[0.0,0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.065,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.115,0.12,0.125,0.13,0.135,0.14,0.145,0.15]'
+                    GetBinning('pt_1',20,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('pt_2',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001,final_bin_start=None),
                     ],
               "et":[
-                    'pt_1[20,25,30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
-                    'pt_2[30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
-                    'iso_1[0.0,0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.065,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.115,0.12,0.125,0.13,0.135,0.14,0.145,0.15]'
+                    GetBinning('pt_1',20,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('pt_2',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001,final_bin_start=None),
                     ],
               "tt":[
-                    'pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
-                    'pt_2[40,45,50,55,60,65,70,80,90,100,120,140,200,400]'
+                    GetBinning('pt_1',40,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('pt_2',40,600,40,log=True,round=1,final_bin_start=None),
                     ]
               }
+
+
+#ch_dep_var = {"mt":[
+#                    'pt_1[20,25,30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
+#                    'pt_2[30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
+#                    'iso_1[0.0,0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.065,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.115,0.12,0.125,0.13,0.135,0.14,0.145,0.15]'
+#                    ],
+#              "et":[
+#                    'pt_1[20,25,30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
+#                    'pt_2[30,35,40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
+#                    'iso_1[0.0,0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.065,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.115,0.12,0.125,0.13,0.135,0.14,0.145,0.15]'
+#                    ],
+#              "tt":[
+#                    'pt_1[40,45,50,55,60,65,70,80,90,100,120,140,200,400]',
+#                    'pt_2[40,45,50,55,60,65,70,80,90,100,120,140,200,400]'
+#                    ]
+#              }
 
 config_files = {'2016':'scripts/plot_mssm_2016.cfg',
                 '2017':'scripts/plot_mssm_2017.cfg',
@@ -161,13 +226,16 @@ for year in years:
 
           if year == "2016":
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
-            add_syst += ' --syst_zwt="CMS_htt_dyShape_2016" --syst_prefire="CMS_prefiring"'
+            if eval(args.add_systs):
+              add_syst += ' --syst_zwt="CMS_htt_dyShape_2016" --syst_prefire="CMS_prefiring"'
           elif year == "2017":
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\'"
-            add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
+            if eval(args.add_systs):
+              add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
           elif year == "2018":
             wt = "--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm\'"
-            add_syst += ' --syst_zwt="CMS_htt_dyShape"'
+            if eval(args.add_systs):
+              add_syst += ' --syst_zwt="CMS_htt_dyShape"'
  
 
           extra_name = '%(var_string)s%(add_name)s' % vars()
@@ -194,7 +262,7 @@ for year in years:
           if os.path.exists(output_file): os.system('rm %(output_file)s' % vars())
 
           if not eval(args.dry_run):
-            if year != "2018" or 'w_dr' in job_file or 'qcd_dr' in job_file or not eval(args.add_systs):
+            if 'w_dr' in job_file or 'qcd_dr' in job_file or not eval(args.add_systs) or not ((year in ["2017","2018"]) and (channel in ['mt','et'])):
               os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=0:180:0 -cwd %(job_file)s' % vars())
             else:
               os.system('qsub -e %(error_file)s -o %(output_file)s -V -q hep.q -l h_rt=10:0:0 -cwd %(job_file)s' % vars())

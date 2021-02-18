@@ -4372,7 +4372,7 @@ def NormSignals(outfile,add_name):
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
 
-def RenameEmbedSysts(outfile):
+def RenameMSSMrun2Datacards(outfile):
   chan = options.channel
   renames = {
    'CMS_eff_trigger_%(chan)s' % vars() : 'CMS_eff_trigger_emb_%(chan)s' % vars(),
@@ -4381,7 +4381,7 @@ def RenameEmbedSysts(outfile):
    'CMS_eff_t': 'CMS_eff_t_emb',
    'CMS_scale_e' : 'CMS_scale_e_emb',
    'CMS_scale_t' : 'CMS_scale_t_emb',
-  }    
+  }  
   directory = outfile.Get(nodename)
   for key in directory.GetListOfKeys():
     name = key.GetName()
@@ -4392,6 +4392,7 @@ def RenameEmbedSysts(outfile):
       directory.cd()
       #histo.Write(new_name,ROOT.TObject.kWriteDelete)
       histo.Write(new_name)
+      directory.Delete(name+';1')
       for x in renames:
         if x in new_name:
           histo_clone = histo.Clone()
@@ -4400,6 +4401,42 @@ def RenameEmbedSysts(outfile):
           histo_clone.SetName(new_name_2)
           histo_clone.Write(new_name_2)
           break
+    elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
+      new_name = name.replace('VVT', 'VVL')
+      histo.SetName(new_name)
+      directory.cd()
+      histo.Write(new_name)
+      directory.Delete(name+';1')
+    elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name:
+      new_name = name.replace('TTT', 'TTL')
+      histo.SetName(new_name)
+      directory.cd()
+      histo.Write(new_name)
+      directory.Delete(name+';1')
+    elif not isinstance(histo,ROOT.TDirectory) and 'Wfakes' in name:
+      new_name = name.replace('Wfakes', 'wFakes')
+      histo.SetName(new_name)
+      directory.cd()
+      histo.Write(new_name)
+      directory.Delete(name+';1')
+    elif not isinstance(histo,ROOT.TDirectory) and ('ggh_' in name or 'ggH_' in name or 'ggA_' in name) and name.count('_') == 1:
+      new_name = name[:5]+'_'+name[5:]
+      histo.SetName(new_name)
+      directory.cd()
+      histo.Write(new_name)
+      directory.Delete(name+';1')
+    elif not isinstance(histo,ROOT.TDirectory) and ('bbh' in name or 'bbH' in name or 'bbA' in name) and name.count('_') == 0:
+      new_name = name[:3]+'_'+name[3:]
+      histo.SetName(new_name)
+      directory.cd()
+      histo.Write(new_name)
+      directory.Delete(name+';1')
+    elif isinstance(histo,ROOT.TDirectory):
+      directory.Delete(name+';1')
+    elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name.count('_') == 0 and not name == 'ggH125':
+      directory.Delete(name+';1')
+
+
 
 def TotalUnc(h0, hists=[]):
   #sum in quadrature several systematic uncertainties to form total uncertainty band
@@ -5070,7 +5107,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 if options.analysis in ['mssmrun2']:
-  RenameEmbedSysts(outfile) 
+  RenameMSSMrun2Datacards(outfile) 
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
