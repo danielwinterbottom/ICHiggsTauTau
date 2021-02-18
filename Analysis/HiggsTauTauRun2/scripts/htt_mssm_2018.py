@@ -209,20 +209,23 @@ if options.proc_sm or options.proc_all:
 
 if options.proc_mssm or options.proc_all:
 
-    M_GluGluBBH = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','600','700','800','900','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
-    for mass in M_GluGluBBH:
-    		signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
-
-    M_GluGluBBH_NLO = ['80','90','100','110','120','125','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200','3500']
-    for mass in M_GluGluBBH_NLO:
-        signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO']
-
-    M_GluGluH = ['80','90','100','110','120','130','140','160','180','200','250','300','400','450','600','700','800','1200','1400','1500','1600','1800','2000','2600','2900','3200']
-    for mass in M_GluGluH:
-		signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
-    	
-
-
+#    M_GluGluBBH = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','600','700','800','900','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
+#    for mass in M_GluGluBBH:
+#    		signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass]
+#
+#    M_GluGluBBH_NLO = ['80','90','100','110','120','125','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200','3500']
+#    for mass in M_GluGluBBH_NLO:
+#        signal_mc += ['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO']
+#
+#    M_GluGluH = ['80','90','100','110','120','130','140','160','180','200','250','300','400','450','600','700','800','1200','1400','1500','1600','1800','2000','2600','2900','3200']
+#    for mass in M_GluGluH:
+#		signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
+#    	
+    masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500] 
+    # note not all samples exists currently for every mass
+    for mass in masses_ph:
+      signal_mc += ['SUSYGluGluToHToTauTau_M-%s_powheg' % mass]
+      signal_mc += ['SUSYGluGluToBBHToTauTau_M-%s_powheg' % mass]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
     if not no_json:
@@ -483,9 +486,18 @@ if options.proc_bkg or options.proc_all:
 if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
-        user='guttley'
         SIG_FILELIST = FILELIST
         SIG_DIR = 'Sep18_MC_102X_2018'
+
+        if 'SUSY' in sa and 'powheg' in sa:
+          SIG_DIR = 'Feb09_MC_102X_2018'
+          SIG_FILELIST ="./filelists/Feb09_2018_MC_102X"                  
+          user='dwinterb'
+        else:
+          SIG_DIR = 'Sep18_MC_102X_2018'
+          SIG_FILELIST = FILELIST
+          user='guttley'
+
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         if ("HToTauTau" in sa and "amcatnloFXFX" in sa) or 'nospinner' in sa:

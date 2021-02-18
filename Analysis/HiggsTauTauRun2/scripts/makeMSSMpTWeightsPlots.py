@@ -4,6 +4,7 @@ import ROOT
 import UserCode.ICHiggsTauTau.plotting as plotting
 import argparse
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--mass', '-m', help= 'Mass to draw')
 args = parser.parse_args()
@@ -39,7 +40,7 @@ def TotalUnc(h0, hists=[]):
 def MakePlot(m,x,extra):
     fout = ROOT.TFile('mssm_pt_weight_inputs.root')
     fout.cd()
-    h_pythia = fout.Get('pythia_m%(m)s' % vars())
+    h_pythia = fout.Get('ref_m%(m)s' % vars())
     h_t = fout.Get('%(x)s_m%(m)s_t' % vars())
     h_b = fout.Get('%(x)s_m%(m)s_b' % vars())
     h_i = fout.Get('%(x)s_m%(m)s_i%(extra)s' % vars())
@@ -65,7 +66,7 @@ def MakePlot(m,x,extra):
     u_i =  TotalUnc(h_i, [h_i_scale_up, h_i_scale_down, h_i_hdamp_up, h_i_hdamp_down])
 
     plotting.CompareHists([h_pythia, h_t, h_b, h_i],
-             ['Pythia','Top-only','Bottom-only','Interference'],
+             ['Reference','Top-only','Bottom-only','Interference'],
              "gg%(x)s: %(m)s GeV" % vars(),
              True,
              False,
@@ -81,7 +82,7 @@ def MakePlot(m,x,extra):
              'a.u.',
              0.1,
              False,
-             'ggh_reweighting_plots/pythia_%(x)s_m%(m)s' % vars(),
+             'ggh_reweighting_plots/powheg_%(x)s_m%(m)s' % vars(),
              uncert_hist=[None,u_t,u_b,u_i],
              uncert_title=[None,'Top-only Unc.','Bottom-only Unc.', 'Interference Unc.'],
 
