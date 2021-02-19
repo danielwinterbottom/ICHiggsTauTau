@@ -7,19 +7,12 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 dir_2016 = '/vols/cms/dw515/Offline/output/MSSM/ggh_reweighting_2016/'
 dir_2018 = '/vols/cms/dw515/Offline/output/MSSM/ggh_reweighting_2018/'
 
-masses_pythia = [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 400, 450, 600, 700, 800, 1200, 1400, 1500, 1600, 1800, 2000, 2600, 2900, 3200]
 
 masses_pythia_2016 = [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]
-
-masses_pythia_2017 = [80, 90, 100, 110, 120, 130, 140, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]
 
 masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
 
 masses_ph_alt  = [350, 400, 450, 500, 600, 700, 800, 900]
-
-#masses_pythia = [400]
-#masses_ph = [400]
-#masses_ph_alt = [400]
 
 fout = ROOT.TFile('mssm_pt_weight_inputs.root', 'RECREATE')
 
@@ -141,10 +134,9 @@ def FixBins(h,h0):
       h.SetBinError(i,c)
   return h
 
-for m in set(masses_pythia+masses_pythia_2017):
-  file_name_2018 = '%(dir_2018)s/SUSYGluGluToHToTauTau_M-%(m)i_tt_2018.root' % vars()
-  if int(m) not in masses_pythia: file_name_2018 = file_name_2018.replace('2018','2017')
-  hist_name_2018 = 'pythia_m%(m)i' % vars()
+for m in set(masses_ph):
+  file_name_2018 = '%(dir_2018)s/SUSYGluGluToHToTauTau_M-%(m)s_powheg_tt_2018And2017.root' % vars()
+  hist_name_2018 = 'ref_m%(m)i' % vars()
   h1 = GetPythiaHist(file_name_2018, hist_name_2018)
   fout.cd()
   h1.Write()
@@ -152,7 +144,7 @@ for m in set(masses_pythia+masses_pythia_2017):
 for m in masses_pythia_2016:
 
   file_name_2016 = '%(dir_2016)s/SUSYGluGluToHToTauTau_M-%(m)i_tt_2016.root' % vars()
-  hist_name_2016 = 'pythia_m%(m)i_2016' % vars()
+  hist_name_2016 = 'ref_m%(m)i_2016' % vars()
   h2 = GetPythiaHist(file_name_2016, hist_name_2016)
   fout.cd()
   h2.Write()
