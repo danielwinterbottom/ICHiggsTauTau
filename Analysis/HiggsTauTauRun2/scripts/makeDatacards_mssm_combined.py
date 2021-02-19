@@ -111,6 +111,13 @@ for year in years:
                    "nobtag_loosemt",
                    "btag_tightmt",
                    "btag_loosemt",
+                   "1btag_tightmt",
+                   "1btag_loosemt",
+                   #"nobtag_tightmt_highmsv",
+                   #"nobtag_loosemt_highmsv",
+                   #"btag_tightmt_highmsv",
+                   #"btag_loosemt_highmsv",
+
                    ]
 
   categories_mt = [
@@ -119,12 +126,21 @@ for year in years:
                    "nobtag_loosemt",
                    "btag_tightmt",
                    "btag_loosemt",
+                   "1btag_tightmt",
+                   "1btag_loosemt",
+                   #"nobtag_tightmt_highmsv",
+                   #"nobtag_loosemt_highmsv",
+                   #"btag_tightmt_highmsv",
+                   #"btag_loosemt_highmsv",
                    ]
 
   categories_tt = [
                    "inclusive",
                    "btag",
                    "nobtag",
+                   "1btag",
+                   #"btag_highmsv",
+                   #"nobtag_highmsv",
                    ]
 
   categories_em = [
@@ -241,7 +257,11 @@ for year in years:
         job_file = '%(output_folder)s/jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
         CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
         if not options.dry_run:
-          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+          if YEAR in ["2017","2017"] and ch in ["mt","et"]:
+            SubmitBatchJob(job_file,time=600,memory=24,cores=1)
+          else:
+            SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+  
            
     
 

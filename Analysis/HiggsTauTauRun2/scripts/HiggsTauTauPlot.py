@@ -639,6 +639,18 @@ cats['nobtag_loosemt'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
 cats['btag_tightmt'] = '(n_deepbjets>0 && mt_1<40)'
 cats['btag_loosemt'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
 
+cats['btag_highmsv'] = '(n_deepbjets>0 && m_sv>250)'
+cats['nobtag_highmsv'] = '(n_deepbjets==0 && m_sv>250)'
+
+cats['nobtag_tightmt_highmsv'] = '(n_deepbjets==0 && mt_1<40 && m_sv>250)'
+cats['nobtag_loosemt_highmsv'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && m_sv>250)'
+cats['btag_tightmt_highmsv'] = '(n_deepbjets>0 && mt_1<40 && m_sv>250)'
+cats['btag_loosemt_highmsv'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70 && m_sv>250)'
+
+cats['1btag'] = '(n_deepbjets==1)'
+cats['1btag_tightmt'] = '(n_deepbjets==1 && mt_1<40)'
+cats['1btag_loosemt'] = '(n_deepbjets==1 && mt_1>40 && mt_1<70)'
+
 cats['tightmt'] = '(mt_1<40)'
 cats['loosemt'] = '(mt_1>40 && mt_1<70)'
 
@@ -4355,7 +4367,8 @@ def NormSignals(outfile,add_name):
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting and samp == 'ggH': 
-                          re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          #re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          re_weighted_names = ['ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
                           for name in re_weighted_names:
                             mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
                             mssm_hist.Scale(sf)
@@ -4383,58 +4396,68 @@ def RenameMSSMrun2Datacards(outfile):
    'CMS_scale_t' : 'CMS_scale_t_emb',
   }  
   directory = outfile.Get(nodename)
+
+  # count number of directories
+  count = 0    
+  for key in directory.GetListOfKeys(): count += 1
+
+  i = 0
   for key in directory.GetListOfKeys():
-    name = key.GetName()
-    histo = directory.Get(name)
-    if not isinstance(histo,ROOT.TDirectory) and 'EmbedZTT' in name:
-      new_name = name.replace('EmbedZTT', 'EMB')
-      histo.SetName(new_name)
-      directory.cd()
-      #histo.Write(new_name,ROOT.TObject.kWriteDelete)
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-      for x in renames:
-        if x in new_name:
-          histo_clone = histo.Clone()
-          y = renames[x]
-          new_name_2 = new_name.replace(x,y)
-          histo_clone.SetName(new_name_2)
-          histo_clone.Write(new_name_2)
-          break
-    elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
-      new_name = name.replace('VVT', 'VVL')
-      histo.SetName(new_name)
-      directory.cd()
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-    elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name:
-      new_name = name.replace('TTT', 'TTL')
-      histo.SetName(new_name)
-      directory.cd()
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-    elif not isinstance(histo,ROOT.TDirectory) and 'Wfakes' in name:
-      new_name = name.replace('Wfakes', 'wFakes')
-      histo.SetName(new_name)
-      directory.cd()
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-    elif not isinstance(histo,ROOT.TDirectory) and ('ggh_' in name or 'ggH_' in name or 'ggA_' in name) and name.count('_') == 1:
-      new_name = name[:5]+'_'+name[5:]
-      histo.SetName(new_name)
-      directory.cd()
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-    elif not isinstance(histo,ROOT.TDirectory) and ('bbh' in name or 'bbH' in name or 'bbA' in name) and name.count('_') == 0:
-      new_name = name[:3]+'_'+name[3:]
-      histo.SetName(new_name)
-      directory.cd()
-      histo.Write(new_name)
-      directory.Delete(name+';1')
-    elif isinstance(histo,ROOT.TDirectory):
-      directory.Delete(name+';1')
-    elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name.count('_') == 0 and not name == 'ggH125':
-      directory.Delete(name+';1')
+    if i < count:
+      name = key.GetName()
+      histo = directory.Get(name)
+      if not isinstance(histo,ROOT.TDirectory) and 'EmbedZTT' in name:
+        new_name = name.replace('EmbedZTT', 'EMB')
+        histo.SetName(new_name)
+        directory.cd()
+        #histo.Write(new_name,ROOT.TObject.kWriteDelete)
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+        for x in renames:
+          if x in new_name:
+            histo_clone = histo.Clone()
+            y = renames[x]
+            new_name_2 = new_name.replace(x,y)
+            histo_clone.SetName(new_name_2)
+            histo_clone.Write(new_name_2)
+            break
+      elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
+        new_name = name.replace('VVT', 'VVL')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name:
+        new_name = name.replace('TTT', 'TTL')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'Wfakes' in name:
+        new_name = name.replace('Wfakes', 'wFakes')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and ('ggH_' in name or 'ggA_' in name) and name[:6].count('_') == 1:
+        new_name = name[:5]+'_'+name[5:]
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'bbH' in name and name[:4].count('_') == 0:
+        new_name = name[:3]+'_'+name[3:]
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif isinstance(histo,ROOT.TDirectory):
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and not name == 'ggH125':
+        directory.Delete(name+';1')
+    i += 1
 
 
 
@@ -5106,9 +5129,6 @@ for add_name in add_names:
     if options.analysis in ['mssm','mssmrun2']:
         NormSignals(outfile,add_name)
 
-if options.analysis in ['mssmrun2']:
-  RenameMSSMrun2Datacards(outfile) 
-
 # for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
   outfile.cd(nodename)
@@ -5125,6 +5145,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
 
+if options.analysis in ['mssmrun2']:
+  RenameMSSMrun2Datacards(outfile)
 
 outfile.Close()
 
