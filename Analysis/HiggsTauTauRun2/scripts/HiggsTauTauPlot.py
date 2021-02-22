@@ -578,8 +578,8 @@ if options.analysis == 'cpdecay':
 
 
 if options.w_ff_closure:
-  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
-  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<70)'
+  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<70)'
 elif options.qcd_ff_closure:
   if options.channel in ['et','mt']:
     cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<50 && iso_1>0.05)'
@@ -1927,9 +1927,9 @@ if options.syst_tau_scale_3prong1pi0 != '':
 if options.syst_tau_scale_grouped != "":
     hist_name = options.syst_tau_scale_grouped
     syst_dict = {
-        #'0pi': ['1prong','TSCALE0PI'],
-        #'1pi': ['1prong1pizero','TSCALE1PI'],
-        #'3prong': ['3prong','TSCALE3PRONG'],
+        '0pi': ['1prong','TSCALE0PI'],
+        '1pi': ['1prong1pizero','TSCALE1PI'],
+        '3prong': ['3prong','TSCALE3PRONG'],
         '3prong1pi0': ['3prong1pizero','TSCALE3PRONG1PI0'],
     }
     for name, values in syst_dict.iteritems():
