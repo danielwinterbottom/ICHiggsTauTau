@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --batch --msv_cut
+# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --batch
 
 import sys
 from optparse import OptionParser
@@ -55,8 +55,6 @@ parser.add_option("--years", dest="years", type='string', default='2016,2017,201
                   help="Year input")
 parser.add_option("--no_syst",dest="no_syst", action='store_true', default=False,
                   help="Run without systematics")
-parser.add_option("--msv_cut",dest="msv_cut", action='store_true', default=False,
-                  help="Add m_sv cut to no btag datacards")
 
 
 (options, args) = parser.parse_args()
@@ -64,7 +62,6 @@ output_folder = options.output_folder
 channels = options.channels
 years = options.years
 no_syst = options.no_syst
-msv_cut = options.msv_cut
 
 print 'Processing channels:      %(channels)s' % vars()
 print 'Processing years:         %(years)s' % vars()
@@ -242,9 +239,6 @@ for year in years:
         for i in extra_channel[ch]:   
           add_cond += i
 
-      if msv_cut and cat.startswith('nobtag'):
-        add_cond += ' --sel=\'m_sv>250\''
-
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
       rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
@@ -257,7 +251,7 @@ for year in years:
         job_file = '%(output_folder)s/jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
         CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
         if not options.dry_run:
-          if YEAR in ["2017","2017"] and ch in ["mt","et"]:
+          if YEAR in ["2017","2018"] and ch in ["mt","et"]:
             SubmitBatchJob(job_file,time=600,memory=24,cores=1)
           else:
             SubmitBatchJob(job_file,time=180,memory=24,cores=1)

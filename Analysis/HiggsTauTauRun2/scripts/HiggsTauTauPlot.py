@@ -578,7 +578,8 @@ if options.analysis == 'cpdecay':
 
 
 if options.w_ff_closure:
-  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<70)'
 elif options.qcd_ff_closure:
   if options.channel in ['et','mt']:
     cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<50 && iso_1>0.05)'
@@ -1926,9 +1927,9 @@ if options.syst_tau_scale_3prong1pi0 != '':
 if options.syst_tau_scale_grouped != "":
     hist_name = options.syst_tau_scale_grouped
     syst_dict = {
-        '0pi': ['1prong','TSCALE0PI'],
-        '1pi': ['1prong1pizero','TSCALE1PI'],
-        '3prong': ['3prong','TSCALE3PRONG'],
+        #'0pi': ['1prong','TSCALE0PI'],
+        #'1pi': ['1prong1pizero','TSCALE1PI'],
+        #'3prong': ['3prong','TSCALE3PRONG'],
         '3prong1pi0': ['3prong1pizero','TSCALE3PRONG1PI0'],
     }
     for name, values in syst_dict.iteritems():
@@ -3238,13 +3239,13 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
-              #if options.w_ff_closure or options.qcd_ff_closure:
-                #json_name = 'scripts/ff_strings.json'
-                #with open(json_name) as json_file:
-                  #ff_dict = json.load(json_file)
+              if options.w_ff_closure or options.qcd_ff_closure:
+                json_name = 'scripts/ff_strings.json'
+                with open(json_name) as json_file:
+                  ff_dict = json.load(json_file)
               if options.w_ff_closure:
-                fake_factor_wt_string = "wt_ff_mssm_wjets_1"
-                #fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
+                #fake_factor_wt_string = "wt_ff_mssm_wjets_1"
+                fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
               elif options.qcd_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_qcd_1"
                 #fake_factor_wt_string = ff_dict[channel][year]['qcd']
@@ -3606,7 +3607,8 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
 
 
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
-  weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
+  #weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
+  weights = {'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' } 
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
   if options.gen_signal: OSSS='1' 
@@ -4329,7 +4331,8 @@ def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
     return h1d
 
 def NormSignals(outfile,add_name):
-    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
+    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level
+    samples_to_skip = add_names_dict[add_name] 
     if 'signal' not in samples_to_skip:
         outfile.cd(nodename)
         if options.analysis in ['sm','cpprod','cpdecay'] or options.add_sm_background:
@@ -4363,14 +4366,16 @@ def NormSignals(outfile,add_name):
                     for mass in masses:
                         xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
                         sf = 1.0/xs
+                        if sf == 1.0: continue
                         mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting and samp == 'ggH': 
                           #re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
-                          re_weighted_names = ['ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          re_weighted_names = ['ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
                           for name in re_weighted_names:
-                            mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
+                            mssm_hist = outfile.Get(nodename+'/'+name+mass+add_name)
+                            #mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
                             mssm_hist.Scale(sf)
                             mssm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "Hhh":
@@ -4439,12 +4444,12 @@ def RenameMSSMrun2Datacards(outfile):
         directory.cd()
         histo.Write(new_name)
         directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and ('ggH_' in name or 'ggA_' in name) and name[:6].count('_') == 1:
-        new_name = name[:5]+'_'+name[5:]
-        histo.SetName(new_name)
-        directory.cd()
-        histo.Write(new_name)
-        directory.Delete(name+';1')
+      #elif not isinstance(histo,ROOT.TDirectory) and ('ggH_' in name or 'ggA_' in name) and name[:6].count('_') == 1:
+        #new_name = name[:5]+'_'+name[5:]
+        #histo.SetName(new_name)
+        #directory.cd()
+        #histo.Write(new_name)
+        #directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'bbH' in name and name[:4].count('_') == 0:
         new_name = name[:3]+'_'+name[3:]
         histo.SetName(new_name)
@@ -4531,7 +4536,7 @@ plot_unmodified = plot
 if options.datacard != "": nodename = options.channel+'_'+options.datacard
 else: nodename = options.channel+'_'+options.cat   
 
-
+add_names_dict = {}
 add_names = []
 cats_unmodified = copy.deepcopy(cats)
 
@@ -4679,6 +4684,8 @@ while len(systematics) > 0:
           add_names.append("_custom_uncerts_down")
           RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
           RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
+
+      add_names_dict[add_name] = samples_to_skip
       
       del systematics[systematic]
   ana.Run()
