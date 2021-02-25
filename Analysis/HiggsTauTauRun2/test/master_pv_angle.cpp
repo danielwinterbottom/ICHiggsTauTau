@@ -35,9 +35,6 @@
 #include "TauSpinner/tau_reweight_lib.h"
 
 //#include <iostream>
-
-
-
 struct Particle
 {
         double px;
@@ -54,7 +51,6 @@ struct PEtaPhi
         double Phi;
         int pdgID;
 };
-
 
 /** Add two simple particles resulting in a third simple particles. Must specify new pdgID */
 TauSpinner::SimpleParticle addSimpleParticles(TauSpinner::SimpleParticle &a, TauSpinner::SimpleParticle &b, int result_pdgID)
@@ -90,7 +86,8 @@ return TLorentzVector(particle.Px(), particle.Py(), particle.Pz(), particle.E())
 }
 
 
-
+/*Funtion to produce the vactor of pions, used by the AcopAngle method that
+ * will then boost them in the Higgs rest frame*/
 std::vector<TLorentzVector> getPis(Particle pi, Particle pi2, Particle pi3){
     TLorentzVector pi_L = TLorentzVector(pi.px, pi.py, pi.pz, pi.E);
     TLorentzVector pi2_L = TLorentzVector(pi2.px, pi2.py, pi2.pz, pi2.E);
@@ -100,45 +97,26 @@ std::vector<TLorentzVector> getPis(Particle pi, Particle pi2, Particle pi3){
             pi2_L,
             pi3_L
         };
-
     return pis;
 }
 
+/*construct the tau in a1(3pr) decays with neutrinos and pions */
 TLorentzVector getTau(Particle pi, Particle pi2, Particle pi3, PEtaPhi nu){
     TLorentzVector pi_L = TLorentzVector(pi.px, pi.py, pi.pz, pi.E);
     TLorentzVector pi2_L = TLorentzVector(pi2.px, pi2.py, pi2.pz, pi2.E);
     TLorentzVector pi3_L = TLorentzVector(pi3.px, pi3.py, pi3.pz, pi3.E);
     TLorentzVector nu_L = neutrinoToLorentz(nu);
     TLorentzVector tau = pi_L + pi2_L + pi3_L + nu_L;
-    
     return tau;
 }
 
+
+/*This is calculating the pv angle         
+ *Note: the AcopAngle gets the sv angle for a1 a1s:
+ *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
 namespace ic {
-    void getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
-        
-        
+    double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
         SCalculator Scalc("a1");
-        
-//         TLorentzVector Higgs_frame = Tauplus + Tauminus;
-//         TLorentzVector Tauplus_HRF = Scalc.Boost(Tauplus, Higgs_frame);
-//         TLorentzVector Tauminus_HRF = Scalc.Boost(Tauminus, Higgs_frame);
-//         
-//         TLorentzVector Higgs_Restframe = Scalc.Boost(Higgs_frame, Higgs_frame);
-//         
-//         double pz=Tauplus.Pz();
-//         std::cout<<"Hey tau plus"<<pz<<std::endl;
-//         
-//         double pz_H=Higgs_frame.Pz();
-//         std::cout<<"Hey Higgs_frame"<<pz_H<<std::endl;
-//     
-//         double pz_THRF=Tauplus_HRF.Pz();
-//         std::cout<<"Hey tau_HRF plus"<<pz_THRF<<std::endl;
-//         
-//         double pz_HHRF=Higgs_Restframe.Pz();
-//         std::cout<<"Hey H_HRF plus"<<pz_HHRF<<std::endl;
-//         
-        
         double angle = -9999.;
         if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)){
             angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
@@ -147,8 +125,8 @@ namespace ic {
         else {
             std::cout << "Wrong variables";
         }
+        return angle;
     }
-
 }
 
 int main(int argc, char* argv[])
@@ -173,16 +151,12 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi2", pi2_2, 211, 2);
 	setupParticle(tree, "pi3", pi3_1, 211, 1);
 	setupParticle(tree, "pi3", pi3_2, -211, 2);
-	//a1-a1(3pr) channel - no need for pi0s
-//	setupParticle(tree, "pi0", pi0_1, 111, 1);
-//	setupParticle(tree, "pi0", pi0_2, 111, 2);//
-		// Set neutrinos to read from gen for now
 	PEtaPhi nu_1, nu_2;
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
-	//                                                                                                                 
-	std::cout << "Up to now, works:" << std::endl;
     
+    
+    /*Loop over the tree entries*/
     //tree->GetEntries()
     for (int i = 0, nEntries = 10; i < nEntries; i++)
     {
@@ -198,21 +172,7 @@ int main(int argc, char* argv[])
         std::vector<double> charges_1 = {-1.00, -1.00, 1.00};
         std::vector<double> charges_2 = {-1.00, 1.00, 1.00};
         
-        //double angle;
         ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
-        
     }
     
     
-//     double angle = SCalculator::AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
-//     std::cout << "\nwe have the angle\n";
-//     if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)) //(security checks, if there is no problem with variables)
-//     {
-//        angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
-//        std::cout << "\nwe have the angle\n";
-    }
-
-    
-    
-    
-	//PolarimetricA1A1(svminuspv_1, svminuspv_2, a1_1, a1_2, pis_1, pis_2, charges_1, charges_2);
