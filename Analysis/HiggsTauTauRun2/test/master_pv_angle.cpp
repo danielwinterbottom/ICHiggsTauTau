@@ -112,17 +112,20 @@ TLorentzVector getTau(Particle pi, Particle pi2, Particle pi3, PEtaPhi nu){
 
 
 /*This is calculating the pv angle         
- *Note: the AcopAngle gets the sv angle for a1 a1s:
+ *Note: the AcopAngle gets the pv angle for a1 a1s:
  *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
 namespace ic {
-    double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
+    double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2)
+{
         SCalculator Scalc("a1");
         double angle = -9999.;
-        if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)){
+        if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2))
+        {
             angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
             std::cout << "\nGood variables - Angle: " << angle << '\n';
         }
-        else {
+        else
+        {
             std::cout << "Wrong variables";
         }
         return angle;
@@ -174,5 +177,4 @@ int main(int argc, char* argv[])
         
         ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
     }
-    
-    
+}
