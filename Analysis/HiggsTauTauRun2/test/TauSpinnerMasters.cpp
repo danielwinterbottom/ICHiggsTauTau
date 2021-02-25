@@ -135,14 +135,9 @@ int main(int argc, char* argv[])
 	{
 		neutrinoLevel = "gen";
 	}
-	else if(level=="reco")
-	{
-		neutrinoLevel = "reco";
-	}
 	else
 	{
-		std::cerr << "Level arguement must be either \"reco\" or \"pseudo\"" << std::endl;
-		return 2;
+		neutrinoLevel = level;
 	}
 	
 	// Only set smearing if the arguement is specified
@@ -168,6 +163,16 @@ int main(int argc, char* argv[])
 	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
 	
 	TFile newFile(outputFilename.c_str(), "recreate");
+	
+	// Check neutrinos with given name exist
+	TString neutrinoBranchName(neutrinoLevel+"_nu_p_1");
+	TBranch* neutrinoBranch = static_cast<TBranch *>(oldTree->GetListOfBranches()->FindObject(neutrinoBranchName));
+	if (!neutrinoBranch)
+	{
+		std::cerr << "TauSpinnerMasters Error: Neutrinos with name \"" + neutrinoLevel + "\" not found in root file. Check level arguement. Exiting." << std::endl;
+		return 2;
+	}
+	
 	std::cout << "Beginning cloning tree." << std::endl;
 	//TTree *tree = oldTree->CloneTree(10000);
 	TTree *tree = oldTree->CloneTree();
@@ -187,7 +192,6 @@ int main(int argc, char* argv[])
 	tree->SetBranchAddress("mva_dm_1", &mva_dm_1);
 	tree->SetBranchAddress("mva_dm_2", &mva_dm_2);
 	
-	
 	// Gen selectors
 	int tauFlag_1, tauFlag_2;
 	tree->SetBranchAddress("tauFlag_1", &tauFlag_1);
@@ -199,8 +203,7 @@ int main(int argc, char* argv[])
 	tree->SetBranchAddress("wt_cp_mm", &stored_wt_cp_mm);
 	tree->SetBranchAddress("wt_cp_ps", &stored_wt_cp_ps);
 	
-	
-	// Setup particles
+	// Set particles to be read
 	Particle pi_1, pi2_1, pi3_1, pi0_1;
 	Particle pi_2, pi2_2, pi3_2, pi0_2;
 	setupParticle(tree, "pi", pi_1, -211, 1);
@@ -211,7 +214,7 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi3", pi3_2, -211, 2);
 	setupParticle(tree, "pi0", pi0_1, 111, 1);
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
-	// Set neutrinos to read from gen for now
+	// Set neutrinos to be read
 	PEtaPhi nu_1, nu_2;
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
@@ -237,7 +240,7 @@ int main(int argc, char* argv[])
   	tree->GetEntry(i);
 		//std::cout << "Entry: " << i << std::endl;
 		
-		// Standard for all hadronic decays
+		// Always a pi and nu_tau for hadronic decays
 		TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
 		TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
 		TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1, smearDist, rng);
