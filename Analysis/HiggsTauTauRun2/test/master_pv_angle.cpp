@@ -112,7 +112,7 @@ TLorentzVector getTau(Particle pi, Particle pi2, Particle pi3, PEtaPhi nu){
 
 
 /*This is calculating the pv angle         
- *Note: the AcopAngle gets the sv angle for a1 a1s:
+ *Note: the AcopAngle gets the pv angle for a1 a1s:
  *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
 namespace ic {
     double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
@@ -133,14 +133,25 @@ int main(int argc, char* argv[])
 {
 	std::string inputFilename(argv[1]);
 	std::string neutrinoLevel = "gen";
-	TFile oldFile(inputFilename.c_str(), "READ");
-	if (oldFile.IsZombie())
-        {
-                std::cerr << "File didn't load correctly." << std::endl;
-                return -1;
-        }
-	TTree *tree = static_cast<TTree*>(oldFile.Get("ntuple"));
-    std::cout << "Read file." << std::endl;
+    std::string level = "pseudo";
+    std::string outputFilename(argv[2]);
+	
+    TFile oldFile(inputFilename.c_str(), "READ");
+    if (oldFile.IsZombie())
+	{
+		std::cerr << "File didn't load correctly." << std::endl;
+		return -1;
+	}
+	TTree *oldTree = static_cast<TTree*>(oldFile.Get("ntuple"));
+	
+	TFile newFile(outputFilename.c_str(), "recreate");
+	std::cout << "Beginning cloning tree." << std::endl;
+	TTree *tree = oldTree->CloneTree();
+	std::cout << "Clone finished." << std::endl;
+    
+    //Set-up write-up branches
+    double pv_angle;
+	TBranch *pv_angle_branch = tree->Branch((level+"_pv_angle").c_str(), &pv_angle, (level+"_pv_angle/D").c_str());
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1;	
@@ -151,14 +162,16 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi2", pi2_2, 211, 2);
 	setupParticle(tree, "pi3", pi3_1, 211, 1);
 	setupParticle(tree, "pi3", pi3_2, -211, 2);
-	PEtaPhi nu_1, nu_2;
+	
+    //Setup Neutrinos
+    PEtaPhi nu_1, nu_2;
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
     
     
     /*Loop over the tree entries*/
     //tree->GetEntries()
-    for (int i = 0, nEntries = 10; i < nEntries; i++)
+    for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
     {
         tree->GetEntry(i);
     
@@ -172,7 +185,12 @@ int main(int argc, char* argv[])
         std::vector<double> charges_1 = {-1.00, -1.00, 1.00};
         std::vector<double> charges_2 = {-1.00, 1.00, 1.00};
         
-        ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+        pv_angle = ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+        
+        pv_angle_branch->Fill();
     }
-    
+    tree->Write("", TObject::kOverwrite);
+    return 0;
+}
+
     
