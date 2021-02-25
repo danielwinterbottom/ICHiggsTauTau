@@ -36,7 +36,7 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   bosonPdgId_=25;
   info_ = new ic::EventInfo();
   outFile.open("weights.csv");
-  rootFile = new TFile("smearingEffects_smearing1.root", "RECREATE");
+  rootFile = new TFile("smearingEffects_noSmearing.root", "RECREATE");
   outTree = new TTree("outTree", "outTree");
 }
 
@@ -233,10 +233,10 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     // we should only do this for tau neutrinos !
     if (daughter1_pdgid == 16)
     {
-      //smearing
-      double smearing_nu1_pt = rndm.Gaus(1.65,32.56);
-      double smearing_nu1_eta = rndm.Gaus(-0.01, 0.09);
-      double smearing_nu1_phi = rndm.Gaus(0.09, 0.96);
+      //smearing     //reference values (from NN)
+      double smearing_nu1_pt = rndm.Gaus(0., 0.);      //(1.65,32.56);
+      double smearing_nu1_eta = rndm.Gaus(0., 0.);     //(-0.01, 0.09);
+      double smearing_nu1_phi = rndm.Gaus(0., 0.);     //(0.09, 0.96);
       smearingArray[0] = smearing_nu1_pt;
       smearingArray[1] = smearing_nu1_eta;
       smearingArray[2] = smearing_nu1_phi;
@@ -269,10 +269,10 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     int daughter2_pdgid = fabs(tau2_daughters[i].pdgId());
     if (daughter2_pdgid == 16)
     {
-      //smearing
-      double smearing_nu2_pt = rndm.Gaus(1.20,29.41);
-      double smearing_nu2_eta = rndm.Gaus(0.12, 5.01);
-      double smearing_nu2_phi = rndm.Gaus(0.03, 0.74);
+      //smearing //Reference values (from NN)
+      double smearing_nu2_pt = rndm.Gaus(0., 0.);      //(1.20,29.41);
+      double smearing_nu2_eta = rndm.Gaus(0., 0.);     //(0.12, 5.01);
+      double smearing_nu2_phi = rndm.Gaus(0., 0.);     //(0.03, 0.74);
       smearingArray[3] = smearing_nu2_pt;
       smearingArray[4] = smearing_nu2_eta;
       smearingArray[5] = smearing_nu2_phi;
