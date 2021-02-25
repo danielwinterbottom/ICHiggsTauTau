@@ -133,6 +133,8 @@ int main(int argc, char* argv[])
 {
 	std::string inputFilename(argv[1]);
 	std::string neutrinoLevel = "gen";
+    std::string reco = "reco";
+    std::string pola = "pola";
     std::string level = "pseudo";
     std::string outputFilename(argv[2]);
 	
@@ -150,8 +152,16 @@ int main(int argc, char* argv[])
 	std::cout << "Clone finished." << std::endl;
     
     //Set-up write-up branches
-    double pv_angle;
-	TBranch *pv_angle_branch = tree->Branch((level+"_pv_angle").c_str(), &pv_angle, (level+"_pv_angle/D").c_str());
+    double pv_angle, reco_pv_angle, reco2_pv_angle, pola_pv_angle, pola2_pv_angle;
+	
+    
+    TBranch *pv_angle_branch = tree->Branch((level+"_pv_angle").c_str(), &pv_angle, (level+"_pv_angle/D").c_str());
+    
+    TBranch *reco_pv_angle_branch = tree->Branch((reco+"_pv_angle").c_str(), &reco_pv_angle, (reco+"_pv_angle/D").c_str());
+    TBranch *reco2_pv_angle_branch = tree->Branch((reco+"2_pv_angle").c_str(), &reco2_pv_angle, (reco+"2_pv_angle/D").c_str());
+    
+    TBranch *pola_pv_angle_branch = tree->Branch((pola+"_pv_angle").c_str(), &pola_pv_angle, (pola+"_pv_angle/D").c_str());
+    TBranch *pola2_pv_angle_branch = tree->Branch((pola+"2_pv_angle").c_str(), &pola2_pv_angle, (pola+"2_pv_angle/D").c_str());
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1;	
@@ -168,6 +178,22 @@ int main(int argc, char* argv[])
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
     
+    PEtaPhi reco_nu_1, reco_nu_2;
+	setupNeutrino(tree, (reco + "_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (reco + "_nu").c_str(), nu_2, -16, 2);
+    
+    PEtaPhi reco2_nu_1, reco2_nu_2;
+	setupNeutrino(tree, (reco + "2_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (reco + "2_nu").c_str(), nu_2, -16, 2);
+    
+    PEtaPhi pola_nu_1, pola_nu_2;
+	setupNeutrino(tree, (pola + "_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "_nu").c_str(), nu_2, -16, 2);
+    
+    PEtaPhi pola2_nu_1, pola2_nu_2;
+	setupNeutrino(tree, (pola + "2_nu").c_str(), nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "2_nu").c_str(), nu_2, -16, 2);
+    
     
     /*Loop over the tree entries*/
     //tree->GetEntries()
@@ -181,13 +207,33 @@ int main(int argc, char* argv[])
         TLorentzVector Tauminus = getTau(pi_1, pi2_1, pi3_1, nu_1);
         TLorentzVector Tauplus = getTau(pi_2, pi2_2, pi3_2, nu_2);
         
+        TLorentzVector reco_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco_nu_1);
+        TLorentzVector reco_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco_nu_2);
+        
+        TLorentzVector reco2_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco2_nu_1);
+        TLorentzVector reco2_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco2_nu_2);
+        
+        TLorentzVector pola_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola_nu_1);
+        TLorentzVector pola_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola_nu_2);
+        
+        TLorentzVector pola2_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola2_nu_1);
+        TLorentzVector pola2_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola2_nu_2);
+        
         //Arbitrarily choose the charge of the three pions as to respect charge conserv.
         std::vector<double> charges_1 = {-1.00, -1.00, 1.00};
         std::vector<double> charges_2 = {-1.00, 1.00, 1.00};
         
         pv_angle = ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+        reco_pv_angle = ic::getPV_angle(reco_Tauminus, pis_1, charges_1, reco_Tauplus, pis_2, charges_2);
+        reco2_pv_angle = ic::getPV_angle(reco2_Tauminus, pis_1, charges_1, reco2_Tauplus, pis_2, charges_2);
+        pola_pv_angle = ic::getPV_angle(pola_Tauminus, pis_1, charges_1, pola_Tauplus, pis_2, charges_2);
+        pola2_pv_angle = ic::getPV_angle(pola2_Tauminus, pis_1, charges_1, pola2_Tauplus, pis_2, charges_2);
         
         pv_angle_branch->Fill();
+        reco_pv_angle_branch->Fill();
+        reco2_pv_angle_branch->Fill();
+        pola_pv_angle_branch->Fill();
+        pola2_pv_angle_branch->Fill();
     }
     tree->Write("", TObject::kOverwrite);
     return 0;
