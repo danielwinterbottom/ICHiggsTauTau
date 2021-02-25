@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --batch
+# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --output_folder='mssm_dc' --batch
+# python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --output_folder='mssm_dc_v4' --no_syst --batch
 
 import sys
 from optparse import OptionParser
@@ -70,6 +72,7 @@ years = options.years.split(',')
 
 cmssw_base = os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2','')
 
+
 if not os.path.isdir('%(output_folder)s' % vars()):
   os.system("mkdir %(output_folder)s" % vars())
 
@@ -103,41 +106,32 @@ for year in years:
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
 
   categories_et = [
-                   "inclusive",
-                   "nobtag_tightmt",
-                   "nobtag_loosemt",
-                   "btag_tightmt",
-                   "btag_loosemt",
-                   "1btag_tightmt",
-                   "1btag_loosemt",
-                   #"nobtag_tightmt_highmsv",
-                   #"nobtag_loosemt_highmsv",
-                   #"btag_tightmt_highmsv",
-                   #"btag_loosemt_highmsv",
-
+                   "Nbtag0_MTLt40",
+                   "Nbtag0_MT40To70",
+                   "NbtagGt1_MTLt40",
+                   "NbtagGt1_MT40To70",
+                   "Nbtag1_MTLt40",
+                   "Nbtag1_MT40To70",
+                   #"Nbtag0_MTLt40_MHGt250",
+                   #"Nbtag0_MT40To70_MHGt250"
                    ]
 
   categories_mt = [
-                   "inclusive",
-                   "nobtag_tightmt",
-                   "nobtag_loosemt",
-                   "btag_tightmt",
-                   "btag_loosemt",
-                   "1btag_tightmt",
-                   "1btag_loosemt",
-                   #"nobtag_tightmt_highmsv",
-                   #"nobtag_loosemt_highmsv",
-                   #"btag_tightmt_highmsv",
-                   #"btag_loosemt_highmsv",
+                   "Nbtag0_MTLt40",
+                   "Nbtag0_MT40To70",
+                   "NbtagGt1_MTLt40",
+                   "NbtagGt1_MT40To70",
+                   "Nbtag1_MTLt40",
+                   "Nbtag1_MT40To70",
+                   #"Nbtag0_MTLt40_MHGt250",
+                   #"Nbtag0_MT40To70_MHGt250"
                    ]
 
   categories_tt = [
-                   "inclusive",
-                   "btag",
-                   "nobtag",
-                   "1btag",
-                   #"btag_highmsv",
-                   #"nobtag_highmsv",
+                   "Nbtag0",
+                   "NbtagGt1",
+                   "Nbtag1",
+                   #"Nbtag0_MHGt250",
                    ]
 
   categories_em = [
@@ -218,7 +212,7 @@ for year in years:
   }
 
   var     = 'mt_tot'
-  dc_app  = '-mttot_puppi'
+  dc_app  = '-mt_tot_puppi'
 
   for ch in channels:
 
