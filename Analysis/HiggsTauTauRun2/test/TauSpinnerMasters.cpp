@@ -117,35 +117,38 @@ inline double findPhitt(double sm, double mm, double ps)
 	return std::numeric_limits<double>::quiet_NaN();
 }
 
+std::string getNeutrinoLevel(std::string level)
+{
+	if(level == "pseudo")
+	{
+		return std::string("gen");
+	}
+	else{
+		return level;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	
 	if(argc < 4)
 	{
-		std::cerr << "Usage: ./TauSpinnerMasters level:{pseudo, reco} input_file output_file [smearing]" << std::endl;
+		std::cerr << "Usage: ./TauSpinnerMasters input_file output_file smearing level1 [level2] [level3] ..." << std::endl;
 		return 1;
 	}
 	
 	std::string neutrinoLevel;
-	std::string level(argv[1]);
-	std::string inputFilename(argv[2]);
-	std::string outputFilename(argv[3]);
+	std::string inputFilename(argv[1]);
+	std::string outputFilename(argv[2]);
+	double smearing = std::stod(argv[3], nullptr);
 	
-	if(level=="pseudo")
+	std::vector<std::string> levels;
+	for(int i=4; i<argc; i++)
 	{
-		neutrinoLevel = "gen";
+		levels.emplace_back(argv[i]);
 	}
-	else
-	{
-		neutrinoLevel = level;
-	}
-	
-	// Only set smearing if the arguement is specified
-	double smearing = 0;
-	if(argc>4)
-	{
-		smearing = std::stod(argv[4], nullptr);
-	}
+	const unsigned int nLevels = levels.size();
+	std::cout << "Processing " << nLevels << " different levels of neutrinos." << std::endl;
 	
 	// Partially seed mt19937
 	std::mt19937 rng(std::random_device{}());
@@ -164,26 +167,38 @@ int main(int argc, char* argv[])
 	
 	TFile newFile(outputFilename.c_str(), "recreate");
 	
-	// Check neutrinos with given name exist
-	TString neutrinoBranchName(neutrinoLevel+"_nu_p_1");
-	TBranch* neutrinoBranch = static_cast<TBranch *>(oldTree->GetListOfBranches()->FindObject(neutrinoBranchName));
-	if (!neutrinoBranch)
+	// Check neutrinos with given names exist
+	for(auto level : levels)
 	{
-		std::cerr << "TauSpinnerMasters Error: Neutrinos with name \"" + neutrinoLevel + "\" not found in root file. Check level arguement. Exiting." << std::endl;
-		return 2;
+		std::string neutrinoLevel = getNeutrinoLevel(level);
+		
+		TString neutrinoBranchName(neutrinoLevel+"_nu_p_1");
+		TBranch* neutrinoBranch = static_cast<TBranch *>(oldTree->GetListOfBranches()->FindObject(neutrinoBranchName));
+		if (!neutrinoBranch)
+		{
+			std::cerr << "TauSpinnerMasters Error: Neutrinos with name \"" + neutrinoLevel + "\" not found in root file. Check level arguement. Exiting." << std::endl;
+			return 2;
+		}
 	}
 	
 	std::cout << "Beginning cloning tree." << std::endl;
-	//TTree *tree = oldTree->CloneTree(10000);
+	//TTree *tree = oldTree->CloneTree(100);
 	TTree *tree = oldTree->CloneTree();
 	std::cout << "Clone finished." << std::endl;
 	
 	// Setup branches to write to ntuple
 	double weight_sm, weight_mm, weight_ps, max_theta;
-	TBranch *weight_sm_branch = tree->Branch((level+"_wt_cp_sm").c_str(), &weight_sm, (level+"_wt_cp_sm/D").c_str());
-	TBranch *weight_mm_branch = tree->Branch((level+"_wt_cp_mm").c_str(), &weight_mm, (level+"_wt_cp_mm/D").c_str());
-	TBranch *weight_ps_branch = tree->Branch((level+"_wt_cp_ps").c_str(), &weight_ps, (level+"_wt_cp_ps/D").c_str());
-	TBranch *phitt_branch = tree->Branch((level+"_phitt").c_str(), &max_theta, (level+"_phitt/D").c_str());
+	std::vector<TBranch *> weight_sm_branches;
+	std::vector<TBranch *> weight_mm_branches;
+	std::vector<TBranch *> weight_ps_branches;
+	std::vector<TBranch *> phitt_branches;
+	for(auto level : levels)
+	{
+		weight_sm_branches.emplace_back(tree->Branch((level+"_wt_cp_sm").c_str(), &weight_sm, (level+"_wt_cp_sm/D").c_str()));
+		weight_mm_branches.emplace_back(tree->Branch((level+"_wt_cp_mm").c_str(), &weight_mm, (level+"_wt_cp_mm/D").c_str()));
+		weight_ps_branches.emplace_back(tree->Branch((level+"_wt_cp_ps").c_str(), &weight_ps, (level+"_wt_cp_ps/D").c_str()));
+		phitt_branches.emplace_back(tree->Branch((level+"_phitt").c_str(), &max_theta, (level+"_phitt/D").c_str()));
+	}
 	
 	// Setup variables to read from branches
 	int tau_decay_mode_1, tau_decay_mode_2, mva_dm_1, mva_dm_2;
@@ -214,10 +229,18 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi3", pi3_2, -211, 2);
 	setupParticle(tree, "pi0", pi0_1, 111, 1);
 	setupParticle(tree, "pi0", pi0_2, 111, 2);
+	
 	// Set neutrinos to be read
-	PEtaPhi nu_1, nu_2;
-	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
-	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
+	std::vector<PEtaPhi> nu_1s, nu_2s;
+	nu_1s.resize(nLevels);
+	nu_2s.resize(nLevels);
+	for(unsigned int i=0; i<nLevels; i++)
+	{
+		std::string neutrinoLevel = getNeutrinoLevel(levels[i]);
+		std::cout << neutrinoLevel << std::endl;
+		setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1s[i], 16, 1);
+		setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2s[i], -16, 2);
+	}
 	
 	// Variables for initialising TauSpinner
   std::string TauSpinnerSettingsPDF="NNPDF30_nlo_as_0118";
@@ -234,85 +257,88 @@ int main(int argc, char* argv[])
   TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);
   
   // Event loop
-  for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
-  //for (int i = 0, nEntries = 10000; i < nEntries; i++)
+  for (int iEntry = 0, nEntries = tree->GetEntries(); iEntry < nEntries; iEntry++)
+  //for (int iEntry = 0, nEntries = 100; iEntry < nEntries; iEntry++)
   {
-  	tree->GetEntry(i);
+  	tree->GetEntry(iEntry);
 		//std::cout << "Entry: " << i << std::endl;
 		
-		// Always a pi and nu_tau for hadronic decays
-		TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
-		TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
-		TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1, smearDist, rng);
-		TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2, smearDist, rng);
-		
-		TauSpinner::SimpleParticle tau_1_simple, tau_2_simple, Higgs_simple;
-		std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
-		simple_tau1_daughters.push_back(nu_1_simple);
-		simple_tau2_daughters.push_back(nu_2_simple);
-		simple_tau1_daughters.push_back(pi_1_simple);
-		simple_tau2_daughters.push_back(pi_2_simple);
-		
-		// Handle tau decay modes
-		setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
-		setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
-		
-		/*
-		std::cout << std::endl;
-		std::cout << "mva_dm_1 = " << mva_dm_1 << std::endl;
-		std::cout << "tauFlag_1 = " << tauFlag_1 << std::endl;
-		std::cout << "Tau 1 daughters:" << std::endl;
-		*/
-		// add up tau_1
-		for(auto daughter : simple_tau1_daughters)
+		// Loop through different levels
+		for(unsigned int iLevel=0; iLevel<nLevels; iLevel++)
 		{
-			//std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
-			tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
-		}
-		tau_1_simple.setPdgid(15);
-		
-		/*
-		std::cout << std::endl;
-		std::cout << "mva_dm_2 = " << mva_dm_2 << std::endl;
-		std::cout << "tauFlag_2 = " << tauFlag_2 << std::endl;
-		std::cout << "Tau 2 daughters:" << std::endl;
-		*/
-		// add up tau_2
-		for(auto daughter : simple_tau2_daughters)
-		{
-			//std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
-			tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
-		}
-		tau_2_simple.setPdgid(-15);
-		
-		// add up Higgs
-		Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
-		
-		// Calculate different weights: sm, mm, ps
-		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0), cos(2*M_PI*0), -sin(2*M_PI*0), -sin(2*M_PI*0));
-		weight_sm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.25), cos(2*M_PI*0.25), -sin(2*M_PI*0.25), -sin(2*M_PI*0.25));
-		weight_mm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-		TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
-		weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
-		
-		/*
-		if (true) // mva_dm_1 == 0 && mva_dm_2 == 0 ) // Print selected weights
-		{
-			std::cout << "Event " << i << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
-			std::cout << "Event " << i << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
-		}
-		*/
-		
-		max_theta = findPhitt(weight_sm, weight_mm, weight_ps);
-		
-		// Fill branches
-		//std::cout << "Filling branches, entry " << i << std::endl;
-		weight_sm_branch->Fill();
-		weight_mm_branch->Fill();
-		weight_ps_branch->Fill();
-		phitt_branch->Fill();
-		
+			// Always a pi and nu_tau for hadronic decays
+			TauSpinner::SimpleParticle pi_1_simple = convertToSimplePart(pi_1);
+			TauSpinner::SimpleParticle pi_2_simple = convertToSimplePart(pi_2);
+			TauSpinner::SimpleParticle nu_1_simple = neutrinoToSimplePart(nu_1s[iLevel], smearDist, rng);
+			TauSpinner::SimpleParticle nu_2_simple = neutrinoToSimplePart(nu_2s[iLevel], smearDist, rng);
+			
+			TauSpinner::SimpleParticle tau_1_simple, tau_2_simple, Higgs_simple;
+			std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters, simple_tau2_daughters;
+			simple_tau1_daughters.push_back(nu_1_simple);
+			simple_tau2_daughters.push_back(nu_2_simple);
+			simple_tau1_daughters.push_back(pi_1_simple);
+			simple_tau2_daughters.push_back(pi_2_simple);
+			
+			// Handle tau decay modes
+			setupTauDaughters(mva_dm_1, simple_tau1_daughters, pi0_1, pi2_1, pi3_1);
+			setupTauDaughters(mva_dm_2, simple_tau2_daughters, pi0_2, pi2_2, pi3_2);
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "mva_dm_1 = " << mva_dm_1 << std::endl;
+			std::cout << "tauFlag_1 = " << tauFlag_1 << std::endl;
+			std::cout << "Tau 1 daughters:" << std::endl;
+			*/
+			// add up tau_1
+			for(auto daughter : simple_tau1_daughters)
+			{
+				std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
+				tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
+			}
+			tau_1_simple.setPdgid(15);
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "mva_dm_2 = " << mva_dm_2 << std::endl;
+			std::cout << "tauFlag_2 = " << tauFlag_2 << std::endl;
+			std::cout << "Tau 2 daughters:" << std::endl;
+			*/
+			// add up tau_2
+			for(auto daughter : simple_tau2_daughters)
+			{
+				std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
+				tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
+			}
+			tau_2_simple.setPdgid(-15);
+			
+			// add up Higgs
+			Higgs_simple = addSimpleParticles(tau_1_simple, tau_2_simple, 25);
+			
+			// Calculate different weights: sm, mm, ps
+			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0), cos(2*M_PI*0), -sin(2*M_PI*0), -sin(2*M_PI*0));
+			weight_sm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.25), cos(2*M_PI*0.25), -sin(2*M_PI*0.25), -sin(2*M_PI*0.25));
+			weight_mm = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
+			weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
+			
+			
+			if (true) // mva_dm_1 == 0 && mva_dm_2 == 0 ) // Print selected weights
+			{
+				std::cout << "Event " << iEntry << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
+				std::cout << "Event " << iEntry << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
+			}
+			
+			
+			max_theta = findPhitt(weight_sm, weight_mm, weight_ps);
+			
+			// Fill branches
+			//std::cout << "Filling branches, entry " << i << std::endl;
+			weight_sm_branches[iLevel]->Fill();
+			weight_mm_branches[iLevel]->Fill();
+			weight_ps_branches[iLevel]->Fill();
+			phitt_branches[iLevel]->Fill();
+		} // Levels loop
 	} // Event loop
   
   // Write new trees here
