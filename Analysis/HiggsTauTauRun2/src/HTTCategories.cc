@@ -1386,6 +1386,10 @@ namespace ic {
       mvatree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       mvatree_->Branch("wt",                &wt_.var_double);
       mvatree_->Branch("os",                &os_);
+
+      mvatree_->Branch("event",             &event_);
+      mvatree_->Branch("run",               &run_);
+      mvatree_->Branch("lumi",               &lumi_);
     }
     return 0;
   }
