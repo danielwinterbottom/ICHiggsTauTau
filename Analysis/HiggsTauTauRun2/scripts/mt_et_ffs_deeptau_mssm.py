@@ -73,7 +73,7 @@ elif channel == "et":
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018_v6/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018_v7/'
 
   if channel == "mt":
     crosstrg_pt = 25

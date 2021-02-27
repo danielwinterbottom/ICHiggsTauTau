@@ -577,8 +577,8 @@ if options.analysis == 'cpdecay':
   cats['tt_loose_baseline_2'] = '((deepTauVsJets_medium_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_vvloose_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2) && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5))'
 
 
-if options.w_ff_closure:
-  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+#if options.w_ff_closure:
+  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
 elif options.qcd_ff_closure:
   if options.channel in ['et','mt']:
     cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<50 && iso_1>0.05)'
@@ -631,13 +631,23 @@ cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
 
 # MSSM run 2 categories
-cats['btag'] = '(n_deepbjets>0)'
-cats['nobtag'] = '(n_deepbjets==0)'
+cats['NbtagGt1'] = '(n_deepbjets>0)'
+cats['Nbtag0'] = '(n_deepbjets==0)'
 
-cats['nobtag_tightmt'] = '(n_deepbjets==0 && mt_1<40)'
-cats['nobtag_loosemt'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
-cats['btag_tightmt'] = '(n_deepbjets>0 && mt_1<40)'
-cats['btag_loosemt'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
+cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
+cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
+cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
+cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
+
+cats['btag_highmsv'] = '(n_deepbjets>0 && m_sv>250)'
+cats['nobtag_highmsv'] = '(n_deepbjets==0 && m_sv>250)'
+
+cats['Nbtag0_MTLt40_MHGt25'] = '(n_deepbjets==0 && mt_1<40 && m_sv>250)'
+cats['Nbtag0_MT40To70_MHGt250'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && m_sv>250)'
+
+cats['Nbtag1'] = '(n_deepbjets==1)'
+cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<40)'
+cats['Nbtag1_MT40To70'] = '(n_deepbjets==1 && mt_1>40 && mt_1<70)'
 
 cats['tightmt'] = '(mt_1<40)'
 cats['loosemt'] = '(mt_1>40 && mt_1<70)'
@@ -2513,20 +2523,22 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
 if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='mssmrun2' and options.do_ff_systs:
+  ch = options.channel
+  yr = options.year
   if options.channel in ['tt']:
     tt_systs={}
-
+    
     for i in [1,2]:
-      tt_systs['ff_mssm_tt_qcd_stat_dR_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
-      tt_systs['ff_mssm_tt_qcd_stat_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
-    tt_systs['ff_mssm_tt_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
-    tt_systs['ff_mssm_tt_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    tt_systs['ff_mssm_tt_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+      tt_systs['CMS_ff_total_qcd_stat_dR_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_dR_unc%(i)i_' % vars()
+      tt_systs['CMS_ff_total_qcd_stat_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_pt_unc%(i)i_' % vars()
+    tt_systs['CMS_ff_total_qcd_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    tt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    tt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
     for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
-          tt_systs[('ff_mssm_tt_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          tt_systs[('CMS_ff_total_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
 
 
     for template_name in tt_systs:
@@ -2536,40 +2548,39 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
 
   elif options.channel in ['et','mt']:
     lt_systs={}
-    ch = options.channel
 
     for njet in [0,1]:
       for i in [1,2]:
-        lt_systs['ff_mssm_%(ch)s_qcd_stat_ss_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
-        lt_systs['ff_mssm_%(ch)s_wjets_stat_met_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
-        lt_systs['ff_mssm_%(ch)s_wjets_stat_l_pt_njets%(njet)i_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_qcd_stat_ss_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_wjets_stat_met_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
 
     for i in [1,2]:
-      lt_systs['ff_mssm_%(ch)s_qcd_stat_os_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_qcd_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_qcd_stat_iso_unc%(i)i' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_wjets_stat_extrap_unc%(i)i' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_ttbar_stat_met_unc%(i)i' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
-      lt_systs['ff_mssm_%(ch)s_ttbar_stat_l_pt_unc%(i)i' % vars()] = 'wt_ff_mssm_ttbar_stat_l_pt_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_qcd_stat_os_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_qcd_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_qcd_stat_iso_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_wjets_stat_extrap_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_ttbar_stat_met_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
+      lt_systs['CMS_ff_total_ttbar_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_l_pt_unc%(i)i_' % vars()
 
-    lt_systs['ff_mssm_%(ch)s_qcd_syst' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
-    lt_systs['ff_mssm_%(ch)s_qcd_syst_iso' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
-    lt_systs['ff_mssm_%(ch)s_wjets_syst' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    lt_systs['ff_mssm_%(ch)s_ttbar_syst' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+    lt_systs['CMS_ff_total_qcd_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+    lt_systs['CMS_ff_total_qcd_syst_iso_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
+    lt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+    lt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
-    lt_systs['ff_mssm_%(ch)s_wjets_frac' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
-    lt_systs['ff_mssm_%(ch)s_ttbar_frac' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
+    lt_systs['CMS_ff_total_wjets_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
+    lt_systs['CMS_ff_total_ttbar_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
   
-    lt_systs['ff_mssm_%(ch)s_low_pt' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
+    lt_systs['CMS_ff_total_low_pt_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
 
     for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
-          lt_systs[('ff_mssm_%(ch)s_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          lt_systs[('CMS_ff_total_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
         for i in [1,2,3,4]:
-          lt_systs[('ff_mssm_%(ch)s_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          lt_systs[('CMS_ff_total_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
         for i in [1,2,3]:
-          lt_systs[('ff_mssm_%(ch)s_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i' % vars())] = 'wt_ff_mssm_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          lt_systs[('CMS_ff_total_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
 
     if options.qcd_ff_closure or options.w_ff_closure:
       for key,val in lt_systs.items():
@@ -2584,9 +2595,9 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
 
-  template_name = 'ff_mssm_%s_sub_syst' % (options.channel)
-  systematics['ff_mssm_sub_up']   = ('' , '_'+template_name+'_Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
-  systematics['ff_mssm_sub_down'] = ('' , '_'+template_name+'_Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
+  template_name = 'CMS_ff_total_sub_syst_%(ch)s_%(yr)s' % vars()
+  systematics['CMS_ff_total_sub_up_%(ch)s_%(yr)s']   = ('' , '_'+template_name+'_Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
+  systematics['CMS_ff_total_down_%(ch)s_%(yr)s'] = ('' , '_'+template_name+'_Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
 
 
 if options.syst_qcd_bkg: 
@@ -3226,13 +3237,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
-              #if options.w_ff_closure or options.qcd_ff_closure:
-                #json_name = 'scripts/ff_strings.json'
-                #with open(json_name) as json_file:
-                  #ff_dict = json.load(json_file)
+              if options.w_ff_closure or options.qcd_ff_closure:
+                json_name = 'scripts/ff_strings.json'
+                with open(json_name) as json_file:
+                  ff_dict = json.load(json_file)
               if options.w_ff_closure:
-                fake_factor_wt_string = "wt_ff_mssm_wjets_1"
+                #fake_factor_wt_string = "wt_ff_mssm_wjets_1"
                 #fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
+                fake_factor_wt_string = ff_dict[options.channel][options.year]['wjets']
               elif options.qcd_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_qcd_1"
                 #fake_factor_wt_string = ff_dict[channel][year]['qcd']
@@ -3594,7 +3606,8 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
 
 
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
-  weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
+  weights = {'ggh_t_':'wt_ggh_t', 'ggh_b_':'wt_ggh_b', 'ggh_i_':'wt_ggh_i', 'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' }  
+  #weights = {'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' } 
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
   if options.gen_signal: OSSS='1' 
@@ -4317,7 +4330,8 @@ def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
     return h1d
 
 def NormSignals(outfile,add_name):
-    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
+    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level
+    samples_to_skip = add_names_dict[add_name] 
     if 'signal' not in samples_to_skip:
         outfile.cd(nodename)
         if options.analysis in ['sm','cpprod','cpdecay'] or options.add_sm_background:
@@ -4353,13 +4367,16 @@ def NormSignals(outfile,add_name):
                         xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
                         if xs == 1.: continue
                         sf = 1.0/xs
+                        if sf == 1.0: continue
                         mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting and samp == 'ggH': 
-                          re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          re_weighted_names = ['ggh_t_','ggh_b_','ggh_i_','ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
+                          #re_weighted_names = ['ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
                           for name in re_weighted_names:
-                            mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
+                            mssm_hist = outfile.Get(nodename+'/'+name+mass+add_name)
+                            #mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
                             mssm_hist.Scale(sf)
                             mssm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "Hhh":
@@ -4375,34 +4392,84 @@ def NormSignals(outfile,add_name):
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
 
-def RenameEmbedSysts(outfile):
+def RenameMSSMrun2Datacards(outfile):
   chan = options.channel
   renames = {
-   'CMS_eff_trigger_%(chan)s' % vars() : 'CMS_eff_trigger_emb_%(chan)s' % vars(),
-   'CMS_eff_xtrigger_l_%(chan)s' % vars() : 'CMS_eff_xtrigger_l_%(chan)s' % vars(),
-   'CMS_eff_xtrigger_t': 'CMS_eff_xtrigger_t_emb',
-   'CMS_eff_t': 'CMS_eff_t_emb',
-   'CMS_scale_e' : 'CMS_scale_e_emb',
-   'CMS_scale_t' : 'CMS_scale_t_emb',
-  }    
+   'CMS_eff_trigger_' : 'CMS_eff_trigger_emb_',
+   'CMS_eff_xtrigger_l_' : 'CMS_eff_xtrigger_l_',
+   'CMS_eff_xtrigger_t_': 'CMS_eff_xtrigger_t_emb_',
+   'CMS_eff_t_': 'CMS_eff_t_emb_',
+   'CMS_scale_e_' : 'CMS_scale_e_emb_',
+   'CMS_scale_t_' : 'CMS_scale_t_emb_',
+   'CMS_eff_trigger_single_t_':'CMS_eff_trigger_single_t_emb_',
+  }  
   directory = outfile.Get(nodename)
+
+  # count number of directories
+  count = 0    
+  for key in directory.GetListOfKeys(): count += 1
+
+  i = 0
   for key in directory.GetListOfKeys():
-    name = key.GetName()
-    histo = directory.Get(name)
-    if not isinstance(histo,ROOT.TDirectory) and 'EmbedZTT' in name:
-      new_name = name.replace('EmbedZTT', 'EMB')
-      histo.SetName(new_name)
-      directory.cd()
-      #histo.Write(new_name,ROOT.TObject.kWriteDelete)
-      histo.Write(new_name)
-      for x in renames:
-        if x in new_name:
-          histo_clone = histo.Clone()
-          y = renames[x]
-          new_name_2 = new_name.replace(x,y)
-          histo_clone.SetName(new_name_2)
-          histo_clone.Write(new_name_2)
-          break
+    if i < count:
+      name = key.GetName()
+      histo = directory.Get(name)
+      if not isinstance(histo,ROOT.TDirectory) and 'EmbedZTT' in name:
+        new_name = name.replace('EmbedZTT', 'EMB')
+        histo.SetName(new_name)
+        directory.cd()
+        #histo.Write(new_name,ROOT.TObject.kWriteDelete)
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+        for x in renames:
+          if x in new_name:
+            histo_clone = histo.Clone()
+            y = renames[x]
+            new_name_2 = new_name.replace(x,y)
+            print new_name,new_name_2
+            histo_clone.SetName(new_name_2)
+            histo_clone.Write(new_name_2)
+            directory.Delete(new_name+';1')
+            break
+      elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
+        new_name = name.replace('VVT', 'VVL')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name:
+        new_name = name.replace('TTT', 'TTL')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'Wfakes' in name:
+        new_name = name.replace('Wfakes', 'wFakes')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      #elif not isinstance(histo,ROOT.TDirectory) and ('ggH_' in name or 'ggA_' in name) and name[:6].count('_') == 1:
+        #new_name = name[:5]+'_'+name[5:]
+        #histo.SetName(new_name)
+        #directory.cd()
+        #histo.Write(new_name)
+        #directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'bbH' in name and name[:4].count('_') == 0:
+        new_name = name[:3]+'_'+name[3:]
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif isinstance(histo,ROOT.TDirectory):
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and not name == 'ggH125':
+        directory.Delete(name+';1')
+    i += 1
+
+
 
 def TotalUnc(h0, hists=[]):
   #sum in quadrature several systematic uncertainties to form total uncertainty band
@@ -4474,7 +4541,7 @@ plot_unmodified = plot
 if options.datacard != "": nodename = options.channel+'_'+options.datacard
 else: nodename = options.channel+'_'+options.cat   
 
-
+add_names_dict = {}
 add_names = []
 cats_unmodified = copy.deepcopy(cats)
 
@@ -4622,6 +4689,8 @@ while len(systematics) > 0:
           add_names.append("_custom_uncerts_down")
           RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
           RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
+
+      add_names_dict[add_name] = samples_to_skip
       
       del systematics[systematic]
   ana.Run()
@@ -5072,9 +5141,6 @@ for add_name in add_names:
     if options.analysis in ['mssm','mssmrun2']:
         NormSignals(outfile,add_name)
 
-if options.analysis in ['mssmrun2']:
-  RenameEmbedSysts(outfile) 
-
 # for smsummer16 need to ad WplusH and WminusH templates into one
 if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
   outfile.cd(nodename)
@@ -5091,6 +5157,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
 
+if options.analysis in ['mssmrun2']:
+  RenameMSSMrun2Datacards(outfile)
 
 outfile.Close()
 
