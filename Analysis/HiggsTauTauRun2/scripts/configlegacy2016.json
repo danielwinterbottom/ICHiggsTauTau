@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Jan24_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tt"],
+    "channels":      ["tt","et","mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,6 @@
   },
   "sequence": {
     "do_gen_analysis" : false,
-    "make_mva_ntuple" : true,
     "mc"            : "mcleg2016",
     "era"           : "data_2016",
     "strategy"      : "legacy16",
@@ -62,8 +61,7 @@
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2016/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/et_2016_newSF/",
-//    "output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2016_fixFF/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/master_reco_ntuple_1502/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2016_fixFF/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/cpprod_2016_svfit/",

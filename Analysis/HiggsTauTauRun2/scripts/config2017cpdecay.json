@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adow/Jan24_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt"],
+    "channels":     ["et","mt","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -18,7 +18,6 @@
   },
   "sequence": {  
     "do_gen_analysis" : false,
-    "make_mva_ntuple" : true,
     "era"           : "data_2017",
     "mc"            : "mc2017",
     "strategy"      : "cpdecays17",
@@ -60,8 +59,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-//    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/cpprod_2017_fixFF/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/master_reco_ntuple_1502/",
+    "output_folder"  : "/vols/cms/dw515/Offline/output/SM/cpprod_2017_fixFF/",
 //    "output_folder"  : "/vols/build/cms/dw515/tap_et_cross_2017/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2017_myFF/",
     "svfit_from_grid" : true,
