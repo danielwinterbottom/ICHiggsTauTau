@@ -1375,6 +1375,17 @@ namespace ic {
       mvatree_->Branch("svcov20_2", &svcov20_2_);
       mvatree_->Branch("svcov21_2", &svcov21_2_);
       mvatree_->Branch("svcov22_2", &svcov22_2_);
+
+      mvatree_->Branch("met",               &met_.var_double);
+      mvatree_->Branch("n_jets",            &n_jets_);
+      mvatree_->Branch("mjj",               &mjj_.var_double);
+      mvatree_->Branch("jpt_1",             &jpt_1_.var_double);
+      mvatree_->Branch("m_vis",             &m_vis_.var_double);
+      mvatree_->Branch("pt_vis",            &pt_vis_.var_double);
+      mvatree_->Branch("pt_tt",             &pt_tt_.var_double);
+      mvatree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
+      mvatree_->Branch("wt",                &wt_.var_double);
+      mvatree_->Branch("os",                &os_);
     }
     return 0;
   }
