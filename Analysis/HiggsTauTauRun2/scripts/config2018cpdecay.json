@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Oct07_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["tt","mt","et"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -19,6 +19,7 @@
   "sequence": {
     "usePFMET" : false,
     "do_gen_analysis" : false,
+    "make_mva_ntuple" : true,
     "mc"            : "mc2018",
     "era"           : "data_2018",
     "strategy"      : "cpdecays18",
@@ -64,7 +65,7 @@
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/Jun17_2018/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/May11_2018_PFMET/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2018_myFF/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2018_fixFF/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/master_reco_ntuple_1502/",
     //"output_folder" : "gen_output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

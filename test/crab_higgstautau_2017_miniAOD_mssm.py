@@ -70,7 +70,7 @@ if __name__ == '__main__':
    #     file_location = '/SUSYGluGluToBBHToTauTau_M-{}_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'.format(mass)
    #     tasks.append((task_name,file_location))
 
-    ggh_masses_missing = [130, 600]
+    ggh_masses_missing = []
 
     tasks.append(('SUSYGluGluToHToTauTau_M-1000_powheg','/SUSYGluGluToHToTauTau_M1000_Tanb11_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-100_powheg','/SUSYGluGluToHToTauTau_M100_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
@@ -101,9 +101,11 @@ if __name__ == '__main__':
     tasks.append(('SUSYGluGluToHToTauTau_M-800_powheg','/SUSYGluGluToHToTauTau_M800_Tanb9_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-80_powheg','/SUSYGluGluToHToTauTau_M80_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-900_powheg','/SUSYGluGluToHToTauTau_M900_Tanb10_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-130_powheg','/SUSYGluGluToHToTauTau_M130_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-600_powheg','/SUSYGluGluToHToTauTau_M600_Tanb6_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
 
     bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
-    bbh_masses_missing = [3500]
+    bbh_masses_missing = []
 
 
     for mass in bbh_masses_ph:
