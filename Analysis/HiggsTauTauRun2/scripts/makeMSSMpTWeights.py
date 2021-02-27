@@ -7,9 +7,6 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 dir_2016 = '/vols/cms/dw515/Offline/output/MSSM/ggh_reweighting_2016/'
 dir_2018 = '/vols/cms/dw515/Offline/output/MSSM/ggh_reweighting_2018/'
 
-
-masses_pythia_2016 = [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]
-
 masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
 
 masses_ph_alt  = [350, 400, 450, 500, 600, 700, 800, 900]
@@ -141,9 +138,9 @@ for m in set(masses_ph):
   fout.cd()
   h1.Write()
 
-for m in masses_pythia_2016:
+for m in set(masses_ph):
 
-  file_name_2016 = '%(dir_2016)s/SUSYGluGluToHToTauTau_M-%(m)i_tt_2016.root' % vars()
+  file_name_2016 = '%(dir_2016)s/SUSYGluGluToHToTauTau_M-%(m)i_powheg_tt_2016.root' % vars()
   hist_name_2016 = 'ref_m%(m)i_2016' % vars()
   h2 = GetPythiaHist(file_name_2016, hist_name_2016)
   fout.cd()

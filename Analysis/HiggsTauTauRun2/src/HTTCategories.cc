@@ -1397,17 +1397,14 @@ namespace ic {
       lOFile = new TFile(mva_output_name_.c_str(), "RECREATE");
       lOFile->cd();
       mvatree_ = new TTree("ntuple", "ntuple");
-
       mvatree_->Branch("genM", &gen_m_);
       mvatree_->Branch("genpT", &gen_pt_);
-
       mvatree_->Branch("gen_nu_p_1",   &gen_nu_p_1_);
       mvatree_->Branch("gen_nu_p_2",   &gen_nu_p_2_);
       mvatree_->Branch("gen_nu_phi_1", &gen_nu_phi_1_);
       mvatree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
       mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
       mvatree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
-
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
       mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
@@ -1449,18 +1446,15 @@ namespace ic {
       mvatree_->Branch("tauFlag_1", &tauFlag_1_);
       mvatree_->Branch("tauFlag_2", &tauFlag_2_);
       mvatree_->Branch("gen_phitt", &gen_phitt_);
-
       mvatree_->Branch("y_1_1", &y_1_1_);
       mvatree_->Branch("y_1_2", &y_1_2_);
       mvatree_->Branch("y_2_2", &y_2_2_);
       mvatree_->Branch("y_3_2", &y_3_2_);
       mvatree_->Branch("y_4_2", &y_4_2_);
-
       mvatree_->Branch("metcov00", &metCov00_, "metCov00/F");
       mvatree_->Branch("metcov01", &metCov01_, "metCov01/F");
       mvatree_->Branch("metcov10", &metCov10_, "metCov10/F");
       mvatree_->Branch("metcov11", &metCov11_, "metCov11/F");
-
       mvatree_->Branch("pi_px_1", &pi_px_1_);
       mvatree_->Branch("pi_py_1", &pi_py_1_);
       mvatree_->Branch("pi_pz_1", &pi_pz_1_);
@@ -1485,7 +1479,6 @@ namespace ic {
       mvatree_->Branch("pi3_py_2", &pi3_py_2_);
       mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
       mvatree_->Branch("pi3_E_2", &pi3_E_2_);
-
       mvatree_->Branch("pi0_px_1", &pi0_px_1_);
       mvatree_->Branch("pi0_py_1", &pi0_py_1_);
       mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);
@@ -1558,7 +1551,6 @@ namespace ic {
       mvatree_->Branch("ipcov20_2", &ipcov20_2_);
       mvatree_->Branch("ipcov21_2", &ipcov21_2_);
       mvatree_->Branch("ipcov22_2", &ipcov22_2_);
-
       mvatree_->Branch("svcov00_1", &svcov00_1_);
       mvatree_->Branch("svcov01_1", &svcov01_1_);
       mvatree_->Branch("svcov02_1", &svcov02_1_);

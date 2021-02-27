@@ -4348,6 +4348,7 @@ def NormSignals(outfile,add_name):
                     for mass in masses:        
                         if isinstance(sm_samples[samp], (list,)): xs = ana.info[sm_samples[samp][0].replace('*',mass)]['xs']
                         else: xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
+                        if xs == 1.: continue
                         sf = 1.0/xs
                         if not outfile.GetDirectory(nodename).GetListOfKeys().Contains(samp_name+mass+add_name): continue
                         sm_hist = outfile.Get(nodename+'/'+samp_name+mass+add_name)
@@ -4364,6 +4365,7 @@ def NormSignals(outfile,add_name):
                 if masses is not None:    
                     for mass in masses:
                         xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
+                        if xs == 1.: continue
                         sf = 1.0/xs
                         if sf == 1.0: continue
                         mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
@@ -4383,6 +4385,7 @@ def NormSignals(outfile,add_name):
                 if masses is not None:
                     for mass in masses:
                         xs = ana.info[Hhh_samples[samp].replace('*',mass)]['xs']
+                        if xs == 1.: continue
                         sf = 1.0/xs
                         mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
                         mssm_hist.Scale(sf)
