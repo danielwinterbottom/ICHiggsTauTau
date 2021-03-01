@@ -110,8 +110,8 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   "Nbtag1_MTLt40",
-                   "Nbtag1_MT40To70",
+                   #"Nbtag1_MTLt40",
+                   #"Nbtag1_MT40To70",
                    #"Nbtag0_MTLt40_MHGt250",
                    #"Nbtag0_MT40To70_MHGt250"
                    ]
@@ -121,8 +121,8 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   "Nbtag1_MTLt40",
-                   "Nbtag1_MT40To70",
+                   #"Nbtag1_MTLt40",
+                   #"Nbtag1_MT40To70",
                    #"Nbtag0_MTLt40_MHGt250",
                    #"Nbtag0_MT40To70_MHGt250"
                    ]
@@ -130,7 +130,7 @@ for year in years:
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
-                   "Nbtag1",
+                   #"Nbtag1",
                    #"Nbtag0_MHGt250",
                    ]
 

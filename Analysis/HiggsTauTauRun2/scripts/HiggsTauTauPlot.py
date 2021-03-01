@@ -62,7 +62,7 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"",
 
 }
 
@@ -363,6 +363,11 @@ parser.add_argument("--qcd_ff_closure", dest="qcd_ff_closure", action='store_tru
     help="Will run closure plot for QCD DR (mssmrun2)")
 parser.add_argument("--w_ff_closure", dest="w_ff_closure", action='store_true',
     help="Will run closure plot for W DR (mssmrun2)")
+parser.add_argument("--bbh_masses_powheg", dest="bbh_masses_powheg", type=str,
+    help="SUSY bbh masses to run more powheg samples")
+parser.add_argument("--ggh_masses_powheg", dest="ggh_masses_powheg", type=str,
+    help="SUSY ggh masses to run more powheg samples")
+
 
 options = parser.parse_args(remaining_argv)   
 
@@ -1884,10 +1889,19 @@ if options.analysis == 'mssmrun2':
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
 
-mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
-mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
-mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
-mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
+if options.ggh_masses_powheg != "":
+  mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
+else:
+  mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*_powheg', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
+
+if options.bbh_masses_powheg != "":
+  mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
+  mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
+  mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
+else:
+  mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
+
+
 if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
@@ -2672,10 +2686,14 @@ else:
 ggh_masses=None
 bbh_masses=None
 sm_masses=None
+bbh_masses_powheg=None
+ggh_masses_powheg=None
 if options.sm_masses != "": sm_masses = options.sm_masses.split(',')
 if options.ggh_masses != "": ggh_masses = options.ggh_masses.split(',')
 if options.bbh_masses != "": bbh_masses = options.bbh_masses.split(',')
 if options.bbh_nlo_masses != "": bbh_nlo_masses = options.bbh_nlo_masses.split(',')
+if options.ggh_masses_powheg != "": ggh_masses = options.ggh_masses_powheg.split(',')
+if options.bbh_masses_powheg != "": bbh_masses = options.bbh_masses_powheg.split(',')
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -4262,7 +4280,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             else: GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis in ['mssm','mssmrun2'] and (options.ggh_masses != "" or options.bbh_masses != ""):
             bbh_add_name = ''
-            if options.bbh_nlo_masses: bbh_add_name = '-LO'
+            if options.bbh_nlo_masses and not options.bbh_masses_powheg: bbh_add_name = '-LO'
             GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
             if options.add_sm_background:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
