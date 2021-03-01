@@ -3624,8 +3624,8 @@ def GenerateReweightedCPProdSignal(ana, add_name='', plot='', wt='', sel='', cat
 
 
 def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
-  weights = {'ggh_t_':'wt_ggh_t', 'ggh_b_':'wt_ggh_b', 'ggh_i_':'wt_ggh_i', 'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' }  
-  #weights = {'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' } 
+  #weights = {'ggh_t_':'wt_ggh_t', 'ggh_b_':'wt_ggh_b', 'ggh_i_':'wt_ggh_i', 'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' }  
+  weights = {'ggH_t_':'wt_ggH_t', 'ggH_b_':'wt_ggH_b', 'ggH_i_':'wt_ggH_i', 'ggA_t_':'wt_ggA_t', 'ggA_b_':'wt_ggA_b', 'ggA_i_':'wt_ggA_i' } 
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
   if options.gen_signal: OSSS='1' 
@@ -4390,8 +4390,8 @@ def NormSignals(outfile,add_name):
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting and samp == 'ggH': 
-                          re_weighted_names = ['ggh_t_','ggh_b_','ggh_i_','ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
-                          #re_weighted_names = ['ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
+                          #re_weighted_names = ['ggh_t_','ggh_b_','ggh_i_','ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
+                          re_weighted_names = ['ggH_t_','ggH_b_','ggH_i_','ggA_t_','ggA_b_','ggA_i_']
                           for name in re_weighted_names:
                             mssm_hist = outfile.Get(nodename+'/'+name+mass+add_name)
                             #mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
