@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["mt","et","tt"],
+    "channels":      ["tt","mt","et"],
     //"channels":      ["tt"],
     "sequences": {
       "all":  ["default"]
@@ -60,10 +60,9 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802/",
-    //"output_folder" : "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802_svfit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802_svfit_signals/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     //"svfit_folder"  : "./output/",

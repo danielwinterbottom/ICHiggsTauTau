@@ -72,16 +72,16 @@ if __name__ == '__main__':
 #        tasks.append((task_name,file_location))
 
     ggh_masses_missing = []
-    #tasks.append(('SUSYGluGluToHToTauTau_M-1000_powheg','/SUSYGluGluToHToTauTau_M1000_Tanb11_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-100_powheg','/SUSYGluGluToHToTauTau_M100_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-1200_powheg','/SUSYGluGluToHToTauTau_M1200_Tanb15_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-120_powheg','/SUSYGluGluToHToTauTau_M120_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-125_powheg','/SUSYGluGluToHToTauTau_M125_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-130_powheg','/SUSYGluGluToHToTauTau_M130_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-1400_powheg','/SUSYGluGluToHToTauTau_M1400_Tanb21_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-140_powheg','/SUSYGluGluToHToTauTau_M140_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-1600_powheg','/SUSYGluGluToHToTauTau_M1600_Tanb31_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
-    #tasks.append(('SUSYGluGluToHToTauTau_M-160_powheg','/SUSYGluGluToHToTauTau_M160_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-1000_powheg','/SUSYGluGluToHToTauTau_M1000_Tanb11_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-100_powheg','/SUSYGluGluToHToTauTau_M100_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-1200_powheg','/SUSYGluGluToHToTauTau_M1200_Tanb15_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-120_powheg','/SUSYGluGluToHToTauTau_M120_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-125_powheg','/SUSYGluGluToHToTauTau_M125_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-130_powheg','/SUSYGluGluToHToTauTau_M130_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-1400_powheg','/SUSYGluGluToHToTauTau_M1400_Tanb21_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-140_powheg','/SUSYGluGluToHToTauTau_M140_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-1600_powheg','/SUSYGluGluToHToTauTau_M1600_Tanb31_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToHToTauTau_M-160_powheg','/SUSYGluGluToHToTauTau_M160_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-1800_powheg','/SUSYGluGluToHToTauTau_M1800_Tanb44_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-180_powheg','/SUSYGluGluToHToTauTau_M180_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM'))
     tasks.append(('SUSYGluGluToHToTauTau_M-2000_powheg','/SUSYGluGluToHToTauTau_M2000_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM'))
@@ -106,11 +106,10 @@ if __name__ == '__main__':
 
 
     bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
-    bbh_masses_missing     = [100, 200, 300, 350, 700, 1000, 1400]
-    bbh_masses_ph=[]
-
+    bbh_masses_missing     = []
+    # 1000 and 1400 were still in production when they were processed so check the status of these 
     masses_v3 = [140, 180, 250, 450, 500]
-    masses_v4 = [2000]
+    masses_v4 = [2000, 100, 200, 300, 350, 700, 1400]
 
     for mass in bbh_masses_ph:
       if mass in bbh_masses_missing: continue
