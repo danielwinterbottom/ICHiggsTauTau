@@ -4415,7 +4415,7 @@ def RenameMSSMrun2Datacards(outfile):
   chan = options.channel
   renames = {
    'CMS_eff_trigger_' : 'CMS_eff_trigger_emb_',
-   'CMS_eff_xtrigger_l_' : 'CMS_eff_xtrigger_l_',
+   'CMS_eff_xtrigger_l_' : 'CMS_eff_xtrigger_l_emb_',
    'CMS_eff_xtrigger_t_': 'CMS_eff_xtrigger_t_emb_',
    'CMS_eff_t_': 'CMS_eff_t_emb_',
    'CMS_scale_e_' : 'CMS_scale_e_emb_',
