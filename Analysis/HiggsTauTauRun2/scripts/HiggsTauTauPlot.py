@@ -1902,7 +1902,7 @@ else:
   mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
 
 
-if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
+if options.nlo_qsh and mssm_nlo_samples: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
@@ -4652,7 +4652,7 @@ while len(systematics) > 0:
           signal_samples = sm_samples
       elif options.analysis in ['mssm','mssmrun2']:
           signal_samples = mssm_samples
-          if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+          if options.bbh_nlo_masses and mssm_nlo_samples: signal_samples['bbH'] = mssm_nlo_samples['bbH']
           if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
           if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
       elif options.analysis == 'Hhh':
