@@ -366,7 +366,7 @@ for d in subdirs:
   if infi: new_subdirs.append((d,infi))
 subdirs=new_subdirs
 
-#print subdirs
+print subdirs
 
 failed = []
 
