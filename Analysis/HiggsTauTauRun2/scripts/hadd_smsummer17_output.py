@@ -38,7 +38,6 @@ batch = options.batch
 JOBWRAPPER      = './scripts/generate_job.sh'
 JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
-
 sample_list = [
     "DY1JetsToLL-LO",
     "DY1JetsToLL-LO-ext",
@@ -378,6 +377,7 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
 	]
+
 
 sample_list = list(set(sample_list))
 

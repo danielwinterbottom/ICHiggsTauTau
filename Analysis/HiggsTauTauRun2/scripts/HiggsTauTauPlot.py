@@ -1889,17 +1889,17 @@ if options.analysis == 'mssmrun2':
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
 
-if options.ggh_masses_powheg != "":
+if options.ggh_masses_powheg == "":
   mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 else:
   mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*_powheg', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
 
-if options.bbh_masses_powheg != "":
+if options.bbh_masses_powheg == "":
   mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
   mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
   mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
 else:
-  mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
+  mssm_lo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
 
 
 if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
@@ -2694,6 +2694,7 @@ if options.bbh_masses != "": bbh_masses = options.bbh_masses.split(',')
 if options.bbh_nlo_masses != "": bbh_nlo_masses = options.bbh_nlo_masses.split(',')
 if options.ggh_masses_powheg != "": ggh_masses = options.ggh_masses_powheg.split(',')
 if options.bbh_masses_powheg != "": bbh_masses = options.bbh_masses_powheg.split(',')
+
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -4278,7 +4279,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             if options.analysis == 'cpdecay' and options.sm_masses!="": GenerateReweightedCPSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
             elif options.analysis == 'cpprod' and options.sm_masses!="": GenerateReweightedCPProdSignal(ana, add_name, plot, wt, sel, cat, not options.do_ss) 
             else: GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
-        elif options.analysis in ['mssm','mssmrun2'] and (options.ggh_masses != "" or options.bbh_masses != ""):
+        elif options.analysis in ['mssm','mssmrun2'] and (options.ggh_masses != "" or options.bbh_masses != "" or options.ggh_masses_powheg != "" or options.bbh_masses_powheg != "") :
             bbh_add_name = ''
             if options.bbh_nlo_masses and not options.bbh_masses_powheg: bbh_add_name = '-LO'
             GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
