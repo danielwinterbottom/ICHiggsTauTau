@@ -49,7 +49,7 @@ defaults = {
     "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"",
     "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"",
     "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"",
-    "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"", "syst_quarkmass":"",
+    "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"", "syst_quarkmass":"", "syst_mssm_ggh":False,
     "syst_ps":"", "syst_ue":"", "doNLOScales":False, "gen_signal":False, "doPDF":False,
     "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
@@ -293,6 +293,8 @@ parser.add_argument("--syst_ps", dest="syst_ps", type=str,
     help="If set then add the PS uncertainty for ggH")
 parser.add_argument("--syst_ue", dest="syst_ue", type=str,
     help="If set then add the UE uncertainty for ggH")
+parser.add_argument("--syst_mssm_ggh", dest="syst_mssm_ggh", action='store_true',
+    help="If set then add the ggH uncertainties for the MSSM (scale and Hdamp uncerts)")
 parser.add_argument("--syst_tau_id_dm0", dest="syst_tau_id_dm0", type=str,
     help="If set, adds the tau dm = 0 id uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_id_dm1", dest="syst_tau_id_dm1", type=str,
@@ -1902,7 +1904,7 @@ else:
   mssm_lo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*_powheg' }
 
 
-if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
+if options.nlo_qsh and mssm_nlo_samples: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
@@ -3635,9 +3637,23 @@ def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'
       weight=wt+"*"+weights[name]    
       full_selection = BuildCutString(weight, sel, cat, OSSS)
       sample_name = mssm_samples['ggH'].replace('*',mass)
-      add_name_2 = ''
       ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample_name, plot, full_selection))
-                
+      if options.syst_mssm_ggh:
+        for u in ['_scale', '_hdamp']:
+          weight_up=wt+"*"+weights[name].replace('ggH','ggh')+u+'_up'
+          weight_down=wt+"*"+weights[name].replace('ggH','ggh')+u+'_down'
+          full_selection_up = BuildCutString(weight_up, sel, cat, OSSS)
+          full_selection_down = BuildCutString(weight_down, sel, cat, OSSS)
+          if 'scale' in u:
+            syst_name_up='_QCDscale_ggH_REWEIGHTUp'
+            syst_name_down='_QCDscale_ggH_REWEIGHTDown'
+          else:
+            syst_name_up = '_Hdamp_%sREWEIGHTUp' % (name.replace('ggA','ggH').replace('ggh','ggH'))
+            syst_name_down = '_Hdamp_%sREWEIGHTDown' % (name.replace('ggA','ggH').replace('ggh','ggH'))
+          sample_name = mssm_samples['ggH'].replace('*',mass)
+          ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name+syst_name_up, sample_name, plot, full_selection_up))      
+          ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name+syst_name_down, sample_name, plot, full_selection_down))      
+          
 def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'],wt='wt', sel='', cat='', doScales=True, doPDF=False, get_os=True,do_ggH=True, do_bbH=True):
     if get_os:
         OSSS = 'os'
@@ -4659,7 +4675,7 @@ while len(systematics) > 0:
           signal_samples = sm_samples
       elif options.analysis in ['mssm','mssmrun2']:
           signal_samples = mssm_samples
-          if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+          if options.bbh_nlo_masses and mssm_nlo_samples: signal_samples['bbH'] = mssm_nlo_samples['bbH']
           if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
           if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
       elif options.analysis == 'Hhh':

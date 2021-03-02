@@ -165,6 +165,7 @@ for year in years:
       ' --syst_res_met="CMS_htt_boson_res_met_%(year)s"' % vars(),  # MET recoil correction uncertainty
       ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
       ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
+      ' --syst_mssm_ggh ' # ggH theory uncertainties
     ]
 
   if year != '2018': 
