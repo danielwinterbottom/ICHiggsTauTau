@@ -1852,7 +1852,7 @@ if options.analysis in ['cpdecay']:
 
 if options.analysis == 'mssmrun2':
   if options.era == 'cp18':
-    sm_samples = { 'ggH125' : 'GluGluHToTauTau_M-125',
+    sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : 'VBFHToTauTau_M-125-ext1',
                    'ZH125' : 'ZHToTauTau_M-125',
                    'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1865,7 +1865,7 @@ if options.analysis == 'mssmrun2':
                  }
   elif options.era == 'cpsummer17':
     sm_samples = { #'ggH125' : ['GluGluToHToTauTau_M-125','GluGluToHToTauTau_M-125-ext'],
-                   'ggH125' : 'GluGluHToTauTau_M-125-ext',
+                   'ggH125_SM' : 'GluGluHToTauTau_M-125-ext',
                    'qqH125' : 'VBFHToTauTau_M-125',
                    'ZH125' : 'ZHToTauTau_M-125',
                    'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1877,7 +1877,7 @@ if options.analysis == 'mssmrun2':
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
   elif options.era == 'legacy16':
-    sm_samples = { 'ggH125' : 'GluGluToHToTauTau_M-125',
+    sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
                    'qqH125' : 'VBFHToTauTau_M-125',
                    'ZH125' : 'ZHToTauTau_M-125',
                    'WplusH125' : 'WplusHToTauTau_M-125',
@@ -4418,7 +4418,7 @@ def RenameMSSMrun2Datacards(outfile):
    'CMS_eff_xtrigger_l_' : 'CMS_eff_xtrigger_l_emb_',
    'CMS_eff_xtrigger_t_': 'CMS_eff_xtrigger_t_emb_',
    'CMS_eff_t_': 'CMS_eff_t_emb_',
-   'CMS_scale_e_' : 'CMS_scale_e_emb_',
+   'CMS_scale_e' : 'CMS_scale_e_emb',
    'CMS_scale_t_' : 'CMS_scale_t_emb_',
    'CMS_eff_trigger_single_t_':'CMS_eff_trigger_single_t_emb_',
   }  
@@ -4448,7 +4448,6 @@ def RenameMSSMrun2Datacards(outfile):
             print new_name,new_name_2
             histo_clone.SetName(new_name_2)
             histo_clone.Write(new_name_2)
-            directory.Delete(new_name+';1')
             break
       elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
         new_name = name.replace('VVT', 'VVL')
@@ -4484,8 +4483,15 @@ def RenameMSSMrun2Datacards(outfile):
         directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
         directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and not name == 'ggH125':
+      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name :
         directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'ggH125_SM' in name :
+        new_name = name.replace('ggH125_SM', 'ggH125')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+
     i += 1
 
 
