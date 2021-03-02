@@ -248,7 +248,7 @@ for year in years:
         job_file = '%(output_folder)s/jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
         CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
         if not options.dry_run:
-          if (YEAR in ["2017","2018"] and ch in ["mt","et"]) or (YEAR in "2016" and ch in "mt"):
+          if (YEAR in ["2017","2018"] and ch in ["mt","et"]) or (YEAR in "2016" and ch in "mt") and not options.no_syst:
             SubmitBatchJob(job_file,time=600,memory=24,cores=1)
           else:
             SubmitBatchJob(job_file,time=180,memory=24,cores=1)
