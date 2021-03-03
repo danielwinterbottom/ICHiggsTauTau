@@ -2193,7 +2193,11 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
     else:  
       systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
-      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)    
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)  
+      if options.embedding and options.analysis == 'mssmrun2': 
+        embed_hist_name='scale_embed_met' 
+        systematics['syst_scale_embed_met_up'] = ('MET_SCALE_UP' , '_'+embed_hist_name+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+        systematics['syst_scale_embed_met_down'] = ('MET_SCALE_DOWN' , '_'+embed_hist_name+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False) 
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
     jes_to_process=[]
