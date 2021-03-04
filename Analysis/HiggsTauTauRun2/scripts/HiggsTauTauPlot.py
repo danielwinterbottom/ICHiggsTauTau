@@ -1858,10 +1858,11 @@ if options.analysis in ['cpdecay']:
 if options.analysis == 'mssmrun2':
   if options.era == 'cp18':
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
-                   'qqH125' : 'VBFHToTauTau_M-125-ext1',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+                   'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+                   #'qqH125' : 'VBFHToTauTau_M-125-ext1',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHToTauTau',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -1869,12 +1870,12 @@ if options.analysis == 'mssmrun2':
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
   elif options.era == 'cpsummer17':
-    sm_samples = { #'ggH125' : ['GluGluToHToTauTau_M-125','GluGluToHToTauTau_M-125-ext'],
-                   'ggH125_SM' : 'GluGluHToTauTau_M-125-ext',
-                   'qqH125' : 'VBFHToTauTau_M-125',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+    sm_samples = { 'ggH125_SM' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
+                   'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   #'qqH125' : 'VBFHToTauTau_M-125',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHToTauTau',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -1883,10 +1884,11 @@ if options.analysis == 'mssmrun2':
                  }
   elif options.era == 'legacy16':
     sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
-                   'qqH125' : 'VBFHToTauTau_M-125',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+                   'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   #'qqH125' : 'VBFHToTauTau_M-125',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHJetToTT',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -4504,8 +4506,8 @@ def RenameMSSMrun2Datacards(outfile):
         directory.Delete(name+';1')
       elif isinstance(histo,ROOT.TDirectory):
         directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
-        directory.Delete(name+';1')
+      #elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
+        #directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name :
         directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'ggH125_SM' in name :
@@ -4712,8 +4714,15 @@ while len(systematics) > 0:
                     ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), tree_name, None, sample_name)
       if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
           for samp in sm_samples:
-              sample_name = sm_samples[samp].replace('*',options.add_sm_background)
-              ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+            sample_names=[]
+            if isinstance(sm_samples[samp], (list,)):
+              for i in sm_samples[samp]: sample_names.append(i.replace('*',options.add_sm_background))
+            else: sample_names = [sm_samples[samp].replace('*',options.add_sm_background)]
+            for sample_name in sample_names:
+              ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+
+
+
               
       ana.AddInfo(options.paramfile, scaleTo='data_obs')
   
@@ -5190,7 +5199,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
+if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm' and options.analysis != "mssmrun2":
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []
