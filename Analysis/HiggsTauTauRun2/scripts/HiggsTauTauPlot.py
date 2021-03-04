@@ -584,8 +584,8 @@ if options.analysis == 'cpdecay':
   cats['tt_loose_baseline_2'] = '((deepTauVsJets_medium_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_vvloose_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2) && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5))'
 
 
-#if options.w_ff_closure:
-  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+if options.w_ff_closure:
+  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
 elif options.qcd_ff_closure:
   if options.channel in ['et','mt']:
     cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<50 && iso_1>0.05)'
@@ -3258,14 +3258,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
-              if options.w_ff_closure or options.qcd_ff_closure:
-                json_name = 'scripts/ff_strings.json'
-                with open(json_name) as json_file:
-                  ff_dict = json.load(json_file)
+              #if options.w_ff_closure or options.qcd_ff_closure:
+                #json_name = 'scripts/ff_strings.json'
+                #with open(json_name) as json_file:
+                  #ff_dict = json.load(json_file)
               if options.w_ff_closure:
-                #fake_factor_wt_string = "wt_ff_mssm_wjets_1"
+                fake_factor_wt_string = "wt_ff_mssm_wjets_1"
                 #fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
-                fake_factor_wt_string = ff_dict[options.channel][options.year]['wjets']
+                #fake_factor_wt_string = ff_dict[options.channel][options.year]['wjets']
               elif options.qcd_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_qcd_1"
                 #fake_factor_wt_string = ff_dict[channel][year]['qcd']
