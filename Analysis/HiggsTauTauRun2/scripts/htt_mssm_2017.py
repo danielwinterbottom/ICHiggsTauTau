@@ -8,6 +8,8 @@ import os
 import math
 import json
 
+os.system("voms-proxy-init --voms cms --valid 96:00 --out ~/cms.proxy")
+
 JOBWRAPPER      = './scripts/generate_job.sh'
 JOBSUBMIT       = 'true'
 if "JOBWRAPPER" in os.environ:      JOBWRAPPER      = os.environ["JOBWRAPPER"]
