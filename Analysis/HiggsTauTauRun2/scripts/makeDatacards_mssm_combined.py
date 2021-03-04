@@ -115,6 +115,8 @@ for year in years:
                    "NbtagGt1_MT40To70",
                    #"Nbtag0_MTLt40_MHGt250",
                    #"Nbtag0_MT40To70_MHGt250"
+                   #"Nbtag0_MTLt40_MHGt200",
+                   #"Nbtag0_MT40To70_MHGt200"
                    ]
 
   categories_mt = [
@@ -124,12 +126,15 @@ for year in years:
                    "NbtagGt1_MT40To70",
                    #"Nbtag0_MTLt40_MHGt250",
                    #"Nbtag0_MT40To70_MHGt250"
+                   #"Nbtag0_MTLt40_MHGt200",
+                   #"Nbtag0_MT40To70_MHGt200"
                    ]
 
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
                    #"Nbtag0_MHGt250",
+                   #"Nbtag0_MHGt200",
                    ]
 
   categories_em = [
