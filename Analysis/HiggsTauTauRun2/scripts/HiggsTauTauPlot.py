@@ -646,14 +646,14 @@ cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
 cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
 
-cats['Nbtag0_MHGt250'] = '(n_deepbjets==0 && m_sv>250)'
-cats['Nbtag0_MHGt200'] = '(n_deepbjets==0 && m_sv>200)'
+cats['Nbtag0_MHGt250'] = '(n_deepbjets==0 && svfit_mass>250)'
+cats['Nbtag0_MHGt200'] = '(n_deepbjets==0 && svfit_mass>200)'
 
-cats['Nbtag0_MTLt40_MHGt250'] = '(n_deepbjets==0 && mt_1<40 && m_sv>250)'
-cats['Nbtag0_MT40To70_MHGt250'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && m_sv>250)'
+cats['Nbtag0_MTLt40_MHGt250'] = '(n_deepbjets==0 && mt_1<40 && svfit_mass>250)'
+cats['Nbtag0_MT40To70_MHGt250'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && svfit_mass>250)'
 
-cats['Nbtag0_MTLt40_MHGt200'] = '(n_deepbjets==0 && mt_1<40 && m_sv>200)'
-cats['Nbtag0_MT40To70_MHGt200'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && m_sv>200)'
+cats['Nbtag0_MTLt40_MHGt200'] = '(n_deepbjets==0 && mt_1<40 && svfit_mass>200)'
+cats['Nbtag0_MT40To70_MHGt200'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && svfit_mass>200)'
 
 cats['Nbtag1'] = '(n_deepbjets==1)'
 cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<40)'
