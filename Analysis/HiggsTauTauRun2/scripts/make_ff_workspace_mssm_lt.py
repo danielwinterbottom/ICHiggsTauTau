@@ -202,8 +202,15 @@ for p in ['qcd','wjets','ttbar']:
       func = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(name)s_fit' % vars())
       func_str=str(func.GetExpFormula('p')).replace('x','@0').replace(',false','')
       nparams = func.GetNpar() 
- 
+
+      func_alt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
+      func_str_alt=str(func_alt.GetExpFormula('p')).replace('x','@0').replace(',false','') 
+      alt_syst_max = '600.'
+      if '>=140' in func_str: alt_syst_max = '140.'
+      elif '>=200' in func_str: alt_syst_max = '200.' 
+
       w.factory('expr::lt_%(name)s_fit("max(%(func_str)s,0.)",pt_bounded)' % vars())
+      w.factory('expr::lt_%(name)s_fit_alt_func_up("(@0<%(alt_syst_max)s)*(max(%(func_str)s,0.)/@1) + (@0>=%(alt_syst_max)s)",pt_bounded,lt_%(name)s_fit)' % vars())
  
       if p == 'wjets' and njet==1:
         # if wjets and njets=1 we need to also get the function bounded at 140 for ttbar corrections and the corresponding MC function
@@ -283,8 +290,16 @@ for p in ['qcd','wjets','ttbar']:
 for p in ['wjets','qcd']:
 
   w.factory('expr::ff_lt_%(p)s_raw("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5) + (@0>0)*((@1<1.25*@2)*@6 + (@1>=1.25*@2&&@1<1.5*@2)*@7 + (@1>=1.5*@2)*@8)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_0jet_pt_2_ff_%(p)s_fit, lt_jet_pt_med_0jet_pt_2_ff_%(p)s_fit, lt_jet_pt_high_0jet_pt_2_ff_%(p)s_fit, lt_jet_pt_low_1jet_pt_2_ff_%(p)s_fit, lt_jet_pt_med_1jet_pt_2_ff_%(p)s_fit, lt_jet_pt_high_1jet_pt_2_ff_%(p)s_fit)' % vars())
+  
+  w.factory('expr::ff_lt_%(p)s_alt_func_up("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5) + (@0>0)*((@1<1.25*@2)*@6 + (@1>=1.25*@2&&@1<1.5*@2)*@7 + (@1>=1.5*@2)*@8)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_0jet_pt_2_ff_%(p)s_fit_alt_func_up, lt_jet_pt_med_0jet_pt_2_ff_%(p)s_fit_alt_func_up, lt_jet_pt_high_0jet_pt_2_ff_%(p)s_fit_alt_func_up, lt_jet_pt_low_1jet_pt_2_ff_%(p)s_fit_alt_func_up, lt_jet_pt_med_1jet_pt_2_ff_%(p)s_fit_alt_func_up, lt_jet_pt_high_1jet_pt_2_ff_%(p)s_fit_alt_func_up)' % vars())
+  w.factory('expr::ff_lt_%(p)s_alt_func_down("2-@0",ff_lt_%(p)s_alt_func_up)' % vars())
+
+
 
 w.factory('expr::ff_lt_ttbar_raw("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_inclusive_pt_2_ff_ttbar_mc_fit, lt_jet_pt_med_inclusive_pt_2_ff_ttbar_mc_fit, lt_jet_pt_high_inclusive_pt_2_ff_ttbar_mc_fit)' % vars())
+
+w.factory('expr::ff_lt_ttbar_alt_func_up("(@0>=0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5)", njets[0], jetpt[40], pt_bounded, lt_jet_pt_low_inclusive_pt_2_ff_ttbar_mc_fit_alt_func_up, lt_jet_pt_med_inclusive_pt_2_ff_ttbar_mc_fit_alt_func_up, lt_jet_pt_high_inclusive_pt_2_ff_ttbar_mc_fit_alt_func_up)' % vars())
+w.factory('expr::ff_lt_ttbar_alt_func_down("2-@0",ff_lt_ttbar_alt_func_up)')
 
 # apply qcd corrections
 
@@ -721,6 +736,10 @@ w.factory('expr::ff_total_wjets_frac_down("(@0*@1 + @2*@3*0.9 + @4*@5)/(@1 + @3*
 w.factory('expr::ff_total_ttbar_frac_up("(@0*@1 + @2*@3 + @4*@5*1.1)/(@1 + @3 + @5*1.1)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 w.factory('expr::ff_total_ttbar_frac_down("(@0*@1 + @2*@3 + @4*@5*0.9)/(@1 + @3 + @5*0.9)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
+
+w.factory('expr::ff_total_alt_func_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_up, lt_fracs_qcd, ff_lt_wjets_alt_func_up, lt_fracs_wjets, ff_lt_ttbar_alt_func_up, lt_fracs_ttbar, ff_total)' % vars())
+w.factory('expr::ff_total_alt_func_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_down, lt_fracs_qcd, ff_lt_wjets_alt_func_down, lt_fracs_wjets, ff_lt_ttbar_alt_func_down, lt_fracs_ttbar, ff_total)' % vars())
+
 # uncertainty for cross triggered part
 w.factory('expr::ff_total_low_pt_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*(1.2*(@6<%(crosstrg_pt)s)+(@6>=%(crosstrg_pt)s))", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar, l_pt_bounded200)' % vars())
 w.factory('expr::ff_total_low_pt_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*(0.8*(@6<%(crosstrg_pt)s)+(@6>=%(crosstrg_pt)s))", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar, l_pt_bounded200)' % vars())
@@ -746,7 +765,7 @@ for s in wjets_systs:
     w.factory('expr::ff_total_%(s)s_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_%(s)s_down, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v2.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v3.root' % vars())
 w.Delete() 
 
 # check et_medium_pt_1_nbjets1_dr_to_ar_aiso_closure_qcd_fit uncertainty band

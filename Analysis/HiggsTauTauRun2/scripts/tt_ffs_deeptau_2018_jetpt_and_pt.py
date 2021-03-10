@@ -21,6 +21,7 @@ parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms
 parser.add_argument('--year','-y', help= 'year', type=str, default='2018')
 parser.add_argument("--singletau", dest="singletau", action='store_true', help="Use single tau trigger in OR")
 parser.add_argument("--cms_label", help="If true will draw CMS label")
+parser.add_argument('--force_pol1', help= 'force all fits to be pol1 up to 100 GeV and flat above',  action='store_true')
 args = parser.parse_args()
 
 wp = args.wp
@@ -38,7 +39,7 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018_v6/' 
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -101,7 +102,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v6/'
+    input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -355,6 +356,10 @@ def FitFakeFactors(h,pt_min,pt_max,usePol1=False,polOnly=None):
       f1 = ROOT.TF1("f1","pol1",0,400)
       f2 = ROOT.TF1("f2","pol1",0,400)
 
+  if args.force_pol1 and not polOnly == 0:
+      f1 = ROOT.TF1("f1","[0]+[1]*min(100.,x)",0,100)
+      f2 = ROOT.TF1("f2","[0]+[1]*min(100.,x)",0,100)
+
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
@@ -391,49 +396,52 @@ def FitFakeFactors(h,pt_min,pt_max,usePol1=False,polOnly=None):
   fit.SetName(h.GetName()+'_fit')
   fit.Print("all")
 
-  if 'high' in h.GetName():
-    # find minimum bin value over 80 GeV
-    minbin = h.FindBin(80.1)
-    minval = h.GetBinContent(minbin)
-    maxbin_to_check = h.GetNbinsX()
+  islandau = 'landau' in str(fit.GetExpFormula('p')).lower()
 
-    for i in range(minbin+1,maxbin_to_check+1):
-      bin_val = h.GetBinContent(i)
-      if bin_val != 0 and bin_val < minval and h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(i)))>=bin_val: # stop it choosing the lowest value way where fit way below values
-        minbin = i
-        minval = bin_val
+  if islandau:
+    if 'high' in h.GetName():
+      # find minimum bin value over 80 GeV
+      minbin = h.FindBin(80.1)
+      minval = h.GetBinContent(minbin)
+      maxbin_to_check = h.GetNbinsX()
 
-    # if no bins above 80 GeV filled find the largest filled bin
-    if minval == 0:
-      for i in range(h.GetNbinsX()+1,0,-1):
-        if h.GetBinContent(i) > 0:
-          break
-      minbin_val = h.GetBinLowEdge(i)
+      for i in range(minbin+1,maxbin_to_check+1):
+        bin_val = h.GetBinContent(i)
+        if bin_val != 0 and bin_val < minval and h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(i)))>=bin_val: # stop it choosing the lowest value way where fit way below values
+          minbin = i
+          minval = bin_val
+
+      # if no bins above 80 GeV filled find the largest filled bin
+      if minval == 0:
+        for i in range(h.GetNbinsX()+1,0,-1):
+          if h.GetBinContent(i) > 0:
+            break
+        minbin_val = h.GetBinLowEdge(i)
+      else:
+        minbin_val = h.GetBinLowEdge(minbin)
+
+      p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
+      if not usePol1:
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
+      else:
+        p4 = fit.GetParameter(4)
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s+(%(p4)s*x)" % vars(),20,600)
+      for j in range(0,h_uncert.GetNbinsX()+1):
+        if h_uncert.GetBinLowEdge(j) >= minbin_val:
+          h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
+          h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
     else:
-      minbin_val = h.GetBinLowEdge(minbin)
+      p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
+      if not usePol1:
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,170.),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
+      else:
+        p4 = fit.GetParameter(4)
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,170.),%(p1)s,%(p2)s)+%(p3)s+(%(p4)s*min(x,170.))" % vars(),20,600)
 
-    p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-    if not usePol1:
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
-    else:
-      p4 = fit.GetParameter(4)
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s+(%(p4)s*x)" % vars(),20,600)
-    for j in range(0,h_uncert.GetNbinsX()+1):
-      if h_uncert.GetBinLowEdge(j) >= minbin_val:
-        h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
-        h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
-  else:
-    p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-    if not usePol1:
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,170.),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
-    else:
-      p4 = fit.GetParameter(4)
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,170.),%(p1)s,%(p2)s)+%(p3)s+(%(p4)s*min(x,170.))" % vars(),20,600)
-
-    for j in range(0,h_uncert.GetNbinsX()+1):
-      if h_uncert.GetBinLowEdge(j) >= 170 and h_uncert.GetBinLowEdge(j) < 200:
-        h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(170)))
-        h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(170)))
+      for j in range(0,h_uncert.GetNbinsX()+1):
+        if h_uncert.GetBinLowEdge(j) >= 170 and h_uncert.GetBinLowEdge(j) < 200:
+          h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(170)))
+          h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(170)))
 
 
   return fit, h_uncert, h
@@ -1017,7 +1025,7 @@ for ff in ff_list:
 
 
 # write raw fake factors
-
+if args.force_pol1: out_file=out_file.replace('.root','_forcepol1.root')
 fout = ROOT.TFile(out_file, 'RECREATE')
 
 for i in to_write: i.Write()
