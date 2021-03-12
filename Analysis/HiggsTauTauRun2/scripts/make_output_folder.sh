@@ -107,8 +107,8 @@ mkdir -p -v $1/JESHF_YEAR_DOWN
 mkdir -p -v $1/JESHF_YEAR_UP
 mkdir -p -v $1/JESRELSAMP_YEAR_DOWN
 mkdir -p -v $1/JESRELSAMP_YEAR_UP
-# mkdir -p -v $1/METCL_UP
-# mkdir -p -v $1/METCL_DOWN
+mkdir -p -v $1/METCL_UP
+mkdir -p -v $1/METCL_DOWN
 # mkdir -p -v $1/JESFULL_UP
 # mkdir -p -v $1/JESFULL_DOWN
 # mkdir -p -v $1/JESCENT_UP

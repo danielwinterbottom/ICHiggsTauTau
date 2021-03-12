@@ -25,9 +25,9 @@ cmssw_base = os.environ['CMSSW_BASE']
 fake_factor_output = 'fake_factor_output'
 if options.force_pol1: fake_factor_output = 'fake_factor_output_pol1'
 
-os.system('rm -r %(fake_factor_output)s/*/*/*.pdf' % vars())
-os.system('rm -r %(fake_factor_output)s/workspaces/*' % vars())
-os.system('rm -r %(fake_factor_output)s/jobs/*' % vars())
+#os.system('rm -r %(fake_factor_output)s/*/*/*.pdf' % vars())
+#os.system('rm -r %(fake_factor_output)s/workspaces/*' % vars())
+#os.system('rm -r %(fake_factor_output)s/jobs/*' % vars())
 
 
 if year == "all":

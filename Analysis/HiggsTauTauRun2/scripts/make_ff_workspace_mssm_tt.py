@@ -104,6 +104,9 @@ for njet in [0,1]:
     func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:%(name)s_fit' % vars())
     func_str=str(func.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
+    func_alt = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
+    func_str_alt=str(func_alt.GetExpFormula('p')).replace('x','@0').replace(',false','')
+
     hist = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:%(name)s' % vars())
 
     high_pt_val = hist.GetBinContent(hist.FindBin(300.))
@@ -114,9 +117,11 @@ for njet in [0,1]:
 
     if 'high' in jetpt:
       w.factory('expr::tt_%(name)s_fit("max(%(func_str)s,0.)",pt_bounded)' % vars())
+      w.factory('expr::tt_%(name)s_fit_alt_func_up("max(%(func_str_alt)s,0.)/@1",pt_bounded, tt_%(name)s_fit)' % vars())
     else:
       w.factory('expr::tt_%(name)s_fit("max((%(func_str)s)*(@0<200.) + (@0>=200.)*%(high_pt_val).5f,0.)",pt_bounded)' % vars())
       print 'expr::tt_%(name)s_fit("max((%(func_str)s)*(@0<200.) + (@0>=200.)*%(high_pt_val).5f,0.)",pt_bounded)' % vars()
+      w.factory('expr::tt_%(name)s_fit_alt_func_up("max((%(func_str_alt)s)*(@0<200.) + (@0>=200.)*%(high_pt_val).5f,0.)/@1",pt_bounded, tt_%(name)s_fit)' % vars())
  
 
     # get stat uncertainties
@@ -144,10 +149,19 @@ for njet in [0,1]:
 
 # make njets / jetpt binned functions
 
-w.factory('expr::ff_tt_qcd("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5) + (@0>0)*((@1<1.25*@2)*@6 + (@1>=1.25*@2&&@1<1.5*@2)*@7 + (@1>=1.5*@2)*@8)", njets[0], jetpt[40], pt_bounded, tt_jet_pt_low_0jet_pt_1_ff_qcd_fit, tt_jet_pt_med_0jet_pt_1_ff_qcd_fit, tt_jet_pt_high_0jet_pt_1_ff_qcd_fit, tt_jet_pt_low_1jet_pt_1_ff_qcd_fit, tt_jet_pt_med_1jet_pt_1_ff_qcd_fit, tt_jet_pt_high_1jet_pt_1_ff_qcd_fit)' % vars())
-
+w.factory('expr::ff_tt_qcd("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5) + (@0>0)*((@1<1.25*@2)*@6 + (@1>=1.25*@2&&@1<1.5*@2)*@7 + (@1>=1.5*@2)*@8)", njets[0], jetpt[40], pt_bounded, tt_jet_pt_low_0jet_pt_1_ff_qcd_fit, tt_jet_pt_med_0jet_pt_1_ff_qcd_fit, tt_jet_pt_high_0jet_pt_1_ff_qcd_fit, tt_jet_pt_low_1jet_pt_1_ff_qcd_fit, tt_jet_pt_med_1jet_pt_1_ff_qcd_fit, tt_jet_pt_high_1jet_pt_1_ff_qcd_fit, pt_2[40], met[30])' % vars())
+w.factory('expr::ff_tt_qcd_alt_func_up("(@0==0)*((@1<1.25*@2)*@3 + (@1>=1.25*@2&&@1<1.5*@2)*@4 + (@1>=1.5*@2)*@5) + (@0>0)*((@1<1.25*@2)*@6 + (@1>=1.25*@2&&@1<1.5*@2)*@7 + (@1>=1.5*@2)*@8)", njets[0], jetpt[40], pt_bounded, tt_jet_pt_low_0jet_pt_1_ff_qcd_fit_alt_func_up, tt_jet_pt_med_0jet_pt_1_ff_qcd_fit_alt_func_up, tt_jet_pt_high_0jet_pt_1_ff_qcd_fit_alt_func_up, tt_jet_pt_low_1jet_pt_1_ff_qcd_fit_alt_func_up, tt_jet_pt_med_1jet_pt_1_ff_qcd_fit_alt_func_up, tt_jet_pt_high_1jet_pt_1_ff_qcd_fit_alt_func_up)' % vars())
+w.factory('expr::ff_tt_qcd_alt_func_down("2-@0",ff_tt_qcd_alt_func_up)')
 
 # get closure corrections
+
+# this one just for an uncertainty
+func_ss_pt_2 = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:ss_pt_2_closure_qcd_fit' % vars())
+func_ss_pt_2_str=str(func_ss_pt_2.GetExpFormula('p')).replace('x','min(@0,140.)').replace(',false','')
+w.factory('expr::tt_qcd_ss_pt_2_uncert("max(%(func_ss_pt_2_str)s,0.)",pt_2[40])' % vars())
+
+# we also introduce a met uncertainty due to non-closure of met in 2018. For 2017 and 2016 this is very small so we take the 2018 fits for all years
+w.factory('expr::tt_qcd_ss_met_uncert("0.986185+0.000606797*min(@0,200.)",met[30])' % vars())
 
 for nbjet in [0,1]:
   w.factory('expr::dR_bounded("min(max(0.5,@0),4.5)",dR[3])' % vars())
@@ -216,6 +230,18 @@ for i in [1,2]:
 # get final fake factor
 w.factory('expr::ff_total("@0*@1*((@2!=0)*@3 + (@2==0))", ff_tt_qcd, tt_qcd_ss_correction, os[1], tt_qcd_os_correction)' % vars())
 
+#uncertainty due to alternative fitted functions
+w.factory('expr::ff_total_syst_alt_func_up("@0*@1", ff_tt_qcd_alt_func_up, ff_total)' % vars())
+w.factory('expr::ff_total_syst_alt_func_down("@0*@1", ff_tt_qcd_alt_func_down, ff_total)' % vars())
+
+# uncertainty on pt_2
+w.factory('expr::ff_total_qcd_syst_pt_2_up("@0*@1", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_pt_2_down("@0*(2-@1)", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
+
+# uncertainty on met
+w.factory('expr::ff_total_qcd_syst_met_up("@0*@1", ff_total, tt_qcd_ss_met_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_met_down("@0*(2-@1)", ff_total, tt_qcd_ss_met_uncert)' % vars())
+
 # statistical uncertainties on measured fake factors
 ## add statistical uncertainties 1 per njets/jetpt bin
 for njet in [0,1]:
@@ -244,5 +270,5 @@ w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_total, tt_fracs_ttba
 w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s_v2.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s_v3.root' % vars())
 w.Delete() 

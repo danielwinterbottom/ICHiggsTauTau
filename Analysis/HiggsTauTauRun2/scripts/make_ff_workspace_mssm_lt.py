@@ -155,8 +155,8 @@ for i in ['qcd','wjets','ttbar']:
   w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
 
 
-w.factory('expr::pt_bounded("max(min(599.9,@0),20)",pt[0])' % vars())
-w.factory('expr::pt_bounded140("max(min(139.9,@0),20)",pt[0])' % vars())
+w.factory('expr::pt_bounded("max(min(599.9,@0),20)",pt[30])' % vars())
+w.factory('expr::pt_bounded140("max(min(139.9,@0),20)",pt[30])' % vars())
 
 # pT dependent fits
 
@@ -210,7 +210,7 @@ for p in ['qcd','wjets','ttbar']:
       elif '>=200' in func_str: alt_syst_max = '200.' 
 
       w.factory('expr::lt_%(name)s_fit("max(%(func_str)s,0.)",pt_bounded)' % vars())
-      w.factory('expr::lt_%(name)s_fit_alt_func_up("(@0<%(alt_syst_max)s)*(max(%(func_str)s,0.)/@1) + (@0>=%(alt_syst_max)s)",pt_bounded,lt_%(name)s_fit)' % vars())
+      w.factory('expr::lt_%(name)s_fit_alt_func_up("(@0<%(alt_syst_max)s)*(max(%(func_str_alt)s,0.)/@1) + (@0>=%(alt_syst_max)s)",pt_bounded,lt_%(name)s_fit)' % vars())
  
       if p == 'wjets' and njet==1:
         # if wjets and njets=1 we need to also get the function bounded at 140 for ttbar corrections and the corresponding MC function
@@ -737,8 +737,8 @@ w.factory('expr::ff_total_ttbar_frac_up("(@0*@1 + @2*@3 + @4*@5*1.1)/(@1 + @3 + 
 w.factory('expr::ff_total_ttbar_frac_down("(@0*@1 + @2*@3 + @4*@5*0.9)/(@1 + @3 + @5*0.9)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 
-w.factory('expr::ff_total_alt_func_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_up, lt_fracs_qcd, ff_lt_wjets_alt_func_up, lt_fracs_wjets, ff_lt_ttbar_alt_func_up, lt_fracs_ttbar, ff_total)' % vars())
-w.factory('expr::ff_total_alt_func_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_down, lt_fracs_qcd, ff_lt_wjets_alt_func_down, lt_fracs_wjets, ff_lt_ttbar_alt_func_down, lt_fracs_ttbar, ff_total)' % vars())
+w.factory('expr::ff_total_syst_alt_func_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_up, lt_fracs_qcd, ff_lt_wjets_alt_func_up, lt_fracs_wjets, ff_lt_ttbar_alt_func_up, lt_fracs_ttbar, ff_total)' % vars())
+w.factory('expr::ff_total_syst_alt_func_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*@6", ff_lt_qcd_alt_func_down, lt_fracs_qcd, ff_lt_wjets_alt_func_down, lt_fracs_wjets, ff_lt_ttbar_alt_func_down, lt_fracs_ttbar, ff_total)' % vars())
 
 # uncertainty for cross triggered part
 w.factory('expr::ff_total_low_pt_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)*(1.2*(@6<%(crosstrg_pt)s)+(@6>=%(crosstrg_pt)s))", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar, l_pt_bounded200)' % vars())

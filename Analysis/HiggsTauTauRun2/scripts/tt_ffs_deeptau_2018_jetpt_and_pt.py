@@ -1088,6 +1088,44 @@ print '`n'
 print 'aiso FF'
 print tau1_aiso_string
 
+# for an additional uncertainty due to the non-closure on the pt_2 distribution derive additional non-closure here
+
+var='pt_2[40,45,50,55,60,65,70,80,90,100,120,140]'
+cut = '1'
+
+# ss region
+qcd_ss_data = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', 'ss_pt_2_closure' % vars(),input_folder,file_ext,False)
+qcd_ss_pred = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', 'ss_pt_2_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau1_string)
+fout.cd()
+qcd_ss_data.Divide(qcd_ss_pred)
+
+polfit = 'pol1'
+
+qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func=polfit)
+
+qcd_ss_data.Write()
+qcd_ss_data_fit.Write()
+qcd_ss_data_uncert.Write()
+PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp, year, 0.5, 4.5, x_title='p_{T} (GeV)')
+
+var='met[0,10,20,30,40,50,60,70,80,100,120,140,160,200]'
+cut = '1'
+
+# ss region
+qcd_ss_data = DrawHists(var, '('+baseline_bothiso+')*('+cut+')', 'ss_met_closure' % vars(),input_folder,file_ext,False)
+qcd_ss_pred = DrawHists(var, '('+baseline_aiso1+')*('+cut+')', 'ss_met_closure_pred' % vars(),input_folder,file_ext,False,add_wt=tau1_string)
+fout.cd()
+qcd_ss_data.Divide(qcd_ss_pred)
+
+polfit = 'pol1'
+
+qcd_ss_data_fit, qcd_ss_data_uncert =  FitCorrection(qcd_ss_data, func=polfit)
+
+qcd_ss_data.Write()
+qcd_ss_data_fit.Write()
+qcd_ss_data_uncert.Write()
+PlotFakeFactorCorrection(qcd_ss_data, qcd_ss_data_uncert, qcd_ss_data.GetName(), output_folder, wp, year, 0.5, 4.5, x_title='MET (GeV)')
+
 # same sign correction from aiso data
 
 var='dR[0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0]'

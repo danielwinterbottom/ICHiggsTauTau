@@ -17,6 +17,7 @@ parser.add_argument('--output_folder','-o', help= 'Name of output directory', de
 parser.add_argument('--year', help= 'Name of input year', default='2018')
 parser.add_argument('--cms_label', help= 'Draw cms label', default=False)
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
+parser.add_argument('--force_pol1', help= 'force all fits to be pol1 up to 100 GeV and flat above',  action='store_true')
 args = parser.parse_args()
 
 wp = args.wp
@@ -27,6 +28,7 @@ channel = args.channel
 draw = int(args.draw) > 0
 
 out_file = '%(output_folder)s/fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root' % vars()
+if args.force_pol1: out_file=out_file.replace('.root','_forcepol1.root')
 file_ext = '_%(channel)s_%(year)s.root' % vars()
 
 # binning for fake factor determination
@@ -73,7 +75,7 @@ elif channel == "et":
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018_v7/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -144,7 +146,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017_v6/'
+  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -808,6 +810,10 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
       f1 = ROOT.TF1("f1","pol1",20,200)
       f2 = ROOT.TF1("f2","pol1",20,200)
 
+  if args.force_pol1:
+      f1 = ROOT.TF1("f1","[0]+[1]*min(100.,x)",0,100)
+      f2 = ROOT.TF1("f2","[0]+[1]*min(100.,x)",0,100)
+
   # clone histogram and set all bins with >0 content
   h_clone = h.Clone()
   h_clone.Reset()
@@ -821,7 +827,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
   if polOnly is None:
     # fit first with landau to get initial values for parameters - pol values set to 0 initially
     status = h.Fit("f1",'SNIR')
-    if int(status) != 0  and not use_erf:
+    if int(status) != 0  and not use_erf and not args.force_pol1:
       print "Doing new fit because other fit failed"
       if bin_type == 0: f2 = ROOT.TF1("f2","[0]+[1]*x",20,600)
       elif bin_type == 1: f2 = ROOT.TF1("f2","([0]+[1]*x)*(x<140) + ([2]*(x>=140 && x<200)) + ([3]*(x>=200))",20,600)
@@ -888,7 +894,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
       large_uncert = True
   
   # Do pol1 fit because uncertainty too big
-  if large_uncert:
+  if large_uncert and not args.force_pol1:
     print "Doing new fit because other fit had large uncertainties"
     if bin_type == 0: f2 = ROOT.TF1("f2","[0]+[1]*x",20,600)
     elif bin_type == 1: f2 = ROOT.TF1("f2","([0]+[1]*x)*(x<140) + ([2]*(x>=140 && x<200)) + ([3]*(x>=200))",20,600)
@@ -965,72 +971,100 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
   
   print "initial minbin, initial minval:",minbin,minval  
 
-  if (not use_erf) or large_uncert or int(status) != 0:
+  if args.force_pol1: # and not use_erf:
     i = 0
-    while h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(minbin)))+0.005<minval and i < 5: # stop it choosing the lowest value where fit way below values
+    while h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(minbin)))+0.01<minval and i < 5: # stop it choosing the lowest value where fit way below values
       print "fit_val", h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(minbin)))
       minbin += -1
       i += 1
-     
+
     # if no bins above 80 GeV filled find the largest filled bin
-    if minval == 0: 
+    if minval == 0:
       for i in range(h.GetNbinsX()+1,0,-1):
         if h.GetBinContent(i) > 0 and h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(i)))+0.1 > h.GetBinContent(i):
           break
       minbin_val = h.GetBinLowEdge(i)
     else:
       minbin_val = h.GetBinLowEdge(minbin)
-
-  print "minbin,minval:",minbin,minval
-  print "bin_type:",bin_type
-  if bin_type == 0:
-    if (int(status) != 0 and not use_erf) or large_uncert:
-      p0,p1 = fit.GetParameter(0),fit.GetParameter(1)
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s+(%(p1)s*min(x,%(minbin_val)s))" % vars(),20,600)
-    elif not use_erf:
-      p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-      fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
-    if int(status) != 0 or large_uncert or not use_erf:
+    print '!!!!!!', minbin, minbin_val, minval
+    print 'sring before capping: ', str(fit.GetExpFormula('p'))
+    if minbin_val<100.:
+      fit = ROOT.TF1(h.GetName()+'_fit', str(fit.GetExpFormula('p')).replace('x','min(x,%(minbin_val)s)' % vars()),0,100)
       for j in range(0,h_uncert.GetNbinsX()+1):
         if h_uncert.GetBinLowEdge(j) >= minbin_val:
           h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
           h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
-  elif bin_type == 1:
-    if (int(status) != 0 and not use_erf) or large_uncert:
-      p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+(%(p2)s*(x>=140 && x<200)) + (%(p3)s*(x>=200))" % vars(),20,600)
-    elif not use_erf:
-      p0,p1,p2,p3,p4,p5 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140))+(%(p4)s*(x>=140 && x<200)) + (%(p5)s*(x>=200))" % vars(),20,600)
-    if int(status) != 0 or large_uncert or not use_erf:
-      for j in range(0,h_uncert.GetNbinsX()+1):
-        if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 140:
-          h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
-          h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
-  elif bin_type == 2:
-    if (int(status) != 0 and not use_erf) or large_uncert:
-      p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<200))+ (%(p2)s*(x>=200))" % vars(),20,600)
-    elif not use_erf:
-      p0,p1,p2,p3,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<200)) + (%(p4)s*(x>=200))" % vars(),20,600)
-    if int(status) != 0 or large_uncert or not use_erf:
-      for j in range(0,h_uncert.GetNbinsX()+1):
-        if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 200:
-          h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
-          h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
-  elif bin_type == 3:
-    if (int(status) != 0 and not use_erf) or large_uncert:
-      p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+ (%(p2)s*(x>=140))" % vars(),20,600)
-    elif not use_erf:
-      p0,p1,p2,p3,p4,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
-      fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140)) + (%(p4)s*(x>=140))" % vars(),20,600)
-    if int(status) != 0 or large_uncert or not use_erf:
-      for j in range(0,h_uncert.GetNbinsX()+1):
-        if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 140:
-          h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
-          h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
+    print 'sring after capping: ', str(fit.GetExpFormula('p'))
+
+
+  if not args.force_pol1:
+
+    if (not use_erf) or large_uncert or int(status) != 0:
+      i = 0
+      while h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(minbin)))+0.005<minval and i < 5: # stop it choosing the lowest value where fit way below values
+        print "fit_val", h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(minbin)))
+        minbin += -1
+        i += 1
+       
+      # if no bins above 80 GeV filled find the largest filled bin
+      if minval == 0: 
+        for i in range(h.GetNbinsX()+1,0,-1):
+          if h.GetBinContent(i) > 0 and h_uncert.GetBinContent(h_uncert.FindBin(h.GetBinCenter(i)))+0.1 > h.GetBinContent(i):
+            break
+        minbin_val = h.GetBinLowEdge(i)
+      else:
+        minbin_val = h.GetBinLowEdge(minbin)
+
+    print "minbin,minval:",minbin,minval
+    print "bin_type:",bin_type
+    if bin_type == 0:
+      if (int(status) != 0 and not use_erf) or large_uncert:
+        p0,p1 = fit.GetParameter(0),fit.GetParameter(1)
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s+(%(p1)s*min(x,%(minbin_val)s))" % vars(),20,600)
+      elif not use_erf:
+        p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
+        fit = ROOT.TF1(h.GetName()+'_fit',"%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s" % vars(),20,600)
+      if int(status) != 0 or large_uncert or not use_erf:
+        for j in range(0,h_uncert.GetNbinsX()+1):
+          if h_uncert.GetBinLowEdge(j) >= minbin_val:
+            h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
+            h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
+    elif bin_type == 1:
+      if (int(status) != 0 and not use_erf) or large_uncert:
+        p0,p1,p2,p3 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+(%(p2)s*(x>=140 && x<200)) + (%(p3)s*(x>=200))" % vars(),20,600)
+      elif not use_erf:
+        p0,p1,p2,p3,p4,p5 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140))+(%(p4)s*(x>=140 && x<200)) + (%(p5)s*(x>=200))" % vars(),20,600)
+      if int(status) != 0 or large_uncert or not use_erf:
+        for j in range(0,h_uncert.GetNbinsX()+1):
+          if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 140:
+            h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
+            h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
+    elif bin_type == 2:
+      if (int(status) != 0 and not use_erf) or large_uncert:
+        p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<200))+ (%(p2)s*(x>=200))" % vars(),20,600)
+      elif not use_erf:
+        p0,p1,p2,p3,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<200)) + (%(p4)s*(x>=200))" % vars(),20,600)
+      if int(status) != 0 or large_uncert or not use_erf:
+        for j in range(0,h_uncert.GetNbinsX()+1):
+          if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 200:
+            h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
+            h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
+    elif bin_type == 3:
+      if (int(status) != 0 and not use_erf) or large_uncert:
+        p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+ (%(p2)s*(x>=140))" % vars(),20,600)
+      elif not use_erf:
+        p0,p1,p2,p3,p4,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
+        fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140)) + (%(p4)s*(x>=140))" % vars(),20,600)
+      if int(status) != 0 or large_uncert or not use_erf:
+        for j in range(0,h_uncert.GetNbinsX()+1):
+          if h_uncert.GetBinLowEdge(j) >= minbin_val and h_uncert.GetBinLowEdge(j) < 140:
+            h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
+            h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
 
   return fit, h_uncert, h
 
