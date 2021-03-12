@@ -549,14 +549,14 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h = t.GetHistogram()
       scale = lumi*params[i]['xs']/params[i]['evt']
       h.Scale(scale)
-      if doMCShift == 'Up':
-        h.Scale(1.1)
-      if doMCShift == 'Down':
-        h.Scale(0.9)
-
       bkgs_qcd.Add(h)
 
     bkgs_qcd = ZeroNegativeBins(bkgs_qcd)
+    if doMCShift == 'Up':
+      bkgs_qcd.Scale(1.1)
+    if doMCShift == 'Down':
+      bkgs_qcd.Scale(0.9)
+
     data_qcd.Add(bkgs_qcd,-1)
     data_qcd = ZeroNegativeBins(data_qcd)
 
@@ -587,10 +587,6 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h = t.GetHistogram()
       scale = lumi*params[i]['xs']/params[i]['evt']
       h.Scale(scale)
-      if doMCShift == 'Up':
-        h.Scale(1.1)
-      if doMCShift == 'Down':
-        h.Scale(0.9)
       bkgs_w.Add(h)
 
 
@@ -615,16 +611,18 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       h = t.GetHistogram()
       scale = lumi*params[i]['xs']/params[i]['evt']
       h.Scale(scale)
-      if doMCShift == 'Up': 
-        h.Scale(1.1)
-      if doMCShift == 'Down':
-        h.Scale(0.9)
-
       w_qcd_sub_mc.Add(h)
 
     w_qcd_sub_mc = ZeroNegativeBins(w_qcd_sub_mc)
     w_qcd_sub.Add(w_qcd_sub_mc,-1)
     w_qcd_sub = ZeroNegativeBins(w_qcd_sub)
+    if doMCShift == 'Up':
+      w_qcd_sub.Scale(1.1)
+      bkgs_w.Scale(1.1)
+    if doMCShift == 'Down':
+      w_qcd_sub.Scale(0.9)
+      bkgs_w.Scale(0.9)
+
     # scale by OS/SS ratio
     w_qcd_sub.Scale(1.1)
 
