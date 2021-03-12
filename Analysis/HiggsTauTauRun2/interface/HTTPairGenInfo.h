@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/interface/HTTConfig.h"
 #include "TGraph.h"
+#include "TF2.h"
 
 #include <string>
 
@@ -27,6 +28,8 @@ class HTTPairGenInfo : public ModuleBase {
   TGraph *gr_met_corr_;
   TGraph *gr_met_corr_up_;
   TGraph *gr_met_corr_down_;
+  TF2 *func;
+  TF2 *func2;
 
  public:
   HTTPairGenInfo(std::string const& name);

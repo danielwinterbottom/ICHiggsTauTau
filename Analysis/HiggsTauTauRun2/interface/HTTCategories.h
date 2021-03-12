@@ -178,6 +178,13 @@ class HTTCategories : public ModuleBase {
   double fake_tau_met_;
   double gen_tau_met_;
 
+  double fake_tau_metx_;
+  double fake_tau_mety_;
+  double gen_tau_metx_;
+  double gen_tau_mety_;
+  double gen_metx_;
+  double gen_mety_;
+
   double qcd_frac_score_, w_frac_score_;
   double w_frac_, qcd_frac_, ttbar_frac_;
 
@@ -261,6 +268,8 @@ class HTTCategories : public ModuleBase {
   unsigned gen_match_2_;
   double gen_match_1_pt_;
   double gen_match_2_pt_;
+  double gen_match_undecayed_1_pt_;
+  double gen_match_undecayed_2_pt_;
   double gen_m_;
   double gen_pt_;
   int tauFlag_1_;

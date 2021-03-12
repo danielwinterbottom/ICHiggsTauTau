@@ -9,7 +9,6 @@
 #include "boost/format.hpp"
 
 
-
 namespace ic {
 
 TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
@@ -81,6 +80,62 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       embed_corr_->Close();
     }
 
+    std::string scale_str ="1.";
+    std::string scale_str_2 ="1.";
+
+    if(is_embedded_) {
+      //if(channel_==channel::tt) {
+      //  if(era_ == era::data_2016) scale_str = "(x-y)*0.934 + y*(1.+0.028)";
+      //  if(era_ == era::data_2017) scale_str = "(x-y)*0.866 + y*(1.+0.022)";
+      //  //if(era_ == era::data_2018) scale_str = "(x-y)*0.891 + y*(1.+0.038)";
+      //  if(era_ == era::data_2018) scale_str = "(x-y)*0.883 + y*(1.+0.038)";
+      //} else if (channel_==channel::et){
+      //  if(era_ == era::data_2016) scale_str = "(x-y)*0.972 + y*(1.+-0.003)";
+      //  if(era_ == era::data_2017) scale_str = "(x-y)*0.911 + y*(1.+0.014)";
+      //  //if(era_ == era::data_2018) scale_str = "(x-y)*0.960 + y*(1.+0.018)";
+      //  if(era_ == era::data_2018) scale_str = "(x-y)*0.952 + y*(1.+0.018)";
+      //} else if (channel_==channel::mt){
+      //  if(era_ == era::data_2016) scale_str = "(x-y)*0.973 + y*(1.+-0.010)";
+      //  if(era_ == era::data_2017) scale_str = "(x-y)*0.906 + y*(1.+0.008)";
+      //  //if(era_ == era::data_2018) scale_str = "(x-y)*0.956 + y*(1.+0.016)";
+      //  if(era_ == era::data_2018) scale_str = "(x-y)*0.950 + y*(1.+0.016)";
+      //} else if (channel_==channel::em){
+      //  if(era_ == era::data_2016) scale_str = "(x-y)*1.006 + y*(1.+0.003)";
+      //  if(era_ == era::data_2017) scale_str = "(x-y)*0.926 + y*(1.+0.010)";
+      //  //if(era_ == era::data_2018) scale_str = "(x-y)*1.008 + y*(1.+0.019)";
+      //  if(era_ == era::data_2018) scale_str = "(x-y)*0.998 + y*(1.+0.019)";
+      //}
+
+      // so called v3 of corrections where em has no applied correction and is used to "calibrate" other channels
+      if(channel_==channel::tt) {
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.929 + y*(1.+0.005)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.935 + y*(1.+-0.002)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.885 + y*(1.+-0.004)";
+      } else if (channel_==channel::et){
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.966 + y*(1.+-0.003)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.984 + y*(1.+-0.002)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.954 + y*(1.+-0.007)";
+      } else if (channel_==channel::mt){
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.967 + y*(1.+-0.007)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.979 + y*(1.+-0.000)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.952 + y*(1.+0.001)";
+      } else if (channel_==channel::em){
+        if(era_ == era::data_2016) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+      }
+    } //else {
+      //no njets bins version
+      //scale_str  ="(x-y)*min(0.91386 + 0.00323*z, 1.06873 + 0.00014*z) + y";
+      //scale_str_2="(x-y)*min(0.91252 + 0.00333*z, 1.06925 + 0.00022*z) + y";
+    //}
+
+    std::cout << "smear+scale function for met shift:" << std::endl;
+    std::cout << scale_str << std::endl;
+    //std::cout << scale_str_2 << std::endl;
+    func = new TF2("func",scale_str.c_str());
+    //func2 = new TF2("func2",scale_str_2.c_str());
+
     return 0;
   }
 
@@ -112,9 +167,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     TVector3 gen_ip_2(0.,0.,0.);
     bool foundboson=false;
     GenParticle *h = new GenParticle();
+    double bosonpT = -1.;
 
     ROOT::Math::PtEtaPhiEVector neutrinos; 
     ROOT::Math::PtEtaPhiEVector tau_neutrinos; 
+    ROOT::Math::PtEtaPhiEVector bosons; 
  
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
@@ -126,8 +183,10 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
       if(channel_==channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 13) undecayed_taus.push_back(particles[i]);
       if(status_flags_start[IsLastCopy] && (abs(particles[i]->pdgid()) == 23 || abs(particles[i]->pdgid()) == 24 || abs(particles[i]->pdgid()) == 25 || abs(particles[i]->pdgid()) == 35 || abs(particles[i]->pdgid()) == 6) ) {h = particles[i]; foundboson=true; }
+      if(status_flags_start[IsLastCopy] && (abs(particles[i]->pdgid()) == 23 || abs(particles[i]->pdgid()) == 24 || abs(particles[i]->pdgid()) == 25 || abs(particles[i]->pdgid()) == 35) ) {bosons+=particles[i]->vector(); }
 
     }
+    bosonpT = bosons.Pt();
 
 
     gen_met=neutrinos.Pt();
@@ -147,46 +206,52 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     
     event->Add("fake_met_vec",fake_met_vec);
     event->Add("fake_tau_met_vec",fake_tau_met_vec);
+    event->Add("gen_tau_met_vec",tau_neutrinos);
+    event->Add("gen_met_vec",neutrinos);
+
 
     if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)) {
       Met *old_met = new Met(*mets);
       // up uncertainty is uncorrected met so first copy this and add to the event
       event->Add("pfMET_up", old_met);
-      double scale =1.;
- 
-      if(channel_==channel::tt) {
-        if(era_ == era::data_2016) scale = 0.949;
-        if(era_ == era::data_2017) scale = 0.918;
-        if(era_ == era::data_2018) scale = 0.900;
-      } else if (channel_==channel::et){
-        if(era_ == era::data_2016) scale = 0.958;
-        if(era_ == era::data_2017) scale = 0.960;
-        if(era_ == era::data_2018) scale = 0.935;
-      } else if (channel_==channel::mt){
-        if(era_ == era::data_2016) scale = 0.962;
-        if(era_ == era::data_2017) scale = 0.952;
-        if(era_ == era::data_2018) scale = 0.931;
-      } else if (channel_==channel::em){
-        if(era_ == era::data_2016) scale = 0.992;
-        if(era_ == era::data_2017) scale = 0.955;
-        if(era_ == era::data_2018) scale = 0.957;
-      }
-      fake_met_vec*=scale;
-      event->ForceAdd("fake_tau_met_vec",fake_met_vec);
-      double new_pt = (fake_met_vec + neutrinos).Pt();
-      double new_phi = (fake_met_vec + neutrinos).Phi();
+
+      double new_px = func->Eval(mets->vector().Px(), tau_neutrinos.Px());
+      double new_py = func->Eval(mets->vector().Py(), tau_neutrinos.Py());
+      TVector3 vec3(new_px,new_py,0.);
+      double new_pt = vec3.Pt();
+      double new_phi = vec3.Phi();
       ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);
       mets->set_vector(new_met_vec);
 
+      //std::cout << "----------" << std::endl;
+      //std::cout << tau_neutrinos.Px() << "    " << tau_neutrinos.Py() << std::endl;
+      //std::cout << old_met->pt() << "    " << old_met->phi() << "    " << old_met->vector().Px() << "    " << old_met->vector().Py() << std::endl;
+      //std::cout << mets->pt() << "    " << mets->phi() << "    " << mets->vector().Px() << "    " << mets->vector().Py() << std::endl;
+
       // now repeat procedure again for down uncertainty variation (scale applied twice)
-      fake_met_vec*=scale;
-      double new_pt_down = (fake_met_vec + neutrinos).Pt();
-      double new_phi_down = (fake_met_vec + neutrinos).Phi();
+      double new_px_down = func->Eval(mets->vector().Px(), tau_neutrinos.Px());
+      double new_py_down = func->Eval(mets->vector().Py(), tau_neutrinos.Py());
+      TVector3 vec3_down(new_px_down,new_py_down, 0.);
+      double new_pt_down = vec3_down.Pt();
+      double new_phi_down = vec3_down.Phi();
       ROOT::Math::PtEtaPhiEVector new_met_vec_down(new_pt_down,0., new_phi_down, new_pt_down);
       Met *met_down = new Met(*mets);
       met_down->set_vector(new_met_vec_down);
       event->Add("pfMET_down", met_down);
 
+    }
+
+    if(!is_embedded_ && false) {
+      // my version of a recopil corrections like corrections for MC events derived from Z->mumu - seems to have similar problems as recoil corrections so don't apply it but keep code for reference
+      double pt = 50.; //for samples with no Z boson set pt equal to average value
+      if(bosonpT>=0.) pt = bosonpT;  
+      double new_px = func->Eval(mets->vector().Px(), neutrinos.Px(),pt);
+      double new_py = func2->Eval(mets->vector().Py(), neutrinos.Py(),pt);
+      TVector3 vec3(new_px,new_py,0.);
+      double new_pt = vec3.Pt();
+      double new_phi = vec3.Phi();
+      ROOT::Math::PtEtaPhiEVector new_met_vec(new_pt,0., new_phi, new_pt);
+      mets->set_vector(new_met_vec);
     }
 
     if(undecayed_taus.size()>0){

@@ -881,6 +881,8 @@ namespace ic {
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
+      outtree_->Branch("gen_match_undecayed_1_pt", &gen_match_undecayed_1_pt_);
+      outtree_->Branch("gen_match_undecayed_2_pt", &gen_match_undecayed_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
       outtree_->Branch("ngenjets" , &ngenjets_);
       outtree_->Branch("ngenjets20" , &ngenjets20_);
@@ -981,6 +983,15 @@ namespace ic {
       outtree_->Branch("fake_tau_met_dphi_2",             &fake_tau_met_dphi_2_);
       outtree_->Branch("fake_tau_met",             &fake_tau_met_);
       outtree_->Branch("gen_tau_met",             &gen_tau_met_);
+
+      outtree_->Branch("metx", &metx_);
+      outtree_->Branch("mety", &mety_);
+      outtree_->Branch("gen_tau_metx", &gen_tau_metx_);
+      outtree_->Branch("gen_tau_mety", &gen_tau_mety_);
+      outtree_->Branch("gen_metx", &gen_metx_);
+      outtree_->Branch("gen_mety", &gen_mety_);
+      outtree_->Branch("fake_tau_metx", &fake_tau_metx_);
+      outtree_->Branch("fake_tau_mety", &fake_tau_mety_);
 
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
@@ -2299,6 +2310,8 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
     if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
+    if(event->Exists("gen_match_undecayed_1_pt")) gen_match_undecayed_1_pt_ = event->Get<double>("gen_match_undecayed_1_pt");
+    if(event->Exists("gen_match_undecayed_2_pt")) gen_match_undecayed_2_pt_ = event->Get<double>("gen_match_undecayed_2_pt");
 
     if(event->Exists("ngenjets")) ngenjets_ = event->Get<unsigned>("ngenjets");
     if(event->Exists("ngenjets20")) ngenjets20_ = event->Get<unsigned>("ngenjets20");
@@ -2557,6 +2570,19 @@ namespace ic {
     event->Exists("fake_tau_met_vec") ? fake_tau_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("fake_tau_met_vec") : fake_tau_met_vec;
     fake_tau_met_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep1->vector()));
     fake_tau_met_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fake_tau_met_vec,lep2->vector()));
+
+    ROOT::Math::PtEtaPhiEVector gen_tau_met_vec;
+    event->Exists("gen_tau_met_vec") ? gen_tau_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("gen_tau_met_vec") : gen_tau_met_vec;
+ 
+    ROOT::Math::PtEtaPhiEVector gen_met_vec;
+    event->Exists("gen_met_vec") ? gen_met_vec = event->Get<ROOT::Math::PtEtaPhiEVector>("gen_met_vec") : gen_met_vec;
+
+    fake_tau_metx_ = fake_tau_met_vec.Px();
+    fake_tau_mety_ = fake_tau_met_vec.Py();
+    gen_tau_metx_ = gen_tau_met_vec.Px();
+    gen_tau_mety_ = gen_tau_met_vec.Py();
+    gen_metx_ = gen_met_vec.Px();
+    gen_mety_ = gen_met_vec.Py();
 
  
     event->Exists("fake_met") ? fake_met_ = event->Get<double>("fake_met") : 0.;
