@@ -242,50 +242,50 @@ scale_uncert0_down/=n0
 
 scale_uncert_hist = ScaleUncertHist(hists)
 
-plotting.CompareHists([h0],
-         ['nominal'],
-         "bbH %(mass)s GeV" % vars(),
-         True,
-         False,
-         False,
-         "0.9,1.1",
-         False,
-         10000,
-         0,
-         False,
-         10000,
-         0,
-         'N_{bjets}',
-         'a.u.',
-         0,
-         False,
-         'bbh_uncerts/bbH_QCDscale_uncerts_m%(mass)s_%(year)s' % vars(),
-         uncert_hist=scale_uncert_hist,
-         uncert_title='(#mu_{R},#mu_{F}) uncertainty')
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_QCDscale_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=scale_uncert_hist,
+#         uncert_title='(#mu_{R},#mu_{F}) uncertainty')
 
 #pdf uncerts
 (pdf_uncert_hist,pdf_uncert0, pdf_uncert1) = PDFUncertHist(h0,hists)
 
-plotting.CompareHists([h0],
-         ['nominal'],
-         "bbH %(mass)s GeV" % vars(),
-         True,
-         False,
-         False,
-         "0.9,1.1",
-         False,
-         10000,
-         0,
-         False,
-         10000,
-         0,
-         'N_{bjets}',
-         'a.u.',
-         0,
-         False,
-         'bbh_uncerts/bbH_PDF_uncerts_m%(mass)s_%(year)s' % vars(),
-         uncert_hist=pdf_uncert_hist,
-         uncert_title='PDF uncertainty')
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_PDF_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=pdf_uncert_hist,
+#         uncert_title='PDF uncertainty')
 
 # hdamp uncerts
 
@@ -330,52 +330,52 @@ ps_uncert1_down/=h0.Integral(2,-1)
 
 hdamp_uncert_hist = ScaleUncertHist([h0, h0_up, h0_down])
 
-plotting.CompareHists([h0],
-         ['nominal'],
-         "bbH %(mass)s GeV" % vars(), 
-         True,
-         False,
-         False,
-         "0.95,1.05",
-         False,
-         10000,
-         0,
-         False,
-         10000,
-         0,
-         'N_{bjets}',
-         'a.u.',
-         0,
-         False,
-         'bbh_uncerts/bbH_hdamp_uncerts_m%(mass)s_%(year)s' % vars(),
-         uncert_hist=hdamp_uncert_hist,
-         uncert_title='hdamp uncertainty')
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(), 
+#         True,
+#         False,
+#         False,
+#         "0.95,1.05",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_hdamp_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=hdamp_uncert_hist,
+#         uncert_title='hdamp uncertainty')
+#
+#plotting.CompareHists([h0,hmg],
+#         ['Powheg','Madgraph_aMC@NLO'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_mg_vs_ph_m%(mass)s_%(year)s' % vars())
 
-plotting.CompareHists([h0,hmg],
-         ['Powheg','Madgraph_aMC@NLO'],
-         "bbH %(mass)s GeV" % vars(),
-         True,
-         False,
-         False,
-         "0.9,1.1",
-         False,
-         10000,
-         0,
-         False,
-         10000,
-         0,
-         'N_{bjets}',
-         'a.u.',
-         0,
-         False,
-         'bbh_uncerts/bbH_mg_vs_ph_m%(mass)s_%(year)s' % vars())
+#print 'Uncertainties for %(year)s M=%(mass)s:' % vars()
 
-print 'Uncertainties for %(year)s M=%(mass)s:' % vars()
-
-print 'hdamp uncerts (0, >0) = ((+) %.3f (-) %.4f , (+) %.3f (-) %.3f)' % (1.+ps_uncert0_up, 1.+ps_uncert0_down, 1.+ps_uncert1_up, 1.+ps_uncert1_down)
-print 'QCD-scale uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up, 1.+scale_uncert0_down, 1.+scale_uncert1_up, 1.+scale_uncert1_down)
-print 'QCD-scale + hdamp uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up+ps_uncert0_up, 1.+scale_uncert0_down+ps_uncert0_down, 1.+scale_uncert1_up+ps_uncert1_up, 1.+scale_uncert1_down+ps_uncert1_down)
-print 'PDF uncerts (0, >0) = (%.3f, %.3f)' % (1.-pdf_uncert0, 1+pdf_uncert1)
+#print 'hdamp uncerts (0, >0) = ((+) %.3f (-) %.4f , (+) %.3f (-) %.3f)' % (1.+ps_uncert0_up, 1.+ps_uncert0_down, 1.+ps_uncert1_up, 1.+ps_uncert1_down)
+#print 'QCD-scale uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up, 1.+scale_uncert0_down, 1.+scale_uncert1_up, 1.+scale_uncert1_down)
+#print 'QCD-scale + hdamp uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up+ps_uncert0_up, 1.+scale_uncert0_down+ps_uncert0_down, 1.+scale_uncert1_up+ps_uncert1_up, 1.+scale_uncert1_down+ps_uncert1_down)
+#print 'PDF uncerts (0, >0) = (%.3f, %.3f)' % (1.-pdf_uncert0, 1+pdf_uncert1)
 
 nobtag_scale_up = 1.+scale_uncert0_up+ps_uncert0_up
 nobtag_scale_down = 1.+scale_uncert0_down+ps_uncert0_down
@@ -385,11 +385,11 @@ btag_scale_down = 1.+scale_uncert1_down+ps_uncert1_down
 nobtag_pdf_up=1.-pdf_uncert0
 btag_pdf_up=1.+pdf_uncert1
 
-out_scale=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_scale_down).3f, %(nobtag_scale_up).3f)\n' % vars()
-out_scale+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_scale_down).3f, %(btag_scale_up).3f)' % vars()
+out_scale=  '   ({\\"em\\",\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_scale_down).3f, %(nobtag_scale_up).3f)\n' % vars()
+out_scale+= '   ({\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_scale_down).3f, %(btag_scale_up).3f)' % vars()
 
-out_pdf=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_pdf_up).3f)\n' % vars()
-out_pdf+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_pdf_up).3f)' % vars()
+out_pdf=  '   ({\\"em\\",\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_pdf_up).3f)\n' % vars()
+out_pdf+= '   ({\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_pdf_up).3f)' % vars()
 
 nobtag_vs_up = hmg.Integral(1,1)/h0.Integral(1,1)
 btag_vs_up = hmg.Integral(2,-1)/h0.Integral(2,-1)
@@ -397,8 +397,10 @@ btag_vs_up = hmg.Integral(2,-1)/h0.Integral(2,-1)
 out_vs=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_vs_up).3f)\n' % vars()
 out_vs+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_vs_up).3f)' % vars()
 
-#os.system('echo "%(out_scale)s" >> bbh_scale.txt' % vars())
-#os.system('echo "%(out_pdf)s" >> bbh_pdf.txt' % vars())
+print '(%(mass)i, %(nobtag_pdf_up).3f, %(btag_pdf_up).3f, (%(nobtag_scale_down).3f, %(nobtag_scale_up).3f), (%(btag_scale_down).3f, %(btag_scale_up).3f)),' % vars()
+
+os.system('echo "%(out_scale)s" >> bbh_scale.txt' % vars())
+os.system('echo "%(out_pdf)s" >> bbh_pdf.txt' % vars())
 #os.system('echo "%s %.3f" >> uncerts_scale.txt' % (mass, abs(scale_uncert1_up+ps_uncert1_up - (scale_uncert1_down+ps_uncert1_down))/2))
 #os.system('echo "%s %.3f" >> uncerts_pdf.txt' % (mass, btag_pdf_up-1.))
 

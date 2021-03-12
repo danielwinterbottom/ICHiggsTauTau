@@ -107,95 +107,157 @@ samples:
     - SUSYGluGluToBBHToTauTau_M-100-NLO
     - SUSYGluGluToBBHToTauTau_M-1000
     - SUSYGluGluToBBHToTauTau_M-1000-NLO
+    - SUSYGluGluToBBHToTauTau_M-1000_powheg
+    - SUSYGluGluToBBHToTauTau_M-100_powheg
     - SUSYGluGluToBBHToTauTau_M-110
     - SUSYGluGluToBBHToTauTau_M-110-NLO
     - SUSYGluGluToBBHToTauTau_M-120
     - SUSYGluGluToBBHToTauTau_M-120-NLO
     - SUSYGluGluToBBHToTauTau_M-1200
     - SUSYGluGluToBBHToTauTau_M-1200-NLO
+    - SUSYGluGluToBBHToTauTau_M-1200_powheg
+    - SUSYGluGluToBBHToTauTau_M-120_powheg
+    - SUSYGluGluToBBHToTauTau_M-125_powheg
     - SUSYGluGluToBBHToTauTau_M-130
     - SUSYGluGluToBBHToTauTau_M-130-NLO
+    - SUSYGluGluToBBHToTauTau_M-130_powheg
     - SUSYGluGluToBBHToTauTau_M-140
     - SUSYGluGluToBBHToTauTau_M-140-NLO
     - SUSYGluGluToBBHToTauTau_M-1400
     - SUSYGluGluToBBHToTauTau_M-1400-NLO
+    - SUSYGluGluToBBHToTauTau_M-1400_powheg
+    - SUSYGluGluToBBHToTauTau_M-140_powheg
     - SUSYGluGluToBBHToTauTau_M-1500
     - SUSYGluGluToBBHToTauTau_M-1500-NLO
     - SUSYGluGluToBBHToTauTau_M-160
     - SUSYGluGluToBBHToTauTau_M-160-NLO
     - SUSYGluGluToBBHToTauTau_M-1600
     - SUSYGluGluToBBHToTauTau_M-1600-NLO
+    - SUSYGluGluToBBHToTauTau_M-1600_powheg
+    - SUSYGluGluToBBHToTauTau_M-160_powheg
     - SUSYGluGluToBBHToTauTau_M-180
     - SUSYGluGluToBBHToTauTau_M-180-NLO
     - SUSYGluGluToBBHToTauTau_M-1800
     - SUSYGluGluToBBHToTauTau_M-1800-NLO
+    - SUSYGluGluToBBHToTauTau_M-1800_powheg
+    - SUSYGluGluToBBHToTauTau_M-180_powheg
     - SUSYGluGluToBBHToTauTau_M-200
     - SUSYGluGluToBBHToTauTau_M-200-NLO
     - SUSYGluGluToBBHToTauTau_M-2000
     - SUSYGluGluToBBHToTauTau_M-2000-NLO
+    - SUSYGluGluToBBHToTauTau_M-2000_powheg
+    - SUSYGluGluToBBHToTauTau_M-200_powheg
     - SUSYGluGluToBBHToTauTau_M-2300
     - SUSYGluGluToBBHToTauTau_M-2300-NLO
+    - SUSYGluGluToBBHToTauTau_M-2300_powheg
     - SUSYGluGluToBBHToTauTau_M-250
     - SUSYGluGluToBBHToTauTau_M-250-NLO
+    - SUSYGluGluToBBHToTauTau_M-250_powheg
     - SUSYGluGluToBBHToTauTau_M-2600
     - SUSYGluGluToBBHToTauTau_M-2600-NLO
+    - SUSYGluGluToBBHToTauTau_M-2600_powheg
     - SUSYGluGluToBBHToTauTau_M-2900
     - SUSYGluGluToBBHToTauTau_M-2900-NLO
+    - SUSYGluGluToBBHToTauTau_M-2900_powheg
     - SUSYGluGluToBBHToTauTau_M-300
     - SUSYGluGluToBBHToTauTau_M-300-NLO
+    - SUSYGluGluToBBHToTauTau_M-300_powheg
     - SUSYGluGluToBBHToTauTau_M-3200
     - SUSYGluGluToBBHToTauTau_M-3200-NLO
+    - SUSYGluGluToBBHToTauTau_M-3200_powheg
     - SUSYGluGluToBBHToTauTau_M-350
     - SUSYGluGluToBBHToTauTau_M-350-NLO
+    - SUSYGluGluToBBHToTauTau_M-3500_powheg
+    - SUSYGluGluToBBHToTauTau_M-350_powheg
     - SUSYGluGluToBBHToTauTau_M-400
     - SUSYGluGluToBBHToTauTau_M-400-NLO
+    - SUSYGluGluToBBHToTauTau_M-400_powheg
     - SUSYGluGluToBBHToTauTau_M-450
     - SUSYGluGluToBBHToTauTau_M-450-NLO
+    - SUSYGluGluToBBHToTauTau_M-450_powheg
     - SUSYGluGluToBBHToTauTau_M-500
     - SUSYGluGluToBBHToTauTau_M-500-NLO
+    - SUSYGluGluToBBHToTauTau_M-500_powheg
     - SUSYGluGluToBBHToTauTau_M-600
     - SUSYGluGluToBBHToTauTau_M-600-NLO
+    - SUSYGluGluToBBHToTauTau_M-600_powheg
+    - SUSYGluGluToBBHToTauTau_M-60_powheg
     - SUSYGluGluToBBHToTauTau_M-700
     - SUSYGluGluToBBHToTauTau_M-700-NLO
+    - SUSYGluGluToBBHToTauTau_M-700_powheg
     - SUSYGluGluToBBHToTauTau_M-80
     - SUSYGluGluToBBHToTauTau_M-80-NLO
     - SUSYGluGluToBBHToTauTau_M-800
     - SUSYGluGluToBBHToTauTau_M-800-NLO
+    - SUSYGluGluToBBHToTauTau_M-800_powheg
+    - SUSYGluGluToBBHToTauTau_M-80_powheg
     - SUSYGluGluToBBHToTauTau_M-90
     - SUSYGluGluToBBHToTauTau_M-90-NLO
     - SUSYGluGluToBBHToTauTau_M-900
     - SUSYGluGluToBBHToTauTau_M-900-NLO
+    - SUSYGluGluToBBHToTauTau_M-900_powheg
     - SUSYGluGluToHToTauTau_M-100
     - SUSYGluGluToHToTauTau_M-1000
+    - SUSYGluGluToHToTauTau_M-1000_powheg
+    - SUSYGluGluToHToTauTau_M-100_powheg
     - SUSYGluGluToHToTauTau_M-110
     - SUSYGluGluToHToTauTau_M-120
     - SUSYGluGluToHToTauTau_M-1200
+    - SUSYGluGluToHToTauTau_M-1200_powheg
+    - SUSYGluGluToHToTauTau_M-120_powheg
+    - SUSYGluGluToHToTauTau_M-125_powheg
     - SUSYGluGluToHToTauTau_M-130
+    - SUSYGluGluToHToTauTau_M-130_powheg
     - SUSYGluGluToHToTauTau_M-140
     - SUSYGluGluToHToTauTau_M-1400
+    - SUSYGluGluToHToTauTau_M-1400_powheg
+    - SUSYGluGluToHToTauTau_M-140_powheg
     - SUSYGluGluToHToTauTau_M-1500
     - SUSYGluGluToHToTauTau_M-160
     - SUSYGluGluToHToTauTau_M-1600
+    - SUSYGluGluToHToTauTau_M-1600_powheg
+    - SUSYGluGluToHToTauTau_M-160_powheg
     - SUSYGluGluToHToTauTau_M-180
     - SUSYGluGluToHToTauTau_M-1800
+    - SUSYGluGluToHToTauTau_M-1800_powheg
+    - SUSYGluGluToHToTauTau_M-180_powheg
     - SUSYGluGluToHToTauTau_M-200
     - SUSYGluGluToHToTauTau_M-2000
+    - SUSYGluGluToHToTauTau_M-2000_powheg
+    - SUSYGluGluToHToTauTau_M-200_powheg
     - SUSYGluGluToHToTauTau_M-2300
+    - SUSYGluGluToHToTauTau_M-2300_powheg
     - SUSYGluGluToHToTauTau_M-250
+    - SUSYGluGluToHToTauTau_M-250_powheg
     - SUSYGluGluToHToTauTau_M-2600
+    - SUSYGluGluToHToTauTau_M-2600_powheg
     - SUSYGluGluToHToTauTau_M-2900
+    - SUSYGluGluToHToTauTau_M-2900_powheg
     - SUSYGluGluToHToTauTau_M-300
+    - SUSYGluGluToHToTauTau_M-300_powheg
     - SUSYGluGluToHToTauTau_M-3200
+    - SUSYGluGluToHToTauTau_M-3200_powheg
     - SUSYGluGluToHToTauTau_M-350
+    - SUSYGluGluToHToTauTau_M-3500_powheg
+    - SUSYGluGluToHToTauTau_M-350_powheg
     - SUSYGluGluToHToTauTau_M-400
+    - SUSYGluGluToHToTauTau_M-400_powheg
     - SUSYGluGluToHToTauTau_M-450
+    - SUSYGluGluToHToTauTau_M-450_powheg
     - SUSYGluGluToHToTauTau_M-500
+    - SUSYGluGluToHToTauTau_M-500_powheg
     - SUSYGluGluToHToTauTau_M-600
+    - SUSYGluGluToHToTauTau_M-600_powheg
+    - SUSYGluGluToHToTauTau_M-60_powheg
     - SUSYGluGluToHToTauTau_M-700
+    - SUSYGluGluToHToTauTau_M-700_powheg
     - SUSYGluGluToHToTauTau_M-80
     - SUSYGluGluToHToTauTau_M-800
+    - SUSYGluGluToHToTauTau_M-800_powheg
+    - SUSYGluGluToHToTauTau_M-80_powheg
     - SUSYGluGluToHToTauTau_M-90
     - SUSYGluGluToHToTauTau_M-900
+    - SUSYGluGluToHToTauTau_M-900_powheg
     - SingleElectronB
     - SingleElectronC
     - SingleElectronD
