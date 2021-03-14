@@ -155,18 +155,25 @@ int main(int argc, char* argv[])
 	std::cout << "Clone finished." << std::endl;
     
     //Set-up write-up branches
-    double pv_angle, reco_pv_angle, reco2_pv_angle, pola_pv_angle, pola2_pv_angle, pola3_pv_angle, pola4_pv_angle;
+    double pv_angle, pola0_pv_angle, pola1_pv_angle, pola2_pv_angle, pola3_pv_angle;
+    double pola4_pv_angle, pola5_pv_angle, pola6_pv_angle, pola7_pv_angle, pola8_pv_angle;
+    //double reco_pv_angle, reco2_pv_angle; 
 	
     
     TBranch *pv_angle_branch = tree->Branch((level+"_pv_angle").c_str(), &pv_angle, (level+"_pv_angle/D").c_str());
     
-    TBranch *reco_pv_angle_branch = tree->Branch((reco+"_pv_angle").c_str(), &reco_pv_angle, (reco+"_pv_angle/D").c_str());
-    TBranch *reco2_pv_angle_branch = tree->Branch((reco+"2_pv_angle").c_str(), &reco2_pv_angle, (reco+"2_pv_angle/D").c_str());
+    //TBranch *reco_pv_angle_branch = tree->Branch((reco+"_pv_angle").c_str(), &reco_pv_angle, (reco+"_pv_angle/D").c_str());
+    //TBranch *reco2_pv_angle_branch = tree->Branch((reco+"2_pv_angle").c_str(), &reco2_pv_angle, (reco+"2_pv_angle/D").c_str());
     
-    TBranch *pola_pv_angle_branch = tree->Branch((pola+"_pv_angle").c_str(), &pola_pv_angle, (pola+"_pv_angle/D").c_str());
+    TBranch *pola0_pv_angle_branch = tree->Branch((pola+"0_pv_angle").c_str(), &pola0_pv_angle, (pola+"0_pv_angle/D").c_str());
+    TBranch *pola1_pv_angle_branch = tree->Branch((pola+"1_pv_angle").c_str(), &pola1_pv_angle, (pola+"1_pv_angle/D").c_str());
     TBranch *pola2_pv_angle_branch = tree->Branch((pola+"2_pv_angle").c_str(), &pola2_pv_angle, (pola+"2_pv_angle/D").c_str());
     TBranch *pola3_pv_angle_branch = tree->Branch((pola+"3_pv_angle").c_str(), &pola3_pv_angle, (pola+"3_pv_angle/D").c_str());
     TBranch *pola4_pv_angle_branch = tree->Branch((pola+"4_pv_angle").c_str(), &pola4_pv_angle, (pola+"4_pv_angle/D").c_str());
+    TBranch *pola5_pv_angle_branch = tree->Branch((pola+"5_pv_angle").c_str(), &pola5_pv_angle, (pola+"5_pv_angle/D").c_str());
+    TBranch *pola6_pv_angle_branch = tree->Branch((pola+"6_pv_angle").c_str(), &pola6_pv_angle, (pola+"6_pv_angle/D").c_str());
+    TBranch *pola7_pv_angle_branch = tree->Branch((pola+"7_pv_angle").c_str(), &pola7_pv_angle, (pola+"7_pv_angle/D").c_str());
+    TBranch *pola8_pv_angle_branch = tree->Branch((pola+"8_pv_angle").c_str(), &pola8_pv_angle, (pola+"8_pv_angle/D").c_str());
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1;	
@@ -183,17 +190,21 @@ int main(int argc, char* argv[])
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1, 16, 1);
 	setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2, -16, 2);
     
-    PEtaPhi reco_nu_1, reco_nu_2;
-	setupNeutrino(tree, (reco + "_nu").c_str(), reco_nu_1, 16, 1);
-	setupNeutrino(tree, (reco + "_nu").c_str(), reco_nu_2, -16, 2);
+    //PEtaPhi reco_nu_1, reco_nu_2;
+	//setupNeutrino(tree, (reco + "_nu").c_str(), reco_nu_1, 16, 1);
+	//setupNeutrino(tree, (reco + "_nu").c_str(), reco_nu_2, -16, 2);
     
-    PEtaPhi reco2_nu_1, reco2_nu_2;
-	setupNeutrino(tree, (reco + "2_nu").c_str(), reco2_nu_1, 16, 1);
-	setupNeutrino(tree, (reco + "2_nu").c_str(), reco2_nu_2, -16, 2);
+    //PEtaPhi reco2_nu_1, reco2_nu_2;
+	//setupNeutrino(tree, (reco + "2_nu").c_str(), reco2_nu_1, 16, 1);
+	//setupNeutrino(tree, (reco + "2_nu").c_str(), reco2_nu_2, -16, 2);
     
-    PEtaPhi pola_nu_1, pola_nu_2;
-	setupNeutrino(tree, (pola + "_nu").c_str(), pola_nu_1, 16, 1);
-	setupNeutrino(tree, (pola + "_nu").c_str(), pola_nu_2, -16, 2);
+    PEtaPhi pola0_nu_1, pola0_nu_2;
+	setupNeutrino(tree, (pola + "0_nu").c_str(), pola0_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "0_nu").c_str(), pola0_nu_2, -16, 2);
+    
+    PEtaPhi pola1_nu_1, pola1_nu_2;
+	setupNeutrino(tree, (pola + "1_nu").c_str(), pola1_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "1_nu").c_str(), pola1_nu_2, -16, 2);
     
     PEtaPhi pola2_nu_1, pola2_nu_2;
 	setupNeutrino(tree, (pola + "2_nu").c_str(), pola2_nu_1, 16, 1);
@@ -206,6 +217,22 @@ int main(int argc, char* argv[])
     PEtaPhi pola4_nu_1, pola4_nu_2;
 	setupNeutrino(tree, (pola + "4_nu").c_str(), pola4_nu_1, 16, 1);
 	setupNeutrino(tree, (pola + "4_nu").c_str(), pola4_nu_2, -16, 2);
+    
+    PEtaPhi pola5_nu_1, pola5_nu_2;
+	setupNeutrino(tree, (pola + "5_nu").c_str(), pola5_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "5_nu").c_str(), pola5_nu_2, -16, 2);
+    
+    PEtaPhi pola6_nu_1, pola6_nu_2;
+	setupNeutrino(tree, (pola + "6_nu").c_str(), pola6_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "6_nu").c_str(), pola6_nu_2, -16, 2);
+    
+    PEtaPhi pola7_nu_1, pola7_nu_2;
+	setupNeutrino(tree, (pola + "7_nu").c_str(), pola7_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "7_nu").c_str(), pola7_nu_2, -16, 2);
+
+    PEtaPhi pola8_nu_1, pola8_nu_2;
+	setupNeutrino(tree, (pola + "8_nu").c_str(), pola8_nu_1, 16, 1);
+	setupNeutrino(tree, (pola + "8_nu").c_str(), pola8_nu_2, -16, 2);
     
     
     /*Loop over the tree entries*/
@@ -220,14 +247,17 @@ int main(int argc, char* argv[])
         TLorentzVector Tauminus = getTau(pi_1, pi2_1, pi3_1, nu_1);
         TLorentzVector Tauplus = getTau(pi_2, pi2_2, pi3_2, nu_2);
         
-        TLorentzVector reco_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco_nu_1);
-        TLorentzVector reco_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco_nu_2);
+        //TLorentzVector reco_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco_nu_1);
+        //TLorentzVector reco_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco_nu_2);
         
-        TLorentzVector reco2_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco2_nu_1);
-        TLorentzVector reco2_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco2_nu_2);
+        //TLorentzVector reco2_Tauminus = getTau(pi_1, pi2_1, pi3_1, reco2_nu_1);
+        //TLorentzVector reco2_Tauplus = getTau(pi_2, pi2_2, pi3_2, reco2_nu_2);
         
-        TLorentzVector pola_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola_nu_1);
-        TLorentzVector pola_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola_nu_2);
+        TLorentzVector pola0_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola0_nu_1);
+        TLorentzVector pola0_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola0_nu_2);
+        
+        TLorentzVector pola1_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola1_nu_1);
+        TLorentzVector pola1_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola1_nu_2);
         
         TLorentzVector pola2_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola2_nu_1);
         TLorentzVector pola2_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola2_nu_2);
@@ -238,29 +268,51 @@ int main(int argc, char* argv[])
         TLorentzVector pola4_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola4_nu_1);
         TLorentzVector pola4_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola4_nu_2);
         
+        TLorentzVector pola5_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola5_nu_1);
+        TLorentzVector pola5_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola5_nu_2);
+        
+        TLorentzVector pola6_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola6_nu_1);
+        TLorentzVector pola6_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola6_nu_2);
+        
+        TLorentzVector pola7_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola7_nu_1);
+        TLorentzVector pola7_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola7_nu_2);
+        
+        TLorentzVector pola8_Tauminus = getTau(pi_1, pi2_1, pi3_1, pola8_nu_1);
+        TLorentzVector pola8_Tauplus = getTau(pi_2, pi2_2, pi3_2, pola8_nu_2);
+        
         //Arbitrarily choose the charge of the three pions as to respect charge conserv.
         std::vector<double> charges_1 = {1.00, -1.00, -1.00};
         std::vector<double> charges_2 = {-1.00, 1.00, 1.00};
         
         pv_angle = ic::getPV_angle(Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
         
-        reco_pv_angle = ic::getPV_angle(reco_Tauminus, pis_1, charges_1, reco_Tauplus, pis_2, charges_2);
-        reco2_pv_angle = ic::getPV_angle(reco2_Tauminus, pis_1, charges_1, reco2_Tauplus, pis_2, charges_2);
+        //reco_pv_angle = ic::getPV_angle(reco_Tauminus, pis_1, charges_1, reco_Tauplus, pis_2, charges_2);
+        //reco2_pv_angle = ic::getPV_angle(reco2_Tauminus, pis_1, charges_1, reco2_Tauplus, pis_2, charges_2);
         
-        pola_pv_angle = ic::getPV_angle(pola_Tauminus, pis_1, charges_1, pola_Tauplus, pis_2, charges_2);
+        pola0_pv_angle = ic::getPV_angle(pola0_Tauminus, pis_1, charges_1, pola0_Tauplus, pis_2, charges_2);
+        pola1_pv_angle = ic::getPV_angle(pola1_Tauminus, pis_1, charges_1, pola1_Tauplus, pis_2, charges_2);
         pola2_pv_angle = ic::getPV_angle(pola2_Tauminus, pis_1, charges_1, pola2_Tauplus, pis_2, charges_2);
         pola3_pv_angle = ic::getPV_angle(pola3_Tauminus, pis_1, charges_1, pola3_Tauplus, pis_2, charges_2);
         pola4_pv_angle = ic::getPV_angle(pola4_Tauminus, pis_1, charges_1, pola4_Tauplus, pis_2, charges_2);
+        pola5_pv_angle = ic::getPV_angle(pola5_Tauminus, pis_1, charges_1, pola5_Tauplus, pis_2, charges_2);
+        pola6_pv_angle = ic::getPV_angle(pola6_Tauminus, pis_1, charges_1, pola6_Tauplus, pis_2, charges_2);
+        pola7_pv_angle = ic::getPV_angle(pola7_Tauminus, pis_1, charges_1, pola7_Tauplus, pis_2, charges_2);
+        pola8_pv_angle = ic::getPV_angle(pola8_Tauminus, pis_1, charges_1, pola8_Tauplus, pis_2, charges_2);
         
         pv_angle_branch->Fill();
         
-        reco_pv_angle_branch->Fill();
-        reco2_pv_angle_branch->Fill();
+        //reco_pv_angle_branch->Fill();
+        //reco2_pv_angle_branch->Fill();
         
-        pola_pv_angle_branch->Fill();
+        pola0_pv_angle_branch->Fill();
+        pola1_pv_angle_branch->Fill();
         pola2_pv_angle_branch->Fill();
         pola3_pv_angle_branch->Fill();
         pola4_pv_angle_branch->Fill();
+        pola5_pv_angle_branch->Fill();
+        pola6_pv_angle_branch->Fill();
+        pola7_pv_angle_branch->Fill();
+        pola8_pv_angle_branch->Fill();
         
     }
     tree->Write("", TObject::kOverwrite);
