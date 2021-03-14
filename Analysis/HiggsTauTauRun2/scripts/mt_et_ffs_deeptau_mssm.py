@@ -15,6 +15,7 @@ parser.add_argument('--alt_wp',help= 'Alternative tau ID working point to measur
 parser.add_argument('--channel',help= 'Channel to get fake factors for (mt or et)', default='mt')
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='./')
 parser.add_argument('--year', help= 'Name of input year', default='2018')
+parser.add_argument('--mc_shift', help= 'Perform Up or Down 10% subtracted MC shift', default='')
 parser.add_argument('--cms_label', help= 'Draw cms label', default=False)
 parser.add_argument('--draw','-d', help= 'Draw histograms, if >0 then histograms will be redrawn. Else the histograms will be loaded from the file named the same as the output folder', default=1)
 parser.add_argument('--force_pol1', help= 'force all fits to be pol1 up to 100 GeV and flat above',  action='store_true')
@@ -26,8 +27,9 @@ output_folder=args.output_folder
 year=args.year
 channel = args.channel
 draw = int(args.draw) > 0
+mc_shift = args.mc_shift
 
-out_file = '%(output_folder)s/fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root' % vars()
+out_file = '%(output_folder)s/fakefactor_fits_%(channel)s_%(wp)s_%(year)s%(mc_shift)s.root' % vars()
 if args.force_pol1: out_file=out_file.replace('.root','_forcepol1.root')
 file_ext = '_%(channel)s_%(year)s.root' % vars()
 
@@ -75,7 +77,7 @@ elif channel == "et":
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2018/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2018/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -146,7 +148,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2017/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2017/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -226,7 +228,7 @@ elif year == "2017":
 elif year == "2016":
   lumi = 35920.
   params_file = 'scripts/params_mssm_2016.json'
-  input_folder = '/vols/cms/gu18/Offline/output/MSSM/mssm_2016_v6/'
+  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802/'
 
   if channel == "mt":
     crosstrg_pt = 23
@@ -479,7 +481,7 @@ def ZeroLargeErrorBins(h):
         h.SetBinError(i,0)
   return h
 
-def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doTT=True,doIso=True,fullMT=False,lowMT=False,qcdMT='50'):
+def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1',doQCD=True,doW=True,doMC=True,doTT=True,doIso=True,fullMT=False,lowMT=False,qcdMT='50',doMCShift=''):
   add_wt = "(" + add_wt + "*wt_tau_trg_mssm*wt_tau_id_mssm)"
   if ':' in var_input:
     #pass 2D inputs like x[],y[]
@@ -552,6 +554,11 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
       bkgs_qcd.Add(h)
 
     bkgs_qcd = ZeroNegativeBins(bkgs_qcd)
+    if doMCShift == 'Up':
+      bkgs_qcd.Scale(1.1)
+    if doMCShift == 'Down':
+      bkgs_qcd.Scale(0.9)
+
     data_qcd.Add(bkgs_qcd,-1)
     data_qcd = ZeroNegativeBins(data_qcd)
 
@@ -611,6 +618,13 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     w_qcd_sub_mc = ZeroNegativeBins(w_qcd_sub_mc)
     w_qcd_sub.Add(w_qcd_sub_mc,-1)
     w_qcd_sub = ZeroNegativeBins(w_qcd_sub)
+    if doMCShift == 'Up':
+      w_qcd_sub.Scale(1.1)
+      bkgs_w.Scale(1.1)
+    if doMCShift == 'Down':
+      w_qcd_sub.Scale(0.9)
+      bkgs_w.Scale(0.9)
+
     # scale by OS/SS ratio
     w_qcd_sub.Scale(1.1)
 
@@ -986,16 +1000,12 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
       minbin_val = h.GetBinLowEdge(i)
     else:
       minbin_val = h.GetBinLowEdge(minbin)
-    print '!!!!!!', minbin, minbin_val, minval
-    print 'sring before capping: ', str(fit.GetExpFormula('p'))
     if minbin_val<100.:
       fit = ROOT.TF1(h.GetName()+'_fit', str(fit.GetExpFormula('p')).replace('x','min(x,%(minbin_val)s)' % vars()),0,100)
       for j in range(0,h_uncert.GetNbinsX()+1):
         if h_uncert.GetBinLowEdge(j) >= minbin_val:
           h_uncert.SetBinContent(j,h_uncert.GetBinContent(h_uncert.GetXaxis().FindBin(minbin_val)))
           h_uncert.SetBinError(j,h_uncert.GetBinError(h_uncert.GetXaxis().FindBin(minbin_val)))
-    print 'sring after capping: ', str(fit.GetExpFormula('p'))
-
 
   if not args.force_pol1:
 
@@ -1058,7 +1068,7 @@ def FitFakeFactors(h,usePol1=False,polOnly=None,use_erf=False):
         p0,p1,p2 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2)
         fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s+(%(p1)s*min(x,%(minbin_val)s)))*(x<140))+ (%(p2)s*(x>=140))" % vars(),20,600)
       elif not use_erf:
-        p0,p1,p2,p3,p4,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
+        p0,p1,p2,p3,p4 = fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2),fit.GetParameter(3),fit.GetParameter(4)
         fit = ROOT.TF1(h.GetName()+'_fit',"((%(p0)s*TMath::Landau(min(x,%(minbin_val)s),%(p1)s,%(p2)s)+%(p3)s)*(x<140)) + (%(p4)s*(x>=140))" % vars(),20,600)
       if int(status) != 0 or large_uncert or not use_erf:
         for j in range(0,h_uncert.GetNbinsX()+1):
@@ -1727,21 +1737,20 @@ for ff in ff_list:
   if draw:
     if "inclusive" not in ff:
       if do_qcd and not 'aiso2' in ff:
-        (qcd_iso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False)
-        (qcd_aiso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False)
+        (qcd_iso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
+        (qcd_aiso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
 
       if do_qcd_aiso and 'aiso2' in ff:
-        print "In aiso loop"
-        (qcd_iso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False)
-        (qcd_aiso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False)
+        (qcd_iso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
+        (qcd_aiso, _, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=True,doW=False,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
 
       if do_wjets:
-        (_, wjets_iso, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=True,doMC=False,doTT=False,doIso=False)
-        (_, wjets_aiso, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=True,doMC=False,doTT=False,doIso=False)
+        (_, wjets_iso, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=True,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
+        (_, wjets_aiso, _, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=True,doMC=False,doTT=False,doIso=False,doMCShift=mc_shift)
 
       if do_wjets_mc:
-        (_, _, wjets_mc_iso, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=True,doTT=False,doIso=False)
-        (_, _, wjets_mc_aiso, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=True,doTT=False,doIso=False)
+        (_, _, wjets_mc_iso, _) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=True,doTT=False,doIso=False,doMCShift=mc_shift)
+        (_, _, wjets_mc_aiso, _) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=True,doTT=False,doIso=False,doMCShift=mc_shift)
 
       if do_qcd or do_qcd_aiso:
         qcd_ff = CalculateFakeFactors(qcd_iso, qcd_aiso)
@@ -1757,8 +1766,8 @@ for ff in ff_list:
           to_write.append(wjets_mc_ff)
 
       if "inclusive" in ff and do_ttbar_mc:
-        (_, _, _, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False)
-        (_, _, _, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False)
+        (_, _, _, ttbar_mc_iso) = DrawHists(ff_list[ff][0], ff_list[ff][1], ff+'_iso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False,doMCShift=mc_shift)
+        (_, _, _, ttbar_mc_aiso) = DrawHists(ff_list[ff][0], ff_list[ff][2], ff+'_aiso',input_folder,file_ext,doOS=('aiso2_os' in ff),doQCD=False,doW=False,doMC=False,doTT=True,doIso=False,doMCShift=mc_shift)
 
         ttbar_mc_ff = CalculateFakeFactors(ttbar_mc_iso, ttbar_mc_aiso)
         to_write.append(ttbar_mc_ff)
@@ -1851,7 +1860,7 @@ ana_cats = {
   'control_nbjets1':'n_deepbjets>0 && mt_1>=70',
   }
 
-if draw:
+if draw and mc_shift == "":
   for cat_name,cat_cut in ana_cats.items():
     var= 'mt_tot[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]'
     cuts = '(%(baseline_iso_fail)s)*(%(cat_cut)s)' % vars()
@@ -1916,8 +1925,6 @@ if do_ttbar_mc:
   print "---------------------------------------------------------------------------------------------------"
 
 
-# Define logcauchy function for cW fits
-
 
 ############ Do closures ##############
 
@@ -1948,8 +1955,8 @@ if do_wjets:
       corr_cut = njets_cut
       corr_name = 'met_' + njets_name
 
-      (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False)
-      (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_wjets+")",doMC=False,doW=True,doQCD=False,doTT=False)
+      (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False,doMCShift=mc_shift)
+      (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="("+ff_wjets+")",doMC=False,doW=True,doQCD=False,doTT=False,doMCShift=mc_shift)
       fout.cd()
       wjets_data.Divide(wjets_pred)
 
@@ -2007,8 +2014,8 @@ if do_wjets:
   for add_name, corr_cut in njets_bins.items():
     if "inclusive" not in add_name:
       corr_name = 'l_pt_' + add_name
-      (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False)
-      (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets+")"+init_w_corr_string+")",doMC=False,doW=True,doQCD=False,doTT=False)
+      (_,wjets_data,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=True,doQCD=False,doTT=False,doMCShift=mc_shift)
+      (_,wjets_pred,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="(("+ff_wjets+")"+init_w_corr_string+")",doMC=False,doW=True,doQCD=False,doTT=False,doMCShift=mc_shift)
       fout.cd()
       wjets_data.Divide(wjets_pred)
 
@@ -2041,8 +2048,8 @@ if do_wjets_mc:
       corr_cut = njets_cut
       corr_name = 'met_' + njets_name
 
-      (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False)
-      (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_wjets_mc+")",doMC=True,doW=False,doQCD=False,doTT=False)
+      (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,doMCShift=mc_shift)
+      (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="("+ff_wjets_mc+")",doMC=True,doW=False,doQCD=False,doTT=False,doMCShift=mc_shift)
       fout.cd()
       wjets_mc_data.Divide(wjets_mc_pred)
 
@@ -2117,8 +2124,8 @@ if do_wjets_mc:
   for add_name, corr_cut in njets_bins.items():
     if "inclusive" not in add_name:
       corr_name = 'l_pt_' + add_name
-      (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False)
-      (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+init_w_mc_corr_string+")",doMC=True,doW=False,doQCD=False,doTT=False)
+      (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,doMCShift=mc_shift)
+      (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+init_w_mc_corr_string+")",doMC=True,doW=False,doQCD=False,doTT=False,doMCShift=mc_shift)
       fout.cd()
       wjets_mc_data.Divide(wjets_mc_pred)
 
@@ -2155,8 +2162,8 @@ if do_wjets_mc:
     if 'nbjets1' in add_name: var = 'pt_1[20,%(crosstrg_pt)s,400]' % vars()
     else: var = 'pt_1[20,%(crosstrg_pt)s,40,60,80,100,120,160,200,400]' % vars()
     corr_name = 'pt_1_' + add_name + '_dr_to_ar'
-    (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
-    (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+w_mc_corr_ff+")",doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True)
+    (_,_,wjets_mc_data,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True,doMCShift=mc_shift)
+    (_,_,wjets_mc_pred,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="(("+ff_wjets_mc+")"+w_mc_corr_ff+")",doMC=True,doW=False,doQCD=False,doTT=False,lowMT=True,doMCShift=mc_shift)
     fout.cd()
     wjets_mc_data.Divide(wjets_mc_pred)
 
@@ -2193,8 +2200,8 @@ if do_qcd:
   for add_name, corr_cut in njets_bins.items():
     if "inclusive" not in add_name:
       corr_name = 'met_' + add_name
-      (qcd_data,_,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doIso=False)
-      (qcd_pred,_,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_qcd+")",doMC=False,doW=False,doQCD=True,doTT=False,doIso=False)
+      (qcd_data,_,_,_) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doIso=False,doMCShift=mc_shift)
+      (qcd_pred,_,_,_) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="("+ff_qcd+")",doMC=False,doW=False,doQCD=True,doTT=False,doIso=False,doMCShift=mc_shift)
       fout.cd()
       qcd_data.Divide(qcd_pred)
 
@@ -2227,8 +2234,8 @@ if do_qcd:
 
      
   corr_name = 'l_pt'
-  (qcd_data,_,_,_) = DrawHists(var, '('+baseline_iso_pass+')', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doIso=False)
-  (qcd_pred,_,_,_) = DrawHists(var, '('+baseline_iso_fail+')', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd+")"+init_qcd_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False,doIso=False)
+  (qcd_data,_,_,_) = DrawHists(var, '('+baseline_iso_pass+')', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doIso=False,doMCShift=mc_shift)
+  (qcd_pred,_,_,_) = DrawHists(var, '('+baseline_iso_fail+')', corr_name+'_closure_pred',input_folder,file_ext,add_wt="(("+ff_qcd+")"+init_qcd_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False,doIso=False,doMCShift=mc_shift)
   fout.cd()
   qcd_data.Divide(qcd_pred)
 
@@ -2248,8 +2255,8 @@ if do_qcd:
   print '!!!!!!!!'
 
   corr_name = 'iso_' + add_name
-  (qcd_data,_,_,_) = DrawHists(var, '('+baseline_iso_pass+')', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False)
-  (qcd_pred,_,_,_) = DrawHists(var, '('+baseline_iso_fail+')', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd+")"+init_qcd_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False)
+  (qcd_data,_,_,_) = DrawHists(var, '('+baseline_iso_pass+')', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
+  (qcd_pred,_,_,_) = DrawHists(var, '('+baseline_iso_fail+')', corr_name+'_closure_pred',input_folder,file_ext,add_wt="(("+ff_qcd+")"+init_qcd_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
   fout.cd()
 
   print "(("+ff_qcd+")"+init_qcd_corr_string+")"
@@ -2283,8 +2290,8 @@ if do_qcd_aiso:
   for add_name, corr_cut in njets_bins.items():
     if "inclusive" not in add_name:
       corr_name = 'met_' + add_name
-      (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False)
-      (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_qcd_aiso+")",doMC=False,doW=False,doQCD=True,doTT=False)
+      (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
+      (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred',input_folder,file_ext,add_wt="("+ff_qcd_aiso+")",doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
       fout.cd()
       qcd_aiso_data.Divide(qcd_aiso_pred)
 
@@ -2318,8 +2325,8 @@ if do_qcd_aiso:
   qcd_aiso_corr_string += "*("
 
   corr_name = 'l_pt'
-  (qcd_aiso_data,_,_,_) = DrawHists(var, '('+baseline_aiso_pass+')', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False)
-  (qcd_aiso_pred,_,_,_) = DrawHists(var, '('+baseline_aiso_fail+')', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+init_qcd_aiso_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False)
+  (qcd_aiso_data,_,_,_) = DrawHists(var, '('+baseline_aiso_pass+')', corr_name+'_aiso_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
+  (qcd_aiso_pred,_,_,_) = DrawHists(var, '('+baseline_aiso_fail+')', corr_name+'_aiso_closure_pred',input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+init_qcd_aiso_corr_string+")",doMC=False,doW=False,doQCD=True,doTT=False,doMCShift=mc_shift)
   fout.cd()
   qcd_aiso_data.Divide(qcd_aiso_pred)
 
@@ -2354,8 +2361,8 @@ if do_qcd_aiso:
       else: var = 'pt_1[20,%(crosstrg_pt)s,35,40,50,60,80,100,120,160]' % vars()
     else: var = 'pt_1[20,%(crosstrg_pt)s,160]' % vars()
     corr_name = 'pt_1_' + add_name + '_dr_to_ar'
-    (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
-    (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred' % vars(),input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+qcd_aiso_corr_ff+")",doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70')
+    (qcd_aiso_data,_,_,_) = DrawHists(var, '(('+baseline_aiso_pass+')*('+corr_cut+'))', corr_name+'_aiso_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70',doMCShift=mc_shift)
+    (qcd_aiso_pred,_,_,_) = DrawHists(var, '(('+baseline_aiso_fail+')*('+corr_cut+'))', corr_name+'_aiso_closure_pred',input_folder,file_ext,add_wt="(("+ff_qcd_aiso+")"+qcd_aiso_corr_ff+")",doMC=False,doW=False,doQCD=True,doTT=False,doOS=True,qcdMT='70',doMCShift=mc_shift)
     fout.cd()
     qcd_aiso_data.Divide(qcd_aiso_pred)
 
@@ -2388,8 +2395,8 @@ if do_ttbar_mc:
   #mt_1_regions = {'tightmT':'mt_1<50' % vars(),'loosemT':'mt_1>=50' % vars()}
   corr_name = 'met'
   corr_cut = '1'
-  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True)
-  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True)
+  (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True,doMCShift=mc_shift)
+  (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True,doMCShift=mc_shift)
   fout.cd()
   ttbar_mc_data.Divide(ttbar_mc_pred)
   ttbar_mc_cw_cap = {
@@ -2454,8 +2461,8 @@ if do_ttbar_mc:
     pol_to_use = 'pol1'
     corr_cut = add_cut
     corr_name = 'l_pt_'+add_name
-    (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure' % vars(),input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True)
-    (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred' % vars(),input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True)
+    (_,_,_,ttbar_mc_data) = DrawHists(var, '(('+baseline_iso_pass+')*('+corr_cut+'))', corr_name+'_closure',input_folder,file_ext,doMC=False,doW=False,doQCD=False,doTT=True,doMCShift=mc_shift)
+    (_,_,_,ttbar_mc_pred) = DrawHists(var, '(('+baseline_iso_fail+')*('+corr_cut+'))', corr_name+'_closure_pred',input_folder,file_ext,add_wt="("+ff_ttbar_mc+")",doMC=False,doW=False,doQCD=False,doTT=True,doMCShift=mc_shift)
     fout.cd()
     ttbar_mc_data.Divide(ttbar_mc_pred)
 
@@ -2471,8 +2478,6 @@ if do_ttbar_mc:
     low_pt_corr = ttbar_mc_data.GetBinContent(1) 
     ttbar_mc_corr_string += '((%s)*(%s)+(%s)*(%s))+' % (high_pt_corr_cut,str(fout.Get(corr_name+'_closure_ttbar_mc_fit').GetExpFormula('p')).replace('x','min(pt_1,300)'),low_pt_corr_cut, low_pt_corr)
   ttbar_mc_corr_string = ttbar_mc_corr_string[:-1] + ')'
-
-fout.Close()
 
 # print fake factor strings after closures
 print "---------------------------------------------------------------------------------------------------"
@@ -2500,30 +2505,33 @@ if do_ttbar_mc:
   print "---------------------------------------------------------------------------------------------------"
 
 # Write to json file
+if mc_shift == "":
 
-json_name = 'scripts/ff_strings.json'
-# Check to see if json exists
-if os.path.isfile(json_name):
-  with open(json_name) as json_file:
-    ff_dict = json.load(json_file)
-else:
-  ff_dict = {'et':{'2016':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2017':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2018':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''}},'mt':{'2016':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2017':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2018':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''}}}
+  json_name = 'scripts/ff_strings.json'
+  # Check to see if json exists
+  if os.path.isfile(json_name):
+    with open(json_name) as json_file:
+      ff_dict = json.load(json_file)
+  else:
+    ff_dict = {'et':{'2016':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2017':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2018':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''}},'mt':{'2016':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2017':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''},'2018':{'qcd':'','qcd_aiso':'','wjets':'','wjets_mc':'','ttbar_mc':''}}}
 
 
-if do_qcd:
-  ff_dict[channel][year]['qcd'] = "((" + ff_qcd + ")" + qcd_corr_string + ")"
-if do_qcd_aiso:
-  ff_dict[channel][year]['qcd_aiso'] = "((" + ff_qcd_aiso + ")" + qcd_aiso_corr_string + ")"
-if do_wjets:
-  ff_dict[channel][year]['wjets'] = "((" + ff_wjets + ")" + w_corr_string + ")"
-if do_wjets_mc:
-  ff_dict[channel][year]['wjets_mc'] = "((" + ff_wjets_mc + ")" + w_mc_corr_string + ")"
-if do_ttbar_mc:
-  ff_dict[channel][year]['ttbar_mc'] = "((" + ff_ttbar_mc + ")" + ttbar_mc_corr_string + ")"
+  if do_qcd:
+    ff_dict[channel][year]['qcd'] = "((" + ff_qcd + ")" + qcd_corr_string + ")"
+  if do_qcd_aiso:
+    ff_dict[channel][year]['qcd_aiso'] = "((" + ff_qcd_aiso + ")" + qcd_aiso_corr_string + ")"
+  if do_wjets:
+    ff_dict[channel][year]['wjets'] = "((" + ff_wjets + ")" + w_corr_string + ")"
+  if do_wjets_mc:
+    ff_dict[channel][year]['wjets_mc'] = "((" + ff_wjets_mc + ")" + w_mc_corr_string + ")"
+  if do_ttbar_mc:
+    ff_dict[channel][year]['ttbar_mc'] = "((" + ff_ttbar_mc + ")" + ttbar_mc_corr_string + ")"
 
-# Write json
-with open(json_name, 'w') as outfile:
+  # Write json
+  with open(json_name, 'w') as outfile:
     json.dump(ff_dict, outfile)
+
+fout.Close()
 
 
    

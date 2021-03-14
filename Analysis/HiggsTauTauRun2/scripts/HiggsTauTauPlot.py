@@ -584,8 +584,8 @@ if options.analysis == 'cpdecay':
   cats['tt_loose_baseline_2'] = '((deepTauVsJets_medium_1>0.5 && deepTauVsJets_vvvloose_2>0.5 && deepTauVsJets_vvloose_2<0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2) && mva_dm_1>=0 && mva_dm_2>=0 && (mva_dm_1>=1&&tau_decay_mode_1==0)==0 && (mva_dm_2>=1&&tau_decay_mode_2==0)==0 && mva_dm_1<11 && mva_dm_2<11 && m_vis>40 && (mva_dm_1!=0 || ip_sig_1>1.5) && (mva_dm_2!=0 || ip_sig_2>1.5))'
 
 
-#if options.w_ff_closure:
-  #cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
+if options.w_ff_closure:
+  cats['baseline'] = '(' + cats['baseline'] + ' && mt_1>70 && n_deepbjets==0)'
 elif options.qcd_ff_closure:
   if options.channel in ['et','mt']:
     cats['baseline'] = '(' + cats['baseline'] + ' && mt_1<50 && iso_1>0.05)'
@@ -646,11 +646,14 @@ cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
 cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
 
-cats['btag_highmsv'] = '(n_deepbjets>0 && m_sv>250)'
-cats['nobtag_highmsv'] = '(n_deepbjets==0 && m_sv>250)'
+cats['Nbtag0_MHGt250'] = '(n_deepbjets==0 && svfit_mass>250)'
+cats['Nbtag0_MHGt200'] = '(n_deepbjets==0 && svfit_mass>200)'
 
-cats['Nbtag0_MTLt40_MHGt25'] = '(n_deepbjets==0 && mt_1<40 && m_sv>250)'
-cats['Nbtag0_MT40To70_MHGt250'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && m_sv>250)'
+cats['Nbtag0_MTLt40_MHGt250'] = '(n_deepbjets==0 && mt_1<40 && svfit_mass>250)'
+cats['Nbtag0_MT40To70_MHGt250'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && svfit_mass>250)'
+
+cats['Nbtag0_MTLt40_MHGt200'] = '(n_deepbjets==0 && mt_1<40 && svfit_mass>200)'
+cats['Nbtag0_MT40To70_MHGt200'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && svfit_mass>200)'
 
 cats['Nbtag1'] = '(n_deepbjets==1)'
 cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<40)'
@@ -1855,10 +1858,11 @@ if options.analysis in ['cpdecay']:
 if options.analysis == 'mssmrun2':
   if options.era == 'cp18':
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
-                   'qqH125' : 'VBFHToTauTau_M-125-ext1',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+                   'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+                   #'qqH125' : 'VBFHToTauTau_M-125-ext1',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHToTauTau',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -1866,12 +1870,12 @@ if options.analysis == 'mssmrun2':
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
   elif options.era == 'cpsummer17':
-    sm_samples = { #'ggH125' : ['GluGluToHToTauTau_M-125','GluGluToHToTauTau_M-125-ext'],
-                   'ggH125_SM' : 'GluGluHToTauTau_M-125-ext',
-                   'qqH125' : 'VBFHToTauTau_M-125',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+    sm_samples = { 'ggH125_SM' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
+                   'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   #'qqH125' : 'VBFHToTauTau_M-125',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHToTauTau',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -1880,10 +1884,11 @@ if options.analysis == 'mssmrun2':
                  }
   elif options.era == 'legacy16':
     sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
-                   'qqH125' : 'VBFHToTauTau_M-125',
-                   'ZH125' : 'ZHToTauTau_M-125',
-                   'WplusH125' : 'WplusHToTauTau_M-125',
-                   'WminusH125' : 'WminusHToTauTau_M-125',
+                   'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   #'qqH125' : 'VBFHToTauTau_M-125',
+                   #'ZH125' : 'ZHToTauTau_M-125',
+                   #'WplusH125' : 'WplusHToTauTau_M-125',
+                   #'WminusH125' : 'WminusHToTauTau_M-125',
                    #'ttH125' : 'ttHJetToTT',
                    #'ggHWW125' : 'GluGluHToWWTo2L2Nu_M-125',
                    #'qqHWW125' : 'VBFHToWWTo2L2Nu_M-125',
@@ -3262,14 +3267,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
             elif options.analysis == 'mssmrun2':
-              if options.w_ff_closure or options.qcd_ff_closure:
-                json_name = 'scripts/ff_strings.json'
-                with open(json_name) as json_file:
-                  ff_dict = json.load(json_file)
+              #if options.w_ff_closure or options.qcd_ff_closure:
+                #json_name = 'scripts/ff_strings.json'
+                #with open(json_name) as json_file:
+                  #ff_dict = json.load(json_file)
               if options.w_ff_closure:
-                #fake_factor_wt_string = "wt_ff_mssm_wjets_1"
+                fake_factor_wt_string = "wt_ff_mssm_wjets_1"
                 #fake_factor_wt_string = RawFFFromString(ff_dict[options.channel][options.year]['wjets'])
-                fake_factor_wt_string = ff_dict[options.channel][options.year]['wjets']
+                #fake_factor_wt_string = ff_dict[options.channel][options.year]['wjets']
               elif options.qcd_ff_closure:
                 fake_factor_wt_string = "wt_ff_mssm_qcd_1"
                 #fake_factor_wt_string = ff_dict[channel][year]['qcd']
@@ -4501,8 +4506,8 @@ def RenameMSSMrun2Datacards(outfile):
         directory.Delete(name+';1')
       elif isinstance(histo,ROOT.TDirectory):
         directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
-        directory.Delete(name+';1')
+      #elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
+        #directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name :
         directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'ggH125_SM' in name :
@@ -4709,8 +4714,15 @@ while len(systematics) > 0:
                     ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), tree_name, None, sample_name)
       if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
           for samp in sm_samples:
-              sample_name = sm_samples[samp].replace('*',options.add_sm_background)
-              ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+            sample_names=[]
+            if isinstance(sm_samples[samp], (list,)):
+              for i in sm_samples[samp]: sample_names.append(i.replace('*',options.add_sm_background))
+            else: sample_names = [sm_samples[samp].replace('*',options.add_sm_background)]
+            for sample_name in sample_names:
+              ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+
+
+
               
       ana.AddInfo(options.paramfile, scaleTo='data_obs')
   
@@ -5187,7 +5199,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm':
+if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm' and options.analysis != "mssmrun2":
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []

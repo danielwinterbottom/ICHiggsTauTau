@@ -113,8 +113,10 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   #"Nbtag0_MTLt40_MHGt250",
-                   #"Nbtag0_MT40To70_MHGt250"
+                   "Nbtag0_MTLt40_MHGt250",
+                   "Nbtag0_MT40To70_MHGt250"
+                   "Nbtag0_MTLt40_MHGt200",
+                   "Nbtag0_MT40To70_MHGt200"
                    ]
 
   categories_mt = [
@@ -122,14 +124,17 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   #"Nbtag0_MTLt40_MHGt250",
-                   #"Nbtag0_MT40To70_MHGt250"
+                   "Nbtag0_MTLt40_MHGt250",
+                   "Nbtag0_MT40To70_MHGt250"
+                   "Nbtag0_MTLt40_MHGt200",
+                   "Nbtag0_MT40To70_MHGt200"
                    ]
 
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
-                   #"Nbtag0_MHGt250",
+                   "Nbtag0_MHGt250",
+                   "Nbtag0_MHGt200",
                    ]
 
   categories_em = [
@@ -249,7 +254,7 @@ for year in years:
         job_file = '%(output_folder)s/jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
         CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
         if not options.dry_run:
-          if (YEAR in ["2017","2018"] and ch in ["mt","et"]) or (YEAR in "2016" and ch in "mt") and not options.no_syst:
+          if ch in ["mt","et"] or (YEAR in "2018" and ch in "tt") and not options.no_syst:
             SubmitBatchJob(job_file,time=600,memory=24,cores=1)
           else:
             SubmitBatchJob(job_file,time=180,memory=24,cores=1)
