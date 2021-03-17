@@ -237,7 +237,6 @@ int main(int argc, char* argv[])
 	for(unsigned int i=0; i<nLevels; i++)
 	{
 		std::string neutrinoLevel = getNeutrinoLevel(levels[i]);
-		std::cout << neutrinoLevel << std::endl;
 		setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_1s[i], 16, 1);
 		setupNeutrino(tree, (neutrinoLevel+"_nu").c_str(), nu_2s[i], -16, 2);
 	}
@@ -292,7 +291,7 @@ int main(int argc, char* argv[])
 			// add up tau_1
 			for(auto daughter : simple_tau1_daughters)
 			{
-				std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
+				//std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
 				tau_1_simple = addSimpleParticles(tau_1_simple, daughter, 0);
 			}
 			tau_1_simple.setPdgid(15);
@@ -306,7 +305,7 @@ int main(int argc, char* argv[])
 			// add up tau_2
 			for(auto daughter : simple_tau2_daughters)
 			{
-				std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
+				//std::cout << daughter.pdgid() << ": " << daughter.e() << ", " << daughter.px() << ", " << daughter.py() << ", " << daughter.pz() << std::endl;
 				tau_2_simple = addSimpleParticles(tau_2_simple, daughter, 0);
 			}
 			tau_2_simple.setPdgid(-15);
@@ -322,13 +321,13 @@ int main(int argc, char* argv[])
 			TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0.5), cos(2*M_PI*0.5), -sin(2*M_PI*0.5), -sin(2*M_PI*0.5));
 			weight_ps = TauSpinner::calculateWeightFromParticlesH(Higgs_simple, tau_1_simple, tau_2_simple, simple_tau1_daughters, simple_tau2_daughters);
 			
-			
+			/*
 			if (true) // mva_dm_1 == 0 && mva_dm_2 == 0 ) // Print selected weights
 			{
 				std::cout << "Event " << iEntry << " calculated:\tsm = " << weight_sm << "\tmm = " << weight_mm << "\tps = " << weight_ps << std::endl;
 				std::cout << "Event " << iEntry << " .root true:\tsm = " << stored_wt_cp_sm << "\tmm = " << stored_wt_cp_mm << "\tps = " << stored_wt_cp_ps << std::endl << std::endl;
 			}
-			
+			*/
 			
 			max_theta = findPhitt(weight_sm, weight_mm, weight_ps);
 			
