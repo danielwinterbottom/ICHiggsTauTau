@@ -161,6 +161,8 @@ int main(int argc, char* argv[])
 	TBranch *pola9_nu_eta_2_branch = tree->Branch((pola+"9_nu_eta_2").c_str(), &pola9_nu_eta_2, (pola+"9_nu_eta_2/D").c_str());
 	TBranch *pola9_nu_phi_2_branch = tree->Branch((pola+"9_nu_phi_2").c_str(), &pola9_nu_phi_2, (pola+"9_nu_phi_2/D").c_str());
 	
+	double my_pv;
+	TBranch *my_pv_branch = tree->Branch("my_pv", &my_pv, "my_pv/D");
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1;	
@@ -275,6 +277,9 @@ int main(int argc, char* argv[])
 		pola9_nu_p_2 = best_nu_2.P();
 		pola9_nu_eta_2 = best_nu_2.Eta();
 		pola9_nu_phi_2 = best_nu_2.Phi();
+		
+		my_pv = ic::getPV_angle_pola(pis_1, pis_2, sv_1_vect, sv_2_vect, met_x, met_y);
+		my_pv_branch->Fill();
 		
 		pv_angle_branch->Fill();
 		

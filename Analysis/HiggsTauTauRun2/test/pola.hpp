@@ -50,8 +50,22 @@ namespace pola
 			TVector3 n_2 = n_1.Cross(tau_vis.Vect()).Unit();
 			
 			// optimal phi from calculus
-			double phi_opt = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
-			new_dir = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt)*n_1 + std::sin(phi_opt)*n_2);
+			double phi_opt_1 = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
+			TVector3 new_dir_1 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_1)*n_1 + std::sin(phi_opt_1)*n_2);
+			
+			// tan so can have phi+pi solution
+			double phi_opt_2 = phi_opt_1 + M_PI;
+			TVector3 new_dir_2 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_2)*n_1 + std::sin(phi_opt_2)*n_2);
+			
+			// test which solution maximises dot product
+			if ( new_dir_1.Dot(sv) > new_dir_2.Dot(sv) )
+			{
+				new_dir = new_dir_1;
+			}
+			else
+			{
+				new_dir = new_dir_2;
+			}
 		}
 		else
 		{
@@ -68,8 +82,8 @@ namespace pola
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
 		double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
 		
-		tau_sol_1 = TLorentzVector(new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1, std::sqrt(sol_1*sol_1+m_tau*m_tau));
-		tau_sol_2 = TLorentzVector(new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2, std::sqrt(sol_2*sol_2+m_tau*m_tau));
+		tau_sol_1 = TLorentzVector(sol_1*new_dir, std::sqrt(sol_1*sol_1+m_tau*m_tau));
+		tau_sol_2 = TLorentzVector(sol_2*new_dir, std::sqrt(sol_2*sol_2+m_tau*m_tau));
 		
 		return true;
 	}
