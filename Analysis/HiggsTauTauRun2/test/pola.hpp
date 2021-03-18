@@ -19,9 +19,14 @@ namespace pola
 	    Returns true if successful, otherwise false.*/
 	bool findTauSolutions(TLorentzVector &tau_sol_1, TLorentzVector &tau_sol_2, TLorentzVector tau_vis, TVector3 sv)
 	{
-		const double m_vis = tau_vis.M();
+		double m_vis = tau_vis.M();
+		if (m_vis == 0)
+		{
+			m_vis = 1.260;
+		}
 		
-		if (sv.Mag2() == 0)
+		// Fail if magnitudes are 0
+		if (sv.Mag2() == 0 || tau_vis.Vect().Mag2() == 0)
 		{
 			return false;
 		}
@@ -29,8 +34,8 @@ namespace pola
 		TVector3 vis_dir = tau_vis.Vect().Unit();
 		TVector3 tau_dir = sv.Unit();
 		
-    double theta_GJ = std::acos(tau_dir.Dot(vis_dir.Unit()));
-    double theta_GJ_max = std::asin((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()));
+		double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1., 1.));
+		double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1., 1.));
 		
 		TVector3 new_dir;
 		// Rotate tau back if theta_GJ is in unphysical region
@@ -38,7 +43,7 @@ namespace pola
 		{
 			theta_GJ = theta_GJ_max;
 			// Create a normalised vector prependicular to a1
-			double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
+			double n_1_x = 1/std::max(std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2)), 10.0e-10);
 			double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
 			TVector3 n_1(n_1_x, n_1_y, 0);
 			// create n_2, a unit vector perpendicular to n_1 and the a1
@@ -47,6 +52,8 @@ namespace pola
 			// optimal phi from calculus
 			double phi_opt = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
 			new_dir = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt)*n_1 + std::sin(phi_opt)*n_2);
+			//maybe not needed
+			new_dir = new_dir.Unit();
 		}
 		else
 		{
@@ -56,12 +63,14 @@ namespace pola
 		// Calculate the tau momentum
     double minus_b = (m_vis*m_vis + m_tau*m_tau) * tau_vis.P() * std::cos(theta_GJ);
     double two_a = 2*(m_vis*m_vis + std::pow(tau_vis.P(), 2) * std::pow(std::sin(theta_GJ), 2));
+
     double b_squared_m_four_ac = (m_vis*m_vis + std::pow(tau_vis.P(), 2)) * (std::pow(m_vis*m_vis - m_tau*m_tau, 2) - 4*m_tau*m_tau*std::pow(tau_vis.P(), 2)*std::pow(std::sin(theta_GJ), 2));
+    b_squared_m_four_ac = std::max(b_squared_m_four_ac, 0.0);
     
     // two solutions for tau momentum magnitude
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
     double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
-		
+
     tau_sol_1 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1);
     tau_sol_2 = TLorentzVector(std::sqrt(sol_2*sol_2+m_tau*m_tau), new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2);
 		
@@ -70,8 +79,7 @@ namespace pola
 	
 	
 	/** Calculates the best neutrinos using the polarimetric method.
-	    outputs true if successful or false if best neutrinos could not be found.
-	    input sum of visisble products, met and secondary vertices for each tau. */
+	    outputs true if successful or false if best neutrinos could not be found.	    input sum of visisble products, met and secondary vertices for each tau. */
 	bool a1_a1_polarimetric(TLorentzVector &best_nu_1, TLorentzVector &best_nu_2, 
 	                        TLorentzVector tau_1_vis, TLorentzVector tau_2_vis,
 	                        TVector3 sv_1, TVector3 sv_2,
