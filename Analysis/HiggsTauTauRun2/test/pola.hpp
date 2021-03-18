@@ -35,7 +35,7 @@ namespace pola
 		TVector3 tau_dir = sv.Unit();
 		
     double theta_GJ = std::acos(tau_dir.Dot(vis_dir.Unit()));
-    double theta_GJ_max = std::asin((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()));
+    double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1.0, 1.0));
 		
 		TVector3 new_dir;
 		// Rotate tau back if theta_GJ is in unphysical region
@@ -43,7 +43,7 @@ namespace pola
 		{
 			theta_GJ = theta_GJ_max;
 			// Create a normalised vector prependicular to a1
-			double n_1_x = 1/std::clamp(std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2)), 1e-9, 1e10);
+			double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
 			double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
 			TVector3 n_1(n_1_x, n_1_y, 0);
 			// create n_2, a unit vector perpendicular to n_1 and the a1
@@ -68,8 +68,8 @@ namespace pola
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
 		double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
 		
-		tau_sol_1 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1);
-		tau_sol_2 = TLorentzVector(std::sqrt(sol_2*sol_2+m_tau*m_tau), new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2);
+		tau_sol_1 = TLorentzVector(new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1, std::sqrt(sol_1*sol_1+m_tau*m_tau));
+		tau_sol_2 = TLorentzVector(new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2, std::sqrt(sol_2*sol_2+m_tau*m_tau));
 		
 		return true;
 	}
@@ -103,8 +103,8 @@ namespace pola
 		{
 			for ( auto tau_2 : tau_2_sols)
 			{
-				TLorentzVector nu_1 = tau_1-tau_1_vis;
-				TLorentzVector nu_2 = tau_2-tau_2_vis;
+				TLorentzVector nu_1 = tau_1 - tau_1_vis;
+				TLorentzVector nu_2 = tau_2 - tau_2_vis;
 				TLorentzVector higgs = tau_1 + tau_2;
 				
 				double pred_met_x = nu_1.Px() + nu_2.Px();
