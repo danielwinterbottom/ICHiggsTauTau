@@ -36,6 +36,7 @@ namespace pola
 		// Rotate tau back if theta_GJ is in unphysical region
 		if (theta_GJ > theta_GJ_max)
 		{
+			theta_GJ = theta_GJ_max;
 			// Create a normalised vector prependicular to a1
 			double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
 			double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
@@ -45,11 +46,11 @@ namespace pola
 			
 			// optimal phi from calculus
 			double phi_opt = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
-			new_dir = std::cos(theta_GJ_max)*vis_dir + std::sin(theta_GJ_max)*(std::cos(phi_opt)*n_1 + std::sin(phi_opt)*n_2);
+			new_dir = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt)*n_1 + std::sin(phi_opt)*n_2);
 		}
 		else
 		{
-			new_dir = vis_dir;
+			new_dir = tau_dir;
 		}
 		
 		// Calculate the tau momentum
