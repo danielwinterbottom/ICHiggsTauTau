@@ -114,30 +114,6 @@ TLorentzVector getTau(Particle pi, Particle pi2, Particle pi3, PEtaPhi nu){
 	return tau;
 }
 
-
-/*This is calculating the pv angle         
- *Note: the AcopAngle gets the pv angle for a1 a1s:
- *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
-namespace ic
-{
-	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1,
-	                   TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2)
-	{
-		SCalculator Scalc("a1");
-		double angle = -9999.;
-		if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2))
-		{
-			angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
-			std::cout << "\nGood variables - Angle: " << angle << '\n';
-		}
-		else
-		{
-			std::cout << "Wrong variables";
-		}
-		return angle;
-	}
-}
-
 namespace pola
 {
 	
@@ -260,6 +236,29 @@ namespace pola
 	}
 }
 
+/*This is calculating the pv angle         
+ *Note: the AcopAngle gets the pv angle for a1 a1s:
+ *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
+namespace ic
+{
+	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1,
+	                   TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2)
+	{
+		SCalculator Scalc("a1");
+		double angle = -9999.;
+		if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2))
+		{
+			angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+			std::cout << "\nGood variables - Angle: " << angle << '\n';
+		}
+		else
+		{
+			std::cout << "Wrong variables";
+		}
+		return angle;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	std::string inputFilename(argv[1]);
@@ -305,6 +304,20 @@ int main(int argc, char* argv[])
 	setupParticle(tree, "pi2", pi2_2, 211, 2);
 	setupParticle(tree, "pi3", pi3_1, 211, 1);
 	setupParticle(tree, "pi3", pi3_2, -211, 2);
+	
+	// Setup MET
+	double met_x, met_y;
+	tree->SetBranchAddress("metx", &met_x);
+	tree->SetBranchAddress("mety", &met_y);
+	// Setup SV
+	double sv_1[3];
+	double sv_2[3];
+	tree->SetBranchAddress("sv_x_1", &sv_1[0]);
+	tree->SetBranchAddress("sv_y_1", &sv_1[1]);
+	tree->SetBranchAddress("sv_z_1", &sv_1[2]);
+	tree->SetBranchAddress("sv_x_2", &sv_2[0]);
+	tree->SetBranchAddress("sv_y_2", &sv_2[1]);
+	tree->SetBranchAddress("sv_z_2", &sv_2[2]);
 	
   //Setup Neutrinos
   PEtaPhi nu_1, nu_2;
