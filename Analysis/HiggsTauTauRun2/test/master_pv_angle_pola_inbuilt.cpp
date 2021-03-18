@@ -211,13 +211,13 @@ namespace pola
 	                        double met_x, double met_y)
 	{
 		TLorentzVector tau_1_sols[2];
-		if (!pola::findTauSolutions(tau_1_sols[0], tau_1_sols[1], tau_1_vis, sv_1))
+		if (!findTauSolutions(tau_1_sols[0], tau_1_sols[1], tau_1_vis, sv_1))
 		{
 			return false;
 		}
 		
 		TLorentzVector tau_2_sols[2];
-		if (!pola::findTauSolutions(tau_2_sols[0], tau_2_sols[1], tau_2_vis, sv_2))
+		if (!findTauSolutions(tau_2_sols[0], tau_2_sols[1], tau_2_vis, sv_2))
 		{
 			return false;
 		}
