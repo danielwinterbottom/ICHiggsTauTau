@@ -266,15 +266,29 @@ int main(int argc, char* argv[])
 		TVector3 sv_1_vect(sv_1);
 		TVector3 sv_2_vect(sv_2);
 		
-		pola::a1_a1_polarimetric(best_nu_1, best_nu_2, Tauminus, Tauplus, sv_1_vect, sv_2_vect, met_x, met_y);
+		//making sure we have a proper solution
+		bool check_pola = pola::a1_a1_polarimetric(best_nu_1, best_nu_2, Tauminus, Tauplus, sv_1_vect, sv_2_vect, met_x, met_y);
 		
-		pola9_nu_p_1 = best_nu_1.P();
-		pola9_nu_eta_1 = best_nu_1.Eta();
-		pola9_nu_phi_1 = best_nu_1.Phi();
+		if(check_pola){
+			pola9_nu_p_1 = best_nu_1.P();
+			pola9_nu_eta_1 = best_nu_1.Eta();
+			pola9_nu_phi_1 = best_nu_1.Phi();
+			
+			pola9_nu_p_2 = best_nu_2.P();
+			pola9_nu_eta_2 = best_nu_2.Eta();
+			pola9_nu_phi_2 = best_nu_2.Phi();
+		}
 		
-		pola9_nu_p_2 = best_nu_2.P();
-		pola9_nu_eta_2 = best_nu_2.Eta();
-		pola9_nu_phi_2 = best_nu_2.Phi();
+		if (!check_pola){
+			pola9_nu_p_1 = -9999;
+			pola9_nu_eta_1 = -9999;
+			pola9_nu_phi_1 = -9999;
+			
+			pola9_nu_p_2 = -9999;
+			pola9_nu_eta_2 = -9999;
+			pola9_nu_phi_2 = -9999;
+		}
+		
 		
 		pv_angle_branch->Fill();
 		

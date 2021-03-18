@@ -56,14 +56,14 @@ namespace pola
 		// Calculate the tau momentum
     double minus_b = (m_vis*m_vis + m_tau*m_tau) * tau_vis.P() * std::cos(theta_GJ);
     double two_a = 2*(m_vis*m_vis + std::pow(tau_vis.P(), 2) * std::pow(std::sin(theta_GJ), 2));
-		double b_squared_m_four_ac = (m_vis*m_vis + std::pow(tau_vis.P(), 2)) * (std::pow(m_vis*m_vis - m_tau*m_tau, 2) - 4*m_tau*m_tau*std::pow(tau_vis.P(), 2)*std::pow(std::sin(theta_GJ), 2));
+    double b_squared_m_four_ac = (m_vis*m_vis + std::pow(tau_vis.P(), 2)) * (std::pow(m_vis*m_vis - m_tau*m_tau, 2) - 4*m_tau*m_tau*std::pow(tau_vis.P(), 2)*std::pow(std::sin(theta_GJ), 2));
     
     // two solutions for tau momentum magnitude
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
-		double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
+    double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
 		
-		tau_sol_1 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1);
-		tau_sol_2 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2);
+    tau_sol_1 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1);
+    tau_sol_2 = TLorentzVector(std::sqrt(sol_2*sol_2+m_tau*m_tau), new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2);
 		
 		return true;
 	}
