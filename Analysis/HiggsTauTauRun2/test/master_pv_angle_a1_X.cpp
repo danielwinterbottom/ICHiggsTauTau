@@ -34,6 +34,8 @@
 #include "TauSpinner/SimpleParticle.h"
 #include "TauSpinner/tau_reweight_lib.h"
 
+// Include polarimetric method and PV angle functions
+#include "pola.hpp"
 
 /*pv_angle for reco (=regressed with updated polarimetric neutrinos as inputs) and for reco2 (=regressed with 'old' polarimetric neutrinos) as well as for pola(=updated polarimetric neutrinos) and pola2(='old' polarimetric neutrinos) in this file: /vols/cms/ac4317/msci/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/MVAFILE_full_10_10_pv.root pseudo is with gen_neutrinos*/
 
@@ -146,154 +148,6 @@ TLorentzVector getVis(Particle pi, Particle pi2, Particle pi3){
     return tau;
 }
 
-/*This is calculating the pv angle         
- *Note: the AcopAngle gets the pv angle for a1 a1s:
- *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
-namespace ic {
-	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
-		std::cout << pis_2.size() << std::endl;
-		SCalculator Scalc("a1");
-		double angle = -9999.;
-		if(Scalc.isOk("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)){
-			std::cout << "It's ok 5 \n"<< std::endl;
-			angle = Scalc.AcopAngle("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
-			std::cout << "\nGood variables - Angle: " << angle << '\n';
-		}
-		else {
-			std::cout << "Wrong variables";
-		}
-		return angle;
-	}
-
-	double getIPPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> sumPionsMinus, TLorentzVector IP_vect_1, int mva_dm1, TLorentzVector Tauplus, std::vector<TLorentzVector> sumPionsPlus, TLorentzVector IP_vect_2, int mva_dm2){
-		if ((mva_dm1 == 10) && (mva_dm2 == 0 || mva_dm2 == 1))
-		{
-			std::vector<TLorentzVector> tauandprodminus;
-			TLorentzVector a1 = Tauminus;
-			TLorentzVector pi = sumPionsPlus.at(0);
-			TLorentzVector ZMF = a1 + Tauplus;
-			SCalculator Scalc1("a1");
-			tauandprodminus.push_back(Tauminus);
-			for(unsigned int i=0; i<sumPionsMinus.size();i++) {
-				tauandprodminus.push_back(sumPionsMinus.at(i));
-			}
-			//in lab frame we have the direction of the pion, of the a1 of the IP and of the pv_a1 (already calculated in ZMF)
-			Scalc1.Configure(tauandprodminus, Tauminus+Tauplus, -1);
-			TVector3 pv_vect=Scalc1.pv();
-			TVector3 a1_vect(a1.Px(), a1.Py(), a1.Pz());
-			//Normalise
-			//TVector3 IP_vect = IP_vect_2.Unit();
-			TLorentzVector IP = IP_vect_2;
-			TVector3 PV_vect_ZMF = pv_vect.Unit();
-			//form 4vectors and boost everything in visible decay products frame
-
-			//TLorentzVector IP(IP_vect(0), IP_vect(1), IP_vect(2), 0);
-			
-
-			TLorentzVector IP_ZMF(Scalc1.Boost(IP, ZMF));
-			TLorentzVector pi_ZMF(Scalc1.Boost(pi, ZMF));
-			TLorentzVector a1_ZMF(Scalc1.Boost(a1, ZMF));
-			//Take the normal to the planes
-			TVector3 IP_vect_ZMF(IP_ZMF.Vect()); 
-			TVector3 pi_vect_ZMF(pi_ZMF.Vect());
-			TVector3 a1_vect_ZMF(a1_ZMF.Vect());
-			//Same parameter as is done in the code instead of just cos
-			TVector3 h1 = PV_vect_ZMF;
-			TVector3 h2 = IP_vect_ZMF;
-			TVector3 tauminus_HRF = a1_vect_ZMF;
-			TVector3 tauplus_HRF = pi_vect_ZMF;
-			TVector3 k1 = (h1.Cross(tauminus_HRF.Unit())).Unit();
-			TVector3 k2 = (h2.Cross(tauplus_HRF.Unit())).Unit();
-					
-			double angle = -9999;
-
-			if(((h1.Cross(h2))*(tauminus_HRF.Unit()))<=0){
-				angle = TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2);}
-			else{
-				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
-			
-			//not do this shift in a1-rho case - debugging
-//             if (mva_dm2 == 1){
-//                 angle = TMath::ACos(k1.Dot(k2));
-//             }
-			
-			if (isnan(angle)){
-				angle = -9999;
-			}
-			std::cout << "\nAngle: " << angle << '\n';
-			return angle;
-		}
-		
-		if ((mva_dm1 == 0 || mva_dm1 == 1) && (mva_dm2 == 10))
-		{
-		//std::cout << "You are here\n";
-			std::vector<TLorentzVector> tauandprodplus;
-			TLorentzVector a1 = Tauplus;
-			TLorentzVector pi = sumPionsMinus.at(0);
-			TLorentzVector ZMF = a1 + Tauminus;
-			SCalculator Scalc1("a1");
-			tauandprodplus.push_back(Tauplus);
-			for(unsigned int i=0; i<sumPionsPlus.size();i++) {
-				tauandprodplus.push_back(sumPionsPlus.at(i));
-			}
-			//in lab frame we have the direction of the pion, of the a1 of the IP and of the pv_a1
-			Scalc1.Configure(tauandprodplus, Tauminus+Tauplus, -1);
-			TVector3 pv_vect=Scalc1.pv();
-			
-			TVector3 a1_vect(a1.Px(), a1.Py(), a1.Pz());
-			//Normalise
-			//TVector3 IP_vect = IP_vect_1.Unit();
-			TVector3 PV_vect_ZMF = pv_vect.Unit();
-			//a1_vect = a1_vect/a1_vect.Mag();
-			//form 4vectors and boost everything in visible decay products frame
-			//TLorentzVector IP(IP_vect(0), IP_vect(1), IP_vect(2), 0);
-			//TLorentzVector PV(pv_vect(0), pv_vect(1), pv_vect(2), 0);
-			
-			TLorentzVector IP = IP_vect_1;
-			
-			TLorentzVector IP_ZMF(Scalc1.Boost(IP, ZMF));
-			TLorentzVector pi_ZMF(Scalc1.Boost(pi, ZMF));
-			//TLorentzVector PV_ZMF(Scalc1.Boost(PV, ZMF));
-			TLorentzVector a1_ZMF(Scalc1.Boost(a1, ZMF));
-			//Take the normal to the planes
-			TVector3 IP_vect_ZMF(IP_ZMF.Vect()); 
-			TVector3 pi_vect_ZMF(pi_ZMF.Vect());
-			//TVector3 PV_vect_ZMF(PV_ZMF.Vect());
-			TVector3 a1_vect_ZMF(a1_ZMF.Vect());
-			//Same parameter as is done in the code instead of just cos
-			TVector3 h2 = PV_vect_ZMF;
-			TVector3 h1 = IP_vect_ZMF;
-			TVector3 tauplus_HRF = a1_vect_ZMF;
-			TVector3 tauminus_HRF = pi_vect_ZMF;
-			TVector3 k1 = (h1.Cross(tauminus_HRF.Unit())).Unit();
-			TVector3 k2 = (h2.Cross(tauplus_HRF.Unit())).Unit();
-			double angle = -9999;  
-			
-		// double y = (sumPionsMinus.at(0) - sumPionsMinus.at(1))/(sumPionsMinus.at(0) + sumPionsMinus.at(1))
-			
-			//this is the bigO shift
-			if(((h1.Cross(h2))*(tauminus_HRF.Unit()))<=0){
-				angle = TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2);}
-				
-			else{
-				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
-			
-
-			
-			if (isnan(angle)){
-				angle = -9999;
-			}
-			std::cout << "\nAngle: " << angle << '\n';
-			return angle;
-			}
-		//could add something to calculate in the a1-a1 channel, make it cleaner and more compact
-		//in case where we are not in an a1-pi decay, ippv = -9999
-		else{
-			return -9999;
-		}
-	}
-}
-
 int main(int argc, char* argv[])
 {
 	std::string inputFilename(argv[1]);
@@ -315,9 +169,9 @@ int main(int argc, char* argv[])
 	std::cout << "Clone finished." << std::endl;
     
 	double ippv_angle;
-    //Set-up write-up branches
+  //Set-up write-up branches
 
-    //choosing to call this new angle ippv
+  //choosing to call this new angle ippv
 	TBranch *ippv_angle_branch = tree->Branch("ippv_angle", &ippv_angle, "ippv_angle/D");
 
 	// Setup particles
@@ -339,9 +193,23 @@ int main(int argc, char* argv[])
 	int mva_dm1, mva_dm2;
 	setupMVA(tree, mva_dm1, 1);
 	setupMVA(tree, mva_dm2, 2);
+	
+	// Setup MET
+	double met_x, met_y;
+	tree->SetBranchAddress("metx", &met_x);
+	tree->SetBranchAddress("mety", &met_y);
+	// Setup SV
+	double sv_1_arr[3];
+	double sv_2_arr[3];
+	tree->SetBranchAddress("sv_x_1", &sv_1_arr[0]);
+	tree->SetBranchAddress("sv_y_1", &sv_1_arr[1]);
+	tree->SetBranchAddress("sv_z_1", &sv_1_arr[2]);
+	tree->SetBranchAddress("sv_x_2", &sv_2_arr[0]);
+	tree->SetBranchAddress("sv_y_2", &sv_2_arr[1]);
+	tree->SetBranchAddress("sv_z_2", &sv_2_arr[2]);
     
-    /*Loop over the tree entries*/
-    //tree->GetEntries()
+  // Loop over the tree entries
+	//tree->GetEntries()
 	for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
 	{   
 		tree->GetEntry(i);
@@ -394,7 +262,16 @@ int main(int argc, char* argv[])
 			IP_vect_1 = particleToLorentz(pi0_1);
 			ippv_angle = ic::getIPPV_angle(Tauminus, pis_1, IP_vect_1, mva_dm1, Tauplus, pis_2, IP_vect_2, mva_dm2);
 		}
-        
+    
+    if ((mva_dm1 == 10) && (mva_dm2 == 10))
+    {
+    	pis_1 = getPis(pi_1, pi2_1, pi3_1);
+    	pis_2 = getPis(pi_2, pi2_2, pi3_2);
+			TVector3 sv_1(sv_1_arr);
+			TVector3 sv_2(sv_2_arr);
+    	ippv_angle = ic::getPV_angle_pola(pis_1, pis_2, sv_1, sv_2, met_x, met_y);
+    }
+    
 		ippv_angle_branch->Fill();
 
 	}
