@@ -54,8 +54,7 @@ namespace pola
 		
 		// Calculate the tau momentum
     double minus_b = (m_vis*m_vis + m_tau*m_tau) * tau_vis.P() * std::cos(theta_GJ);
-    //TODO: check tau_vis.p2 properly replaced in these next 2 lines
-    double two_a = 2*std::pow(m_vis*m_vis + std::pow(tau_vis.P(), 2) * std::sin(theta_GJ), 2);
+    double two_a = 2*(m_vis*m_vis + std::pow(tau_vis.P(), 2) * std::pow(std::sin(theta_GJ), 2));
 		double b_squared_m_four_ac = (m_vis*m_vis + std::pow(tau_vis.P(), 2)) * (std::pow(m_vis*m_vis - m_tau*m_tau, 2) - 4*m_tau*m_tau*std::pow(tau_vis.P(), 2)*std::pow(std::sin(theta_GJ), 2));
     
     // two solutions for tau momentum magnitude
