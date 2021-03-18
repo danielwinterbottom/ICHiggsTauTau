@@ -19,7 +19,7 @@ namespace pola
 	    Returns true if successful, otherwise false.*/
 	bool findTauSolutions(TLorentzVector &tau_sol_1, TLorentzVector &tau_sol_2, TLorentzVector tau_vis, TVector3 sv)
 	{
-		const double m_vis = tau_vis.M();
+		double m_vis = tau_vis.M();
 		if (m_vis == 0)
 		{
 			m_vis = 1.260;
@@ -43,7 +43,7 @@ namespace pola
 		{
 			theta_GJ = theta_GJ_max;
 			// Create a normalised vector prependicular to a1
-			double n_1_x = 1/std::clamp(std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2)) 1e-9, 1e10);
+			double n_1_x = 1/std::clamp(std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2)), 1e-9, 1e10);
 			double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
 			TVector3 n_1(n_1_x, n_1_y, 0);
 			// create n_2, a unit vector perpendicular to n_1 and the a1
@@ -62,7 +62,7 @@ namespace pola
     double minus_b = (m_vis*m_vis + m_tau*m_tau) * tau_vis.P() * std::cos(theta_GJ);
     double two_a = 2*(m_vis*m_vis + std::pow(tau_vis.P(), 2) * std::pow(std::sin(theta_GJ), 2));
 		double b_squared_m_four_ac = (m_vis*m_vis + std::pow(tau_vis.P(), 2)) * (std::pow(m_vis*m_vis - m_tau*m_tau, 2) - 4*m_tau*m_tau*std::pow(tau_vis.P(), 2)*std::pow(std::sin(theta_GJ), 2));
-    b_squared_m_four_ac = std::max(b_squared_m_four_ac, 0);
+    b_squared_m_four_ac = std::max(b_squared_m_four_ac, 0.0);
     
     // two solutions for tau momentum magnitude
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
