@@ -161,6 +161,8 @@ int main(int argc, char* argv[])
 	TBranch *pola9_nu_eta_2_branch = tree->Branch((pola+"9_nu_eta_2").c_str(), &pola9_nu_eta_2, (pola+"9_nu_eta_2/D").c_str());
 	TBranch *pola9_nu_phi_2_branch = tree->Branch((pola+"9_nu_phi_2").c_str(), &pola9_nu_phi_2, (pola+"9_nu_phi_2/D").c_str());
 	
+	double my_pv;
+	TBranch *my_pv_branch = tree->Branch("my_pv", &my_pv, "my_pv/D");
 	
 	// Setup particles
 	Particle pi_1, pi2_1, pi3_1;	
@@ -222,7 +224,7 @@ int main(int argc, char* argv[])
   for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
   {
 		tree->GetEntry(i);
-
+		
 		std::vector<TLorentzVector> pis_1 = getPis(pi_1, pi2_1, pi3_1);
 		std::vector<TLorentzVector> pis_2 = getPis(pi_2, pi2_2, pi3_2);
 		
@@ -265,9 +267,20 @@ int main(int argc, char* argv[])
 		TLorentzVector best_nu_1, best_nu_2;
 		TVector3 sv_1_vect(sv_1);
 		TVector3 sv_2_vect(sv_2);
-		
 		//making sure we have a proper solution
 		bool check_pola = pola::a1_a1_polarimetric(best_nu_1, best_nu_2, Tauminus, Tauplus, sv_1_vect, sv_2_vect, met_x, met_y);
+		TLorentzVector tau_1_vis, tau_2_vis;
+		
+		for(auto pi : pis_1)
+		{
+			tau_1_vis+=pi;
+		}
+		for(auto pi : pis_2)
+		{
+			tau_2_vis+=pi;
+		}
+		
+		pola::a1_a1_polarimetric(best_nu_1, best_nu_2, tau_1_vis, tau_2_vis, sv_1_vect, sv_2_vect, met_x, met_y);
 		
 		if(check_pola){
 			pola9_nu_p_1 = best_nu_1.P();
@@ -289,6 +302,9 @@ int main(int argc, char* argv[])
 			pola9_nu_phi_2 = -9999;
 		}
 		
+		
+		my_pv = ic::getPV_angle_pola(pis_1, pis_2, sv_1_vect, sv_2_vect, met_x, met_y);
+		my_pv_branch->Fill();
 		
 		pv_angle_branch->Fill();
 		

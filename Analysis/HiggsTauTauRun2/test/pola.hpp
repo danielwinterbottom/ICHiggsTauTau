@@ -33,9 +33,8 @@ namespace pola
 		
 		TVector3 vis_dir = tau_vis.Vect().Unit();
 		TVector3 tau_dir = sv.Unit();
-		
-		double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1., 1.));
-		double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1., 1.));
+    double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1.0, 1.0));
+    double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1.0, 1.0));
 		
 		TVector3 new_dir;
 		// Rotate tau back if theta_GJ is in unphysical region
@@ -43,17 +42,29 @@ namespace pola
 		{
 			theta_GJ = theta_GJ_max;
 			// Create a normalised vector prependicular to a1
-			double n_1_x = 1/std::max(std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2)), 10.0e-10);
+			double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
 			double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
 			TVector3 n_1(n_1_x, n_1_y, 0);
 			// create n_2, a unit vector perpendicular to n_1 and the a1
 			TVector3 n_2 = n_1.Cross(tau_vis.Vect()).Unit();
 			
 			// optimal phi from calculus
-			double phi_opt = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
-			new_dir = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt)*n_1 + std::sin(phi_opt)*n_2);
-			//maybe not needed
-			new_dir = new_dir.Unit();
+			double phi_opt_1 = std::atan(sv.Dot(n_2)/sv.Dot(n_1));
+			TVector3 new_dir_1 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_1)*n_1 + std::sin(phi_opt_1)*n_2);
+			
+			// tan so can have phi+pi solution
+			double phi_opt_2 = phi_opt_1 + M_PI;
+			TVector3 new_dir_2 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_2)*n_1 + std::sin(phi_opt_2)*n_2);
+			
+			// test which solution maximises dot product
+			if ( new_dir_1.Dot(sv) > new_dir_2.Dot(sv) )
+			{
+				new_dir = new_dir_1;
+			}
+			else
+			{
+				new_dir = new_dir_2;
+			}
 		}
 		else
 		{
@@ -70,9 +81,9 @@ namespace pola
     // two solutions for tau momentum magnitude
     double sol_1 = (minus_b + std::sqrt(b_squared_m_four_ac))/two_a;
     double sol_2 = (minus_b - std::sqrt(b_squared_m_four_ac))/two_a;
-
-    tau_sol_1 = TLorentzVector(std::sqrt(sol_1*sol_1+m_tau*m_tau), new_dir.x()*sol_1, new_dir.y()*sol_1, new_dir.z()*sol_1);
-    tau_sol_2 = TLorentzVector(std::sqrt(sol_2*sol_2+m_tau*m_tau), new_dir.x()*sol_2, new_dir.y()*sol_2, new_dir.z()*sol_2);
+		
+    tau_sol_1 = TLorentzVector(sol_1*new_dir, std::sqrt(sol_1*sol_1+m_tau*m_tau));
+    tau_sol_2 = TLorentzVector(sol_2*new_dir, std::sqrt(sol_2*sol_2+m_tau*m_tau));
 		
 		return true;
 	}
@@ -105,8 +116,8 @@ namespace pola
 		{
 			for ( auto tau_2 : tau_2_sols)
 			{
-				TLorentzVector nu_1 = tau_1-tau_1_vis;
-				TLorentzVector nu_2 = tau_2-tau_2_vis;
+				TLorentzVector nu_1 = tau_1 - tau_1_vis;
+				TLorentzVector nu_2 = tau_2 - tau_2_vis;
 				TLorentzVector higgs = tau_1 + tau_2;
 				
 				double pred_met_x = nu_1.Px() + nu_2.Px();
@@ -140,7 +151,8 @@ namespace pola
  *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
 namespace ic
 {
-	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
+	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2)
+	{
 		std::cout << pis_2.size() << std::endl;
 		SCalculator Scalc("a1");
 		double angle = -9999.;
@@ -150,7 +162,7 @@ namespace ic
 			std::cout << "\nGood variables - Angle: " << angle << '\n';
 		}
 		else {
-			std::cout << "Wrong variables";
+			std::cout << "Wrong variables" << std::endl;
 		}
 		return angle;
 	}
@@ -255,7 +267,7 @@ namespace ic
 			if (isnan(angle)){
 				angle = -9999;
 			}
-			std::cout << "\nAngle: " << angle << '\n';
+			//std::cout << "\nAngle: " << angle << '\n';
 			return angle;
 		}
 		
@@ -318,7 +330,7 @@ namespace ic
 			if (isnan(angle)){
 				angle = -9999;
 			}
-			std::cout << "\nAngle: " << angle << '\n';
+			//std::cout << "\nAngle: " << angle << '\n';
 			return angle;
 			}
 		//could add something to calculate in the a1-a1 channel, make it cleaner and more compact
