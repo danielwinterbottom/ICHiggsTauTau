@@ -156,9 +156,9 @@ namespace ic
 		std::cout << pis_2.size() << std::endl;
 		SCalculator Scalc("a1");
 		double angle = -9999.;
-		if(Scalc.isOk("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)){
+		if(Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2)){
 			std::cout << "It's ok 5 \n"<< std::endl;
-			angle = Scalc.AcopAngle("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+			angle = Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
 			std::cout << "\nGood variables - Angle: " << angle << '\n';
 		}
 		else {
@@ -259,10 +259,18 @@ namespace ic
 			else{
 				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
 			
-			//not do this shift in a1-rho case - debugging
-//             if (mva_dm2 == 1){
-//                 angle = TMath::ACos(k1.Dot(k2));
-//             }
+			//in case of an a1-rho decay we need to perform the y shift for polarisation states
+			if ((mva_dm1 == 1) && (!isnan(angle))){
+				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
+				if (y < 0 ){
+					if (angle < TMath::Pi()){
+						angle = angle + TMath::Pi();
+					}
+					else {
+						angle = angle - TMath::Pi();
+					}
+				}
+			}
 			
 			if (isnan(angle)){
 				angle = -9999;
@@ -316,7 +324,7 @@ namespace ic
 			TVector3 k2 = (h2.Cross(tauplus_HRF.Unit())).Unit();
 			double angle = -9999;  
 			
-		// double y = (sumPionsMinus.at(0) - sumPionsMinus.at(1))/(sumPionsMinus.at(0) + sumPionsMinus.at(1))
+			// double y = (sumPionsMinus.at(0) - sumPionsMinus.at(1))/(sumPionsMinus.at(0) + sumPionsMinus.at(1))
 			
 			//this is the bigO shift
 			if(((h1.Cross(h2))*(tauminus_HRF.Unit()))<=0){
@@ -325,7 +333,18 @@ namespace ic
 			else{
 				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
 			
-
+			//inn case of an a1-rho decay we need to perform the y shift for polarisation states
+			if ((mva_dm2 == 1) && (!isnan(angle))){
+				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
+				if (y < 0 ){
+					if (angle < TMath::Pi()){
+						angle = angle + TMath::Pi();
+					}
+					else {
+						angle = angle - TMath::Pi();
+					}
+				}
+			}
 			
 			if (isnan(angle)){
 				angle = -9999;
