@@ -201,13 +201,13 @@ namespace ic
 		TLorentzVector Tauplus = tau_2_vis + nu_2;
 		
 		SCalculator Scalc("a1");
-		if(!Scalc.isOk("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2))
+		if(!Scalc.isOk("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2))
 		{
 			std::cout << "Wrong variables." << std::endl;
 			return -9999;
 		}
 		
-		return Scalc.AcopAngle("a1", "pion", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
+		return Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
   }
 	
 	double getIPPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> sumPionsMinus, TLorentzVector IP_vect_1, int mva_dm1,
