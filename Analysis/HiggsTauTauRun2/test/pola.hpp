@@ -260,7 +260,7 @@ namespace ic
 				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
 			
 			//in case of an a1-rho decay we need to perform the y shift for polarisation states
-			if ((mva_dm1 == 1) && (!isnan(angle))){
+			if ((mva_dm2 == 1) && (!isnan(angle))){
 				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
 				if (y < 0 ){
 					if (angle < TMath::Pi()){
@@ -334,7 +334,7 @@ namespace ic
 				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
 			
 			//inn case of an a1-rho decay we need to perform the y shift for polarisation states
-			if ((mva_dm2 == 1) && (!isnan(angle))){
+			if ((mva_dm1 == 1) && (!isnan(angle))){
 				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
 				if (y < 0 ){
 					if (angle < TMath::Pi()){
