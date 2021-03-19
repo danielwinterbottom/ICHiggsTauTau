@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
   for (int i = 0, nEntries = tree->GetEntries(); i < nEntries; i++)
   {
 		tree->GetEntry(i);
-
+		
 		std::vector<TLorentzVector> pis_1 = getPis(pi_1, pi2_1, pi3_1);
 		std::vector<TLorentzVector> pis_2 = getPis(pi_2, pi2_2, pi3_2);
 		
@@ -268,7 +268,18 @@ int main(int argc, char* argv[])
 		TVector3 sv_1_vect(sv_1);
 		TVector3 sv_2_vect(sv_2);
 		
-		pola::a1_a1_polarimetric(best_nu_1, best_nu_2, Tauminus, Tauplus, sv_1_vect, sv_2_vect, met_x, met_y);
+		TLorentzVector tau_1_vis, tau_2_vis;
+		
+		for(auto pi : pis_1)
+		{
+			tau_1_vis+=pi;
+		}
+		for(auto pi : pis_2)
+		{
+			tau_2_vis+=pi;
+		}
+		
+		pola::a1_a1_polarimetric(best_nu_1, best_nu_2, tau_1_vis, tau_2_vis, sv_1_vect, sv_2_vect, met_x, met_y);
 		
 		pola9_nu_p_1 = best_nu_1.P();
 		pola9_nu_eta_1 = best_nu_1.Eta();

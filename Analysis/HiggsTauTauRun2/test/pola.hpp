@@ -34,7 +34,7 @@ namespace pola
 		TVector3 vis_dir = tau_vis.Vect().Unit();
 		TVector3 tau_dir = sv.Unit();
 		
-    double theta_GJ = std::acos(tau_dir.Dot(vis_dir.Unit()));
+    double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1.0, 1.0));
     double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1.0, 1.0));
 		
 		TVector3 new_dir;
@@ -152,7 +152,8 @@ namespace pola
  *https://github.com/danielwinterbottom/ICHiggsTauTau/blob/c21542125ed10f82d01ca2ae3e4286abcba8d4f6/Analysis/Utilities/src/SCalculator.cc#L260*/
 namespace ic
 {
-	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2){
+	double getPV_angle(TLorentzVector Tauminus, std::vector<TLorentzVector> pis_1, std::vector<double> charges_1, TLorentzVector Tauplus, std::vector<TLorentzVector> pis_2, std::vector<double> charges_2)
+	{
 		std::cout << pis_2.size() << std::endl;
 		SCalculator Scalc("a1");
 		double angle = -9999.;
@@ -162,7 +163,7 @@ namespace ic
 			std::cout << "\nGood variables - Angle: " << angle << '\n';
 		}
 		else {
-			std::cout << "Wrong variables";
+			std::cout << "Wrong variables" << std::endl;
 		}
 		return angle;
 	}
@@ -267,7 +268,7 @@ namespace ic
 			if (isnan(angle)){
 				angle = -9999;
 			}
-			std::cout << "\nAngle: " << angle << '\n';
+			//std::cout << "\nAngle: " << angle << '\n';
 			return angle;
 		}
 		
@@ -330,7 +331,7 @@ namespace ic
 			if (isnan(angle)){
 				angle = -9999;
 			}
-			std::cout << "\nAngle: " << angle << '\n';
+			//std::cout << "\nAngle: " << angle << '\n';
 			return angle;
 			}
 		//could add something to calculate in the a1-a1 channel, make it cleaner and more compact
