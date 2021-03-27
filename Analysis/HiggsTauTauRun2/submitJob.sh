@@ -6,4 +6,4 @@ eval `scramv1 runtime -sh`
 source /vols/cms/ac4317/msci/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/setup_libs.sh
 ulimit -c 0
 lx03.hep.ph.ic.ac.uk
-./bin/master_pv_angle_a1_h /vols/cms/ac4317/msci/MVAFILE_full_10_X.root MVAFILE_full_10_X_ippv25.root
+./bin/master_pv_angle_a1_me /vols/cms/dw515/Offline/output/SM/masters_ntuples/MVAFILE_AllHiggs_mt.root MVAFILE_full_X_m_ippv.root
