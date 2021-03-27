@@ -31,6 +31,6 @@ getIPPV_angle:
     
 Code conjointly written by A. Craplet (alie.craplet17@imperial.ac.uk) and K. Collie (kingsley.collie17@imperial.ac.uk). 
 
-The pola.hpp code is another, older but working version of pola_module.cpp. The main difference is in the inputs of the getIPPV_angle function. 
+The pola.hpp code is another, older but working version of pola_module.cpp. The main difference is in the inputs of the getIPPV_angle function, an example of use can be found in master_pv_angle_a1_X.cpp. 
 
 The pola_me.hpp and master_pv_angle_me.cpp are for a1-leptons ippv angle. 
