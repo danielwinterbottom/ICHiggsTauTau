@@ -663,6 +663,7 @@ if(!is_data) {
     .set_write_plots(false)
     .set_ditau_label("ditau")
     .set_channel(channel)
+    .set_era(era_type)
     .set_is_embedded(is_embedded)
     .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }

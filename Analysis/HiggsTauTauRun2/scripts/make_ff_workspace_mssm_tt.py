@@ -235,12 +235,12 @@ w.factory('expr::ff_total_syst_alt_func_up("@0*@1", ff_tt_qcd_alt_func_up, ff_to
 w.factory('expr::ff_total_syst_alt_func_down("@0*@1", ff_tt_qcd_alt_func_down, ff_total)' % vars())
 
 # uncertainty on pt_2
-w.factory('expr::ff_total_qcd_syst_pt_2_up("@0*@1", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
-w.factory('expr::ff_total_qcd_syst_pt_2_down("@0*(2-@1)", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_pt_2_closure_up("@0*@1", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_pt_2_closure_down("@0*(2-@1)", ff_total, tt_qcd_ss_pt_2_uncert)' % vars())
 
 # uncertainty on met
-w.factory('expr::ff_total_qcd_syst_met_up("@0*@1", ff_total, tt_qcd_ss_met_uncert)' % vars())
-w.factory('expr::ff_total_qcd_syst_met_down("@0*(2-@1)", ff_total, tt_qcd_ss_met_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_met_closure_up("@0*@1", ff_total, tt_qcd_ss_met_uncert)' % vars())
+w.factory('expr::ff_total_qcd_syst_met_closure_down("@0*(2-@1)", ff_total, tt_qcd_ss_met_uncert)' % vars())
 
 # statistical uncertainties on measured fake factors
 ## add statistical uncertainties 1 per njets/jetpt bin
@@ -264,8 +264,8 @@ for i in [1,2]:
   w.factory('expr::ff_total_qcd_stat_pt_unc%(i)i_down("@0*@1", ff_total, tt_qcd_correction_pt_uncert%(i)i_down)' % vars())
 
 # systematic uncertainty for applying dR and pt closure corrections twice or not applying it 
-w.factory('expr::ff_total_qcd_dr_closure_syst_up("@0*@1*@1*((@2!=0)*@3 + (@2==0))", ff_tt_qcd, tt_qcd_ss_correction, os[1], tt_qcd_os_correction)' % vars())
-w.factory('expr::ff_total_qcd_dr_closure_syst_down("@0*((@1!=0)*@2 + (@1==0))", ff_tt_qcd, os[1], tt_qcd_os_correction)' % vars())
+w.factory('expr::ff_total_qcd_syst_dr_closure_up("@0*@1*@1*((@2!=0)*@3 + (@2==0))", ff_tt_qcd, tt_qcd_ss_correction, os[1], tt_qcd_os_correction)' % vars())
+w.factory('expr::ff_total_qcd_syst_dr_closure_down("@0*((@1!=0)*@2 + (@1==0))", ff_tt_qcd, os[1], tt_qcd_os_correction)' % vars())
 
 
 # systematics for wjet and ttbar by scaling the FF by 20% and 40%

@@ -784,6 +784,26 @@ class HTTCategories : public ModuleBase {
   double wt_ff_mssm_qcd_stat_iso_unc2_down_1_;
   double wt_ff_mssm_qcd_syst_iso_up_1_;
   double wt_ff_mssm_qcd_syst_iso_down_1_; 
+  double wt_ff_mssm_syst_alt_func_up_1_;
+  double wt_ff_mssm_syst_alt_func_down_1_;
+  double wt_ff_mssm_qcd_syst_met_closure_up_1_;
+  double wt_ff_mssm_qcd_syst_met_closure_down_1_;
+  double wt_ff_mssm_ttbar_syst_met_closure_up_1_;
+  double wt_ff_mssm_ttbar_syst_met_closure_down_1_;
+  double wt_ff_mssm_ttbar_syst_l_pt_closure_up_1_;
+  double wt_ff_mssm_ttbar_syst_l_pt_closure_down_1_;
+  double wt_ff_mssm_wjets_syst_met_closure_up_1_;
+  double wt_ff_mssm_wjets_syst_met_closure_down_1_;
+  double wt_ff_mssm_wjets_syst_l_pt_closure_up_1_;
+  double wt_ff_mssm_wjets_syst_l_pt_closure_down_1_;
+  double wt_ff_mssm_wjets_syst_bkg_up_1_;
+  double wt_ff_mssm_wjets_syst_bkg_down_1_;
+  double wt_ff_mssm_qcd_syst_bkg_up_1_;
+  double wt_ff_mssm_qcd_syst_bkg_down_1_;
+  double wt_ff_mssm_qcd_syst_pt_2_closure_up_1_;
+  double wt_ff_mssm_qcd_syst_pt_2_closure_down_1_;
+  double wt_ff_mssm_qcd_syst_dr_closure_up_1_;
+  double wt_ff_mssm_qcd_syst_dr_closure_down_1_;
 
   bool trg_singleelectron_;
   bool trg_singlemuon_;

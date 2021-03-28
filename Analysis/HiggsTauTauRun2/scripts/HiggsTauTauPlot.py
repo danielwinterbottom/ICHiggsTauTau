@@ -512,6 +512,7 @@ elif options.analysis == 'mssmrun2':
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
         else: 
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
+        if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] +='*(pt_1>26)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -2200,7 +2201,7 @@ if options.syst_scale_met != '':
       systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
       systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)  
       if options.embedding and options.analysis == 'mssmrun2': 
-        embed_hist_name='scale_embed_met' 
+        embed_hist_name='scale_embed_met_%s' % options.year 
         systematics['syst_scale_embed_met_up'] = ('MET_SCALE_UP' , '_'+embed_hist_name+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
         systematics['syst_scale_embed_met_down'] = ('MET_SCALE_DOWN' , '_'+embed_hist_name+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False) 
 if options.syst_scale_j_by_source != '':
@@ -2560,6 +2561,12 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     tt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
     tt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
+    # new additional uncertainties
+    tt_systs['CMS_ff_total_qcd_syst_dr_closure_%(ch)s_%(yr)s' % vars()]  = 'wt_ff_mssm_qcd_syst_dR_closure_' % vars()
+    tt_systs['CMS_ff_total_qcd_syst_met_closure_%(ch)s_%(yr)s' % vars()]  = 'wt_ff_mssm_qcd_syst_met_closure_' % vars()
+    tt_systs['CMS_ff_total_qcd_syst_pt_2_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_pt_2_closure_' % vars()
+    tt_systs['CMS_ff_total_syst_alt_func_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_syst_alt_func_' % vars()
+
     for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
@@ -2598,6 +2605,16 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   
     lt_systs['CMS_ff_total_low_pt_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
 
+    # new additional uncertainties
+    lt_systs['CMS_ff_total_qcd_syst_met_closure_%(ch)s_%(yr)s' % vars()]  = 'wt_ff_mssm_qcd_syst_met_closure_' % vars()
+    lt_systs['CMS_ff_total_wjets_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_met_closure_' % vars()
+    lt_systs['CMS_ff_total_ttbar_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_met_closure_' % vars()
+    lt_systs['CMS_ff_total_wjets_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_l_pt_closure_' % vars()
+    lt_systs['CMS_ff_total_ttbar_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_l_pt_closure_' % vars()
+    lt_systs['CMS_ff_total_syst_alt_func_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_syst_alt_func_' % vars()
+    lt_systs['CMS_ff_total_qcd_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_bkg_' % vars()
+    lt_systs['CMS_ff_total_wjets_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_bkg_' % vars()
+
     for njet in [0,1]:
       for jetpt in ['low','med','high']:
         for i in [1,2,3]:
@@ -2621,8 +2638,8 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
 
   template_name = 'CMS_ff_total_sub_syst_%(ch)s_%(yr)s' % vars()
-  systematics['CMS_ff_total_sub_up_%(ch)s_%(yr)s']   = ('' , '_'+template_name+'_Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
-  systematics['CMS_ff_total_down_%(ch)s_%(yr)s'] = ('' , '_'+template_name+'_Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
+  systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
+  systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT','ZLL','TT','VV'], True)
 
 
 if options.syst_qcd_bkg: 
@@ -3435,7 +3452,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.40415-0.101317*dR) + (n_jets>0)*(1.16253-0.031154*dR))'
           if options.era=='legacy16':
             fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.22618-0.0546679*dR) + (n_jets>0)*(1.09292-0.0200048*dR))'
-          fake_factor_wt_string_1='wt_ff_test_lead_1'
+          #fake_factor_wt_string_1='wt_ff_test_lead_1'
           if wt is not "":
               wt_1=wt+"*"+fake_factor_wt_string_1
           else:
@@ -4446,6 +4463,7 @@ def RenameMSSMrun2Datacards(outfile):
    'CMS_scale_e' : 'CMS_scale_e_emb',
    'CMS_scale_t_' : 'CMS_scale_t_emb_',
    'CMS_eff_trigger_single_t_':'CMS_eff_trigger_single_t_emb_',
+   'scale_embed_met_' : 'scale_embed_met_%s_' % chan,
   }  
   directory = outfile.Get(nodename)
 
@@ -4578,9 +4596,10 @@ if var_name.count(',') == 2:
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
 if options.extra_name != "": 
-  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
-#datacard_name+='_'+options.extra_name
-else: output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+#  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+  datacard_name+='_'+options.extra_name
+#else: 
+output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -4902,11 +4921,29 @@ if options.do_custom_uncerts:
     h.SetName(h0.GetName()+syst)
     for key in directory.GetListOfKeys():
       name = key.GetName()
+      if name.startswith('ggH') or name.startswith('bbH') or name.startswith('qqH') or name.startswith('VH') or name.startswith('ZH') or name.startswith('WH') or name.startswith('WplusH') or name.startswith('WminusH'): continue
       histo = directory.Get(name)
       if not isinstance(histo,ROOT.TDirectory) and name.endswith(syst) and not name.startswith('jetFakes_norm'):
         #print name.replace(syst,''), name, histo.Integral() 
         histo_nom = directory.Get(name.replace(syst,''))
         histo.Add(histo_nom,-1)
+        if 'scale_embed_met' in name:
+          # this part scales the embed MET uncertainties to their actual values
+          scales = {
+            "mt_2018": 0.85,
+            "mt_2017": 0.67,
+            "mt_2016": 1.0,
+            "et_2018": 0.73,
+            "et_2017": 0.63,
+            "et_2016": 0.84,
+            "tt_2018": 0.20,
+            "tt_2017": 0.25,
+            "tt_2016": 0.22,
+          }
+          scale = (scales['%s_%s' % (options.channel,options.year)]**2+0.1**2)**.5
+          print 'scaling ', name, ' by ', scale
+          for i in range(1,histo.GetNbinsX()+1): 
+            histo.SetBinContent(i,histo.GetBinContent(i)*scale)
         h.Add(histo)
     hists.append(h.Clone())
 
@@ -4955,6 +4992,7 @@ if options.do_custom_uncerts:
     h1.SetName(h0.GetName()+syst)
     h2.SetName(h0.GetName()+syst)
     for p in procs:
+      print p
       hup = directory.Get(p).Clone()
       hnom = directory.Get(p).Clone()
       hup.Scale(val)
@@ -4974,8 +5012,13 @@ if options.do_custom_uncerts:
 
 outfile.Close()
 
-if options.do_unrolling==0: exit(0)
-if is_2d and not options.do_unrolling: exit(0) # add options for is_3d as well!
+
+if options.do_unrolling==0: 
+  print "Finished Processing"
+  exit(0)
+if is_2d and not options.do_unrolling:
+  print "Finished Processing"
+  exit(0) # add options for is_3d as well!
 plot_file = ROOT.TFile(output_name, 'READ')
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
@@ -5219,3 +5262,4 @@ if options.analysis in ['mssmrun2']:
 
 outfile.Close()
 
+print "Finished Processing"

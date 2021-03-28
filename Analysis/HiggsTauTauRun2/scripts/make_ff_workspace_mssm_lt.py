@@ -351,8 +351,8 @@ for njet in [0,1]:
     func_os_1 = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s%(mc_shift)s.root:pt_1_nbjets%(njet)i_dr_to_ar_aiso_closure_qcd_fit' % vars())
     func_os_str_1=str(func_os_1.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-  w.factory('expr::lt_qcd_ss_njets%(njet)i_correction%(mc_shift)s("max(%(func_ss_str)s,0.)",met_var_qcd_bounded)' % vars())
-  w.factory('expr::lt_qcd_os_nbjets%(njet)i_correction%(mc_shift)s("max(%(func_os_str_1)s,0.)",l_pt_bounded100)' % vars())
+    w.factory('expr::lt_qcd_ss_njets%(njet)i_correction%(mc_shift)s("max(%(func_ss_str)s,0.)",met_var_qcd_bounded)' % vars())
+    w.factory('expr::lt_qcd_os_nbjets%(njet)i_correction%(mc_shift)s("max(%(func_os_str_1)s,0.)",l_pt_bounded100)' % vars())
 
   # get stat uncertainties
 
@@ -432,7 +432,7 @@ w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_up("((@0==0)*@1 + (@0>0)*@2)*
 w.factory('expr::lt_qcd_ss_correction_l_pt_uncert2_down("((@0==0)*@1 + (@0>0)*@2)*((@3<%(crosstrg_pt)s)*(%(l_pt_low).5f) + (@3>=%(crosstrg_pt)s)*(%(l_pt_high).5f-%(l_pt_high_uncert).5f))*@4/@5",njets[0], lt_qcd_ss_njets0_correction, lt_qcd_ss_njets1_correction, l_pt_bounded200, lt_iso_correction, lt_qcd_ss_correction)' % vars())
 
 
-for i in [0,2]:
+for i in [1,2]:
 
   w.factory('expr::lt_qcd_ss_correction_njets0_uncert%(i)i_up("(@0==0)*@1 + (@0!=0)", njets[0], lt_qcd_ss_njets0_correction_uncert%(i)i_up)' % vars())
   w.factory('expr::lt_qcd_ss_correction_njets1_uncert%(i)i_up("(@0==0) + (@0!=0)*@1", njets[0], lt_qcd_ss_njets1_correction_uncert%(i)i_up)' % vars())
@@ -444,8 +444,8 @@ for i in [0,2]:
   w.factory('expr::lt_qcd_os_correction_uncert%(i)i_down("2.-@0", lt_qcd_os_correction_uncert%(i)i_up)' % vars())
 
 
-w.factory('expr::ff_lt_qcd_dr_closure_syst_up("@0*@1*@1*((@2!=0)*@3 + (@2==0))", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1], lt_qcd_os_correction, met_var_w_bounded, mt[0])' % vars())
-w.factory('expr::ff_lt_qcd_dr_closure_syst_down("@0*((@1!=0)*@2 + (@1==0))", ff_lt_qcd_raw, os[1], lt_qcd_os_correction, met_var_w_bounded, mt[0])' % vars())
+w.factory('expr::ff_lt_qcd_syst_met_closure_up("@0*@1*@1*((@2!=0)*@3 + (@2==0))", ff_lt_qcd_raw, lt_qcd_ss_correction, os[1], lt_qcd_os_correction, met_var_w_bounded, mt[0])' % vars())
+w.factory('expr::ff_lt_qcd_syst_met_closure_down("@0*((@1!=0)*@2 + (@1==0))", ff_lt_qcd_raw, os[1], lt_qcd_os_correction, met_var_w_bounded, mt[0])' % vars())
 
 
 # get final qcd fake factor
@@ -454,7 +454,7 @@ for mc_shift in ["Up","Down",""]:
 
 qcd_systs=[]
 
-qcd_systs.append('qcd_dr_closure_syst')
+qcd_systs.append('qcd_syst_met_closure')
 
 # statistical uncertainties on measured qcd fake factors
 # add statistical uncertainties 1 per njets/jetpt bin
@@ -618,14 +618,14 @@ for mc_shift in ["Up","Down",""]:
 wjets_systs=[]
 
 # systematic uncertainty for wjets dr closure corrections applied twice or not at all
-w.factory('expr::lt_wjets_dr_met_closure_syst_up("@0*(((@1==0)*@2*@2 + (@1>0)*@3*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5 + (@1>0)*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7 + (@1>0)*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
-w.factory('expr::lt_wjets_dr_met_closure_syst_down(""@0*(((@1==0)*@2/@2 + (@1>0)*@3/@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5 + (@1>0)*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7 + (@1>0)*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
+w.factory('expr::ff_lt_wjets_syst_met_closure_up("@0*(((@1==0)*@2*@2 + (@1>0)*@3*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5 + (@1>0)*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7 + (@1>0)*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
+w.factory('expr::ff_lt_wjets_syst_met_closure_down("@0*(((@1==0)*@2/@2 + (@1>0)*@3/@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5 + (@1>0)*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7 + (@1>0)*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
 
-w.factory('expr::lt_wjets_dr_l_pt_closure_syst_up("@0*(((@1==0)*@2 + (@1>0)*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5*@5 + (@1>0)*@6*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7*@7 + (@1>0)*@8*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
-w.factory('expr::lt_wjets_dr_l_pt_closure_syst_down(""@0*(((@1==0)*@2 + (@1>0)*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5/@5 + (@1>0)*@6/@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7/@7 + (@1>0)*@8/@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
+w.factory('expr::ff_lt_wjets_syst_l_pt_closure_up("@0*(((@1==0)*@2 + (@1>0)*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5*@5 + (@1>0)*@6*@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7*@7 + (@1>0)*@8*@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
+w.factory('expr::ff_lt_wjets_syst_l_pt_closure_down("@0*(((@1==0)*@2 + (@1>0)*@3)*((@4<%(crosstrg_pt)s)*((@1==0)*@5/@5 + (@1>0)*@6/@6) + (@4>=%(crosstrg_pt)s)*((@1==0)*@7/@7 + (@1>0)*@8/@8)))*@9",ff_lt_wjets_raw,njets[0], lt_wjets_met_njets0_correction, lt_wjets_met_njets1_correction, l_pt_bounded200, lt_wjets_low_l_pt_njets0_correction, lt_wjets_low_l_pt_njets1_correction, lt_wjets_l_pt_njets0_correction, lt_wjets_l_pt_njets1_correction,lt_wjets_extrap_correction)' % vars())
 
-wjets_systs.append('wjets_dr_met_closure_syst')
-wjets_systs.append('wjets_dr_l_pt_closure_syst')
+wjets_systs.append('wjets_syst_met_closure')
+wjets_systs.append('wjets_syst_l_pt_closure')
 
 # statistical uncertainties on measured wjets fake factors
 # add statistical uncertainties 1 per njets/jetpt bin
@@ -744,15 +744,15 @@ w.factory('expr::ff_lt_ttbar("@0*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correc
 ttbar_systs=[]
 
 # systematic for ttbar dr closure correction applied twice or not all
-w.factory('expr::ff_lt_ttbar_dr_met_closure_syst_up("@0*@1*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
-w.factory('expr::ff_lt_ttbar_dr_met_closure_syst_down("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_met_closure_up("@0*@1*@1*@2*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_met_closure_down("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
 
-w.factory('expr::ff_lt_ttbar_dr_l_pt_closure_syst_up("@0*@1*@2*@3*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
-w.factory('expr::ff_lt_ttbar_dr_l_pt_closure_syst_down("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_l_pt_closure_up("@0*@1*@2*@3*@3", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, lt_ttbar_l_pt_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
+w.factory('expr::ff_lt_ttbar_syst_l_pt_closure_down("@0*@1*@2", ff_lt_ttbar_raw, lt_ttbar_met_correction, lt_ttbar_datamc_correction, os[1], l_pt_bounded200, nbjets[0], met_var_qcd_bounded, iso_bounded)' % vars())
 
 
-ttbar_systs.append('ttbar_dr_met_closure_syst')
-ttbar_systs.append('ttbar_dr_l_pt_closure_syst')
+ttbar_systs.append('ttbar_syst_met_closure')
+ttbar_systs.append('ttbar_syst_l_pt_closure')
 
 # statistical uncertainties on measured ttbar and wjets fake factors
 # add statistical uncertainties 1 per jetpt bin
@@ -830,10 +830,10 @@ for s in wjets_systs:
     w.factory('expr::ff_total_%(s)s_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_%(s)s_down, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 # add subtracted MC shifts
-w.factory('expr::ff_total_wjets_shift_mc_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjetsUp, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
-w.factory('expr::ff_total_wjets_shift_mc_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjetsDown, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
-w.factory('expr::ff_total_qcd_shift_mc_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdUp, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
-w.factory('expr::ff_total_qcd_shift_mc_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdDown, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_wjets_syst_bkg_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjetsUp, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_wjets_syst_bkg_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcd, lt_fracs_qcd, ff_lt_wjetsDown, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_qcd_syst_bkg_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdUp, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
+w.factory('expr::ff_total_qcd_syst_bkg_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdDown, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
 w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v3.root' % vars())
