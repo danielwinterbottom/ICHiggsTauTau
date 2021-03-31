@@ -211,7 +211,8 @@ for p in ['qcd','wjets','ttbar']:
 
           w.factory('expr::lt_%(name)s_fit%(mc_shift)s("max(%(func_str)s,0.)",pt_bounded)' % vars())
 
-      func_alt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
+      #func_alt = GetFromTFile(loc+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
+      func_alt = GetFromTFile(loc.replace(input.split('/')[0],input.split('/')[0]+'_pol1')+'fakefactor_fits_%(channel)s_%(wp)s_%(year)s.root:%(name)s_fit' % vars())
       func_str_alt=str(func_alt.GetExpFormula('p')).replace('x','@0').replace(',false','') 
       alt_syst_max = '600.'
       if '>=140' in func_str: alt_syst_max = '140.'
@@ -836,6 +837,6 @@ w.factory('expr::ff_total_qcd_syst_bkg_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", 
 w.factory('expr::ff_total_qcd_syst_bkg_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdDown, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v3.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v4.root' % vars())
 w.Delete() 
 

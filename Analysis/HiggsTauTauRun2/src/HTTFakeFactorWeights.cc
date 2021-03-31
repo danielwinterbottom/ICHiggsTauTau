@@ -306,7 +306,7 @@ namespace ic {
 
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v3.root";
       if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v3.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v3.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v4.root";
       if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v3.root";
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 

@@ -2167,8 +2167,9 @@ if do_wjets_mc:
     fout.cd()
     wjets_mc_data.Divide(wjets_mc_pred)
 
-    if wjets_mc_data.GetBinContent(1) <=0: 
+    if wjets_mc_data.GetBinContent(1) <=0 or wjets_mc_data.GetBinError(1) >= 1: 
       wjets_mc_data.SetBinContent(1,1.)
+      wjets_mc_data.SetBinError(1,0.)
 
     if 'nbjets1' in add_name: wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol0',fit_range=[crosstrg_pt,300.])
     else: wjets_mc_data_fit, wjets_mc_data_uncert =  FitCorrection(wjets_mc_data,func='pol1',fit_range=[crosstrg_pt,400.])
