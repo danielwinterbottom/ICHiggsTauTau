@@ -3294,7 +3294,7 @@ def CompareHists(hists=[],
     tot = len(hists)
     if isinstance(uncert_hist,list): tot+=len(uncert_hist)
     if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
-    else: legend = PositionedLegend(0.55,0.2,3,0.03)
+    else: legend = PositionedLegend(0.35,0.2,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.040)
     legend.SetFillColor(0)

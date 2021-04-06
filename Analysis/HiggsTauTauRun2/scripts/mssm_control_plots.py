@@ -128,7 +128,7 @@ config_files = {'2016':'scripts/plot_mssm_2016.cfg',
                }
 
 
-add_options = '--embedding --ggh_masses=\'\' --bbh_nlo_masses=\'\' --ratio --norm_bins --ratio_range=\'0.6,1.4\''
+add_options = '--embedding --ggh_masses=\'\' --bbh_nlo_masses=\'\' --bbh_masses_powheg=\"\"  --bbh_masses=\"\" --ggh_masses_powheg=\"\" --ratio --norm_bins --ratio_range=\'0.6,1.4\''
  
 # Set up output directories
 

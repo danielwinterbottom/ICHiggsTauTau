@@ -72,51 +72,59 @@ if __name__ == '__main__':
 
     ggh_masses_missing = []
 
-    tasks.append(('SUSYGluGluToHToTauTau_M-1000_powheg','/SUSYGluGluToHToTauTau_M1000_Tanb11_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-100_powheg','/SUSYGluGluToHToTauTau_M100_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-1200_powheg','/SUSYGluGluToHToTauTau_M1200_Tanb15_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-120_powheg','/SUSYGluGluToHToTauTau_M120_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-125_powheg','/SUSYGluGluToHToTauTau_M125_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-1400_powheg','/SUSYGluGluToHToTauTau_M1400_Tanb21_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-140_powheg','/SUSYGluGluToHToTauTau_M140_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-1600_powheg','/SUSYGluGluToHToTauTau_M1600_Tanb31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-160_powheg','/SUSYGluGluToHToTauTau_M160_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-1800_powheg','/SUSYGluGluToHToTauTau_M1800_Tanb44_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-180_powheg','/SUSYGluGluToHToTauTau_M180_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-2000_powheg','/SUSYGluGluToHToTauTau_M2000_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-200_powheg','/SUSYGluGluToHToTauTau_M200_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-2300_powheg','/SUSYGluGluToHToTauTau_M2300_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-250_powheg','/SUSYGluGluToHToTauTau_M250_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-2600_powheg','/SUSYGluGluToHToTauTau_M2600_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-2900_powheg','/SUSYGluGluToHToTauTau_M2900_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-300_powheg','/SUSYGluGluToHToTauTau_M300_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-3200_powheg','/SUSYGluGluToHToTauTau_M3200_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-3500_powheg','/SUSYGluGluToHToTauTau_M3500_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-350_powheg','/SUSYGluGluToHToTauTau_M350_Tanb3_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-400_powheg','/SUSYGluGluToHToTauTau_M400_Tanb4_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-450_powheg','/SUSYGluGluToHToTauTau_M450_Tanb4_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-500_powheg','/SUSYGluGluToHToTauTau_M500_Tanb5_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-60_powheg','/SUSYGluGluToHToTauTau_M60_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-700_powheg','/SUSYGluGluToHToTauTau_M700_Tanb8_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-800_powheg','/SUSYGluGluToHToTauTau_M800_Tanb9_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-80_powheg','/SUSYGluGluToHToTauTau_M80_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-900_powheg','/SUSYGluGluToHToTauTau_M900_Tanb10_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-130_powheg','/SUSYGluGluToHToTauTau_M130_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
-    tasks.append(('SUSYGluGluToHToTauTau_M-600_powheg','/SUSYGluGluToHToTauTau_M600_Tanb6_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-1000_powheg','/SUSYGluGluToHToTauTau_M1000_Tanb11_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-100_powheg','/SUSYGluGluToHToTauTau_M100_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-1200_powheg','/SUSYGluGluToHToTauTau_M1200_Tanb15_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-120_powheg','/SUSYGluGluToHToTauTau_M120_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-125_powheg','/SUSYGluGluToHToTauTau_M125_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-1400_powheg','/SUSYGluGluToHToTauTau_M1400_Tanb21_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-140_powheg','/SUSYGluGluToHToTauTau_M140_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-1600_powheg','/SUSYGluGluToHToTauTau_M1600_Tanb31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-160_powheg','/SUSYGluGluToHToTauTau_M160_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-1800_powheg','/SUSYGluGluToHToTauTau_M1800_Tanb44_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-180_powheg','/SUSYGluGluToHToTauTau_M180_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-2000_powheg','/SUSYGluGluToHToTauTau_M2000_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-200_powheg','/SUSYGluGluToHToTauTau_M200_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-2300_powheg','/SUSYGluGluToHToTauTau_M2300_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-250_powheg','/SUSYGluGluToHToTauTau_M250_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-2600_powheg','/SUSYGluGluToHToTauTau_M2600_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-2900_powheg','/SUSYGluGluToHToTauTau_M2900_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-300_powheg','/SUSYGluGluToHToTauTau_M300_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-3200_powheg','/SUSYGluGluToHToTauTau_M3200_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-3500_powheg','/SUSYGluGluToHToTauTau_M3500_Tanb60_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-350_powheg','/SUSYGluGluToHToTauTau_M350_Tanb3_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-400_powheg','/SUSYGluGluToHToTauTau_M400_Tanb4_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-450_powheg','/SUSYGluGluToHToTauTau_M450_Tanb4_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-500_powheg','/SUSYGluGluToHToTauTau_M500_Tanb5_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-60_powheg','/SUSYGluGluToHToTauTau_M60_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-700_powheg','/SUSYGluGluToHToTauTau_M700_Tanb8_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-800_powheg','/SUSYGluGluToHToTauTau_M800_Tanb9_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-80_powheg','/SUSYGluGluToHToTauTau_M80_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-900_powheg','/SUSYGluGluToHToTauTau_M900_Tanb10_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-130_powheg','/SUSYGluGluToHToTauTau_M130_Tanb1_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#    tasks.append(('SUSYGluGluToHToTauTau_M-600_powheg','/SUSYGluGluToHToTauTau_M600_Tanb6_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM'))
+#
+#    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
+#    bbh_masses_missing = []
+#
+#
+#    for mass in bbh_masses_ph:
+#      if mass in bbh_masses_missing: continue
+# 
+#      tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM' % vars()))
 
-    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
-    bbh_masses_missing = []
-
-
-    for mass in bbh_masses_ph:
-      if mass in bbh_masses_missing: continue
- 
-      tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM' % vars()))
+    # private sample for 200 GeV
+    tasks.append(('SUSYGluGluToBBHToTauTau_M-200_powheg','/bbh_m200_GENSIM-v3/dwinterb-bbH_m200_2017_MINIAOD-b63beb1ae05c0e254c43785544367ee5/USER'))
 
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
+
+        if task[0] == 'SUSYGluGluToBBHToTauTau_M-200_powheg':
+          config.Data.inputDBS = 'phys03'
+        else:
+          config.Data.inputDBS = 'global'
 
         if "DY4JetsToLL-LO" in task[0]:
           # talk to DBS to get list of files in this dataset
@@ -145,7 +153,6 @@ if __name__ == '__main__':
         config.JobType.pyCfgParams = cfgParams
 
         config.Data.ignoreLocality = True
-        config.Data.inputDBS = 'global'
 
         print config.Data.unitsPerJob
         print config.Data.splitting

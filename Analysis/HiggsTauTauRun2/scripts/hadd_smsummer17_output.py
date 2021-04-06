@@ -381,6 +381,11 @@ sample_list = [
 
 sample_list = list(set(sample_list))
 
+out=''
+for s in sorted(sample_list): out+='    - %s\n' %s
+
+print out
+
 # channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
 channel = ['et','em','mt','tt','zmm']
 with open("%(samplelist)s"%vars(),"r") as inf:

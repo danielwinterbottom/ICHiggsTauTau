@@ -424,6 +424,7 @@ for sa in sample_list:
             failed.append(sa) 
           else :
             to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())
+            os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root' %vars())
         else:
           haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir) 
           command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_input.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\nif [ \"$(cat %(haddout)s | grep -e Warning -e Error)\"  == \"\" ]; then rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*input.root; fi\n" % vars()    
@@ -435,7 +436,7 @@ for sa in sample_list:
         file.write('\necho End of job &> jobs/hadd_svfit_%(sa)s_%(ch)s_%(year)s.log' % vars())
       os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
 
-  if not batch and remove:
-    # if all channels and systematics were hadded sucsessfully then remove the input files
-    for x in to_remove:
-      os.system(x)
+  #if not batch and remove:
+  #  # if all channels and systematics were hadded sucsessfully then remove the input files
+  #  for x in to_remove:
+  #    os.system(x)
