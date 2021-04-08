@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # in production still:
     tasks.append(('SUSYGluGluToHToTauTau_M-60_powheg','/SUSYGluGluToHToTauTau_M60_Tanb1_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v6/MINIAODSIM'))
 
-    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
+    bbh_masses_ph     = [60, 80, 100, 120, 125, 130, 140, 160, 180, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
     bbh_masses_missing     = [1000]
 
     for mass in bbh_masses_ph:
@@ -120,11 +120,19 @@ if __name__ == '__main__':
 
       tasks.append(('SUSYGluGluToBBHToTauTau_M-%(mass)s_powheg' % vars(),'/SUSYGluGluToBBHToTauTau_M%(mass)s_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM' % vars()))
 
+    # private sample for 200 GeV
+    tasks.append(('SUSYGluGluToBBHToTauTau_M-200_powheg','/bbh_m200_LHE/dwinterb-bbH_m200_2016_MINIAOD-53f8667ba4b240d5eafd36e71bf34742/USER'))
+
     
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
+
+        if task[0] == 'SUSYGluGluToBBHToTauTau_M-200_powheg':
+          config.Data.inputDBS = 'phys03'
+        else:
+          config.Data.inputDBS = 'global'
 
         config.JobType.pyCfgParams = cfgParams
         print(config)
