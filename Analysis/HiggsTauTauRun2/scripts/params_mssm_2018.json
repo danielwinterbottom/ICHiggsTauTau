@@ -983,6 +983,14 @@
     "xs": 1.0,
     "evt": 283020
   },
+  "SUSYGluGluToHToTauTau_M-95_powheg": {
+    "xs": 1.0,
+    "evt": 1955818 
+  },
+  "VBFHToTauTau_M-95": {
+    "xs": 1.0,
+    "evt": 1950648 
+  },
   "EGamma": {
     "lumi": 59740
   },

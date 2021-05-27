@@ -493,7 +493,7 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
         SIG_FILELIST = FILELIST
         SIG_DIR = 'Sep18_MC_102X_2018'
 
-        if 'SUSY' in sa and 'powheg' in sa:
+        if 'SUSY' in sa and 'powheg' in sa or 'M-95' in sa:
           SIG_DIR = 'Feb09_MC_102X_2018'
           SIG_FILELIST ="./filelists/Feb09_2018_MC_102X"                  
           user='dwinterb'

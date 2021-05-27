@@ -476,7 +476,7 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
   #PREFIX = FILELIST.split("/")[1]
   PREFIX = 'Sep18_MC_102X_2017'
   for sa in signal_mc:
-    if 'SUSY' in sa and 'powheg' in sa: 
+    if 'SUSY' in sa and 'powheg' in sa or 'M-95' in sa:
       PREFIX = 'Feb09_MC_102X_2017'
       SIG_FILELIST ="./filelists/Feb09_2017_MC_102X" 
     else: 

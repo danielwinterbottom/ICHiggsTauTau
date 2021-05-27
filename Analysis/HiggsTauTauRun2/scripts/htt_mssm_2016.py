@@ -499,7 +499,7 @@ if options.proc_sm or options.proc_all or options.proc_mssm:
     else:
         SIG_FILELIST = FILELIST
 
-    if 'SUSY' in sa and 'powheg' in sa:
+    if 'SUSY' in sa and 'powheg' in sa or 'M-95' in sa:
       PREFIX = 'Feb09_MC_102X_2016'
       SIG_FILELIST ="./filelists/Feb09_2016_MC_102X"
       user='dwinterb'
