@@ -405,10 +405,10 @@ if(!is_data && js["do_gen_analysis"].asBool()){
 
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
-  if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
-    BuildModule( PileupWeight("PileupWeight")
-        .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
-  }
+  //if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
+  //  BuildModule( PileupWeight("PileupWeight")
+  //      .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+  //}
 
   // do stitching for dy samples:
   HTTStitching httStitching = HTTStitching("HTTStitching")
@@ -718,7 +718,7 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
   httWeights.set_do_mssm_higgspt(true); 
   if(era_type == era::data_2016) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v1.root");
-  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v1.root");
+  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2.root");
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));
