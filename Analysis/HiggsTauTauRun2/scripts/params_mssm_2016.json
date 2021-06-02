@@ -931,6 +931,14 @@
     "xs": 1.0,
     "evt": 968546
   },
+  "SUSYGluGluToHToTauTau_M-95_powheg": {
+    "xs": 1.0,
+    "evt": 1969834
+  },
+  "VBFHToTauTau_M-95": {
+    "xs": 1.0,
+    "evt": 1992154
+  },
   "SingleElectron": {
     "lumi": 35920
   },

@@ -315,3 +315,5 @@ samples:
     - ttHiggs0MToTauTau
     - ttHiggs0Mf05ph0ToTauTau
     - ttHiggs0PMToTauTau
+    - SUSYGluGluToHToTauTau_M-95_powheg
+    - VBFHToTauTau_M-95

@@ -377,6 +377,8 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-800_powheg',
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
+    'SUSYGluGluToHToTauTau_M-95_powheg',
+    'VBFHToTauTau_M-95',
     ]
 
 sample_list = list(set(sample_list))
