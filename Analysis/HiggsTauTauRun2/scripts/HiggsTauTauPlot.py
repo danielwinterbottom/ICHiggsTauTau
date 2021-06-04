@@ -1860,6 +1860,8 @@ if options.analysis == 'mssmrun2':
   if options.era == 'cp18':
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
+                   'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125-ext1',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1872,7 +1874,9 @@ if options.analysis == 'mssmrun2':
                  }
   elif options.era == 'cpsummer17':
     sm_samples = { 'ggH125_SM' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
-                   'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
+                   'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1885,7 +1889,9 @@ if options.analysis == 'mssmrun2':
                  }
   elif options.era == 'legacy16':
     sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
-                   'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125']
+                   'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
+                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
+                   'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1979,7 +1985,12 @@ if options.syst_eff_t != '':
     systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
 if options.syst_tquark != '':
     systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZL','ZJ','VVT','VVJ','QCD','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)    
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)  
+#    syst_alt_name='CMS_htt_ttbarShape_TheoryVsData'
+#    if 'ttbarShape' in options.syst_tquark:
+#      syst_alt_name = options.syst_tquark.replace('ttbarShape','ttbarShape_TheoryVsData') 
+#    systematics['syst_tquark_alt_up'] = ('' , '_'+syst_alt_name+'Up', 'wt*wt_tquark_alt', ['ZTT','ZL','ZJ','VVT','VVJ','QCD','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
+#    systematics['syst_tquark_alt_down'] = ('' , '_'+syst_alt_name+'Down', 'wt*(2.-wt_tquark_alt)', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False) 
 if options.syst_zwt != '':
     systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
     systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
@@ -3659,6 +3670,11 @@ def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'
   else: OSSS = '!os'
   if options.gen_signal: OSSS='1' 
   for mass in ggh_masses:
+    if int(mass) == 95:
+      full_selection = BuildCutString(wt, sel, cat, OSSS)
+      sample_name = mssm_samples['ggH'].replace('*',mass)
+      name = 'ggH'
+      ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample_name, plot, full_selection))
     for name in weights:
       weight=wt+"*"+weights[name]    
       full_selection = BuildCutString(weight, sel, cat, OSSS)
@@ -4324,7 +4340,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         elif options.analysis in ['mssm','mssmrun2'] and (options.ggh_masses != "" or options.bbh_masses != "" or options.ggh_masses_powheg != "" or options.bbh_masses_powheg != "") :
             bbh_add_name = ''
             if options.bbh_nlo_masses and not options.bbh_masses_powheg: bbh_add_name = '-LO'
-            GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
+            #GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
+            GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, [], bbh_masses, wt, sel, cat, not options.do_ss)
             if options.add_sm_background:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
@@ -4949,12 +4966,21 @@ if options.do_custom_uncerts:
 
   norm_systs = {}
   if options.embedding: 
-    norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
-    norm_systs['dy_xs'] = (0.02,['ZL'])
-    norm_systs['lumi'] = (0.025,['TTT','VVT','ZL'])
+    if options.channel in ['em']:
+      norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
+      norm_systs['dy_xs'] = (0.02,['ZLL'])
+      norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL'])
+    else:
+      norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
+      norm_systs['dy_xs'] = (0.02,['ZL'])
+      norm_systs['lumi'] = (0.025,['TTT','VVT','ZL'])
   else: 
-    norm_systs['dy_xs'] = (0.02,['ZL','ZTT'])
-    norm_systs['lumi'] = (0.025,['TTT','VVT','ZL','ZTT'])
+    if options.channel in ['em']:
+      norm_systs['dy_xs'] = (0.02,['ZLL','ZTT'])
+      norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL','ZTT'])
+    else:
+      norm_systs['dy_xs'] = (0.02,['ZL','ZTT'])
+      norm_systs['lumi'] = (0.025,['TTT','VVT','ZL','ZTT'])
   norm_systs['ttbar_xs'] = (0.04,['TTT'])
   norm_systs['vv_xs'] = (0.05,['VVT'])
   if options.channel == 'tt':
@@ -4972,16 +4998,16 @@ if options.do_custom_uncerts:
     norm_systs['l_fakerate'] = (0.2,['ZL'])
   if options.channel in ['em']:
     if options.embedding: 
-      norm_systs['m_id'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
-      norm_systs['e_id'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
-      norm_systs['m_trg'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
-      norm_systs['e_trg'] = (0.02,['EmbedZTT','TT','VV','ZL','W'])
+      norm_systs['m_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+      norm_systs['e_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+      norm_systs['m_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+      norm_systs['e_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
     else:
-      norm_systs['m_id'] = (0.02,['ZTT','TT','VV','ZL','W'])
-      norm_systs['e_id'] = (0.02,['ZTT','TT','VV','ZL','W'])
-      norm_systs['m_trg'] = (0.02,['ZTT','TT','VV','ZL','W'])
-      norm_systs['e_trg'] = (0.02,['ZTT','TT','VV','ZL','W'])
-    norm_systs['l_fakerate'] = (0.2,['ZL','W'])
+      norm_systs['m_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+      norm_systs['e_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+      norm_systs['m_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+      norm_systs['e_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+    norm_systs['l_fakerate'] = (0.2,['ZLL','W'])
   
   for syst in norm_systs:
   
