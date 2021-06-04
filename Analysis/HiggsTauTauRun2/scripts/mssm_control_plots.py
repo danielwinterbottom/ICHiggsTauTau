@@ -56,18 +56,28 @@ def GetBinning(var,min_bin,max_bin,num_bins,log=False,round=1,final_bin_start=No
 all_ch_variables = [
                     GetBinning('mt_tot',20,3200,50,log=True,round=1,final_bin_start=1000),
                     GetBinning('m_vis',20,3200,50,log=True,round=1,final_bin_start=1000),
+                    GetBinning('svfit_mass',20,3200,50,log=True,round=1,final_bin_start=1000),
                     GetBinning('met',10,600,40,log=True,round=1,final_bin_start=None),
                     'n_jets[0,1,>=2]',
                     'n_prebjets[0,1,>=2]', 
                     'n_deepbjets[0,>=1]',
-                    GetBinning('mt_1',0,400,40,log=False,round=1,final_bin_start=None),
-                    GetBinning('mt_2',0,400,40,log=False,round=1,final_bin_start=None),
-                    GetBinning('mt_lep',0,400,40,log=False,round=1,final_bin_start=None),
-                    #GetBinning('eta_1',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
-                    #GetBinning('eta_2',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
-                    #GetBinning('met_dphi_1',0,3.2,40,log=False,round=0.05,final_bin_start=None),
-                    #GetBinning('met_dphi_2',0,3.2,40,log=False,round=0.05,final_bin_start=None),
-                    #GetBinning('dphi',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('mt_1',0,500,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('mt_2',0,500,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('mt_lep',0,500,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('eta_1',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('eta_2',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('met_dphi_1',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('met_dphi_2',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    GetBinning('dphi',0,3.2,40,log=False,round=0.05,final_bin_start=None),
+                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    'mva_dm_2[==0,==1,==2,==10,==11]',
+                    GetBinning('jpt_1',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('jpt_2',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('pt_vis',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('pt_tt',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('mjj',0,500,40,log=False,round=1,final_bin_start=None),
+                    GetBinning('dijetpt',30,600,40,log=True,round=1,final_bin_start=None),
+                    GetBinning('jdeta',0,6.0,40,log=False,round=0.05,final_bin_start=None),
                     ]
 
 
@@ -102,6 +112,9 @@ ch_dep_var = {"mt":[
               "tt":[
                     GetBinning('pt_1',40,600,40,log=True,round=1,final_bin_start=None),
                     GetBinning('pt_2',40,600,40,log=True,round=1,final_bin_start=None),
+                    'tau_decay_mode_1[==0,==1,==10,==11]',
+                    'mva_dm_1[==0,==1,==2,==10,==11]',
+
                     ]
               }
 
@@ -170,14 +183,19 @@ for year in years:
         elif '(' in var: var_string = var.split('(')[0]
    
         cfg = config_files[year]
-        run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\' --ml_ff' % vars()
+        #run_cmd = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\'' % vars()
+
 
         if eval(args.add_systs):
           run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
           run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --do_custom_uncerts --add_stat_to_syst --do_ff_syst' % vars()
         else:
-          run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure' % vars()
-          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure' % vars()
+          run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --ml_ff --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\'' % vars()
+          run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --ml_ff --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\'' % vars()
+          #run_cmd_w_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --w_ff_closure --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\'' % vars()
+          #run_cmd_qcd_closure = 'python %(cmssw_base)s/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' %(add_options)s --qcd_ff_closure --folder=/vols/cms/gu18/Offline/output/MSSM/reweight_ff_2017_v2 --embed_folder=\'\'' % vars()
+
 
         run_list = []
         if channel in ["et","mt"]: 
@@ -240,7 +258,7 @@ for year in years:
 
           extra_name = '%(var_string)s%(add_name)s' % vars()
           cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s %(wt)s' % vars()
-          if var_string in ["mt_tot","m_vis","pt_1","pt_2","met"]: cmd += ' --log_x'
+          if var_string in ["mt_tot","m_vis","pt_1","pt_2","met","svfit_mass","jpt_1","jpt_2","pt_vis","pt_tt","dijetpt"]: cmd += ' --log_x'
           job_file = '%(cmssw_base)s/%(output)s/jobs/mssm_control_plot_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
           if os.path.exists(job_file): os.system('rm %(job_file)s' % vars())
           os.system('echo "#!/bin/bash" >> %(job_file)s' % vars())

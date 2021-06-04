@@ -164,27 +164,27 @@
     "evt": 92702899
   },
   "GluGluHToTauTau_M-125": {
-    "xs": 3.045966,
+    "xs": 2.998464,
     "evt": 11910929
   },
   "GluGluHToTauTau_M-125-ext": {
-    "xs": 3.045966,
+    "xs": 2.998464,
     "evt": 11910929
   },
   "VBFHToTauTau_M-125": {
-    "xs": 0.2371,
+    "xs": 0.2340414,
     "evt": 2963366
   },
   "WminusHToTauTau_M-125": {
-    "xs": 0.03340,
+    "xs": 0.032728576,
     "evt": 3657584
   },
   "WplusHToTauTau_M-125": {
-    "xs": 0.05266,
+    "xs": 0.0516077,
     "evt": 3777578
   },
   "ZHToTauTau_M-125": {
-    "xs": 0.05542,
+    "xs": 0.054425536,
     "evt": 4652054
   },
   "GluGluHToWWTo2L2Nu_M-125": {

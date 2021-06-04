@@ -1381,7 +1381,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       else if (is_embedded_) {
         auto args_dm_1 = std::vector<double>{decay_mode_1};
         tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium"]->eval(args_dm_1.data()) : 1.0;
-        tau_sf_highpt_1 = (gen_match_2==5&&pt_1>100) ? fns_["t_deeptauid_highpt_embed"]->eval(args_pt_1.data()) : 1.0;
+        tau_sf_highpt_1 = (gen_match_1==5&&pt_1>100) ? fns_["t_deeptauid_highpt_embed"]->eval(args_pt_1.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm10_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_embed_medium_dm10_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
