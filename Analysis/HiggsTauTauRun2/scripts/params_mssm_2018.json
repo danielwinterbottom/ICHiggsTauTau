@@ -152,7 +152,7 @@
     "evt": 95543038
   },
   "GluGluHToTauTau_M-125": {
-    "xs": 3.045966,
+    "xs": 2.998464,
     "evt": 12409035
   },
   "GluGluHToWWTo2L2Nu_M-125": {
@@ -240,7 +240,7 @@
     "evt": 989490
   },
   "VBFHToTauTau_M-125-ext1": {
-    "xs": 0.2371,
+    "xs": 0.2340414,
     "evt": 2916340
   },
   "VBFHToWWTo2L2Nu_M-125": {
@@ -256,7 +256,7 @@
     "evt": 998128
   },
   "WminusHToTauTau_M-125": {
-    "xs": 0.03340656,
+    "xs": 0.032728576,
     "evt": 3502830
   },
   "WplusHToTauTauUncorrelatedDecay": {
@@ -268,7 +268,7 @@
     "evt": 3502830
   },
   "WplusHToTauTau_M-125": {
-    "xs": 0.052668,
+    "xs": 0.0516077,
     "evt": 3573548
   },
   "ZHToTauTauUncorrelatedDecay_Filtered": {
@@ -276,11 +276,11 @@
     "evt": 3573548
   },
   "ZHToTauTau_M-125": {
-    "xs": 0.05542,
+    "xs": 0.054425536,
     "evt": 4425913
   },
   "ttHiggs0MToTauTau": {
-    "xs": 0.0318,
+    "xs": 0.031244864,
     "evt": 4425913
   },
   "ttHiggs0Mf05ph0ToTauTau": {

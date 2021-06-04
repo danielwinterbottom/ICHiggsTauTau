@@ -236,7 +236,7 @@
     "evt": 492200
   },
   "GluGluToHToTauTau_M-125": {
-    "xs": 3.045966,
+    "xs": 2.998464,
     "evt": 9673200
   },
   "JJH0PMToTauTauPlusZeroJets": {
@@ -320,7 +320,7 @@
     "evt": 9673200
   },
   "VBFHToTauTau_M-125": {
-    "xs": 0.2371,
+    "xs": 0.2340414,
     "evt": 1497048
   },
   "VBFHToWWTo2L2Nu_M-125": {
@@ -336,7 +336,7 @@
     "evt": 498440
   },
   "WminusHToTauTau_M-125": {
-    "xs": 0.03340,
+    "xs": 0.032728576,
     "evt": 420456
   },
   "WplusHToTauTauUncorrelatedDecay": {
@@ -348,7 +348,7 @@
     "evt": 420456
   },
   "WplusHToTauTau_M-125": {
-    "xs": 0.05266,
+    "xs": 0.0516077,
     "evt": 411462
   },
   "ZHToTauTauUncorrelatedDecay": {
@@ -360,11 +360,11 @@
     "evt": 411462
   },
   "ZHToTauTau_M-125": {
-    "xs": 0.05542,
+    "xs": 0.054425536,
     "evt": 563177
   },
   "ttHiggs0MToTauTau": {
-    "xs": 0.0318,
+    "xs": 0.031244864,
     "evt": 563177
   },
   "ttHiggs0Mf05ph0ToTauTau": {
@@ -932,15 +932,15 @@
     "evt": 968546
   },
   "SingleElectron": {
-    "lumi": 35920
+    "lumi": 36330
   },
   "SingleMuon": {
-    "lumi": 35920
+    "lumi": 36330
   },
   "Tau": {
-    "lumi": 35920
+    "lumi": 36330
   },
   "MuonEG": {
-    "lumi": 35920
+    "lumi": 36330
   }
 }
