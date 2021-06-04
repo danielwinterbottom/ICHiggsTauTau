@@ -124,12 +124,16 @@ if __name__ == '__main__':
     # private sample for 200 GeV
     tasks.append(('SUSYGluGluToBBHToTauTau_M-200_powheg','/bbh_m200_GENSIM-v2/dwinterb-bbH_m200_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
 
+    tasks.append(('SUSYGluGluToHToTauTau_M-95_powheg', '/ggh_m95_GENSIM_2018/dwinterb-ggh_m95_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+
+    tasks.append(('VBFHToTauTau_M-95', '/vbf_m95_GENSIM_2018/dwinterb-vbf_m95_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+
     for task in tasks:
         print(task[0])
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
 
-        if task[0] == 'SUSYGluGluToBBHToTauTau_M-200_powheg':
+        if task[0] in ['SUSYGluGluToBBHToTauTau_M-200_powheg','SUSYGluGluToHToTauTau_M-95_powheg','VBFHToTauTau_M-95']:
           config.Data.inputDBS = 'phys03'
         else: 
           config.Data.inputDBS = 'global'

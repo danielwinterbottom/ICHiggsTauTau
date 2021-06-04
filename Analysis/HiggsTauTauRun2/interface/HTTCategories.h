@@ -81,6 +81,7 @@ class HTTCategories : public ModuleBase {
   double wt_tau_fake_down_;
   double wt_tquark_up_;
   double wt_tquark_down_;
+  double wt_tquark_alt_;
   double wt_zpt_up_;
   double wt_zpt_down_;
   double wt_efake_rate_up_;
@@ -248,6 +249,7 @@ class HTTCategories : public ModuleBase {
   float dijetpt_;
   float jmva_1_; 
   float jmva_2_; 
+  float jnemfrac_1_;
 
   branch_var bpt_1_;     // Defined if n_bjets >= 1
   branch_var beta_1_;    // Defined if n_bjets >= 1

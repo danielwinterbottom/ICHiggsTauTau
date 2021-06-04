@@ -979,6 +979,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
   if (do_topquark_weights_) {
     double top_wt = 1.0;
+    double top_wt_alt = 1.0;
     double top_wt_up = 1.0;
     double top_wt_down = 1.0;
     std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -988,8 +989,10 @@ int HTTWeights::Execute(TreeEvent *event) {
       if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
         double pt = parts[i]->pt();
         pt = std::min(pt, 472.);
+        double pt_max2000 = std::min(parts[i]->pt(), 2000.);
         double a = 0.088, b = -0.00087, c = 9.2e-07;
-        top_wt *= std::exp(a + b * pt + c * pt*pt); 
+        top_wt *= std::exp(a + b * pt + c * pt*pt);
+        top_wt_alt *= 0.103*std::exp(-0.0118*pt_max2000) - 0.000134*pt_max2000 + 0.973; 
       }
     }
         
@@ -998,6 +1001,7 @@ int HTTWeights::Execute(TreeEvent *event) {
     top_wt_down = 1.0;
     event->Add("wt_tquark_up", top_wt_up / top_wt);
     event->Add("wt_tquark_down", top_wt_down / top_wt);
+    event->Add("wt_tquark_alt", top_wt_alt / top_wt);
     eventInfo->set_weight("topquark_weight", top_wt);
   }
   

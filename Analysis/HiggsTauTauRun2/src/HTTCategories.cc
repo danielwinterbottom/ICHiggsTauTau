@@ -1089,6 +1089,7 @@ namespace ic {
       outtree_->Branch("trg_etau_matched", &trg_etau_matched_);
       outtree_->Branch("jpt_1",             &jpt_1_.var_double);
       outtree_->Branch("jpt_2",             &jpt_2_.var_double);
+      outtree_->Branch("jnemfrac_1",             &jnemfrac_1_);
       outtree_->Branch("jeta_1",            &jeta_1_.var_double);
       outtree_->Branch("jeta_2",            &jeta_2_.var_double);
       outtree_->Branch("jmva_1",             &jmva_1_);
@@ -1130,6 +1131,7 @@ namespace ic {
         
       outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
       outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+      outtree_->Branch("wt_tquark_alt",      &wt_tquark_alt_);
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -2370,6 +2372,7 @@ namespace ic {
     wt_tau_fake_down_ = 1.0;
     wt_tquark_up_ = 1.0;
     wt_tquark_down_ = 1.0;
+    wt_tquark_alt_ = 1.0;
     wt_zpt_up_ = 1.0;
     wt_zpt_down_ = 1.0;
     wt_em_qcd_ = 1.0;
@@ -2381,6 +2384,7 @@ namespace ic {
     if (event->Exists("wt_tau_fake_down"))  wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
+    if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
@@ -2963,6 +2967,7 @@ namespace ic {
  
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
+      jnemfrac_1_=lowpt_jets[0]->neutral_em_energy_frac();
       jeta_1_ = lowpt_jets[0]->eta();
       jphi_1_ = lowpt_jets[0]->phi();
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();

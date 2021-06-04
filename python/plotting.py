@@ -2222,8 +2222,8 @@ def HTTPlot(nodename,
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], True ) 
     sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['smsummer17'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"],False)
-    sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
-    sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
+    sig_schemes['run2_mssm'] = ( '('+str(int(signal_scale))+" pb) gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+    sig_schemes['run2_mssm_bbH'] = ( '('+str(int(signal_scale))+" pb) bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
 
     sig_schemes['sm_cp'] = ( str(int(signal_scale))+"#times SM ggH#rightarrow#tau#tau", ["ggH_sm_htt"], False )
@@ -2726,7 +2726,9 @@ def HTTPlot(nodename,
         sighists = dict()
 
         signal_split_schemes = ""
-        if ggh_scheme == 'powheg':
+        if signal_scheme == 'run2_mssm':
+            signal_split_schemes = ['run2_mssm','run2_mssm_bbH']
+        elif ggh_scheme == 'powheg':
             signal_split_schemes = ['sm_ggH','sm_qqH']
             # signal_split_schemes = ['sm_cp_decays','sm_cp_decays_ps']
         elif ggh_scheme == "tauspinner":
@@ -2749,9 +2751,9 @@ def HTTPlot(nodename,
                     else:
                         sighists[split_scheme].Add(h)
 
-                if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays','sm_cp_decays_ggh']:
+                if split_scheme in ['sm_cp','sm_ggH','sm_cp_decays','sm_cp_decays_ggh','run2_mssm']:
                     sighists[split_scheme].SetLineColor(R.kRed)
-                elif split_scheme in ['sm_qqH','sm_cp_decays_qqh']:
+                elif split_scheme in ['sm_qqH','sm_cp_decays_qqh','run2_mssm_bbH']:
                     sighists[split_scheme].SetLineColor(R.TColor.GetColor(51,51,230))
                 elif split_scheme in ['sm_ps','sm_cp_decays_ps']:
                     sighists[split_scheme].SetLineColor(R.kGreen+3)
@@ -2844,7 +2846,7 @@ def HTTPlot(nodename,
 
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.03) 
+    legend = PositionedLegend(0.37,0.3,3,0.05) 
     #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
