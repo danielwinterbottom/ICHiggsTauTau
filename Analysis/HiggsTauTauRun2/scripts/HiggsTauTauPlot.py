@@ -1878,7 +1878,6 @@ if options.analysis == 'mssmrun2':
   if options.era == 'cp18':
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
                    'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125-ext1',
                    #'ZH125' : 'ZHToTauTau_M-125',
@@ -1893,7 +1892,6 @@ if options.analysis == 'mssmrun2':
   elif options.era == 'cpsummer17':
     sm_samples = { 'ggH125_SM' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
                    'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
                    'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
@@ -1908,7 +1906,6 @@ if options.analysis == 'mssmrun2':
   elif options.era == 'legacy16':
     sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
                    'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'ggH95' : 'SUSYGluGluToHToTauTau_M-95_powheg',
                    'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
