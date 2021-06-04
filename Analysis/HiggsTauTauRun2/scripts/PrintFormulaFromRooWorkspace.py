@@ -36,7 +36,6 @@ def GetFormula(func,total_func,RooFuncList,it_2):
   return func_str,RooFuncList
 
 print "Getting Function for {}:{}".format(input,function)
-print ""
 
 f = ROOT.TFile(input)
 w = f.Get("w")
