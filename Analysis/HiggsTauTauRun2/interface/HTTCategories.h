@@ -266,6 +266,7 @@ class HTTCategories : public ModuleBase {
   double aco_angle_6_;
   double aco_angle_7_;
   double pv_angle_;
+  double pv_angle_new_;
   double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
   bool hasSV_2_;
@@ -882,15 +883,6 @@ class HTTCategories : public ModuleBase {
   double gen_nu_phi_2_;
   double gen_nu_eta_1_;
   double gen_nu_eta_2_;
-
-  double gen_vis_p_1_;
-  double gen_vis_p_2_;
-  double gen_vis_E_1_;
-  double gen_vis_E_2_;
-  double gen_vis_phi_1_;
-  double gen_vis_phi_2_;
-  double gen_vis_eta_1_;
-  double gen_vis_eta_2_;
 
  public:
   HTTCategories(std::string const& name);
