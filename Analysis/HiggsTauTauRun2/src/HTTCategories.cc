@@ -13,6 +13,8 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/test/pola_module.hpp"
+
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
         return cos(x)*cos(x)*sm + sin(x)*sin(x)*ps + 2*cos(x)*sin(x)*(mm-sm/2-ps/2);
@@ -726,6 +728,7 @@ namespace ic {
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("pv_angle", &pv_angle_);
+      outtree_->Branch("pv_angle_new", &pv_angle_new_);
 
       outtree_->Branch("sv_x_2", &sv_x_2_);
       outtree_->Branch("sv_y_2", &sv_y_2_);
@@ -2693,6 +2696,7 @@ namespace ic {
     aco_angle_6_=-9999.;
     aco_angle_7_=-9999.;
     pv_angle_=-9999.;
+    pv_angle_new_=-9999.;
     sv_x_2_=0.;
     sv_y_2_=-0.;
     sv_z_2_=0.;
@@ -3360,6 +3364,18 @@ namespace ic {
 
             TLorentzVector lvec5 = ConvertToLorentz(a1_daughters[2]->vector());
 
+            std::vector<TLorentzVector> pis_a1 = {
+                  ConvertToLorentz(a1_daughters[0]->vector()),
+                  ConvertToLorentz(a1_daughters[1]->vector()),
+                  ConvertToLorentz(a1_daughters[2]->vector())
+            };
+
+            TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);
+ 
+            std::vector<TLorentzVector> pis = {lvec3};
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 0);
+          
+
           }
 
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip);
@@ -3442,6 +3458,17 @@ namespace ic {
             cp_sign_2_ = y_1_1_*y_2_2_;
             cp_sign_3_ = y_1_1_*y_3_2_;
             cp_sign_4_ = y_1_1_*y_4_2_;
+
+            std::vector<TLorentzVector> pis_a1 = {
+                  ConvertToLorentz(a1_daughters[0]->vector()),
+                  ConvertToLorentz(a1_daughters[1]->vector()),
+                  ConvertToLorentz(a1_daughters[2]->vector())
+            };
+
+            TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);           
+
+            std::vector<TLorentzVector> pis = {lvec3};
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 1);
         }   
 
         if (cp_sign_1_<0) {
@@ -3533,6 +3560,8 @@ namespace ic {
           };
 
           pv_angle_=PolarimetricA1A1(svminuspv_1, svminuspv_2, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
+
+          pv_angle_new_ = ic::getPV_angle_pola(pis_1, pis_2, svminuspv_1, svminuspv_2, metx_, mety_);
         } else pv_angle_=-9999;
 
         if(a1_daughters_1.size()>2 && a1_daughters_2.size()>2) {
