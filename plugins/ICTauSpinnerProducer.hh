@@ -4,6 +4,9 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <TFile.h>
+#include <TTree.h>
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,6 +18,7 @@
 #include "TauSpinner/SimpleParticle.h"
 #include "TauSpinner/tau_reweight_lib.h"
 #include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
+#include <TRandom3.h>
 
 
 enum pdgId {
@@ -68,6 +72,16 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   int nonSM2;
   int nonSMN;
   double CMSENE;
+  
+  TRandom3 rndm;
+  std::ofstream outFile;
+  TFile *rootFile;
+  TTree *outTree;
+  double *weight1Array;
+  double *weight2Array;
+  double smearingArray[6];
+  double tau1DaughtersArray[10][5];
+  double tau2DaughtersArray[10][5];
 };
 
 #endif
