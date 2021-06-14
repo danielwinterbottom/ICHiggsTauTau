@@ -267,6 +267,7 @@ class HTTCategories : public ModuleBase {
   double aco_angle_7_;
   double pv_angle_;
   double pv_angle_new_;
+  double pv_angle_new_test_;
   double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
   bool hasSV_2_;
