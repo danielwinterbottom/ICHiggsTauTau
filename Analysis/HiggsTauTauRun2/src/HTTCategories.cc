@@ -4032,16 +4032,18 @@ namespace ic {
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         a1_daughters  = GetA1(tau2, pfcands).first;
         
-        std::vector<TLorentzVector> pis_a1 = {
+        
+
+        if (a1_daughters.size()>2){
+            
+            std::vector<TLorentzVector> pis_a1 = {
                   ConvertToLorentz(a1_daughters[0]->vector()),
                   ConvertToLorentz(a1_daughters[1]->vector()),
                   ConvertToLorentz(a1_daughters[2]->vector())
             };
         
-        //The muon 4 vector which we treat in the same way as the pion
-        std::vector<TLorentzVector> pis = {lvec3};
-
-        if (a1_daughters.size()>2){
+            //The muon 4 vector which we treat in the same way as the pion
+            std::vector<TLorentzVector> pis = {lvec3};
 
             if(tau2->hasSV()) {
 
@@ -4409,17 +4411,15 @@ namespace ic {
         std::vector<ic::PFCandidate*> a1_daughters;
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         a1_daughters  = GetA1(tau2, pfcands).first;
-        
-        std::vector<TLorentzVector> pis_a1 = {
+
+        if (a1_daughters.size()>2){
+            
+            std::vector<TLorentzVector> pis_a1 = {
                   ConvertToLorentz(a1_daughters[0]->vector()),
                   ConvertToLorentz(a1_daughters[1]->vector()),
                   ConvertToLorentz(a1_daughters[2]->vector())
             };
-                
-        
-        std::vector<TLorentzVector> pis = {lvec3};
-
-        if (a1_daughters.size()>2){
+            std::vector<TLorentzVector> pis = {lvec3};
 
             lvec2 = ConvertToLorentz(a1_daughters[0]->vector()); //pi zero from rho
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
