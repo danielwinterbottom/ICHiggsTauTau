@@ -208,146 +208,83 @@ namespace ic
 		return Scalc.AcopAngle("a1", "a1", Tauminus, pis_1, charges_1, Tauplus, pis_2, charges_2);
   }
 	
-	double getIPPV_angle(std::vector<TLorentzVector> sumPionsMinus, TLorentzVector IP_vect_1, int mva_dm1,
-	                     std::vector<TLorentzVector> sumPionsPlus, TLorentzVector IP_vect_2, int mva_dm2)
+	double getIPPV_angle(std::vector<TLorentzVector> listPionsA1,
+	                          std::vector<TLorentzVector> listPionsX, TLorentzVector IP_vect_X, bool IsRho)
+    //to get the new, IPPV variable for either a1-rho, rho-a1, a1-pi, pi-a1, e-a1 or mu-a1
+    // we always have a1 first
 	{
 		//Tauminus(plus) are here only the visible decay products summed up
-		TLorentzVector Tauminus;
-		for(auto pi : sumPionsMinus)
+		TLorentzVector TauA1;
+		for(auto pi : listPionsA1)
 		{
-			Tauminus += pi;
+			TauA1 += pi;
 		}
 		
-		TLorentzVector Tauplus;
-		for(auto pi : sumPionsPlus)
+		TLorentzVector TauX;
+		for(auto pi : listPionsX)
 		{
-			Tauplus += pi;
+			TauX += pi;
 		}
 		
-		if ((mva_dm1 == 10) && (mva_dm2 == 0 || mva_dm2 == 1))
-		{
-			std::vector<TLorentzVector> tauandprodminus;
-			TLorentzVector a1 = Tauminus;
-			//The charged pion is used  for forming the planes
-			TLorentzVector pi = sumPionsPlus.at(0);
-			
-			//Always working in the frame of the a1-pi/rho
-			TLorentzVector ZMF = a1 + Tauplus;
-			
-			//Get the pv direction for the a1
-			SCalculator Scalc1("a1");
-			tauandprodminus.push_back(Tauminus);
-			for(unsigned int i=0; i<sumPionsMinus.size();i++) {
-				tauandprodminus.push_back(sumPionsMinus.at(i));
-			}
-			Scalc1.Configure(tauandprodminus, Tauminus+Tauplus, -1);
-			TVector3 pv_vect=Scalc1.pv();
-			TVector3 PV_vect_ZMF = pv_vect.Unit();
-			
-			//in lab frame we have the direction of the pion/rho, of the a1 of the IP
-			TLorentzVector IP = IP_vect_2;
+		std::vector<TLorentzVector> tauandprodA1;
+		TLorentzVector a1 = TauA1;
+		//Always working in the frame of the a1-pi/rho
+		TLorentzVector ZMF = a1 + TauX;
+		
+		//Get the pv direction for the a1
+		SCalculator Scalc1("a1");
+		tauandprodA1.push_back(TauA1);
+		for(unsigned int i=0; i<listPionsA1.size();i++) {
+		    tauandprodA1.push_back(listPionsA1.at(i));
+		}
+		Scalc1.Configure(tauandprodA1, TauA1+TauX, -1);
+		TVector3 pv_vect=Scalc1.pv();
+		TVector3 PV_vect_ZMF = pv_vect.Unit();
+		
+		//in lab frame we have the direction of the pion/rho, of the a1 of the IP
+		TLorentzVector IP = IP_vect_X;
+        //The charged pion is used  for forming the planes
+		TLorentzVector pi = listPionsX.at(0);
 
-			//form 4vectors, boost everything in visible decay products frame then take directions
-			TLorentzVector IP_ZMF(Scalc1.Boost(IP, ZMF));
-			TLorentzVector pi_ZMF(Scalc1.Boost(pi, ZMF));
-			TLorentzVector a1_ZMF(Scalc1.Boost(a1, ZMF));
-			TVector3 IP_vect_ZMF(IP_ZMF.Vect()); 
-			TVector3 pi_vect_ZMF(pi_ZMF.Vect());
-			TVector3 a1_vect_ZMF(a1_ZMF.Vect());
-			
-			
-			//Calulate the appropriate angles
-			TVector3 h1 = PV_vect_ZMF;
-			TVector3 h2 = IP_vect_ZMF;
-			TVector3 tauminus_HRF = a1_vect_ZMF;
-			TVector3 tauplus_HRF = pi_vect_ZMF;
-			TVector3 k1 = (h1.Cross(tauminus_HRF.Unit())).Unit();
-			TVector3 k2 = (h2.Cross(tauplus_HRF.Unit())).Unit();
-			double angle = -9999;
-			//this performs the O shift
-			if(((h1.Cross(h2))*(tauminus_HRF.Unit()))<=0){
-				angle = TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2);}
-			else{
-				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
-			
-			//in case of an a1-rho decay we need to perform the y shift for polarisation states
-			if ((mva_dm2 == 1) && (!isnan(angle))){
-				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
-				if (y < 0 ){
-					if (angle < TMath::Pi()){
-						angle = angle + TMath::Pi();
-					}
-					else {
-						angle = angle - TMath::Pi();
-					}
-				}
-			}
-			
-			if (isnan(angle)){
-				angle = -9999;
-			}
-			return angle;
-		}
+		//form 4vectors, boost everything in visible decay products frame then take directions
+		TLorentzVector IP_ZMF(Scalc1.Boost(IP, ZMF));
+		TLorentzVector pi_ZMF(Scalc1.Boost(pi, ZMF));
+		TLorentzVector a1_ZMF(Scalc1.Boost(a1, ZMF));
+		TVector3 IP_vect_ZMF(IP_ZMF.Vect()); 
+		TVector3 pi_vect_ZMF(pi_ZMF.Vect());
+		TVector3 a1_vect_ZMF(a1_ZMF.Vect());
 		
-		//Similar logic with subleading a1
-		if ((mva_dm1 == 0 || mva_dm1 == 1) && (mva_dm2 == 10))
-		{
-			std::vector<TLorentzVector> tauandprodplus;
-			TLorentzVector a1 = Tauplus;
-			TLorentzVector pi = sumPionsMinus.at(0);
-			TLorentzVector ZMF = a1 + Tauminus;
-			SCalculator Scalc1("a1");
-			tauandprodplus.push_back(Tauplus);
-			for(unsigned int i=0; i<sumPionsPlus.size();i++) {
-				tauandprodplus.push_back(sumPionsPlus.at(i));
-			}
-			
-			Scalc1.Configure(tauandprodplus, Tauminus+Tauplus, -1);
-			TVector3 pv_vect=Scalc1.pv();
-			TVector3 PV_vect_ZMF = pv_vect.Unit();
-			TLorentzVector IP = IP_vect_1;
-			
-			TLorentzVector IP_ZMF(Scalc1.Boost(IP, ZMF));
-			TLorentzVector pi_ZMF(Scalc1.Boost(pi, ZMF));
-			TLorentzVector a1_ZMF(Scalc1.Boost(a1, ZMF));
-			TVector3 IP_vect_ZMF(IP_ZMF.Vect()); 
-			TVector3 pi_vect_ZMF(pi_ZMF.Vect());
-			TVector3 a1_vect_ZMF(a1_ZMF.Vect());
-
-			TVector3 h2 = PV_vect_ZMF;
-			TVector3 h1 = IP_vect_ZMF;
-			TVector3 tauplus_HRF = a1_vect_ZMF;
-			TVector3 tauminus_HRF = pi_vect_ZMF;
-			TVector3 k1 = (h1.Cross(tauminus_HRF.Unit())).Unit();
-			TVector3 k2 = (h2.Cross(tauplus_HRF.Unit())).Unit();
-			double angle = -9999;  
-			//this is the bigO shift
-			if(((h1.Cross(h2))*(tauminus_HRF.Unit()))<=0){
-				angle = TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2);}
-				
-			else{
-				angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
-			//in case of an a1-rho decay we need to perform the y shift for polarisation states
-			if ((mva_dm1 == 1) && (!isnan(angle))){
-				double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
-				if (y < 0 ){
-					if (angle < TMath::Pi()){
-						angle = angle + TMath::Pi();
-					}
-					else {
-						angle = angle - TMath::Pi();
-					}
-				}
-			}
-			
-			if (isnan(angle)){
-				angle = -9999;
-			}
-			return angle;
-			}
+		//Calulate the appropriate angles
+		TVector3 h1 = PV_vect_ZMF;
+		TVector3 h2 = IP_vect_ZMF;
+		TVector3 tauA1_HRF = a1_vect_ZMF;
+		TVector3 tauX_HRF = pi_vect_ZMF;
+		TVector3 k1 = (h1.Cross(tauA1_HRF.Unit())).Unit();
+		TVector3 k2 = (h2.Cross(tauX_HRF.Unit())).Unit();
+		double angle = -9999;
+		//this performs the O shift
+		if(((h1.Cross(h2))*(tauA1_HRF.Unit()))<=0){
+		    angle = TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2);}
 		else{
-			return -9999;
+		    angle = (2.*TMath::Pi()-TMath::ATan2((k1.Cross(k2)).Mag(),k1*k2));}
+		
+		//in case of an a1-rho decay we need to perform the y shift for polarisation states
+		if ((IsRho) && (!isnan(angle))){
+		    double y = (IP_ZMF.E() - pi_ZMF.E()) / (IP_ZMF.E() + pi_ZMF.E());
+		    if (y < 0 ){
+				if (angle < TMath::Pi()){
+				    angle = angle + TMath::Pi();
+				}
+				else {
+				    angle = angle - TMath::Pi();
+				}
+		    }
 		}
+		
+		if (isnan(angle)){
+		    angle = -9999;
+		}
+		return angle;
 	}
 	
 	

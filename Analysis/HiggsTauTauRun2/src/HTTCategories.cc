@@ -14,7 +14,6 @@
 #include "TLorentzVector.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/test/pola_module.hpp"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/test/pola_module_test.hpp"
 
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
@@ -730,7 +729,6 @@ namespace ic {
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("pv_angle", &pv_angle_);
       outtree_->Branch("pv_angle_new", &pv_angle_new_);
-      outtree_->Branch("pv_angle_new_test", &pv_angle_new_test_);
 
       outtree_->Branch("sv_x_2", &sv_x_2_);
       outtree_->Branch("sv_y_2", &sv_y_2_);
@@ -2741,7 +2739,6 @@ namespace ic {
     aco_angle_7_=-9999.;
     pv_angle_=-9999.;
     pv_angle_new_=-9999.;
-    pv_angle_new_test_=-9999.;
     sv_x_2_=0.;
     sv_y_2_=-0.;
     sv_z_2_=0.;
@@ -3418,8 +3415,7 @@ namespace ic {
             TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);
  
             std::vector<TLorentzVector> pis = {lvec3};
-            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 0);
-            pv_angle_new_test_ = ic::getIPPV_angle_test(pis_a1, pis, lvec1, false);
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, pis, lvec1, false);
           
 
           }
@@ -3514,8 +3510,7 @@ namespace ic {
             TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);           
 
             std::vector<TLorentzVector> pis = {lvec3};
-            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 1);
-            pv_angle_new_test_ = ic::getIPPV_angle_test(pis_a1, pis, lvec1, true);
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, pis, lvec1, true);
         }   
 
         if (cp_sign_1_<0) {
@@ -3607,9 +3602,8 @@ namespace ic {
           };
 
           pv_angle_=PolarimetricA1A1(svminuspv_1, svminuspv_2, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
-
+          
           pv_angle_new_ = ic::getPV_angle_pola(pis_1, pis_2, svminuspv_1, svminuspv_2, metx_, mety_);
-          pv_angle_new_test_ = ic::getPV_angle_pola(pis_1, pis_2, svminuspv_1, svminuspv_2, metx_, mety_);
         } else pv_angle_=-9999;
 
         if(a1_daughters_1.size()>2 && a1_daughters_2.size()>2) {
@@ -4066,7 +4060,7 @@ namespace ic {
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
             aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
             aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
-            pv_angle_new_test_ = ic::getIPPV_angle_test(pis_a1, pis, lvec1, false);
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, pis, lvec1, false);
 
             double cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
 
@@ -4425,7 +4419,7 @@ namespace ic {
             lvec4 = ConvertToLorentz(a1_daughters[1]->vector()); //pi charge from rho
             aco_angle_5_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
             aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);
-            pv_angle_new_test_ = ic::getIPPV_angle_test(pis_a1, pis, lvec1, false);
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, pis, lvec1, false);
 
             double cp_sign_ = YRho(std::vector<Candidate*>({a1_daughters[0], a1_daughters[1]}),TVector3());
 
