@@ -117,7 +117,8 @@ git config --global user.github [GitHub account name]
 #If you are running at IC you also need to do: git config --global http.sslVerify false
 #This extra line is not needed at CERN. Anywhere else if you see a fatal error message relating to SSL certificate problems it may be required
 
-<p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
+<p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.c
+<p> You also need to follow the instructions here to create and add a ssh key: <a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh">https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh</a></p>
 <p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc7_amd64_gcc700
 # The SCRAM_ARCH parameter will depend on what CMSSW release you are trying to use. For both using the analyser and ntuple production we currently use CMSSW_10_2_19 which uses slc7_amd64_gcc700 as above
 scramv1 project CMSSW CMSSW_10_2_19
