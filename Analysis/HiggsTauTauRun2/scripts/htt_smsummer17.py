@@ -174,11 +174,10 @@ signal_mc = [ ]
 signal_vh = [ ] 
 signal_mc_ww = [ ]
 
-if os.path.isfile("./jobs/files_per_sample.txt"):
-  os.system("mv ./jobs/files_per_sample.txt ./jobs/files_per_sample-%(BACKUPNAME)s.txt"%vars())
+if os.path.isfile("./jobs/files_per_sample_2017.txt"):
+    os.system("mv ./jobs/files_per_sample_2017.txt ./jobs/files_per_sample_2017-%(BACKUPNAME)s.txt"%vars())
 
-file_persamp = open("./jobs/files_per_sample.txt", "w")
-
+file_persamp = open("./jobs/files_per_sample_2017.txt", "w")
 
 if options.proc_sm or options.proc_all:
     signal_mc += [
