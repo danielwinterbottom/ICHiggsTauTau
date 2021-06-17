@@ -65,7 +65,7 @@
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/May11_2018_PFMET/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2018_myFF/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2018_fixFF/",
-    "output_folder" : "/vols/cms/ac4317/UROP_2021/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output/outputOnlyTT/",
+    "output_folder" : "/vols/cms/ac4317/UROP_2021/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output/outputTT/",
     //"output_folder" : "gen_output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
