@@ -2314,11 +2314,15 @@ def HTTPlot(nodename,
                backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
                ],
             'et':[
-               backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+               backgroundComp("TTT",["TTT"],R.TColor.GetColor(155,152,204)),
+               backgroundComp("TTJ",["TTJ"],R.TColor.GetColor(59,49,196)),
                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-               backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
-               backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
-               backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+               backgroundComp("VVT",["VVT"],R.TColor.GetColor(255,178,102)),
+               backgroundComp("VVJ",["VVJ"],R.TColor.GetColor(203,124,19)),
+               backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+               backgroundComp("ZL",["ZL"],R.TColor.GetColor(100,192,232)),
+               backgroundComp("ZJ",["ZJ"],R.TColor.GetColor(14,97,132)),
+               backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
                ],
             'tt':[
                backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
