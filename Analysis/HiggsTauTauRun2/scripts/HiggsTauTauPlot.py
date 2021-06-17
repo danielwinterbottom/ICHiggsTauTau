@@ -4597,7 +4597,7 @@ def RenameMSSMrun2Datacards(outfile):
         directory.Delete(name+';1')
       #elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
         #directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name :
+      elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name and 'ggH95' not in name:
         directory.Delete(name+';1')
       elif not isinstance(histo,ROOT.TDirectory) and 'ggH125_SM' in name :
         new_name = name.replace('ggH125_SM', 'ggH125')
