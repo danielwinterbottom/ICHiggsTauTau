@@ -1,0 +1,13 @@
+*.pyc
+*.hdf5
+*.root
+*.txt
+*.pdf
+*.pkl
+*.xml
+*.log
+*.yaml
+*.pickle
+*.json
+*.dat
+*.h5
