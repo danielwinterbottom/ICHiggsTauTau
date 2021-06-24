@@ -63,6 +63,7 @@ def main(args):
         'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
         'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
         'JER_UP','JER_DOWN',
+        'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN',
     ]
 
     qsub_command = (
