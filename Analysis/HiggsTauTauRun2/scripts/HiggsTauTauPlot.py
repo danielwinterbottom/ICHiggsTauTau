@@ -492,7 +492,7 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1 && fabs(eta_1-eta_2)>0.2)||(trg_singleelectron&&pt_1>33)))&&wt<2'
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)))&&wt<2'
 
-elif options.analysis == 'mssmrun2':
+elif options.analysis in ['mssmrun2','vlq']:
     wp = options.wp
 
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
@@ -557,7 +557,7 @@ if options.channel == 'tt':
     if options.era in ['cpsummer17','cp18']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
-    if options.analysis in ['mssmrun2']:
+    if options.analysis in ['mssmrun2','vlq']:
       wp = options.wp
       if options.singletau:
         if options.era=='legacy16':
@@ -1535,7 +1535,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
         if options.era == "legacy16": 
           data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
-          if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH'] 
+          if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH'] 
     if options.channel == 'em':
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
         if options.era == "legacy16": data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
@@ -1543,7 +1543,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
         if options.era == "legacy16": 
           data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
-          if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+          if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
     if options.channel == 'tt':
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
         if options.era == "legacy16": data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
@@ -1553,7 +1553,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
     #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
-    if options.analysis == 'mssmrun2': top_samples = ['TT']
+    if options.analysis in ['mssmrun2','vlq']: top_samples = ['TT']
     else: top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
@@ -1629,13 +1629,13 @@ if options.era in ['cpsummer17','tauid2017']:
  
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-        if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
 
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
     if options.channel == 'et' or options.channel == 'zee': 
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-        if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF']
 
@@ -1679,12 +1679,12 @@ if options.era in ['cp18']:
  
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-        if options.analysis=='mssmrun2' and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'em':
         data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
     if options.channel == 'et' or options.channel == 'zee':
         data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
-        if options.analysis=='mssmrun2' and options.channel == 'et': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
@@ -1874,7 +1874,7 @@ if options.analysis in ['cpdecay']:
         "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
     }
 
-if options.analysis == 'mssmrun2':
+if options.analysis in ['mssmrun2','vlq']:
   if options.era == 'cp18':
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
@@ -2226,7 +2226,7 @@ if options.syst_scale_met != '':
     else:  
       systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
       systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)  
-      if options.embedding and options.analysis == 'mssmrun2': 
+      if options.embedding and options.analysis in ['mssmrun2','vlq']: 
         embed_hist_name='scale_embed_met_%s' % options.year 
         systematics['syst_scale_embed_met_up'] = ('MET_SCALE_UP' , '_'+embed_hist_name+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
         systematics['syst_scale_embed_met_down'] = ('MET_SCALE_DOWN' , '_'+embed_hist_name+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False) 
@@ -2267,7 +2267,7 @@ if options.syst_tau_id_diff != '':
 
     hist_name = options.syst_tau_id_diff
 
-    if options.analysis == 'mssmrun2':
+    if options.analysis in ['mssmrun2','vlq']:
       if '*' in hist_name:
         # add the usual pT binned uncerts for et and mt with pT<100 
         if options.channel in ['et','mt']:
@@ -2369,7 +2369,7 @@ if options.syst_tau_id_diff != '':
 if options.syst_lep_trg_diff != '':
   hist_name = options.syst_lep_trg_diff
   chan = options.channel
-  if options.analysis == 'mssmrun2':
+  if options.analysis in ['mssmrun2','vlq']:
     hist_name_bini_slt = hist_name.replace('*','trigger_%(chan)s' % vars())
     hist_name_bini_ct = hist_name.replace('*','xtrigger_l_%(chan)s' % vars())
     if chan in ["et"]:
@@ -2388,7 +2388,7 @@ if options.syst_tau_trg_diff != '':
     hist_name = options.syst_tau_trg_diff
     chan = options.channel
 
-    if options.analysis == 'mssmrun2':
+    if options.analysis in ['mssmrun2','vlq']:
       if '*'in hist_name:
 
         # single tau uncerts
@@ -2607,7 +2607,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
   systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
-if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis=='mssmrun2' and options.do_ff_systs:
+if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis in ['mssmrun2','vlq'] and options.do_ff_systs:
   ch = options.channel
   yr = options.year
   if options.channel in ['tt']:
@@ -2714,7 +2714,7 @@ systematics = OrderedDict(sorted(systematics.items(), key=lambda key: key[1]))
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
-    if options.analysis in ['sm','cpprod','cpdecay','mssmrun2']:
+    if options.analysis in ['sm','cpprod','cpdecay','mssmrun2','vlq']:
       if options.channel == 'et':
           qcd_os_ss_ratio = 1.0
           qcd_os_ss_ratio = 1.13 
@@ -2810,7 +2810,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    if options.analysis=='mssmrun2':
+    if options.analysis in ['mssmrun2','vlq']:
       if options.channel == 'tt': 
         wt_+='*(pt_1/gen_match_1_pt<1.5&&pt_2/gen_match_2_pt<1.5)'
         if options.year == "2016": wt_+='*1.008'
@@ -3342,7 +3342,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis in ['cpprod']: 
               fake_factor_wt_string = "wt_ff_us_1"
               fake_factor_wt_string = "wt_ff_dmbins_1"
-            elif options.analysis == 'mssmrun2':
+            elif options.analysis in ['mssmrun2','vlq']:
               #if options.w_ff_closure or options.qcd_ff_closure:
                 #json_name = 'scripts/ff_strings.json'
                 #with open(json_name) as json_file:
@@ -3476,7 +3476,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
                     ff_syst_weight = '((n_jets==0)/(1.22618-0.0546679*dR)*1.04 + (n_jets>0)/(1.09292-0.0200048*dR)*1.04)*wt_ff_1'
               fake_factor_wt_string_1 = ff_syst_weight
 
-            if options.analysis in ['cpprod','cpdecay','mssmrun2']:
+            if options.analysis in ['cpprod','cpdecay','mssmrun2','vlq']:
               fake_factor_wt_string_2='0'
         else:
           if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18"]:
@@ -3487,7 +3487,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             elif options.analysis == 'cpdecay':
               fake_factor_wt_string_2='0'
               fake_factor_wt_string_1 = "wt_ff_1"
-            elif options.analysis == 'mssmrun2':
+            elif options.analysis in ['mssmrun2','vlq']:
               fake_factor_wt_string_2='0'
               if options.wp == 'medium':
                 fake_factor_wt_string_1 = "wt_ff_mssm_1"
@@ -3807,7 +3807,9 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
         else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err 
         if True in [node.name.find(add_name) != -1 and add_name is not '' for add_name in add_names]: continue
-        if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name.find("_SM"+options.add_sm_background) ==-1:
+        if len(signal_samples) != 0: sig_samp_cond = [node.name.find(sig) != -1 for sig in signal_samples.keys()]
+        else: sig_samp_cond = []
+        if True in sig_samp_cond and node.name.find("_SM"+options.add_sm_background) ==-1:
             sig_total += node.shape.rate
         elif node.name not in data_strings or (options.method == 18 and 'jetFakes' == node.name):
             bkg_total += node.shape.rate      
@@ -4176,7 +4178,9 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
    #             sum_hist.Write()
     first_hist=True
     for node in nodes:
-        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1 and not node.name.endswith('Up') and not node.name.endswith('Down'):
+        if len(signal_samples) != 0: sig_samp_cond = [node.name.find(sig) != -1 for sig in signal_samples.keys()]
+        else: sig_samp_cond = []
+        if True not in sig_samp_cond and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1 and not node.name.endswith('Up') and not node.name.endswith('Down'):
             if options.embedding and node.name.startswith('ZTT'): continue
             if 'embed_syst' in node.name: continue
             if options.method == 18 and 'jetFakes' == node.name: continue
@@ -4244,7 +4248,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     doZJ  = 'ZJ'  not in samples_to_skip
     
     zll_samples=list(ztt_samples)
-    if options.analysis in ['cpdecay','cpprod','mssmrun2']: zll_samples+=ewkz_samples
+    if options.analysis in ['cpdecay','cpprod','mssmrun2','vlq']: zll_samples+=ewkz_samples
 
     # produce template for observed data
     if do_data:
@@ -4285,7 +4289,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             #GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis == 'cpprod':
         #  GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, not options.do_ss, True, True)
-        if 'W' not in samples_to_skip and options.channel=='tt' and options.analysis in ['cpprod','cpdecay','mssmrun2'] and 'VV' not in samples_to_skip and 'ZTT' not in samples_to_skip and not options.ml_ff:
+        if 'W' not in samples_to_skip and options.channel=='tt' and options.analysis in ['cpprod','cpdecay','mssmrun2','vlq'] and 'VV' not in samples_to_skip and 'ZTT' not in samples_to_skip and not options.ml_ff:
             GenerateW(ana, 'fakes'+add_name, ztt_samples+vv_samples+wjets_samples+ewkz_samples+top_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel+'&&gen_match_1!=6&&gen_match_2==6', cat, cat_data, 8, qcd_os_ss_ratio, not options.do_ss)
         if options.channel in ['mt','et']:
           # need to add back the other fake components when testing the FF validations
@@ -4779,6 +4783,8 @@ while len(systematics) > 0:
           if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
       elif options.analysis == 'Hhh':
           signal_samples = Hhh_samples
+      elif options.analysis == "vlq":
+          signal_samples = []
   
       for samp in signal_samples:
           if options.analysis in ['sm','cpprod','cpdecay']:

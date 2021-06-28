@@ -3062,6 +3062,12 @@ def HTTPlot(nodename,
           hists.Divide(bkghist)
           fracstack.Add(hists)
         pads[1].cd()
+        if log_x: 
+          pads[1].SetLogx(1)
+          pads[2].SetLogx(1)
+          axish[2].GetXaxis().SetMoreLogLabels()
+          axish[2].GetXaxis().SetNoExponent()
+
         pads[1].SetGrid(0,1)
         axish[1].Draw("axis")
         axish[1].SetMinimum(0.)
