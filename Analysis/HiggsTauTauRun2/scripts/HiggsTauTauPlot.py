@@ -1918,6 +1918,29 @@ if options.analysis in ['mssmrun2','vlq']:
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
 
+if options.vlq:
+  vlq_samples = {
+    "vlq_bR0_mU2_gU1":"VectorLQToTauTau_betaRd33_0_mU2_gU1",
+    "vlq_bR0_mU2_gU2":"VectorLQToTauTau_betaRd33_0_mU2_gU2",
+    "vlq_bR0_mU2_gU3":"VectorLQToTauTau_betaRd33_0_mU2_gU3",
+    "vlq_bR0_mU3_gU1":"VectorLQToTauTau_betaRd33_0_mU3_gU1",
+    "vlq_bR0_mU3_gU2":"VectorLQToTauTau_betaRd33_0_mU3_gU2",
+    "vlq_bR0_mU3_gU3":"VectorLQToTauTau_betaRd33_0_mU3_gU3",
+    "vlq_bR0_mU4_gU1":"VectorLQToTauTau_betaRd33_0_mU4_gU1",
+    "vlq_bR0_mU4_gU2":"VectorLQToTauTau_betaRd33_0_mU4_gU2",
+    "vlq_bR0_mU4_gU3":"VectorLQToTauTau_betaRd33_0_mU4_gU3",
+    "vlq_bRminus1_mU2_gU1":"VectorLQToTauTau_betaRd33_minus1_mU2_gU1",
+    "vlq_bRminus1_mU2_gU2":"VectorLQToTauTau_betaRd33_minus1_mU2_gU2",
+    "vlq_bRminus1_mU2_gU3":"VectorLQToTauTau_betaRd33_minus1_mU2_gU3",
+    "vlq_bRminus1_mU3_gU1":"VectorLQToTauTau_betaRd33_minus1_mU3_gU1",
+    "vlq_bRminus1_mU3_gU2":"VectorLQToTauTau_betaRd33_minus1_mU3_gU2",
+    "vlq_bRminus1_mU3_gU3":"VectorLQToTauTau_betaRd33_minus1_mU3_gU3",
+    "vlq_bRminus1_mU4_gU1":"VectorLQToTauTau_betaRd33_minus1_mU4_gU1",
+    "vlq_bRminus1_mU4_gU2":"VectorLQToTauTau_betaRd33_minus1_mU4_gU2",
+    "vlq_bRminus1_mU4_gU3":"VectorLQToTauTau_betaRd33_minus1_mU4_gU3",
+  }
+
+
 if options.ggh_masses_powheg == "":
   mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 else:
@@ -3794,6 +3817,16 @@ def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel=''
                 sample_name = Hhh_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
 
+def GenerateVLQSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
+    if get_os:
+        OSSS = 'os'
+    else:
+        OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS)
+    for key in vlq_samples:
+      sample_name = vlq_samples[key].replace('*',mass)
+      ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name, sample_name, plot, full_selection))
+
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
     print ''
@@ -4404,6 +4437,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
+        elif options.analysis == 'vlq':
+            # Write GenerateVLQSignal function
         if options.analysis in ['mssm','mssmrun2'] and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
         if options.analysis in ['mssm','mssmrun2'] and options.doMSSMReWeighting:
@@ -4784,8 +4819,8 @@ while len(systematics) > 0:
       elif options.analysis == 'Hhh':
           signal_samples = Hhh_samples
       elif options.analysis == "vlq":
-          signal_samples = []
-  
+          signal_samples = vlq_samples
+
       for samp in signal_samples:
           if options.analysis in ['sm','cpprod','cpdecay']:
               masses=sm_masses

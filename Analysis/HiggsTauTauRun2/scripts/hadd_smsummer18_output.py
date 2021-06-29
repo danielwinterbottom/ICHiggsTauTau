@@ -360,6 +360,25 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-900_powheg',
     'SUSYGluGluToHToTauTau_M-95_powheg',
     'VBFHToTauTau_M-95',
+
+    'VectorLQToTauTau_betaRd33_0_mU2_gU1',
+    'VectorLQToTauTau_betaRd33_0_mU2_gU2',
+    'VectorLQToTauTau_betaRd33_0_mU2_gU3',
+    'VectorLQToTauTau_betaRd33_0_mU3_gU1',
+    'VectorLQToTauTau_betaRd33_0_mU3_gU2',
+    'VectorLQToTauTau_betaRd33_0_mU3_gU3',
+    'VectorLQToTauTau_betaRd33_0_mU4_gU1',
+    'VectorLQToTauTau_betaRd33_0_mU4_gU2',
+    'VectorLQToTauTau_betaRd33_0_mU4_gU3',
+    'VectorLQToTauTau_betaRd33_minus1_mU2_gU1',
+    'VectorLQToTauTau_betaRd33_minus1_mU2_gU2',
+    'VectorLQToTauTau_betaRd33_minus1_mU2_gU3',
+    'VectorLQToTauTau_betaRd33_minus1_mU3_gU1',
+    'VectorLQToTauTau_betaRd33_minus1_mU3_gU2',
+    'VectorLQToTauTau_betaRd33_minus1_mU3_gU3',
+    'VectorLQToTauTau_betaRd33_minus1_mU4_gU1',
+    'VectorLQToTauTau_betaRd33_minus1_mU4_gU2',
+    'VectorLQToTauTau_betaRd33_minus1_mU4_gU3',
 	]
 
 
