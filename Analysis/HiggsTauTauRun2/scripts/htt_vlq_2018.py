@@ -482,8 +482,8 @@ if options.mg_signal or options.proc_sm or options.proc_vlq or options.proc_all:
         SIG_DIR = 'Sep18_MC_102X_2018'
 
         if 'VectorLQ' in sa:
-          SIG_DIR = 'Jun28_MC_102X_2018'
-          SIG_FILELIST ="./filelists/Jun28_2018_MC_102X"                  
+          SIG_DIR = 'Jul02_MC_102X_2018'
+          SIG_FILELIST ="./filelists/Jul02_2018_MC_102X"                  
           user='guttley'
         else:
           SIG_DIR = 'Sep18_MC_102X_2018'
