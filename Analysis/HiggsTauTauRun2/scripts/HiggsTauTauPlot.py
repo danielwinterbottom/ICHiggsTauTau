@@ -62,7 +62,7 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"",
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False
 
 }
 
@@ -223,6 +223,8 @@ parser.add_argument("--log_x", dest="log_x", action='store_true',
     help="Set log scale on x-axis.")
 parser.add_argument("--log_y", dest="log_y", action='store_true',
     help="Set log scale on y-axis.")
+parser.add_argument("--ratio_log_y", dest="ratio_log_y", action='store_true',
+    help="Set log scale on ratio y-axis.")
 parser.add_argument("--extra_pad", dest="extra_pad", type=float,
     help="Fraction of extra whitespace at top of plot.")
 parser.add_argument("--signal_scale", dest="signal_scale", type=float,
@@ -373,6 +375,10 @@ parser.add_argument("--bkg_comp", dest="bkg_comp", action='store_true',
     help="Will plot the background composition on the 2nd pad and ratio on 3rd. Needs to be run with threePads.")
 parser.add_argument("--ml_ff", dest="ml_ff", action='store_true',
     help="Use machine learning fake factors for mssmrun2.")
+parser.add_argument("--vlq_sig", dest="vlq_sig", type=str,
+    help="Comma separated list of signal parameter names i.e. vlq_betaRd33_minus1_mU4_gU1,vlq_betaRd33_minus1_mU4_gU2,vlq_betaRd33_minus1_mU4_gU3")
+parser.add_argument("--plot_signals", dest="plot_signals", type=str,
+    help="Comma separated list of what signals to plot")
 
 
 
@@ -655,9 +661,14 @@ cats['qcd_shape_comp']=''
 if options.channel == "tt":
   cats['NbtagGt1'] = '(n_deepbjets>0)'
   cats['Nbtag0'] = '(n_deepbjets==0)'
-else:
+elif options.channel in ["et","mt"]:
   cats['NbtagGt1'] = '(n_deepbjets>0 && mt_1<70)'
   cats['Nbtag0'] = '(n_deepbjets==0 && mt_1<70)'
+elif options.channel == "em":
+  cats['NbtagGt1'] = '(n_deepbjets>0 && pzeta>-35)'
+  cats['Nbtag0'] = '(n_deepbjets==0 && pzeta>-35)'
+
+
 
 
 cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
@@ -678,6 +689,10 @@ cats['Nbtag1'] = '(n_deepbjets==1)'
 cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<40)'
 cats['Nbtag1_MT40To70'] = '(n_deepbjets==1 && mt_1>40 && mt_1<70)'
 
+cats['Nbtag0_MTLt70'] = '(n_deepbjets==0 && mt_1<70)'
+cats['NbtagGt1_MTLt70'] = '(n_deepbjets>0 && mt_1<70)'
+cats['MTLt70'] = '(mt_1<70)'
+
 cats['tightmt'] = '(mt_1<40)'
 cats['loosemt'] = '(mt_1>40 && mt_1<70)'
 
@@ -690,13 +705,15 @@ elif options.channel in ["et","mt"]:
 if options.cat == 'qcd_control':
   options.do_ss = True
 
-cats['btag_highdzeta'] = '(n_deepbjets>0 && pzeta>30)'
-cats['btag_mediumdzeta'] = '(n_deepbjets>0 && pzeta<=30 && pzeta>-10)'
-cats['btag_lowdzeta'] = '(n_deepbjets>0 && pzeta<=-10 && pzeta>-50)'
-cats['nobtag_highdzeta'] ='(n_deepbjets>0 && pzeta>30)'
-cats['nobtag_mediumdzeta'] ='(n_deepbjets>0 && pzeta<=30 && pzeta>-10)'
-cats['nobtag_lowdzeta'] ='(n_deepbjets>0 && pzeta<=-10 && pzeta>-50)'
-cats['ttbar_control'] = '(pzeta<=-50)'
+cats['Nbtag0_DZetaGt30'] = '(n_deepbjets==0 && pzeta>30)'
+cats['Nbtag0_DZetam10To30'] = '(n_deepbjets==0 && pzeta<=30 && pzeta>-10)'
+cats['Nbtag0_DZetam35Tom10'] = '(n_deepbjets==0 && pzeta<=-10 && pzeta>-35)'
+cats['NbtagGt1_DZetaGt30'] ='(n_deepbjets>0 && pzeta>30)'
+cats['NbtagGt1_DZetam10To30'] ='(n_deepbjets>0 && pzeta<=30 && pzeta>-10)'
+cats['NbtagGt1_DZetam35Tom10'] ='(n_deepbjets>0 && pzeta<=-10 && pzeta>-35)'
+cats['NbtagGt1_DZetaLtm35'] = '(n_deepbjets>0 && pzeta<=-35)'
+
+cats['DZetaGtm35'] = '(pzeta>-35)'
 
 
 if options.channel == 'et': cats['baseline_loose'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto &&  trg_singleelectron)'
@@ -1918,26 +1935,26 @@ if options.analysis in ['mssmrun2','vlq']:
                    #'WplusHWW125' : 'HWplusJ_HToWW',
                  }
 
-if options.vlq:
+if options.analysis == "vlq":
   vlq_samples = {
-    "vlq_bR0_mU2_gU1":"VectorLQToTauTau_betaRd33_0_mU2_gU1",
-    "vlq_bR0_mU2_gU2":"VectorLQToTauTau_betaRd33_0_mU2_gU2",
-    "vlq_bR0_mU2_gU3":"VectorLQToTauTau_betaRd33_0_mU2_gU3",
-    "vlq_bR0_mU3_gU1":"VectorLQToTauTau_betaRd33_0_mU3_gU1",
-    "vlq_bR0_mU3_gU2":"VectorLQToTauTau_betaRd33_0_mU3_gU2",
-    "vlq_bR0_mU3_gU3":"VectorLQToTauTau_betaRd33_0_mU3_gU3",
-    "vlq_bR0_mU4_gU1":"VectorLQToTauTau_betaRd33_0_mU4_gU1",
-    "vlq_bR0_mU4_gU2":"VectorLQToTauTau_betaRd33_0_mU4_gU2",
-    "vlq_bR0_mU4_gU3":"VectorLQToTauTau_betaRd33_0_mU4_gU3",
-    "vlq_bRminus1_mU2_gU1":"VectorLQToTauTau_betaRd33_minus1_mU2_gU1",
-    "vlq_bRminus1_mU2_gU2":"VectorLQToTauTau_betaRd33_minus1_mU2_gU2",
-    "vlq_bRminus1_mU2_gU3":"VectorLQToTauTau_betaRd33_minus1_mU2_gU3",
-    "vlq_bRminus1_mU3_gU1":"VectorLQToTauTau_betaRd33_minus1_mU3_gU1",
-    "vlq_bRminus1_mU3_gU2":"VectorLQToTauTau_betaRd33_minus1_mU3_gU2",
-    "vlq_bRminus1_mU3_gU3":"VectorLQToTauTau_betaRd33_minus1_mU3_gU3",
-    "vlq_bRminus1_mU4_gU1":"VectorLQToTauTau_betaRd33_minus1_mU4_gU1",
-    "vlq_bRminus1_mU4_gU2":"VectorLQToTauTau_betaRd33_minus1_mU4_gU2",
-    "vlq_bRminus1_mU4_gU3":"VectorLQToTauTau_betaRd33_minus1_mU4_gU3",
+    "vlq_betaRd33_0_mU2_gU1":"VectorLQToTauTau_betaRd33_0_mU2_gU1",
+    "vlq_betaRd33_0_mU2_gU2":"VectorLQToTauTau_betaRd33_0_mU2_gU2",
+    "vlq_betaRd33_0_mU2_gU3":"VectorLQToTauTau_betaRd33_0_mU2_gU3",
+    "vlq_betaRd33_0_mU3_gU1":"VectorLQToTauTau_betaRd33_0_mU3_gU1",
+    "vlq_betaRd33_0_mU3_gU2":"VectorLQToTauTau_betaRd33_0_mU3_gU2",
+    "vlq_betaRd33_0_mU3_gU3":"VectorLQToTauTau_betaRd33_0_mU3_gU3",
+    "vlq_betaRd33_0_mU4_gU1":"VectorLQToTauTau_betaRd33_0_mU4_gU1",
+    "vlq_betaRd33_0_mU4_gU2":"VectorLQToTauTau_betaRd33_0_mU4_gU2",
+    "vlq_betaRd33_0_mU4_gU3":"VectorLQToTauTau_betaRd33_0_mU4_gU3",
+    "vlq_betaRd33_minus1_mU2_gU1":"VectorLQToTauTau_betaRd33_minus1_mU2_gU1",
+    "vlq_betaRd33_minus1_mU2_gU2":"VectorLQToTauTau_betaRd33_minus1_mU2_gU2",
+    "vlq_betaRd33_minus1_mU2_gU3":"VectorLQToTauTau_betaRd33_minus1_mU2_gU3",
+    "vlq_betaRd33_minus1_mU3_gU1":"VectorLQToTauTau_betaRd33_minus1_mU3_gU1",
+    "vlq_betaRd33_minus1_mU3_gU2":"VectorLQToTauTau_betaRd33_minus1_mU3_gU2",
+    "vlq_betaRd33_minus1_mU3_gU3":"VectorLQToTauTau_betaRd33_minus1_mU3_gU3",
+    "vlq_betaRd33_minus1_mU4_gU1":"VectorLQToTauTau_betaRd33_minus1_mU4_gU1",
+    "vlq_betaRd33_minus1_mU4_gU2":"VectorLQToTauTau_betaRd33_minus1_mU4_gU2",
+    "vlq_betaRd33_minus1_mU4_gU3":"VectorLQToTauTau_betaRd33_minus1_mU4_gU3",
   }
 
 
@@ -3817,15 +3834,16 @@ def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel=''
                 sample_name = Hhh_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
 
-def GenerateVLQSignal(ana, add_name='', plot='', wt='', sel='', cat='', get_os=True):
+def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat='', get_os=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS)
     for key in vlq_samples:
-      sample_name = vlq_samples[key].replace('*',mass)
-      ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name, sample_name, plot, full_selection))
+      if key in vlq_sig:
+        sample_name = vlq_samples[key]
+        ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name, sample_name, plot, full_selection))
 
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
@@ -4438,7 +4456,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'vlq':
-            # Write GenerateVLQSignal function
+            GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss)
         if options.analysis in ['mssm','mssmrun2'] and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
         if options.analysis in ['mssm','mssmrun2'] and options.doMSSMReWeighting:
@@ -4830,6 +4848,8 @@ while len(systematics) > 0:
               masses = bbh_masses
           elif 'bbH' in samp:
               masses = bbh_nlo_masses
+          elif options.analysis == "vlq":
+              masses = None
           if masses is not None:    
               for mass in masses:
                   sample_names=[]
@@ -4843,6 +4863,11 @@ while len(systematics) > 0:
                     #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
                     #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
                     ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), tree_name, None, sample_name)
+          elif options.analysis == "vlq":
+              if options.vlq_sig != "":
+                if samp in options.vlq_sig.split(","):
+                  ana.AddSamples(signal_mc_input_folder_name+'/'+signal_samples[samp]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, signal_samples[samp])
+
       if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
           for samp in sm_samples:
             sample_names=[]
@@ -5255,6 +5280,7 @@ if not options.no_plot:
         options.x_blind_max,
         options.ratio,
         options.threePads,
+        options.ratio_log_y,
         options.log_y,
         options.log_x,
         options.ratio_range,
@@ -5289,6 +5315,7 @@ if not options.no_plot:
         options.qcd_ff_closure,
         options.w_ff_closure,
         options.bkg_comp,
+        options.plot_signals.split(",")
         )
     else:    
       plotting.HTTPlotSignal(nodename, 
