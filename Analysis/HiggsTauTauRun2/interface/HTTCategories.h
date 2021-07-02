@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "TRandom3.h"
+#include "math.h"  
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IpCorrection.h"
 
 #include <string>
@@ -200,8 +201,18 @@ class HTTCategories : public ModuleBase {
   branch_var phi_1_;
   branch_var phi_2_;
   double raw_pt_1_;
+  double px_1_;
+  double px_2_;
+  double py_1_;
+  double py_2_;
+  double pz_1_;
+  double pz_2_;
   double E_1_;
   double E_2_;
+  double y1_;
+  double y2_;
+  double ystar_;
+  double chi_;
   int q_1_;
   int q_2_;
   int jet_flav_1_;
@@ -312,6 +323,71 @@ class HTTCategories : public ModuleBase {
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
   double wt_cp_prod_mm_;
+  double wt_vlq_off_diag_0_; 
+  double wt_vlq_betaL23_1sigma_up_;
+  double wt_vlq_betaL23_1sigma_down_;
+  double wt_vlq_betaL32_1sigma_up_;
+  double wt_vlq_betaL32_1sigma_down_;
+  double wt_vlq_betaL23_2sigma_up_; 
+  double wt_vlq_betaL23_2sigma_down_; 
+  double wt_vlq_gU_1_;
+  double wt_vlq_gU_2_; 
+  double wt_vlq_gU_3_;
+  double wt_vlq_betaR33_0_;
+  double wt_vlq_betaR33_minus1_;
+  double wt_vlq_gU_4_;
+  double wt_vlq_gU_5_;
+  double wt_vlq_gU_0p5_; 
+  double wt_vlq_gU_10_; 
+  double wt_vlq_gU_20_; 
+  double wt_vlq_gU_30_; 
+  double wt_vlq_gU_40_; 
+  double wt_vlq_gU_50_; 
+  double wt_vlq_gU_100_;
+  double wt_vlq_full_;
+  double wt_vlq_off_diag_0_full_; 
+  double wt_vlq_betaL23_1sigma_up_full_;
+  double wt_vlq_betaL23_1sigma_down_full_;
+  double wt_vlq_betaL32_1sigma_up_full_;
+  double wt_vlq_betaL32_1sigma_down_full_; 
+  double wt_vlq_betaL23_2sigma_up_full_;
+  double wt_vlq_betaL23_2sigma_down_full_;
+  double wt_vlq_gU_1_full_;
+  double wt_vlq_gU_2_full_;
+  double wt_vlq_gU_3_full_;
+  double wt_vlq_betaR33_0_full_;
+  double wt_vlq_betaR33_minus1_full_;
+  double wt_vlq_gU_4_full_;
+  double wt_vlq_gU_5_full_;
+  double wt_vlq_gU_0p5_full_;
+  double wt_vlq_gU_10_full_;
+  double wt_vlq_gU_20_full_;
+  double wt_vlq_gU_30_full_;
+  double wt_vlq_gU_40_full_;
+  double wt_vlq_gU_50_full_;
+  double wt_vlq_gU_100_full_;
+  double wt_vlq_sm_;
+  double wt_vlq_off_diag_0_sm_;
+  double wt_vlq_betaL23_1sigma_up_sm_;
+  double wt_vlq_betaL23_1sigma_down_sm_;
+  double wt_vlq_betaL32_1sigma_up_sm_;
+  double wt_vlq_betaL32_1sigma_down_sm_;
+  double wt_vlq_betaL23_2sigma_up_sm_;
+  double wt_vlq_betaL23_2sigma_down_sm_;
+  double wt_vlq_gU_1_sm_;
+  double wt_vlq_gU_2_sm_;
+  double wt_vlq_gU_3_sm_;
+  double wt_vlq_betaR33_0_sm_;
+  double wt_vlq_betaR33_minus1_sm_;
+  double wt_vlq_gU_4_sm_;
+  double wt_vlq_gU_5_sm_;
+  double wt_vlq_gU_0p5_sm_; 
+  double wt_vlq_gU_10_sm_; 
+  double wt_vlq_gU_20_sm_; 
+  double wt_vlq_gU_30_sm_; 
+  double wt_vlq_gU_40_sm_; 
+  double wt_vlq_gU_50_sm_; 
+  double wt_vlq_gU_100_sm_;
 
   double gen_phitt_;
 

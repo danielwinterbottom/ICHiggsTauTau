@@ -895,8 +895,19 @@ namespace ic {
       outtree_->Branch("mu_pt", &mu_pt_);
       outtree_->Branch("sjdphi",             &sjdphi_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
-      outtree_->Branch("pt_2",              &pt_2_.var_double);
-      outtree_->Branch("pt_1",              &pt_1_.var_double);
+      outtree_->Branch("px_2",              &px_2_);
+      outtree_->Branch("px_1",              &px_1_);
+      outtree_->Branch("py_2",              &py_2_);
+      outtree_->Branch("py_1",              &py_1_);
+      outtree_->Branch("pz_2",              &pz_2_);
+      outtree_->Branch("pz_1",              &pz_1_);
+      outtree_->Branch("pt_2",              &pt_2_);
+      outtree_->Branch("pt_1",              &pt_1_);
+      outtree_->Branch("y1",              &y1_);
+      outtree_->Branch("y2",              &y2_);
+      outtree_->Branch("ystar",              &ystar_);
+      outtree_->Branch("chi",              &chi_);
+
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("gen_match_1", &gen_match_1_);
@@ -930,6 +941,72 @@ namespace ic {
       outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
+
+      outtree_->Branch("wt_vlq_off_diag_0",&wt_vlq_off_diag_0_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_up",&wt_vlq_betaL23_1sigma_up_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_down",&wt_vlq_betaL23_1sigma_down_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_up",&wt_vlq_betaL32_1sigma_up_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_down",&wt_vlq_betaL32_1sigma_down_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_up",&wt_vlq_betaL23_2sigma_up_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_down",&wt_vlq_betaL23_2sigma_down_);
+      outtree_->Branch("wt_vlq_gU_1",&wt_vlq_gU_1_);
+      outtree_->Branch("wt_vlq_gU_2",&wt_vlq_gU_2_);
+      outtree_->Branch("wt_vlq_gU_3",&wt_vlq_gU_3_);
+      outtree_->Branch("wt_vlq_betaR33_0",&wt_vlq_betaR33_0_);
+      outtree_->Branch("wt_vlq_betaR33_minus1",&wt_vlq_betaR33_minus1_);
+      outtree_->Branch("wt_vlq_gU_4",&wt_vlq_gU_4_);
+      outtree_->Branch("wt_vlq_gU_5",&wt_vlq_gU_5_);
+      outtree_->Branch("wt_vlq_gU_0p5",&wt_vlq_gU_0p5_);
+      outtree_->Branch("wt_vlq_gU_10",&wt_vlq_gU_10_);
+      outtree_->Branch("wt_vlq_gU_20",&wt_vlq_gU_20_);
+      outtree_->Branch("wt_vlq_gU_30",&wt_vlq_gU_30_);
+      outtree_->Branch("wt_vlq_gU_40",&wt_vlq_gU_40_);
+      outtree_->Branch("wt_vlq_gU_50",&wt_vlq_gU_50_);
+      outtree_->Branch("wt_vlq_gU_100",&wt_vlq_gU_100_);
+      outtree_->Branch("wt_vlq_full",&wt_vlq_full_);
+      outtree_->Branch("wt_vlq_off_diag_0_full",&wt_vlq_off_diag_0_full_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_up_full",&wt_vlq_betaL23_1sigma_up_full_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_down_full",&wt_vlq_betaL23_1sigma_down_full_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_up_full",&wt_vlq_betaL32_1sigma_up_full_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_down_full",&wt_vlq_betaL32_1sigma_down_full_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_up_full",&wt_vlq_betaL23_2sigma_up_full_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_down_full",&wt_vlq_betaL23_2sigma_down_full_);
+      outtree_->Branch("wt_vlq_gU_1_full",&wt_vlq_gU_1_full_);
+      outtree_->Branch("wt_vlq_gU_2_full",&wt_vlq_gU_2_full_);
+      outtree_->Branch("wt_vlq_gU_3_full",&wt_vlq_gU_3_full_);
+      outtree_->Branch("wt_vlq_betaR33_0_full",&wt_vlq_betaR33_0_full_);
+      outtree_->Branch("wt_vlq_betaR33_minus1_full",&wt_vlq_betaR33_minus1_full_);
+      outtree_->Branch("wt_vlq_gU_4_full",&wt_vlq_gU_4_full_);
+      outtree_->Branch("wt_vlq_gU_5_full",&wt_vlq_gU_5_full_);
+      outtree_->Branch("wt_vlq_gU_0p5_full",&wt_vlq_gU_0p5_full_);
+      outtree_->Branch("wt_vlq_gU_10_full",&wt_vlq_gU_10_full_);
+      outtree_->Branch("wt_vlq_gU_20_full",&wt_vlq_gU_20_full_);
+      outtree_->Branch("wt_vlq_gU_30_full",&wt_vlq_gU_30_full_);
+      outtree_->Branch("wt_vlq_gU_40_full",&wt_vlq_gU_40_full_);
+      outtree_->Branch("wt_vlq_gU_50_full",&wt_vlq_gU_50_full_);
+      outtree_->Branch("wt_vlq_gU_100_full",&wt_vlq_gU_100_full_);
+      outtree_->Branch("wt_vlq_sm",&wt_vlq_sm_);
+      outtree_->Branch("wt_vlq_off_diag_0_sm",&wt_vlq_off_diag_0_sm_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_up_sm",&wt_vlq_betaL23_1sigma_up_sm_);
+      outtree_->Branch("wt_vlq_betaL23_1sigma_down_sm",&wt_vlq_betaL23_1sigma_down_sm_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_up_sm",&wt_vlq_betaL32_1sigma_up_sm_);
+      outtree_->Branch("wt_vlq_betaL32_1sigma_down_sm",&wt_vlq_betaL32_1sigma_down_sm_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_up_sm",&wt_vlq_betaL23_2sigma_up_sm_);
+      outtree_->Branch("wt_vlq_betaL23_2sigma_down_sm",&wt_vlq_betaL23_2sigma_down_sm_);
+      outtree_->Branch("wt_vlq_gU_1_sm",&wt_vlq_gU_1_sm_);
+      outtree_->Branch("wt_vlq_gU_2_sm",&wt_vlq_gU_2_sm_);
+      outtree_->Branch("wt_vlq_gU_3_sm",&wt_vlq_gU_3_sm_);
+      outtree_->Branch("wt_vlq_betaR33_0_sm",&wt_vlq_betaR33_0_sm_);
+      outtree_->Branch("wt_vlq_betaR33_minus1_sm",&wt_vlq_betaR33_minus1_sm_);
+      outtree_->Branch("wt_vlq_gU_4_sm",&wt_vlq_gU_4_sm_);
+      outtree_->Branch("wt_vlq_gU_5_sm",&wt_vlq_gU_5_sm_);
+      outtree_->Branch("wt_vlq_gU_0p5_sm",&wt_vlq_gU_0p5_sm_);
+      outtree_->Branch("wt_vlq_gU_10_sm",&wt_vlq_gU_10_sm_);
+      outtree_->Branch("wt_vlq_gU_20_sm",&wt_vlq_gU_20_sm_);
+      outtree_->Branch("wt_vlq_gU_30_sm",&wt_vlq_gU_30_sm_);
+      outtree_->Branch("wt_vlq_gU_40_sm",&wt_vlq_gU_40_sm_);
+      outtree_->Branch("wt_vlq_gU_50_sm",&wt_vlq_gU_50_sm_);
+      outtree_->Branch("wt_vlq_gU_100_sm",&wt_vlq_gU_100_sm_);
 
       outtree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
       outtree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
@@ -1647,9 +1724,9 @@ namespace ic {
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
 
-    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_weights();
-    //eventInfo->print_all_weights();
+    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    eventInfo->print_weights();
+    eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
     wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
@@ -2317,15 +2394,26 @@ namespace ic {
    if(do_qcd_scale_wts_){
      // note some of these labels may be generator dependent so need to make sure you check before using them
       
-     if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
-     if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
-     if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
-     if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
-     if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
-     if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
-     if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
-     if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
-     if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+     //if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+     //if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+     //if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+     //if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+     //if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+     //if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+     //if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+     //if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+     //if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+
+     if(eventInfo->weight_defined("1004")) scale1_ = eventInfo->weight("1004"); else scale1_=1.0;
+     if(eventInfo->weight_defined("1019")) scale2_ = eventInfo->weight("1019"); else scale2_=1.0;
+     if(eventInfo->weight_defined("1034")) scale3_ = eventInfo->weight("1034"); else scale3_=1.0;
+     if(eventInfo->weight_defined("1009")) scale4_ = eventInfo->weight("1009"); else scale4_=1.0;
+     if(eventInfo->weight_defined("1024")) scale5_ = eventInfo->weight("1024"); else scale5_=1.0;
+     if(eventInfo->weight_defined("1039")) scale6_ = eventInfo->weight("1039"); else scale6_=1.0;
+     if(eventInfo->weight_defined("1014")) scale7_ = eventInfo->weight("1014"); else scale7_=1.0;
+     if(eventInfo->weight_defined("1029")) scale8_ = eventInfo->weight("1029"); else scale8_=1.0;
+     if(eventInfo->weight_defined("1044")) scale9_ = eventInfo->weight("1044"); else scale9_=1.0;
+
 
      // W-jets weights are numbered 1-9 - be careful this doesn't overwrite scale weights for other samples with some other weight!
      if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
@@ -2661,6 +2749,13 @@ namespace ic {
 
     // std::cout << lep1->pt() << "    " << lep2->pt() << "    " << lep1->eta() << "    " << lep2->eta() << std::endl;
 
+    px_1_ = lep1->vector().Px();
+    px_2_ = lep2->vector().Px();
+    py_1_ = lep1->vector().Py();
+    py_2_ = lep2->vector().Py();
+    pz_1_ = lep1->vector().Pz();
+    pz_2_ = lep2->vector().Pz();
+
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
@@ -2676,6 +2771,10 @@ namespace ic {
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
 
+    y1_ = 0.5*log((E_1_+pz_1_)/(E_1_-pz_1_));
+    y2_ = 0.5*log((E_2_+pz_2_)/(E_2_-pz_2_));
+    ystar_ = 0.5*abs(y1_-y2_);
+    chi_ = exp(2*ystar_);
 
 
     if(make_sync_ntuple_){
@@ -3199,6 +3298,90 @@ namespace ic {
       if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
       if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
     }
+
+    wt_vlq_off_diag_0_=0.; wt_vlq_betaL23_1sigma_up_=0.;wt_vlq_betaL23_1sigma_down_=0.;wt_vlq_betaL32_1sigma_up_=0.;
+    wt_vlq_betaL32_1sigma_down_=0.; wt_vlq_betaL23_2sigma_up_=0.; wt_vlq_betaL23_2sigma_down_=0.; wt_vlq_gU_1_=0.;
+    wt_vlq_gU_2_=0.; wt_vlq_gU_3_=0.; wt_vlq_betaR33_0_=0.; wt_vlq_betaR33_minus1_=0.; wt_vlq_gU_4_=0.;wt_vlq_gU_5_=0.;
+    wt_vlq_gU_0p5_=0.; wt_vlq_gU_10_=0.; wt_vlq_gU_20_=0.; wt_vlq_gU_30_=0.; wt_vlq_gU_40_=0.; wt_vlq_gU_50_=0.; wt_vlq_gU_100_=0.;
+    wt_vlq_full_=0.;
+    wt_vlq_off_diag_0_full_=0.; wt_vlq_betaL23_1sigma_up_full_=0.;wt_vlq_betaL23_1sigma_down_full_=0.;wt_vlq_betaL32_1sigma_up_full_=0.;
+    wt_vlq_betaL32_1sigma_down_full_=0.; wt_vlq_betaL23_2sigma_up_full_=0.; wt_vlq_betaL23_2sigma_down_full_=0.; wt_vlq_gU_1_full_=0.;
+    wt_vlq_gU_2_full_=0.; wt_vlq_gU_3_full_=0.; wt_vlq_betaR33_0_full_=0.; wt_vlq_betaR33_minus1_full_=0.; wt_vlq_gU_4_full_=0.;wt_vlq_gU_5_full_=0.;
+    wt_vlq_gU_0p5_full_=0.; wt_vlq_gU_10_full_=0.; wt_vlq_gU_20_full_=0.; wt_vlq_gU_30_full_=0.; wt_vlq_gU_40_full_=0.; wt_vlq_gU_50_full_=0.; wt_vlq_gU_100_full_=0.; 
+    wt_vlq_sm_=0.;
+    wt_vlq_off_diag_0_sm_=0.; wt_vlq_betaL23_1sigma_up_sm_=0.;wt_vlq_betaL23_1sigma_down_sm_=0.;wt_vlq_betaL32_1sigma_up_sm_=0.;
+    wt_vlq_betaL32_1sigma_down_sm_=0.; wt_vlq_betaL23_2sigma_up_sm_=0.; wt_vlq_betaL23_2sigma_down_sm_=0.; wt_vlq_gU_1_sm_=0.;
+    wt_vlq_gU_2_sm_=0.; wt_vlq_gU_3_sm_=0.; wt_vlq_betaR33_0_sm_=0.; wt_vlq_betaR33_minus1_sm_=0.; wt_vlq_gU_4_sm_=0.;wt_vlq_gU_5_sm_=0.;
+    wt_vlq_gU_0p5_sm_=0.; wt_vlq_gU_10_sm_=0.; wt_vlq_gU_20_sm_=0.; wt_vlq_gU_30_sm_=0.; wt_vlq_gU_40_sm_=0.; wt_vlq_gU_50_sm_=0.; wt_vlq_gU_100_sm_=0.;
+
+    if(eventInfo->weight_defined("off_diag_0")) {
+      if(eventInfo->weight_defined("off_diag_0")) wt_vlq_off_diag_0_ = eventInfo->weight("off_diag_0");
+      if(eventInfo->weight_defined("betaL23_1sigma_up")) wt_vlq_betaL23_1sigma_up_ = eventInfo->weight("betaL23_1sigma_up");
+      if(eventInfo->weight_defined("betaL23_1sigma_down")) wt_vlq_betaL23_1sigma_down_ = eventInfo->weight("betaL23_1sigma_down"); 
+      if(eventInfo->weight_defined("betaL32_1sigma_up")) wt_vlq_betaL32_1sigma_up_ = eventInfo->weight("betaL32_1sigma_up"); 
+      if(eventInfo->weight_defined("betaL32_1sigma_down")) wt_vlq_betaL32_1sigma_down_ = eventInfo->weight("betaL32_1sigma_down"); 
+      if(eventInfo->weight_defined("betaL23_2sigma_up")) wt_vlq_betaL23_2sigma_up_ = eventInfo->weight("betaL23_2sigma_up"); 
+      if(eventInfo->weight_defined("betaL23_2sigma_down")) wt_vlq_betaL23_2sigma_down_ = eventInfo->weight("betaL23_2sigma_down");      
+      if(eventInfo->weight_defined("gU_1")) wt_vlq_gU_1_ = eventInfo->weight("gU_1");
+      if(eventInfo->weight_defined("gU_2")) wt_vlq_gU_2_ = eventInfo->weight("gU_2");
+      if(eventInfo->weight_defined("gU_3")) wt_vlq_gU_3_ = eventInfo->weight("gU_3");
+      if(eventInfo->weight_defined("betaR33_0")) wt_vlq_betaR33_0_ = eventInfo->weight("betaR33_0");
+      if(eventInfo->weight_defined("betaR33_minus1")) wt_vlq_betaR33_minus1_ = eventInfo->weight("betaR33_minus1");      
+      if(eventInfo->weight_defined("gU_4")) wt_vlq_gU_4_ = eventInfo->weight("gU_4");
+      if(eventInfo->weight_defined("gU_5")) wt_vlq_gU_5_ = eventInfo->weight("gU_5");
+      if(eventInfo->weight_defined("gU_0p5")) wt_vlq_gU_0p5_ = eventInfo->weight("gU_0p5");
+      if(eventInfo->weight_defined("gU_10")) wt_vlq_gU_10_ = eventInfo->weight("gU_10");
+      if(eventInfo->weight_defined("gU_20")) wt_vlq_gU_20_ = eventInfo->weight("gU_20");      
+      if(eventInfo->weight_defined("gU_30")) wt_vlq_gU_30_ = eventInfo->weight("gU_30");
+      if(eventInfo->weight_defined("gU_40")) wt_vlq_gU_40_ = eventInfo->weight("gU_40");
+      if(eventInfo->weight_defined("gU_50")) wt_vlq_gU_50_ = eventInfo->weight("gU_50");
+      if(eventInfo->weight_defined("gU_100")) wt_vlq_gU_100_ = eventInfo->weight("gU_100");
+      if(eventInfo->weight_defined("full")) wt_vlq_full_ = eventInfo->weight("full");
+      if(eventInfo->weight_defined("off_diag_0_full")) wt_vlq_off_diag_0_ = eventInfo->weight("off_diag_0_full");
+      if(eventInfo->weight_defined("betaL23_1sigma_up_full")) wt_vlq_betaL23_1sigma_up_full_ = eventInfo->weight("betaL23_1sigma_up_full");
+      if(eventInfo->weight_defined("betaL23_1sigma_down_full")) wt_vlq_betaL23_1sigma_down_full_ = eventInfo->weight("betaL23_1sigma_down_full");
+      if(eventInfo->weight_defined("betaL32_1sigma_up_full")) wt_vlq_betaL32_1sigma_up_full_ = eventInfo->weight("betaL32_1sigma_up_full"); 
+      if(eventInfo->weight_defined("betaL32_1sigma_down_full")) wt_vlq_betaL32_1sigma_down_full_ = eventInfo->weight("betaL32_1sigma_down_full");
+      if(eventInfo->weight_defined("betaL23_2sigma_up_full")) wt_vlq_betaL23_2sigma_up_full_ = eventInfo->weight("betaL23_2sigma_up_full"); 
+      if(eventInfo->weight_defined("betaL23_2sigma_down_full")) wt_vlq_betaL23_2sigma_down_full_ = eventInfo->weight("betaL23_2sigma_down_full");
+      if(eventInfo->weight_defined("gU_1_full")) wt_vlq_gU_1_full_ = eventInfo->weight("gU_1_full");
+      if(eventInfo->weight_defined("gU_2_full")) wt_vlq_gU_2_full_ = eventInfo->weight("gU_2_full");
+      if(eventInfo->weight_defined("gU_3_full")) wt_vlq_gU_3_full_ = eventInfo->weight("gU_3_full");
+      if(eventInfo->weight_defined("betaR33_0_full")) wt_vlq_betaR33_0_full_ = eventInfo->weight("betaR33_0_full");
+      if(eventInfo->weight_defined("betaR33_minus1_full")) wt_vlq_betaR33_minus1_full_ = eventInfo->weight("betaR33_minus1_full");
+      if(eventInfo->weight_defined("gU_4_full")) wt_vlq_gU_4_full_ = eventInfo->weight("gU_4_full");
+      if(eventInfo->weight_defined("gU_5_full")) wt_vlq_gU_5_full_ = eventInfo->weight("gU_5_full");
+      if(eventInfo->weight_defined("gU_0p5_full")) wt_vlq_gU_0p5_full_ = eventInfo->weight("gU_0p5_full");
+      if(eventInfo->weight_defined("gU_10_full")) wt_vlq_gU_10_full_ = eventInfo->weight("gU_10_full");
+      if(eventInfo->weight_defined("gU_20_full")) wt_vlq_gU_20_full_ = eventInfo->weight("gU_20_full");
+      if(eventInfo->weight_defined("gU_30_full")) wt_vlq_gU_30_full_ = eventInfo->weight("gU_30_full");
+      if(eventInfo->weight_defined("gU_40_full")) wt_vlq_gU_40_full_ = eventInfo->weight("gU_40_full");
+      if(eventInfo->weight_defined("gU_50_full")) wt_vlq_gU_50_full_ = eventInfo->weight("gU_50_full");
+      if(eventInfo->weight_defined("gU_100_full")) wt_vlq_gU_100_full_ = eventInfo->weight("gU_100_full");
+      if(eventInfo->weight_defined("sm")) wt_vlq_sm_ = eventInfo->weight("sm");
+      if(eventInfo->weight_defined("off_diag_0_sm")) wt_vlq_off_diag_0_sm_ = eventInfo->weight("off_diag_0_sm");
+      if(eventInfo->weight_defined("betaL23_1sigma_up_sm")) wt_vlq_betaL23_1sigma_up_sm_ = eventInfo->weight("betaL23_1sigma_up_sm");
+      if(eventInfo->weight_defined("betaL23_1sigma_down_sm")) wt_vlq_betaL23_1sigma_down_sm_ = eventInfo->weight("betaL23_1sigma_down_sm");
+      if(eventInfo->weight_defined("betaL32_1sigma_up_sm")) wt_vlq_betaL32_1sigma_up_sm_ = eventInfo->weight("betaL32_1sigma_up_sm");
+      if(eventInfo->weight_defined("betaL32_1sigma_down_sm")) wt_vlq_betaL32_1sigma_down_sm_ = eventInfo->weight("betaL32_1sigma_down_sm");
+      if(eventInfo->weight_defined("betaL23_2sigma_up_sm")) wt_vlq_betaL23_2sigma_up_sm_ = eventInfo->weight("betaL23_2sigma_up_sm");
+      if(eventInfo->weight_defined("betaL23_2sigma_down_sm")) wt_vlq_betaL23_2sigma_down_sm_ = eventInfo->weight("betaL23_2sigma_down_sm");
+      if(eventInfo->weight_defined("gU_1_sm")) wt_vlq_gU_1_sm_ = eventInfo->weight("gU_1_sm");
+      if(eventInfo->weight_defined("gU_2_sm")) wt_vlq_gU_2_sm_ = eventInfo->weight("gU_2_sm");
+      if(eventInfo->weight_defined("gU_3_sm")) wt_vlq_gU_3_sm_ = eventInfo->weight("gU_3_sm");
+      if(eventInfo->weight_defined("betaR33_0_sm")) wt_vlq_betaR33_0_sm_ = eventInfo->weight("betaR33_0_sm");
+      if(eventInfo->weight_defined("betaR33_minus1_sm")) wt_vlq_betaR33_minus1_sm_ = eventInfo->weight("betaR33_minus1_sm");
+      if(eventInfo->weight_defined("gU_4_sm")) wt_vlq_gU_4_sm_ = eventInfo->weight("gU_4_sm");
+      if(eventInfo->weight_defined("gU_5_sm")) wt_vlq_gU_5_sm_ = eventInfo->weight("gU_5_sm");
+      if(eventInfo->weight_defined("gU_0p5_sm")) wt_vlq_gU_0p5_sm_ = eventInfo->weight("gU_0p5_sm");
+      if(eventInfo->weight_defined("gU_10_sm")) wt_vlq_gU_10_sm_ = eventInfo->weight("gU_10_sm");
+      if(eventInfo->weight_defined("gU_20_sm")) wt_vlq_gU_20_sm_ = eventInfo->weight("gU_20_sm");
+      if(eventInfo->weight_defined("gU_30_sm")) wt_vlq_gU_30_sm_ = eventInfo->weight("gU_30_sm");
+      if(eventInfo->weight_defined("gU_40_sm")) wt_vlq_gU_40_sm_ = eventInfo->weight("gU_40_sm");
+      if(eventInfo->weight_defined("gU_50_sm")) wt_vlq_gU_50_sm_ = eventInfo->weight("gU_50_sm");
+      if(eventInfo->weight_defined("gU_100_sm")) wt_vlq_gU_100_sm_ = eventInfo->weight("gU_100_sm");
+    }
+
 
     // initalise here to add to sync
     pvx_   = -9999.;
