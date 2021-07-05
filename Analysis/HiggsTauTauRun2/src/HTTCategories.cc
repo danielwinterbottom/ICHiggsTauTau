@@ -895,6 +895,8 @@ namespace ic {
       outtree_->Branch("mu_pt", &mu_pt_);
       outtree_->Branch("sjdphi",             &sjdphi_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
+      outtree_->Branch("e_2",              &E_2_);
+      outtree_->Branch("e_1",              &E_1_);
       outtree_->Branch("px_2",              &px_2_);
       outtree_->Branch("px_1",              &px_1_);
       outtree_->Branch("py_2",              &py_2_);
@@ -907,6 +909,11 @@ namespace ic {
       outtree_->Branch("y2",              &y2_);
       outtree_->Branch("ystar",              &ystar_);
       outtree_->Branch("chi",              &chi_);
+      outtree_->Branch("met_E",              &met_E_);
+      outtree_->Branch("metCov00",              &metCov00_);
+      outtree_->Branch("metCov10",              &metCov10_);
+      outtree_->Branch("metCov01",              &metCov01_);
+      outtree_->Branch("metCov11",              &metCov11_);
 
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
@@ -1724,9 +1731,9 @@ namespace ic {
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
 
-    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    eventInfo->print_weights();
-    eventInfo->print_all_weights();
+    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    //eventInfo->print_weights();
+    //eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
     wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
@@ -2739,10 +2746,6 @@ namespace ic {
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
 
-    
-    
-
-
     mt_1_ = MT(lep1, mets);
     mt_2_ = MT(lep2, mets);
     mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
@@ -2785,6 +2788,8 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+    met_E_ = mets->vector().E();
+
     event->Exists("genM") ? gen_m_ = event->Get<double>("genM") : 0.;
     event->Exists("genpT") ? gen_pt_ = event->Get<double>("genpT") : 0.;
 

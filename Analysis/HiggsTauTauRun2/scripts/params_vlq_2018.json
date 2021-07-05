@@ -987,6 +987,10 @@
     "xs": 1.0,
     "evt": 1955818 
   },
+  "VBFHToTauTau_M-95": {
+    "xs": 1.0,
+    "evt": 1950648 
+  },
   "VectorLQToTauTau_betaRd33_0_mU2_gU1": {
     "xs": 4.218e-04,
     "evt": 200000
@@ -1029,7 +1033,7 @@
   },
   "VectorLQToTauTau_betaRd33_minus1_mU2_gU2": {
     "xs": 5.094e-02,
-    "evt": 199000
+    "evt": 200000
   },
   "VectorLQToTauTau_betaRd33_minus1_mU2_gU3": {
     "xs": 2.580e-01,
@@ -1041,7 +1045,7 @@
   },
   "VectorLQToTauTau_betaRd33_minus1_mU3_gU2": {
     "xs": 1.080e-02,
-    "evt": 196000
+    "evt": 195000
   },
   "VectorLQToTauTau_betaRd33_minus1_mU3_gU3": {
     "xs": 5.463e-02,
@@ -1049,7 +1053,7 @@
   },
   "VectorLQToTauTau_betaRd33_minus1_mU4_gU1": {
     "xs": 2.198e-04,
-    "evt": 198000
+    "evt": 197000
   },
   "VectorLQToTauTau_betaRd33_minus1_mU4_gU2": {
     "xs": 3.511e-03,
@@ -1058,10 +1062,6 @@
   "VectorLQToTauTau_betaRd33_minus1_mU4_gU3": {
     "xs": 1.781e-02,
     "evt": 199500
-  },
-  "VBFHToTauTau_M-95": {
-    "xs": 1.0,
-    "evt": 1950648 
   },
   "EGamma": {
     "lumi": 59740

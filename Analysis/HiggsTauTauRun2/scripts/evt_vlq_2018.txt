@@ -110,7 +110,7 @@ VectorLQToTauTau_betaRd33_0_mU2_gU2  200000
 VectorLQToTauTau_betaRd33_0_mU2_gU3  200000
 VectorLQToTauTau_betaRd33_0_mU2_gU1  200000
 VectorLQToTauTau_betaRd33_minus1_mU3_gU3  200000
-VectorLQToTauTau_betaRd33_minus1_mU3_gU2  196000
+VectorLQToTauTau_betaRd33_minus1_mU3_gU2  195000
 VectorLQToTauTau_betaRd33_minus1_mU3_gU1  200000
 VectorLQToTauTau_betaRd33_minus1_mU2_gU3  194000
 VectorLQToTauTau_betaRd33_minus1_mU2_gU1  197000
@@ -119,9 +119,9 @@ VectorLQToTauTau_betaRd33_0_mU4_gU2  197500
 VectorLQToTauTau_betaRd33_0_mU4_gU3  198000
 VectorLQToTauTau_betaRd33_0_mU3_gU2  197500
 VectorLQToTauTau_betaRd33_0_mU3_gU3  198500
-VectorLQToTauTau_betaRd33_minus1_mU2_gU2  199000
+VectorLQToTauTau_betaRd33_minus1_mU2_gU2  200000
 VectorLQToTauTau_betaRd33_0_mU3_gU1  196000
-VectorLQToTauTau_betaRd33_minus1_mU4_gU1  198000
+VectorLQToTauTau_betaRd33_minus1_mU4_gU1  197000
 VectorLQToTauTau_betaRd33_minus1_mU4_gU2  195500
 VectorLQToTauTau_betaRd33_minus1_mU4_gU3  199500
 

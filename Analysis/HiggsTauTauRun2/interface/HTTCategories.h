@@ -213,6 +213,7 @@ class HTTCategories : public ModuleBase {
   double y2_;
   double ystar_;
   double chi_;
+  double met_E_;
   int q_1_;
   int q_2_;
   int jet_flav_1_;

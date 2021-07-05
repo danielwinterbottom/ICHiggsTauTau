@@ -26,10 +26,10 @@ mkdir -p -v $1/TSCALE3PRONG1PI0_DOWN
 #mkdir -p -v $1/TSCALE_DOWN_1.5
 #mkdir -p -v $1/TSCALE_UP_2.5
 #mkdir -p -v $1/TSCALE_DOWN_2.5
-# mkdir -p -v $1/BTAG_UP
-# mkdir -p -v $1/BTAG_DOWN
-# mkdir -p -v $1/BFAKE_UP
-# mkdir -p -v $1/BFAKE_DOWN
+mkdir -p -v $1/BTAG_UP
+mkdir -p -v $1/BTAG_DOWN
+mkdir -p -v $1/BFAKE_UP
+mkdir -p -v $1/BFAKE_DOWN
 # mkdir -p -v $1/HF_UP
 # mkdir -p -v $1/HF_DOWN
 # mkdir -p -v $1/HFSTATS1_UP
