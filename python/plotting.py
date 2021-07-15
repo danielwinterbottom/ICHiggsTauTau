@@ -2,6 +2,7 @@ import ROOT as R
 import math
 import numpy as np
 from array import array
+from math import log10, floor
 import re
 import json
 import types
@@ -2160,7 +2161,12 @@ def ConvertHistToDiscreteBins(hist,bin_labels):
   return hist, bin_names
 
   
-
+def NonZeroMinimum(h):
+  min_value = 9999
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) > 0 and h.GetBinContent(i)<min_value:
+      min_value = h.GetBinContent(i)
+  return min_value
 
 def HTTPlot(nodename, 
             infile=None, 
@@ -2240,24 +2246,24 @@ def HTTPlot(nodename,
     sig_schemes["sm_18"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], False )
 
     plot_signals_dict = {
-        "vlq_betaRd33_0_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=1",
-        "vlq_betaRd33_0_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=2",
-        "vlq_betaRd33_0_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=3",
-        "vlq_betaRd33_0_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=1",
-        "vlq_betaRd33_0_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=2",
-        "vlq_betaRd33_0_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=3",
-        "vlq_betaRd33_0_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=1",
-        "vlq_betaRd33_0_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=2",
-        "vlq_betaRd33_0_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=3",
-        "vlq_betaRd33_minus1_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=1",
-        "vlq_betaRd33_minus1_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=2",
-        "vlq_betaRd33_minus1_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=3",
-        "vlq_betaRd33_minus1_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=1",
-        "vlq_betaRd33_minus1_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=2",
-        "vlq_betaRd33_minus1_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=3",
-        "vlq_betaRd33_minus1_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=1",
-        "vlq_betaRd33_minus1_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=2",
-        "vlq_betaRd33_minus1_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=3",
+        "vlq_betaRd33_0_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_0_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_0_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=3 (XS)",
 
     }
 
@@ -2750,14 +2756,15 @@ def HTTPlot(nodename,
     h = []
     h_ratio = []
     pads[0].cd()
-    for i in range(0,len(plot_signals)):
-      h.append(infile.Get(nodename+'/'+plot_signals[i]).Clone())
-      if norm_bins:
-        h[i].Scale(1.0,"width")
-      h[i].SetLineColor(colours[i])
-      h[i].SetLineWidth(2)
-      h[i].Scale(signal_scale)
-      h[i].Draw("histsame")
+    if plot_signals != [""]:
+      for i in range(0,len(plot_signals)):
+        h.append(infile.Get(nodename+'/'+plot_signals[i]).Clone())
+        if norm_bins:
+          h[i].Scale(1.0,"width")
+        h[i].SetLineColor(colours[i])
+        h[i].SetLineWidth(2)
+        h[i].Scale(signal_scale)
+        h[i].Draw("histsame")
 
  
     # separate out signal into powheg ggH and qqH,
@@ -2891,7 +2898,7 @@ def HTTPlot(nodename,
     legend = PositionedLegend(0.4,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
     #legend.SetTextSize(0.03)
-    legend.SetTextSize(0.02) # when showing plots of signal
+    legend.SetTextSize(0.018) # when showing plots of signal
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
@@ -2903,11 +2910,12 @@ def HTTPlot(nodename,
         legend.AddEntry(hists,background_schemes[scheme][legi]['leg_text'],"f")
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
-    for i in range(0,len(plot_signals)):
-      if plot_signals[i] in plot_signals_dict.keys():
-        legend.AddEntry(h[i],plot_signals_dict[plot_signals[i]],"l")
-      else:
-        legend.AddEntry(h[i],plot_signals[i],"l")
+    if plot_signals != [""]:
+      for i in range(0,len(plot_signals)):
+        if plot_signals[i] in plot_signals_dict.keys():
+          legend.AddEntry(h[i],plot_signals_dict[plot_signals[i]],"l")
+        else:
+          legend.AddEntry(h[i],plot_signals[i],"l")
 
     if signal_mass != "":
         if not split_sm_scheme:
@@ -3051,21 +3059,43 @@ def HTTPlot(nodename,
         pads[1+pad_shift].cd()
         pads[1+pad_shift].SetGrid(0,1)
         axish[1+pad_shift].Draw("axis")
-        if not ratio_log_y:
+        if not ratio_log_y and ratio_range != "auto":
           if ratio_range == "0,2":
               ratio_range = "0.01,1.99"
           axish[1+pad_shift].SetMinimum(float(ratio_range.split(',')[0]))
           axish[1+pad_shift].SetMaximum(float(ratio_range.split(',')[1]))
-        for i in range(0,len(plot_signals)):
-          h_ratio.append(h[i].Clone())
-          h_ratio[i].Scale(1/signal_scale)
-          h_ratio[i].Add(bkghist)
-          h_ratio[i].Divide(bkghist)
-          h_ratio[i].SetLineColor(colours[i])
-          h_ratio[i].SetLineWidth(2)
-          h_ratio[i].Draw("histsame")
+        if plot_signals != [""]:
+          for i in range(0,len(plot_signals)):
+            h_ratio.append(h[i].Clone())
+            h_ratio[i].Scale(1/signal_scale)
+            h_ratio[i].Add(bkghist)
+            h_ratio[i].Divide(bkghist)
+            h_ratio[i].SetLineColor(colours[i])
+            h_ratio[i].SetLineWidth(2)
+            h_ratio[i].Draw("histsame")
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
+        if ratio_range == "auto":
+          max_list,min_list = [],[]
+          max_list.append(ratio_bkghist.GetMaximum())
+          min_list.append(NonZeroMinimum(ratio_bkghist))
+          #max_list.append(blind_ratio.GetMaximum())
+          #min_list.append(blind_ratio.GetMinimum())
+          for i in h_ratio:
+            max_list.append(i.GetMaximum())
+            min_list.append(NonZeroMinimum(i))
+          if min(min_list) <= 0: min_val = 0.01
+          else: min_val = min(min_list)
+          if max(max_list)>100: max_val = 99.9
+          else: max_val = max(max_list)
+          print min_list,min(min_list), min_val
+          print max_list,min(max_list), max_val
+          axish[1+pad_shift].SetMinimum(round(min_val, -int(floor(log10(abs(min_val))))))
+          if round(max_val, -int(floor(log10(abs(max_val))))) < max_val:
+            axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))) + 10**int(floor(log10(abs(max_val)))))
+          else:
+            axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))))
+
         if not blind: blind_ratio.DrawCopy("e0same")
         if(ratio_log_y):
             pads[1].SetLogy(1)

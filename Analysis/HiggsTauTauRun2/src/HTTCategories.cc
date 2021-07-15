@@ -903,8 +903,8 @@ namespace ic {
       outtree_->Branch("py_1",              &py_1_);
       outtree_->Branch("pz_2",              &pz_2_);
       outtree_->Branch("pz_1",              &pz_1_);
-      outtree_->Branch("pt_2",              &pt_2_);
-      outtree_->Branch("pt_1",              &pt_1_);
+      outtree_->Branch("pt_2",              &pt_2_.var_double);
+      outtree_->Branch("pt_1",              &pt_1_.var_double);
       outtree_->Branch("y1",              &y1_);
       outtree_->Branch("y2",              &y2_);
       outtree_->Branch("ystar",              &ystar_);

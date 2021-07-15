@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# python scripts/makeDatacards_vlq.py --years='2016,2017,2018' --channels='tt,mt,et' --output_folder='mssm_dc' --batch
+# python scripts/makeDatacards_vlq.py --years='2018' --channels='tt,mt,et' --output_folder='vlq_dc' --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for ch in tt et mt; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/htt_${ch}.inputs-vlq-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done; done
+#for ch in tt et mt; do year=2018; eval "hadd -f ${year}/${ch}/htt_all.inputs-vlq-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done
 
 import sys
 from optparse import OptionParser
@@ -59,15 +59,12 @@ parser.add_option("--years", dest="years", type='string', default='2016,2017,201
                   help="Year input")
 parser.add_option("--no_syst",dest="no_syst", action='store_true', default=False,
                   help="Run without systematics")
-parser.add_option("--old_sig",dest="old_sig", action='store_true', default=False,
-                  help="Will make datacards with old signal")
 
 
 (options, args) = parser.parse_args()
 output_folder = options.output_folder
 channels = options.channels
 years = options.years
-old_sig = options.old_sig
 no_syst = options.no_syst
 
 print 'Processing channels:      %(channels)s' % vars()
@@ -133,7 +130,6 @@ for year in years:
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
-                   "Nbtag0_MHGt250",
                    ]
 
   categories_em = [
@@ -164,6 +160,8 @@ for year in years:
       ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
       ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
       ' --syst_mssm_ggh ' # ggH theory uncertainties
+      ' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
+      ' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
     ]
 
   common_sep_shape_systematics = [
@@ -253,10 +251,6 @@ for year in years:
       if cat.startswith("btag"): bins = BINS
       else: bins = BINS_FINE
 
-      if old_sig:
-        add_cond += " --bbh_masses_powheg='' --ggh_masses_powheg=''"
-      else:
-        add_cond += " --bbh_nlo_masses='' --ggh_masses=''"
 
       add_cond_nosysts = add_cond
 
@@ -264,7 +258,7 @@ for year in years:
         for i in extra_channel[ch]:   
           add_cond += i
 
-      run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s' % vars()
       rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
       if not options.batch:
@@ -286,7 +280,7 @@ for year in years:
       for syst in sep_systs_channel[ch]:
         syst_name=syst.split('=')[0].split('--')[1]
         dc='%(cat)s_%(syst_name)s' % vars()
-        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s' % vars()
         rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
   
         if not options.batch:

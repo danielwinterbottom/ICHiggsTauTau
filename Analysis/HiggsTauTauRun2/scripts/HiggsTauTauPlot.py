@@ -62,7 +62,7 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":""
 
 }
 
@@ -1522,9 +1522,15 @@ if options.embedding:
     if options.channel == 'tt': extra_top_sel = '!((gen_match_1 == 5) && (gen_match_2 == 5))'
     if options.channel == 'em': extra_top_sel = '!((gen_match_1 == 3) && (gen_match_2 == 4))'
     if options.channel =='zee': extra_top_sel = '!((gen_match_1 == 1) && (gen_match_2 == 1))'
-    for sel in top_sels: top_sels[sel]+='&&'+extra_top_sel
-    for sel in vv_sels: vv_sels[sel]+='&&'+extra_top_sel
-    
+    top_sels["ttt_ztt_sel"] = top_sels["ttt_sel"]+'&&!'+extra_top_sel
+    vv_sels["vvt_ztt_sel"] = vv_sels["vvt_sel"]+'&&!'+extra_top_sel
+    for sel in top_sels: 
+      if "ztt_sel" not in sel: top_sels[sel]+='&&'+extra_top_sel
+    for sel in vv_sels: 
+      if "ztt_sel" not in sel: vv_sels[sel]+='&&'+extra_top_sel
+    top_sels_embed["ttt_ztt_sel"] = top_sels["ttt_ztt_sel"]
+    top_sels_embed["vvt_ztt_sel"] = vv_sels["vvt_ztt_sel"]
+ 
 # Add data sample names
 if options.channel == 'mt': 
     data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD']
@@ -1955,6 +1961,12 @@ if options.analysis == "vlq":
     "vlq_betaRd33_minus1_mU4_gU1":"VectorLQToTauTau_betaRd33_minus1_mU4_gU1",
     "vlq_betaRd33_minus1_mU4_gU2":"VectorLQToTauTau_betaRd33_minus1_mU4_gU2",
     "vlq_betaRd33_minus1_mU4_gU3":"VectorLQToTauTau_betaRd33_minus1_mU4_gU3",
+    "VLQ_betaRd33_0_M_2000":["VectorLQToTauTau_betaRd33_0_mU2_gU1","VectorLQToTauTau_betaRd33_0_mU2_gU2","VectorLQToTauTau_betaRd33_0_mU2_gU3"],
+    "VLQ_betaRd33_0_M_3000":["VectorLQToTauTau_betaRd33_0_mU3_gU1","VectorLQToTauTau_betaRd33_0_mU3_gU2","VectorLQToTauTau_betaRd33_0_mU3_gU3"],
+    "VLQ_betaRd33_0_M_4000":["VectorLQToTauTau_betaRd33_0_mU4_gU1","VectorLQToTauTau_betaRd33_0_mU4_gU2","VectorLQToTauTau_betaRd33_0_mU4_gU3"],
+    "VLQ_betaRd33_minus1_M_2000":["VectorLQToTauTau_betaRd33_minus1_mU2_gU1","VectorLQToTauTau_betaRd33_minus1_mU2_gU2","VectorLQToTauTau_betaRd33_minus1_mU2_gU3"],
+    "VLQ_betaRd33_minus1_M_3000":["VectorLQToTauTau_betaRd33_minus1_mU3_gU1","VectorLQToTauTau_betaRd33_minus1_mU3_gU2","VectorLQToTauTau_betaRd33_minus1_mU3_gU3"],
+    "VLQ_betaRd33_minus1_M_4000":["VectorLQToTauTau_betaRd33_minus1_mU4_gU1","VectorLQToTauTau_betaRd33_minus1_mU4_gU2","VectorLQToTauTau_betaRd33_minus1_mU4_gU3"],
   }
 
 
@@ -2138,11 +2150,11 @@ if options.syst_eff_b_weights != '':
     systematics['syst_b_weights_up'] = ('' , '_'+options.syst_eff_b_weights+'Up', 'wt*wt_btag_up/wt_btag', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
     systematics['syst_b_weights_down'] = ('' , '_'+options.syst_eff_b_weights+'Down', 'wt*wt_btag_down/wt_btag', ['EmbedZTT','ZTT','ZL','ZLL','ZJ','EWKZ','signal','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
 if options.syst_eff_b != '':
-    systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZTT','ZJ','EWKZ','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
-    systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZTT','ZJ','EWKZ','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
+    systematics['syst_b_up'] = ('../../../../../../../vols/cms/dw515/Offline/output/MSSM/mssm_{}_btag/BTAG_UP'.format(options.year), '_'+options.syst_eff_b+'Up', 'wt', ['EmbedZTT','ZJ','EWKZ','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
+    systematics['syst_b_down'] = ('../../../../../../../vols/cms/dw515/Offline/output/MSSM/mssm_{}_btag/BTAG_DOWN'.format(options.year) , '_'+options.syst_eff_b+'Down', 'wt', ['EmbedZTT','ZJ','EWKZ','jetFakes','W','QCD','qqH_hww','ggH_hww'], False)
 if options.syst_fake_b != '':
-    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', ['EmbedZTT'], False)
-    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', ['EmbedZTT'], False)
+    systematics['syst_fake_b_up'] = ('../../../../../../../vols/cms/dw515/Offline/output/MSSM/mssm_{}_btag/BFAKE_UP'.format(options.year), '_'+options.syst_fake_b+'Up', 'wt', ['EmbedZTT'], False)
+    systematics['syst_fake_b_down'] = ('../../../../../../../vols/cms/dw515/Offline/output/MSSM/mssm_{}_btag/BFAKE_DOWN'.format(options.year) , '_'+options.syst_fake_b+'Down', 'wt', ['EmbedZTT'], False)
 if options.syst_zpt_es != '':
     systematics['syst_zpt_es_up'] = ('' , '_'+options.syst_zpt_es+'Up', 'wt*wt_zpt_esup', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
     systematics['syst_zpt_es_down'] = ('' , '_'+options.syst_zpt_es+'Down', 'wt*wt_zpt_esdown', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
@@ -2246,6 +2258,9 @@ if options.syst_res_met != '':
       
       systematics['syst_res_met_2jet_up'] = ('MET_RES_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_res_met_2jet_down'] = ('MET_RES_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
+    elif options.analysis == "vlq":
+      systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','signal'], False)
+      systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','signal'], False)
     else:
       systematics['syst_res_met_up'] = ('MET_RES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
       systematics['syst_res_met_down'] = ('MET_RES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False) 
@@ -2263,6 +2278,9 @@ if options.syst_scale_met != '':
       
       systematics['syst_scale_met_2jet_up'] = ('MET_SCALE_NJETS2_UP' , '_'+hist_name_2jet+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
       systematics['syst_scale_met_2jet_down'] = ('MET_SCALE_NJETS2_DOWN' , '_'+hist_name_2jet+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ'], False)
+    elif options.analysis == "vlq":
+      systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','signal'], False)
+      systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','signal'], False)
     else:  
       systematics['syst_scale_met_up'] = ('MET_SCALE_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)
       systematics['syst_scale_met_down'] = ('MET_SCALE_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes','EmbedZTT','TT','TTJ','TTT','VV','VVT','VVJ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww'], False)  
@@ -2972,6 +2990,13 @@ def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top
   full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
   return ana.SummedFactory('TTT'+add_name, samples, plot, full_selection)
   
+def GetTTTforZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_ztt_sel'])
+  return ana.SummedFactory('TTT_for_ZTT'+add_name, samples, plot, full_selection)
+
+
 def GetTTJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
   if get_os: OSSS = 'os'
   else: OSSS = '!os'  
@@ -2983,6 +3008,10 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
   if doTTT:
       ttt_node = GetTTTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
       ana.nodes[nodename].AddNode(ttt_node)
+      if options.embedding:
+        ttt_for_ztt_node = GetTTTforZTTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
+        ana.nodes[nodename].AddNode(ttt_for_ztt_node)
+
       if split_taus:
        ttt_node_rho = GetTTTNode(ana, '_rho'+add_name, samples, plot, wt_, sel+'&&tauFlag_2==1', cat, top_sels, get_os)
        ana.nodes[nodename].AddNode(ttt_node_rho)
@@ -3003,6 +3032,13 @@ def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
   return ana.SummedFactory('VVT'+add_name, samples, plot, full_selection)
 
+def GetVVTforZTTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_ztt_sel'])
+  return ana.SummedFactory('VVT_for_ZTT'+add_name, samples, plot, full_selection)
+
+
 def GetVVJNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
   if get_os: OSSS = 'os'
   else: OSSS = '!os'  
@@ -3013,6 +3049,9 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   if doVVT:
       vvt_node = GetVVTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
       ana.nodes[nodename].AddNode(vvt_node)
+      if options.embedding:
+        vvt_for_ztt_node = GetVVTforZTTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+        ana.nodes[nodename].AddNode(vvt_for_ztt_node)
       if split_taus:
        vvt_node_rho = GetVVTNode(ana, '_rho'+add_name, samples, plot, wt, sel+'&&tauFlag_2==1', cat, vv_sels, get_os)
        ana.nodes[nodename].AddNode(vvt_node_rho)
@@ -3842,8 +3881,12 @@ def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat
     full_selection = BuildCutString(wt, sel, cat, OSSS)
     for key in vlq_samples:
       if key in vlq_sig:
-        sample_name = vlq_samples[key]
-        ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name, sample_name, plot, full_selection))
+        if isinstance(vlq_samples[key], (list,)):
+          sample_names = []
+          for i in vlq_samples[key]:
+            sample_names.append(i)
+        else: sample_names = [vlq_samples[key]]
+        ana.nodes[nodename].AddNode(ana.SummedFactory(key+add_name, sample_names, plot, full_selection))
 
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
@@ -4327,8 +4370,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
             GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
-            if do_data: GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
-        if 'ZTT' not in samples_to_skip and not options.embedding:
+            #if do_data: GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+        #if 'ZTT' not in samples_to_skip and not options.embedding:
+        if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
@@ -4579,6 +4623,14 @@ def NormSignals(outfile,add_name):
                         mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
                         mssm_hist.Scale(sf)
                         mssm_hist.Write("",ROOT.TObject.kOverwrite)
+        if options.analysis == "vlq":
+            for samp in vlq_samples:
+              xs = ana.info[vlq_samples[samp]]['xs']
+              if xs == 1.: continue
+              sf = 1.0/xs
+              vlq_hist = outfile.Get(nodename+'/'+samp+add_name)
+              vlq_hist.Scale(sf)
+              vlq_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
 
 def RenameMSSMrun2Datacards(outfile):
@@ -4620,14 +4672,20 @@ def RenameMSSMrun2Datacards(outfile):
             histo_clone.SetName(new_name_2)
             histo_clone.Write(new_name_2)
             break
-      elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name:
+      elif not isinstance(histo,ROOT.TDirectory) and 'VVT' in name and not 'VVT_for_ZTT' in name:
         new_name = name.replace('VVT', 'VVL')
         histo.SetName(new_name)
         directory.cd()
         histo.Write(new_name)
         directory.Delete(name+';1')
-      elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name:
+      elif not isinstance(histo,ROOT.TDirectory) and 'TTT' in name and not 'TTT_for_ZTT' in name:
         new_name = name.replace('TTT', 'TTL')
+        histo.SetName(new_name)
+        directory.cd()
+        histo.Write(new_name)
+        directory.Delete(name+';1')
+      elif not isinstance(histo,ROOT.TDirectory) and 'for_ZTT' in name:
+        new_name = name.replace('_for_ZTT', '')
         histo.SetName(new_name)
         directory.cd()
         histo.Write(new_name)
@@ -4770,6 +4828,7 @@ while len(systematics) > 0:
       prev_dir = systematics[systematic][0]
       print "Processing:", systematic
       print ""
+      print systematics[systematic][0]
 
       plot = options.var
       cats=copy.deepcopy(cats_unmodified)
@@ -4866,7 +4925,13 @@ while len(systematics) > 0:
           elif options.analysis == "vlq":
               if options.vlq_sig != "":
                 if samp in options.vlq_sig.split(","):
-                  ana.AddSamples(signal_mc_input_folder_name+'/'+signal_samples[samp]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, signal_samples[samp])
+                  sample_names=[]
+                  if isinstance(vlq_samples[samp], (list,)):
+                    for i in vlq_samples[samp]: sample_names.append(i)
+                  else: sample_names = [vlq_samples[samp]]
+                  for sample_name in sample_names:
+                    ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+                   #ana.AddSamples(signal_mc_input_folder_name+'/'+signal_samples[samp]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, signal_samples[samp])
 
       if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
           for samp in sm_samples:
@@ -5409,7 +5474,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
 
-if options.analysis in ['mssmrun2']:
+if options.analysis in ['mssmrun2','vlq']:
   RenameMSSMrun2Datacards(outfile)
 
 outfile.Close()
