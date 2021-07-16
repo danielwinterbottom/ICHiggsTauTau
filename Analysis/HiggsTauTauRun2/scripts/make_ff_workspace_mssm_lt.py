@@ -666,6 +666,17 @@ for i in [1,2]:
   w.factory('expr::ff_lt_wjets_stat_extrap_unc%(i)i_down("@0*@1", ff_lt_wjets, lt_wjets_extrap_correction_uncert%(i)i_down)' % vars())
   wjets_systs.append('wjets_stat_extrap_unc%(i)i' % vars())
 
+  # adding extrapolation systematic uncertainties for W+jets
+  # come from using Z->mumu + jet->tauh events to check high->low mT extrapolations in data (Ersatz method)
+  # uncertainty comes from difference between mT regions added to statistical uncertainties (uncerts are mainly statistical though)
+  # uncertainty is doubled for btag categories because we can't perform a dedicated measurment due to lack of stats
+
+  w.factory('expr::wjets_extrap_uncert("(@1==0)*((@0<40)*0.1+(@0>=40&&@0<70)*0.04) + (@1>0)*((@0<40)*0.2+(@0>=40&&@0<70)*0.08)", mt[0], nbjets[0])' % vars())
+  w.factory('expr::ff_lt_wjets_syst_extrap_up("@0*(1.+@1)", ff_lt_wjets, wjets_extrap_uncert)' % vars())
+  w.factory('expr::ff_lt_wjets_syst_extrap_down("@0*(1.-@1)", ff_lt_wjets, wjets_extrap_uncert)' % vars())
+
+  wjets_systs.append('wjets_syst_extrap' % vars())
+
 print 'wjets systematics:'
 print wjets_systs
 
@@ -837,6 +848,6 @@ w.factory('expr::ff_total_qcd_syst_bkg_up("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", 
 w.factory('expr::ff_total_qcd_syst_bkg_down("(@0*@1 + @2*@3 + @4*@5)/(@1+@3+@5)", ff_lt_qcdDown, lt_fracs_qcd, ff_lt_wjets, lt_fracs_wjets, ff_lt_ttbar, lt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v4.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_%(channel)s_mssm_%(year)s_v5.root' % vars())
 w.Delete() 
 

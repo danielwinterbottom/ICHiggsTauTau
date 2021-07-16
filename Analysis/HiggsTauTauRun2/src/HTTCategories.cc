@@ -491,6 +491,8 @@ namespace ic {
             outtree_->Branch("wt_ff_mssm_qcd_syst_down_1"  , &wt_ff_mssm_qcd_syst_down_1_);
             outtree_->Branch("wt_ff_mssm_wjets_syst_up_1"  , &wt_ff_mssm_wjets_syst_up_1_);
             outtree_->Branch("wt_ff_mssm_wjets_syst_down_1"  , &wt_ff_mssm_wjets_syst_down_1_);
+            outtree_->Branch("wt_ff_mssm_wjets_syst_extrap_up_1"  , &wt_ff_mssm_wjets_syst_extrap_up_1_);
+            outtree_->Branch("wt_ff_mssm_wjets_syst_extrap_down_1"  , &wt_ff_mssm_wjets_syst_extrap_down_1_);
             outtree_->Branch("wt_ff_mssm_ttbar_syst_up_1"  , &wt_ff_mssm_ttbar_syst_up_1_);
             outtree_->Branch("wt_ff_mssm_ttbar_syst_down_1"  , &wt_ff_mssm_ttbar_syst_down_1_);
             outtree_->Branch("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1"  , &wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1_);
@@ -2112,6 +2114,8 @@ namespace ic {
         wt_ff_mssm_qcd_syst_down_1_ = event->Exists("wt_ff_mssm_qcd_syst_down_1") ? event->Get<double>("wt_ff_mssm_qcd_syst_down_1") : 0.0;
         wt_ff_mssm_wjets_syst_up_1_ = event->Exists("wt_ff_mssm_wjets_syst_up_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_up_1") : 0.0;
         wt_ff_mssm_wjets_syst_down_1_ = event->Exists("wt_ff_mssm_wjets_syst_down_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_down_1") : 0.0;
+        wt_ff_mssm_wjets_syst_extrap_up_1_ = event->Exists("wt_ff_mssm_wjets_syst_extrap_up_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_extrap_up_1") : 0.0;
+        wt_ff_mssm_wjets_syst_extrap_down_1_ = event->Exists("wt_ff_mssm_wjets_syst_extrap_down_1") ? event->Get<double>("wt_ff_mssm_wjets_syst_extrap_down_1") : 0.0;
         wt_ff_mssm_ttbar_syst_up_1_ = event->Exists("wt_ff_mssm_ttbar_syst_up_1") ? event->Get<double>("wt_ff_mssm_ttbar_syst_up_1") : 0.0;
         wt_ff_mssm_ttbar_syst_down_1_ = event->Exists("wt_ff_mssm_ttbar_syst_down_1") ? event->Get<double>("wt_ff_mssm_ttbar_syst_down_1") : 0.0;
         wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1_ = event->Exists("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1") ? event->Get<double>("wt_ff_mssm_qcd_stat_njet0_jet_pt_low_unc1_up_1") : 0.0;
@@ -3143,18 +3147,45 @@ namespace ic {
         }
         mt_1_nomu_ = MT(not_removed_mu, newmet); 
         mu_pt_ = not_removed_mu->pt();
+
+        ROOT::Math::PtEtaPhiEVector newvec;
+        Met* modmet = new Met();
+        newvec.SetPxPyPzE(not_removed_mu->vector().Px(), not_removed_mu->vector().Py(),0.,lep1->pt());
+    
+        newlep->set_vector(newvec);
+        modmet->set_vector(newmet->vector()+newlep->vector());
+    
+        newmet_ = modmet->pt();
+        newmet_dphi_1_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(modmet->vector(),lep1->vector()));
+        newmet_dphi_2_=std::fabs(ROOT::Math::VectorUtil::DeltaPhi(modmet->vector(),lep2->vector()));
+
+        std::vector<Candidate *> subleading_lepton;
+        if(taus.size()>0) subleading_lepton.push_back(taus[0]);
+        std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
+
+        if(tau_matches.size() > 0) jet_pt_1_ = (tau_matches.at(0)).first->pt();
+        else jet_pt_1_ = -9999;
+
       }
 
       if(taus.size()>0) { 
         deepTauVsEle_vvvloose_1_   = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
+        deepTauVsEle_vvloose_1_   = taus[0]->HasTauID("byVVLooseDeepTau2017v2p1VSe")   ? taus[0]->GetTauID("byVVLooseDeepTau2017v2p1VSe"):   0.;
+        deepTauVsEle_tight_1_   = taus[0]->HasTauID("byTightDeepTau2017v2p1VSe")   ? taus[0]->GetTauID("byTightDeepTau2017v2p1VSe"):   0.;
         deepTauVsMu_vloose_1_      =    taus[0]->HasTauID("byVLooseDeepTau2017v2p1VSmu")   ? taus[0]->GetTauID("byVLooseDeepTau2017v2p1VSmu"):   0.;
+        deepTauVsMu_tight_1_      =    taus[0]->HasTauID("byTightDeepTau2017v2p1VSmu")   ? taus[0]->GetTauID("byTightDeepTau2017v2p1VSmu"):   0.;
         deepTauVsJets_vvvloose_1_  = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"):   0.;
+        deepTauVsJets_medium_1_  = taus[0]->HasTauID("byMediumDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byMediumDeepTau2017v2p1VSjet"):   0.;
         tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
       }
       else {
         deepTauVsEle_vvvloose_1_ = 0.;
+        deepTauVsEle_vvloose_1_ = 0.;
+        deepTauVsEle_tight_1_ = 0.;
         deepTauVsMu_vloose_1_ = 0.;
+        deepTauVsMu_tight_1_ = 0.;
         deepTauVsJets_vvvloose_1_ = 0.;
+        deepTauVsJets_medium_1_ = 0.;
         tau_mva_decay_mode_1_ = -1;
       } 
 
