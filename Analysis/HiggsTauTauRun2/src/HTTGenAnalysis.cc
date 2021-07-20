@@ -256,6 +256,7 @@ namespace ic {
       outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
       outtree_->Branch("parton_mjj",    &parton_mjj_);
       outtree_->Branch("parton_HpT", &parton_HpT_);
+      outtree_->Branch("parton_Zmass", &parton_Zmass_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
@@ -572,10 +573,12 @@ namespace ic {
     partons_=0;
     parton_mjj_=-9999;
     parton_HpT_=-9999;
+    parton_Zmass_=-9999;
     //double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
     std::vector<GenParticle*> outparts;
+    ROOT::Math::PtEtaPhiEVector gen_boson_lhe;
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
@@ -590,6 +593,7 @@ namespace ic {
              lead_b_eta=lhe_parts[i]->eta();
            }
            if(id==25) parton_HpT_ = lhe_parts[i]->pt();
+           if(id==11 ||id==13 || id==15) gen_boson_lhe+=lhe_parts[i]->vector();
            if ((id >= 1 && id <=6) || id == 21){ 
              outparts.push_back(lhe_parts[i]);
              partons_++;
@@ -638,6 +642,8 @@ namespace ic {
     if(npNLO_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
     else wt_stitch_=1.;
     
+    ROOT::Math::PtEtaPhiEVector gen_boson;
+
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
@@ -649,12 +655,12 @@ namespace ic {
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
-      
       unsigned genID = std::fabs(part.pdgid());
       bool status_flag_t = part.statusFlags().at(0);
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
+      if ( (genID >= 11 && genID <= 16 && part.statusFlags()[FromHardProcess] && abs(part.status())==1) || part.statusFlags()[IsDirectHardProcessTauDecayProduct]) gen_boson+=part.vector();
       if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 ) partons_++;
 
       //if(genID==25 || genID==36 || genID==35 ) std::cout << genID << std::endl;
@@ -663,7 +669,7 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
-      if((genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
+      if((genID=23||genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
@@ -730,6 +736,9 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
+
+    mass_=gen_boson.M();
+    parton_Zmass_=gen_boson_lhe.M();
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
     std::sort(gen_taus.begin(),gen_taus.end(),PtComparator());
@@ -902,7 +911,7 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
-      mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+      //mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       //wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       if(!(channel_str_ == "zmm")){
@@ -923,7 +932,7 @@ namespace ic {
       phi_2_ = -9999;
       met_   = -9999;
       pt_tt_ = -9999;
-      mass_= -9999;
+      //mass_= -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;
