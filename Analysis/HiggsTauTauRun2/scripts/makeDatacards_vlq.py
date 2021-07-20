@@ -3,7 +3,7 @@
 # python scripts/makeDatacards_vlq.py --years='2018' --channels='tt,mt,et' --output_folder='vlq_dc' --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for ch in tt et mt; do year=2018; eval "hadd -f ${year}/${ch}/htt_all.inputs-vlq-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done
+#for ch in tt et mt; do year=2018; eval "hadd -f ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done
 
 import sys
 from optparse import OptionParser
@@ -17,7 +17,7 @@ config_files = {'2016':'scripts/plot_mssm_2016.cfg',
                }
 param_files = {'2016':'scripts/params_mssm_2016.json',
                '2017':'scripts/params_mssm_2017.json',
-               '2018':'scripts/params_vlq_2018.json',
+               '2018':'scripts/params_vlq_2018_gu4.json',
               }
 
 def split_callback(option, opt, value, parser):
