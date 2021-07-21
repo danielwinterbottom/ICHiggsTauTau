@@ -2,6 +2,7 @@ import ROOT as R
 import math
 import numpy as np
 from array import array
+from math import log10, floor
 import re
 import json
 import types
@@ -237,6 +238,7 @@ def SetAxisTitles2D(plot, channel):
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
     
   return [x_titles, y_titles]
+  
 
 def SetTDRStyle():
     """Sets the PubComm recommended style
@@ -244,9 +246,6 @@ def SetTDRStyle():
     Just a copy of <http://ghm.web.cern.ch/ghm/plots/MacroExample/tdrstyle.C>
     @sa ModTDRStyle() to use this style with some additional customisation.
     """
-
-    R.gStyle.Reset()
-
     # For the canvas:
     R.gStyle.SetCanvasBorderMode(0)
     R.gStyle.SetCanvasColor(R.kWhite)
@@ -404,11 +403,6 @@ def ModTDRStyle(width=600, height=600, t=0.06, b=0.12, l=0.16, r=0.04):
     R.gStyle.SetCanvasDefW(width)
     R.gStyle.SetCanvasDefH(height)
 
-    R.gStyle.SetHatchesSpacing(1.0)
-    R.gStyle.SetHatchesLineWidth(1)
-    #print R.gStyle().GetLineStyleString(3)
-    #R.gStyle().SetLineStyleString(3," 4 8")
-
     # Set the default margins. These are given as fractions of the pad height
     # for `Top` and `Bottom` and the pad width for `Left` and `Right`. But we
     # want to specify all of these as fractions of the shortest length.
@@ -432,7 +426,7 @@ def ModTDRStyle(width=600, height=600, t=0.06, b=0.12, l=0.16, r=0.04):
     # 0.08, 0.12, 0.12, 0.04
 
     # Set number of axis tick divisions
-    R.gStyle.SetNdivisions(506, 'XYZ')  # default 510
+    R.gStyle.SetNdivisions(510, 'XYZ')  # default 510
 
     # Some marker properties not set in the default tdr style
     R.gStyle.SetMarkerColor(R.kBlack)
@@ -474,9 +468,6 @@ def ModTDRStyle(width=600, height=600, t=0.06, b=0.12, l=0.16, r=0.04):
     R.gStyle.SetFillColor(0)
 
     R.gROOT.ForceStyle()
-
-
-  
 
 
 def SetBirdPalette():
@@ -1657,113 +1648,6 @@ def DrawCMSLogo(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, ex
         latex.SetTextAlign(align_)
         latex.DrawLatex(posX_, posY_, extraText)
 
-def DrawCMSLogoCH(pad, cmsText, extraText, iPosX, relPosX, relPosY, relExtraDY, relExtraDX, extraText2='', cmsTextSize=0.8):
-    """Blah
-    
-    Args:
-        pad (TYPE): Description
-        cmsText (TYPE): Description
-        extraText (TYPE): Description
-        iPosX (TYPE): Description
-        relPosX (TYPE): Description
-        relPosY (TYPE): Description
-        relExtraDY (TYPE): Description
-        extraText2 (str): Description
-        cmsTextSize (float): Description
-    
-    Returns:
-        TYPE: Description
-    """
-    pad.cd()
-    cmsTextFont = 62  # default is helvetic-bold
-
-    writeExtraText = len(extraText) > 0
-    writeExtraText2 = len(extraText2) > 0
-    extraTextFont = 52
-
-    # text sizes and text offsets with respect to the top frame
-    # in unit of the top margin size
-    lumiTextOffset = 0.2
-    # cmsTextSize = 0.8
-    # float cmsTextOffset    = 0.1;  // only used in outOfFrame version
-
-    # ratio of 'CMS' and extra text size
-    extraOverCmsTextSize = 0.76
-
-    outOfFrame = False
-    if iPosX / 10 == 0:
-        outOfFrame = True
-
-    alignY_ = 3
-    alignX_ = 2
-    if (iPosX / 10 == 0):
-        alignX_ = 1
-    if (iPosX == 0):
-        alignX_ = 1
-    if (iPosX == 0):
-        alignY_ = 1
-    if (iPosX / 10 == 1):
-        alignX_ = 1
-    if (iPosX / 10 == 2):
-        alignX_ = 2
-    if (iPosX / 10 == 3):
-        alignX_ = 3
-    # if (iPosX == 0): relPosX = 0.14
-    align_ = 10 * alignX_ + alignY_
-
-    l = pad.GetLeftMargin()
-    t = pad.GetTopMargin()
-    r = pad.GetRightMargin()
-    b = pad.GetBottomMargin()
-
-    latex = R.TLatex()
-    latex.SetNDC()
-    latex.SetTextAngle(0)
-    latex.SetTextColor(R.kBlack)
-
-    extraTextSize = extraOverCmsTextSize * cmsTextSize
-    pad_ratio = (float(pad.GetWh()) * pad.GetAbsHNDC()) / \
-        (float(pad.GetWw()) * pad.GetAbsWNDC())
-    if (pad_ratio < 1.):
-        pad_ratio = 1.
-
-    if outOfFrame:
-        latex.SetTextFont(cmsTextFont)
-        latex.SetTextAlign(11)
-        latex.SetTextSize(cmsTextSize * t * pad_ratio)
-        latex.DrawLatex(l, 1 - t + lumiTextOffset * t, cmsText)
-
-    posX_ = 0
-    if iPosX % 10 <= 1:
-        posX_ = l + relPosX * (1 - l - r)
-    elif (iPosX % 10 == 2):
-        posX_ = l + 0.5 * (1 - l - r)
-    elif (iPosX % 10 == 3):
-        posX_ = 1 - r - relPosX * (1 - l - r)
-
-    posY_ = 1 - t - relPosY * (1 - t - b)
-    if not outOfFrame:
-        latex.SetTextFont(cmsTextFont)
-        latex.SetTextSize(cmsTextSize * t * pad_ratio)
-        latex.SetTextAlign(align_)
-        latex.DrawLatex(posX_, posY_, cmsText)
-        if writeExtraText:
-            latex.SetTextFont(extraTextFont)
-            latex.SetTextAlign(align_)
-            latex.SetTextSize(extraTextSize * t * pad_ratio)
-            latex.DrawLatex(
-                posX_+ relExtraDX * cmsTextSize * t, posY_ - relExtraDY * cmsTextSize * t, extraText)
-            if writeExtraText2:
-                latex.DrawLatex(
-                    posX_, posY_ - 1.8 * relExtraDY * cmsTextSize * t, extraText2)
-    elif writeExtraText:
-        if iPosX == 0:
-            posX_ = l + relPosX * (1 - l - r)
-            posY_ = 1 - t + lumiTextOffset * t
-        latex.SetTextFont(extraTextFont)
-        latex.SetTextSize(extraTextSize * t * pad_ratio)
-        latex.SetTextAlign(align_)
-        latex.DrawLatex(posX_, posY_, extraText)
 
 def PositionedLegend(width, height, pos, offset):
     o = offset
@@ -2262,7 +2146,6 @@ def ConvertHistToDiscreteBins(hist,bin_labels):
       bin_names.append(str(i).replace(">=","#geq"))
 
   if do_eq:
-    hist.Print("all")
     h_clone = hist.Clone()
     new_bins = range(1,len(bin_labels)+1)
     new_bins_array =  array('f',range(1,len(bin_labels)+2))
@@ -2278,7 +2161,12 @@ def ConvertHistToDiscreteBins(hist,bin_labels):
   return hist, bin_names
 
   
-
+def NonZeroMinimum(h):
+  min_value = 9999
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) > 0 and h.GetBinContent(i)<min_value:
+      min_value = h.GetBinContent(i)
+  return min_value
 
 def HTTPlot(nodename, 
             infile=None, 
@@ -2292,6 +2180,7 @@ def HTTPlot(nodename,
             x_blind_max=1e5,
             ratio=True,
             threePads=False,
+            ratio_log_y=False,
             log_y=False,
             log_x=False,
             ratio_range="0.7,1.3",
@@ -2325,7 +2214,8 @@ def HTTPlot(nodename,
             discrete_x_labels=None,
             qcd_ff_closure=False,
             w_ff_closure=False,
-            bkg_comp = False
+            bkg_comp = False,
+            plot_signals=[]
             ):
 
     R.gROOT.SetBatch(R.kTRUE)
@@ -2354,6 +2244,28 @@ def HTTPlot(nodename,
     sig_schemes["sm_cp_decays_mm"] = ( str(int(signal_scale))+"#times MM H#rightarrow#tau#tau", ["ggH_mm_htt", "qqH_mm_htt"], False )
 
     sig_schemes["sm_18"] = ( str(int(signal_scale))+"#times SM H#rightarrow#tau#tau", ["ggH_ph_htt", "qqH_htt"], False )
+
+    plot_signals_dict = {
+        "vlq_betaRd33_0_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=2 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_0_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=3 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_0_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_0_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_0_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=0, m_{U}=4 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU2_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=2 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU3_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=3 TeV, g_{U}=3 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=1 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=2 (XS)",
+        "vlq_betaRd33_minus1_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=3 (XS)",
+
+    }
 
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2839,7 +2751,22 @@ def HTTPlot(nodename,
             if not sig_scheme[2]: sighist.Draw("histsame")
     elif not split_sm_scheme:
         stack.Draw("histsame")
-        
+       
+    colours = [2,3,4,5,6,7,8]
+    h = []
+    h_ratio = []
+    pads[0].cd()
+    if plot_signals != [""]:
+      for i in range(0,len(plot_signals)):
+        h.append(infile.Get(nodename+'/'+plot_signals[i]).Clone())
+        if norm_bins:
+          h[i].Scale(1.0,"width")
+        h[i].SetLineColor(colours[i])
+        h[i].SetLineWidth(2)
+        h[i].Scale(signal_scale)
+        h[i].Draw("histsame")
+
+ 
     # separate out signal into powheg ggH and qqH,
     # JHU ggH, and VH
         
@@ -2962,15 +2889,16 @@ def HTTPlot(nodename,
     if discrete_x_axis: blind_datahist,_ = ConvertHistToDiscreteBins(blind_datahist,discrete_x_labels)
 
     error_hist.Draw("e2same")
-    blind_datahist.Draw("E same")
+    if not blind: blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
 
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.0) 
-    #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
+    #legend = PositionedLegend(0.37,0.3,3,0.05) 
+    legend = PositionedLegend(0.4,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
+    #legend.SetTextSize(0.03)
+    legend.SetTextSize(0.018) # when showing plots of signal
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
@@ -2982,6 +2910,13 @@ def HTTPlot(nodename,
         legend.AddEntry(hists,background_schemes[scheme][legi]['leg_text'],"f")
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
+    if plot_signals != [""]:
+      for i in range(0,len(plot_signals)):
+        if plot_signals[i] in plot_signals_dict.keys():
+          legend.AddEntry(h[i],plot_signals_dict[plot_signals[i]],"l")
+        else:
+          legend.AddEntry(h[i],plot_signals[i],"l")
+
     if signal_mass != "":
         if not split_sm_scheme:
             legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
@@ -3124,13 +3059,50 @@ def HTTPlot(nodename,
         pads[1+pad_shift].cd()
         pads[1+pad_shift].SetGrid(0,1)
         axish[1+pad_shift].Draw("axis")
-        if ratio_range == "0,2":
-            ratio_range = "0.01,1.99"
-        axish[1+pad_shift].SetMinimum(float(ratio_range.split(',')[0]))
-        axish[1+pad_shift].SetMaximum(float(ratio_range.split(',')[1]))
+        if not ratio_log_y and ratio_range != "auto":
+          if ratio_range == "0,2":
+              ratio_range = "0.01,1.99"
+          axish[1+pad_shift].SetMinimum(float(ratio_range.split(',')[0]))
+          axish[1+pad_shift].SetMaximum(float(ratio_range.split(',')[1]))
+        if plot_signals != [""]:
+          for i in range(0,len(plot_signals)):
+            h_ratio.append(h[i].Clone())
+            h_ratio[i].Scale(1/signal_scale)
+            h_ratio[i].Add(bkghist)
+            h_ratio[i].Divide(bkghist)
+            h_ratio[i].SetLineColor(colours[i])
+            h_ratio[i].SetLineWidth(2)
+            h_ratio[i].Draw("histsame")
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
-        blind_ratio.DrawCopy("e0same")
+        if ratio_range == "auto":
+          max_list,min_list = [],[]
+          max_list.append(ratio_bkghist.GetMaximum())
+          min_list.append(NonZeroMinimum(ratio_bkghist))
+          #max_list.append(blind_ratio.GetMaximum())
+          #min_list.append(blind_ratio.GetMinimum())
+          for i in h_ratio:
+            max_list.append(i.GetMaximum())
+            min_list.append(NonZeroMinimum(i))
+          if min(min_list) <= 0: min_val = 0.01
+          else: min_val = min(min_list)
+          if max(max_list)>100: max_val = 99.9
+          else: max_val = max(max_list)
+          print min_list,min(min_list), min_val
+          print max_list,min(max_list), max_val
+          axish[1+pad_shift].SetMinimum(round(min_val, -int(floor(log10(abs(min_val))))))
+          if round(max_val, -int(floor(log10(abs(max_val))))) < max_val:
+            axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))) + 10**int(floor(log10(abs(max_val)))))
+          else:
+            axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))))
+
+        if not blind: blind_ratio.DrawCopy("e0same")
+        if(ratio_log_y):
+            pads[1].SetLogy(1)
+            axish[1+pad_shift].SetMinimum(0.9)
+            axish[1+pad_shift].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*ratio_bkghist.GetMaximum() - math.log10(axish[1+pad_shift].GetMinimum())))))
+        pads[1].RedrawAxis("G")
+
 
         ## lines below will show seperate lines indicating systematic up and down bands
         if do_custom_uncerts:
@@ -3179,6 +3151,12 @@ def HTTPlot(nodename,
           hists.Divide(bkghist)
           fracstack.Add(hists)
         pads[1].cd()
+        if log_x: 
+          pads[1].SetLogx(1)
+          pads[2].SetLogx(1)
+          axish[2].GetXaxis().SetMoreLogLabels()
+          axish[2].GetXaxis().SetNoExponent()
+
         pads[1].SetGrid(0,1)
         axish[1].Draw("axis")
         axish[1].SetMinimum(0.)
@@ -3383,9 +3361,8 @@ def CompareHists(hists=[],
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
-    R.gStyle.SetTitleFont(42, 'XYZ')
 
-    colourlist=[R.kRed,R.kBlue,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+    colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
     if ReweightPlot:
       colourlist=[R.kBlack,R.kBlue,R.kRed,R.kGreen+3,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
 
@@ -3460,16 +3437,14 @@ def CompareHists(hists=[],
         axish[0].GetXaxis().SetLabelSize(0.03)
         axish[0].GetXaxis().SetTitle(x_title)
         axish[0].GetXaxis().SetTitleSize(0.04)
-        axish[0].GetXaxis().SetTitleFont(42)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:                                                                
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
-    axish[0].GetYaxis().SetTitleOffset(1.4)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
-    axish[0].GetYaxis().SetTitleFont(42)
 
     hs.Draw("nostack same")
 
@@ -3538,8 +3513,6 @@ def CompareHists(hists=[],
     if isinstance(uncert_hist,list): tot+=len(uncert_hist)
     if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
     else: legend = PositionedLegend(0.35,0.2,3,0.03)
-    legend = PositionedLegend(0.78,0.05,1,0.05)
-    legend.SetNColumns(3)
     legend.SetTextFont(42)
     legend.SetTextSize(0.040)
     legend.SetFillColor(0)
@@ -3557,16 +3530,11 @@ def CompareHists(hists=[],
     legend.Draw("same")
     
     #CMS label and title
-    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad)
+    #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
     #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    #DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
-    #DrawTitle(pads[0], title, 3)
-
-    #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.01, -0.05, 1.0, '', 1.0)
-    DrawCMSLogoCH(pads[0], 'CMS', 'Simulation Supplementary', 11, 0.001, -0.07, 0.2, 2.1, '', 0.9)
-    DrawTitle(pads[0], '13 TeV', 3)   
-
- 
+    # DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawTitle(pads[0], title, 3)
+    
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
@@ -3791,8 +3759,6 @@ def HTTPlotSignal(nodename,
     
     #Setup legend
     legend = PositionedLegend(0.30,0.1,3,0.03)
-    #legend = PositionedLegend(0.78,0.05,1,0.02,0.02)
-    #legend.SetNColumns(3)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
