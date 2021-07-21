@@ -160,8 +160,8 @@ for year in years:
       ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
       ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
       ' --syst_mssm_ggh ' # ggH theory uncertainties
-      ' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
-      ' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
+      #' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
+      #' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
     ]
 
   common_sep_shape_systematics = [
