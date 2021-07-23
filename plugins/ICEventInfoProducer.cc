@@ -278,7 +278,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
         info_->set_weight(lhe_handle->weights()[i].id,
                           lhe_handle->weights()[i].wgt / nominal_wt, false);
 
-        //std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt << "  " <<  nominal_wt << "    " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
+        std::cout << lhe_handle->weights()[i].id << "   " << lhe_handle->weights()[i].wgt << "  " <<  nominal_wt << "    " << lhe_handle->weights()[i].wgt / nominal_wt << std::endl;
       }
     }
   }
