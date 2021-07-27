@@ -850,7 +850,8 @@ namespace ic {
        outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
        outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
      }
-      
+     
+ 
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
@@ -2409,7 +2410,9 @@ namespace ic {
      //if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
      //if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
      //if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
-     //if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+     //if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;   
+
+     //std::cout << eventInfo->weight("1004") << ", " << eventInfo->weight("1009") << ", " << eventInfo->weight("1014") << ", " << eventInfo->weight("1019") << ", " << eventInfo->weight("1024") << ", " << eventInfo->weight("1029") << ", " << eventInfo->weight("1034") << ", " << eventInfo->weight("1039") << ", " << eventInfo->weight("1044") << std::endl;
 
      if(eventInfo->weight_defined("1004")) scale1_ = eventInfo->weight("1004"); else scale1_=1.0;
      if(eventInfo->weight_defined("1019")) scale2_ = eventInfo->weight("1019"); else scale2_=1.0;
@@ -2423,15 +2426,15 @@ namespace ic {
 
 
      // W-jets weights are numbered 1-9 - be careful this doesn't overwrite scale weights for other samples with some other weight!
-     if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
-     if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
-     if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
-     if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
-     if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
-     if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
-     if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
-     if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
-     if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
+     //if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
+     //if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2"); else scale2_=1.0;
+     //if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3"); else scale3_=1.0;
+     //if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4"); else scale4_=1.0;
+     //if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5"); else scale5_=1.0;
+     //if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6"); else scale6_=1.0;
+     //if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7"); else scale7_=1.0;
+     //if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8"); else scale8_=1.0;
+     //if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9"); else scale9_=1.0;
    }
     
     std::vector<PileupInfo *> puInfo;
@@ -3304,23 +3307,24 @@ namespace ic {
       if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
     }
 
-    wt_vlq_off_diag_0_=0.; wt_vlq_betaL23_1sigma_up_=0.;wt_vlq_betaL23_1sigma_down_=0.;wt_vlq_betaL32_1sigma_up_=0.;
-    wt_vlq_betaL32_1sigma_down_=0.; wt_vlq_betaL23_2sigma_up_=0.; wt_vlq_betaL23_2sigma_down_=0.; wt_vlq_gU_1_=0.;
-    wt_vlq_gU_2_=0.; wt_vlq_gU_3_=0.; wt_vlq_betaR33_0_=0.; wt_vlq_betaR33_minus1_=0.; wt_vlq_gU_4_=0.;wt_vlq_gU_5_=0.;
-    wt_vlq_gU_0p5_=0.; wt_vlq_gU_10_=0.; wt_vlq_gU_20_=0.; wt_vlq_gU_30_=0.; wt_vlq_gU_40_=0.; wt_vlq_gU_50_=0.; wt_vlq_gU_100_=0.;
-    wt_vlq_full_=0.;
-    wt_vlq_off_diag_0_full_=0.; wt_vlq_betaL23_1sigma_up_full_=0.;wt_vlq_betaL23_1sigma_down_full_=0.;wt_vlq_betaL32_1sigma_up_full_=0.;
-    wt_vlq_betaL32_1sigma_down_full_=0.; wt_vlq_betaL23_2sigma_up_full_=0.; wt_vlq_betaL23_2sigma_down_full_=0.; wt_vlq_gU_1_full_=0.;
-    wt_vlq_gU_2_full_=0.; wt_vlq_gU_3_full_=0.; wt_vlq_betaR33_0_full_=0.; wt_vlq_betaR33_minus1_full_=0.; wt_vlq_gU_4_full_=0.;wt_vlq_gU_5_full_=0.;
-    wt_vlq_gU_0p5_full_=0.; wt_vlq_gU_10_full_=0.; wt_vlq_gU_20_full_=0.; wt_vlq_gU_30_full_=0.; wt_vlq_gU_40_full_=0.; wt_vlq_gU_50_full_=0.; wt_vlq_gU_100_full_=0.; 
-    wt_vlq_sm_=0.;
-    wt_vlq_off_diag_0_sm_=0.; wt_vlq_betaL23_1sigma_up_sm_=0.;wt_vlq_betaL23_1sigma_down_sm_=0.;wt_vlq_betaL32_1sigma_up_sm_=0.;
-    wt_vlq_betaL32_1sigma_down_sm_=0.; wt_vlq_betaL23_2sigma_up_sm_=0.; wt_vlq_betaL23_2sigma_down_sm_=0.; wt_vlq_gU_1_sm_=0.;
-    wt_vlq_gU_2_sm_=0.; wt_vlq_gU_3_sm_=0.; wt_vlq_betaR33_0_sm_=0.; wt_vlq_betaR33_minus1_sm_=0.; wt_vlq_gU_4_sm_=0.;wt_vlq_gU_5_sm_=0.;
-    wt_vlq_gU_0p5_sm_=0.; wt_vlq_gU_10_sm_=0.; wt_vlq_gU_20_sm_=0.; wt_vlq_gU_30_sm_=0.; wt_vlq_gU_40_sm_=0.; wt_vlq_gU_50_sm_=0.; wt_vlq_gU_100_sm_=0.;
+    wt_vlq_off_diag_0_=1.; wt_vlq_betaL23_1sigma_up_=1.;wt_vlq_betaL23_1sigma_down_=1.;wt_vlq_betaL32_1sigma_up_=1.;
+    wt_vlq_betaL32_1sigma_down_=1.; wt_vlq_betaL23_2sigma_up_=1.; wt_vlq_betaL23_2sigma_down_=1.; wt_vlq_gU_1_=1.;
+    wt_vlq_gU_2_=1.; wt_vlq_gU_3_=1.; wt_vlq_betaR33_0_=1.; wt_vlq_betaR33_minus1_=1.; wt_vlq_gU_4_=1.;wt_vlq_gU_5_=1.;
+    wt_vlq_gU_0p5_=1.; wt_vlq_gU_10_=1.; wt_vlq_gU_20_=1.; wt_vlq_gU_30_=1.; wt_vlq_gU_40_=1.; wt_vlq_gU_50_=1.; wt_vlq_gU_100_=1.;
+    wt_vlq_full_=1.;
+    wt_vlq_off_diag_0_full_=1.; wt_vlq_betaL23_1sigma_up_full_=1.;wt_vlq_betaL23_1sigma_down_full_=1.;wt_vlq_betaL32_1sigma_up_full_=1.;
+    wt_vlq_betaL32_1sigma_down_full_=1.; wt_vlq_betaL23_2sigma_up_full_=1.; wt_vlq_betaL23_2sigma_down_full_=1.; wt_vlq_gU_1_full_=1.;
+    wt_vlq_gU_2_full_=1.; wt_vlq_gU_3_full_=1.; wt_vlq_betaR33_0_full_=1.; wt_vlq_betaR33_minus1_full_=1.; wt_vlq_gU_4_full_=1.;wt_vlq_gU_5_full_=1.;
+    wt_vlq_gU_0p5_full_=1.; wt_vlq_gU_10_full_=1.; wt_vlq_gU_20_full_=1.; wt_vlq_gU_30_full_=1.; wt_vlq_gU_40_full_=1.; wt_vlq_gU_50_full_=1.; wt_vlq_gU_100_full_=1.; 
+    wt_vlq_sm_=1.;
+    wt_vlq_off_diag_0_sm_=1.; wt_vlq_betaL23_1sigma_up_sm_=1.;wt_vlq_betaL23_1sigma_down_sm_=1.;wt_vlq_betaL32_1sigma_up_sm_=1.;
+    wt_vlq_betaL32_1sigma_down_sm_=1.; wt_vlq_betaL23_2sigma_up_sm_=1.; wt_vlq_betaL23_2sigma_down_sm_=1.; wt_vlq_gU_1_sm_=1.;
+    wt_vlq_gU_2_sm_=1.; wt_vlq_gU_3_sm_=1.; wt_vlq_betaR33_0_sm_=1.; wt_vlq_betaR33_minus1_sm_=1.; wt_vlq_gU_4_sm_=1.;wt_vlq_gU_5_sm_=1.;
+    wt_vlq_gU_0p5_sm_=1.; wt_vlq_gU_10_sm_=1.; wt_vlq_gU_20_sm_=1.; wt_vlq_gU_30_sm_=1.; wt_vlq_gU_40_sm_=1.; wt_vlq_gU_50_sm_=1.; wt_vlq_gU_100_sm_=1.;
 
     if(eventInfo->weight_defined("off_diag_0")) {
       if(eventInfo->weight_defined("off_diag_0")) wt_vlq_off_diag_0_ = eventInfo->weight("off_diag_0");
+      std::cout << wt_vlq_off_diag_0_ << " ," << eventInfo->weight("off_diag_0") << std::endl;
       if(eventInfo->weight_defined("betaL23_1sigma_up")) wt_vlq_betaL23_1sigma_up_ = eventInfo->weight("betaL23_1sigma_up");
       if(eventInfo->weight_defined("betaL23_1sigma_down")) wt_vlq_betaL23_1sigma_down_ = eventInfo->weight("betaL23_1sigma_down"); 
       if(eventInfo->weight_defined("betaL32_1sigma_up")) wt_vlq_betaL32_1sigma_up_ = eventInfo->weight("betaL32_1sigma_up"); 
@@ -3342,7 +3346,7 @@ namespace ic {
       if(eventInfo->weight_defined("gU_50")) wt_vlq_gU_50_ = eventInfo->weight("gU_50");
       if(eventInfo->weight_defined("gU_100")) wt_vlq_gU_100_ = eventInfo->weight("gU_100");
       if(eventInfo->weight_defined("full")) wt_vlq_full_ = eventInfo->weight("full");
-      if(eventInfo->weight_defined("off_diag_0_full")) wt_vlq_off_diag_0_ = eventInfo->weight("off_diag_0_full");
+      if(eventInfo->weight_defined("off_diag_0_full")) wt_vlq_off_diag_0_full_ = eventInfo->weight("off_diag_0_full");
       if(eventInfo->weight_defined("betaL23_1sigma_up_full")) wt_vlq_betaL23_1sigma_up_full_ = eventInfo->weight("betaL23_1sigma_up_full");
       if(eventInfo->weight_defined("betaL23_1sigma_down_full")) wt_vlq_betaL23_1sigma_down_full_ = eventInfo->weight("betaL23_1sigma_down_full");
       if(eventInfo->weight_defined("betaL32_1sigma_up_full")) wt_vlq_betaL32_1sigma_up_full_ = eventInfo->weight("betaL32_1sigma_up_full"); 

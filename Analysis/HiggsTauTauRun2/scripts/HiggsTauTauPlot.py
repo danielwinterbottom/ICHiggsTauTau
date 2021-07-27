@@ -261,6 +261,10 @@ parser.add_argument("--add_wt", dest="add_wt", type=str,
     help="Name of additional weight to be applied to all templates.")
 parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
     help="Do fake-factor systamatic shifts.")
+parser.add_argument("--do_ff_systs_1", dest="do_ff_systs_1", action='store_true',
+    help="Split mt/et fake-factor systematics so they don't take so long.")
+parser.add_argument("--do_ff_systs_2", dest="do_ff_systs_2", action='store_true',
+    help="Split mt/et fake-factor systematics so they don't take so long.")
 parser.add_argument("--syst_efake_0pi_scale", dest="syst_efake_0pi_scale", type=str,
     help="If this string is set then the e->tau dm=0 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_efake_1pi_scale", dest="syst_efake_1pi_scale", type=str,
@@ -692,6 +696,9 @@ cats['Nbtag1_MT40To70'] = '(n_deepbjets==1 && mt_1>40 && mt_1<70)'
 cats['Nbtag0_MTLt70'] = '(n_deepbjets==0 && mt_1<70)'
 cats['NbtagGt1_MTLt70'] = '(n_deepbjets>0 && mt_1<70)'
 cats['MTLt70'] = '(mt_1<70)'
+
+cats['MTLt40'] = '(mt_1<40)'
+cats['MT40To70'] = '(mt_1>40 && mt_1<70)'
 
 cats['tightmt'] = '(mt_1<40)'
 cats['loosemt'] = '(mt_1>40 && mt_1<70)'
@@ -2673,7 +2680,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   systematics['ff_sub_up']   = ('' , '_'+template_name+'Up',   'wt_ff',   ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
   systematics['ff_sub_down'] = ('' , '_'+template_name+'Down', 'wt_ff', ['EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal','EmbedZTT'], True)
 
-if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis in ['mssmrun2','vlq'] and options.do_ff_systs:
+if options.method in [17,18] and options.channel in ['et','mt','tt'] and options.analysis in ['mssmrun2','vlq'] and (options.do_ff_systs or options.do_ff_systs_1 or options.do_ff_systs_2):
   ch = options.channel
   yr = options.year
   if options.channel in ['tt']:
@@ -2706,48 +2713,53 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
   elif options.channel in ['et','mt']:
     lt_systs={}
 
-    for njet in [0,1]:
-      for i in [1,2]:
-        lt_systs['CMS_ff_total_qcd_stat_ss_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
-        lt_systs['CMS_ff_total_wjets_stat_met_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
-        lt_systs['CMS_ff_total_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
+    if options.do_ff_systs_1 or options.do_ff_systs:
 
-    for i in [1,2]:
-      lt_systs['CMS_ff_total_qcd_stat_os_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
-      lt_systs['CMS_ff_total_qcd_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
-      lt_systs['CMS_ff_total_qcd_stat_iso_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
-      lt_systs['CMS_ff_total_wjets_stat_extrap_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
-      lt_systs['CMS_ff_total_ttbar_stat_met_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
-      lt_systs['CMS_ff_total_ttbar_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_l_pt_unc%(i)i_' % vars()
-
-    lt_systs['CMS_ff_total_qcd_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
-    lt_systs['CMS_ff_total_qcd_syst_iso_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
-    lt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    lt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
-
-    lt_systs['CMS_ff_total_wjets_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
-    lt_systs['CMS_ff_total_ttbar_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
+      for njet in [0,1]:
+        for i in [1,2]:
+          lt_systs['CMS_ff_total_qcd_stat_ss_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_ss_njets%(njet)i_unc%(i)i_' % vars()
+          lt_systs['CMS_ff_total_wjets_stat_met_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_met_njets%(njet)i_unc%(i)i_' % vars()
+          lt_systs['CMS_ff_total_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_l_pt_njets%(njet)i_unc%(i)i_' % vars()
   
-    lt_systs['CMS_ff_total_low_pt_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
+      for i in [1,2]:
+        lt_systs['CMS_ff_total_qcd_stat_os_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_os_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_qcd_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_l_pt_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_qcd_stat_iso_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_stat_iso_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_wjets_stat_extrap_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_stat_extrap_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_ttbar_stat_met_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_met_unc%(i)i_' % vars()
+        lt_systs['CMS_ff_total_ttbar_stat_l_pt_unc%(i)i_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_stat_l_pt_unc%(i)i_' % vars()
+  
+      lt_systs['CMS_ff_total_qcd_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
+      lt_systs['CMS_ff_total_qcd_syst_iso_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
+      lt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
+      lt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
+  
+      lt_systs['CMS_ff_total_wjets_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()
+      lt_systs['CMS_ff_total_ttbar_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_frac_' % vars()
+    
+      lt_systs['CMS_ff_total_low_pt_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_low_pt_' % vars()
+  
+      # new additional uncertainties
+      lt_systs['CMS_ff_total_qcd_syst_met_closure_%(ch)s_%(yr)s' % vars()]  = 'wt_ff_mssm_qcd_syst_met_closure_' % vars()
+      lt_systs['CMS_ff_total_wjets_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_met_closure_' % vars()
+      lt_systs['CMS_ff_total_ttbar_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_met_closure_' % vars()
+      lt_systs['CMS_ff_total_wjets_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_l_pt_closure_' % vars()
+      lt_systs['CMS_ff_total_ttbar_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_l_pt_closure_' % vars()
+      lt_systs['CMS_ff_total_syst_alt_func_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_syst_alt_func_' % vars()
+      lt_systs['CMS_ff_total_qcd_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_bkg_' % vars()
+      lt_systs['CMS_ff_total_wjets_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_bkg_' % vars()
 
-    # new additional uncertainties
-    lt_systs['CMS_ff_total_qcd_syst_met_closure_%(ch)s_%(yr)s' % vars()]  = 'wt_ff_mssm_qcd_syst_met_closure_' % vars()
-    lt_systs['CMS_ff_total_wjets_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_met_closure_' % vars()
-    lt_systs['CMS_ff_total_ttbar_syst_met_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_met_closure_' % vars()
-    lt_systs['CMS_ff_total_wjets_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_l_pt_closure_' % vars()
-    lt_systs['CMS_ff_total_ttbar_syst_l_pt_closure_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_l_pt_closure_' % vars()
-    lt_systs['CMS_ff_total_syst_alt_func_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_syst_alt_func_' % vars()
-    lt_systs['CMS_ff_total_qcd_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_bkg_' % vars()
-    lt_systs['CMS_ff_total_wjets_syst_bkg_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_bkg_' % vars()
+    elif options.do_ff_systs_2 or options.do_ff_systs:
 
-    for njet in [0,1]:
-      for jetpt in ['low','med','high']:
-        for i in [1,2,3]:
-          lt_systs[('CMS_ff_total_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
-        for i in [1,2,3,4]:
-          lt_systs[('CMS_ff_total_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
-        for i in [1,2,3]:
-          lt_systs[('CMS_ff_total_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+
+      for njet in [0,1]:
+        for jetpt in ['low','med','high']:
+          for i in [1,2,3]:
+            lt_systs[('CMS_ff_total_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_qcd_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          for i in [1,2,3,4]:
+            lt_systs[('CMS_ff_total_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_wjets_stat_njet%(njet)i_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
+          for i in [1,2,3]:
+            lt_systs[('CMS_ff_total_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_%(ch)s_%(yr)s' % vars())] = 'wt_ff_mssm_ttbar_stat_jet_pt_%(jetpt)s_unc%(i)i_' % vars()
 
     if options.qcd_ff_closure or options.w_ff_closure:
       for key,val in lt_systs.items():
@@ -3881,20 +3893,23 @@ def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel=''
                 sample_name = Hhh_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
 
-def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat='', get_os=True):
+def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat='', get_os=True, doScales=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS)
-    for key in vlq_samples:
-      if key in vlq_sig:
-        if isinstance(vlq_samples[key], (list,)):
-          sample_names = []
-          for i in vlq_samples[key]:
-            sample_names.append(i)
-        else: sample_names = [vlq_samples[key]]
-        ana.nodes[nodename].AddNode(ana.SummedFactory(key+add_name, sample_names, plot, full_selection))
+    if doScales: weights = {'':'1','_muR1muF2':'wt_mur1_muf2','_muR1muF0p5':'wt_mur1_muf0p5','_muR2muF1':'wt_mur2_muf1','_muR2muF2':'wt_mur2_muf2','_muR0p5muF1':'wt_mur0p5_muf1','_muR0p5muF0p5':'wt_mur0p5_muf0p5','_muR2muF0p5':'wt_mur2_muf0p5','_muR0p5muF2':'wt_mur0p5_muf2','_QCDScaleUp':'wt_mur1_muf2','_QCDScaleDown':'wt_mur1_muf0p5'}
+    else: weights = {'':'1'}
+    for name,weight in weights.items():
+      full_selection = BuildCutString(wt+"*"+weight, sel, cat, OSSS)
+      for key in vlq_samples:
+        if key in vlq_sig:
+          if isinstance(vlq_samples[key], (list,)):
+            sample_names = []
+            for i in vlq_samples[key]:
+              sample_names.append(i)
+          else: sample_names = [vlq_samples[key]]
+          ana.nodes[nodename].AddNode(ana.SummedFactory(key+name+add_name, sample_names, plot, full_selection))
 
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
@@ -4508,7 +4523,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'vlq':
-            GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss)
+            #GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=True)
+            if add_name == "":
+              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=True)
+            else:
+              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=True)
         if options.analysis in ['mssm','mssmrun2'] and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
         if options.analysis in ['mssm','mssmrun2'] and options.doMSSMReWeighting:
