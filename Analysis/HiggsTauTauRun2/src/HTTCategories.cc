@@ -861,6 +861,7 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("eta_h",             &eta_h_);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("pt_tt_inc_met",             pt_tt_inc_met_);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
@@ -2642,7 +2643,9 @@ namespace ic {
     event->Exists("fake_tau_met") ? fake_tau_met_ = event->Get<double>("fake_tau_met") : 0.;
     event->Exists("gen_tau_met") ? gen_tau_met_ = event->Get<double>("gen_tau_met") : 0.;
 
+    pt_tt_inc_met_=-9999;
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
+    if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_inc_met_ = (ditau->vector()+mets->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
 

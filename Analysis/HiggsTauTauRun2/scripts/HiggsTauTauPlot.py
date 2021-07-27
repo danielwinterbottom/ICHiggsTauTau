@@ -2715,7 +2715,7 @@ if options.method in [17,18] and options.channel in ['et','mt','tt'] and options
     lt_systs['CMS_ff_total_qcd_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_' % vars()
     lt_systs['CMS_ff_total_qcd_syst_iso_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_qcd_syst_iso_' % vars()
     lt_systs['CMS_ff_total_wjets_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_' % vars()
-    #lt_systs['CMS_ff_total_wjets_syst_extrap_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_extrap_' % vars()
+    lt_systs['CMS_ff_total_wjets_syst_extrap_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_syst_extrap_' % vars()
     lt_systs['CMS_ff_total_ttbar_syst_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_ttbar_syst_' % vars()
 
     lt_systs['CMS_ff_total_wjets_frac_%(ch)s_%(yr)s' % vars()] = 'wt_ff_mssm_wjets_frac_' % vars()

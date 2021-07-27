@@ -669,7 +669,7 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
-      if((genID=23||genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
+      if((genID==23||genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }

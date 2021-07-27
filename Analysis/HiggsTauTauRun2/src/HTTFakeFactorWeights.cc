@@ -186,10 +186,10 @@ namespace ic {
       "_syst_alt_func_up","_syst_alt_func_down","_qcd_syst_met_closure_up","_qcd_syst_met_closure_down","_ttbar_syst_met_closure_up","_ttbar_syst_met_closure_down","_ttbar_syst_l_pt_closure_up","_ttbar_syst_l_pt_closure_down","_wjets_syst_met_closure_up","_wjets_syst_met_closure_down","_wjets_syst_l_pt_closure_up","_wjets_syst_l_pt_closure_down","_wjets_syst_bkg_up","_wjets_syst_bkg_down","_qcd_syst_bkg_up","_qcd_syst_bkg_down"
 };
 
-      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v5.root";
-      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v5.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017_v5.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v5.root";
+      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
+      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017_v6.root";
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -304,10 +304,10 @@ namespace ic {
       "_syst_alt_func_up","_syst_alt_func_down","_qcd_syst_met_closure_up","_qcd_syst_met_closure_down","_ttbar_syst_met_closure_up","_ttbar_syst_met_closure_down","_ttbar_syst_l_pt_closure_up","_ttbar_syst_l_pt_closure_down","_wjets_syst_met_closure_up","_wjets_syst_met_closure_down","_wjets_syst_l_pt_closure_up","_wjets_syst_l_pt_closure_down","_wjets_syst_bkg_up","_wjets_syst_bkg_down","_qcd_syst_bkg_up","_qcd_syst_bkg_down"
 };
 
-      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v5.root";
-      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v5.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v5.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v5.root";
+      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
+      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v6.root";
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));

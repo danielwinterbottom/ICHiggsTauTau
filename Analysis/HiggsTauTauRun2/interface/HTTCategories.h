@@ -141,6 +141,7 @@ class HTTCategories : public ModuleBase {
   float eta_h_;
   float phi_h_;
   branch_var pt_tt_;
+  double pt_tt_inc_met_;
   branch_var pt_vis_;
   branch_var mt_1_;
   branch_var mt_lep_;
