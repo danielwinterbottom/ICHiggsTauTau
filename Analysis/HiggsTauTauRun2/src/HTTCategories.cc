@@ -3324,7 +3324,7 @@ namespace ic {
 
     if(eventInfo->weight_defined("off_diag_0")) {
       if(eventInfo->weight_defined("off_diag_0")) wt_vlq_off_diag_0_ = eventInfo->weight("off_diag_0");
-      std::cout << wt_vlq_off_diag_0_ << " ," << eventInfo->weight("off_diag_0") << std::endl;
+      std::cout << wt_vlq_betaR33_minus1_ << " ," << eventInfo->weight("betaR33_minus1") << std::endl;
       if(eventInfo->weight_defined("betaL23_1sigma_up")) wt_vlq_betaL23_1sigma_up_ = eventInfo->weight("betaL23_1sigma_up");
       if(eventInfo->weight_defined("betaL23_1sigma_down")) wt_vlq_betaL23_1sigma_down_ = eventInfo->weight("betaL23_1sigma_down"); 
       if(eventInfo->weight_defined("betaL32_1sigma_up")) wt_vlq_betaL32_1sigma_up_ = eventInfo->weight("betaL32_1sigma_up"); 
@@ -3335,7 +3335,7 @@ namespace ic {
       if(eventInfo->weight_defined("gU_2")) wt_vlq_gU_2_ = eventInfo->weight("gU_2");
       if(eventInfo->weight_defined("gU_3")) wt_vlq_gU_3_ = eventInfo->weight("gU_3");
       if(eventInfo->weight_defined("betaR33_0")) wt_vlq_betaR33_0_ = eventInfo->weight("betaR33_0");
-      if(eventInfo->weight_defined("betaR33_minus1")) wt_vlq_betaR33_minus1_ = eventInfo->weight("betaR33_minus1");      
+      if(eventInfo->weight_defined("betaR33_minus1")) wt_vlq_betaR33_minus1_ = eventInfo->weight("betaR33_minus1");     
       if(eventInfo->weight_defined("gU_4")) wt_vlq_gU_4_ = eventInfo->weight("gU_4");
       if(eventInfo->weight_defined("gU_5")) wt_vlq_gU_5_ = eventInfo->weight("gU_5");
       if(eventInfo->weight_defined("gU_0p5")) wt_vlq_gU_0p5_ = eventInfo->weight("gU_0p5");
