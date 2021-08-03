@@ -125,11 +125,29 @@ namespace ic {
       //if (!path_found) return 1; // note sure why we need to do this so commenting out
 
       if (channel_ == channel::et || channel_ == channel::zee || channel_ == channel :: tpzee) {
-        if (run >= 271036 && run <= 284044){
+        if (run >= 271036 && run < 276215){
           trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
           leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
+          alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
+          high_leg_pt = 26.;
+        }
+        if (run >= 276215 && run < 278270){
+          trig_obj_label = "triggerObjectsEle24LooseTau20";
+          leg1_filter = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter ";
+          leg2_filter = "hltPFTau20TrackLooseIso";
+          extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
+          alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
+          high_leg_pt = 26.;
+        }
+        if (run >= 278270 && run <= 284044){
+          trig_obj_label = "triggerObjectsEle24LooseTau20"; //should be triggerObjectsEle24LooseTau30 but its prescaled
+          leg1_filter = "hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter ";
+          leg2_filter = "hltPFTau30TrackLooseIso";
+          extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30";
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
@@ -419,12 +437,12 @@ namespace ic {
           alt_cross_leg1_filter = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           alt_cross_leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           alt_cross_extra_leg2_filter = "hltOverlapFilterIsoMu19LooseIsoPFTau20";  
-          if(is_embedded_){
-            leg2_filter = "hltPFTau20";
-            alt_cross_leg2_filter = "hltPFTau20";
-            alt_cross_extra_leg2_filter = "";
-            extra_leg2_filter = "";
-          }
+          //if(is_embedded_){
+          //  leg2_filter = "hltPFTau20";
+          //  alt_cross_leg2_filter = "hltPFTau20";
+          //  alt_cross_extra_leg2_filter = "";
+          //  extra_leg2_filter = "";
+          //}
         } else if (era_ == era::data_2017) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";

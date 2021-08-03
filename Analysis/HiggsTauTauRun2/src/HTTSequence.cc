@@ -434,7 +434,9 @@ if(!is_data && js["do_gen_analysis"].asBool()){
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
-  
+ 
+  TH2D deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+ 
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
     .set_channel_str(channel_str)
@@ -449,6 +451,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_mssm_mass(mass_str)
+    .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
     .set_era(era_type)
   );
   return;  

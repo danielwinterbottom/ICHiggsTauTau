@@ -1406,7 +1406,8 @@ namespace ic {
       synctree_->Branch("jdphi", &jdphi_, "jdphi/F");
 
       // Number of b-tagging jets passing above selections
-      synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      //synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      synctree_->Branch("nbtag", &n_deepbjets_);
       synctree_->Branch("nloosebtag",     &n_loose_bjets_);
       synctree_->Branch("bpt_1", &bpt_1_.var_float, "bpt_1/F");
       synctree_->Branch("beta_1", &beta_1_.var_float, "beta_1/F");
@@ -1427,6 +1428,16 @@ namespace ic {
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
       synctree_->Branch("trg_etaucross", &trg_etaucross_);
+      
+      synctree_->Branch("generatorWeight", &generatorWeight_);
+      synctree_->Branch("muonEffTrgWeight", &muonEffTrgWeight_);
+      synctree_->Branch("muonEffIDWeight_1", &muonEffIDWeight_1_);
+      synctree_->Branch("muonEffIDWeight_2", &muonEffIDWeight_2_);
+      synctree_->Branch("et_triggerweight_ic", &et_triggerweight_ic_);
+      synctree_->Branch("mt_triggerweight_ic", &mt_triggerweight_ic_);
+      synctree_->Branch("idisoWeight_1", &idisoweight_1_);
+      synctree_->Branch("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", &tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_);
+      synctree_->Branch("tauIDScaleFactorWeight_highpt_deeptauid_2", &tauIDScaleFactorWeight_highpt_deeptauid_2_);
 
 
     }
@@ -2430,6 +2441,16 @@ namespace ic {
     et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;
     et_trg_cross_= (event->Exists("et_trg_cross")) ? event->Get<double>("et_trg_cross") : 0;
     et_trg_or_= (event->Exists("et_trg_or")) ? event->Get<double>("et_trg_or") : 0;
+
+
+    if (eventInfo->weight_defined("wt_embedding")) generatorWeight_ = std::min(eventInfo->weight("wt_embedding"),1.0); else generatorWeight_ = 0.0;
+    if (eventInfo->weight_defined("muonEffTrgWeight")) muonEffTrgWeight_= eventInfo->weight("muonEffTrgWeight"); else muonEffTrgWeight_ = 0.0;
+    if (eventInfo->weight_defined("muonEffIDWeight_1")) muonEffIDWeight_1_ = eventInfo->weight("muonEffIDWeight_1"); else muonEffIDWeight_1_ = 0.0;
+    if (eventInfo->weight_defined("muonEffIDWeight_2")) muonEffIDWeight_2_ = eventInfo->weight("muonEffIDWeight_2"); else muonEffIDWeight_2_ = 0.0;
+    if (eventInfo->weight_defined("et_triggerweight_ic")) et_triggerweight_ic_ = eventInfo->weight("et_triggerweight_ic"); else et_triggerweight_ic_ = 0.0;
+    if (eventInfo->weight_defined("mt_triggerweight_ic")) mt_triggerweight_ic_ = eventInfo->weight("mt_triggerweight_ic"); else mt_triggerweight_ic_ = 0.0;
+    if (eventInfo->weight_defined("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2")) tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_ = eventInfo->weight("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2"); else tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_ = 0.0;
+    if (eventInfo->weight_defined("tauIDScaleFactorWeight_highpt_deeptauid_2")) tauIDScaleFactorWeight_highpt_deeptauid_2_ = eventInfo->weight("tauIDScaleFactorWeight_highpt_deeptauid_2"); else tauIDScaleFactorWeight_highpt_deeptauid_2_ = 0.0;
 
 
     mvadm_idiso_et_ =  (event->Exists("wt_tau_id_mvadm_sync")) ? event->Get<double>("wt_tau_id_mvadm_sync") : 1.0; 

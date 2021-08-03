@@ -972,6 +972,10 @@ int HTTWeights::Execute(TreeEvent *event) {
     auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
     auto args_4 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta,gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
     double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
+    eventInfo->set_weight("muonEffIDWeight_1", fns_["m_sel_idEmb_ratio"]->eval(args_1.data()), false);
+    eventInfo->set_weight("muonEffIDWeight_2", fns_["m_sel_idEmb_ratio"]->eval(args_2.data()), false);
+    eventInfo->set_weight("muonEffTrgWeight", fns_["m_sel_trg_ratio"]->eval(args_4.data()), false);
+
     if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield = 0.; // values > 1 are un-physical so set yield to 0
     eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     event->Add("wt_embedding_yield", wt_embedding_yield);
@@ -1088,6 +1092,9 @@ int HTTWeights::Execute(TreeEvent *event) {
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt.data()) : 1.0;
         tau_sf_highpt_2 = (gen_match_2==5&&pt_2>100) ? fns_["t_deeptauid_highpt"]->eval(args_pt.data()) : 1.0;
 
+        eventInfo->set_weight("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", tau_sf_2 , false);
+        eventInfo->set_weight("tauIDScaleFactorWeight_highpt_deeptauid_2",tau_sf_highpt_2 , false);
+
         std::vector<std::string> systs = {"bin5_up","bin5_down","bin6_up","bin6_down"};
         for (auto s: systs) {
           double tau_sf_highpt_2_syst=1.;
@@ -1183,6 +1190,9 @@ int HTTWeights::Execute(TreeEvent *event) {
           et_tau_extra/=tau_sf_2;
           event->Add("wt_tau_id_extra",et_tau_extra);
         }
+
+        eventInfo->set_weight("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", tau_sf_2 , false);
+        eventInfo->set_weight("tauIDScaleFactorWeight_highpt_deeptauid_2",tau_sf_highpt_2 , false);
 
         std::vector<std::string> systs = {"bin5_up","bin5_down","bin6_up","bin6_down"};
         for (auto s: systs) {
@@ -1941,6 +1951,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       std::vector<std::string> systs = {"_crosslep_up","_crosslep_down","_singlelep_up","_singlelep_down","_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down"};
 
       double wt_tau_trg_mssm = fns_["et_trg"+extra+"_ratio"]->eval(args_etau.data());
+      eventInfo->set_weight("et_triggerweight_ic", wt_tau_trg_mssm, false);
       event->Add("wt_tau_trg_mssm", xtrg_OR_sf > 0. ? wt_tau_trg_mssm/xtrg_OR_sf : 0.);
       for (auto s: systs) {
         double wt_tau_trg_mssm_syst = fns_["et_trg"+extra+"_ratio"+s]->eval(args_etau.data());
@@ -2159,6 +2170,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       std::vector<std::string> systs = {"_crosslep_up","_crosslep_down","_singlelep_up","_singlelep_down","_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down"};
 
       double wt_tau_trg_mssm = fns_["mt_trg"+extra+"_ratio"]->eval(args_mutau.data());
+      eventInfo->set_weight("et_triggerweight_ic", wt_tau_trg_mssm, false);
       event->Add("wt_tau_trg_mssm", xtrg_OR_sf > 0. ? wt_tau_trg_mssm/xtrg_OR_sf : 0.);
       for (auto s: systs) {
         double wt_tau_trg_mssm_syst = fns_["mt_trg"+extra+"_ratio"+s]->eval(args_mutau.data());
@@ -2648,6 +2660,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
      weight *= mu_idiso;
      event->Add("idisoweight_1", mu_idiso);
+     eventInfo->set_weight("idiso", mu_idiso, false);
    } else if (channel_ == channel::em) {
      Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));

@@ -347,7 +347,7 @@ for year in years:
             CreateBatchJob(job_file,cmssw_base,[run_cmd_syst_,rename_cmd_syst_])
             if not options.dry_run:
               #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
-              if ch in ["mt","et"] and YEAR == "2018" and 'do_ff_syst' in syst:
+              if ch in ["mt","et"] and 'do_ff_syst' in syst:
                 SubmitBatchJob(job_file,time=600,memory=24,cores=1)
               else:
                 SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
